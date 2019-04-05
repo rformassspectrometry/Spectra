@@ -243,7 +243,9 @@ Spectra <- function(spectraData = DataFrame(), backend = BackendMemory()) {
 
 #' @rdname hidden_aliases
 #'
-#' @param object Object to display.
+#' @importMethodsFrom methods show
+#'
+#' @importFrom utils capture.output
 #'
 #' @exportMethod show
 setMethod("show", "Spectra",

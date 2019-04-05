@@ -20,19 +20,20 @@ BackendMzR()
 manage and access mass spectrometry data. Backends can be generally
 classified into \emph{in-memory} and \emph{on-disk} backends. In-memory backends keep
 all the (spectra) data in memory ensuring fast data access. On-disk backends
-do not keep any data in memory but fetch the requested spectrum data only on
-demand, applying eventual data manipulations on-the-fly. Due to their minimal
-memory demand, on-disk backends support also loading and analyzing very large
-MS experiments.
+do not keep any m/z - intensity data in memory but fetch the requested
+spectrum data only on demand, applying eventual data manipulations
+on-the-fly. Due to their minimal memory demand, on-disk backends support
+also loading and analyzing very large MS experiments or accessing spectra
+data stored in databases.
 
-Available backends in \code{MSnbase} are listed below.
+Available backends in \code{Spectra} are listed below.
 }
 \section{BackendMemory}{
 
 
-The \code{BackendMemory} uses a \code{list} as backend and stores all MS data in the
-memory. This ensures a high performance but needs a lot of memory for larger
-experiments.
+The \code{BackendMemory} uses a \code{list} as backend and stores all MS data in
+memory. This ensures a high performance but needs a considerable amount of
+memory for larger experiments.
 
 New backends can be created with the \code{BackendMemory()} function.
 }
@@ -43,8 +44,7 @@ New backends can be created with the \code{BackendMemory()} function.
 The \code{BackendMzR} uses the original MS data files (such as \emph{mzML}, \emph{mzXML} or
 \emph{CDF} files) as backend and reads the data on demand from these files. This
 ensures a low memory footprint and enables thus the analysis also of very
-large experiments - at the cost of a slightly lower performance. New
-backends can be created with the \code{BackendMzR} function.
+large experiments - at the cost of a slightly lower performance.
 
 New backends can be created with the \code{BackendMzR()} function.
 }
@@ -52,7 +52,7 @@ New backends can be created with the \code{BackendMzR()} function.
 \section{BackendHdf5}{
 
 
-The \code{BackendHdf5} is, similar to the \code{BackendMzR}, a \emph{on-disk} backend that
+The \code{BackendHdf5} is, similar to the \code{BackendMzR}, an \emph{on-disk} backend that
 does only keep the minimum required data in memory (i.e. spectrum metadata).
 The m/z and intensity values of all spectra are stored in HDF5 files (one
 for each input file). This backend combines the advantages of the

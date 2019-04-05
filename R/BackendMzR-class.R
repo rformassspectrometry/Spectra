@@ -23,17 +23,18 @@ setMethod(
     "backendWriteSpectra",
     "BackendMzR",
     function(object, spectra, spectraData) {
-        if (isMSnbaseVerbose()) {
-            message("Can not make changes to spectrum data persistent: ",
-                    "'BackendMzR' is read-only.")
-        }
-    object
+        message("Can not make changes to spectrum data persistent: ",
+                "'BackendMzR' is read-only.")
+        object
 })
 
 #' @rdname Backend
 #'
 #' @export
 BackendMzR <- function() {
+    if (!requireNamespace("mzR", quietly = TRUE))
+        stop("'BackendMzR' needs package 'mzR' being installed. Please install",
+             "using 'BiocManager::install(\"mzR\")")
     new("BackendMzR")
 }
 
