@@ -1,5 +1,5 @@
 Package: Spectra
-Title: Base Mass Spectrometry
+Title: Spectra Base Classes for Mass Spectrometry Data
 Version: 0.0.1
 Description: Spectra provides base classes for Mass spectrometry.
 Authors@R: c(person(given = "Laurent", family = "Gatto",
@@ -37,3 +37,12 @@ VignetteBuilder: knitr
 BugReports: https://github.com/lgatto/Spectra/issues
 URL: https://github.com/lgatto/Spectra
 biocViews: Infrastructure, Proteomics, MassSpectrometry
+RoxygenNote: 6.1.1
+Collate: 
+    'AllGenerics.R'
+    'hidden_aliases.R'
+    'Backend-class.R'
+    'BackendHdf5-class.R'
+    'BackendMemory-class.R'
+    'BackendMzR-class.R'
+    'Spectra-class.R'

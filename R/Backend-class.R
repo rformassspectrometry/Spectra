@@ -7,7 +7,7 @@ NULL
 #'
 #' @description
 #'
-#' [MSnExperiment-class] objects support the use of different backends to
+#' [Spectra-class] objects support the use of different backends to
 #' manage and access mass spectrometry data. Backends can be generally
 #' classified into *in-memory* and *on-disk* backends. In-memory backends keep
 #' all the (spectra) data in memory ensuring fast data access. On-disk backends
@@ -47,7 +47,7 @@ NULL
 #' from HDF5 files is considerably faster than reading data from MS raw files
 #' (mzML, mzXML or CDF). By default, HDF5 files are stored in the current
 #' working directory, but it is also possible to specify a directory with
-#' the `path` parameter of the [readMSnExperiment()] function (passed as an
+#' the `path` parameter of the [readSpectra()] function (passed as an
 #' optional parameter).
 #'
 #' New backends can be created with the `BackendHdf5()` function.
@@ -59,7 +59,7 @@ NULL
 #' @md
 NULL
 
-#' Base class for all other [MSnExperiment-class] data
+#' Base class for all other [Spectra-class] data
 #' backend classes (e.g., [BackendMemory-class], [BackendHdf5-class]).
 #'
 #' It is a *VIRTUAL* class and just defines a common interface for possible
@@ -81,6 +81,8 @@ NULL
 #' @author Sebastian Gibb
 #'
 #' @noRd
+#'
+#' @exportClass Backend
 setClass("Backend",
     slots = c(
         files = "character",    # src files (i.e. mzML files)
@@ -121,6 +123,7 @@ setValidity("Backend", function(object) {
 })
 
 #' @rdname hidden_aliases
+#'
 #' @param object Object to display.
 setMethod("show", signature = "Backend", definition = function(object) {
     cat("Backend:", class(object)[1L], "\n")
@@ -144,12 +147,19 @@ setMethod("fileNames", "Backend", function(object, ...) object@files)
 #'
 #' @param object An object inheriting from [Backend-class],
 #' i.e. [BackendHdf5-class]
+#'
 #' @param files The path to the source (generally .mzML) files.
+#'
 #' @param spectraData A [S4Vectors::DataFrame-class]
+#'
 #' @param ... Other arguments passed to the methods.
+#'
 #' @return A [Backend-class] derivate.
+#'
 #' @family Backend generics
+#'
 #' @author Sebastian Gibb \email{mail@@sebastiangibb.de}
+#'
 #' @noRd
 setGeneric(
     "backendInitialize",
@@ -174,12 +184,18 @@ setMethod(
 #' It *MUST* be reimplemented by all backends!
 #'
 #' @inheritParams backendInitialize
+#'
 #' @param file The path to the source (generally .mzML) file.
+#'
 #' @param processingQueue `list` of `ProcessingStep` objects defining the
 #'     processing steps to be applied to the spectra before returning them.
-#' @return A list of [Spectrum-class] objects.
+#'
+#' @return A list of [DataFrame] objects with columns `"mz"` and `"intensity`".
+#'
 #' @family Backend generics
+#'
 #' @author Sebastian Gibb \email{mail@@sebastiangibb.de}
+#'
 #' @noRd
 setGeneric(
     "backendReadSpectra",
@@ -195,13 +211,19 @@ setGeneric(
 #' It *MUST* be reimplemented by all backends!
 #'
 #' @inheritParams backendReadSpectra
+#'
 #' @param spectra A `list` of [Spectrum-class] objects that should be written to
 #' the backend.
+#'
 #' @param updateModCount `logical`, should the `@modCount` be incremented? Only
 #' set to `FALSE` if you know what you are doing (e.g. in `setBackend`).
+#'
 #' @return A [Backend-class] derivate.
+#'
 #' @family Backend generics
+#'
 #' @author Sebastian Gibb \email{mail@@sebastiangibb.de}
+#'
 #' @noRd
 setGeneric(
     "backendWriteSpectra",
@@ -316,11 +338,11 @@ setReplaceMethod(
 #'
 #' `backendUpdateMetadata` updates the spectrum metadata on backends that
 #' support it with the provided `spectraData`. It ensures that changes to the
-#' metadata in the upstream object (e.g. `MSnExperiment`) are propagated to
+#' metadata in the upstream object (e.g. `Spectra`) are propagated to
 #' the backend.
 #'
 #' This method is called each time the spectrum metadata is updated in the
-#' `MSnExperiment`, e.g. by `spectraData(object) <- new_spd`.
+#' `Spectra`, e.g. by `spectraData(object) <- new_spd`.
 #'
 #' @param x `Backend`.
 #'

@@ -4,6 +4,8 @@ NULL
 setClass("BackendMzR", contains = "Backend")
 
 #' @rdname hidden_aliases
+#'
+#' @importMethodsFrom S4Vectors split
 setMethod("backendReadSpectra", "BackendMzR", function(object,
                                                        spectraData, ...) {
     file_f <- factor(spectraData$fileIdx, levels = unique(spectraData$fileIdx))
@@ -29,6 +31,10 @@ setMethod(
 })
 
 #' @rdname Backend
+#'
+#' @exportClass BackendMzR
+#'
+#' @export
 BackendMzR <- function() {
     new("BackendMzR")
 }
@@ -53,11 +59,15 @@ BackendMzR <- function() {
 .spectra_from_file_mzR <- function(file, spectraData) {
     if (missing(file) || missing(spectraData))
         stop("Both 'file' and 'spectraData' are required")
-    fl <- .openMSfile(file)
+    fl <- mzR::openMSfile(file)
     on.exit(mzR::close(fl))
+    cat(spectraData$fileIdx[1], " ", max(spectraData$spIdx), "\n")
     hdr <- mzR::header(fl, max(spectraData$spIdx))
     mzi <- mzR::peaks(fl, spectraData$spIdx)
     if (is.matrix(mzi))
         mzi <- list(mzi)
-    .spectra_from_data(mzi, spectraData)
+    lapply(mzi, function(z) {
+        colnames(z) <- c("mz", "intensity")
+        as.data.frame(z, make.names = FALSE)
+    })
 }
