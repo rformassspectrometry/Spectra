@@ -12,7 +12,7 @@ Authors@R: c(person(given = "Laurent", family = "Gatto",
                     email = "mail@sebastiangibb.de",
                     role = c("aut", "cre")))
 Author: Laurent Gatto, Johannes Rainer and Sebastian Gibb.
-Maintainer: Laurent Gatto <lg390@cam.ac.uk>
+Maintainer: Laurent Gatto <laurent.gatto@uclouvain.be> and Johannes Rainer <Johannes.Rainer@eurac.edu>
 Depends:
     R (>= 3.5.0),
     methods,
