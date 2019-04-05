@@ -32,8 +32,6 @@ setMethod(
 
 #' @rdname Backend
 #'
-#' @exportClass BackendMzR
-#'
 #' @export
 BackendMzR <- function() {
     new("BackendMzR")

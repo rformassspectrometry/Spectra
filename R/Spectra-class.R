@@ -154,6 +154,22 @@ setClass(
 )
 
 ## #' @rdname Spectra
+
+## Constructor:
+## provide spectraData, backend, metadata, spectra, ...
+#' @param spectraData `DataFrame` with spectrum properties. Check content for
+#'     specific columns.
+#'
+#' @param backend `Backend` class. Either `spectra` or `Backend` have to be
+#'     provided.
+#'
+#' @param spectra `list` of `data.frame`s with columns named `"mz"` and
+#'     `"intensity"`.
+#'
+#' @param metadata `list` of optional additional metadata.
+Spectra <- function(spectraData = DataFrame(), backend = BackendMemory()) {
+}
+
 ## Spectra <- function(x, spectraData, metadata, ...) {
 ##     if (missing(x) || any(vapply(x, function(z) !inherits(z, "Spectrum"),
 ##                                  logical(1))))

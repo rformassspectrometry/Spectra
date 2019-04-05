@@ -9,10 +9,24 @@
 \alias{setBackend}
 \title{The Spectra class to manage and access MS data}
 \usage{
+Spectra(spectraData = DataFrame(), backend = BackendMemory())
+
 readSpectra(file, sampleData, backend = BackendMzR(), smoothed = NA,
   metadata = list(), ..., BPPARAM = bpparam())
 
 setBackend(object, backend, ..., BPPARAM = bpparam())
+}
+\arguments{
+\item{spectraData}{`DataFrame` with spectrum properties. Check content for
+specific columns.}
+
+\item{backend}{`Backend` class. Either `spectra` or `Backend` have to be
+provided.}
+
+\item{metadata}{`list` of optional additional metadata.}
+
+\item{spectra}{`list` of `data.frame`s with columns named `"mz"` and
+`"intensity"`.}
 }
 \value{
 See individual method description for the return value.

@@ -4,7 +4,8 @@ NULL
 setClass("BackendMemory",
     contains = "Backend",
     slots = c(
-        spectra = "list" # or environment
+        ## list of data.frames with columns mz and intensity.
+        spectra = "list"
     )
 )
 
@@ -25,13 +26,31 @@ setClass("BackendMemory",
     NULL
 }
 
+.valid_spectrum_data_frame <- function(x) {
+    if (is.data.frame(x)) {
+        if (!all(c("mz", "intensity") %in% colnames(x)))
+            return("Spectra data.frame must have columns \"mz\" and \"intensity\"")
+        if (is.unsorted(x$mz))
+            return("m/z values have to be increasingly ordered")
+        if (!is.numeric(x$mz) || !is.numeric(x$intensity))
+            return("columns \"mz\" and \"intensity\" need to be of type numeric")
+    } else return("Spectra should be a data.frame")
+    NULL
+}
+
 setValidity("BackendMemory", function(object) {
-    lapply(object@spectra, validObject)
+    lapply(object@spectra, function(z) {
+        res <- .valid_spectrum_data_frame
+        if (length(character))
+            stop("Validity: first error: ", res, call. = FALSE)
+    })
     msg <- .valid.BackendMemory.spectra.names(object@spectra)
     if (is.null(msg)) { TRUE } else { msg }
 })
 
 #' @rdname Backend
+#'
+#' @export
 BackendMemory <- function() { new("BackendMemory") }
 
 #' @rdname hidden_aliases
