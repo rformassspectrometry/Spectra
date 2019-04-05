@@ -22,7 +22,7 @@ NULL
 #'
 #' The `BackendMemory` uses a `list` as backend and stores all MS data in the
 #' memory. This ensures a high performance but needs a lot of memory for larger
-#' experiments.  It mimics the classical [MSnExp-class] behaviour.
+#' experiments.
 #'
 #' New backends can be created with the `BackendMemory()` function.
 #
@@ -334,30 +334,30 @@ setReplaceMethod(
     object
 })
 
-#' @description
-#'
-#' `backendUpdateMetadata` updates the spectrum metadata on backends that
-#' support it with the provided `spectraData`. It ensures that changes to the
-#' metadata in the upstream object (e.g. `Spectra`) are propagated to
-#' the backend.
-#'
-#' This method is called each time the spectrum metadata is updated in the
-#' `Spectra`, e.g. by `spectraData(object) <- new_spd`.
-#'
-#' @param x `Backend`.
-#'
-#' @param spectraData `DataFrame` with the updated spectrum metadata.
-#'
-#' @return A `Backend` class.
-#'
-#' @author Johannes Rainer
-#'
-#' @rdname hidden_aliases
-#'
-#' @noRd
-setGeneric("backendUpdateMetadata", def = function(object, spectraData)
-    standardGeneric("backendUpdateMetadata"),
-    valueClass = "Backend")
-setMethod("backendUpdateMetadata", "Backend", function(object, spectraData) {
-    object
-})
+## #' @description
+## #'
+## #' `backendUpdateMetadata` updates the spectrum metadata on backends that
+## #' support it with the provided `spectraData`. It ensures that changes to the
+## #' metadata in the upstream object (e.g. `Spectra`) are propagated to
+## #' the backend.
+## #'
+## #' This method is called each time the spectrum metadata is updated in the
+## #' `Spectra`, e.g. by `spectraData(object) <- new_spd`.
+## #'
+## #' @param x `Backend`.
+## #'
+## #' @param spectraData `DataFrame` with the updated spectrum metadata.
+## #'
+## #' @return A `Backend` class.
+## #'
+## #' @author Johannes Rainer
+## #'
+## #' @rdname hidden_aliases
+## #'
+## #' @noRd
+## setGeneric("backendUpdateMetadata", def = function(object, spectraData)
+##     standardGeneric("backendUpdateMetadata"),
+##     valueClass = "Backend")
+## setMethod("backendUpdateMetadata", "Backend", function(object, spectraData) {
+##     object
+## })

@@ -141,7 +141,6 @@ setClass(
     "Spectra",
     slots = c(
         backend = "Backend",
-        ## was featureData in MSnExp
         spectraData = "DataFrame",
         processingQueue = "list",
         ## logging
@@ -227,8 +226,10 @@ setClass(
 }
 
 #' @rdname hidden_aliases
+#'
 #' @param object Object to display.
-#' @export
+#'
+#' @exportMethod show
 setMethod("show", "Spectra",
     function(object) {
         cat("MSn data (", class(object)[1L], ") with ",
@@ -246,6 +247,10 @@ setMethod("show", "Spectra",
     })
 
 #' @rdname Spectra
+#'
+#' @importMethodsFrom BiocParallel bplapply
+#'
+#' @importFrom BiocParallel bpparam
 #'
 #' @export
 readSpectra <- function(file, sampleData, backend = BackendMzR(),
@@ -269,9 +274,9 @@ readSpectra <- function(file, sampleData, backend = BackendMzR(),
         file_number <- match(z, files)
         suppressPackageStartupMessages(
             require("MSnbase", quietly = TRUE, character.only = TRUE))
-        msd <- .openMSfile(z)
-        on.exit(close(msd))
-        hdr <- header(msd)
+        msd <- mzR::openMSfile(z)
+        on.exit(mzR::close(msd))
+        hdr <- mzR::header(msd)
         sp_idx <- seq_len(nrow(hdr))
         rownames(hdr) <- formatFileSpectrumNames(fileIds = file_number,
                                                  spectrumIds = seq_along(sp_idx),
@@ -323,6 +328,8 @@ readSpectra <- function(file, sampleData, backend = BackendMzR(),
 setGeneric("setBackend", function(object, backend, ..., BPPARAM = bpparam())
     standardGeneric("setBackend"))
 #' @rdname hidden_aliases
+#'
+#' @importMethodsFrom BiocParallel bpmapply
 setMethod(
     "setBackend",
     c("Spectra", "Backend"),
