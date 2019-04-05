@@ -30,5 +30,5 @@ test_that("backendReadSpectra,BackendMzR works", {
     expect_true(all(vapply(res_2, is.data.frame, logical(1))))
 
     res <- Spectra:::backendReadSpectra(be, spd)
-
+    expect_equal(res, c(res_1, res_2))
 })

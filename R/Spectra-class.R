@@ -132,7 +132,7 @@ NULL
 #'
 #' @importClassesFrom S4Vectors DataFrame
 #'
-#' @importMethodsFrom S4Vectors colnames lapply cbind
+#' @importMethodsFrom S4Vectors lapply
 #'
 #' @importFrom S4Vectors DataFrame
 #'
@@ -211,6 +211,8 @@ setClass(
 #' @return `DataFrame` with the merged columns.
 #'
 #' @author Johannes Rainer
+#'
+#' @importMethodsFrom S4Vectors nrow rownames colnames cbind
 #'
 #' @noRd
 .combine_featureData <- function(x, y) {
