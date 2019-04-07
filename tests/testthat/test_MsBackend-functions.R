@@ -28,3 +28,14 @@ test_that(".valid_intensity_column works", {
     expect_match(.valid_intensity_column(df),
                  "contain a list of numeric")
 })
+
+test_that(".valid_ms_backend_files works", {
+    expect_null(.valid_ms_backend_files(c("a", "b")))
+    expect_match(.valid_ms_backend_files(c("a", "a")))
+})
+
+test_that(".valid_ms_backend_mod_count works", {
+    expect_null(.valid_ms_backend_mod_count(1, "a"))
+    expect_match(.valid_ms_backend_mod_count(integer(), "a"),
+                 "Different number of")
+})

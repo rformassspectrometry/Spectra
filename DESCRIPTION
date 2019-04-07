@@ -41,11 +41,8 @@ RoxygenNote: 6.1.1
 Collate:
     'AllGenerics.R'
     'hidden_aliases.R'
-    'Backend-class.R'
-    'BackendHdf5-class.R'
-    'BackendMemory-class.R'
-    'BackendMzR-class.R'
     'MsBackend-functions.R'
     'MsBackend.R'
     'ProcessingStep.R'
-    'Spectra-class.R'
+    'Spectra-functions.R'
+    'Spectra.R'

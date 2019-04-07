@@ -1,6 +1,22 @@
 #' @include hidden_aliases.R
 NULL
 
+.valid_ms_backend_files <- function(x) {
+    n <- length(x)
+    if (n) {
+        if (anyDuplicated(x))
+            return("Duplicated file names found.")
+    }
+    NULL
+}
+
+.valid_ms_backend_mod_count <- function(x, y) {
+    if (length(x) != length(y))
+        "Different number of source files and modification counters."
+    else
+        NULL
+}
+
 #' Function to check data types of selected columns in the provided `DataFrame`.
 #'
 #' @param x `DataFrame` to validate.
@@ -57,9 +73,6 @@ NULL
     collisionEnergy = "numeric"
 )
 
-## MsBackend <- function(spectraData, msLevel, rt, mz, intensity, acquisitionNum,
-##                       scanIndex, fromFile, centroided, smoothed, polarity,
-##                       precScanNum, precursorMz, precursorIntensity,
-##                       precursorCharge, collisionEnergy) {
-
-## }
+MsBackend <- function() {
+    new("MsBackend")
+}

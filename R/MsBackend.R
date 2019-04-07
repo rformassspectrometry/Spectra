@@ -36,8 +36,12 @@ NULL
 
 setClass("MsBackend",
          slots = c(spectraData = "DataFrame",
+                   files = "character",
+                   modCount = "integer",
                    version = "character"),
          prototype = prototype(spectraData = DataFrame(),
+                               files = character(),
+                               modCount = integer(),
                                version = "0.1"))
 
 setValidity("MsBackend", function(object) {
@@ -46,4 +50,44 @@ setValidity("MsBackend", function(object) {
              .valid_mz_column(object@spectraData))
     if (is.null(msg)) TRUE
     else msg
+})
+
+#' Initialize a backend
+#'
+#' This generic is used to setup a backend.
+#'
+#' It should be only reimplemented if the backend needs specific requirements,
+#' e.g. for *HDF5* the creation of .h5 files; for *SQL* the creation of a
+#' database or tables.
+#'
+#' @param object An object inheriting from [Backend-class],
+#' i.e. [BackendHdf5-class]
+#'
+#' @param files The path to the source (generally .mzML) files.
+#'
+#' @param spectraData A [S4Vectors::DataFrame-class]
+#'
+#' @param ... Other arguments passed to the methods.
+#'
+#' @return A [Backend-class] derivate.
+#'
+#' @family Backend generics
+#'
+#' @author Sebastian Gibb \email{mail@@sebastiangibb.de}
+#'
+#' @noRd
+setGeneric(
+    "backendInitialize",
+    def = function(object, files, spectraData, ...)
+        standardGeneric("backendInitialize"),
+    valueClass = "MsBackend"
+)
+setMethod(
+    "backendInitialize",
+    signature = "MsBackend",
+    definition = function(object, files, spectraData, ...) {
+    object@files <- files
+    object@modCount <- integer(length(files))
+    validObject(object)
+    object
 })
