@@ -45,5 +45,7 @@ Collate:
     'BackendHdf5-class.R'
     'BackendMemory-class.R'
     'BackendMzR-class.R'
+    'MsBackend-functions.R'
+    'MsBackend.R'
     'ProcessingStep.R'
     'Spectra-class.R'
