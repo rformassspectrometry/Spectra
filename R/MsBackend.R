@@ -45,20 +45,28 @@ setClass("MsBackend",
                                version = "0.1"))
 
 setValidity("MsBackend", function(object) {
-    msg <- c(.valid_column_datatype(object@spectraData, .SPECTRA_DATA_COLUMNS),
-             .valid_intensity_column(object@spectraData),
-             .valid_mz_column(object@spectraData))
+    msg <- .valid_spectra_data_required_columns(object@spectraData)
+    if (length(msg))
+        return(msg)
+    msg <- c(
+        .valid_column_datatype(object@spectraData, .SPECTRA_DATA_COLUMNS),
+        .valid_intensity_column(object@spectraData),
+        .valid_mz_column(object@spectraData),
+        .valid_ms_backend_files(object@files),
+        .valid_ms_backend_files_from_file(object@files,
+                                          object@spectraData$fromFile),
+        .valid_ms_backend_mod_count(object@files, object@modCount))
     if (is.null(msg)) TRUE
     else msg
 })
 
 #' Initialize a backend
 #'
-#' This generic is used to setup a backend.
+#' This generic is used to setup and initialize a backend.
 #'
-#' It should be only reimplemented if the backend needs specific requirements,
+#' It should be reimplemented if the backend needs specific requirements,
 #' e.g. for *HDF5* the creation of .h5 files; for *SQL* the creation of a
-#' database or tables.
+#' database or tables or establish and check a database connection.
 #'
 #' @param object An object inheriting from [Backend-class],
 #' i.e. [BackendHdf5-class]
@@ -69,7 +77,7 @@ setValidity("MsBackend", function(object) {
 #'
 #' @param ... Other arguments passed to the methods.
 #'
-#' @return A [Backend-class] derivate.
+#' @return A fully operational [Backend-class] derivate.
 #'
 #' @family Backend generics
 #'
@@ -88,6 +96,23 @@ setMethod(
     definition = function(object, files, spectraData, ...) {
     object@files <- files
     object@modCount <- integer(length(files))
+    object@spectraData <- spectraData
     validObject(object)
     object
+})
+
+#' @exportMethod length
+#'
+#' @noRd
+setMethod("length", "MsBackend", function(x) {
+    nrow(x@spectraData)
+})
+
+#' @exportMethod msLevel
+#'
+#' @noRd
+setMethod("msLevel", "MsBackend", function(object, ...) {
+    if (any(colnames(object@spectraData) == "msLevel"))
+        object@spectraData$msLevel
+    else rep(NA_integer_, times = length(object))
 })

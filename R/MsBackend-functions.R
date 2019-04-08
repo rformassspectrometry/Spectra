@@ -17,6 +17,31 @@ NULL
         NULL
 }
 
+.valid_ms_backend_files_from_file <- function(x, y) {
+    if (length(x) && !all(y %in% seq_along(x)))
+            return("Index in 'fromFile' outside of the number of files")
+    else NULL
+}
+
+#' @description
+#'
+#' Check if spectraData has all required columns.
+#'
+#' @noRd
+#'
+#' @param x spectraData `DataFrame`
+.valid_spectra_data_required_columns <- function(x) {
+    if (nrow(x)) {
+        .req_cols <- c("fromFile")
+        missing_cn <- setdiff(.req_cols, colnames(x))
+        if (length(missing_cn))
+            return(paste0("Required column(s): ",
+                          paste(missing_cn, collapse = ", "),
+                          " is/are missing"))
+    }
+    NULL
+}
+
 #' Function to check data types of selected columns in the provided `DataFrame`.
 #'
 #' @param x `DataFrame` to validate.

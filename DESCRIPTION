@@ -46,3 +46,4 @@ Collate:
     'ProcessingStep.R'
     'Spectra-functions.R'
     'Spectra.R'
+    'functions-util.R'

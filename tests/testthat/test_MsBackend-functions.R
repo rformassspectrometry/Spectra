@@ -1,3 +1,32 @@
+test_that(".valid_ms_backend_files works", {
+    expect_null(.valid_ms_backend_files(c("a", "b")))
+    expect_match(.valid_ms_backend_files(c("a", "a")))
+})
+
+test_that(".valid_ms_backend_mod_count works", {
+    expect_null(.valid_ms_backend_mod_count(1, "a"))
+    expect_match(.valid_ms_backend_mod_count(integer(), "a"),
+                 "Different number of")
+})
+
+test_that(".valid_ms_backend_files_from_file works", {
+    expect_null(.valid_ms_backend_files_from_file(
+        c("a", "b", "c"), c(1, 1, 2, 2, 3, 3, 3)))
+    expect_match(.valid_ms_backend_files_from_file(
+        c("a", "b", "c"), c(1, 1, 2, 2, 3, 3, 4)),
+        "Index in 'fromFile'")
+})
+
+test_that(".valid_spectra_data_required_columns works", {
+    df <- DataFrame()
+    expect_null(.valid_spectra_data_required_columns(df))
+    df <- DataFrame(msLevel = 1L)
+    expect_match(.valid_spectra_data_required_columns(df),
+                 "Required column")
+    df$fromFile <- 1L
+    expect_null(.valid_spectra_data_required_columns(df))
+})
+
 test_that(".valid_column_datatype works", {
     expect_null(.valid_column_datatype(DataFrame(a = 4)))
     expect_match(.valid_column_datatype(
@@ -27,15 +56,4 @@ test_that(".valid_intensity_column works", {
     df$intensity <- list("g", TRUE)
     expect_match(.valid_intensity_column(df),
                  "contain a list of numeric")
-})
-
-test_that(".valid_ms_backend_files works", {
-    expect_null(.valid_ms_backend_files(c("a", "b")))
-    expect_match(.valid_ms_backend_files(c("a", "a")))
-})
-
-test_that(".valid_ms_backend_mod_count works", {
-    expect_null(.valid_ms_backend_mod_count(1, "a"))
-    expect_match(.valid_ms_backend_mod_count(integer(), "a"),
-                 "Different number of")
 })

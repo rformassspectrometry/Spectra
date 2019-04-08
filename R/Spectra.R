@@ -24,6 +24,8 @@ NULL
 #'
 #' @section Creation of objects, conversion and changing the backend:
 #'
+#' TODO @jo: update with the `Spectra` constructor.
+#'
 #' `Spectra` classes are usually created with the `readSpectra`
 #' function that reads general spectrum metadata information from the  mass
 #' spectrometry data files.
@@ -92,97 +94,14 @@ setClass(
         metadata = "list",
         version = "character"
     ),
-    prototype = prototype(version = "0.1"),
-    validity = .valid_spectra
+    prototype = prototype(version = "0.1")
 )
 
-## #' @rdname Spectra
-
-## Constructor:
-## provide spectraData, backend, metadata, spectra, ...
-#' @param spectraData `DataFrame` with spectrum properties. Check content for
-#'     specific columns.
-#'
-#' @param backend `Backend` class. Either `spectra` or `Backend` have to be
-#'     provided.
-#'
-#' @param spectra `list` of `data.frame`s with columns named `"mz"` and
-#'     `"intensity"`.
-#'
-#' @param metadata `list` of optional additional metadata.
-Spectra <- function(spectraData = DataFrame(), backend = MsBackend()) {
-}
-
-## Spectra <- function(x, spectraData, metadata, ...) {
-##     if (missing(x) || any(vapply(x, function(z) !inherits(z, "Spectrum"),
-##                                  logical(1))))
-##         stop("'x' has to be a list of 'Spectrum' objects")
-##     fdata <- DataFrame(do.call(rbind, lapply(x, .spectrum_header)))
-##     if (!missing(spectraData))
-##         spectraData <- .combine_featureData(spectraData, fdata)
-##     else spectraData <- fdata
-##     if (all(is.na(spectraData$fileIdx))) {
-##         spectraData$fileIdx <- 1L
-##         for (i in seq_along(x))
-##             x[[i]]@fromFile <- 1L
-##     }
-##     file <- unique(spectraData$fileIdx)
-##     if (!is.null(names(x)))
-##         rownames(spectraData) <- names(x)
-##     else {
-##         ## Use acquisitionNum to order the spectra per file. If that is NA
-##         ## spectra get named according to their
-##         from_file <- factor(spectraData$fileIdx, unique(spectraData$fileIdx))
-##         names(x) <- formatFileSpectrumNames(
-##             fileIds = spectraData$fileIdx,
-##             spectrumIds = unsplit(lapply(
-##                 split(spectraData$acquisitionNum, from_file),
-##                 order), from_file),
-##             nFiles = length(file))
-##         rownames(spectraData) <- names(x)
-##     }
-##     if (missing(sampleData))
-##         sampleData <- DataFrame(sampleIdx = unique(fdata$fileIdx))
-##     backend <- BackendMemory()
-##     backend <- backendInitialize(backend, as.character(file), spectraData, ...)
-##     backend <- backendWriteSpectra(backend, x, spectraData)
-##     new("Spectra",
-##         backend = backend,
-##         sampleData = sampleData,
-##         spectraData = spectraData,
-##         processingQueue = list(),
-##         processing = paste0("Data loaded [", date(), "]")
-##         )
-## }
-
-#' @description
-#'
-#' Combine two featureData `DataFrame`s. The resulting `DataFrame` contains all
-#' columns from both `x` and `y`. For columns present in both `DataFrame`s those
-#' in `x` will be used. Also, the resulting `DataFrame` uses the row names of
-#' `x` unless `x` has no row names.
-#'
-#' @param x `DataFrame`
-#'
-#' @param y `DataFrame`
-#'
-#' @return `DataFrame` with the merged columns.
-#'
-#' @author Johannes Rainer
-#'
-#' @importMethodsFrom S4Vectors nrow rownames colnames cbind
-#'
-#' @noRd
-.combine_featureData <- function(x, y) {
-    if (nrow(x) != nrow(y))
-        stop("'x' and 'y' have to have the same number of rows")
-    if (is.null(rownames(x)) & !is.null(rownames(y)))
-        rownames(x) <- rownames(y)
-    cols_y <- !(colnames(y) %in% colnames(x))
-    if (any(cols_y))
-        x <- cbind(x, y[, cols_y, drop = FALSE])
-    x
-}
+setValidity("Spectra", function(object) {
+    msg <- .valid_processing_queue(object@processingQueue)
+    if (length(msg)) msg
+    else TRUE
+})
 
 #' @rdname hidden_aliases
 #'
@@ -194,10 +113,11 @@ Spectra <- function(spectraData = DataFrame(), backend = MsBackend()) {
 setMethod("show", "Spectra",
     function(object) {
         cat("MSn data (", class(object)[1L], ") with ",
-            nrow(object@spectraData), " spectra:\n", sep = "")
-        if (nrow(object@spectraData)) {
+            length(object@backend), " spectra:\n", sep = "")
+        if (length(object@backend)) {
+            ## Replace later with spectraData(object@backend, c("msLevel", ...))
             txt <- capture.output(
-                object@spectraData[, c("msLevel", "retentionTime", "totIonCurrent")])
+                DataFrame(msLevel = msLevel(object@backend)))
             cat(txt[-1], sep = "\n")
         }
         show(object@backend)
@@ -206,6 +126,16 @@ setMethod("show", "Spectra",
                 "processing step(s)\n")
         cat("Processing:\n", paste(object@processing, collapse="\n"), "\n")
     })
+
+#' @rdname Spectra
+#'
+#' @exportMethod length
+setMethod("length", "Spectra", function(x) length(x@backend))
+
+#' @rdname Spectra
+#'
+#' @exportMethod msLevel
+setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
 ## #' @rdname Spectra
 ## #'
