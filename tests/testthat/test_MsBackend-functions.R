@@ -15,6 +15,10 @@ test_that(".valid_ms_backend_files_from_file works", {
     expect_match(.valid_ms_backend_files_from_file(
         c("a", "b", "c"), c(1, 1, 2, 2, 3, 3, 4)),
         "Index in 'fromFile'")
+    expect_error(.valid_ms_backend_files_from_file(character(), 1:3),
+                 "'files' can not be empty")
+    expect_error(.valid_ms_backend_files_from_file("a", integer()),
+                 "'fromFile' can not be empty")
 })
 
 test_that(".valid_spectra_data_required_columns works", {

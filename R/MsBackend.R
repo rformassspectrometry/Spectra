@@ -25,7 +25,7 @@ NULL
 #'
 #' TODO: add description of required methods etc.
 #'
-#' @name Backend
+#' @name MsBackend
 #'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
 #'
@@ -90,16 +90,16 @@ setGeneric(
         standardGeneric("backendInitialize"),
     valueClass = "MsBackend"
 )
-setMethod(
-    "backendInitialize",
-    signature = "MsBackend",
-    definition = function(object, files, spectraData, ...) {
-    object@files <- files
-    object@modCount <- integer(length(files))
-    object@spectraData <- spectraData
-    validObject(object)
-    object
-})
+setMethod("backendInitialize", signature = "MsBackend",
+          definition = function(object, files, spectraData, ...) {
+              if (missing(files)) files <- character()
+              if (missing(spectraData)) spectraData <- DataFrame()
+              object@files <- files
+              object@modCount <- integer(length(files))
+              object@spectraData <- spectraData
+              validObject(object)
+              object
+          })
 
 #' @exportMethod length
 #'

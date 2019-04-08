@@ -18,8 +18,12 @@ NULL
 }
 
 .valid_ms_backend_files_from_file <- function(x, y) {
+    if (length(x) && !length(y))
+        return("'fromFile' can not be empty if 'files' are defined.")
+    if (length(y) && !length(x))
+        return("'files' can not be empty if 'fromFile' is defined.")
     if (length(x) && !all(y %in% seq_along(x)))
-            return("Index in 'fromFile' outside of the number of files")
+        return("Index in 'fromFile' outside of the number of files")
     else NULL
 }
 
@@ -98,6 +102,9 @@ NULL
     collisionEnergy = "numeric"
 )
 
+#' @rdname MsBackend
+#'
+#' @export MsBackend
 MsBackend <- function() {
     new("MsBackend")
 }

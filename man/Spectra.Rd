@@ -20,6 +20,8 @@ Spectra(spectraData = DataFrame(), msLevel, rt, acquisitionNum,
 }
 \value{
 See individual method description for the return value.
+
+TODO @jo: add all parameters (in alphabetic order).
 }
 \description{
 The \code{Spectra} class encapsules spectral mass spectrometry data and

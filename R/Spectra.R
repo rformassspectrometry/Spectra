@@ -47,6 +47,8 @@ NULL
 #'
 #' @return See individual method description for the return value.
 #'
+#' TODO @jo: add all parameters (in alphabetic order).
+#'
 #' @author Sebastian Gibb, Johannes Rainer
 #'
 #' @md
