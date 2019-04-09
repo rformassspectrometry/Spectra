@@ -15,14 +15,11 @@ Author: Laurent Gatto, Johannes Rainer and Sebastian Gibb.
 Maintainer: Laurent Gatto <laurent.gatto@uclouvain.be> and Johannes Rainer <Johannes.Rainer@eurac.edu>
 Depends:
     R (>= 3.5.0),
-    methods,
-    BiocGenerics (>= 0.7.1),
-    Biobase (>= 2.15.2),
     S4Vectors,
     ProtGenerics (>= 1.9.1)
 Imports:
-    BiocParallel,
-    rhdf5
+    methods,
+    BiocParallel
 Suggests:
     testthat,
     knitr (>= 1.1.0),
@@ -30,6 +27,7 @@ Suggests:
     roxygen2,
     BiocStyle (>= 2.5.19),
     mzR (>= 2.15.1),
+    rhdf5,
     rmarkdown
 License: Artistic-2.0
 LazyData: yes
@@ -39,10 +37,12 @@ URL: https://github.com/lgatto/Spectra
 biocViews: Infrastructure, Proteomics, MassSpectrometry
 RoxygenNote: 6.1.1
 Collate:
-    'AllGenerics.R'
     'hidden_aliases.R'
+    'AllGenerics.R'
     'MsBackend-functions.R'
     'MsBackend.R'
+    'MsBackendMemory-functions.R'
+    'MsBackendMemory.R'
     'MsBackendMzR-functions.R'
     'MsBackendMzR.R'
     'ProcessingStep.R'

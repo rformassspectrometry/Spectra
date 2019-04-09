@@ -21,8 +21,8 @@ setGeneric("collisionEnergy", function(object, ...)
     standardGeneric("collisionEnergy"))
 #' @rdname hidden_aliases
 setGeneric("collisionEnergy<-", function(object, value)
-    standardGeneric("collisionEnergy"))
-#' @rdname fileNames
+    standardGeneric("collisionEnergy<-"))
+#' @rdname hidden_aliases
 setGeneric("fileNames", function(object, ...) standardGeneric("fileNames"))
 #' @rdname hidden_aliases
 setGeneric("fromFile", function(object, ...)
@@ -67,8 +67,8 @@ setGeneric("scanIndex", function(object, ...)
 setGeneric("smoothed", function(object, ...)
     standardGeneric("smoothed"))
 #' @rdname hidden_aliases
-setGeneric("smoothed", function(object, value)
-    standardGeneric("smoothed"))
+setGeneric("smoothed<-", function(object, value)
+    standardGeneric("smoothed<-"))
 #' @rdname hidden_aliases
 setGeneric("spectraData", function(object, ...)
     standardGeneric("spectraData"))

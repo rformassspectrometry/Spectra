@@ -3,12 +3,14 @@ NULL
 
 #' @title Mass spectrometry data backends
 #'
+#' @aliases MsBackend-class MsBackendMemory-class
+#'
 #' @description
 #'
-#' [MsBackend-class] objects provide access to mass spectrometry data. Such
+#' `MsBackend` objects provide access to mass spectrometry data. Such
 #' backends can be generally classidied into *in-memory* and *on-disk* backends.
-#' In-memory backends, such as [MsBackendMemory()], keep all (spectra) data in
-#' memory ensuring fast data access. On-disk backends like the [MsBackendMzR()]
+#' In-memory backends, such as `MsBackendMemory`, keep all (spectra) data in
+#' memory ensuring fast data access. On-disk backends like the `MsBackendMzR`
 #' keep only part of the data in memory retrieving the remaining data (mostly
 #' m/z and intensity values) on-demand from disk.
 #'
@@ -16,16 +18,52 @@ NULL
 #'     which the data is/will be imported. Should be set to `NA_character_` if
 #'     not applicable.
 #'
-#' @param object Object extending [MsBackend-class].
+#' @param object Object extending `MsBackend`.
+#'
+#' @param spectraData For `backendInitialize`: `DataFrame` with spectrum
+#'     metadata/data. Format and whether the argument is required depends on
+#'     the backend.
 #'
 #' @param value replacement value for `<-` methods. See individual method
 #'     description or expected data type.
 #'
-#' @param x Object extending [MsBackend-class].
+#' @param x Object extending `MsBackend`.
 #'
 #' @param ... Additional arguments.
 #'
-#' @section Implementation notes for new backend classes:
+#' @section `MsBackendMemory`, in-memory MS data backend:
+#'
+#' The `MsBackendMemory` objects keep all MS data in memory. New objects can
+#' be created with the `MsBackendMemory()` function. The backend can be
+#' subsequently initialized with the `backendInitialize` method, taking a
+#' `DataFrame` with the MS data as parameter. Suggested columns of this
+#' `DataFrame` are:
+#'
+#' - `"msLevel"`: `integer` with MS levels of the spectra.
+#' - `"rt"`: `numeric` with retention times of the spectra.
+#' - `"acquisitionNum"`: `integer` with the acquisition number of the spectrum.
+#' - `"scanIndex"`: `integer` with the index of the scan/spectrum within the
+#'   *mzML*/*mzXML*/*CDF* file.
+#' - `"fromFile"`: `integer` indicating in which file in an experiment the
+#'   spectrum was measured.
+#' - `"centroided"`: `logical` whether the spectrum is centroided.
+#' - `"smoothed"`: `logical` whether the spectrum was smoothed.
+#' - `"polarity"`: `integer` with the polarity information of the spectra.
+#' - `"precScanNum"`: `integer` specifying the index of the (MS1) spectrum
+#'   containing the precursor of a (MS2) spectrum.
+#' - `"precursorMz"`: `numeric` with the m/z value of the precursor.
+#' - `"precursorIntensity"`: `numeric` with the intensity value of the
+#'   precursor.
+#' - `"precursorCharge"`: `integer` with the charge of the precursor.
+#' - `"collisionEnergy"`: `numeric` with the collision energy.
+#' - `"mz"`: `list` of `numeric` vectors representing the m/z values for each
+#'   spectrum.
+#' - `"intensity"`: `list` of `numeric` vectors representing the intensity
+#'   values for each spectrum.
+#'
+#' Additional columns are allowed too.
+#'
+#' @section Backend functions and implementation notes for new backend classes:
 #'
 #' New backend classes should extend the base `MsBackend` class and **have** to
 #' implement the following methods:
@@ -155,6 +193,9 @@ setClass("MsBackend",
                                readonly = FALSE,
                                version = "0.1"))
 
+#' @importFrom methods .valueClassTest is new validObject
+#'
+#' @noRd
 setValidity("MsBackend", function(object) {
     cat("MsBackend validity\n") # TODO: remove this later - just for debugging
     msg <- c(
@@ -164,28 +205,9 @@ setValidity("MsBackend", function(object) {
     else msg
 })
 
-#' @title Initialize a backend
+#' @exportMethod backendInitialize
 #'
-#' This generic is used to setup and initialize a backend.
-#'
-#' It has to be reimplemented by each backend and is supposed to initialize
-#' the backend or, in case of in-memory backend, import/set the data.
-#'
-#' @param object An object inheriting from [MsBackend-class]
-#'
-#' @param files The path to the source (generally .mzML) files.
-#'
-#' @param spectraData A [S4Vectors::DataFrame-class]
-#'
-#' @param ... Other arguments passed to the methods.
-#'
-#' @return A fully operational [Backend-class] derivate.
-#'
-#' @family Backend generics
-#'
-#' @author Sebastian Gibb \email{mail@@sebastiangibb.de}
-#'
-#' @noRd
+#' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackend",
           definition = function(object, files, spectraData, ...) {
               if (missing(files)) files <- character()
@@ -199,42 +221,42 @@ setMethod("backendInitialize", signature = "MsBackend",
 #'
 #' @rdname MsBackend
 setMethod("acquisitionNum", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod centroided
 #'
 #' @rdname MsBackend
 setMethod("centroided", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod centroided<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("centroided", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod collisionEnergy
 #'
 #' @rdname MsBackend
 setMethod("collisionEnergy", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod collisionEnergy<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod fromFile
 #'
 #' @rdname MsBackend
 setMethod("fromFile", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod fileNames
@@ -250,14 +272,14 @@ setMethod("fileNames", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("intensity", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod ionCount
 #'
 #' @rdname MsBackend
 setMethod("ionCount", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod isCentroided
@@ -266,7 +288,7 @@ setMethod("ionCount", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("isCentroided", "MsBackend", function(object, ...) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod isEmpty
@@ -296,7 +318,7 @@ setMethod("length", "MsBackend", function(x) {
 #'
 #' @rdname MsBackend
 setMethod("msLevel", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod mz
@@ -305,7 +327,7 @@ setMethod("msLevel", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("mz", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod peaks
@@ -314,56 +336,56 @@ setMethod("mz", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("peaks", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod peaksCount
 #'
 #' @rdname MsBackend
 setMethod("peaksCount", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod polarity
 #'
 #' @rdname MsBackend
 setMethod("polarity", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod polarity<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("polarity", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod precScanNum
 #'
 #' @rdname MsBackend
 setMethod("precScanNum", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod precursorCharge
 #'
 #' @rdname MsBackend
 setMethod("precursorCharge", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod precursorIntensity
 #'
 #' @rdname MsBackend
 setMethod("precursorIntensity", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod precursorMz
 #'
 #' @rdname MsBackend
 setMethod("precursorMz", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod rtime
@@ -372,70 +394,70 @@ setMethod("precursorMz", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("rtime", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod rtime<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("rtime", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod scanIndex
 #'
 #' @rdname MsBackend
 setMethod("scanIndex", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod smoothed
 #'
 #' @rdname MsBackend
 setMethod("smoothed", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod smoothed<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("smoothed", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod spectraData
 #'
 #' @rdname MsBackend
 setMethod("spectraData", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod spectraData<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("spectraData", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod spectraNames
 #'
 #' @rdname MsBackend
 setMethod("spectraNames", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod spectraNames<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("spectraNames", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod spectraVariables
 #'
 #' @rdname MsBackend
 setMethod("spectraVariables", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod tic
@@ -444,5 +466,5 @@ setMethod("spectraVariables", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("tic", "MsBackend", function(object) {
-    stop("Not implemented for ", class(x), ".")
+    stop("Not implemented for ", class(object), ".")
 })
