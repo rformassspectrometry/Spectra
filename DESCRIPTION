@@ -43,6 +43,8 @@ Collate:
     'hidden_aliases.R'
     'MsBackend-functions.R'
     'MsBackend.R'
+    'MsBackendMzR-functions.R'
+    'MsBackendMzR.R'
     'ProcessingStep.R'
     'Spectra-functions.R'
     'Spectra.R'
