@@ -188,7 +188,7 @@ not available).
 \item \code{backendInitialize}: initialize the backend. This method is supposed to be
 called rights after creating an instance of the backend class and should
 prepare the backend (e.g. set the data for the memory backend or read
-the spectra header data for the \code{\link[=MsBackendMzR]{MsBackendMzR()}} backend).
+the spectra header data for the \code{MsBackendMzR} backend).
 \item \code{centroided}, \code{centroided<-}: get or set the centroiding information of
 the spectra. \code{centroided} returns a \code{logical} vector of length equal to the
 number of spectra with \code{TRUE} if a spectrum is centroided, \code{FALSE} if it

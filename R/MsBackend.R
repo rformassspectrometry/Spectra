@@ -75,7 +75,7 @@ NULL
 #' - `backendInitialize`: initialize the backend. This method is supposed to be
 #'   called rights after creating an instance of the backend class and should
 #'   prepare the backend (e.g. set the data for the memory backend or read
-#'   the spectra header data for the [MsBackendMzR()] backend).
+#'   the spectra header data for the `MsBackendMzR` backend).
 #'
 #' - `centroided`, `centroided<-`: get or set the centroiding information of
 #'   the spectra. `centroided` returns a `logical` vector of length equal to the

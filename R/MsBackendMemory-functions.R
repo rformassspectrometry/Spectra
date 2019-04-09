@@ -1,15 +1,6 @@
 #' @include hidden_aliases.R
 NULL
 
-.valid_ms_backend_files <- function(x) {
-    n <- length(x)
-    if (n) {
-        if (anyDuplicated(x))
-            return("Duplicated file names found.")
-    }
-    NULL
-}
-
 .valid_ms_backend_mod_count <- function(x, y) {
     if (length(x) != length(y))
         "Different number of source files and modification counters."

@@ -1,5 +1,5 @@
 test_that(".valid_ms_backend_files works", {
-    expect_match(.valid_ms_backend_files(c("a", "b")), "a, b not ")
+    expect_match(.valid_ms_backend_files(c("a", "b")), "a, b not")
     expect_match(.valid_ms_backend_files(c("a", "a")), "Duplicated")
     tmpf <- tempfile()
     write("hello", file = tmpf)

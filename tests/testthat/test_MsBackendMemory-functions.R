@@ -1,13 +1,3 @@
-test_that(".valid_ms_backend_files works", {
-    expect_null(.valid_ms_backend_files(c("a", "b")))
-    expect_match(.valid_ms_backend_files(c("a", "a")))
-})
-
-test_that(".valid_ms_backend_mod_count works", {
-    expect_null(.valid_ms_backend_mod_count(1, "a"))
-    expect_match(.valid_ms_backend_mod_count(integer(), "a"),
-                 "Different number of")
-})
 
 test_that(".valid_ms_backend_files_from_file works", {
     expect_null(.valid_ms_backend_files_from_file(
@@ -17,7 +7,7 @@ test_that(".valid_ms_backend_files_from_file works", {
         "Index in 'fromFile'")
     expect_match(.valid_ms_backend_files_from_file(character(), 1:3),
                  "'files' can not be empty")
-    expect_error(.valid_ms_backend_files_from_file("a", integer()),
+    expect_match(.valid_ms_backend_files_from_file("a", integer()),
                  "'fromFile' can not be empty")
 })
 

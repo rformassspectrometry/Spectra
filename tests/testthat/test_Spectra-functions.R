@@ -26,7 +26,7 @@ test_that("Spectra works", {
     expect_true(validObject(sp))
     expect_equal(length(sp), 0)
 
-    expect_error(Spectra(msLevel = "a"), "'msLevel' needs to be")
+    expect_error(Spectra(msLevel = "a"), "msLevel should be")
     expect_error(Spectra(msLevel = 1, acquisitionNum = c(1, 2)),
                  "Different lengths of parameters")
     expect_error(Spectra(msLevel = c(1L, 1L), scanIndex = 1:2, mz = mzs),

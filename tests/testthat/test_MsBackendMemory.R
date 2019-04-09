@@ -3,14 +3,15 @@ test_that("backendInitialize,MsBackendMemory works", {
     be <- backendInitialize(be)
     expect_true(validObject(be))
     expect_true(length(be@files) == 0)
-    be <- backendInitialize(be, files = "a",
+    be <- backendInitialize(be, files = NA_character_,
                             spectraData = DataFrame(fromFile = 1L))
     expect_true(validObject(be))
     expect_error(backendInitialize(be, spectraData = DataFrame(msLevel = 1L)),
-                 "column(s): fromFile")
+                 "fromFile is/are")
     expect_error(backendInitialize(MsBackendMemory(),
                                    spectraData = DataFrame(msLevel = 1L,
-                                                           fromFile = 1L)))
+                                                           fromFile = 1L)),
+                 "'files' can not be empty")
 })
 
 test_that("length,MsBackendMemory works", {
@@ -22,11 +23,11 @@ test_that("length,MsBackendMemory works", {
 })
 
 test_that("msLevel,MsBackendMemory works", {
-    be <- backendInitialize(MsBackendMemory(), "a",
+    be <- backendInitialize(MsBackendMemory(), NA_character_,
                             DataFrame(msLevel = c(1L, 2L, 1L),
                                       fromFile = 1L))
     expect_equal(msLevel(be), c(1, 2, 1))
-    be <- backendInitialize(MsBackendMemory(), "a",
+    be <- backendInitialize(MsBackendMemory(), NA_character_,
                             DataFrame(scanIndex = 1:4,
                                       fromFile = 1L))
     expect_equal(msLevel(be), rep(NA_integer_, 4))
