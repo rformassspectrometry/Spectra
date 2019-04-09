@@ -1,22 +1,6 @@
 #' @include hidden_aliases.R
 NULL
 
-#' Helper function checking that files exist
-#'
-#' @param x `character` of file names.
-#'
-#' @return `character` or `NULL`
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-.valid_ms_backend_files_exist <- function(x) {
-    if (!all(file.exists(x)))
-        paste0("File(s) ", paste(x[!file.exists(x)], collapse = ", "),
-               " not found.")
-    else NULL
-}
-
 #' @rdname MsBackend
 #'
 #' @export MsBackendMzR

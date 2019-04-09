@@ -139,6 +139,11 @@ setMethod("length", "Spectra", function(x) length(x@backend))
 #' @exportMethod msLevel
 setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
+## Spectra constructor method:
+## files: read data
+## spectraData: DataFrame
+## individual fields???
+
 ## #' @rdname Spectra
 ## #'
 ## #' @importMethodsFrom BiocParallel bplapply
