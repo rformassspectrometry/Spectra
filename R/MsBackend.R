@@ -3,27 +3,52 @@ NULL
 
 #' @title Mass spectrometry data backends
 #'
-#' @aliases MsBackend-class MsBackendMemory-class MsBackendMzR-class
+#' @aliases class:MsBackend MsBackend-class MsBackendMemory-class MsBackendMzR-class
 #'
 #' @description
+#' 
+#' Note that the classes described here are not meant to be used
+#' directly by the end-users and the material in this man page is
+#' aimed at package developers.
 #'
-#' `MsBackend` objects provide access to mass spectrometry data. Such
-#' backends can be generally classidied into *in-memory* and *on-disk* backends.
-#' In-memory backends, such as `MsBackendMemory`, keep all (spectra) data in
-#' memory ensuring fast data access. On-disk backends like the `MsBackendMzR`
-#' keep only part of the data in memory retrieving the remaining data (mostly
-#' m/z and intensity values) on-demand from disk.
+#' `MsBackend` is a vitual class that defines what each different
+#' backend needs to provide. `MsBackend` objects provide access to
+#' mass spectrometry data. Such backends can be generally classified
+#' into *in-memory* or *on-disk*, depending where the data, i.e
+#' spectra (m/z and intensities) and spectra annotation (MS level,
+#' charge, polarity, ...) are stored. Typically, in-memory backends
+#' keep all data in memory ensuring fast data access, while on-disk
+#' backends store their data on disk and access it on demand. Note
+#' that some backends will have a mixed model and store parts of the
+#' data in memory and parts on disk, to stike a good balance between
+#' fast access and small memory footprint.
 #'
-#' @param columns For `spectraData`: optional `character` with column names
-#'     (spectra variables) that should be included in the returned `DataFrame`.
+#' The *Backend functions and implementation notes for new backend
+#' classes* section documents the API that a backend must implement.
 #'
-#' @param files For `backendInitialize`: `character` with the file names from
-#'     which the data is/will be imported. Should be set to `NA_character_` if
-#'     not applicable.
+#' Currently available backends are:
+#' 
+#' - `MsBackendMemory`: stores all data in memory using a `DataFrame`.
+#' 
+#' - `MsBackendMzR`: stores the m/z and intensities on-disk in raw
+#'    data files (typically `mzML` or `mzXML`) and the spectra
+#'    annotation information (header) in memory in a `DataFrame`. This
+#'    backend requires the `mzR` package.
 #'
-#' @param initial For `tic`: `logical(1)` whether the initially reported total
-#'     ion current should be reported, or whether the total ion current should
-#'     be (re)calculated on the actual data (`initial = FALSE`).
+#' See below for more details about individual backends.
+#'
+#' @param columns For `spectraData`: optional `character` with column
+#'     names (spectra variables) that should be included in the
+#'     returned `DataFrame`.
+#'
+#' @param files For `backendInitialize`: `character` with the file
+#'     names from which the data is/will be imported. Should be set to
+#'     `NA_character_` if not applicable.
+#'
+#' @param initial For `tic`: `logical(1)` whether the initially
+#'     reported total ion current should be reported, or whether the
+#'     total ion current should be (re)calculated on the actual data
+#'     (`initial = FALSE`).
 #'
 #' @param object Object extending `MsBackend`.
 #'
@@ -37,6 +62,135 @@ NULL
 #' @param x Object extending `MsBackend`.
 #'
 #' @param ... Additional arguments.
+#'
+#' @section Backend functions and implementation notes for new backend classes:
+#'
+#' New backend classes **must** extend the base `MsBackend` class and
+#' **have** to implement the following methods:
+#'
+#' - `length`: returns the number of spectra in the object.
+#'
+#' - `acquisitionNum`: returns the acquisition number of each
+#'   spectrum. Returns an `integer` of length equal to the number of
+#'   spectra (with `NA_integer_` if not available).
+#'
+#' - `fileNames`: returns a `character` with the file names, or
+#'   `NA_character_` if not relevant.
+#'
+#' - `fromFile`: returns an `integer` vector of length equal to the
+#'   number of spectra in `object` indicating the file index from
+#'   which spectra originate. If no files are available,
+#'   `NA_character_` is returned for all spectra.
+#'   
+#' - `intensity`: gets the intensity values from the spectra. Returns
+#'   a `list` of `numeric` vectors (intensity values for each
+#'   spectrum). The length of the `list` is equal to the number of
+#'   `spectra` in `object`.
+#'
+#' - `mz`: gets the mass-to-charge ratios (m/z) from the
+#'   spectra. Returns a `list` or length equal to the number of
+#'   spectra, each element a `numeric` vector with the m/z values of
+#'   one spectrum.
+#'
+#' - `peaks` returns a `list` of length equal to the number of spectra
+#'    in `object`. Each element of the list is a `matrix` with columns
+#'    `mz` and `intensity`. For an empty spectrum, a `matrix` with 0
+#'    rows and two columns (named `mz` and `intensity`) is returned.
+#'
+#' - `ionCount`: returns a `numeric` with the sum of intensities for
+#'   each spectrum. If the spectrum is empty (see `isEmptt`),
+#'   `NA_real_` is returned.
+#'
+#' - `isCentroided`: a heuristic approach assessing if the spectra in
+#'   `object` are in profile or centroided mode. The function takes
+#'   the `qtl`th quantile top peaks, then calculates the difference
+#'   between adjacent m/z value and returns `TRUE` if the first
+#'   quartile is greater than `k`. (See `MSnbase:::.isCentroided` for
+#'   the code.)
+#'
+#' - `isEmpty`: checks whether a spectrum in `object` is empty
+#'   (i.e. does not contain any peaks). Returns a `logical` vector of
+#'   length equal number of spectra.
+#'
+#' - `msLevel`: gets the spectra's MS level. Returns an `integer`
+#'   vector (of length equal to the number of spectra) with the MS
+#'   level for each spectrum (or `NA_integer_` if not available).
+#'
+#' - `polarity`, `polarity<-`: gets or sets the polarity for each
+#'   spectrum.  `polarity` returns an `integer` vector (length equal
+#'   to the number of spectra), with `0` and `1` representing negative
+#'   and positive polarities, respectively. `polarity<-` expects an
+#'   integer vector of length 1 or equal to the number of spectra.
+#'
+#' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
+#'   spectrum.  Returns an `integer` vector (length equal to the
+#'   number of spectra). For empty spectra, `NA_integer_` is returned.
+#'
+#' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
+#'   `precScanNum`, `precAcquisitionNum`: get the charge (`integer`),
+#'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
+#'   and acquisition number (`interger`) of the precursor for MS level
+#'   > 2 spectra from the object. Returns a vector of length equal to
+#'   the number of spectra in `object`. `NA` are reported for MS1
+#'   spectra of if no precursor information is available.
+#'
+#' - `isReadOnly`: returns a `logical(1)` whether the backend is *read
+#'   only* or does allow also to write/update data.
+#'
+#' - `rtime`, `rtime<-`: gets or sets the retention times for each
+#'   spectrum.  `rtime` returns a `numeric` vector (length equal to
+#'   the number of spectra) with the retention time for each spectrum.
+#'   `rtime<-` expects a numeric vector with length equal to the
+#'   number of spectra.
+#'
+#' - `scanIndex`: returns an `integer` vector with the *scan index*
+#'   for each spectrum. This represents the relative index of the
+#'   spectrum within each file. Note that this can be different to the
+#'   `acquisitionNum` of the spectrum which is the index of the
+#'   spectrum as reported in the mzML file.
+#'
+#' - `spectraData`, `spectraData<-`: get or sets general spectrum
+#'   metadata (annotation, also called header).  `spectraData` returns
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`.
+#'
+#' - `spectraNames`: returns a `character` vector with the names of
+#'   the spectra in `object`. If names aren't set, should return
+#'   `NULL`.
+#'
+#' - `spectraVariables`: returns a `character` vector with the
+#'   available spectra variables (columns, fields or attributes)
+#'   available in `object`.
+#'
+#' - `tic`: gets the total ion current/count (sum of signal of a
+#'   spectrum) for all spectra in `object`. By default, the value
+#'   reported in the original raw data file is returned. For an empty
+#'   spectrum, `NA_real_` is returned.
+#'
+#' - `smoothed`,`smoothed<-`: geta or sets whether a spectrum is
+#'   *smoothed*. `smoothed` returns a `logical` vector of length equal
+#'   to the number of spectra. `smoothed<-` takes a `logical` vector
+#'   of length 1 or equal to the number of spectra in `object`.
+#'
+#' - `centroided`, `centroided<-`: gets or sets the centroiding
+#'   information of the spectra. `centroided` returns a `logical`
+#'   vector of length equal to the number of spectra with `TRUE` if a
+#'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
+#'   if it is undefined. See also `isCentroided` for estimating from
+#'   the spectrum data whether the spectrum is centroided.  `value`
+#'   for `centroided<-` is either a single `logical` or a `logical` of
+#'   length equal to the number of spectra in `object`.
+#'
+#' - `collisionEnergy`, `collisionEnergy<-`: gets or sets the
+#'   collision energy for all spectra in `object`. `collisionEnergy`
+#'   returns a `numeric` with length equal to the number of spectra
+#'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
+#'   `numeric` of length equal to the number of spectra in `object`.
+#'
+#' - `backendInitialize`: initialises the backend. This method is
+#'   supposed to be called rights after creating an instance of the
+#'   backend class and should prepare the backend (e.g. set the data
+#'   for the memory backend or read the spectra header data for the
+#'   `MsBackendMzR` backend).
 #'
 #' @section `MsBackendMemory`, in-memory MS data backend:
 #'
@@ -82,113 +236,6 @@ NULL
 #' subsequently filled with data by calling `backendInitialize` passing the
 #' file names of the input data files.
 #'
-#' @section Backend functions and implementation notes for new backend classes:
-#'
-#' New backend classes should extend the base `MsBackend` class and **have** to
-#' implement the following methods:
-#'
-#' - `acquisitionNum`: get the acquisition number of each spectrum. Returns an
-#'   `integer` of length equal to the number of spectra (with `NA_integer_` if
-#'   not available).
-#'
-#' - `backendInitialize`: initialize the backend. This method is supposed to be
-#'   called rights after creating an instance of the backend class and should
-#'   prepare the backend (e.g. set the data for the memory backend or read
-#'   the spectra header data for the `MsBackendMzR` backend).
-#'
-#' - `centroided`, `centroided<-`: get or set the centroiding information of
-#'   the spectra. `centroided` returns a `logical` vector of length equal to the
-#'   number of spectra with `TRUE` if a spectrum is centroided, `FALSE` if it
-#'   is in profile mode and `NA` if it is undefined. See also `isCentroided`
-#'   for estimating from the spectrum data whether the spectrum is centroided.
-#'   `value` for `centroided<-` is either a single `logical` or a `logical`
-#'   of length equal to the number of spectra in `object`.
-#'
-#' - `collisionEnergy`, `collisionEnergy<-`: get or set the collision energy
-#'   for all spectra in `object`. `collisionEnergy` returns a `numeric` with
-#'   length equal to the number of spectra (`NA_real_` if not present/defined),
-#'   `collisionEnergy<-` takes a `numeric` of length equal to the number of
-#'   spectra in `object`.
-#'
-#' - `fileNames`: get the file names.
-#'
-#' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
-#'   `integer` vector of length equal to the number of spectra in `object`.
-#'
-#' - `intensity`: get the intensity values from the spectra. Returns a
-#'   `list` of `numeric` vectors (intensity values for each spectrum). The
-#'   length of the `list` is equal to the number of `spectra` in `object`.
-#'
-#' - `ionCount`: returns a `numeric` representing the sum of intensities for
-#'   each spectrum.
-#'
-#' - `isCentroided`: a heuristic approach assessing if the spectra in `object`
-#'   are in profile or centroided mode. The function takes the `qtl`th quantile
-#'   top peaks, then calculates the difference between adjacent M/Z value and
-#'   returns `TRUE` if the first quartile is greater than `k`. (See
-#'   `MSnbase:::.isCentroided` for the code.)
-#'
-#' - `isEmpty`: whether a spectrum in `object` is empty (i.e. does not contain
-#'   any peaks). Returns a `logical` vector (length equal number of spectra).
-#'
-#' - `length`: get the number of spectra in the object.
-#'
-#' - `msLevel`: get the spectra's MS level. Returns an `integer` vector (length
-#'   equal to the number of spectra) with the MS level for each spectrum (or
-#'   `NA_integer_` if not available).
-#'
-#' - `mz`: get the mass-to-charge ratios (m/z) from the spectra. Returns a
-#'   `list` or length equal to the number of spectra, each element a `numeric`
-#'   vector with the m/z values of one spectrum.
-#'
-#' - `polarity`, `polarity<-`: get or set the polarity for each spectrum.
-#'   `polarity` returns an `integer` vector (length equal to the number of
-#'   spectra), with `0` and `1` representing negative and positive polarity,
-#'   respectively. `polarity<-` expects an integer vector of length 1 or equal
-#'   to the number of spectra.
-#'
-#' - `peaksCount`: get the number of peaks (m/z-intensity values) per spectrum.
-#'   Returns an `integer` vector (length equal to the number of spectra).
-#'
-#' - `precursorCharge`, `precursorIntensity`, `precursorMz`, `precScanNum`: get
-#'   the charge (`integer`), intensity (`numeric`), m/z (`numeric`) and scan
-#'   index (`integer`) of the precursor for MS level > 2 spectra from the
-#'   object. Returns a vector of length equal to the number of spectra in
-#'   `object`. `NA` are reported for MS1 spectra of if no precursor information
-#'   is available.
-#'
-#' - `isReadOnly`: returns a `logical(1)` whether the backend is *read only* or
-#'   does allow also to write/update data.
-#'
-#' - `rtime`, `rtime<-`: get or set the retention times for each spectrum.
-#'   `rtime` returns a `numeric` vector (length equal to the number of spectra)
-#'   with the retention time for each spectrum.
-#'   `rtime<-` expects a numeric vector with length equal to the number of
-#'   spectra.
-#'
-#' - `scanIndex`: get an `integer` vector with the *scan index* for each
-#'   spectrum. This represents the relative index of the spectrum within each
-#'   file (i.e. for each sample). Note that this can be different to the
-#'   `acquisitionNum` of the spectrum which is the index of the spectrum as
-#'   reported in the mzML file.
-#'
-#' - `smoothed`,`smoothed<-`: get or set the information whether a spectrum
-#'   was *smoothed*. `smoothed` returns a `logical` vector of
-#'   length equal to the number of spectra. `smoothed<-` takes a `logical`
-#'   vector of length 1 or equal to the number of spectra in `object`.
-#'
-#' - `spectraData`, `spectraData<-`: get or set general spectrum metadata.
-#'   `spectraData` returns a `DataFrame`, `spectraData<-` expects a `DataFrame`.
-#'
-#' - `spectraNames`: returns a `character` vector with the names of the spectra
-#'   in `object`.
-#'
-#' - `spectraVariables`: returns a `character` vector with the available
-#'   spectra variables (columns, fields or attributes) available in `object`.
-#'
-#' - `tic`: get the total ion current/count (sum of signal of a spectrum) for
-#'   all spectra in `object`. By default, the value reported in the original
-#'   raw data file is returned.
 #'
 #' @name MsBackend
 #'

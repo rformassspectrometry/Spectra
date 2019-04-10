@@ -3,6 +3,7 @@ Title: Spectra Base Classes for Mass Spectrometry Data
 Version: 0.0.1
 Description: Spectra provides base classes for Mass spectrometry.
 Authors@R: c(person(given = "Laurent", family = "Gatto",
+		    comment = c(ORCID = "0000-0002-1520-2268"),
                     email = "laurent.gatto@uclouvain.be",
                     role = c("aut","cre")),
              person(given = "Johannes", family = "Rainer",
