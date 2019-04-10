@@ -14,9 +14,16 @@ NULL
 #' keep only part of the data in memory retrieving the remaining data (mostly
 #' m/z and intensity values) on-demand from disk.
 #'
+#' @param columns For `spectraData`: optional `character` with column names
+#'     (spectra variables) that should be included in the returned `DataFrame`.
+#'
 #' @param files For `backendInitialize`: `character` with the file names from
 #'     which the data is/will be imported. Should be set to `NA_character_` if
 #'     not applicable.
+#'
+#' @param initial For `tic`: `logical(1)` whether the initially reported total
+#'     ion current should be reported, or whether the total ion current should
+#'     be (re)calculated on the actual data (`initial = FALSE`).
 #'
 #' @param object Object extending `MsBackend`.
 #'
@@ -228,6 +235,8 @@ setMethod("backendInitialize", signature = "MsBackend",
               object
           })
 
+## Data accessors
+
 #' @exportMethod acquisitionNum
 #'
 #' @rdname MsBackend
@@ -405,6 +414,8 @@ setMethod("precursorMz", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("rtime", "MsBackend", function(object) {
+
+
     stop("Not implemented for ", class(object), ".")
 })
 
@@ -439,7 +450,7 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
 #' @exportMethod spectraData
 #'
 #' @rdname MsBackend
-setMethod("spectraData", "MsBackend", function(object) {
+setMethod("spectraData", "MsBackend", function(object, columns) {
     stop("Not implemented for ", class(object), ".")
 })
 
@@ -476,6 +487,6 @@ setMethod("spectraVariables", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics tic
 #'
 #' @rdname MsBackend
-setMethod("tic", "MsBackend", function(object) {
+setMethod("tic", "MsBackend", function(object, initial = TRUE) {
     stop("Not implemented for ", class(object), ".")
 })

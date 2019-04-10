@@ -66,9 +66,8 @@ NULL
 #' spectrometry experiments.
 #'
 #'
-#' @slot backend A derivate of [Backend-class] holding/controlling the spectra
+#' @slot backend A derivate of [MsBackend-class] holding/controlling the spectra
 #' data.
-#' @slot spectraData A [S4Vectors::DataFrame-class] storing spectra metadata.
 #' @slot processingQueue `list` of `ProcessingStep` objects.
 #' @slot processing A `character` storing logging information.
 #' @slot metadata A `list` storing experiment metadata.
@@ -135,8 +134,6 @@ setMethod("show", "Spectra",
 setMethod("length", "Spectra", function(x) length(x@backend))
 
 #' @rdname Spectra
-#'
-#' @exportMethod msLevel
 setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
 ## Spectra constructor method:

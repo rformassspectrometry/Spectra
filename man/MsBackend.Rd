@@ -104,7 +104,7 @@
 
 \S4method{smoothed}{MsBackend}(object) <- value
 
-\S4method{spectraData}{MsBackend}(object)
+\S4method{spectraData}{MsBackend}(object, columns)
 
 \S4method{spectraData}{MsBackend}(object) <- value
 
@@ -114,7 +114,7 @@
 
 \S4method{spectraVariables}{MsBackend}(object)
 
-\S4method{tic}{MsBackend}(object)
+\S4method{tic}{MsBackend}(object, initial = TRUE)
 
 MsBackendMemory()
 
@@ -137,6 +137,13 @@ the backend.}
 description or expected data type.}
 
 \item{x}{Object extending \code{MsBackend}.}
+
+\item{columns}{For \code{spectraData}: optional \code{character} with column names
+(spectra variables) that should be included in the returned \code{DataFrame}.}
+
+\item{initial}{For \code{tic}: \code{logical(1)} whether the initially reported total
+ion current should be reported, or whether the total ion current should
+be (re)calculated on the actual data (\code{initial = FALSE}).}
 }
 \description{
 \code{MsBackend} objects provide access to mass spectrometry data. Such

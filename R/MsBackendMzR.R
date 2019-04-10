@@ -33,6 +33,8 @@ setValidity("MsBackendMzR", function(object) {
 })
 
 #' @rdname hidden_aliases
+#'
+#' @importFrom methods callNextMethod
 setMethod("backendInitialize", "MsBackendMzR",
           function(object, files, spectraData, ..., BPPARAM = bpparam()) {
               if (missing(files) || !length(files))

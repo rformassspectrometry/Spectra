@@ -32,8 +32,38 @@
 \alias{spectraNames<-}
 \alias{spectraVariables}
 \alias{backendInitialize,MsBackendMemory-method}
+\alias{acquisitionNum,MsBackendMemory-method}
+\alias{centroided,MsBackendMemory-method}
+\alias{centroided<-,MsBackendMemory-method}
+\alias{collisionEnergy,MsBackendMemory-method}
+\alias{collisionEnergy<-,MsBackendMemory-method}
+\alias{fromFile,MsBackendMemory-method}
+\alias{intensity,MsBackendMemory-method}
+\alias{ionCount,MsBackendMemory-method}
+\alias{isCentroided,MsBackendMemory-method}
+\alias{isEmpty,MsBackendMemory-method}
 \alias{length,MsBackendMemory-method}
 \alias{msLevel,MsBackendMemory-method}
+\alias{mz,MsBackendMemory-method}
+\alias{peaks,MsBackendMemory-method}
+\alias{peaksCount,MsBackendMemory-method}
+\alias{polarity,MsBackendMemory-method}
+\alias{polarity<-,MsBackendMemory-method}
+\alias{precScanNum,MsBackendMemory-method}
+\alias{precursorCharge,MsBackendMemory-method}
+\alias{precursorIntensity,MsBackendMemory-method}
+\alias{precursorMz,MsBackendMemory-method}
+\alias{rtime,MsBackendMemory-method}
+\alias{rtime<-,MsBackendMemory-method}
+\alias{scanIndex,MsBackendMemory-method}
+\alias{smoothed,MsBackendMemory-method}
+\alias{smoothed<-,MsBackendMemory-method}
+\alias{spectraData,MsBackendMemory-method}
+\alias{spectraData<-,MsBackendMemory-method}
+\alias{spectraNames,MsBackendMemory-method}
+\alias{spectraNames<-,MsBackendMemory-method}
+\alias{spectraVariables,MsBackendMemory-method}
+\alias{tic,MsBackendMemory-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{ProcessingStep-class}
 \alias{show,ProcessingStep-method}
@@ -97,9 +127,69 @@ spectraVariables(object, ...)
 \S4method{backendInitialize}{MsBackendMemory}(object, files, spectraData,
   ...)
 
+\S4method{acquisitionNum}{MsBackendMemory}(object)
+
+\S4method{centroided}{MsBackendMemory}(object)
+
+\S4method{centroided}{MsBackendMemory}(object) <- value
+
+\S4method{collisionEnergy}{MsBackendMemory}(object)
+
+\S4method{collisionEnergy}{MsBackendMemory}(object) <- value
+
+\S4method{fromFile}{MsBackendMemory}(object)
+
+\S4method{intensity}{MsBackendMemory}(object)
+
+\S4method{ionCount}{MsBackendMemory}(object)
+
+\S4method{isCentroided}{MsBackendMemory}(object, ...)
+
+\S4method{isEmpty}{MsBackendMemory}(x)
+
 \S4method{length}{MsBackendMemory}(x)
 
 \S4method{msLevel}{MsBackendMemory}(object, ...)
+
+\S4method{mz}{MsBackendMemory}(object)
+
+\S4method{peaks}{MsBackendMemory}(object)
+
+\S4method{peaksCount}{MsBackendMemory}(object)
+
+\S4method{polarity}{MsBackendMemory}(object)
+
+\S4method{polarity}{MsBackendMemory}(object) <- value
+
+\S4method{precScanNum}{MsBackendMemory}(object)
+
+\S4method{precursorCharge}{MsBackendMemory}(object)
+
+\S4method{precursorIntensity}{MsBackendMemory}(object)
+
+\S4method{precursorMz}{MsBackendMemory}(object)
+
+\S4method{rtime}{MsBackendMemory}(object)
+
+\S4method{rtime}{MsBackendMemory}(object) <- value
+
+\S4method{scanIndex}{MsBackendMemory}(object)
+
+\S4method{smoothed}{MsBackendMemory}(object)
+
+\S4method{smoothed}{MsBackendMemory}(object) <- value
+
+\S4method{spectraData}{MsBackendMemory}(object, columns)
+
+\S4method{spectraData}{MsBackendMemory}(object) <- value
+
+\S4method{spectraNames}{MsBackendMemory}(object)
+
+\S4method{spectraNames}{MsBackendMemory}(object) <- value
+
+\S4method{spectraVariables}{MsBackendMemory}(object)
+
+\S4method{tic}{MsBackendMemory}(object, initial = TRUE)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
