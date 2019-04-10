@@ -25,10 +25,9 @@ NULL
 #' @noRd
 #'
 #' @param x spectraData `DataFrame`
-.valid_spectra_data_required_columns <- function(x) {
+.valid_spectra_data_required_columns <- function(x, columns = c("fromFile")) {
     if (nrow(x)) {
-        .req_cols <- c("fromFile")
-        missing_cn <- setdiff(.req_cols, colnames(x))
+        missing_cn <- setdiff(columns, colnames(x))
         if (length(missing_cn))
             return(paste0("Required column(s): ",
                           paste(missing_cn, collapse = ", "),

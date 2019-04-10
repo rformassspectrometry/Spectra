@@ -13,7 +13,7 @@ NULL
 #' related metadata.
 #'
 #' It supports multiple data backends, e.g. in-memory ([MsBackendMemory()]),
-#' on-disk as mzML ([MsBackendMzR()]) or HDF5 ([MsBackendHdf5-class]).
+#' on-disk as mzML ([MsBackendMzR()]).
 #'
 #' @details
 #'

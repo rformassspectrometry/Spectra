@@ -28,7 +28,7 @@ The \code{Spectra} class encapsules spectral mass spectrometry data and
 related metadata.
 
 It supports multiple data backends, e.g. in-memory (\code{\link[=MsBackendMemory]{MsBackendMemory()}}),
-on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}) or HDF5 (\linkS4class{MsBackendHdf5}).
+on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}).
 }
 \details{
 The \code{Spectra} class uses by default a lazy data manipulation strategy,

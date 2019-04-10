@@ -24,7 +24,6 @@ setClass("MsBackendMemory",
                                version = "0.1"))
 
 setValidity("MsBackendMemory", function(object) {
-    cat("MsBackendMemory validity\n") # debugging - remove later
     msg <- .valid_spectra_data_required_columns(object@spectraData)
     if (length(msg))
         return(msg)

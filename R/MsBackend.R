@@ -3,7 +3,7 @@ NULL
 
 #' @title Mass spectrometry data backends
 #'
-#' @aliases MsBackend-class MsBackendMemory-class
+#' @aliases MsBackend-class MsBackendMemory-class MsBackendMzR-class
 #'
 #' @description
 #'
@@ -62,6 +62,18 @@ NULL
 #'   values for each spectrum.
 #'
 #' Additional columns are allowed too.
+#'
+#' @section `MsBackendMzR`, on-disk MS data backend:
+#'
+#' The `MsBackendMzR` keeps only a limited amount of data in memory, while the
+#' remaining data (m/z and intensity values) are fetched from the raw fikes
+#' on-demand. This backend uses the `mzR` package for data import and retrieval
+#' and hence requires that package to be installed. Also, it can only be used
+#' to import and represent data stored in *mzML*, *mzXML* and *CDF* files.
+#'
+#' New objects can be created with the `MsBackendMzR()` function which can be
+#' subsequently filled with data by calling `backendInitialize` passing the
+#' file names of the input data files.
 #'
 #' @section Backend functions and implementation notes for new backend classes:
 #'
@@ -177,7 +189,7 @@ NULL
 #'
 #' @md
 #'
-#' @exportClass MsBackend
+#' @exportClass MsBackend MsBackendMemory MsBackendMzR
 NULL
 
 setClass("MsBackend",
@@ -197,7 +209,6 @@ setClass("MsBackend",
 #'
 #' @noRd
 setValidity("MsBackend", function(object) {
-    cat("MsBackend validity\n") # TODO: remove this later - just for debugging
     msg <- c(
         .valid_ms_backend_files(object@files),
         .valid_ms_backend_mod_count(object@files, object@modCount))
