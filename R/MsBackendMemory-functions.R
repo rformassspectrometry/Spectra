@@ -74,6 +74,12 @@ NULL
     NULL
 }
 
+.valid_intensity_mz_columns <- function(x) {
+    if (any(lengths(mz(x)) != lengths(intensity(x))))
+        "Length of mz and intensity values differ for some spectra"
+    else NULL
+}
+
 .SPECTRA_DATA_COLUMNS <- c(
     msLevel = "integer",
     rt = "numeric",

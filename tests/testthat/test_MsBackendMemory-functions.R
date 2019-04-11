@@ -51,3 +51,9 @@ test_that(".valid_intensity_column works", {
     expect_match(.valid_intensity_column(df),
                  "contain a list of numeric")
 })
+
+test_that(".valid_intensity_mz_columns works", {
+    expect_match(.valid_intensity_mz_columns(list(1:3, 1:2), list(1:3, 2)),
+                 "Length of mz and intensity")
+    expect_null(.valid_intensity_mz_columns(list(1:3, 1:2), list(1:3, 1:2)))
+})

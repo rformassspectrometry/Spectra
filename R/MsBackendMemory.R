@@ -34,7 +34,8 @@ setValidity("MsBackendMemory", function(object) {
         .valid_ms_backend_files(object@files),
         .valid_ms_backend_files_from_file(object@files,
                                           object@spectraData$fromFile),
-        .valid_ms_backend_mod_count(object@files, object@modCount))
+        .valid_ms_backend_mod_count(object@files, object@modCount),
+        .valid_intensity_mz_columns(object))
     if (is.null(msg)) TRUE
     else msg
 })
@@ -106,14 +107,14 @@ setMethod("intensity", "MsBackendMemory", function(object) {
     if (any(colnames(object@spectraData) == "intensity"))
         object@spectraData$intensity
     else {
-        lst <- list(numeric)
+        lst <- list(numeric())
         lst[rep(1, times = length(object))]
     }
 })
 
 #' @rdname hidden_aliases
 setMethod("ionCount", "MsBackendMemory", function(object) {
-    lapply(intensity(object), sum, na.rm = TRUE)
+    vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
 
 #' @rdname hidden_aliases
@@ -124,7 +125,7 @@ setMethod("isCentroided", "MsBackendMemory", function(object, ...) {
 
 #' @rdname hidden_aliases
 setMethod("isEmpty", "MsBackendMemory", function(x) {
-    lengths(intensity(object)) == 0
+    lengths(intensity(x)) == 0
 })
 
 #' @rdname hidden_aliases
@@ -144,7 +145,7 @@ setMethod("mz", "MsBackendMemory", function(object) {
     if (any(colnames(object@spectraData) == "mz"))
         object@spectraData$mz
     else {
-        lst <- list(numeric)
+        lst <- list(numeric())
         lst[rep(1, times = length(object))]
     }
 })
@@ -152,7 +153,7 @@ setMethod("mz", "MsBackendMemory", function(object) {
 #' @rdname hidden_aliases
 setMethod("peaks", "MsBackendMemory", function(object) {
     mapply(mz(object), intensity(object), FUN = function(m, i)
-        data.frame(mz = mz, intensity = i))
+        data.frame(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -217,7 +218,7 @@ setMethod("rtime", "MsBackendMemory", function(object) {
 setReplaceMethod("rtime", "MsBackendMemory", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$polarity <- value
+    object@spectraData$rt <- value
     validObject(object)
     object
 })
