@@ -37,9 +37,13 @@ NULL
 #'
 #' See below for more details about individual backends.
 #'
-#' @param columns For `spectraData`: optional `character` with column
+#' @param object Object extending `MsBackend`.
+#'
+#' @param x Object extending `MsBackend`.
+#'
+#' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
-#'     returned `DataFrame`.
+#'     returned `DataFrame`. By default, all columns are returned.
 #'
 #' @param files For `backendInitialize`: `character` with the file
 #'     names from which the data is/will be imported. Should be set to
@@ -50,16 +54,8 @@ NULL
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`).
 #'
-#' @param object Object extending `MsBackend`.
-#'
-#' @param spectraData For `backendInitialize`: `DataFrame` with spectrum
-#'     metadata/data. Format and whether the argument is required depends on
-#'     the backend.
-#'
-#' @param value replacement value for `<-` methods. See individual method
-#'     description or expected data type.
-#'
-#' @param x Object extending `MsBackend`.
+#' @param value replacement value for `<-` methods. See individual
+#'     method description or expected data type.
 #'
 #' @param ... Additional arguments.
 #'
@@ -496,7 +492,7 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
 #' @exportMethod spectraData
 #'
 #' @rdname MsBackend
-setMethod("spectraData", "MsBackend", function(object, columns) {
+setMethod("spectraData", "MsBackend", function(object, columns = TRUE) {
     stop("Not implemented for ", class(object), ".")
 })
 
