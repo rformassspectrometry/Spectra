@@ -253,8 +253,7 @@ setClass("MsBackend",
              modCount = "integer", # Same length than files.
              readonly = "logical",
              version = "character"),
-         prototype = prototype(spectraData = DataFrame(),
-                               files = character(),
+         prototype = prototype(files = character(),
                                modCount = integer(),
                                readonly = FALSE,
                                version = "0.1"))
