@@ -273,7 +273,7 @@ setValidity("MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackend",
-          definition = function(object, files, spectraData, ...) {
+          definition = function(object, files, ...) {
               if (missing(files)) files <- character()
               object@files <- files
               object@modCount <- integer(length(files))
