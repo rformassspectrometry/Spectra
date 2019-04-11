@@ -194,11 +194,11 @@ NULL
 #'
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
-#' The `MsBackendDataFrame` objects keep all MS data in memory. New objects can
-#' be created with the `MsBackendDataFrame()` function. The backend can be
-#' subsequently initialized with the `backendInitialize` method, taking a
-#' `DataFrame` with the MS data as parameter. Suggested columns of this
-#' `DataFrame` are:
+#' The `MsBackendDataFrame` objects keep all MS data in memory. New
+#' objects can be created with the `MsBackendDataFrame()`
+#' function. The backend can be subsequently initialized with the
+#' `backendInitialize` method, taking a `DataFrame` with the MS data
+#' as parameter. Suggested columns of this `DataFrame` are:
 #'
 #' - `"msLevel"`: `integer` with MS levels of the spectra.
 #' - `"rt"`: `numeric` with retention times of the spectra.
@@ -226,16 +226,16 @@ NULL
 #'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
-#' The `MsBackendMzR` keeps only a limited amount of data in memory, while the
-#' remaining data (m/z and intensity values) are fetched from the raw fikes
-#' on-demand. This backend uses the `mzR` package for data import and retrieval
-#' and hence requires that package to be installed. Also, it can only be used
-#' to import and represent data stored in *mzML*, *mzXML* and *CDF* files.
+#' The `MsBackendMzR` keeps only a limited amount of data in memory,
+#' while the spectra data (m/z and intensity values) are fetched from
+#' the raw files on-demand. This backend uses the `mzR` package for
+#' data import and retrieval and hence requires that package to be
+#' installed. Also, it can only be used to import and represent data
+#' stored in *mzML*, *mzXML* and *CDF* files.
 #'
-#' New objects can be created with the `MsBackendMzR()` function which can be
-#' subsequently filled with data by calling `backendInitialize` passing the
-#' file names of the input data files.
-#'
+#' New objects can be created with the `MsBackendMzR()` function which
+#' can be subsequently filled with data by calling `backendInitialize`
+#' passing the file names of the input data files.
 #'
 #' @name MsBackend
 #'
