@@ -3,7 +3,7 @@ NULL
 
 #' @title Mass spectrometry data backends
 #'
-#' @aliases class:MsBackend MsBackend-class MsBackendMemory-class MsBackendMzR-class
+#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class
 #'
 #' @description
 #' 
@@ -28,7 +28,7 @@ NULL
 #'
 #' Currently available backends are:
 #' 
-#' - `MsBackendMemory`: stores all data in memory using a `DataFrame`.
+#' - `MsBackendDataFrame`: stores all data in memory using a `DataFrame`.
 #' 
 #' - `MsBackendMzR`: stores the m/z and intensities on-disk in raw
 #'    data files (typically `mzML` or `mzXML`) and the spectra
@@ -192,10 +192,10 @@ NULL
 #'   for the memory backend or read the spectra header data for the
 #'   `MsBackendMzR` backend).
 #'
-#' @section `MsBackendMemory`, in-memory MS data backend:
+#' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
-#' The `MsBackendMemory` objects keep all MS data in memory. New objects can
-#' be created with the `MsBackendMemory()` function. The backend can be
+#' The `MsBackendDataFrame` objects keep all MS data in memory. New objects can
+#' be created with the `MsBackendDataFrame()` function. The backend can be
 #' subsequently initialized with the `backendInitialize` method, taking a
 #' `DataFrame` with the MS data as parameter. Suggested columns of this
 #' `DataFrame` are:
@@ -243,7 +243,7 @@ NULL
 #'
 #' @md
 #'
-#' @exportClass MsBackend MsBackendMemory MsBackendMzR
+#' @exportClass MsBackend MsBackendDataFrame MsBackendMzR
 NULL
 
 setClass("MsBackend",
