@@ -35,6 +35,10 @@ setValidity("MsBackendMzR", function(object) {
 #' @rdname hidden_aliases
 #'
 #' @importFrom methods callNextMethod
+#'
+#' @importMethodsFrom BiocParallel bpmapply
+#'
+#' @importFrom BiocParallel bpparam
 setMethod("backendInitialize", "MsBackendMzR",
           function(object, files, spectraData, ..., BPPARAM = bpparam()) {
               if (missing(files) || !length(files))

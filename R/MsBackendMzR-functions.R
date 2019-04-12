@@ -5,7 +5,7 @@ NULL
 #'
 #' @export MsBackendMzR
 MsBackendMzR <- function() {
-    if (!require("mzR", character.only = TRUE, quietly = TRUE))
+    if (!requireNamespace("mzR", quietly = TRUE))
         stop("The use of 'MsBackendMzR' requires package 'mzR'. Please ",
              "install with 'Biobase::install(\"mzR\")'")
     new("MsBackendMzR")
@@ -21,9 +21,7 @@ MsBackendMzR <- function() {
 .mzR_header <- function(x = character()) {
     if (length(x) != 1)
         stop("'x' should have length 1")
-    suppressPackageStartupMessages(
-        require("mzR", quietly = TRUE, character.only = TRUE)
-    )
+    requireNamespace("mzR", quietly = TRUE)
     msd <- mzR::openMSfile(x)
     on.exit(mzR::close(msd))
     hdr <- mzR::header(msd)

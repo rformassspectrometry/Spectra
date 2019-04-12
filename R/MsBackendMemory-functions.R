@@ -80,6 +80,9 @@ NULL
     else NULL
 }
 
+#' data types of spectraData columns
+#'
+#' @noRd
 .SPECTRA_DATA_COLUMNS <- c(
     msLevel = "integer",
     rt = "numeric",
@@ -98,9 +101,53 @@ NULL
     collisionEnergy = "numeric"
 )
 
+#' accessor methods for spectraData columns.
+#'
+#' @noRd
+.SPECTRA_DATA_COLUMN_METHODS <- c(
+    msLevel = "msLevel",
+    rt = "rtime",
+    acquisitionNum = "acquisitionNum",
+    scanIndex = "scanIndex",
+    mz = "mz",
+    intensity = "intensity",
+    fromFile = "fromFile",
+    centroided = "centroided",
+    smoothed = "smoothed",
+    polarity = "polarity",
+    precScanNum = "precScanNum",
+    precursorMz = "precursorMz",
+    precursorIntensity = "precursorIntensity",
+    precursorCharge = "precursorCharge",
+    collisionEnergy = "collisionEnergy"
+)
+
 #' @rdname MsBackend
 #'
 #' @export MsBackendMemory
 MsBackendMemory <- function() {
     new("MsBackendMemory")
+}
+
+#' Helper function to extract a certain column from the spectraData data frame.
+#' If the data frame has no such column it will use the accessor method to
+#' retrieve the corresponding data.
+#'
+#' @param x object with a `@spectraData` slot containing a `DataFrame`.
+#'
+#' @param column `character(1)` with the column name.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.get_spectra_data_column <- function(x, column) {
+    if (missing(column) || length(column) != 1)
+        stop("'column' should be a 'character' of length 1.")
+    if (any(colnames(x@spectraData) == column))
+        x@spectraData[, column]
+    else {
+        if (any(names(.SPECTRA_DATA_COLUMN_METHODS) == column))
+            do.call(.SPECTRA_DATA_COLUMN_METHODS[column], args = list(x))
+        else stop("No column '", column, "' available")
+    }
 }

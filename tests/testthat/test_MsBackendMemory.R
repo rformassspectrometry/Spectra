@@ -284,3 +284,48 @@ test_that("tic,MsBackendMemory works", {
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
     expect_equal(tic(be, initial = FALSE), c(sum(5:7), sum(1:4)))
 })
+
+test_that("spectraVariables,MsBackendMemory works", {
+    be <- MsBackendMemory()
+    expect_equal(spectraVariables(be), names(Spectra:::.SPECTRA_DATA_COLUMNS))
+    df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
+    be <- backendInitialize(be, files = NA_character_, spectraData = df)
+    expect_equal(spectraVariables(be), names(Spectra:::.SPECTRA_DATA_COLUMNS))
+    df$other_column <- 3
+    be <- backendInitialize(be, files = NA_character_, spectraData = df)
+    expect_equal(spectraVariables(be), c(names(Spectra:::.SPECTRA_DATA_COLUMNS),
+                                         "other_column"))
+})
+
+test_that("spectraData, spectraData<-, MsBackendMemory works", {
+    be <- MsBackendMemory()
+    res <- spectraData(be)
+    expect_true(is(res, "DataFrame"))
+    expect_true(nrow(res) == 0)
+    expect_equal(colnames(res), names(Spectra:::.SPECTRA_DATA_COLUMNS))
+
+    df <- DataFrame(fromFile = c(1L, 1L), scanIndex = 1:2, a = "a", b = "b")
+    be <- backendInitialize(be, files = NA_character_, spectraData = df)
+
+    res <- spectraData(be)
+    expect_true(is(res, "DataFrame"))
+    expect_true(all(names(Spectra:::.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+    expect_equal(res$a, c("a", "a"))
+    expect_equal(res$b, c("b", "b"))
+
+    res <- spectraData(be, "msLevel")
+    expect_true(is(res, "DataFrame"))
+    expect_equal(colnames(res), "msLevel")
+    expect_equal(res$msLevel, c(NA_integer_, NA_integer_))
+
+    res <- spectraData(be, c("mz"))
+    expect_true(is(res, "DataFrame"))
+    expect_equal(colnames(res), "mz")
+    expect_equal(res$mz, list(numeric(), numeric()))
+
+    res <- spectraData(be, c("a", "intensity"))
+    expect_true(is(res, "DataFrame"))
+    expect_equal(colnames(res), c("a", "intensity"))
+    expect_equal(res$intensity, list(numeric(), numeric()))
+    expect_equal(res$a, c("a", "a"))
+})

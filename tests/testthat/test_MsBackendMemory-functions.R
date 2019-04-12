@@ -53,7 +53,29 @@ test_that(".valid_intensity_column works", {
 })
 
 test_that(".valid_intensity_mz_columns works", {
-    expect_match(.valid_intensity_mz_columns(list(1:3, 1:2), list(1:3, 2)),
+    be <- MsBackendMemory()
+    expect_null(.valid_intensity_mz_columns(be))
+    be <- backendInitialize(be, files = NA_character_,
+                            DataFrame(fromFile = c(1L, 1L)))
+    expect_null(.valid_intensity_mz_columns(be))
+    be@spectraData$mz <- list(1:3, 1:2)
+    be@spectraData$intensity <- list(1:3, 2)
+    expect_match(.valid_intensity_mz_columns(be),
                  "Length of mz and intensity")
-    expect_null(.valid_intensity_mz_columns(list(1:3, 1:2), list(1:3, 1:2)))
+    be@spectraData$intensity <- list(1:3, 1:2)
+    expect_null(.valid_intensity_mz_columns(be))
+})
+
+test_that(".get_spectra_data_column works", {
+    be <- MsBackendMemory()
+    expect_equal(.get_spectra_data_column(be, "rt"), numeric())
+    df <- DataFrame(fromFile = c(1L, 1L), scanIndex = c(1L, 2L), other_col = "a")
+    be <- backendInitialize(be, files = NA_character_, df)
+    expect_equal(.get_spectra_data_column(be, "fromFile"), c(1L, 1L))
+    expect_equal(.get_spectra_data_column(be, "scanIndex"), 1:2)
+    expect_equal(.get_spectra_data_column(be, "other_col"), c("a", "a"))
+    expect_equal(.get_spectra_data_column(be, "precScanNum"), c(NA_integer_,
+                                                                NA_integer_))
+    expect_error(.get_spectra_data_column(be, c("a", "b")), "of length 1")
+    expect_error(.get_spectra_data_column(be, "something"), "No column")
 })
