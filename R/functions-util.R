@@ -15,3 +15,9 @@
         stop("Argument ", arg, " should be a numeric or integer", call. = FALSE)
     }
 }
+
+.isCentroided <- function(pk, k = 0.025, qtl = 0.9) {
+    .qtl <- quantile(pk[, 2], qtl)
+    x <- pk[pk[, 2] > .qtl, 1]
+    quantile(diff(x), 0.25) > k
+}

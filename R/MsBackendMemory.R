@@ -119,8 +119,7 @@ setMethod("ionCount", "MsBackendMemory", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("isCentroided", "MsBackendMemory", function(object, ...) {
-    ## TODO @jo IMPLEMENT
-    stop("Not implemented for ", class(object), ".")
+    vapply(peaks(object), .isCentroided, logical(1))
 })
 
 #' @rdname hidden_aliases
