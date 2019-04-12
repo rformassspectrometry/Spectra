@@ -8,10 +8,12 @@ Authors@R: c(person(given = "Laurent", family = "Gatto",
                     role = c("aut","cre")),
              person(given = "Johannes", family = "Rainer",
                     email = "Johannes.Rainer@eurac.edu",
-                    role = c("aut", "cre")),
+                    role = c("aut", "cre"),
+		    comment = c(ORCID = "0000-0002-6977-7147")),
              person(given = "Sebastian", family = "Gibb",
                     email = "mail@sebastiangibb.de",
-                    role = c("aut", "cre")))
+                    role = c("aut", "cre"),
+		    comment = c(ORCID = "0000-0001-7406-4443")))
 Author: Laurent Gatto, Johannes Rainer and Sebastian Gibb.
 Maintainer: Laurent Gatto <laurent.gatto@uclouvain.be> and Johannes Rainer <Johannes.Rainer@eurac.edu>
 Depends:
@@ -42,8 +44,8 @@ Collate:
     'AllGenerics.R'
     'MsBackend-functions.R'
     'MsBackend.R'
-    'MsBackendMemory-functions.R'
-    'MsBackendMemory.R'
+    'MsBackendDataFrame-functions.R'
+    'MsBackendDataFrame.R'
     'MsBackendMzR-functions.R'
     'MsBackendMzR.R'
     'ProcessingStep.R'

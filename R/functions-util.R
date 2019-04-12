@@ -16,6 +16,9 @@
     }
 }
 
+#' @importFrom stats quantile
+#'
+#' @noRd
 .isCentroided <- function(pk, k = 0.025, qtl = 0.9) {
     .qtl <- quantile(pk[, 2], qtl)
     x <- pk[pk[, 2] > .qtl, 1]

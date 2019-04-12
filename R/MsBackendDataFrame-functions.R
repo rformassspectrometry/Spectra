@@ -124,9 +124,9 @@ NULL
 
 #' @rdname MsBackend
 #'
-#' @export MsBackendMemory
-MsBackendMemory <- function() {
-    new("MsBackendMemory")
+#' @export MsBackendDataFrame
+MsBackendDataFrame <- function() {
+    new("MsBackendDataFrame")
 }
 
 #' Helper function to extract a certain column from the spectraData data frame.

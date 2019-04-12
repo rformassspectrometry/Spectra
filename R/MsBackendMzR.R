@@ -6,7 +6,7 @@ NULL
 #' @description
 #'
 #' The `MsBackendMzR` inherits all slots and methods from the base
-#' `MsBackendMemory` (in-memory) backend. It overrides the base `mz` and
+#' `MsBackendDataFrame` (in-memory) backend. It overrides the base `mz` and
 #' `intensity` methods as well as `peaks` to read the respective data from
 #' the original raw data files.
 #'
@@ -22,7 +22,7 @@ NULL
 #'
 #' @noRd
 setClass("MsBackendMzR",
-         contains = "MsBackendMemory",
+         contains = "MsBackendDataFrame",
          prototype = prototype(version = "0.1", readonly = TRUE))
 
 setValidity("MsBackendMzR", function(object) {

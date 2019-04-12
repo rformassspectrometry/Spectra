@@ -1,5 +1,5 @@
-test_that("backendInitialize,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("backendInitialize,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     be <- backendInitialize(be)
     expect_true(validObject(be))
     expect_true(length(be@files) == 0)
@@ -8,14 +8,14 @@ test_that("backendInitialize,MsBackendMemory works", {
     expect_true(validObject(be))
     expect_error(backendInitialize(be, spectraData = DataFrame(msLevel = 1L)),
                  "fromFile is/are")
-    expect_error(backendInitialize(MsBackendMemory(),
+    expect_error(backendInitialize(MsBackendDataFrame(),
                                    spectraData = DataFrame(msLevel = 1L,
                                                            fromFile = 1L)),
                  "'files' can not be empty")
 })
 
-test_that("acquisitionNum, MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("acquisitionNum, MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(acquisitionNum(be), integer())
     be <- backendInitialize(be, files = NA_character_,
                             spectraData = DataFrame(fromFile = 1L,
@@ -28,8 +28,8 @@ test_that("acquisitionNum, MsBackendMemory works", {
     expect_equal(acquisitionNum(be), 1:10)
 })
 
-test_that("centroided, centroided<-, MsBackendMemory work", {
-    be <- MsBackendMemory()
+test_that("centroided, centroided<-, MsBackendDataFrame work", {
+    be <- MsBackendDataFrame()
     expect_equal(centroided(be), logical())
     be <- backendInitialize(be, files = NA_character_,
                             spectraData = DataFrame(fromFile = 1L,
@@ -43,8 +43,8 @@ test_that("centroided, centroided<-, MsBackendMemory work", {
     expect_equal(centroided(be), c(FALSE, FALSE))
 })
 
-test_that("collisionEnergy, collisionEnergy<-,MsBackendMemory work", {
-    be <- MsBackendMemory()
+test_that("collisionEnergy, collisionEnergy<-,MsBackendDataFrame work", {
+    be <- MsBackendDataFrame()
     expect_equal(collisionEnergy(be), numeric())
     be <- backendInitialize(be, files = NA_character_,
                             spectraData = DataFrame(fromFile = 1L,
@@ -56,8 +56,8 @@ test_that("collisionEnergy, collisionEnergy<-,MsBackendMemory work", {
     expect_equal(collisionEnergy(be), c(2.1, 3.2))
 })
 
-test_that("fromFile,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("fromFile,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(fromFile(be), integer())
     be <- backendInitialize(be, files = NA_character_,
                             spectraData = DataFrame(fromFile = 1L,
@@ -65,8 +65,8 @@ test_that("fromFile,MsBackendMemory works", {
     expect_equal(fromFile(be), c(1L, 1L))
 })
 
-test_that("intensity,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("intensity,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(intensity(be), list())
     be <- backendInitialize(be, files = NA_character_,
                             spectraData = DataFrame(fromFile = 1L,
@@ -79,8 +79,8 @@ test_that("intensity,MsBackendMemory works", {
     expect_equal(intensity(be), list(1:4, c(2.1, 3.4)))
 })
 
-test_that("ionCound,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("ionCound,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(ionCount(be), numeric())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     df$intensity <- list(1:4, c(2.1, 3.4))
@@ -89,8 +89,8 @@ test_that("ionCound,MsBackendMemory works", {
     expect_equal(ionCount(be), c(sum(1:4), sum(c(2.1, 3.4))))
 })
 
-test_that("isEmpty,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("isEmpty,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(isEmpty(be), logical())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -101,27 +101,27 @@ test_that("isEmpty,MsBackendMemory works", {
     expect_equal(isEmpty(be), c(FALSE, FALSE))
 })
 
-test_that("length,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("length,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(length(be), 0)
-    be <- new("MsBackendMemory", spectraData = DataFrame(a = 1:3, fromFile = 1L),
+    be <- new("MsBackendDataFrame", spectraData = DataFrame(a = 1:3, fromFile = 1L),
               files = NA_character_, modCount = 0L)
     expect_equal(length(be), 3)
 })
 
-test_that("msLevel,MsBackendMemory works", {
-    be <- backendInitialize(MsBackendMemory(), NA_character_,
+test_that("msLevel,MsBackendDataFrame works", {
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_,
                             DataFrame(msLevel = c(1L, 2L, 1L),
                                       fromFile = 1L))
     expect_equal(msLevel(be), c(1, 2, 1))
-    be <- backendInitialize(MsBackendMemory(), NA_character_,
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_,
                             DataFrame(scanIndex = 1:4,
                                       fromFile = 1L))
     expect_equal(msLevel(be), rep(NA_integer_, 4))
 })
 
-test_that("mz,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("mz,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(mz(be), list())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -132,8 +132,8 @@ test_that("mz,MsBackendMemory works", {
     expect_equal(mz(be), list(1:3, 2.1))
 })
 
-test_that("peaks,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("peaks,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(peaks(be), list())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -146,8 +146,8 @@ test_that("peaks,MsBackendMemory works", {
                                  data.frame(mz = 2.1, intensity = 4)))
 })
 
-test_that("peaksCount,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("peaksCount,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(peaksCount(be), integer())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -158,8 +158,8 @@ test_that("peaksCount,MsBackendMemory works", {
     expect_equal(peaksCount(be), c(3L, 1L))
 })
 
-test_that("polarity, polarity<- MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("polarity, polarity<- MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(polarity(be), integer())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -172,8 +172,8 @@ test_that("polarity, polarity<- MsBackendMemory works", {
     expect_equal(polarity(be), 1:2)
 })
 
-test_that("precScanNum,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("precScanNum,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(precScanNum(be), integer())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -183,8 +183,8 @@ test_that("precScanNum,MsBackendMemory works", {
     expect_equal(precScanNum(be), c(0L, 1L))
 })
 
-test_that("precursorCharge,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("precursorCharge,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(precursorCharge(be), integer())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -194,8 +194,8 @@ test_that("precursorCharge,MsBackendMemory works", {
     expect_equal(precursorCharge(be), c(-1L, 1L))
 })
 
-test_that("precursorIntensity,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("precursorIntensity,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(precursorIntensity(be), numeric())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -205,8 +205,8 @@ test_that("precursorIntensity,MsBackendMemory works", {
     expect_equal(precursorIntensity(be), c(134.4, 4322.2))
 })
 
-test_that("precursorMz,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("precursorMz,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(precursorMz(be), numeric())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -216,8 +216,8 @@ test_that("precursorMz,MsBackendMemory works", {
     expect_equal(precursorMz(be), c(134.4, 342.2))
 })
 
-test_that("rtime, rtime<-,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("rtime, rtime<-,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(rtime(be), numeric())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -228,8 +228,8 @@ test_that("rtime, rtime<-,MsBackendMemory works", {
     expect_equal(rtime(be), c(123, 124))
 })
 
-test_that("scanIndex,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("scanIndex,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(scanIndex(be), integer())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -239,8 +239,8 @@ test_that("scanIndex,MsBackendMemory works", {
     expect_equal(scanIndex(be), c(1L, 2L))
 })
 
-test_that("smoothed, smoothed<-,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("smoothed, smoothed<-,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(smoothed(be), logical())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -253,8 +253,8 @@ test_that("smoothed, smoothed<-,MsBackendMemory works", {
     expect_equal(smoothed(be), c(TRUE, TRUE))
 })
 
-test_that("spectraNames, spectraNames<-,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("spectraNames, spectraNames<-,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_null(spectraNames(be))
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -268,8 +268,8 @@ test_that("spectraNames, spectraNames<-,MsBackendMemory works", {
     expect_equal(spectraNames(be), c("a", "b"))
 })
 
-test_that("tic,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("tic,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(tic(be), numeric())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -285,8 +285,8 @@ test_that("tic,MsBackendMemory works", {
     expect_equal(tic(be, initial = FALSE), c(sum(5:7), sum(1:4)))
 })
 
-test_that("spectraVariables,MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("spectraVariables,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     expect_equal(spectraVariables(be), names(Spectra:::.SPECTRA_DATA_COLUMNS))
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -297,8 +297,8 @@ test_that("spectraVariables,MsBackendMemory works", {
                                          "other_column"))
 })
 
-test_that("spectraData, spectraData<-, MsBackendMemory works", {
-    be <- MsBackendMemory()
+test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
     res <- spectraData(be)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)

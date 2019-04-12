@@ -50,7 +50,7 @@ Spectra <- function(spectraData = DataFrame(), msLevel, rt, acquisitionNum,
                     scanIndex, fromFile, centroided, smoothed, polarity,
                     precScanNum, precursorMz, precursorIntensity,
                     precursorCharge, collisionEnergy, mz, intensity,
-                    backend = MsBackendMemory(), processingQueue = list(),
+                    backend = MsBackendDataFrame(), processingQueue = list(),
                     metadata = list()) {
     spData <- list()
     if (!missing(msLevel))

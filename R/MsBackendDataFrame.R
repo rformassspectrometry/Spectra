@@ -5,16 +5,16 @@ NULL
 #'
 #' @description
 #'
-#' @name MsBackendMemory
+#' @name MsBackendDataFrame
 #'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
 #'
 #' @noRd
 #'
-#' @exportClass MsBackendMemory
+#' @exportClass MsBackendDataFrame
 NULL
 
-setClass("MsBackendMemory",
+setClass("MsBackendDataFrame",
          contains = "MsBackend",
          slots = c(spectraData = "DataFrame"),
          prototype = prototype(spectraData = DataFrame(),
@@ -23,7 +23,7 @@ setClass("MsBackendMemory",
                                readonly = FALSE,
                                version = "0.1"))
 
-setValidity("MsBackendMemory", function(object) {
+setValidity("MsBackendDataFrame", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData)
     if (length(msg))
         return(msg)
@@ -41,7 +41,7 @@ setValidity("MsBackendMemory", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("backendInitialize", signature = "MsBackendMemory",
+setMethod("backendInitialize", signature = "MsBackendDataFrame",
           definition = function(object, files, spectraData, ...) {
               if (missing(files)) files <- character()
               if (missing(spectraData)) spectraData <- DataFrame()
@@ -55,21 +55,21 @@ setMethod("backendInitialize", signature = "MsBackendMemory",
 ## Data accessors
 
 #' @rdname hidden_aliases
-setMethod("acquisitionNum", "MsBackendMemory", function(object) {
+setMethod("acquisitionNum", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "acquisitionNum"))
         object@spectraData$acquisitionNum
     else rep(NA_integer_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("centroided", "MsBackendMemory", function(object) {
+setMethod("centroided", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "centroided"))
         object@spectraData$centroided
     else rep(NA, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("centroided", "MsBackendMemory", function(object, value) {
+setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
     if (length(value) == 1)
         value <- rep(value, length(object))
     if (!is.logical(value) | length(value) != length(object))
@@ -80,14 +80,14 @@ setReplaceMethod("centroided", "MsBackendMemory", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("collisionEnergy", "MsBackendMemory", function(object) {
+setMethod("collisionEnergy", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "collisionEnergy"))
         object@spectraData$collisionEnergy
     else rep(NA_real_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("collisionEnergy", "MsBackendMemory", function(object, value) {
+setReplaceMethod("collisionEnergy", "MsBackendDataFrame", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
     object@spectraData$collisionEnergy <- value
@@ -96,14 +96,14 @@ setReplaceMethod("collisionEnergy", "MsBackendMemory", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("fromFile", "MsBackendMemory", function(object) {
+setMethod("fromFile", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "fromFile"))
         object@spectraData$fromFile
     else rep(NA_integer_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("intensity", "MsBackendMemory", function(object) {
+setMethod("intensity", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "intensity"))
         object@spectraData$intensity
     else {
@@ -113,34 +113,34 @@ setMethod("intensity", "MsBackendMemory", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("ionCount", "MsBackendMemory", function(object) {
+setMethod("ionCount", "MsBackendDataFrame", function(object) {
     vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
 
 #' @rdname hidden_aliases
-setMethod("isCentroided", "MsBackendMemory", function(object, ...) {
+setMethod("isCentroided", "MsBackendDataFrame", function(object, ...) {
     vapply(peaks(object), .isCentroided, logical(1))
 })
 
 #' @rdname hidden_aliases
-setMethod("isEmpty", "MsBackendMemory", function(x) {
+setMethod("isEmpty", "MsBackendDataFrame", function(x) {
     lengths(intensity(x)) == 0
 })
 
 #' @rdname hidden_aliases
-setMethod("length", "MsBackendMemory", function(x) {
+setMethod("length", "MsBackendDataFrame", function(x) {
     nrow(x@spectraData)
 })
 
 #' @rdname hidden_aliases
-setMethod("msLevel", "MsBackendMemory", function(object, ...) {
+setMethod("msLevel", "MsBackendDataFrame", function(object, ...) {
     if (any(colnames(object@spectraData) == "msLevel"))
         object@spectraData$msLevel
     else rep(NA_integer_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("mz", "MsBackendMemory", function(object) {
+setMethod("mz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "mz"))
         object@spectraData$mz
     else {
@@ -150,25 +150,25 @@ setMethod("mz", "MsBackendMemory", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaks", "MsBackendMemory", function(object) {
+setMethod("peaks", "MsBackendDataFrame", function(object) {
     mapply(mz(object), intensity(object), FUN = function(m, i)
         data.frame(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksCount", "MsBackendMemory", function(object) {
+setMethod("peaksCount", "MsBackendDataFrame", function(object) {
     lengths(mz(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("polarity", "MsBackendMemory", function(object) {
+setMethod("polarity", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "polarity"))
         object@spectraData$polarity
     else rep(NA_integer_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("polarity", "MsBackendMemory", function(object, value) {
+setReplaceMethod("polarity", "MsBackendDataFrame", function(object, value) {
     if (length(value) == 1)
         value <- rep(value, length(object))
     if (!is.numeric(value) | length(value) != length(object))
@@ -179,42 +179,42 @@ setReplaceMethod("polarity", "MsBackendMemory", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("precScanNum", "MsBackendMemory", function(object) {
+setMethod("precScanNum", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "precScanNum"))
         object@spectraData$precScanNum
     else rep(NA_integer_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("precursorCharge", "MsBackendMemory", function(object) {
+setMethod("precursorCharge", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "precursorCharge"))
         object@spectraData$precursorCharge
     else rep(NA_integer_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("precursorIntensity", "MsBackendMemory", function(object) {
+setMethod("precursorIntensity", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "precursorIntensity"))
         object@spectraData$precursorIntensity
     else rep(NA_real_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("precursorMz", "MsBackendMemory", function(object) {
+setMethod("precursorMz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "precursorMz"))
         object@spectraData$precursorMz
     else rep(NA_real_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("rtime", "MsBackendMemory", function(object) {
+setMethod("rtime", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "rt"))
         object@spectraData$rt
     else rep(NA_real_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("rtime", "MsBackendMemory", function(object, value) {
+setReplaceMethod("rtime", "MsBackendDataFrame", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
     object@spectraData$rt <- value
@@ -223,21 +223,21 @@ setReplaceMethod("rtime", "MsBackendMemory", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("scanIndex", "MsBackendMemory", function(object) {
+setMethod("scanIndex", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "scanIndex"))
         object@spectraData$scanIndex
     else rep(NA_integer_, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setMethod("smoothed", "MsBackendMemory", function(object) {
+setMethod("smoothed", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "smoothed"))
         object@spectraData$smoothed
     else rep(NA, times = length(object))
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("smoothed", "MsBackendMemory", function(object, value) {
+setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
     if (length(value) == 1)
         value <- rep(value, length(object))
     if (!is.logical(value) | length(value) != length(object))
@@ -250,7 +250,7 @@ setReplaceMethod("smoothed", "MsBackendMemory", function(object, value) {
 #' @rdname hidden_aliases
 #'
 #' @importFrom methods as
-setMethod("spectraData", "MsBackendMemory", function(object, columns) {
+setMethod("spectraData", "MsBackendDataFrame", function(object, columns) {
     if (missing(columns))
         columns <- union(colnames(object@spectraData),
                          names(.SPECTRA_DATA_COLUMNS))
@@ -272,7 +272,7 @@ setMethod("spectraData", "MsBackendMemory", function(object, columns) {
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("spectraData", "MsBackendMemory", function(object, value) {
+setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
     if (!is(value, "DataFrame") || rownames(value) != length(object))
         stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
     object@spectraData <- value
@@ -281,24 +281,24 @@ setReplaceMethod("spectraData", "MsBackendMemory", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("spectraNames", "MsBackendMemory", function(object) {
+setMethod("spectraNames", "MsBackendDataFrame", function(object) {
     rownames(object@spectraData)
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("spectraNames", "MsBackendMemory", function(object, value) {
+setReplaceMethod("spectraNames", "MsBackendDataFrame", function(object, value) {
     rownames(object@spectraData) <- value
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
-setMethod("spectraVariables", "MsBackendMemory", function(object) {
+setMethod("spectraVariables", "MsBackendDataFrame", function(object) {
     unique(c(names(.SPECTRA_DATA_COLUMNS), colnames(object@spectraData)))
 })
 
 #' @rdname hidden_aliases
-setMethod("tic", "MsBackendMemory", function(object, initial = TRUE) {
+setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
     if (initial) {
         if (any(colnames(object@spectraData) == "totIonCurrent"))
             object@spectraData$totIonCurrent
