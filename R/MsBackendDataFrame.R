@@ -41,6 +41,18 @@ setValidity("MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
+setMethod("show", "MsBackendDataFrame", function(object) {
+    spd <- spectraData(object, c("msLevel", "rt", "scanIndex"))
+    cat(class(object), "with", nrow(spd), "spectra\n")
+    if (nrow(spd)) {
+        txt <- capture.output(show(spd))
+        cat(txt[-1], sep = "\n")
+        sp_cols <- spectraVariables(object)
+        cat(" ...", length(sp_cols) - 3, "more variables/columns.\n")
+    }
+})
+
+#' @rdname hidden_aliases
 setMethod("backendInitialize", signature = "MsBackendDataFrame",
           definition = function(object, files, spectraData, ...) {
               if (missing(files)) files <- character()

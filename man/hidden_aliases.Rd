@@ -31,6 +31,7 @@
 \alias{spectraNames}
 \alias{spectraNames<-}
 \alias{spectraVariables}
+\alias{show,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
 \alias{centroided,MsBackendDataFrame-method}
@@ -123,6 +124,8 @@ spectraNames(object, ...)
 spectraNames(object) <- value
 
 spectraVariables(object, ...)
+
+\S4method{show}{MsBackendDataFrame}(object)
 
 \S4method{backendInitialize}{MsBackendDataFrame}(object, files,
   spectraData, ...)

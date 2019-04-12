@@ -329,3 +329,10 @@ test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
     expect_equal(res$intensity, list(numeric(), numeric()))
     expect_equal(res$a, c("a", "a"))
 })
+
+test_that("show,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    show(be)
+    df <- DataFrame(fromFile = c(1L, 1L), rt = c(1.2, 1.3))
+    be <- backendInitialize(be, files = NA_character_, df)
+})
