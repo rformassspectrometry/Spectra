@@ -85,7 +85,7 @@ NULL
 #' @noRd
 .SPECTRA_DATA_COLUMNS <- c(
     msLevel = "integer",
-    rt = "numeric",
+    rtime = "numeric",
     acquisitionNum = "integer",
     scanIndex = "integer",
     mz = "list",
@@ -106,7 +106,7 @@ NULL
 #' @noRd
 .SPECTRA_DATA_COLUMN_METHODS <- c(
     msLevel = "msLevel",
-    rt = "rtime",
+    rtime = "rtime",
     acquisitionNum = "acquisitionNum",
     scanIndex = "scanIndex",
     mz = "mz",

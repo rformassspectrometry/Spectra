@@ -42,7 +42,7 @@ setValidity("MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("show", "MsBackendDataFrame", function(object) {
-    spd <- spectraData(object, c("msLevel", "rt", "scanIndex"))
+    spd <- spectraData(object, c("msLevel", "rtime", "scanIndex"))
     cat(class(object), "with", nrow(spd), "spectra\n")
     if (nrow(spd)) {
         txt <- capture.output(show(spd))
@@ -220,8 +220,8 @@ setMethod("precursorMz", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("rtime", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "rt"))
-        object@spectraData$rt
+    if (any(colnames(object@spectraData) == "rtime"))
+        object@spectraData$rtime
     else rep(NA_real_, times = length(object))
 })
 
@@ -229,7 +229,7 @@ setMethod("rtime", "MsBackendDataFrame", function(object) {
 setReplaceMethod("rtime", "MsBackendDataFrame", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$rt <- value
+    object@spectraData$rtime <- value
     validObject(object)
     object
 })

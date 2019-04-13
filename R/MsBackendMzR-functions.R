@@ -28,6 +28,6 @@ MsBackendMzR <- function() {
     colnames(hdr)[colnames(hdr) == "seqNum"] <- "scanIndex"
     colnames(hdr)[colnames(hdr) == "precursorScanNum"] <- "precScanNum"
     colnames(hdr)[colnames(hdr) == "precursorMZ"] <- "precursorMz"
-    colnames(hdr)[colnames(hdr) == "retentionTime"] <- "rt"
+    colnames(hdr)[colnames(hdr) == "retentionTime"] <- "rtime"
     S4Vectors::DataFrame(hdr)
 }
