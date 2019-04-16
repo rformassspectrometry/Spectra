@@ -164,7 +164,7 @@ setMethod("mz", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 setMethod("peaks", "MsBackendDataFrame", function(object) {
     mapply(mz(object), intensity(object), FUN = function(m, i)
-        data.frame(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
+        cbind(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
 })
 
 #' @rdname hidden_aliases

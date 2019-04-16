@@ -48,6 +48,8 @@ Collate:
     'MsBackendDataFrame.R'
     'MsBackendMzR-functions.R'
     'MsBackendMzR.R'
+    'MsBackendRleDataFrame-functions.R'
+    'MsBackendRleDataFrame.R'
     'ProcessingStep.R'
     'Spectra-functions.R'
     'Spectra.R'

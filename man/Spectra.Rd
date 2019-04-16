@@ -8,7 +8,7 @@
 \alias{msLevel,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
-Spectra(spectraData = DataFrame(), msLevel, rt, acquisitionNum,
+Spectra(spectraData = DataFrame(), msLevel, rtime, acquisitionNum,
   scanIndex, fromFile, centroided, smoothed, polarity, precScanNum,
   precursorMz, precursorIntensity, precursorCharge, collisionEnergy, mz,
   intensity, backend = MsBackendDataFrame(), processingQueue = list(),
