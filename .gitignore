@@ -1,4 +1,5 @@
 .travis.yml
 docs
+local_data
 *.o
 *.so

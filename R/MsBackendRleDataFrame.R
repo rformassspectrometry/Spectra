@@ -158,7 +158,7 @@ setMethod("mz", "MsBackendRleDataFrame", function(object) {
 #' @rdname hidden_aliases
 setMethod("peaks", "MsBackendRleDataFrame", function(object) {
     mapply(mz(object), intensity(object), FUN = function(m, i)
-        matrix(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
+        cbind(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -243,8 +243,8 @@ setReplaceMethod("smoothed", "MsBackendRleDataFrame", function(object, value) {
 setMethod("spectraData", "MsBackendRleDataFrame", function(object, columns) {
     cn <- colnames(object@spectraData)
     if (missing(columns))
-        columns <- unique(c(colnames(.SPECTRA_DATA_COLUMNS), cn))
-    if(!length(colnames(object@spectraData))) {
+        columns <- unique(c(names(.SPECTRA_DATA_COLUMNS), cn))
+    if(!nrow(object@spectraData)) {
         res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
         res <- DataFrame(res)
         res$mz <- list()

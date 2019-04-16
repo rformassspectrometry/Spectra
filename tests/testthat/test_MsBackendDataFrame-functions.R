@@ -68,7 +68,7 @@ test_that(".valid_intensity_mz_columns works", {
 
 test_that(".get_spectra_data_column works", {
     be <- MsBackendDataFrame()
-    expect_equal(.get_spectra_data_column(be, "rt"), numeric())
+    expect_equal(.get_spectra_data_column(be, "rtime"), numeric())
     df <- DataFrame(fromFile = c(1L, 1L), scanIndex = c(1L, 2L), other_col = "a")
     be <- backendInitialize(be, files = NA_character_, df)
     expect_equal(.get_spectra_data_column(be, "fromFile"), c(1L, 1L))

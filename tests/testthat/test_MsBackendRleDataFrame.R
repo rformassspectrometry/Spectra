@@ -143,13 +143,13 @@ test_that("peaks,MsBackendRleDataFrame works", {
     expect_equal(peaks(be), list())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-    expect_equal(peaks(be), list(data.frame(mz = numeric(), intensity = numeric()),
-                                 data.frame(mz = numeric(), intensity = numeric())))
+    expect_equal(peaks(be), list(cbind(mz = numeric(), intensity = numeric()),
+                                 cbind(mz = numeric(), intensity = numeric())))
     df$mz <- list(1:3, c(2.1))
     df$intensity <- list(1:3, 4)
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-    expect_equal(peaks(be), list(data.frame(mz = 1:3, intensity = 1:3),
-                                 data.frame(mz = 2.1, intensity = 4)))
+    expect_equal(peaks(be), list(cbind(mz = 1:3, intensity = 1:3),
+                                 cbind(mz = 2.1, intensity = 4)))
 })
 
 test_that("peaksCount,MsBackendRleDataFrame works", {

@@ -320,6 +320,12 @@ values for each spectrum.
 }
 
 Additional columns are allowed too.
+
+The \code{backendInitialize} method for this backend takes the following
+argument:
+\itemize{
+\item @param spectraData For : \code{DataFrame} with spectrum metadata/data.
+}
 }
 
 \section{\code{MsBackendMzR}, on-disk MS data backend}{
