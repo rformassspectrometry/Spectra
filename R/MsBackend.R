@@ -220,6 +220,11 @@ NULL
 #'
 #' Additional columns are allowed too.
 #'
+#' The `backendInitialize` method for this backend takes the following
+#' argument:
+#'
+#' - @param spectraData For : `DataFrame` with spectrum metadata/data.
+#' 
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
 #' The `MsBackendMzR` keeps only a limited amount of data in memory,
