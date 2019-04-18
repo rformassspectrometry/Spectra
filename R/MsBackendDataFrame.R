@@ -318,5 +318,6 @@ setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
     } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
 
+
 ## Subsetting:
 ## convert i to index. if logical, if character.
