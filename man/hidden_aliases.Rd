@@ -102,6 +102,7 @@
 \alias{spectraNames<-,MsBackendRleDataFrame-method}
 \alias{spectraVariables,MsBackendRleDataFrame-method}
 \alias{tic,MsBackendRleDataFrame-method}
+\alias{[,MsBackendRleDataFrame-method}
 \alias{ProcessingStep-class}
 \alias{show,ProcessingStep-method}
 \alias{show,Spectra-method}
@@ -218,7 +219,8 @@ spectraVariables(object, ...)
 
 \S4method{smoothed}{MsBackendDataFrame}(object) <- value
 
-\S4method{spectraData}{MsBackendDataFrame}(object, columns)
+\S4method{spectraData}{MsBackendDataFrame}(object,
+  columns = spectraVariables(object))
 
 \S4method{spectraData}{MsBackendDataFrame}(object) <- value
 
@@ -292,7 +294,8 @@ spectraVariables(object, ...)
 
 \S4method{smoothed}{MsBackendRleDataFrame}(object) <- value
 
-\S4method{spectraData}{MsBackendRleDataFrame}(object, columns)
+\S4method{spectraData}{MsBackendRleDataFrame}(object,
+  columns = spectraVariables(object))
 
 \S4method{spectraData}{MsBackendRleDataFrame}(object) <- value
 
@@ -303,6 +306,8 @@ spectraVariables(object, ...)
 \S4method{spectraVariables}{MsBackendRleDataFrame}(object)
 
 \S4method{tic}{MsBackendRleDataFrame}(object, initial = TRUE)
+
+\S4method{[}{MsBackendRleDataFrame}(x, i, j, ..., drop = FALSE)
 
 \S4method{show}{ProcessingStep}(object)
 

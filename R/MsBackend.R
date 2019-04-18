@@ -506,9 +506,10 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
 #' @exportMethod spectraData
 #'
 #' @rdname MsBackend
-setMethod("spectraData", "MsBackend", function(object, columns = TRUE) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("spectraData", "MsBackend",
+          function(object, columns = spectraVariables(object)) {
+              stop("Not implemented for ", class(object), ".")
+          })
 
 #' @exportMethod spectraData<-
 #'
@@ -551,5 +552,5 @@ setMethod("tic", "MsBackend", function(object, initial = TRUE) {
 #'
 #' @rdname MsBackend
 setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
-    stop("Not implemented for ", class(object), ".")
+    stop("Not implemented for ", class(x), ".")
 })

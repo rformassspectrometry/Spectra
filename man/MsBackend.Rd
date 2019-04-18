@@ -107,7 +107,8 @@
 
 \S4method{smoothed}{MsBackend}(object) <- value
 
-\S4method{spectraData}{MsBackend}(object, columns = TRUE)
+\S4method{spectraData}{MsBackend}(object,
+  columns = spectraVariables(object))
 
 \S4method{spectraData}{MsBackend}(object) <- value
 

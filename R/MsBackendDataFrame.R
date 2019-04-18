@@ -262,26 +262,25 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
 #' @rdname hidden_aliases
 #'
 #' @importFrom methods as
-setMethod("spectraData", "MsBackendDataFrame", function(object, columns) {
-    if (missing(columns))
-        columns <- union(colnames(object@spectraData),
-                         names(.SPECTRA_DATA_COLUMNS))
-    df_columns <- columns[columns %in% colnames(object@spectraData)]
-    res <- object@spectraData[, df_columns, drop = FALSE]
-    other_columns <- columns[!(columns %in% colnames(object@spectraData))]
-    if (length(other_columns)) {
-        other_res <- lapply(other_columns, .get_spectra_data_column, x = object)
-        names(other_res) <- other_columns
-        is_mz_int <- names(other_res) %in% c("mz", "intensity")
-        if (!all(is_mz_int))
-            res <- cbind(res, as(other_res[!is_mz_int], "DataFrame"))
-        if (any(names(other_res) == "mz"))
-            res$mz <- if (length(other_res$mz)) other_res$mz else list()
-        if (any(names(other_res) == "intensity"))
-            res$intensity <- if (length(other_res$intensity)) other_res$intensity else list()
-    }
-    res[, columns, drop = FALSE]
-})
+setMethod("spectraData", "MsBackendDataFrame",
+          function(object, columns = spectraVariables(object)) {
+              df_columns <- columns[columns %in% colnames(object@spectraData)]
+              res <- object@spectraData[, df_columns, drop = FALSE]
+              other_columns <- columns[!(columns %in% colnames(object@spectraData))]
+              if (length(other_columns)) {
+                  other_res <- lapply(other_columns, .get_spectra_data_column,
+                                      x = object)
+                  names(other_res) <- other_columns
+                  is_mz_int <- names(other_res) %in% c("mz", "intensity")
+                  if (!all(is_mz_int))
+                      res <- cbind(res, as(other_res[!is_mz_int], "DataFrame"))
+                  if (any(names(other_res) == "mz"))
+                      res$mz <- if (length(other_res$mz)) other_res$mz else list()
+                  if (any(names(other_res) == "intensity"))
+                      res$intensity <- if (length(other_res$intensity)) other_res$intensity else list()
+              }
+              res[, columns, drop = FALSE]
+          })
 
 #' @rdname hidden_aliases
 setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
@@ -318,6 +317,8 @@ setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
     } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
 
+#' @importMethodsFrom S4Vectors [
+#'
 #' @rdname hidden_aliases
 setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     if (!missing(j))

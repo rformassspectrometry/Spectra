@@ -67,7 +67,7 @@ setMethod("backendInitialize", signature = "MsBackendRleDataFrame",
               object
           })
 
-## Data accessors
+#' @importMethodsFrom S4Vectors [[
 .get_rle_column <- function(x, column) {
     if (!any(colnames(x) == column))
         return(do.call(.SPECTRA_DATA_COLUMNS[column], args = list()))
@@ -240,22 +240,23 @@ setReplaceMethod("smoothed", "MsBackendRleDataFrame", function(object, value) {
 #' @rdname hidden_aliases
 #'
 #' @importFrom methods as
-setMethod("spectraData", "MsBackendRleDataFrame", function(object, columns) {
-    cn <- colnames(object@spectraData)
-    if (missing(columns))
-        columns <- unique(c(names(.SPECTRA_DATA_COLUMNS), cn))
-    if(!nrow(object@spectraData)) {
-        res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
-        res <- DataFrame(res)
-        res$mz <- list()
-        res$intensity <- list()
-        return(res[, columns, drop = FALSE])
-    }
-    not_found <- setdiff(columns, colnames(object@spectraData))
-    if (length(not_found))
-        stop("Column(s) ", paste(not_found, collapse = ", "), " not available")
-    .uncompress_spectra_data(object@spectraData[, columns, drop = FALSE])
-})
+setMethod("spectraData", "MsBackendRleDataFrame",
+          function(object, columns = spectraVariables(object)) {
+              cn <- colnames(object@spectraData)
+              if(!nrow(object@spectraData)) {
+                  res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
+                  res <- DataFrame(res)
+                  res$mz <- list()
+                  res$intensity <- list()
+                  return(res[, columns, drop = FALSE])
+              }
+              not_found <- setdiff(columns, colnames(object@spectraData))
+              if (length(not_found))
+                  stop("Column(s) ", paste(not_found, collapse = ", "),
+                       " not available")
+              .uncompress_spectra_data(object@spectraData[, columns,
+                                                          drop = FALSE])
+          })
 
 #' @rdname hidden_aliases
 setReplaceMethod("spectraData", "MsBackendRleDataFrame", function(object,
@@ -295,4 +296,19 @@ setMethod("tic", "MsBackendRleDataFrame", function(object, initial = TRUE) {
             .get_rle_column(object@spectraData, "totIonCurrent")
         else rep(NA_real_, times = length(object))
     } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
+})
+
+#' @rdname hidden_aliases
+setMethod("[", "MsBackendRleDataFrame", function(x, i, j, ..., drop = FALSE) {
+    if (!missing(j))
+        stop("Subsetting byt column ('j = ", j, "' is not supported")
+    i <- .i_to_index(i, length(x), rownames(x@spectraData))
+    x@spectraData <- x@spectraData[i, , drop = FALSE]
+    orig_files <- x@files
+    files_idx <- unique(fromFile(x))
+    x@files <- orig_files[files_idx]
+    x@modCount <- x@modCount[files_idx]
+    x@spectraData$fromFile <- match(orig_files[fromFile(x)], x@files)
+    validObject(x)
+    x
 })
