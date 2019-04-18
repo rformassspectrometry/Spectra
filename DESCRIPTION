@@ -1,10 +1,11 @@
 Package: Spectra
-Title: Spectra Base Classes for Mass Spectrometry Data
+Title: Spectra Infrastructure for Mass Spectrometry Data
 Version: 0.0.1
-Description: Spectra provides base classes for Mass spectrometry.
+Description: The Spectra packages defines a efficient infrastructure
+   for storing and handling for raw mass spectrometry spectra.
 Authors@R: c(person(given = "Laurent", family = "Gatto",
 		    comment = c(ORCID = "0000-0002-1520-2268"),
-                    email = "laurent.gatto@uclouvain.be",
+		    email = "laurent.gatto@uclouvain.be",
                     role = c("aut","cre")),
              person(given = "Johannes", family = "Rainer",
                     email = "Johannes.Rainer@eurac.edu",
@@ -14,8 +15,6 @@ Authors@R: c(person(given = "Laurent", family = "Gatto",
                     email = "mail@sebastiangibb.de",
                     role = c("aut", "cre"),
 		    comment = c(ORCID = "0000-0001-7406-4443")))
-Author: Laurent Gatto, Johannes Rainer and Sebastian Gibb.
-Maintainer: Laurent Gatto <laurent.gatto@uclouvain.be> and Johannes Rainer <Johannes.Rainer@eurac.edu>
 Depends:
     R (>= 3.5.0),
     S4Vectors,
@@ -37,7 +36,7 @@ LazyData: yes
 VignetteBuilder: knitr
 BugReports: https://github.com/lgatto/Spectra/issues
 URL: https://github.com/lgatto/Spectra
-biocViews: Infrastructure, Proteomics, MassSpectrometry
+biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics
 RoxygenNote: 6.1.1
 Collate:
     'hidden_aliases.R'
