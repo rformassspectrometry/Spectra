@@ -80,29 +80,29 @@ setReplaceMethod("centroided", "MsBackendMzR", function(object, value) {
     object
 })
 
-## #' @rdname hidden_aliases
-## setMethod("collisionEnergy", "MsBackendMzR", function(object) {
-##     .get_rle_column(object@spectraData, "collisionEnergy")
-## })
+#' @rdname hidden_aliases
+setMethod("collisionEnergy", "MsBackendMzR", function(object) {
+    .get_rle_column(object@spectraData, "collisionEnergy")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("collisionEnergy", "MsBackendMzR", function(object, value) {
-##     if (!is.numeric(value) | length(value) != length(object))
-##         stop("'value' has to be a 'numeric' of length ", length(object))
-##     object@spectraData$collisionEnergy <- value
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("collisionEnergy", "MsBackendMzR", function(object, value) {
+    if (!is.numeric(value) | length(value) != length(object))
+        stop("'value' has to be a 'numeric' of length ", length(object))
+    object@spectraData$collisionEnergy <- .rle_compress(value)
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 setMethod("fromFile", "MsBackendMzR", function(object) {
     .get_rle_column(object@spectraData, "fromFile")
 })
 
-#' @rdname hidden_aliases
-setMethod("intensity", "MsBackendMzR", function(object) {
-    stop("Have to read intensity from the original files.")
-})
+## #' @rdname hidden_aliases
+## setMethod("intensity", "MsBackendMzR", function(object) {
+##     stop("Have to read intensity from the original files.")
+## })
 
 ## #' @rdname hidden_aliases
 ## setMethod("ionCount", "MsBackendMzR", function(object) {
@@ -129,10 +129,10 @@ setMethod("msLevel", "MsBackendMzR", function(object, ...) {
     .get_rle_column(object@spectraData, "msLevel")
 })
 
-#' @rdname hidden_aliases
-setMethod("mz", "MsBackendMzR", function(object) {
-    stop("Have to read mz from the original files.")
-})
+## #' @rdname hidden_aliases
+## setMethod("mz", "MsBackendMzR", function(object) {
+##     stop("Have to read mz from the original files.")
+## })
 
 ## #' @rdname hidden_aliases
 ## setMethod("peaks", "MsBackendMzR", function(object) {
@@ -150,16 +150,16 @@ setMethod("polarity", "MsBackendMzR", function(object) {
     .get_rle_column(object@spectraData, "polarity")
 })
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("polarity", "MsBackendMzR", function(object, value) {
-##     if (length(value) == 1)
-##         value <- rep(value, length(object))
-##     if (!is.numeric(value) | length(value) != length(object))
-##         stop("'value' has to be an 'integer' of length 1 or ", length(object))
-##     object@spectraData$polarity <- as.integer(value)
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("polarity", "MsBackendMzR", function(object, value) {
+    if (length(value) == 1)
+        value <- rep(value, length(object))
+    if (!is.numeric(value) | length(value) != length(object))
+        stop("'value' has to be an 'integer' of length 1 or ", length(object))
+    object@spectraData$polarity <- .rle_compress(as.integer(value))
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 setMethod("precScanNum", "MsBackendMzR", function(object) {
@@ -186,14 +186,14 @@ setMethod("rtime", "MsBackendMzR", function(object) {
     .get_rle_column(object@spectraData, "rtime")
 })
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("rtime", "MsBackendMzR", function(object, value) {
-##     if (!is.numeric(value) | length(value) != length(object))
-##         stop("'value' has to be a 'numeric' of length ", length(object))
-##     object@spectraData$rtime <- value
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("rtime", "MsBackendMzR", function(object, value) {
+    if (!is.numeric(value) | length(value) != length(object))
+        stop("'value' has to be a 'numeric' of length ", length(object))
+    object@spectraData$rtime <- .rle_compress(value)
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 setMethod("scanIndex", "MsBackendMzR", function(object) {
@@ -205,16 +205,16 @@ setMethod("smoothed", "MsBackendMzR", function(object) {
     .get_rle_column(object@spectraData, "smoothed")
 })
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("smoothed", "MsBackendMzR", function(object, value) {
-##     if (length(value) == 1)
-##         value <- rep(value, length(object))
-##     if (!is.logical(value) | length(value) != length(object))
-##         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-##     object@spectraData$smoothed <- value
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("smoothed", "MsBackendMzR", function(object, value) {
+    if (length(value) == 1)
+        value <- rep(value, length(object))
+    if (!is.logical(value) | length(value) != length(object))
+        stop("'value' has to be a 'logical' of length 1 or ", length(object))
+    object@spectraData$smoothed <- .rle_compress(value)
+    validObject(object)
+    object
+})
 
 ## #' @rdname hidden_aliases
 ## #'

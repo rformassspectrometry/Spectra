@@ -1,5 +1,7 @@
 fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
 sciex_mzr <- backendInitialize(MsBackendMzR(), files = fl)
+fl <- dir(system.file("proteomics", package = "msdata"), full.names = TRUE)
+tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
 test_that("initializeBackend,MsBackendMzR works", {
     fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
@@ -44,27 +46,30 @@ test_that("centroided, centroided<-, MsBackendRleDataFrame work", {
     expect_true(!all(centroided(sciex_mzr)))
 })
 
-## test_that("collisionEnergy, collisionEnergy<-,MsBackendRleDataFrame work", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(collisionEnergy(be), numeric())
-##     be <- backendInitialize(be, files = NA_character_,
-##                             spectraData = DataFrame(fromFile = 1L,
-##                                                     msLevel = c(1L, 2L)))
-##     expect_equal(collisionEnergy(be), c(NA_real_, NA_real_))
-##     expect_error(collisionEnergy(be) <- "a", "to be a 'numeric'")
-##     expect_error(collisionEnergy(be) <- c(2.3), "has to be a")
-##     collisionEnergy(be) <- c(2.1, 3.2)
-##     expect_equal(collisionEnergy(be), c(2.1, 3.2))
-## })
+test_that("collisionEnergy, collisionEnergy<-,MsBackendRleDataFrame work", {
+    be <- MsBackendMzR()
+    expect_equal(collisionEnergy(be), numeric())
 
-## test_that("fromFile,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(fromFile(be), integer())
-##     be <- backendInitialize(be, files = NA_character_,
-##                             spectraData = DataFrame(fromFile = 1L,
-##                                                     msLevel = c(1L, 2L)))
-##     expect_equal(fromFile(be), c(1L, 1L))
-## })
+    expect_true(is(collisionEnergy(sciex_mzr), "numeric"))
+    expect_true(is(sciex_mzr@spectraData$collisionEnergy, "Rle"))
+    expect_true(all(collisionEnergy(sciex_mzr) == 0))
+
+    expect_error(collisionEnergy(sciex_mzr) <- "a", "to be a 'numeric'")
+    expect_error(collisionEnergy(sciex_mzr) <- c(2.3), "has to be a")
+
+    rn <- rnorm(length(sciex_mzr))
+    collisionEnergy(sciex_mzr) <- rn
+    expect_equal(collisionEnergy(sciex_mzr), rn)
+})
+
+test_that("fromFile,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(fromFile(be), integer())
+
+    expect_true(is(fromFile(sciex_mzr), "integer"))
+    expect_true(is(sciex_mzr@spectraData$fromFile, "Rle"))
+    expect_equal(fromFile(sciex_mzr), rep(1:2, each = 931))
+})
 
 ## test_that("intensity,MsBackendRleDataFrame works", {
 ##     be <- MsBackendRleDataFrame()
@@ -110,16 +115,16 @@ test_that("centroided, centroided<-, MsBackendRleDataFrame work", {
 ##     expect_equal(length(be), 3)
 ## })
 
-## test_that("msLevel,MsBackendRleDataFrame works", {
-##     be <- backendInitialize(MsBackendRleDataFrame(), NA_character_,
-##                             DataFrame(msLevel = c(1L, 2L, 1L),
-##                                       fromFile = 1L))
-##     expect_equal(msLevel(be), c(1, 2, 1))
-##     be <- backendInitialize(MsBackendRleDataFrame(), NA_character_,
-##                             DataFrame(scanIndex = 1:4,
-##                                       fromFile = 1L))
-##     expect_equal(msLevel(be), rep(NA_integer_, 4))
-## })
+test_that("msLevel,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(msLevel(be), integer())
+
+    expect_true(is(msLevel(sciex_mzr), "integer"))
+    expect_true(is(sciex_mzr@spectraData$msLevel, "Rle"))
+    expect_true(all(msLevel(sciex_mzr) == 1L))
+
+    expect_true(sum(msLevel(tmt_mzr) == 2) == 451)
+})
 
 ## test_that("mz,MsBackendRleDataFrame works", {
 ##     be <- MsBackendRleDataFrame()
@@ -159,100 +164,124 @@ test_that("centroided, centroided<-, MsBackendRleDataFrame work", {
 ##     expect_equal(peaksCount(be), c(3L, 1L))
 ## })
 
-## test_that("polarity, polarity<- MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(polarity(be), integer())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(polarity(be), c(NA_integer_, NA_integer_))
-##     expect_error(polarity(be) <- "a", "has to be an 'integer'")
-##     expect_error(polarity(be) <- c(1L, 1L, 2L), "has to be")
-##     polarity(be) <- 0
-##     expect_equal(polarity(be), c(0L, 0L))
-##     polarity(be) <- 1:2
-##     expect_equal(polarity(be), 1:2)
-## })
+test_that("polarity, polarity<- MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(polarity(be), integer())
 
-## test_that("precScanNum,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(precScanNum(be), integer())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(precScanNum(be), c(NA_integer_, NA_integer_))
-##     df$precScanNum <- c(0L, 1L)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(precScanNum(be), c(0L, 1L))
-## })
+    expect_true(is(polarity(sciex_mzr), "integer"))
+    expect_true(is(sciex_mzr@spectraData$polarity, "Rle"))
+    expect_true(all(polarity(sciex_mzr) == 1L))
 
-## test_that("precursorCharge,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(precursorCharge(be), integer())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(precursorCharge(be), c(NA_integer_, NA_integer_))
-##     df$precursorCharge <- c(-1L, 1L)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(precursorCharge(be), c(-1L, 1L))
-## })
+    expect_error(polarity(sciex_mzr) <- "a", "has to be an 'integer'")
+    expect_error(polarity(sciex_mzr) <- c(1L, 1L, 2L), "has to be")
 
-## test_that("precursorIntensity,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(precursorIntensity(be), numeric())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(precursorIntensity(be), c(NA_real_, NA_real_))
-##     df$precursorIntensity <- c(134.4, 4322.2)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(precursorIntensity(be), c(134.4, 4322.2))
-## })
+    polarity(sciex_mzr) <- 0
+    expect_true(all(polarity(sciex_mzr) == 0L))
+    polarity(sciex_mzr) <- 1:length(sciex_mzr)
+    expect_equal(polarity(sciex_mzr), 1:length(sciex_mzr))
+    expect_equal(sciex_mzr@spectraData$polarity, 1:length(sciex_mzr))
+})
 
-## test_that("precursorMz,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(precursorMz(be), numeric())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(precursorMz(be), c(NA_real_, NA_real_))
-##     df$precursorMz <- c(134.4, 342.2)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(precursorMz(be), c(134.4, 342.2))
-## })
+test_that("precScanNum,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(precScanNum(be), integer())
 
-## test_that("rtime, rtime<-,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(rtime(be), numeric())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(rtime(be), c(NA_real_, NA_real_))
-##     expect_error(rtime(be) <- "2", "has to be a 'numeric'")
-##     expect_error(rtime(be) <- 1:4, "of length 2")
-##     rtime(be) <- c(123, 124)
-##     expect_equal(rtime(be), c(123, 124))
-## })
+    expect_true(is(precScanNum(sciex_mzr), "integer"))
+    expect_true(is(sciex_mzr@spectraData$precScanNum, "Rle"))
+    expect_true(all(precScanNum(sciex_mzr) == 0L))
 
-## test_that("scanIndex,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(scanIndex(be), integer())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(scanIndex(be), c(NA_integer_, NA_integer_))
-##     df$scanIndex <- c(1L, 2L)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(scanIndex(be), c(1L, 2L))
-## })
+    expect_true(is(tmt_mzr@spectraData$precScanNum, "integer"))
+    expect_true(length(unique(precScanNum(tmt_mzr))) > 1)
+})
 
-## test_that("smoothed, smoothed<-,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(smoothed(be), logical())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(smoothed(be), c(NA, NA))
-##     expect_error(smoothed(be) <- "2", "has to be a 'logical'")
-##     expect_error(smoothed(be) <- c(TRUE, TRUE, FALSE), "of length 1 or 2")
-##     smoothed(be) <- c(TRUE, FALSE)
-##     expect_equal(smoothed(be), c(TRUE, FALSE))
-##     smoothed(be) <- c(TRUE)
-##     expect_equal(smoothed(be), c(TRUE, TRUE))
-## })
+test_that("precursorCharge,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(precursorCharge(be), integer())
+
+    expect_true(is(precursorCharge(sciex_mzr), "integer"))
+    expect_true(is(sciex_mzr@spectraData$precursorCharge, "Rle"))
+    expect_true(all(precursorCharge(sciex_mzr) == 0L))
+
+    expect_true(is(precursorCharge(tmt_mzr), "integer"))
+    expect_true(is(tmt_mzr@spectraData$precursorCharge, "integer"))
+    expect_true(length(unique(precursorCharge(tmt_mzr))) > 1)
+})
+
+test_that("precursorIntensity,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(precursorIntensity(be), numeric())
+
+    expect_true(is(precursorIntensity(sciex_mzr), "numeric"))
+    expect_true(is(sciex_mzr@spectraData$precursorIntensity, "Rle"))
+    expect_true(all(precursorIntensity(sciex_mzr) == 0L))
+
+    expect_true(is(precursorIntensity(tmt_mzr), "numeric"))
+    expect_true(is(tmt_mzr@spectraData$precursorIntensity, "numeric"))
+    expect_true(length(unique(precursorIntensity(tmt_mzr))) > 1)
+})
+
+test_that("precursorMz,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(precursorMz(be), numeric())
+
+    expect_true(is(precursorMz(sciex_mzr), "numeric"))
+    expect_true(is(sciex_mzr@spectraData$precursorMz, "Rle"))
+    expect_true(all(precursorMz(sciex_mzr) == 0L))
+
+    expect_true(is(precursorMz(tmt_mzr), "numeric"))
+    expect_true(is(tmt_mzr@spectraData$precursorMz, "numeric"))
+    expect_true(length(unique(precursorMz(tmt_mzr))) > 1)
+})
+
+test_that("rtime, rtime<-,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(rtime(be), numeric())
+
+    expect_true(is(rtime(sciex_mzr), "numeric"))
+    expect_true(is(sciex_mzr@spectraData$rtime, "numeric"))
+    expect_true(length(unique(rtime(sciex_mzr))) > 1)
+
+    expect_error(rtime(sciex_mzr) <- "a", "'numeric' of length")
+    expect_error(rtime(sciex_mzr) <- 0.2, "'numeric' of length")
+
+    rts <- rtime(sciex_mzr)
+    rtime(sciex_mzr) <- rep(0.1, length(sciex_mzr))
+    expect_true(is(rtime(sciex_mzr), "numeric"))
+    expect_true(is(sciex_mzr@spectraData$rtime, "Rle"))
+
+    rtime(sciex_mzr) <- rts
+    expect_equal(rtime(sciex_mzr), rts)
+})
+
+test_that("scanIndex,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(scanIndex(be), integer())
+
+    expect_true(is(scanIndex(sciex_mzr), "integer"))
+    expect_true(is(sciex_mzr@spectraData$scanIndex, "integer"))
+    expect_true(length(unique(scanIndex(sciex_mzr))) > 1)
+})
+
+test_that("smoothed, smoothed<-,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(smoothed(be), logical())
+
+    expect_true(is(smoothed(sciex_mzr), "logical"))
+    expect_true(all(is.na(smoothed(sciex_mzr))))
+
+    expect_error(smoothed(sciex_mzr) <- "2", "has to be a 'logical'")
+    expect_error(smoothed(sciex_mzr) <- c(TRUE, TRUE, FALSE), "of length 1")
+
+    smoothed(sciex_mzr) <- TRUE
+    expect_true(is(smoothed(sciex_mzr), "logical"))
+    expect_true(is(sciex_mzr@spectraData$smoothed, "Rle"))
+    expect_true(all(smoothed(sciex_mzr)))
+
+    smoothed(sciex_mzr) <- rep(FALSE, length(sciex_mzr))
+    expect_true(is(smoothed(sciex_mzr), "logical"))
+    expect_true(is(sciex_mzr@spectraData$smoothed, "Rle"))
+    expect_true(all(!smoothed(sciex_mzr)))
+})
 
 ## test_that("spectraNames, spectraNames<-,MsBackendRleDataFrame works", {
 ##     be <- MsBackendRleDataFrame()
