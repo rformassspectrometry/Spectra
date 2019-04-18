@@ -24,6 +24,7 @@ setClass("MsBackendDataFrame",
                                version = "0.1"))
 
 setValidity("MsBackendDataFrame", function(object) {
+    cat("validObject MsBackendDataFrame\n")
     msg <- .valid_spectra_data_required_columns(object@spectraData)
     if (length(msg))
         return(msg)
@@ -33,7 +34,7 @@ setValidity("MsBackendDataFrame", function(object) {
         .valid_mz_column(object@spectraData),
         .valid_ms_backend_files(object@files),
         .valid_ms_backend_files_from_file(object@files,
-                                          object@spectraData$fromFile),
+                                          as.vector(fromFile(object))),
         .valid_ms_backend_mod_count(object@files, object@modCount),
         .valid_intensity_mz_columns(object))
     if (is.null(msg)) TRUE

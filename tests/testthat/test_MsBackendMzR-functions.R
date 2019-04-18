@@ -13,3 +13,47 @@ test_that(".mzR_header works", {
     expect_equal(nrow(hdr), 1278)
     expect_equal(hdr$scanIndex, 1:1278)
 })
+
+test_that(".compress_spectra_data works", {
+    df <- DataFrame()
+    res <- .compress_spectra_data(df)
+    expect_equal(df, res)
+    df <- DataFrame(msLevel = c(NA_integer_, NA_integer_), a = "a", b = 1:2)
+    res <- .compress_spectra_data(df)
+    expect_equal(res$msLevel, Rle(NA_integer_, 2))
+    res$fromFile <- c(1L, 1L)
+    res <- .compress_spectra_data(res)
+    expect_equal(res$msLevel, Rle(NA_integer_, 2))
+    expect_equal(res$a, Rle("a", 2))
+    expect_equak(res$b, 1:2)
+    expect_equal(res$fromFile, Rle(1L, 2))
+    res$fromFile <- c(1L, 2L)
+    res <- .compress_spectra_data(res)
+    expect_equal(res$fromFile, Rle(1:2))
+})
+
+test_that(".uncompress_spectra_data works", {
+    df <- DataFrame(msLevel = c(NA_integer_, NA_integer_),
+                    fromFile = Rle(1L, 2), other_col = Rle("a", 2))
+    res <- .uncompress_spectra_data(df)
+    expect_true(is.integer(res$msLevel))
+    expect_true(is.integer(res$fromFile))
+    expect_true(is(res$other_col, "character"))
+})
+
+test_that(".get_rle_column works", {
+    df <- DataFrame(msLevel = c(NA_integer_, NA_integer_),
+                    fromFile = Rle(1L, 2), other_col = Rle("a", 2))
+    res <- .get_rle_column(df, column = "fromFile")
+    expect_equal(res, c(1L, 1L))
+    res <- .get_rle_column(df, column = "other_col")
+    expect_equal(res, c("a", "a"))
+    res <- .get_rle_column(df, column = "msLevel")
+    expect_equal(res, c(NA_integer_, NA_integer_))
+    res <- .get_rle_column(df, column = "precursorCharge")
+    expect_equal(res, c(NA_integer_, NA_integer_))
+    expect_error(.get_rle_column(df, column = "a"), "not available")
+    df <- DataFrame()
+    res <- .get_rle_column(df, column = "msLevel")
+    expect_equal(res, integer())
+})

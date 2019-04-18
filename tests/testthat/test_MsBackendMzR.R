@@ -9,6 +9,6 @@ test_that("initializeBackend,MsBackendMzR works", {
     expect_equal(be@modCount, c(0L, 0L))
     expect_equal(nrow(be@spectraData), 1862)
     expect_equal(be@spectraData$scanIndex, c(1:931, 1:931))
-    expect_equal(be@spectraData$fromFile, rep(1:2, each = 931))
+    expect_equal(be@spectraData$fromFile, Rle(rep(1:2, each = 931)))
     expect_true(isReadOnly(be))
 })

@@ -59,3 +59,43 @@
         stop("index out of bounds: index has to be between 1 and ", length)
     i
 }
+
+## #' Helper function to check the data type even if `x` is an `Rle`.
+## #'
+## #' @param x
+## #'
+## #' @param class2 `character(1)` specifying the class for which should be tested.
+## #'
+## #' @author Johannes Rainer
+## #'
+## #' @noRd
+## .is_class <- function(x, class2) {
+##     if (is(x, "Rle"))
+##         is(x@values, class2)
+##     else is(x, class2)
+## }
+
+.class_rle <- function(x) {
+    if (is(x, "Rle"))
+        class(x@values)
+    else class(x)
+}
+
+#' Function to compress a `numeric`, `logical` or `character` vector into an
+#' Rle if it has only a single element.
+#'
+#' @param x vector to convert to Rle.
+#'
+#' @return `x` or an `Rle` version if `x`
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.rle_compress <- function(x) {
+    len_x <- length(x)
+    if (len_x > 1 && (is.numeric(x) | is.character(x) | is.logical(x))) {
+        if (length(unique(x)) == 1)
+            x <- Rle(x[1], len_x)
+    }
+    x
+}

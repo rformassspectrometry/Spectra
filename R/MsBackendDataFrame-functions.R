@@ -48,7 +48,7 @@ NULL
 #' @noRd
 .valid_column_datatype <- function(x, datatypes = .SPECTRA_DATA_COLUMNS) {
     datatypes <- datatypes[names(datatypes) %in% colnames(x)]
-    x_class <- vapply(x, class, character(1))[names(datatypes)]
+    x_class <- vapply(x, .class_rle, character(1))[names(datatypes)]
     if (!all(datatypes == x_class))
         paste0("The following columns have a wrong data type: ",
                paste(names(datatypes)[datatypes != x_class], collapse = ", "),
