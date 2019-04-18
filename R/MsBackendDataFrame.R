@@ -318,6 +318,17 @@ setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
     } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
 
-
-## Subsetting:
-## convert i to index. if logical, if character.
+#' @rdname hidden_aliases
+setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
+    if (!missing(j))
+        stop("Subsetting byt column ('j = ", j, "' is not supported")
+    i <- .i_to_index(i, length(x), rownames(x@spectraData))
+    x@spectraData <- x@spectraData[i, , drop = FALSE]
+    orig_files <- x@files
+    files_idx <- unique(fromFile(x))
+    x@files <- orig_files[files_idx]
+    x@modCount <- x@modCount[files_idx]
+    x@spectraData$fromFile <- match(orig_files[fromFile(x)], x@files)
+    validObject(x)
+    x
+})

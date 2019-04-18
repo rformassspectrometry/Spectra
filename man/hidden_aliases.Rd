@@ -66,6 +66,7 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
+\alias{[,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendRleDataFrame-method}
 \alias{backendInitialize,MsBackendRleDataFrame-method}
@@ -228,6 +229,8 @@ spectraVariables(object, ...)
 \S4method{spectraVariables}{MsBackendDataFrame}(object)
 
 \S4method{tic}{MsBackendDataFrame}(object, initial = TRUE)
+
+\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())

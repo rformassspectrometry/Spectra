@@ -6,7 +6,7 @@ NULL
 #' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class
 #'
 #' @description
-#' 
+#'
 #' Note that the classes described here are not meant to be used
 #' directly by the end-users and the material in this man page is
 #' aimed at package developers.
@@ -27,9 +27,9 @@ NULL
 #' classes* section documents the API that a backend must implement.
 #'
 #' Currently available backends are:
-#' 
+#'
 #' - `MsBackendDataFrame`: stores all data in memory using a `DataFrame`.
-#' 
+#'
 #' - `MsBackendMzR`: stores the m/z and intensities on-disk in raw
 #'    data files (typically `mzML` or `mzXML`) and the spectra
 #'    annotation information (header) in memory in a `DataFrame`. This
@@ -54,6 +54,12 @@ NULL
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`).
 #'
+#' @param i For `[`: `integer`, `logical` or `character` to subset the object.
+#'
+#' @param j For `[`: not supported.
+#'
+#' @param drop For `[`: not considered.
+#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
@@ -77,7 +83,7 @@ NULL
 #'   number of spectra in `object` indicating the file index from
 #'   which spectra originate. If no files are available,
 #'   `NA_character_` is returned for all spectra.
-#'   
+#'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a `list` of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
@@ -188,6 +194,9 @@ NULL
 #'   for the memory backend or read the spectra header data for the
 #'   `MsBackendMzR` backend).
 #'
+#' - `[`: subset the backend. Only subsetting by element (*row*/`i`) is
+#'   allowed
+#'
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
 #' The `MsBackendDataFrame` objects keep all MS data in memory. New
@@ -224,7 +233,7 @@ NULL
 #' argument:
 #'
 #' - @param spectraData For : `DataFrame` with spectrum metadata/data.
-#' 
+#'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
 #' The `MsBackendMzR` keeps only a limited amount of data in memory,
@@ -535,5 +544,12 @@ setMethod("spectraVariables", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("tic", "MsBackend", function(object, initial = TRUE) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod [
+#'
+#' @rdname MsBackend
+setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
     stop("Not implemented for ", class(object), ".")
 })

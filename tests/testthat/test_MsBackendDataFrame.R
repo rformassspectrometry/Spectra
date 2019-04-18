@@ -336,3 +336,42 @@ test_that("show,MsBackendDataFrame works", {
     df <- DataFrame(fromFile = c(1L, 1L), rt = c(1.2, 1.3))
     be <- backendInitialize(be, files = NA_character_, df)
 })
+
+test_that("[,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_error(be[1])
+    df <- DataFrame(fromFile = c(1L, 1L), scanIndex = 1:2, a = "a", b = "b")
+    be <- backendInitialize(be, files = NA_character_, df)
+    res <- be[1]
+    expect_equal(be@spectraData[1, ], res@spectraData[1, ])
+    res <- be[2]
+    expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res <- be[2:1]
+    expect_equal(be@spectraData[2:1, ], res@spectraData)
+
+    res <- be[c(FALSE, FALSE)]
+    expect_true(length(res) == 0)
+    res <- be[c(FALSE, TRUE)]
+    expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+
+    expect_error(be[TRUE], "match the length of")
+    expect_error(be["a"], "does not have names")
+
+    tmpfa <- tempfile()
+    write(file = tmpfa, "a")
+    tmpfb <- tempfile()
+    write(file = tmpfb, "b")
+
+    df <- DataFrame(fromFile = c(1L, 1L, 2L, 2L), scanIndex = c(1L, 2L, 1L, 2L),
+                    file = c("a", "a", "b", "b"))
+    be <- backendInitialize(be, files = c(tmpfa, tmpfb), df)
+    res <- be[3]
+    expect_equal(fromFile(res), 1L)
+    expect_equal(res@files, tmpfb)
+    expect_equal(res@spectraData$file, "b")
+
+    res <- be[c(3, 1)]
+    expect_equal(fromFile(res), 1:2)
+    expect_equal(res@files, c(tmpfb, tmpfa))
+    expect_equal(res@spectraData$file, c("b", "a"))
+})

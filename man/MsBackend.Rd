@@ -43,6 +43,7 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{tic,MsBackend-method}
+\alias{[,MsBackend-method}
 \alias{MsBackendDataFrame}
 \alias{MsBackendMzR}
 \alias{MsBackendRleDataFrame}
@@ -118,6 +119,8 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
+\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
+
 MsBackendDataFrame()
 
 MsBackendMzR()
@@ -146,6 +149,12 @@ returned \code{DataFrame}. By default, all columns are returned.}
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (\code{initial = FALSE}).}
+
+\item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
+
+\item{j}{For \code{[}: not supported.}
+
+\item{drop}{For \code{[}: not considered.}
 }
 \description{
 Note that the classes described here are not meant to be used
@@ -284,6 +293,8 @@ supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
 for the memory backend or read the spectra header data for the
 \code{MsBackendMzR} backend).
+\item \code{[}: subset the backend. Only subsetting by element (\emph{row}/\code{i}) is
+allowed
 }
 }
 
