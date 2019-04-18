@@ -67,6 +67,9 @@
 \alias{tic,MsBackendDataFrame-method}
 \alias{[,MsBackendDataFrame,ANY,ANY,ANY-method}
 \alias{backendInitialize,MsBackendMzR-method}
+\alias{acquisitionNum,MsBackendMzR-method}
+\alias{centroided,MsBackendMzR-method}
+\alias{centroided<-,MsBackendMzR-method}
 \alias{fromFile,MsBackendMzR-method}
 \alias{intensity,MsBackendMzR-method}
 \alias{msLevel,MsBackendMzR-method}
@@ -214,6 +217,12 @@ spectraVariables(object, ...)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
+
+\S4method{acquisitionNum}{MsBackendMzR}(object)
+
+\S4method{centroided}{MsBackendMzR}(object)
+
+\S4method{centroided}{MsBackendMzR}(object) <- value
 
 \S4method{fromFile}{MsBackendMzR}(object)
 

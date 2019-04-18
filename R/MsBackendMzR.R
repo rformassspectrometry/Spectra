@@ -59,26 +59,26 @@ setMethod("backendInitialize", "MsBackendMzR",
                              ...)
           })
 
-## #' @rdname hidden_aliases
-## setMethod("acquisitionNum", "MsBackendMzR", function(object) {
-##     .get_rle_column(object@spectraData, "acquisitionNum")
-## })
+#' @rdname hidden_aliases
+setMethod("acquisitionNum", "MsBackendMzR", function(object) {
+    .get_rle_column(object@spectraData, "acquisitionNum")
+})
 
-## #' @rdname hidden_aliases
-## setMethod("centroided", "MsBackendMzR", function(object) {
-##     .get_rle_column(object@spectraData, "centroided")
-## })
+#' @rdname hidden_aliases
+setMethod("centroided", "MsBackendMzR", function(object) {
+    .get_rle_column(object@spectraData, "centroided")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("centroided", "MsBackendMzR", function(object, value) {
-##     if (length(value) == 1)
-##         value <- rep(value, length(object))
-##     if (!is.logical(value) | length(value) != length(object))
-##         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-##     object@spectraData$centroided <- value
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("centroided", "MsBackendMzR", function(object, value) {
+    if (length(value) == 1)
+        value <- rep(value, length(object))
+    if (!is.logical(value) | length(value) != length(object))
+        stop("'value' has to be a 'logical' of length 1 or ", length(object))
+    object@spectraData$centroided <- .rle_compress(value)
+    validObject(object)
+    object
+})
 
 ## #' @rdname hidden_aliases
 ## setMethod("collisionEnergy", "MsBackendMzR", function(object) {
