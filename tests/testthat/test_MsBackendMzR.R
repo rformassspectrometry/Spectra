@@ -19,14 +19,14 @@ test_that("initializeBackend,MsBackendMzR works", {
     expect_true(isReadOnly(be))
 })
 
-test_that("acquisitionNum, MsBackendRleDataFrame works", {
+test_that("acquisitionNum, MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(acquisitionNum(be), integer())
     expect_true(is(sciex_mzr@spectraData$acquisitionNum, "integer"))
     expect_equal(acquisitionNum(sciex_mzr), c(1:931, 1:931))
 })
 
-test_that("centroided, centroided<-, MsBackendRleDataFrame work", {
+test_that("centroided, centroided<-, MsBackendMzR work", {
     be <- MsBackendMzR()
     expect_equal(centroided(be), logical())
     expect_true(is(centroided(sciex_mzr), "logical"))
@@ -46,7 +46,7 @@ test_that("centroided, centroided<-, MsBackendRleDataFrame work", {
     expect_true(!all(centroided(sciex_mzr)))
 })
 
-test_that("collisionEnergy, collisionEnergy<-,MsBackendRleDataFrame work", {
+test_that("collisionEnergy, collisionEnergy<-,MsBackendMzR work", {
     be <- MsBackendMzR()
     expect_equal(collisionEnergy(be), numeric())
 
@@ -62,7 +62,7 @@ test_that("collisionEnergy, collisionEnergy<-,MsBackendRleDataFrame work", {
     expect_equal(collisionEnergy(sciex_mzr), rn)
 })
 
-test_that("fromFile,MsBackendRleDataFrame works", {
+test_that("fromFile,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(fromFile(be), integer())
 
@@ -71,22 +71,18 @@ test_that("fromFile,MsBackendRleDataFrame works", {
     expect_equal(fromFile(sciex_mzr), rep(1:2, each = 931))
 })
 
-## test_that("intensity,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(intensity(be), list())
-##     be <- backendInitialize(be, files = NA_character_,
-##                             spectraData = DataFrame(fromFile = 1L,
-##                                                     msLevel = c(1L, 2L)))
-##     expect_equal(intensity(be), list(numeric(), numeric()))
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     df$intensity <- list(1:4, c(2.1, 3.4))
-##     df$mz <- list(1:4, 1:2)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(intensity(be), list(1:4, c(2.1, 3.4)))
-## })
+test_that("intensity,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_equal(intensity(be), list())
 
-## test_that("ionCount,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+    res <- intensity(sciex_mzr)
+    expect_true(is(res, "list"))
+    expect_true(is.numeric(res[[1]]))
+    expect_equal(length(res), length(sciex_mzr))
+})
+
+## test_that("ionCount,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     expect_equal(ionCount(be), numeric())
 ##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
 ##     df$intensity <- list(1:4, c(2.1, 3.4))
@@ -95,8 +91,8 @@ test_that("fromFile,MsBackendRleDataFrame works", {
 ##     expect_equal(ionCount(be), c(sum(1:4), sum(c(2.1, 3.4))))
 ## })
 
-## test_that("isEmpty,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("isEmpty,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     expect_equal(isEmpty(be), logical())
 ##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
 ##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -107,15 +103,15 @@ test_that("fromFile,MsBackendRleDataFrame works", {
 ##     expect_equal(isEmpty(be), c(FALSE, FALSE))
 ## })
 
-## test_that("length,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("length,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     expect_equal(length(be), 0)
-##     be <- new("MsBackendRleDataFrame", spectraData = DataFrame(a = 1:3, fromFile = 1L),
+##     be <- new("MsBackendMzR", spectraData = DataFrame(a = 1:3, fromFile = 1L),
 ##               files = NA_character_, modCount = 0L)
 ##     expect_equal(length(be), 3)
 ## })
 
-test_that("msLevel,MsBackendRleDataFrame works", {
+test_that("msLevel,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(msLevel(be), integer())
 
@@ -126,8 +122,8 @@ test_that("msLevel,MsBackendRleDataFrame works", {
     expect_true(sum(msLevel(tmt_mzr) == 2) == 451)
 })
 
-## test_that("mz,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("mz,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     expect_equal(mz(be), list())
 ##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
 ##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -138,7 +134,7 @@ test_that("msLevel,MsBackendRleDataFrame works", {
 ##     expect_equal(mz(be), list(1:3, 2.1))
 ## })
 
-test_that("peaks,MsBackendRleDataFrame works", {
+test_that("peaks,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(peaks(be), list())
 
@@ -153,8 +149,8 @@ test_that("peaks,MsBackendRleDataFrame works", {
     expect_equal(res[1:length(res_one)], res_one)
 })
 
-## test_that("peaksCount,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("peaksCount,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     expect_equal(peaksCount(be), integer())
 ##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
 ##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -165,7 +161,7 @@ test_that("peaks,MsBackendRleDataFrame works", {
 ##     expect_equal(peaksCount(be), c(3L, 1L))
 ## })
 
-test_that("polarity, polarity<- MsBackendRleDataFrame works", {
+test_that("polarity, polarity<- MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(polarity(be), integer())
 
@@ -183,7 +179,7 @@ test_that("polarity, polarity<- MsBackendRleDataFrame works", {
     expect_equal(sciex_mzr@spectraData$polarity, 1:length(sciex_mzr))
 })
 
-test_that("precScanNum,MsBackendRleDataFrame works", {
+test_that("precScanNum,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(precScanNum(be), integer())
 
@@ -195,7 +191,7 @@ test_that("precScanNum,MsBackendRleDataFrame works", {
     expect_true(length(unique(precScanNum(tmt_mzr))) > 1)
 })
 
-test_that("precursorCharge,MsBackendRleDataFrame works", {
+test_that("precursorCharge,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(precursorCharge(be), integer())
 
@@ -208,7 +204,7 @@ test_that("precursorCharge,MsBackendRleDataFrame works", {
     expect_true(length(unique(precursorCharge(tmt_mzr))) > 1)
 })
 
-test_that("precursorIntensity,MsBackendRleDataFrame works", {
+test_that("precursorIntensity,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(precursorIntensity(be), numeric())
 
@@ -221,7 +217,7 @@ test_that("precursorIntensity,MsBackendRleDataFrame works", {
     expect_true(length(unique(precursorIntensity(tmt_mzr))) > 1)
 })
 
-test_that("precursorMz,MsBackendRleDataFrame works", {
+test_that("precursorMz,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(precursorMz(be), numeric())
 
@@ -234,7 +230,7 @@ test_that("precursorMz,MsBackendRleDataFrame works", {
     expect_true(length(unique(precursorMz(tmt_mzr))) > 1)
 })
 
-test_that("rtime, rtime<-,MsBackendRleDataFrame works", {
+test_that("rtime, rtime<-,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(rtime(be), numeric())
 
@@ -254,7 +250,7 @@ test_that("rtime, rtime<-,MsBackendRleDataFrame works", {
     expect_equal(rtime(sciex_mzr), rts)
 })
 
-test_that("scanIndex,MsBackendRleDataFrame works", {
+test_that("scanIndex,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(scanIndex(be), integer())
 
@@ -263,7 +259,7 @@ test_that("scanIndex,MsBackendRleDataFrame works", {
     expect_true(length(unique(scanIndex(sciex_mzr))) > 1)
 })
 
-test_that("smoothed, smoothed<-,MsBackendRleDataFrame works", {
+test_that("smoothed, smoothed<-,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(smoothed(be), logical())
 
@@ -284,8 +280,8 @@ test_that("smoothed, smoothed<-,MsBackendRleDataFrame works", {
     expect_true(all(!smoothed(sciex_mzr)))
 })
 
-## test_that("spectraNames, spectraNames<-,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("spectraNames, spectraNames<-,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     expect_null(spectraNames(be))
 ##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
 ##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -299,8 +295,8 @@ test_that("smoothed, smoothed<-,MsBackendRleDataFrame works", {
 ##     expect_equal(spectraNames(be), c("a", "b"))
 ## })
 
-## test_that("tic,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("tic,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     expect_equal(tic(be), numeric())
 ##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
 ##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -316,8 +312,8 @@ test_that("smoothed, smoothed<-,MsBackendRleDataFrame works", {
 ##     expect_equal(tic(be, initial = FALSE), c(sum(5:7), sum(1:4)))
 ## })
 
-## test_that("spectraVariables,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("spectraVariables,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     expect_equal(spectraVariables(be), names(.SPECTRA_DATA_COLUMNS))
 ##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
 ##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
@@ -328,8 +324,8 @@ test_that("smoothed, smoothed<-,MsBackendRleDataFrame works", {
 ##                     spectraVariables(be)))
 ## })
 
-## test_that("spectraData, spectraData<-, MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("spectraData, spectraData<-, MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     res <- spectraData(be)
 ##     expect_true(is(res, "DataFrame"))
 ##     expect_true(nrow(res) == 0)
@@ -368,8 +364,8 @@ test_that("smoothed, smoothed<-,MsBackendRleDataFrame works", {
 ##     expect_equal(rtime(be), c(1.2, 1.3))
 ## })
 
-## test_that("show,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
+## test_that("show,MsBackendMzR works", {
+##     be <- MsBackendMzR()
 ##     show(be)
 ##     df <- DataFrame(fromFile = c(1L, 1L), rt = c(1.2, 1.3))
 ##     be <- backendInitialize(be, files = NA_character_, df)

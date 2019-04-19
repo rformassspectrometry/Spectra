@@ -99,10 +99,10 @@ setMethod("fromFile", "MsBackendMzR", function(object) {
     .get_rle_column(object@spectraData, "fromFile")
 })
 
-## #' @rdname hidden_aliases
-## setMethod("intensity", "MsBackendMzR", function(object) {
-##     stop("Have to read intensity from the original files.")
-## })
+#' @rdname hidden_aliases
+setMethod("intensity", "MsBackendMzR", function(object) {
+    lapply(peaks(object), function(z) z[, 2])
+})
 
 ## #' @rdname hidden_aliases
 ## setMethod("ionCount", "MsBackendMzR", function(object) {

@@ -73,7 +73,9 @@
 \alias{collisionEnergy,MsBackendMzR-method}
 \alias{collisionEnergy<-,MsBackendMzR-method}
 \alias{fromFile,MsBackendMzR-method}
+\alias{intensity,MsBackendMzR-method}
 \alias{msLevel,MsBackendMzR-method}
+\alias{peaks,MsBackendMzR-method}
 \alias{polarity,MsBackendMzR-method}
 \alias{polarity<-,MsBackendMzR-method}
 \alias{precScanNum,MsBackendMzR-method}
@@ -233,7 +235,11 @@ spectraVariables(object, ...)
 
 \S4method{fromFile}{MsBackendMzR}(object)
 
+\S4method{intensity}{MsBackendMzR}(object)
+
 \S4method{msLevel}{MsBackendMzR}(object, ...)
+
+\S4method{peaks}{MsBackendMzR}(object)
 
 \S4method{polarity}{MsBackendMzR}(object)
 
