@@ -32,6 +32,33 @@ MsBackendMzR <- function() {
     S4Vectors::DataFrame(hdr)
 }
 
+#' Read peaks from a single mzML file.
+#'
+#' @param x `character(1)` with the file to read from.
+#'
+#' @param scanIndex (required) indices of spectra from which the data should be
+#'     retrieved.
+#'
+#' @author Johannes Rainer
+#'
+#' @return list of `matrix`
+#'
+#' @noRd
+.mzR_peaks <- function(x = character(), scanIndex = integer()) {
+    if (length(x) != 1)
+        stop("'x' should have length 1")
+    msd <- mzR::openMSfile(x)
+    on.exit(mzR::close(msd))
+    ## hd_spectra <- mzR::header(msd, max(scanIndex))
+    pks <- mzR::peaks(msd, scanIndex)
+    if (is.matrix(pks))
+        pks <- list(pks)
+    lapply(pks, function(z) {
+        colnames(z) <- c("mz", "intensity")
+        z
+    })
+}
+
 #' Utility function to convert columns in the `x` `DataFrame` that have only
 #' a single element to `Rle`. Also columns specified with parameter `columns`
 #' will be converted (if present).

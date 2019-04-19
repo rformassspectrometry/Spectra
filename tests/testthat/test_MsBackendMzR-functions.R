@@ -57,3 +57,27 @@ test_that(".get_rle_column works", {
     res <- .get_rle_column(df, column = "msLevel")
     expect_equal(res, integer())
 })
+
+test_that(".mzR_peaks work", {
+    fls <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+    hdr <- Spectra:::.mzR_header(fls[1])
+
+    res <- .mzR_peaks(fls[1], 1)
+    expect_true(is(res, "list"))
+    expect_true(is.matrix(res[[1]]))
+    expect_equal(colnames(res[[1]]), c("mz", "intensity"))
+
+    res_all <- .mzR_peaks(fls[1], hdr$scanIndex)
+    expect_true(is(res_all, "list"))
+    expect_true(is.matrix(res_all[[1]]))
+    expect_equal(colnames(res_all[[1]]), c("mz", "intensity"))
+    expect_equal(res[[1]], res_all[[1]])
+
+    res_13 <- .mzR_peaks(fls[1], 13)
+    expect_true(is(res_13, "list"))
+    expect_true(is.matrix(res_13[[1]]))
+    expect_equal(colnames(res_13[[1]]), c("mz", "intensity"))
+    expect_equal(res_13[[1]], res_all[[13]])
+
+    expect_error(.mzR_peaks(fls, 13), "length 1")
+})

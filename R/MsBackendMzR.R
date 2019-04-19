@@ -134,11 +134,19 @@ setMethod("msLevel", "MsBackendMzR", function(object, ...) {
 ##     stop("Have to read mz from the original files.")
 ## })
 
-## #' @rdname hidden_aliases
-## setMethod("peaks", "MsBackendMzR", function(object) {
-##     mapply(mz(object), intensity(object), FUN = function(m, i)
-##         cbind(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
-## })
+#' @rdname hidden_aliases
+setMethod("peaks", "MsBackendMzR", function(object) {
+    if (!length(object))
+        return(list())
+    if (length(object@files) > 1) {
+            unlist(mapply(FUN = .mzR_peaks, object@files,
+                          split(object@spectraData$scanIndex,
+                                as.factor(object@spectraData$fromFile)),
+                          SIMPLIFY = FALSE, USE.NAMES = FALSE),
+                   use.names = FALSE, recursive = FALSE)
+    } else
+        .mzR_peaks(object@files, object@spectraData$scanIndex)
+})
 
 ## #' @rdname hidden_aliases
 ## setMethod("peaksCount", "MsBackendMzR", function(object) {

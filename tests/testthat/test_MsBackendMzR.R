@@ -138,19 +138,20 @@ test_that("msLevel,MsBackendRleDataFrame works", {
 ##     expect_equal(mz(be), list(1:3, 2.1))
 ## })
 
-## test_that("peaks,MsBackendRleDataFrame works", {
-##     be <- MsBackendRleDataFrame()
-##     expect_equal(peaks(be), list())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(peaks(be), list(cbind(mz = numeric(), intensity = numeric()),
-##                                  cbind(mz = numeric(), intensity = numeric())))
-##     df$mz <- list(1:3, c(2.1))
-##     df$intensity <- list(1:3, 4)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(peaks(be), list(cbind(mz = 1:3, intensity = 1:3),
-##                                  cbind(mz = 2.1, intensity = 4)))
-## })
+test_that("peaks,MsBackendRleDataFrame works", {
+    be <- MsBackendMzR()
+    expect_equal(peaks(be), list())
+
+    res <- peaks(sciex_mzr)
+    expect_true(is(res, "list"))
+    expect_equal(length(res), length(object))
+    expect_true(is(res[[1]], "matrix"))
+    expect_equal(colnames(res[[1]]), c("mz", "intensity"))
+
+    tmp_one <- backendInitialize(MsBackendMzR(), sciex_mzr@files[1])
+    res_one <- peaks(tmp_one)
+    expect_equal(res[1:length(res_one)], res_one)
+})
 
 ## test_that("peaksCount,MsBackendRleDataFrame works", {
 ##     be <- MsBackendRleDataFrame()
