@@ -1,5 +1,6 @@
 fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
 sciex_mzr <- backendInitialize(MsBackendMzR(), files = fl)
+sciex_pks <- peaks(sciex_mzr)
 fl <- dir(system.file("proteomics", package = "msdata"), full.names = TRUE)
 tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
@@ -81,35 +82,35 @@ test_that("intensity,MsBackendMzR works", {
     expect_equal(length(res), length(sciex_mzr))
 })
 
-## test_that("ionCount,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     expect_equal(ionCount(be), numeric())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     df$intensity <- list(1:4, c(2.1, 3.4))
-##     df$mz <- list(1:4, 1:2)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(ionCount(be), c(sum(1:4), sum(c(2.1, 3.4))))
-## })
+test_that("ionCount,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_equal(ionCount(be), numeric())
 
-## test_that("isEmpty,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     expect_equal(isEmpty(be), logical())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(isEmpty(be), c(TRUE, TRUE))
-##     df$intensity <- list(1:2, 1:5)
-##     df$mz <- list(1:2, 1:5)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(isEmpty(be), c(FALSE, FALSE))
-## })
+    res <- ionCount(sciex_mzr)
+    expect_true(is.numeric(res))
+    expect_true(length(res) == length(sciex_mzr))
+    expect_equal(res, vapply(sciex_pks, function(z) sum(z[, 2]), numeric(1)))
+})
 
-## test_that("length,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     expect_equal(length(be), 0)
-##     be <- new("MsBackendMzR", spectraData = DataFrame(a = 1:3, fromFile = 1L),
-##               files = NA_character_, modCount = 0L)
-##     expect_equal(length(be), 3)
-## })
+test_that("isCentroided,MsBackendMzR works", {
+    res <- MsBackendMzR()
+    expect_equal(isCentroided(be), logical())
+
+    res <- isCentroided(sciex_mzr)
+    expect_true(is.logical(res))
+    expect_true(length(res) == length(sciex_mzr))
+    expect_true(all(!res))
+})
+
+test_that("isEmpty,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_equal(isEmpty(be), logical())
+
+    res <- isEmpty(sciex_mzr)
+    expect_true(is.logical(res))
+    expect_true(length(res) == length(sciex_mzr))
+    expect_true(all(!res))
+})
 
 test_that("msLevel,MsBackendMzR works", {
     be <- MsBackendMzR()

@@ -74,6 +74,9 @@
 \alias{collisionEnergy<-,MsBackendMzR-method}
 \alias{fromFile,MsBackendMzR-method}
 \alias{intensity,MsBackendMzR-method}
+\alias{ionCount,MsBackendMzR-method}
+\alias{isCentroided,MsBackendMzR-method}
+\alias{isEmpty,MsBackendMzR-method}
 \alias{msLevel,MsBackendMzR-method}
 \alias{mz,MsBackendMzR-method}
 \alias{peaks,MsBackendMzR-method}
@@ -238,6 +241,12 @@ spectraVariables(object, ...)
 \S4method{fromFile}{MsBackendMzR}(object)
 
 \S4method{intensity}{MsBackendMzR}(object)
+
+\S4method{ionCount}{MsBackendMzR}(object)
+
+\S4method{isCentroided}{MsBackendMzR}(object, ...)
+
+\S4method{isEmpty}{MsBackendMzR}(x)
 
 \S4method{msLevel}{MsBackendMzR}(object, ...)
 

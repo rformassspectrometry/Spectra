@@ -104,25 +104,20 @@ setMethod("intensity", "MsBackendMzR", function(object) {
     lapply(peaks(object), function(z) z[, 2])
 })
 
-## #' @rdname hidden_aliases
-## setMethod("ionCount", "MsBackendMzR", function(object) {
-##     vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
-## })
+#' @rdname hidden_aliases
+setMethod("ionCount", "MsBackendMzR", function(object) {
+    vapply(peaks(object), function(z) sum(z[, 2], na.rm = TRUE), numeric(1))
+})
 
-## #' @rdname hidden_aliases
-## setMethod("isCentroided", "MsBackendMzR", function(object, ...) {
-##     vapply(peaks(object), .isCentroided, logical(1))
-## })
+#' @rdname hidden_aliases
+setMethod("isCentroided", "MsBackendMzR", function(object, ...) {
+    vapply(peaks(object), .isCentroided, logical(1))
+})
 
-## #' @rdname hidden_aliases
-## setMethod("isEmpty", "MsBackendMzR", function(x) {
-##     lengths(intensity(x)) == 0
-## })
-
-## #' @rdname hidden_aliases
-## setMethod("length", "MsBackendMzR", function(x) {
-##     nrow(x@spectraData)
-## })
+#' @rdname hidden_aliases
+setMethod("isEmpty", "MsBackendMzR", function(x) {
+    peaksCount(x) == 0
+})
 
 #' @rdname hidden_aliases
 setMethod("msLevel", "MsBackendMzR", function(object, ...) {
@@ -150,9 +145,7 @@ setMethod("peaks", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendMzR", function(object) {
-    if (length(object))
-        vapply(peaks(object), nrow, integer(1))
-    else integer()
+    vapply(peaks(object), nrow, integer(1))
 })
 
 #' @rdname hidden_aliases
