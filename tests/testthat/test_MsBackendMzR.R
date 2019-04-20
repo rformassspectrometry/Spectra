@@ -122,17 +122,16 @@ test_that("msLevel,MsBackendMzR works", {
     expect_true(sum(msLevel(tmt_mzr) == 2) == 451)
 })
 
-## test_that("mz,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     expect_equal(mz(be), list())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(mz(be), list(numeric(), numeric()))
-##     df$intensity <- list(1:3, 4)
-##     df$mz <- list(1:3, c(2.1))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(mz(be), list(1:3, 2.1))
-## })
+test_that("mz,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_equal(mz(be), list())
+
+    res <- mz(sciex_mzr)
+    expect_true(is.list(res))
+    expect_true(is.numeric(res[[1]]))
+    expect_true(!any(vapply(res, is.unsorted, logical(1))))
+    expect_equal(length(res), length(sciex_mzr))
+})
 
 test_that("peaks,MsBackendMzR works", {
     be <- MsBackendMzR()
@@ -149,17 +148,14 @@ test_that("peaks,MsBackendMzR works", {
     expect_equal(res[1:length(res_one)], res_one)
 })
 
-## test_that("peaksCount,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     expect_equal(peaksCount(be), integer())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(peaksCount(be), c(0L, 0L))
-##     df$mz <- list(1:3, c(2.1))
-##     df$intensity <- list(1:3, 4)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(peaksCount(be), c(3L, 1L))
-## })
+test_that("peaksCount,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_equal(peaksCount(be), integer())
+
+    res <- peaksCount(sciex_mzr)
+    expect_true(is.integer(res))
+    expect_true(length(res) == length(sciex_mzr))
+})
 
 test_that("polarity, polarity<- MsBackendMzR works", {
     be <- MsBackendMzR()

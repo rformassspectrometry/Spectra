@@ -65,7 +65,7 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
-\alias{[,MsBackendDataFrame,ANY,ANY,ANY-method}
+\alias{[,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
 \alias{centroided,MsBackendMzR-method}
@@ -75,7 +75,9 @@
 \alias{fromFile,MsBackendMzR-method}
 \alias{intensity,MsBackendMzR-method}
 \alias{msLevel,MsBackendMzR-method}
+\alias{mz,MsBackendMzR-method}
 \alias{peaks,MsBackendMzR-method}
+\alias{peaksCount,MsBackendMzR-method}
 \alias{polarity,MsBackendMzR-method}
 \alias{polarity<-,MsBackendMzR-method}
 \alias{precScanNum,MsBackendMzR-method}
@@ -218,7 +220,7 @@ spectraVariables(object, ...)
 
 \S4method{tic}{MsBackendDataFrame}(object, initial = TRUE)
 
-\S4method{[}{MsBackendDataFrame,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
@@ -239,7 +241,11 @@ spectraVariables(object, ...)
 
 \S4method{msLevel}{MsBackendMzR}(object, ...)
 
+\S4method{mz}{MsBackendMzR}(object)
+
 \S4method{peaks}{MsBackendMzR}(object)
+
+\S4method{peaksCount}{MsBackendMzR}(object)
 
 \S4method{polarity}{MsBackendMzR}(object)
 

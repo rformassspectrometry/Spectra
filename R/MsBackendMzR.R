@@ -129,10 +129,10 @@ setMethod("msLevel", "MsBackendMzR", function(object, ...) {
     .get_rle_column(object@spectraData, "msLevel")
 })
 
-## #' @rdname hidden_aliases
-## setMethod("mz", "MsBackendMzR", function(object) {
-##     stop("Have to read mz from the original files.")
-## })
+#' @rdname hidden_aliases
+setMethod("mz", "MsBackendMzR", function(object) {
+    lapply(peaks(object), function(z) z[, 1])
+})
 
 #' @rdname hidden_aliases
 setMethod("peaks", "MsBackendMzR", function(object) {
@@ -148,10 +148,12 @@ setMethod("peaks", "MsBackendMzR", function(object) {
         .mzR_peaks(object@files, object@spectraData$scanIndex)
 })
 
-## #' @rdname hidden_aliases
-## setMethod("peaksCount", "MsBackendMzR", function(object) {
-##     lengths(mz(object))
-## })
+#' @rdname hidden_aliases
+setMethod("peaksCount", "MsBackendMzR", function(object) {
+    if (length(object))
+        vapply(peaks(object), nrow, integer(1))
+    else integer()
+})
 
 #' @rdname hidden_aliases
 setMethod("polarity", "MsBackendMzR", function(object) {
