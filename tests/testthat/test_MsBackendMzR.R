@@ -277,20 +277,18 @@ test_that("smoothed, smoothed<-,MsBackendMzR works", {
     expect_true(all(!smoothed(sciex_mzr)))
 })
 
-## test_that("spectraNames, spectraNames<-,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     expect_null(spectraNames(be))
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_null(spectraNames(be))
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     rownames(df) <- c("sp_1", "sp_2")
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(spectraNames(be), c("sp_1", "sp_2"))
-##     expect_error(spectraNames(be) <- "a", "rownames length")
-##     spectraNames(be) <- c("a", "b")
-##     expect_equal(spectraNames(be), c("a", "b"))
-## })
+test_that("spectraNames, spectraNames<-,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_null(spectraNames(be))
+
+    tmp <- sciex_mzr
+    res <- spectraNames(tmp)
+    expect_equal(res, NULL)
+    expect_error(spectraNames(tmp) <- "a", "rownames length")
+    spectraNames(tmp) <- paste0("sp_", 1:length(tmp))
+    expect_equal(rownames(tmp@spectraData), paste0("sp_", 1:length(tmp)))
+    expect_equal(spectraNames(tmp), paste0("sp_", 1:length(tmp)))
+})
 
 ## test_that("tic,MsBackendMzR works", {
 ##     be <- MsBackendMzR()
@@ -309,57 +307,47 @@ test_that("smoothed, smoothed<-,MsBackendMzR works", {
 ##     expect_equal(tic(be, initial = FALSE), c(sum(5:7), sum(1:4)))
 ## })
 
-## test_that("spectraVariables,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     expect_equal(spectraVariables(be), names(.SPECTRA_DATA_COLUMNS))
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% spectraVariables(be)))
-##     df$other_column <- 3
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_true(all(c(names(.SPECTRA_DATA_COLUMNS), "other_column") %in%
-##                     spectraVariables(be)))
-## })
+test_that("spectraVariables,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_equal(spectraVariables(be), names(.SPECTRA_DATA_COLUMNS))
 
-## test_that("spectraData, spectraData<-, MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     res <- spectraData(be)
-##     expect_true(is(res, "DataFrame"))
-##     expect_true(nrow(res) == 0)
-##     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+    res <- spectraVariables(sciex_mzr)
+    expect_true(all(res %in% c(colnames(sciex_mzr@spectraData),
+                               names(.SPECTRA_DATA_COLUMNS))))
+})
 
-##     df <- DataFrame(fromFile = c(1L, 1L), scanIndex = 1:2, a = "a", b = "b")
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
+test_that("spectraData, spectraData<-, MsBackendMzR works", {
+    be <- MsBackendMzR()
+    res <- spectraData(be)
+    expect_true(is(res, "DataFrame"))
+    expect_true(nrow(res) == 0)
+    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
 
-##     res <- spectraData(be)
-##     expect_true(is(res, "DataFrame"))
-##     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
-##     expect_equal(res$a, c("a", "a"))
-##     expect_equal(res$b, c("b", "b"))
+    tmp <- sciex_mzr
+    res <- spectraData(tmp)
+    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+    expect_true(all(colnames(tmp@spectraData) %in% colnames(res)))
+    expect_true(is.logical(res$smoothed))
+    expect_equal(nrow(res), length(tmp))
 
-##     res <- spectraData(be, "msLevel")
-##     expect_true(is(res, "DataFrame"))
-##     expect_equal(colnames(res), "msLevel")
-##     expect_equal(res$msLevel, c(NA_integer_, NA_integer_))
+    spectraData(tmp)$new_col <- 1
+    expect_true(any(colnames(tmp@spectraData) == "new_col"))
+    expect_true(is(tmp@spectraData$new_col, "Rle"))
+    expect_true(any(spectraVariables(tmp) == "new_col"))
 
-##     res <- spectraData(be, c("mz"))
-##     expect_true(is(res, "DataFrame"))
-##     expect_equal(colnames(res), "mz")
-##     expect_equal(res$mz, list(numeric(), numeric()))
+    res <- spectraData(tmp, columns = c("msLevel", "new_col", "rtime"))
+    expect_equal(colnames(res), c("msLevel", "new_col", "rtime"))
+    expect_true(is.integer(res$msLevel))
+    expect_true(is.numeric(res$new_col))
+    expect_true(is.numeric(res$rtime))
 
-##     res <- spectraData(be, c("a", "intensity"))
-##     expect_true(is(res, "DataFrame"))
-##     expect_equal(colnames(res), c("a", "intensity"))
-##     expect_equal(res$intensity, list(numeric(), numeric()))
-##     expect_equal(res$a, c("a", "a"))
-
-##     ## spectraData<-
-##     df <- DataFrame(fromFile = 1L, msLevel = 1L, rtime = 1.2)
-##     expect_error(spectraData(be) <- df, "with 2 rows")
-##     df <- DataFrame(fromFile = c(1L, 1L), msLevel = 2L, rtime = c(1.2, 1.3))
-##     res <- spectraData(be) <- df
-##     expect_equal(rtime(be), c(1.2, 1.3))
-## })
+    res <- spectraData(tmp, columns = c("msLevel", "new_col", "smoothed"))
+    expect_equal(colnames(res), c("msLevel", "new_col", "smoothed"))
+    expect_true(is.integer(res$msLevel))
+    expect_true(is.numeric(res$new_col))
+    expect_true(is.logical(res$smoothed))
+    expect_true(all(is.na(res$smoothed)))
+})
 
 ## test_that("show,MsBackendMzR works", {
 ##     be <- MsBackendMzR()

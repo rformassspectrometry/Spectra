@@ -219,49 +219,68 @@ setReplaceMethod("smoothed", "MsBackendMzR", function(object, value) {
     object
 })
 
-## #' @rdname hidden_aliases
-## #'
-## #' @importFrom methods as
-## setMethod("spectraData", "MsBackendMzR",
-##           function(object, columns = spectraVariables(object)) {
-##               cn <- colnames(object@spectraData)
-##               if(!nrow(object@spectraData)) {
-##                   res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
-##                   res <- DataFrame(res)
-##                   res$mz <- list()
-##                   res$intensity <- list()
-##                   return(res[, columns, drop = FALSE])
-##               }
-##               not_found <- setdiff(columns, colnames(object@spectraData))
-##               if (length(not_found))
-##                   stop("Column(s) ", paste(not_found, collapse = ", "),
-##                        " not available")
-##               .uncompress_spectra_data(object@spectraData[, columns,
-##                                                           drop = FALSE])
-##           })
+#' @rdname hidden_aliases
+#'
+#' @importFrom methods as
+setMethod("spectraData", "MsBackendMzR",
+          function(object, columns = spectraVariables(object)) {
+              cn <- colnames(object@spectraData)
+              if(!nrow(object@spectraData)) {
+                  res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
+                  res <- DataFrame(res)
+                  res$mz <- list()
+                  res$intensity <- list()
+                  return(res[, columns, drop = FALSE])
+              }
+              not_found <- setdiff(columns, c(cn, names(.SPECTRA_DATA_COLUMNS)))
+              if (length(not_found))
+                  stop("Column(s) ", paste(not_found, collapse = ", "),
+                       " not available")
+              sp_cols <- columns[columns %in% cn]
+              res <- .uncompress_spectra_data(
+                  object@spectraData[, sp_cols, drop = FALSE])
+              if (any(columns %in% c("mz", "intensity"))) {
+                  pks <- peaks(object)
+                  if (any(columns == "mz"))
+                      res$mz <- lapply(pks, function(z) z[, 1])
+                  if (any(columns == "intensity"))
+                      res$intensity <- lapply(pks, function(z) z[, 2])
+                  columns <- columns[!(columns %in% c("mz", "intensity"))]
+              }
+              other_cols <- setdiff(columns, sp_cols)
+              if (length(other_cols)) {
+                  other_res <- lapply(other_cols, .get_spectra_data_column,
+                                      x = object)
+                  names(other_res) <- other_cols
+                  res <- cbind(res, as(other_res, "DataFrame"))
+              }
+              res[, columns, drop = FALSE]
+          })
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("spectraData", "MsBackendMzR", function(object,
-##                                                                   value) {
-##     if (!is(value, "DataFrame") || nrow(value) != length(object))
-##         stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
-##     object@spectraData <- .compress_spectra_data(value)
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("spectraData", "MsBackendMzR", function(object, value) {
+    if (!is(value, "DataFrame") || nrow(value) != length(object))
+        stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
+    if (any(colnames(value) %in% c("mz", "intensity"))) {
+        value <- value[, !(colnames(value) %in% c("mz", "intensity")),
+                       drop = FALSE]
+    }
+    object@spectraData <- .compress_spectra_data(value)
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 setMethod("spectraNames", "MsBackendMzR", function(object) {
     rownames(object@spectraData)
 })
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("spectraNames", "MsBackendMzR",
-##                  function(object, value) {
-##                      rownames(object@spectraData) <- value
-##                      validObject(object)
-##                      object
-##                  })
+#' @rdname hidden_aliases
+setReplaceMethod("spectraNames", "MsBackendMzR", function(object, value) {
+    rownames(object@spectraData) <- value
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 setMethod("spectraVariables", "MsBackendMzR", function(object) {

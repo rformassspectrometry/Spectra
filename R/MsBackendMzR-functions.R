@@ -101,7 +101,7 @@ MsBackendMzR <- function() {
 #'
 #' @noRd
 .uncompress_spectra_data <- function(x) {
-    cols <- vapply(x, is, logical(1), "Rle")
+    cols <- colnames(x)[vapply(x, is, logical(1), "Rle")]
     for (col in cols) {
         x[[col]] <- as.vector(x[[col]])
     }

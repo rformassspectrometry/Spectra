@@ -92,7 +92,10 @@
 \alias{scanIndex,MsBackendMzR-method}
 \alias{smoothed,MsBackendMzR-method}
 \alias{smoothed<-,MsBackendMzR-method}
+\alias{spectraData,MsBackendMzR-method}
+\alias{spectraData<-,MsBackendMzR-method}
 \alias{spectraNames,MsBackendMzR-method}
+\alias{spectraNames<-,MsBackendMzR-method}
 \alias{spectraVariables,MsBackendMzR-method}
 \alias{ProcessingStep-class}
 \alias{show,ProcessingStep-method}
@@ -278,7 +281,14 @@ spectraVariables(object, ...)
 
 \S4method{smoothed}{MsBackendMzR}(object) <- value
 
+\S4method{spectraData}{MsBackendMzR}(object,
+  columns = spectraVariables(object))
+
+\S4method{spectraData}{MsBackendMzR}(object) <- value
+
 \S4method{spectraNames}{MsBackendMzR}(object)
+
+\S4method{spectraNames}{MsBackendMzR}(object) <- value
 
 \S4method{spectraVariables}{MsBackendMzR}(object)
 
