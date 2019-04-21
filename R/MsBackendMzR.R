@@ -60,6 +60,19 @@ setMethod("backendInitialize", "MsBackendMzR",
           })
 
 #' @rdname hidden_aliases
+setMethod("show", "MsBackendMzR", function(object) {
+    callNextMethod()
+    fls <- basename(object@files)
+    if (length(fls)) {
+        to <- min(3, length(fls))
+        cat("\nfile(s):\n", paste(basename(fls[1:to]), collapse = "\n"),
+            "\n", sep = "")
+        if (length(fls) > 3)
+            cat(" ...", length(fls) - 3, "more files\n")
+    }
+})
+
+#' @rdname hidden_aliases
 setMethod("acquisitionNum", "MsBackendMzR", function(object) {
     .get_rle_column(object@spectraData, "acquisitionNum")
 })
@@ -245,9 +258,9 @@ setMethod("spectraData", "MsBackendMzR",
                       res$mz <- lapply(pks, function(z) z[, 1])
                   if (any(columns == "intensity"))
                       res$intensity <- lapply(pks, function(z) z[, 2])
-                  columns <- columns[!(columns %in% c("mz", "intensity"))]
               }
-              other_cols <- setdiff(columns, sp_cols)
+              other_cols <- setdiff(
+                  columns[!(columns %in% c("mz", "intensity"))], sp_cols)
               if (length(other_cols)) {
                   other_res <- lapply(other_cols, .get_spectra_data_column,
                                       x = object)
@@ -287,19 +300,19 @@ setMethod("spectraVariables", "MsBackendMzR", function(object) {
     unique(c(names(.SPECTRA_DATA_COLUMNS), colnames(object@spectraData)))
 })
 
-## #' @rdname hidden_aliases
-## setMethod("tic", "MsBackendMzR", function(object, initial = TRUE) {
-##     if (initial) {
-##         if (any(colnames(object@spectraData) == "totIonCurrent"))
-##             .get_rle_column(object@spectraData, "totIonCurrent")
-##         else rep(NA_real_, times = length(object))
-##     } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
-## })
+#' @rdname hidden_aliases
+setMethod("tic", "MsBackendMzR", function(object, initial = TRUE) {
+    if (initial) {
+        if (any(colnames(object@spectraData) == "totIonCurrent"))
+            .get_rle_column(object@spectraData, "totIonCurrent")
+        else rep(NA_real_, times = length(object))
+    } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
+})
 
 ## #' @rdname hidden_aliases
 ## setMethod("[", "MsBackendMzR", function(x, i, j, ..., drop = FALSE) {
 ##     if (!missing(j))
-##         stop("Subsetting byt column ('j = ", j, "' is not supported")
+##         stop("Subsetting by column ('j = ", j, "' is not supported")
 ##     i <- .i_to_index(i, length(x), rownames(x@spectraData))
 ##     x@spectraData <- x@spectraData[i, , drop = FALSE]
 ##     orig_files <- x@files

@@ -323,7 +323,7 @@ setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
 #' @rdname hidden_aliases
 setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     if (!missing(j))
-        stop("Subsetting byt column ('j = ", j, "' is not supported")
+        stop("Subsetting by column ('j = ", j, "' is not supported")
     i <- .i_to_index(i, length(x), rownames(x@spectraData))
     x@spectraData <- x@spectraData[i, , drop = FALSE]
     orig_files <- x@files

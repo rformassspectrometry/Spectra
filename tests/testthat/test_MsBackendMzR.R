@@ -290,22 +290,19 @@ test_that("spectraNames, spectraNames<-,MsBackendMzR works", {
     expect_equal(spectraNames(tmp), paste0("sp_", 1:length(tmp)))
 })
 
-## test_that("tic,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     expect_equal(tic(be), numeric())
-##     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(tic(be), c(NA_real_, NA_real_))
-##     expect_equal(tic(be, initial = FALSE), c(0, 0))
-##     df$totIonCurrent <- c(5, 3)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(tic(be), c(5, 3))
-##     expect_equal(tic(be, initial = FALSE), c(0, 0))
-##     df$intensity <- list(5:7, 1:4)
-##     df$mz <- list(1:3, 1:4)
-##     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-##     expect_equal(tic(be, initial = FALSE), c(sum(5:7), sum(1:4)))
-## })
+test_that("tic,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_equal(tic(be), numeric())
+
+    res_initial <- tic(sciex_mzr)
+    res_file <- tic(sciex_mzr, initial = FALSE)
+    expect_true(is.numeric(res_initial))
+    expect_true(is.numeric(res_file))
+    expect_true(length(res_initial) == length(sciex_mzr))
+    expect_true(length(res_file) == length(sciex_mzr))
+
+    expect_equal(res_initial, res_file)
+})
 
 test_that("spectraVariables,MsBackendMzR works", {
     be <- MsBackendMzR()
@@ -349,10 +346,26 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(all(is.na(res$smoothed)))
 })
 
-## test_that("show,MsBackendMzR works", {
-##     be <- MsBackendMzR()
-##     show(be)
-##     df <- DataFrame(fromFile = c(1L, 1L), rt = c(1.2, 1.3))
-##     be <- backendInitialize(be, files = NA_character_, df)
-##     show(be)
-## })
+test_that("show,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    show(be)
+
+    show(sciex_mzr)
+})
+
+test_that("[,MsBackendMzR works", {
+    tmp <- sciex_mzr[13:25]
+    expect_true(validObject(tmp))
+    expect_equal(length(tmp), 13)
+    expect_equal(tmp@spectraData$scanIndex, 13:25)
+    expect_true(all(is.na(smoothed(tmp))))
+
+    ints <- intensity(tmp)
+    spd <- spectraData(tmp)
+    expect_equal(ints, spd$intensity)
+
+    tmp <- sciex_mzr[1000]
+    expect_equal(length(tmp), 1)
+    spd <- spectraData(tmp)
+    expect_equal(spd$mz, mz(tmp))
+})
