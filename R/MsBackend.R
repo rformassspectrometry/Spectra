@@ -37,17 +37,15 @@ NULL
 #'
 #' See below for more details about individual backends.
 #'
-#' @param object Object extending `MsBackend`.
-#'
-#' @param x Object extending `MsBackend`.
-#'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
+#' @param drop For `[`: not considered.
+#'
 #' @param files For `backendInitialize`: `character` with the file
 #'     names from which the data is/will be imported. Should be set to
-#'     `NA_character_` if not applicable.
+#'     `NA_character_` if not applicable (e.g. for `MsBackendDataFrame`).
 #'
 #' @param initial For `tic`: `logical(1)` whether the initially
 #'     reported total ion current should be reported, or whether the
@@ -58,10 +56,14 @@ NULL
 #'
 #' @param j For `[`: not supported.
 #'
-#' @param drop For `[`: not considered.
+#' @param object Object extending `MsBackend`.
+#'
+#' @param spectraData For : `DataFrame` with spectrum metadata/data.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param x Object extending `MsBackend`.
 #'
 #' @param ... Additional arguments.
 #'
@@ -229,10 +231,9 @@ NULL
 #'
 #' Additional columns are allowed too.
 #'
-#' The `backendInitialize` method for this backend takes the following
-#' argument:
-#'
-#' - @param spectraData For : `DataFrame` with spectrum metadata/data.
+#' The `backendInitialize` method for this backend takes arguments `files`
+#' (should be set to `NA_character`) and `spectraData` (`DataFrame` with the
+#' spectrum data).
 #'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
@@ -245,7 +246,7 @@ NULL
 #'
 #' New objects can be created with the `MsBackendMzR()` function which
 #' can be subsequently filled with data by calling `backendInitialize`
-#' passing the file names of the input data files.
+#' passing the file names of the input data files with argument `files`.
 #'
 #' @name MsBackend
 #'

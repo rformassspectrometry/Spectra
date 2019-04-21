@@ -130,7 +130,9 @@ MsBackendMzR()
 
 \item{files}{For \code{backendInitialize}: \code{character} with the file
 names from which the data is/will be imported. Should be set to
-\code{NA_character_} if not applicable.}
+\code{NA_character_} if not applicable (e.g. for \code{MsBackendDataFrame}).}
+
+\item{spectraData}{For : \code{DataFrame} with spectrum metadata/data.}
 
 \item{...}{Additional arguments.}
 
@@ -330,11 +332,9 @@ values for each spectrum.
 
 Additional columns are allowed too.
 
-The \code{backendInitialize} method for this backend takes the following
-argument:
-\itemize{
-\item @param spectraData For : \code{DataFrame} with spectrum metadata/data.
-}
+The \code{backendInitialize} method for this backend takes arguments \code{files}
+(should be set to \code{NA_character}) and \code{spectraData} (\code{DataFrame} with the
+spectrum data).
 }
 
 \section{\code{MsBackendMzR}, on-disk MS data backend}{
@@ -349,7 +349,7 @@ stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files.
 
 New objects can be created with the \code{MsBackendMzR()} function which
 can be subsequently filled with data by calling \code{backendInitialize}
-passing the file names of the input data files.
+passing the file names of the input data files with argument \code{files}.
 }
 
 \author{

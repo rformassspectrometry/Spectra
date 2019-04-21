@@ -1,5 +1,4 @@
-fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
-sciex_mzr <- backendInitialize(MsBackendMzR(), files = fl)
+sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
 sciex_pks <- peaks(sciex_mzr)
 fl <- dir(system.file("proteomics", package = "msdata"), full.names = TRUE)
 tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
@@ -93,7 +92,7 @@ test_that("ionCount,MsBackendMzR works", {
 })
 
 test_that("isCentroided,MsBackendMzR works", {
-    res <- MsBackendMzR()
+    be <- MsBackendMzR()
     expect_equal(isCentroided(be), logical())
 
     res <- isCentroided(sciex_mzr)
@@ -140,7 +139,7 @@ test_that("peaks,MsBackendMzR works", {
 
     res <- peaks(sciex_mzr)
     expect_true(is(res, "list"))
-    expect_equal(length(res), length(object))
+    expect_equal(length(res), length(sciex_mzr))
     expect_true(is(res[[1]], "matrix"))
     expect_equal(colnames(res[[1]]), c("mz", "intensity"))
 

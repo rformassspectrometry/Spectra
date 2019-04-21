@@ -21,11 +21,12 @@ test_that(".compress_spectra_data works", {
     df <- DataFrame(msLevel = c(NA_integer_, NA_integer_), a = "a", b = 1:2)
     res <- .compress_spectra_data(df)
     expect_equal(res$msLevel, Rle(NA_integer_, 2))
+    expect_equal(res$a, Rle("a", 2))
     res$fromFile <- c(1L, 1L)
     res <- .compress_spectra_data(res)
     expect_equal(res$msLevel, Rle(NA_integer_, 2))
     expect_equal(res$a, Rle("a", 2))
-    expect_equak(res$b, 1:2)
+    expect_equal(res$b, 1:2)
     expect_equal(res$fromFile, Rle(1L, 2))
     res$fromFile <- c(1L, 2L)
     res <- .compress_spectra_data(res)
@@ -60,7 +61,7 @@ test_that(".get_rle_column works", {
 
 test_that(".mzR_peaks work", {
     fls <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
-    hdr <- Spectra:::.mzR_header(fls[1])
+    hdr <- .mzR_header(fls[1])
 
     res <- .mzR_peaks(fls[1], 1)
     expect_true(is(res, "list"))

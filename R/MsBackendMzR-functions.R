@@ -82,6 +82,7 @@ MsBackendMzR <- function() {
     for (col in colnames(x)) {
         x[[col]] <- .rle_compress(x[[col]])
     }
+    columns <- intersect(columns, colnames(x))
     for (col in columns) {
         if (!is(x[[col]], "Rle"))
             x[[col]] <- Rle(x[[col]])
@@ -127,11 +128,11 @@ MsBackendMzR <- function() {
         if (is(x[[column]], "Rle"))
             as.vector(x[[column]])
         else x[[column]]
-    } else if (any(names(Spectra:::.SPECTRA_DATA_COLUMNS) == column)) {
+    } else if (any(names(.SPECTRA_DATA_COLUMNS) == column)) {
         nr_x <- nrow(x)
         if (nr_x)
-            as(rep(NA, nr_x), Spectra:::.SPECTRA_DATA_COLUMNS[column])
+            as(rep(NA, nr_x), .SPECTRA_DATA_COLUMNS[column])
         else
-            do.call(Spectra:::.SPECTRA_DATA_COLUMNS[column], args = list())
+            do.call(.SPECTRA_DATA_COLUMNS[column], args = list())
     } else stop("column '", column, "' not available")
 }

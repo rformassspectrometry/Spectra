@@ -26,7 +26,6 @@ setClass("MsBackendMzR",
          prototype = prototype(version = "0.1", readonly = TRUE))
 
 setValidity("MsBackendMzR", function(object) {
-    cat("validObject MsBackendMzR\n")
     msg <- .valid_spectra_data_required_columns(object@spectraData,
                                                 c("fromFile", "scanIndex"))
     if (length(msg)) msg

@@ -24,7 +24,6 @@ setClass("MsBackendDataFrame",
                                version = "0.1"))
 
 setValidity("MsBackendDataFrame", function(object) {
-    cat("validObject MsBackendDataFrame\n")
     msg <- .valid_spectra_data_required_columns(object@spectraData)
     if (length(msg))
         return(msg)
