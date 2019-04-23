@@ -32,12 +32,12 @@ test_that(".class_rle works", {
     expect_equal(.class_rle(Rle(1L, 5)), "integer")
 })
 
-test_that(".rle_compress works", {
-    expect_equal(.rle_compress(c("a", "a")), Rle("a", 2))
-    expect_equal(.rle_compress("a"), "a")
-    expect_equal(.rle_compress(1:4), 1:4)
-    expect_equal(.rle_compress(rep(1, 10)), Rle(1, 10))
-    expect_equal(.rle_compress(TRUE), TRUE)
-    expect_equal(.rle_compress(c(TRUE, TRUE)), Rle(TRUE, 2))
-    expect_equal(.rle_compress(list(a = 1:3, b = 2:3)), list(a = 1:3, b = 2:3))
+test_that(".as_rle works", {
+    expect_equal(.as_rle(c("a", "a")), Rle("a", 2))
+    expect_equal(.as_rle("a"), "a")
+    expect_equal(.as_rle(1:4), 1:4)
+    expect_equal(.as_rle(rep(1, 10)), Rle(1, 10))
+    expect_equal(.as_rle(TRUE), TRUE)
+    expect_equal(.as_rle(c(TRUE, TRUE)), Rle(TRUE, 2))
+    expect_equal(.as_rle(list(a = 1:3, b = 2:3)), list(a = 1:3, b = 2:3))
 })

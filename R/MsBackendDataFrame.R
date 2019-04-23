@@ -59,6 +59,10 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
               if (missing(spectraData)) spectraData <- DataFrame()
               object@files <- files
               object@modCount <- integer(length(files))
+              if (is.list(spectraData$mz))
+                  spectraData$mz <- SimpleList(spectraData$mz)
+              if (is.list(spectraData$intensity))
+                  spectraData$intensity <- SimpleList(spectraData$intensity)
               object@spectraData <- spectraData
               validObject(object)
               object
@@ -119,7 +123,7 @@ setMethod("intensity", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "intensity"))
         object@spectraData$intensity
     else {
-        lst <- list(numeric())
+        lst <- SimpleList(numeric())
         lst[rep(1, times = length(object))]
     }
 })
@@ -156,7 +160,7 @@ setMethod("mz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "mz"))
         object@spectraData$mz
     else {
-        lst <- list(numeric())
+        lst <- SimpleList(numeric())
         lst[rep(1, times = length(object))]
     }
 })
@@ -262,6 +266,10 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
 #' @rdname hidden_aliases
 #'
 #' @importFrom methods as
+#'
+#' @importFrom S4Vectors SimpleList
+#'
+#' @importMethodsFrom S4Vectors lapply
 setMethod("spectraData", "MsBackendDataFrame",
           function(object, columns = spectraVariables(object)) {
               df_columns <- columns[columns %in% colnames(object@spectraData)]
@@ -275,9 +283,9 @@ setMethod("spectraData", "MsBackendDataFrame",
                   if (!all(is_mz_int))
                       res <- cbind(res, as(other_res[!is_mz_int], "DataFrame"))
                   if (any(names(other_res) == "mz"))
-                      res$mz <- if (length(other_res$mz)) other_res$mz else list()
+                      res$mz <- if (length(other_res$mz)) other_res$mz else SimpleList()
                   if (any(names(other_res) == "intensity"))
-                      res$intensity <- if (length(other_res$intensity)) other_res$intensity else list()
+                      res$intensity <- if (length(other_res$intensity)) other_res$intensity else SimpleList()
               }
               res[, columns, drop = FALSE]
           })
@@ -286,6 +294,10 @@ setMethod("spectraData", "MsBackendDataFrame",
 setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
     if (!is(value, "DataFrame") || rownames(value) != length(object))
         stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
+    if (is.list(value$mz))
+        value$mz <- SimpleList(value$mz)
+    if (is.list(value$intensity))
+        value$intensity <- SimpleList(value$intensity)
     object@spectraData <- value
     validObject(object)
     object

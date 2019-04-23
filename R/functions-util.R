@@ -91,7 +91,7 @@
 #' @author Johannes Rainer
 #'
 #' @noRd
-.rle_compress <- function(x) {
+.as_rle <- function(x) {
     len_x <- length(x)
     if (len_x > 1 && (is.numeric(x) | is.character(x) | is.logical(x))) {
         if (length(unique(x)) == 1)

@@ -87,12 +87,12 @@ NULL
 #'   `NA_character_` is returned for all spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
-#'   a `list` of `numeric` vectors (intensity values for each
+#'   a [SimpleList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
 #' - `mz`: gets the mass-to-charge ratios (m/z) from the
-#'   spectra. Returns a `list` or length equal to the number of
+#'   spectra. Returns a [SimpleList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
@@ -224,10 +224,10 @@ NULL
 #'   precursor.
 #' - `"precursorCharge"`: `integer` with the charge of the precursor.
 #' - `"collisionEnergy"`: `numeric` with the collision energy.
-#' - `"mz"`: `list` of `numeric` vectors representing the m/z values for each
-#'   spectrum.
-#' - `"intensity"`: `list` of `numeric` vectors representing the intensity
-#'   values for each spectrum.
+#' - `"mz"`: [SimpleList()] of `numeric` vectors representing the m/z values
+#'   for each spectrum.
+#' - `"intensity"`: [SimpleList()] of `numeric` vectors representing the
+#'   intensity values for each spectrum.
 #'
 #' Additional columns are allowed too.
 #'

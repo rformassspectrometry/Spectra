@@ -54,7 +54,7 @@ setMethod("backendInitialize", "MsBackendMzR",
                                             fromFile = index)
                                   }))
               callNextMethod(object = object, files = files,
-                             spectraData = .compress_spectra_data(spectraData),
+                             spectraData = .as_rle_spectra_data(spectraData),
                              ...)
           })
 
@@ -87,7 +87,7 @@ setReplaceMethod("centroided", "MsBackendMzR", function(object, value) {
         value <- rep(value, length(object))
     if (!is.logical(value) | length(value) != length(object))
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$centroided <- .rle_compress(value)
+    object@spectraData$centroided <- .as_rle(value)
     validObject(object)
     object
 })
@@ -101,7 +101,7 @@ setMethod("collisionEnergy", "MsBackendMzR", function(object) {
 setReplaceMethod("collisionEnergy", "MsBackendMzR", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$collisionEnergy <- .rle_compress(value)
+    object@spectraData$collisionEnergy <- .as_rle(value)
     validObject(object)
     object
 })
@@ -113,7 +113,7 @@ setMethod("fromFile", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMzR", function(object) {
-    lapply(peaks(object), function(z) z[, 2])
+    SimpleList(lapply(peaks(object), function(z) z[, 2]))
 })
 
 #' @rdname hidden_aliases
@@ -138,7 +138,7 @@ setMethod("msLevel", "MsBackendMzR", function(object, ...) {
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendMzR", function(object) {
-    lapply(peaks(object), function(z) z[, 1])
+    SimpleList(lapply(peaks(object), function(z) z[, 1]))
 })
 
 #' @rdname hidden_aliases
@@ -171,7 +171,7 @@ setReplaceMethod("polarity", "MsBackendMzR", function(object, value) {
         value <- rep(value, length(object))
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be an 'integer' of length 1 or ", length(object))
-    object@spectraData$polarity <- .rle_compress(as.integer(value))
+    object@spectraData$polarity <- .as_rle(as.integer(value))
     validObject(object)
     object
 })
@@ -205,7 +205,7 @@ setMethod("rtime", "MsBackendMzR", function(object) {
 setReplaceMethod("rtime", "MsBackendMzR", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$rtime <- .rle_compress(value)
+    object@spectraData$rtime <- .as_rle(value)
     validObject(object)
     object
 })
@@ -226,7 +226,7 @@ setReplaceMethod("smoothed", "MsBackendMzR", function(object, value) {
         value <- rep(value, length(object))
     if (!is.logical(value) | length(value) != length(object))
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$smoothed <- .rle_compress(value)
+    object@spectraData$smoothed <- .as_rle(value)
     validObject(object)
     object
 })
@@ -249,14 +249,14 @@ setMethod("spectraData", "MsBackendMzR",
                   stop("Column(s) ", paste(not_found, collapse = ", "),
                        " not available")
               sp_cols <- columns[columns %in% cn]
-              res <- .uncompress_spectra_data(
+              res <- .as_vector_spectra_data(
                   object@spectraData[, sp_cols, drop = FALSE])
               if (any(columns %in% c("mz", "intensity"))) {
                   pks <- peaks(object)
                   if (any(columns == "mz"))
-                      res$mz <- lapply(pks, function(z) z[, 1])
+                      res$mz <- SimpleList(lapply(pks, function(z) z[, 1]))
                   if (any(columns == "intensity"))
-                      res$intensity <- lapply(pks, function(z) z[, 2])
+                      res$intensity <- SimpleList(lapply(pks, function(z) z[, 2]))
               }
               other_cols <- setdiff(
                   columns[!(columns %in% c("mz", "intensity"))], sp_cols)
@@ -277,7 +277,7 @@ setReplaceMethod("spectraData", "MsBackendMzR", function(object, value) {
         value <- value[, !(colnames(value) %in% c("mz", "intensity")),
                        drop = FALSE]
     }
-    object@spectraData <- .compress_spectra_data(value)
+    object@spectraData <- .as_rle_spectra_data(value)
     validObject(object)
     object
 })
