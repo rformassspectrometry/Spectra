@@ -3,7 +3,7 @@ NULL
 
 #' @title Mass spectrometry data backends
 #'
-#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class
+#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class [,MsBackend-method
 #'
 #' @description
 #'

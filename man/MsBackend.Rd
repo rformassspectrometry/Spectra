@@ -8,6 +8,7 @@
 \alias{MsBackend-class}
 \alias{MsBackendDataFrame-class}
 \alias{MsBackendMzR-class}
+\alias{[,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
 \alias{centroided,MsBackend-method}
