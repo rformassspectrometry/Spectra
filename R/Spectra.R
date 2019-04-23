@@ -129,6 +129,27 @@ setMethod("show", "Spectra",
     })
 
 #' @rdname Spectra
+setMethod("Spectra", "DataFrame", function(x, processingQueue = list(),
+                                           metadata = list(), ...,
+                                           backend = MsBackendDataFrame(),
+                                           BPPARAM = bpparam()) {
+    x$fromFile <- rep(1L, nrow(x))
+    new("Spectra", metadata = metadata, processingQueue = processingQueue,
+        backend = backendInitialize(backend, files = NA_character_,
+                                    x, BPPARAM = BPPARAM))
+})
+#' @rdname Spectra
+setMethod("Spectra", "missing", function(x, processingQueue = list,
+                                         metadata = list(), ...,
+                                         backend = MsBackendDataFrame(),
+                                         BPPARAM = bpparam()) {
+    new("Spectra", metadata = metadata, processingQueue = processingQueue,
+        backend = backend)
+})
+
+## ACCESSOR METHODS
+
+#' @rdname Spectra
 #'
 #' @exportMethod length
 setMethod("length", "Spectra", function(x) length(x@backend))
@@ -136,10 +157,7 @@ setMethod("length", "Spectra", function(x) length(x@backend))
 #' @rdname Spectra
 setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
-## Spectra constructor method:
-## files: read data
-## spectraData: DataFrame
-## individual fields???
+
 
 ## #' @rdname Spectra
 ## #'

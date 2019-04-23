@@ -76,7 +76,7 @@ MsBackendMzR <- function() {
 #' @importFrom S4Vectors Rle
 #'
 #' @noRd
-.compress_spectra_data <- function(x, columns = c("fromFile")) {
+.as_rle_spectra_data <- function(x, columns = c("fromFile")) {
     if (nrow(x) <= 1)
         return(x)
     for (col in colnames(x)) {
@@ -101,7 +101,7 @@ MsBackendMzR <- function() {
 #' @author Johannes Rainer
 #'
 #' @noRd
-.uncompress_spectra_data <- function(x) {
+.as_vector_spectra_data <- function(x) {
     cols <- colnames(x)[vapply(x, is, logical(1), "Rle")]
     for (col in cols) {
         x[[col]] <- as.vector(x[[col]])

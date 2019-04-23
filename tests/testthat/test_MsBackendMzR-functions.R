@@ -14,29 +14,29 @@ test_that(".mzR_header works", {
     expect_equal(hdr$scanIndex, 1:1278)
 })
 
-test_that(".compress_spectra_data works", {
+test_that(".as_rle_spectra_data works", {
     df <- DataFrame()
-    res <- .compress_spectra_data(df)
+    res <- .as_rle_spectra_data(df)
     expect_equal(df, res)
     df <- DataFrame(msLevel = c(NA_integer_, NA_integer_), a = "a", b = 1:2)
-    res <- .compress_spectra_data(df)
+    res <- .as_rle_spectra_data(df)
     expect_equal(res$msLevel, Rle(NA_integer_, 2))
     expect_equal(res$a, Rle("a", 2))
     res$fromFile <- c(1L, 1L)
-    res <- .compress_spectra_data(res)
+    res <- .as_rle_spectra_data(res)
     expect_equal(res$msLevel, Rle(NA_integer_, 2))
     expect_equal(res$a, Rle("a", 2))
     expect_equal(res$b, 1:2)
     expect_equal(res$fromFile, Rle(1L, 2))
     res$fromFile <- c(1L, 2L)
-    res <- .compress_spectra_data(res)
+    res <- .as_rle_spectra_data(res)
     expect_equal(res$fromFile, Rle(1:2))
 })
 
-test_that(".uncompress_spectra_data works", {
+test_that(".as_vector_spectra_data works", {
     df <- DataFrame(msLevel = c(NA_integer_, NA_integer_),
                     fromFile = Rle(1L, 2), other_col = Rle("a", 2))
-    res <- .uncompress_spectra_data(df)
+    res <- .as_vector_spectra_data(df)
     expect_true(is.integer(res$msLevel))
     expect_true(is.integer(res$fromFile))
     expect_true(is(res$other_col, "character"))

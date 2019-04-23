@@ -81,7 +81,7 @@
     else class(x)
 }
 
-#' Function to compress a `numeric`, `logical` or `character` vector into an
+#' Function to *compress* a `numeric`, `logical` or `character` vector into an
 #' Rle if it has only a single element.
 #'
 #' @param x vector to convert to Rle.
@@ -91,7 +91,7 @@
 #' @author Johannes Rainer
 #'
 #' @noRd
-.rle_compress <- function(x) {
+.as_rle <- function(x) {
     len_x <- length(x)
     if (len_x > 1 && (is.numeric(x) | is.character(x) | is.logical(x))) {
         if (length(unique(x)) == 1)
