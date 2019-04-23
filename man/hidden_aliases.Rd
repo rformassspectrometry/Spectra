@@ -40,6 +40,7 @@
 \alias{scanIndex}
 \alias{smoothed}
 \alias{smoothed<-}
+\alias{Spectra}
 \alias{spectraData}
 \alias{spectraData<-}
 \alias{spectraNames}
@@ -79,7 +80,6 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
-\alias{[,MsBackendDataFrame,ANY,ANY,ANY-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
@@ -162,6 +162,8 @@ smoothed(object, ...)
 
 smoothed(object) <- value
 
+Spectra(object, ...)
+
 spectraData(object, ...)
 
 spectraData(object) <- value
@@ -242,7 +244,7 @@ spectraVariables(object, ...)
 
 \S4method{tic}{MsBackendDataFrame}(object, initial = TRUE)
 
-\S4method{[}{MsBackendDataFrame,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())

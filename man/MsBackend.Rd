@@ -44,7 +44,6 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{tic,MsBackend-method}
-\alias{[,MsBackend,ANY,ANY,ANY-method}
 \alias{MsBackendDataFrame}
 \alias{MsBackendMzR}
 \title{Mass spectrometry data backends}
@@ -120,7 +119,7 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
 
 MsBackendDataFrame()
 
@@ -133,7 +132,9 @@ MsBackendMzR()
 names from which the data is/will be imported. Should be set to
 \code{NA_character_} if not applicable (e.g. for \code{MsBackendDataFrame}).}
 
-\item{spectraData}{For : \code{DataFrame} with spectrum metadata/data.}
+\item{spectraData}{For \code{backendInitialize}: \code{DataFrame} with spectrum
+metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
+but needs to be provided for \code{MsBackendDataFrame} backends.}
 
 \item{...}{Additional arguments.}
 

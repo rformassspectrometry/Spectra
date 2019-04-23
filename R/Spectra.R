@@ -24,22 +24,19 @@ NULL
 #'
 #' @section Creation of objects, conversion and changing the backend:
 #'
-#' TODO @jo: update with the `Spectra` constructor.
+#' `Spectra` classes can be created with the `Spectra` constructor function
+#' which supports the following formats:
+#'
+#' - parameter `object` is a `DataFrame` containing the spectrum data. The
+#'   provided `backend` (by default a [MsBackendDataFrame-class]) will be
+#'   initialized with that data.
+#' - parameter `object` is missing, in which case it is supposed that the data
+#'   is provided by the [MsBackend-class] class passed along with the `backend`
+#'   argument.
 #'
 #' `Spectra` classes are usually created with the `readSpectra`
 #' function that reads general spectrum metadata information from the  mass
 #' spectrometry data files.
-#'
-#' Alternatively it is possible to create a new object from a list of `Spectrum`
-#' objects using the `Spectra` function. Additional spectrum metadata
-#' columns can be provided with the `spectraData` argument, sample annotations
-#' with the `sampleData` argument and arbitrary metadata with the `metadata`
-#' argument. Note that objects created with the `Spectra` constructor
-#' function can not use the `BackendMzR` as backend.
-#'
-#' `Spectra` objects can be converted to a `list` or
-#' [S4Vectors::List-class] of `Spectrum` objects with the `as(object, "list")`
-#' and `as(object, "List")` function, respectively.
 #'
 #' The [MsBackend-class] can be changed with the `setBackend` function by
 #' specifying the new [MsBackend-class] with the `backend` parameter. See
@@ -55,9 +52,20 @@ NULL
 #'
 #' @exportClass Spectra
 #'
+#' @exportMethod Spectra
+#'
 #' @examples
 #'
-#' ## Create an Spectra from a list of Spectrum objects
+#' ## Create a Spectra providing a `DataFrame` containing the spectrum data.
+#'
+#' spd <- DataFrame(msLevel = c(1L, 2L), rtime = c(1.1, 1.2))
+#' spd$mz <- list(c(100, 103.2, 104.3, 106.5), c(45.6, 120.4, 190.2))
+#' spd$intensity <- list(c(200, 400, 34.2, 17), c(12.3, 15.2, 6.8))
+#'
+#' data <- Spectra(spd)
+#' data
+#'
+#' msLevel(data)
 NULL
 
 #' The Spectra class
@@ -114,14 +122,12 @@ setValidity("Spectra", function(object) {
 setMethod("show", "Spectra",
     function(object) {
         cat("MSn data (", class(object)[1L], ") with ",
-            length(object@backend), " spectra:\n", sep = "")
+            length(object@backend), " spectra in a ", class(object@backend),
+            " backend:\n", sep = "")
         if (length(object@backend)) {
-            ## Replace later with spectraData(object@backend, c("msLevel", ...))
-            txt <- capture.output(
-                DataFrame(msLevel = msLevel(object@backend)))
+            txt <- capture.output(show(object@backend))
             cat(txt[-1], sep = "\n")
         }
-        show(object@backend)
         if (length(object@processingQueue))
             cat("Lazy evaluation queue:", length(object@processingQueue),
                 "processing step(s)\n")
@@ -129,17 +135,18 @@ setMethod("show", "Spectra",
     })
 
 #' @rdname Spectra
-setMethod("Spectra", "DataFrame", function(x, processingQueue = list(),
+setMethod("Spectra", "DataFrame", function(object, processingQueue = list(),
                                            metadata = list(), ...,
                                            backend = MsBackendDataFrame(),
                                            BPPARAM = bpparam()) {
-    x$fromFile <- rep(1L, nrow(x))
+    object$fromFile <- rep(1L, nrow(object))
     new("Spectra", metadata = metadata, processingQueue = processingQueue,
-        backend = backendInitialize(backend, files = NA_character_,
-                                    x, BPPARAM = BPPARAM))
+        backend = backendInitialize(
+            backend, files = if (nrow(object)) NA_character_ else character(),
+            object, BPPARAM = BPPARAM))
 })
 #' @rdname Spectra
-setMethod("Spectra", "missing", function(x, processingQueue = list,
+setMethod("Spectra", "missing", function(object, processingQueue = list(),
                                          metadata = list(), ...,
                                          backend = MsBackendDataFrame(),
                                          BPPARAM = bpparam()) {
@@ -156,6 +163,9 @@ setMethod("length", "Spectra", function(x) length(x@backend))
 
 #' @rdname Spectra
 setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
+
+
+## DATA MANIPULATION METHODS
 
 
 

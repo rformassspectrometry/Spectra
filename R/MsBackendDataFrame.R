@@ -52,6 +52,8 @@ setMethod("show", "MsBackendDataFrame", function(object) {
     }
 })
 
+#' @importMethodsFrom S4Vectors $ $<-
+#'
 #' @rdname hidden_aliases
 setMethod("backendInitialize", signature = "MsBackendDataFrame",
           definition = function(object, files, spectraData, ...) {
