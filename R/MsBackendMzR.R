@@ -240,8 +240,8 @@ setMethod("spectraData", "MsBackendMzR",
               if(!nrow(object@spectraData)) {
                   res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
                   res <- DataFrame(res)
-                  res$mz <- list()
-                  res$intensity <- list()
+                  res$mz <- SimpleList()
+                  res$intensity <- SimpleList()
                   return(res[, columns, drop = FALSE])
               }
               not_found <- setdiff(columns, c(cn, names(.SPECTRA_DATA_COLUMNS)))
