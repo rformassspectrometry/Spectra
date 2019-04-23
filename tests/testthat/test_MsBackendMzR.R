@@ -73,10 +73,10 @@ test_that("fromFile,MsBackendMzR works", {
 
 test_that("intensity,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(intensity(be), list())
+    expect_equal(intensity(be), SimpleList())
 
     res <- intensity(sciex_mzr)
-    expect_true(is(res, "list"))
+    expect_true(is(res, "SimpleList"))
     expect_true(is.numeric(res[[1]]))
     expect_equal(length(res), length(sciex_mzr))
 })
@@ -124,10 +124,10 @@ test_that("msLevel,MsBackendMzR works", {
 
 test_that("mz,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(mz(be), list())
+    expect_equal(mz(be), SimpleList())
 
     res <- mz(sciex_mzr)
-    expect_true(is.list(res))
+    expect_true(is(res, "SimpleList"))
     expect_true(is.numeric(res[[1]]))
     expect_true(!any(vapply(res, is.unsorted, logical(1))))
     expect_equal(length(res), length(sciex_mzr))

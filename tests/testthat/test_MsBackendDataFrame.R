@@ -67,16 +67,16 @@ test_that("fromFile,MsBackendDataFrame works", {
 
 test_that("intensity,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_equal(intensity(be), list())
+    expect_equal(intensity(be), SimpleList())
     be <- backendInitialize(be, files = NA_character_,
                             spectraData = DataFrame(fromFile = 1L,
                                                     msLevel = c(1L, 2L)))
-    expect_equal(intensity(be), list(numeric(), numeric()))
+    expect_equal(intensity(be), SimpleList(numeric(), numeric()))
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     df$intensity <- list(1:4, c(2.1, 3.4))
     df$mz <- list(1:4, 1:2)
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-    expect_equal(intensity(be), list(1:4, c(2.1, 3.4)))
+    expect_equal(intensity(be), SimpleList(1:4, c(2.1, 3.4)))
 })
 
 test_that("ionCound,MsBackendDataFrame works", {
@@ -122,14 +122,14 @@ test_that("msLevel,MsBackendDataFrame works", {
 
 test_that("mz,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_equal(mz(be), list())
+    expect_equal(mz(be), SimpleList())
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-    expect_equal(mz(be), list(numeric(), numeric()))
+    expect_equal(mz(be), SimpleList(numeric(), numeric()))
     df$intensity <- list(1:3, 4)
     df$mz <- list(1:3, c(2.1))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-    expect_equal(mz(be), list(1:3, 2.1))
+    expect_equal(mz(be), SimpleList(1:3, 2.1))
 })
 
 test_that("peaks,MsBackendDataFrame works", {
@@ -302,14 +302,14 @@ test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
     res <- spectraData(be)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)
-    expect_equal(colnames(res), names(Spectra:::.SPECTRA_DATA_COLUMNS))
+    expect_equal(colnames(res), names(.SPECTRA_DATA_COLUMNS))
 
     df <- DataFrame(fromFile = c(1L, 1L), scanIndex = 1:2, a = "a", b = "b")
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
 
     res <- spectraData(be)
     expect_true(is(res, "DataFrame"))
-    expect_true(all(names(Spectra:::.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
     expect_equal(res$a, c("a", "a"))
     expect_equal(res$b, c("b", "b"))
 
@@ -321,12 +321,12 @@ test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
     res <- spectraData(be, c("mz"))
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), "mz")
-    expect_equal(res$mz, list(numeric(), numeric()))
+    expect_equal(res$mz, SimpleList(numeric(), numeric()))
 
     res <- spectraData(be, c("a", "intensity"))
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), c("a", "intensity"))
-    expect_equal(res$intensity, list(numeric(), numeric()))
+    expect_equal(res$intensity, SimpleList(numeric(), numeric()))
     expect_equal(res$a, c("a", "a"))
 })
 

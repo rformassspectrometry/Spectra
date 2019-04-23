@@ -113,7 +113,7 @@ setMethod("fromFile", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMzR", function(object) {
-    lapply(peaks(object), function(z) z[, 2])
+    SimpleList(lapply(peaks(object), function(z) z[, 2]))
 })
 
 #' @rdname hidden_aliases
@@ -138,7 +138,7 @@ setMethod("msLevel", "MsBackendMzR", function(object, ...) {
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendMzR", function(object) {
-    lapply(peaks(object), function(z) z[, 1])
+    SimpleList(lapply(peaks(object), function(z) z[, 1]))
 })
 
 #' @rdname hidden_aliases
@@ -254,9 +254,9 @@ setMethod("spectraData", "MsBackendMzR",
               if (any(columns %in% c("mz", "intensity"))) {
                   pks <- peaks(object)
                   if (any(columns == "mz"))
-                      res$mz <- lapply(pks, function(z) z[, 1])
+                      res$mz <- SimpleList(lapply(pks, function(z) z[, 1]))
                   if (any(columns == "intensity"))
-                      res$intensity <- lapply(pks, function(z) z[, 2])
+                      res$intensity <- SimpleList(lapply(pks, function(z) z[, 2]))
               }
               other_cols <- setdiff(
                   columns[!(columns %in% c("mz", "intensity"))], sp_cols)

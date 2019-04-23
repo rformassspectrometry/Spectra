@@ -4,6 +4,20 @@
 \docType{methods}
 \name{hidden_aliases}
 \alias{hidden_aliases}
+\alias{[,MsBackendDataFrame-method}
+\alias{For}
+\alias{S4}
+\alias{methods}
+\alias{that}
+\alias{require}
+\alias{a}
+\alias{documentation}
+\alias{entry}
+\alias{but}
+\alias{only}
+\alias{clutter}
+\alias{the}
+\alias{index.}
 \alias{acquisitionNum}
 \alias{backendInitialize}
 \alias{centroided}
@@ -65,7 +79,7 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
-\alias{[,MsBackendDataFrame-method}
+\alias{[,MsBackendDataFrame,ANY,ANY,ANY-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
@@ -228,7 +242,7 @@ spectraVariables(object, ...)
 
 \S4method{tic}{MsBackendDataFrame}(object, initial = TRUE)
 
-\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
@@ -303,6 +317,6 @@ spectraVariables(object, ...)
 \S4method{show}{Spectra}(object)
 }
 \description{
-For S4 methods that require a documentation entry but only clutter the index.
+Internal page for hidden aliases
 }
 \keyword{internal}

@@ -8,6 +8,7 @@
 \alias{MsBackend-class}
 \alias{MsBackendDataFrame-class}
 \alias{MsBackendMzR-class}
+\alias{[,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
 \alias{centroided,MsBackend-method}
@@ -43,7 +44,7 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{tic,MsBackend-method}
-\alias{[,MsBackend-method}
+\alias{[,MsBackend,ANY,ANY,ANY-method}
 \alias{MsBackendDataFrame}
 \alias{MsBackendMzR}
 \title{Mass spectrometry data backends}
@@ -119,7 +120,7 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 MsBackendDataFrame()
 
@@ -204,11 +205,11 @@ number of spectra in \code{object} indicating the file index from
 which spectra originate. If no files are available,
 \code{NA_character_} is returned for all spectra.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
-a \code{list} of \code{numeric} vectors (intensity values for each
+a \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
 \item \code{mz}: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a \code{list} or length equal to the number of
+spectra. Returns a \code{\link[=SimpleList]{SimpleList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
 \item \code{peaks} returns a \code{list} of length equal to the number of spectra
@@ -324,10 +325,10 @@ containing the precursor of a (MS2) spectrum.
 precursor.
 \item \code{"precursorCharge"}: \code{integer} with the charge of the precursor.
 \item \code{"collisionEnergy"}: \code{numeric} with the collision energy.
-\item \code{"mz"}: \code{list} of \code{numeric} vectors representing the m/z values for each
-spectrum.
-\item \code{"intensity"}: \code{list} of \code{numeric} vectors representing the intensity
-values for each spectrum.
+\item \code{"mz"}: \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors representing the m/z values
+for each spectrum.
+\item \code{"intensity"}: \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors representing the
+intensity values for each spectrum.
 }
 
 Additional columns are allowed too.

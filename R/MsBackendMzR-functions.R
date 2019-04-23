@@ -80,7 +80,7 @@ MsBackendMzR <- function() {
     if (nrow(x) <= 1)
         return(x)
     for (col in colnames(x)) {
-        x[[col]] <- .rle_compress(x[[col]])
+        x[[col]] <- .as_rle(x[[col]])
     }
     columns <- intersect(columns, colnames(x))
     for (col in columns) {
