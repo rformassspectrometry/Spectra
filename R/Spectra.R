@@ -44,7 +44,23 @@ NULL
 #'
 #' @return See individual method description for the return value.
 #'
-#' TODO @jo: add all parameters (in alphabetic order).
+#' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
+#'     section on creation of `Spectra` objects for details.
+#'
+#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
+#'     information. This is passed directly to the [backendInitialize()] method
+#'     of the [MsBackend-class].
+#'
+#' @param metadata For `Spectra`: optional `list` with metadata information.
+#'
+#' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
+#'     on creation of `Spectra` objects for details. For all other methods a
+#'     `Spectra` object.
+#'
+#' @param processingQueue For `Spectra`: optional `list` of
+#'     [ProcessingStep-class] objects.
+#'
+#' @param x A `Soectra` object.
 #'
 #' @author Sebastian Gibb, Johannes Rainer
 #'

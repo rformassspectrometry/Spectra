@@ -24,6 +24,7 @@ Depends:
     ProtGenerics (>= 1.9.1)
 Imports:
     methods
+    IRanges
 Suggests:
     testthat,
     knitr (>= 1.1.0),

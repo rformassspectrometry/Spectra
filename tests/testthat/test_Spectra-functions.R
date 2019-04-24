@@ -18,3 +18,23 @@ test_that(".combine_data_frame works", {
     res <- .combine_data_frame(a, DataFrame())
     expect_equal(res, a)
 })
+
+test_that(".remove_peaks works", {
+    int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
+             0, 1, 5, 10, 5, 1)
+    x <- cbind(mz = 1:length(int), intensity = int)
+    res <- .remove_peaks(x, 1L, centroided = FALSE)
+    expect_equal(res, x)
+    res <- .remove_peaks(x, 1L, centroided = FALSE, t = 3)
+    int_exp <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 0, 0, 0, 0,
+                 1, 5, 10, 5, 1)
+    expect_equal(res[, "intensity"], int_exp)
+
+    res <- .remove_peaks(x, 1L, centroided = TRUE)
+    int_exp <- c(0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 3, 10, 6, 2, 0, 0, 0, 2, 0, 0,
+                 0, 5, 10, 5, 0)
+    expect_equal(res[, "intensity"], int_exp)
+
+    res <- .remove_peaks(x, 1L, centroided = TRUE, msLevel. = 2L)
+    expect_equal(res[, "intensity"], int)
+})

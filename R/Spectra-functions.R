@@ -40,3 +40,65 @@ NULL
         x <- cbind(x, y[, cols_y, drop = FALSE])
     x
 }
+
+#' @description
+#'
+#' Remove peaks from spectrum data if intensity below `t`.
+#'
+#' @note
+#'
+#' This function takes base R types as input (`matrix`, `logical(1)` etc). It
+#' might eventually be better if we used a single parameter being a `DataFrame`?
+#'
+#' @param x `matrix` with spectrum data (columns `"mz"` and `"intensity"`).
+#'
+#' @param spectrumMsLevel `integer(1)` defining the MS level of the spectrum.
+#'
+#' @param centroided `logical(1)` defining whether the spectrum data is
+#'     centroided
+#'
+#' @param msLevel. optional `integer` defining the MS level(s) to which the
+#'     function should be applied.
+#'
+#' @return `matrix` with columns `"mz"` and `"intensity"`.
+#'
+#' @importMethodsFrom IRanges as extractList replaceROWS
+#'
+#' @importClassesFrom IRanges IRagens
+#'
+#' @noRd
+.remove_peaks <- function(x, spectrumMsLevel, centroided = NA, t = "min",
+                          msLevel. = spectrumMsLevel) {
+    if (!spectrumMsLevel %in% msLevel. || !length(x))
+        return(x)
+    if (is.na(centroided)) {
+        warning("Centroided undefined (NA): keeping spectrum as is.")
+        return(x)
+    }
+    if (t == "min")
+        t <- min(x[x[, "intensity"] > 0, "intensity"])
+    if (!is.numeric(t))
+        stop("'t' must either be 'min' or numeric.")
+    if (centroided) {
+        x[x[, "intensity"] <= t, "intensity"] <- 0
+    } else {
+        ints <- x[, "intensity"]
+        peakRanges <- as(ints > 0L, "IRanges")
+        toLow <- max(extractList(ints, peakRanges)) <= t
+        x[, "intensity"] <- replaceROWS(ints, peakRanges[toLow], 0)
+    }
+    x
+}
+
+## .clean <- function(spectrum, all, updatePeaksCount = TRUE, msLevel.) {
+##     ## Just clean the spectrum if its MS level matched msLevel.
+##     if (!missing(msLevel.)) {
+##         if (!(msLevel(spectrum) %in% msLevel.))
+##             return(spectrum)
+##     }
+##   keep <- utils.clean(spectrum@intensity, all)
+##   spectrum@intensity <- spectrum@intensity[keep]
+##   spectrum@mz <- spectrum@mz[keep]
+##   spectrum@peaksCount <- length(spectrum@intensity)
+##   return(spectrum)
+## }
