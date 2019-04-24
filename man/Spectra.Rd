@@ -8,6 +8,7 @@
 \alias{Spectra,missing-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
+\alias{removePeaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 \S4method{Spectra}{DataFrame}(object, processingQueue = list(),
@@ -21,11 +22,38 @@
 \S4method{length}{Spectra}(x)
 
 \S4method{msLevel}{Spectra}(object)
+
+\S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
+}
+\arguments{
+\item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
+on creation of \code{Spectra} objects for details. For all other methods a
+\code{Spectra} object.}
+
+\item{processingQueue}{For \code{Spectra}: optional \code{list} of
+\linkS4class{ProcessingStep} objects.}
+
+\item{metadata}{For \code{Spectra}: optional \code{list} with metadata information.}
+
+\item{...}{Additional arguments.}
+
+\item{backend}{For \code{Spectra}: \linkS4class{MsBackend} to be used as backend. See
+section on creation of \code{Spectra} objects for details.}
+
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
+information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
+of the \linkS4class{MsBackend}.}
+
+\item{x}{A \code{Spectra} object.}
+
+\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
+
+\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
+the function should be applied. For \code{filterMsLevel}: the MS level to
+which \code{object} should be subsetted.}
 }
 \value{
 See individual method description for the return value.
-
-TODO @jo: add all parameters (in alphabetic order).
 }
 \description{
 The \code{Spectra} class encapsules spectral mass spectrometry data and
@@ -57,10 +85,29 @@ argument.
 \code{Spectra} classes are usually created with the \code{readSpectra}
 function that reads general spectrum metadata information from the  mass
 spectrometry data files.
+}
 
-The \linkS4class{MsBackend} can be changed with the \code{setBackend} function by
-specifying the new \linkS4class{MsBackend} with the \code{backend} parameter. See
-examples for more details.
+\section{Accessing data}{
+
+\itemize{
+\item \code{length}: get the number of spectra in the object.
+\item \code{msLevel}: get the spectra's MS level. Returns an integer vector (names
+being spectrum names, length equal to the number of spectra) with the MS
+level for each spectrum.
+}
+}
+
+\section{Data manipulation and analysis methods}{
+
+
+Many data manipulation operations, such as those listed in this section, are
+not applied immediately to the spectra, but added to a
+\emph{lazy processinq queue}. Operations stored in this queue are applied
+on-the-fly to spectra data each time it is accessed. This lazy
+execution guarantees the same functionality for \code{Spectra} objects with
+any backend, i.e. backends supporting to save changes to spectrum data
+(\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} as well as read-only backends (such
+as the \code{\link[=MsBackendMzR]{MsBackendMzR()}}).
 }
 
 \examples{

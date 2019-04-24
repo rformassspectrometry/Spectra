@@ -41,6 +41,27 @@ NULL
     x
 }
 
+#' Helper function to add an arbitrary function with its arguments as a
+#' processing step to the object's `processingQueue`.
+#'
+#' @param object any object with an `processingQueue` slot.
+#'
+#' @param FUN function or name of a function.
+#'
+#' @param ... Additional arguments to `FUN`.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+addProcessingStep <- function(object, FUN, ...) {
+    if (missing(FUN))
+        return(object)
+    object@processingQueue <- c(object@processingQueue,
+                                list(ProcessingStep(FUN, ARGS = list(...))))
+    validObject(object)
+    object
+}
+
 #' @description
 #'
 #' Remove peaks from spectrum data if intensity below `t`.
@@ -62,9 +83,9 @@ NULL
 #'
 #' @return `matrix` with columns `"mz"` and `"intensity"`.
 #'
-#' @importMethodsFrom IRanges as extractList replaceROWS
+#' @importMethodsFrom IRanges extractList replaceROWS
 #'
-#' @importClassesFrom IRanges IRagens
+#' @importClassesFrom IRanges IRanges
 #'
 #' @noRd
 .remove_peaks <- function(x, spectrumMsLevel, centroided = NA, t = "min",

@@ -38,9 +38,24 @@ NULL
 #' function that reads general spectrum metadata information from the  mass
 #' spectrometry data files.
 #'
-#' The [MsBackend-class] can be changed with the `setBackend` function by
-#' specifying the new [MsBackend-class] with the `backend` parameter. See
-#' examples for more details.
+#' @section Accessing data:
+#'
+#' - `length`: get the number of spectra in the object.
+#'
+#' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
+#'   being spectrum names, length equal to the number of spectra) with the MS
+#'   level for each spectrum.
+#'
+#' @section Data manipulation and analysis methods:
+#'
+#' Many data manipulation operations, such as those listed in this section, are
+#' not applied immediately to the spectra, but added to a
+#' *lazy processinq queue*. Operations stored in this queue are applied
+#' on-the-fly to spectra data each time it is accessed. This lazy
+#' execution guarantees the same functionality for `Spectra` objects with
+#' any backend, i.e. backends supporting to save changes to spectrum data
+#' ([MsBackendDataFrame()] as well as read-only backends (such
+#' as the [MsBackendMzR()]).
 #'
 #' @return See individual method description for the return value.
 #'
@@ -53,6 +68,10 @@ NULL
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
+#' @param msLevel. `integer` defining the MS level(s) of the spectra to which
+#'     the function should be applied. For `filterMsLevel`: the MS level to
+#'     which `object` should be subsetted.
+#'
 #' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
 #'     on creation of `Spectra` objects for details. For all other methods a
 #'     `Spectra` object.
@@ -60,7 +79,11 @@ NULL
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
 #'
-#' @param x A `Soectra` object.
+#' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
+#'
+#' @param x A `Spectra` object.
+#'
+#' @param ... Additional arguments.
 #'
 #' @author Sebastian Gibb, Johannes Rainer
 #'
@@ -183,7 +206,24 @@ setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
 ## DATA MANIPULATION METHODS
 
-
+#' @rdname Spectra
+#'
+#' @exportMethod removePeaks
+setMethod("removePeaks", "Spectra", function(object, t = "min", msLevel.) {
+    if (!is.numeric(t) & t != "min")
+        stop("Argument 't' has to be either numeric of 'min'.")
+    if (missing(msLevel.))
+        msLevel. <- base::sort(unique(msLevel(object)))
+    if (!is.numeric(msLevel.))
+        stop("'msLevel' must be numeric.")
+    object <- addProcessingStep(object, ".remove_peaks", t = t,
+                                msLevel. = msLevel.)
+    object@processing <- c(object@processing,
+                           paste0("Signal <= ", t, " in MS level(s) ",
+                                  paste0(msLevel., collapse = ", "),
+                                  " set to 0 [", date(), "]"))
+    object
+})
 
 ## #' @rdname Spectra
 ## #'

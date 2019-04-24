@@ -19,6 +19,15 @@ test_that(".combine_data_frame works", {
     expect_equal(res, a)
 })
 
+test_that("addProcessingStep works", {
+    tst <- Spectra()
+    tst <- addProcessingStep(tst, mean)
+    expect_true(length(tst@processingQueue) == 1)
+    ## expect_error(addProcessingStep(tst, "4"))
+    tst <- addProcessingStep(tst, function(z, t) z * t, t = 4)
+    expect_true(length(tst@processingQueue) == 2)
+})
+
 test_that(".remove_peaks works", {
     int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
              0, 1, 5, 10, 5, 1)

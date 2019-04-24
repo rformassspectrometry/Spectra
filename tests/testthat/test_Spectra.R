@@ -42,3 +42,12 @@ test_that("msLevel,Spectra works", {
     sps <- Spectra(df)
     expect_equal(msLevel(sps), c(1L, 2L))
 })
+
+test_that("removePeaks,Spectra works", {
+    sps <- Spectra()
+    res <- removePeaks(sps, t = 10)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(".remove_peaks",
+                                list(t = 10, msLevel. = integer())))
+})

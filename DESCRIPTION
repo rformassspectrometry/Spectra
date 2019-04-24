@@ -23,7 +23,7 @@ Depends:
     BiocParallel,
     ProtGenerics (>= 1.9.1)
 Imports:
-    methods
+    methods,
     IRanges
 Suggests:
     testthat,

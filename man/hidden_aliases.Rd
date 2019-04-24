@@ -36,6 +36,7 @@
 \alias{precursorCharge}
 \alias{precursorIntensity}
 \alias{precursorMz}
+\alias{removePeaks}
 \alias{rtime<-}
 \alias{scanIndex}
 \alias{smoothed}
@@ -153,6 +154,8 @@ precursorCharge(object, ...)
 precursorIntensity(object, ...)
 
 precursorMz(object, ...)
+
+removePeaks(object, t = "min", ...)
 
 rtime(object) <- value
 

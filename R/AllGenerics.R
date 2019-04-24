@@ -58,6 +58,9 @@ setGeneric("precursorIntensity", function(object, ...)
 setGeneric("precursorMz", function(object, ...)
     standardGeneric("precursorMz"))
 #' @rdname hidden_aliases
+setGeneric("removePeaks", function(object, t="min", ...)
+    standardGeneric("removePeaks"))
+#' @rdname hidden_aliases
 setGeneric("rtime<-", function(object, value)
     standardGeneric("rtime<-"))
 #' @rdname hidden_aliases

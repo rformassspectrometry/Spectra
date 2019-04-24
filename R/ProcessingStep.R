@@ -48,14 +48,15 @@ setClass("ProcessingStep",
          ),
          validity = function(object) {
              msg <- character()
-             if (length(object@FUN)) {
-                 if (!is.function(object@FUN)) {
-                     res <- try(match.fun(object@FUN), silent = TRUE)
-                     if (is(res, "try-error"))
-                         msg <- c(msg, paste0("Function '", object@FUN,
-                                              "' not found."))
-                 }
-             }
+             ## Does not work with un-exported functions.
+             ## if (length(object@FUN)) {
+             ##     if (!is.function(object@FUN)) {
+             ##         res <- try(match.fun(object@FUN), silent = TRUE)
+             ##         if (is(res, "try-error"))
+             ##             msg <- c(msg, paste0("Function '", object@FUN,
+             ##                                  "' not found."))
+             ##     }
+             ## }
              if (length(msg))
                  msg
              else TRUE

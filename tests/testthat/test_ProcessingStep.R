@@ -2,7 +2,7 @@ test_that("ProcessingStep constructor", {
     ps <- new("ProcessingStep", FUN = "mean", ARGS = list(na.rm = TRUE))
     expect_match(capture.output(show(ps))[1],
                  "Object of class \"ProcessingStep\"")
-    expect_error(new("ProcessingStep", FUN = "aaaa"))
+    ## expect_error(new("ProcessingStep", FUN = "aaaa"))
     ps <- ProcessingStep(mean, list(na.rm = TRUE))
     expect_true(validObject(ps))
 })
