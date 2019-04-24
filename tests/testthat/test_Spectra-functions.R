@@ -72,3 +72,17 @@ test_that(".apply_processing_queue works", {
 
     ## TODO: test with processing step of length 2.
 })
+
+test_that(".peaksapply works", {
+    sps <- Spectra(backend = sciex_mzr)
+    res <- .peaksapply(sps, FUN = .remove_peaks, t = 50000)
+    expect_true(is.list(res))
+    expect_equal(length(res), length(sps))
+    expect_true(all(vapply(res, is.matrix, logical(1))))
+
+    sps@processingQueue <- list(ProcessingStep(.remove_peaks, list(t = 50000)))
+    res_2 <- .peaksapply(sps)
+    expect_equal(res, res_2)
+
+    ## TODO: test with processing step of length 2
+})

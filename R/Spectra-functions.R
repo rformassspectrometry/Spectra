@@ -135,13 +135,56 @@ addProcessingStep <- function(object, FUN, ...) {
     if (length(queue)) {
         for (i in seq_along(x)) {
             for (pStep in queue) {
-                x[[i]] <- executeProcessingStep(pStep, x = x[[i]],
+                x[[i]] <- executeProcessingStep(pStep, x[[i]],
                                                 spectrumMsLevel = msLevel[i],
                                                 centroided = centroided[i])
             }
         }
     }
     x
+}
+
+#' @title Apply arbitrary functions and processing queue to peaks matrices
+#'
+#' @description
+#'
+#' This function applies the processing queue and an arbitrary function to
+#' the peaks matrix of each spectrum of the `Spectra` object `object`.
+#'
+#' @param object `Spectra` object.
+#'
+#' @param FUN optional function to be applied to the peaks matrix. The peaks
+#'     matrix will be passed to the first argument of the function. The function
+#'     should also have arguments `...`.
+#'
+#' @param ... optional additional arguments to `FUN`.
+#'
+#' @param f `factor` or `vector` that can be coerced to one defining how the
+#'     data should be split for parallel processing.
+#'
+#' @param BPPARAM parallel processing setup.
+#'
+#' @return `list` of `matrix` with the peaks.
+#'
+#' @author Johannes Rainer
+#'
+#' @importMethodsFrom BiocParallel bplapply
+#'
+#' @noRd
+.peaksapply <- function(object, FUN = NULL, ..., f = fromFile(object),
+                        BPPARAM = bpparam()) {
+    if (length(f) != length(object))
+        stop("Length of 'f' has to match 'length(object)'")
+    pqueue <- object@processingQueue
+    if (!is.null(FUN))
+        pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
+    ## Question whether we would to use a slim version of the backend, i.e.
+    ## reduce it to certain columns/spectra variables.
+    res <- bplapply(split(object@backend, f), function(z, queue) {
+        .apply_processing_queue(peaks(z), msLevel(z), centroided(z),
+                                queue = queue)
+    }, queue = pqueue, BPPARAM = BPPARAM)
+    unlist(res, recursive = FALSE, use.names = FALSE)
 }
 
 ## .clean_peaks <- function(spectrum, all, updatePeaksCount = TRUE, msLevel.) {
