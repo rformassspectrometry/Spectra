@@ -111,7 +111,40 @@ addProcessingStep <- function(object, FUN, ...) {
     x
 }
 
-## .clean <- function(spectrum, all, updatePeaksCount = TRUE, msLevel.) {
+#' @description
+#'
+#' Apply the lazy evaluation processing queue to the peaks (i.e. m/z, intensity
+#' matrix) and return the result.
+#'
+#' @param x `list` of peak `matrix`.
+#'
+#' @param msLevel `integer` with the MS level of each spectrum. Length has to
+#'     match `length(x)`.
+#'
+#' @param centroided `logical` whether spectra are centroided. Length has to
+#'     match `length(x)`.
+#'
+#' @param queue `list` of `ProcessStep` elements.
+#'
+#' @return `list` of peak `matrix` elements.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.apply_processing_queue <- function(x, msLevel, centroided, queue = NULL) {
+    if (length(queue)) {
+        for (i in seq_along(x)) {
+            for (pStep in queue) {
+                x[[i]] <- executeProcessingStep(pStep, x = x[[i]],
+                                                spectrumMsLevel = msLevel[i],
+                                                centroided = centroided[i])
+            }
+        }
+    }
+    x
+}
+
+## .clean_peaks <- function(spectrum, all, updatePeaksCount = TRUE, msLevel.) {
 ##     ## Just clean the spectrum if its MS level matched msLevel.
 ##     if (!missing(msLevel.)) {
 ##         if (!(msLevel(spectrum) %in% msLevel.))

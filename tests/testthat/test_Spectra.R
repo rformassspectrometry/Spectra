@@ -25,6 +25,15 @@ test_that("Spectra,missing works", {
     expect_equal(msLevel(res), c(1L, 2L))
 })
 
+test_that("fromFile,Spectra works", {
+    sps <- Spectra()
+    expect_equal(fromFile(sps), integer())
+
+    df <- DataFrame(msLevel = c(1L, 2L))
+    sps <- Spectra(df)
+    expect_equal(fromFile(sps), c(1L, 1L))
+})
+
 test_that("length,Spectra works", {
     sps <- Spectra()
     expect_equal(length(sps), 0)
@@ -48,6 +57,6 @@ test_that("removePeaks,Spectra works", {
     res <- removePeaks(sps, t = 10)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(".remove_peaks",
+                 ProcessingStep(.remove_peaks,
                                 list(t = 10, msLevel. = integer())))
 })

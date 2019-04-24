@@ -44,6 +44,7 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{tic,MsBackend-method}
+\alias{[,MsBackend,ANY,ANY,ANY-method}
 \alias{MsBackendDataFrame}
 \alias{MsBackendMzR}
 \title{Mass spectrometry data backends}
@@ -119,7 +120,7 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 MsBackendDataFrame()
 

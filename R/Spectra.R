@@ -40,6 +40,9 @@ NULL
 #'
 #' @section Accessing data:
 #'
+#' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
+#'   integer vector of length equal to the number of spectra.
+#'
 #' - `length`: get the number of spectra in the object.
 #'
 #' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
@@ -196,6 +199,9 @@ setMethod("Spectra", "missing", function(object, processingQueue = list(),
 ## ACCESSOR METHODS
 
 #' @rdname Spectra
+setMethod("fromFile", "Spectra", function(object) fromFile(object@backend))
+
+#' @rdname Spectra
 #'
 #' @exportMethod length
 setMethod("length", "Spectra", function(x) length(x@backend))
@@ -216,7 +222,7 @@ setMethod("removePeaks", "Spectra", function(object, t = "min", msLevel.) {
         msLevel. <- base::sort(unique(msLevel(object)))
     if (!is.numeric(msLevel.))
         stop("'msLevel' must be numeric.")
-    object <- addProcessingStep(object, ".remove_peaks", t = t,
+    object <- addProcessingStep(object, .remove_peaks, t = t,
                                 msLevel. = msLevel.)
     object@processing <- c(object@processing,
                            paste0("Signal <= ", t, " in MS level(s) ",

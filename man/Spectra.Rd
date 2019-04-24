@@ -6,6 +6,7 @@
 \alias{Spectra-class}
 \alias{Spectra,DataFrame-method}
 \alias{Spectra,missing-method}
+\alias{fromFile,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{removePeaks,Spectra-method}
@@ -18,6 +19,8 @@
 \S4method{Spectra}{missing}(object, processingQueue = list(),
   metadata = list(), ..., backend = MsBackendDataFrame(),
   BPPARAM = bpparam())
+
+\S4method{fromFile}{Spectra}(object)
 
 \S4method{length}{Spectra}(x)
 
@@ -90,6 +93,8 @@ spectrometry data files.
 \section{Accessing data}{
 
 \itemize{
+\item \code{fromFile}: get the file/sample assignment of each spectrum. Returns an
+integer vector of length equal to the number of spectra.
 \item \code{length}: get the number of spectra in the object.
 \item \code{msLevel}: get the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS

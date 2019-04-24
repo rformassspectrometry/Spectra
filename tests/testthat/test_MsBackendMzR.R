@@ -1,7 +1,3 @@
-sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
-sciex_pks <- peaks(sciex_mzr)
-fl <- dir(system.file("proteomics", package = "msdata"), full.names = TRUE)
-tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
 test_that("initializeBackend,MsBackendMzR works", {
     fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)

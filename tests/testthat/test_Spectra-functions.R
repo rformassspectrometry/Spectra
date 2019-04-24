@@ -23,7 +23,7 @@ test_that("addProcessingStep works", {
     tst <- Spectra()
     tst <- addProcessingStep(tst, mean)
     expect_true(length(tst@processingQueue) == 1)
-    ## expect_error(addProcessingStep(tst, "4"))
+    expect_error(addProcessingStep(tst, "4"))
     tst <- addProcessingStep(tst, function(z, t) z * t, t = 4)
     expect_true(length(tst@processingQueue) == 2)
 })
@@ -46,4 +46,29 @@ test_that(".remove_peaks works", {
 
     res <- .remove_peaks(x, 1L, centroided = TRUE, msLevel. = 2L)
     expect_equal(res[, "intensity"], int)
+})
+
+
+test_that(".apply_processing_queue works", {
+    inp <- list(1:5, 1:3, 5)
+    expect_equal(Spectra:::.apply_processing_queue(inp), inp)
+    res <- Spectra:::.apply_processing_queue(inp, msLevel = rep(0, 3),
+                                             centroided = rep(FALSE, 3),
+                                             list(ProcessingStep("sum")))
+    expect_equal(res, list(sum(1:5), sum(1:3), 5))
+
+    q <- list(ProcessingStep(function(x, y, ...) x + y, ARGS = list(y = 3)),
+              ProcessingStep(function(x, y, ...) x - y, ARGS = list(y = 1)))
+    res <- Spectra:::.apply_processing_queue(inp, msLevel = rep(0, 3),
+                                   centroided = rep(FALSE, 3), q)
+    expect_equal(res, list((1:5 + 2), (1:3 + 2), 7))
+
+    be <- sciex_mzr
+    pq <- list(ProcessingStep(.remove_peaks, list(t = 50000)))
+    res <- .apply_processing_queue(peaks(be), msLevel(be),
+                                   rep(TRUE, length(be)), pq)
+    expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
+                           logical(1))))
+
+    ## TODO: test with processing step of length 2.
 })
