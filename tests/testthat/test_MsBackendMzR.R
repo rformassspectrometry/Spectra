@@ -364,3 +364,14 @@ test_that("[,MsBackendMzR works", {
     spd <- spectraData(tmp)
     expect_equal(spd$mz, mz(tmp))
 })
+
+test_that("selectSpectraVariables,MsBackendMzR works", {
+    be <- sciex_mzr
+
+    res <- selectSpectraVariables(be, c("fromFile", "msLevel", "rtime",
+                                        "scanIndex"))
+    expect_equal(colnames(res@spectraData), c("fromFile", "msLevel", "rtime",
+                                              "scanIndex"))
+    expect_error(selectSpectraVariables(be, c("fromFile", "msLevel")),
+                 "scanIndex is/are missing")
+})

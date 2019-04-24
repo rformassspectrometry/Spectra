@@ -375,3 +375,23 @@ test_that("[,MsBackendDataFrame works", {
     expect_equal(res@files, c(tmpfb, tmpfa))
     expect_equal(res@spectraData$file, c("b", "a"))
 })
+
+test_that("selectSpectraVariables,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    res <- selectSpectraVariables(be, c("fromFile", "msLevel"))
+
+    df <- DataFrame(fromFile = c(1L, 1L), msLevel = 1:2, rtime = c(2.3, 1.2),
+                    other_col = 2)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    res <- selectSpectraVariables(be, c("fromFile", "other_col"))
+    expect_equal(colnames(res@spectraData), c("fromFile", "other_col"))
+    expect_equal(msLevel(res), c(NA_integer_, NA_integer_))
+
+    res <- selectSpectraVariables(be, c("fromFile", "rtime"))
+    expect_equal(colnames(res@spectraData), c("fromFile", "rtime"))
+
+    expect_error(selectSpectraVariables(be, "rtime"), "fromFile is/are missing")
+    expect_error(selectSpectraVariables(be, "something"),
+                 "something not available")
+})

@@ -39,6 +39,7 @@
 \alias{removePeaks}
 \alias{rtime<-}
 \alias{scanIndex}
+\alias{selectSpectraVariables}
 \alias{smoothed}
 \alias{smoothed<-}
 \alias{Spectra}
@@ -73,6 +74,7 @@
 \alias{rtime,MsBackendDataFrame-method}
 \alias{rtime<-,MsBackendDataFrame-method}
 \alias{scanIndex,MsBackendDataFrame-method}
+\alias{selectSpectraVariables,MsBackendDataFrame-method}
 \alias{smoothed,MsBackendDataFrame-method}
 \alias{smoothed<-,MsBackendDataFrame-method}
 \alias{spectraData,MsBackendDataFrame-method}
@@ -162,6 +164,8 @@ rtime(object) <- value
 
 scanIndex(object, ...)
 
+selectSpectraVariables(object, ...)
+
 smoothed(object, ...)
 
 smoothed(object) <- value
@@ -230,6 +234,9 @@ spectraVariables(object, ...)
 \S4method{rtime}{MsBackendDataFrame}(object) <- value
 
 \S4method{scanIndex}{MsBackendDataFrame}(object)
+
+\S4method{selectSpectraVariables}{MsBackendDataFrame}(object,
+  spectraVariables = spectraVariables(object))
 
 \S4method{smoothed}{MsBackendDataFrame}(object)
 

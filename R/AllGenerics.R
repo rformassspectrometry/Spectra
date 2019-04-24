@@ -67,6 +67,9 @@ setGeneric("rtime<-", function(object, value)
 setGeneric("scanIndex", function(object, ...)
     standardGeneric("scanIndex"))
 #' @rdname hidden_aliases
+setGeneric("selectSpectraVariables", function(object, ...)
+    standardGeneric("selectSpectraVariables"))
+#' @rdname hidden_aliases
 setGeneric("smoothed", function(object, ...)
     standardGeneric("smoothed"))
 #' @rdname hidden_aliases
