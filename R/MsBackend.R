@@ -6,7 +6,7 @@ NULL
 #' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class
 #'
 #' @description
-#' 
+#'
 #' Note that the classes described here are not meant to be used
 #' directly by the end-users and the material in this man page is
 #' aimed at package developers.
@@ -27,9 +27,9 @@ NULL
 #' classes* section documents the API that a backend must implement.
 #'
 #' Currently available backends are:
-#' 
+#'
 #' - `MsBackendDataFrame`: stores all data in memory using a `DataFrame`.
-#' 
+#'
 #' - `MsBackendMzR`: stores the m/z and intensities on-disk in raw
 #'    data files (typically `mzML` or `mzXML`) and the spectra
 #'    annotation information (header) in memory in a `DataFrame`. This
@@ -77,7 +77,7 @@ NULL
 #'   number of spectra in `object` indicating the file index from
 #'   which spectra originate. If no files are available,
 #'   `NA_character_` is returned for all spectra.
-#'   
+#'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a `list` of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
@@ -162,7 +162,7 @@ NULL
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `NA_real_` is returned.
 #'
-#' - `smoothed`,`smoothed<-`: geta or sets whether a spectrum is
+#' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
 #'   *smoothed*. `smoothed` returns a `logical` vector of length equal
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
@@ -224,7 +224,7 @@ NULL
 #' argument:
 #'
 #' - @param spectraData For : `DataFrame` with spectrum metadata/data.
-#' 
+#'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
 #' The `MsBackendMzR` keeps only a limited amount of data in memory,
