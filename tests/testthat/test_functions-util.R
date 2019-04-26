@@ -42,7 +42,7 @@ test_that(".as_rle works", {
     expect_equal(.as_rle(list(a = 1:3, b = 2:3)), list(a = 1:3, b = 2:3))
 })
 
-test_that("clean utils", {
+test_that("utils.clean works", {
     x <- list(c(0, 0, 0, 1, 0, 1, 0, 0, 0),
               c(0, 0, 0, 1, 0, 0, 1, 0, 0, 0),
               c(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0),
@@ -91,7 +91,7 @@ test_that("clean utils", {
     }
 })
 
-test_that("enableNeighbours utils", {
+test_that("utils.enableNeighbours works", {
     expect_error(MSnbase:::utils.enableNeighbours(1:10))
     expect_error(MSnbase:::utils.enableNeighbours(LETTERS[1:10]))
     expect_equal(MSnbase:::utils.enableNeighbours(c(FALSE, TRUE, FALSE)),

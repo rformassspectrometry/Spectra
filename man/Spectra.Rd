@@ -11,6 +11,7 @@
 \alias{msLevel,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
+\alias{peaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 \S4method{Spectra}{DataFrame}(object, processingQueue = list(),
@@ -30,6 +31,8 @@
 \S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
 
 \S4method{clean}{Spectra}(object, all = FALSE, msLevel.)
+
+\S4method{peaks}{Spectra}(object, ...)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -106,6 +109,9 @@ integer vector of length equal to the number of spectra.
 \item \code{msLevel}: get the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.
+\item \code{peaks}: get the \emph{peaks} matrices for all spectra in \code{object}. The function
+returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns \code{mz} and
+\code{intensity} with the m/z and intensity values for all peaks of a spectrum.
 }
 }
 

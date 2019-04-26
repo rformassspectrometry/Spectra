@@ -61,7 +61,7 @@ test_that("removePeaks,Spectra works", {
                                 list(t = 10, msLevel. = integer())))
 })
 
-test_that("ckean,Spectra works", {
+test_that("clean,Spectra works", {
     sps <- Spectra()
     res <- clean(sps)
     expect_true(length(res@processingQueue) == 1)
@@ -74,4 +74,21 @@ test_that("ckean,Spectra works", {
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.clean_peaks,
                                 list(all = TRUE, msLevel. = 2L)))
+})
+
+test_that("peaks,Spectra works", {
+    df <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L)
+    df$mz <- list(1:4, 1:5)
+    df$intensity <- list(1:4, 1:5)
+    be <- backendInitialize(MsBackendDataFrame(), file = NA_character_, df)
+    sps <- Spectra(backend = be)
+    res <- peaks(sps)
+    expect_true(is(res, "SimpleList"))
+    expect_equal(res[[1]][, 1], 1:4)
+    expect_equal(res[[2]][, 1], 1:5)
+
+    sps <- Spectra(backend = MsBackendDataFrame())
+    res <- peaks(sps)
+    expect_true(is(res, "SimpleList"))
+    expect_true(length(res) == 0)
 })

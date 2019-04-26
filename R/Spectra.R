@@ -49,6 +49,10 @@ NULL
 #'   being spectrum names, length equal to the number of spectra) with the MS
 #'   level for each spectrum.
 #'
+#' - `peaks`: get the *peaks* matrices for all spectra in `object`. The function
+#'   returns a [SimpleList()] of matrices, each `matrix` with columns `mz` and
+#'   `intensity` with the m/z and intensity values for all peaks of a spectrum.
+#'
 #' @section Data manipulation and analysis methods:
 #'
 #' Many data manipulation operations, such as those listed in this section, are
@@ -266,135 +270,11 @@ setMethod("clean", "Spectra", function(object, all = FALSE, msLevel.) {
     object
 })
 
-## #' @rdname Spectra
-## #'
-## #' @importMethodsFrom BiocParallel bplapply
-## #'
-## #' @importFrom BiocParallel bpparam
-## #'
-## #' @export
-## readSpectra <- function(file, sampleData, backend = BackendMzR(),
-##                               smoothed = NA, metadata = list(), ...,
-##                               BPPARAM = bpparam()) {
-##     ## if (missing(backend) || !inherits(backend))
-##     if (missing(file) || length(file) == 0)
-##         stop("Parameter 'file' is required")
-##     if (!all(file.exists(file)))
-##         stop("Input file(s) can not be found")
-##     file <- normalizePath(file)
-##     if (!missing(sampleData)) {
-##         if (is.data.frame(sampleData))
-##             sampleData <- DataFrame(sampleData)
-##     } else {
-##         sampleData <- DataFrame(sampleIdx = seq_along(file))
-##     }
-##     if (!is.logical(smoothed))
-##         stop("smoothed should be a logical")
-##     .read_file <- function(z, files, smoothed) {
-##         file_number <- match(z, files)
-##         suppressPackageStartupMessages(
-##             require("MSnbase", quietly = TRUE, character.only = TRUE))
-##         msd <- mzR::openMSfile(z)
-##         on.exit(mzR::close(msd))
-##         hdr <- mzR::header(msd)
-##         sp_idx <- seq_len(nrow(hdr))
-##         rownames(hdr) <- formatFileSpectrumNames(fileIds = file_number,
-##                                                  spectrumIds = seq_along(sp_idx),
-##                                                  nSpectra = length(sp_idx),
-##                                                  nFiles = length(files))
-##         ## rename totIonCurrent and peaksCount, as detailed in
-##         ## https://github.com/lgatto/MSnbase/issues/105#issuecomment-229503816
-##         names(hdr) <- sub("peaksCount", "originalPeaksCount", names(hdr))
-##         ## Add also:
-##         ## o fileIdx -> links to fileNames property
-##         ## o spIdx -> the index of the spectrum in the file.
-##         hdr$fileIdx <- file_number
-##         hdr$spIdx <- sp_idx
-##         hdr$smoothed <- smoothed
-##         if (isCdfFile(z)) {
-##             if (!any(colnames(hdr) == "polarity"))
-##                 hdr$polarity <- NA
-##         }
-##         ## Order the fdData by acquisitionNum to force use of acquisitionNum
-##         ## as unique ID for the spectrum (issue #103). That way we can use
-##         ## the spIdx (is the index of the spectrum within the file) for
-##         ## subsetting and extracting.
-##         if (!all(sort(hdr$acquisitionNum) == hdr$acquisitionNum))
-##             warning(paste("Unexpected acquisition number order detected.",
-##                           "Please contact the maintainers or open an issue",
-##                           "on https://github.com/lgatto/MSnbase.",
-##                           sep = "\n")) ## see issue #160
-##         hdr[order(hdr$acquisitionNum), ]
-##     }
-##     spectraData <- DataFrame(
-##         do.call(rbind, bplapply(file, .read_file, files = file,
-##                                 smoothed = smoothed, BPPARAM = BPPARAM)))
-##     msnexp <- new("Spectra",
-##         backend = backendInitialize(BackendMzR(), file),
-##         sampleData = sampleData,
-##         spectraData = spectraData,
-##         processingQueue = list(),
-##         metadata = metadata,
-##         processing = paste0("Data loaded [", date(), "]")
-##     )
-
-##     if (!inherits(backend, "BackendMzR"))
-##         msnexp <- setBackend(msnexp, backend, ..., BPPARAM = BPPARAM)
-
-##     msnexp
-## }
-
-## #' @rdname Spectra
-## setGeneric("setBackend", function(object, backend, ..., BPPARAM = bpparam())
-##     standardGeneric("setBackend"))
-## #' @rdname hidden_aliases
-## #'
-## #' @importMethodsFrom BiocParallel bpmapply
-## setMethod(
-##     "setBackend",
-##     c("Spectra", "MsBackend"),
-##     function(object, backend, ..., BPPARAM = bpparam()) {
-##     backend <- backendInitialize(backend, fileNames(object), object@spectraData,
-##                                  ...)
-##     ## update fileIdx, useful to split src backends across cores
-##     spd <- object@spectraData
-##     spd$fileIdx <- 1L
-##     spd <- split(spd, object@spectraData$fileIdx)
-
-##     ## keep current modCount
-##     backend@modCount <- object@backend@modCount
-
-##     backendSplitByFile(backend, object@spectraData) <-
-##         bpmapply(function(dst, src, spd, queue) {
-##             backendWriteSpectra(
-##                 dst, backendReadSpectra(src, spd), spd, updateModCount=FALSE
-##             )
-##         },
-##         dst = backendSplitByFile(backend, object@spectraData),
-##         src = backendSplitByFile(object@backend, object@spectraData),
-##         spd = spd,
-##         SIMPLIFY = FALSE, USE.NAMES = FALSE, BPPARAM = BPPARAM)
-
-##     object@backend <- backend
-##     object@processing <- c(object@processing,
-##                            paste0("Backend set to '", class(backend),
-##                                   "' [", date(), "]"))
-##     validObject(object)
-##     object
-## })
-
-## #' @rdname hidden_aliases
-## setMethod(
-##     "setBackend",
-##     c("Spectra", "BackendMzR"),
-##     function(object, backend, ..., BPPARAM = bpparam()) {
-##     if (any(object@backend@modCount))
-##         stop("Can not change backend to 'BackendMzR' because the ",
-##              "data was changed.")
-##     object@backend <- backendInitialize(backend, fileNames(object),
-##                                         object@spectraData, ...)
-##     object@processing <- c(object@processing,
-##                            paste0("Backend set to 'BackendMzR' [", date(), "]"))
-##     validObject(object)
-##     object
-## })
+#' @rdname Spectra
+#'
+#' @importMethodsFrom ProtGenerics peaks
+#'
+#' @exportMethod peaks
+setMethod("peaks", "Spectra", function(object, ...) {
+    SimpleList(.peaksapply(object, ...))
+})

@@ -89,7 +89,7 @@ addProcessingStep <- function(object, FUN, ...) {
 #'
 #' @noRd
 .remove_peaks <- function(x, spectrumMsLevel, centroided = NA, t = "min",
-                          msLevel. = spectrumMsLevel) {
+                          msLevel. = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel. || !length(x))
         return(x)
     if (is.na(centroided)) {
@@ -121,7 +121,7 @@ addProcessingStep <- function(object, FUN, ...) {
 #'
 #' @noRd
 .clean_peaks <- function(x, spectrumMsLevel, all = FALSE,
-                         msLevel. = spectrumMsLevel) {
+                         msLevel. = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel. || !length(x))
         return(x)
     x[utils.clean(x[, "intensity"], all), , drop = FALSE]
@@ -189,8 +189,11 @@ addProcessingStep <- function(object, FUN, ...) {
 #' @noRd
 .peaksapply <- function(object, FUN = NULL, ..., f = fromFile(object),
                         BPPARAM = bpparam()) {
-    if (length(f) != length(object))
-        stop("Length of 'f' has to match 'length(object)'")
+    len <- length(object)
+    if (!len)
+        return(list())
+    if (length(f) != len)
+        stop("Length of 'f' has to match 'length(object)' (", len, ")")
     pqueue <- object@processingQueue
     if (!is.null(FUN))
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
