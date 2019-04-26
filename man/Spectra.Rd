@@ -10,6 +10,7 @@
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{removePeaks,Spectra-method}
+\alias{clean,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 \S4method{Spectra}{DataFrame}(object, processingQueue = list(),
@@ -27,6 +28,8 @@
 \S4method{msLevel}{Spectra}(object)
 
 \S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
+
+\S4method{clean}{Spectra}(object, all = FALSE, msLevel.)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -54,6 +57,10 @@ of the \linkS4class{MsBackend}.}
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied. For \code{filterMsLevel}: the MS level to
 which \code{object} should be subsetted.}
+
+\item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
+removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
+non-zero intensity peak should be kept (\code{FALSE}).}
 }
 \value{
 See individual method description for the return value.
@@ -113,6 +120,18 @@ execution guarantees the same functionality for \code{Spectra} objects with
 any backend, i.e. backends supporting to save changes to spectrum data
 (\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} as well as read-only backends (such
 as the \code{\link[=MsBackendMzR]{MsBackendMzR()}}).
+\itemize{
+\item \code{clean}: remove 0-intensity data points. For \code{all = FALSE} (the default)
+0-intensity peaks next to non-zero intensity peaks are retained while with
+\code{all = TRUE} all 0-intensity peaks are removed.
+\item \code{removePeaks}: \emph{remove} peaks lower or equal to a threshold intensity
+value \code{t} by setting their intensity to \code{0}. With the default \code{t = "min"}
+all peaks with an intensity smaller or equal to the minimal non-zero
+intensity is set to \code{0}. If the spectrum is in profile mode, ranges of
+successive non-0 peaks <= \code{t} are set to 0. If the spectrum is centroided,
+then individual peaks <= \code{t} are set to 0. Note that the number of peaks
+is not changed unless \code{clean} is called after \code{removePeaks}.
+}
 }
 
 \examples{

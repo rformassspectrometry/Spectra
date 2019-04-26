@@ -60,3 +60,18 @@ test_that("removePeaks,Spectra works", {
                  ProcessingStep(.remove_peaks,
                                 list(t = 10, msLevel. = integer())))
 })
+
+test_that("ckean,Spectra works", {
+    sps <- Spectra()
+    res <- clean(sps)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.clean_peaks,
+                                list(all = FALSE, msLevel. = integer())))
+
+    res <- clean(sps, all = TRUE, msLevel. = 2L)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.clean_peaks,
+                                list(all = TRUE, msLevel. = 2L)))
+})

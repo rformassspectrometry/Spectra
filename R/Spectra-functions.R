@@ -113,6 +113,22 @@ addProcessingStep <- function(object, FUN, ...) {
 
 #' @description
 #'
+#' Clean spectrum by removing 0-intensity peaks.
+#'
+#' @inheritParams .remove_peaks
+#'
+#' @return `matrix` with columns `"mz"` and `"intensity"`.
+#'
+#' @noRd
+.clean_peaks <- function(x, spectrumMsLevel, all = FALSE,
+                         msLevel. = spectrumMsLevel) {
+    if (!spectrumMsLevel %in% msLevel. || !length(x))
+        return(x)
+    x[utils.clean(x[, "intensity"], all), , drop = FALSE]
+}
+
+#' @description
+#'
 #' Apply the lazy evaluation processing queue to the peaks (i.e. m/z, intensity
 #' matrix) and return the result.
 #'
@@ -186,16 +202,3 @@ addProcessingStep <- function(object, FUN, ...) {
     }, queue = pqueue, BPPARAM = BPPARAM)
     unlist(res, recursive = FALSE, use.names = FALSE)
 }
-
-## .clean_peaks <- function(spectrum, all, updatePeaksCount = TRUE, msLevel.) {
-##     ## Just clean the spectrum if its MS level matched msLevel.
-##     if (!missing(msLevel.)) {
-##         if (!(msLevel(spectrum) %in% msLevel.))
-##             return(spectrum)
-##     }
-##   keep <- utils.clean(spectrum@intensity, all)
-##   spectrum@intensity <- spectrum@intensity[keep]
-##   spectrum@mz <- spectrum@mz[keep]
-##   spectrum@peaksCount <- length(spectrum@intensity)
-##   return(spectrum)
-## }

@@ -60,7 +60,23 @@ NULL
 #' ([MsBackendDataFrame()] as well as read-only backends (such
 #' as the [MsBackendMzR()]).
 #'
+#' - `clean`: remove 0-intensity data points. For `all = FALSE` (the default)
+#'   0-intensity peaks next to non-zero intensity peaks are retained while with
+#'   `all = TRUE` all 0-intensity peaks are removed.
+#'
+#' - `removePeaks`: *remove* peaks lower or equal to a threshold intensity
+#'   value `t` by setting their intensity to `0`. With the default `t = "min"`
+#'   all peaks with an intensity smaller or equal to the minimal non-zero
+#'   intensity is set to `0`. If the spectrum is in profile mode, ranges of
+#'   successive non-0 peaks <= `t` are set to 0. If the spectrum is centroided,
+#'   then individual peaks <= `t` are set to 0. Note that the number of peaks
+#'   is not changed unless `clean` is called after `removePeaks`.
+#'
 #' @return See individual method description for the return value.
+#'
+#' @param all for `clean`: `logical(1)` whether all 0 intensity peaks should be
+#'     removed (`TRUE`) or whether 0-intensity peaks directly adjacent to a
+#'     non-zero intensity peak should be kept (`FALSE`).
 #'
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
 #'     section on creation of `Spectra` objects for details.
@@ -228,6 +244,25 @@ setMethod("removePeaks", "Spectra", function(object, t = "min", msLevel.) {
                            paste0("Signal <= ", t, " in MS level(s) ",
                                   paste0(msLevel., collapse = ", "),
                                   " set to 0 [", date(), "]"))
+    object
+})
+
+#' @rdname Spectra
+#'
+#' @exportMethod clean
+setMethod("clean", "Spectra", function(object, all = FALSE, msLevel.) {
+    if (!is.logical(all) || length(all) != 1)
+        stop("Argument 'all' must be a logical of length 1")
+    if (missing(msLevel.))
+        msLevel. <- base::sort(unique(msLevel(object)))
+    if (!is.numeric(msLevel.))
+        stop("'msLevel' must be numeric.")
+    object <- addProcessingStep(object, .clean_peaks, all = all,
+                                msLevel. = msLevel.)
+    object@processing <- c(object@processing,
+                           paste0("Spectra of MS level(s) ",
+                                  paste0(msLevel., collapse = ", "),
+                                  " cleaned [", date(), "]"))
     object
 })
 

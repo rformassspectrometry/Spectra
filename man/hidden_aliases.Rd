@@ -22,6 +22,7 @@
 \alias{backendInitialize}
 \alias{centroided}
 \alias{centroided<-}
+\alias{clean}
 \alias{collisionEnergy}
 \alias{collisionEnergy<-}
 \alias{fileNames}
@@ -83,7 +84,6 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
-\alias{[,MsBackendDataFrame,ANY,ANY,ANY-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
@@ -129,6 +129,8 @@ backendInitialize(object, files, spectraData, ...)
 centroided(object, ...)
 
 centroided(object) <- value
+
+clean(object, ...)
 
 collisionEnergy(object, ...)
 
@@ -255,7 +257,7 @@ spectraVariables(object, ...)
 
 \S4method{tic}{MsBackendDataFrame}(object, initial = TRUE)
 
-\S4method{[}{MsBackendDataFrame,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())

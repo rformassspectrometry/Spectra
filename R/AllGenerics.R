@@ -17,6 +17,8 @@ setGeneric("centroided", function(object, ...)
 setGeneric("centroided<-", function(object, value)
     standardGeneric("centroided<-"))
 #' @rdname hidden_aliases
+setGeneric("clean", function(object, ...) standardGeneric("clean"))
+#' @rdname hidden_aliases
 setGeneric("collisionEnergy", function(object, ...)
     standardGeneric("collisionEnergy"))
 #' @rdname hidden_aliases
