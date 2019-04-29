@@ -58,7 +58,9 @@ NULL
 #'
 #' @param object Object extending `MsBackend`.
 #'
-#' @param spectraData For : `DataFrame` with spectrum metadata/data.
+#' @param spectraData For `backendInitialize`: `DataFrame` with spectrum
+#'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
+#'     but needs to be provided for `MsBackendDataFrame` backends.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
