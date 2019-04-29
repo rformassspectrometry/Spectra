@@ -170,7 +170,7 @@ NULL
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `NA_real_` is returned.
 #'
-#' - `smoothed`,`smoothed<-`: geta or sets whether a spectrum is
+#' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
 #'   *smoothed*. `smoothed` returns a `logical` vector of length equal
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
