@@ -46,17 +46,17 @@ NULL
 #' @rdname Spectra
 #'
 #' @export
-Spectra <- function(spectraData = DataFrame(), msLevel, rt, acquisitionNum,
+Spectra <- function(spectraData = DataFrame(), msLevel, rtime, acquisitionNum,
                     scanIndex, fromFile, centroided, smoothed, polarity,
                     precScanNum, precursorMz, precursorIntensity,
                     precursorCharge, collisionEnergy, mz, intensity,
-                    backend = MsBackendMemory(), processingQueue = list(),
+                    backend = MsBackendDataFrame(), processingQueue = list(),
                     metadata = list()) {
     spData <- list()
     if (!missing(msLevel))
         spData <- c(spData, list(msLevel = .as_integer(msLevel)))
-    if (!missing(rt))
-        spData <- c(spData, list(rt = rt))
+    if (!missing(rtime))
+        spData <- c(spData, list(rtime = rtime))
     if (!missing(acquisitionNum))
         spData <- c(spData, list(acquisitionNum = .as_integer(acquisitionNum)))
     if (!missing(scanIndex))
