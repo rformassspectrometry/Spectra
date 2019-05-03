@@ -479,8 +479,6 @@ setMethod("precursorMz", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("rtime", "MsBackend", function(object) {
-
-
     stop("Not implemented for ", class(object), ".")
 })
 

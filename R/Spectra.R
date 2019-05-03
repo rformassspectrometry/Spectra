@@ -290,11 +290,56 @@ setMethod("Spectra", "missing", function(object, processingQueue = list(),
 ## ACCESSOR METHODS
 
 #' @rdname Spectra
+setMethod("acquisitionNum", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("centroided", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setReplaceMethod("centroided", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("collisionEnergy", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setReplaceMethod("collisionEnergy", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("fileNames", "Spectra", function(object) {
+    object@files
+})
+
+#' @rdname Spectra
 setMethod("fromFile", "Spectra", function(object) fromFile(object@backend))
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
     SimpleList(lapply(.peaksapply(object, ...), function(z) z[, 2]))
+})
+
+#' @rdname Spectra
+setMethod("ionCount", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("isCentroided", "Spectra", function(object, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("isEmpty", "Spectra", function(x) {
+    stop("Not implemented for ", class(x), ".")
 })
 
 #' @rdname Spectra
@@ -312,11 +357,59 @@ setMethod("mz", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 #'
-#' @importMethodsFrom ProtGenerics peaks
-#'
 #' @exportMethod peaks
 setMethod("peaks", "Spectra", function(object, ...) {
     SimpleList(.peaksapply(object, ...))
+})
+
+#' @rdname Spectra
+setMethod("peaksCount", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("polarity", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setReplaceMethod("polarity", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("precScanNum", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("precursorCharge", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("precursorIntensity", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("precursorMz", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("rtime", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setReplaceMethod("rtime", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("scanIndex", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @rdname Spectra
@@ -372,6 +465,18 @@ setReplaceMethod("spectraNames", "Spectra", function(object, value) {
 #' @rdname Spectra
 setMethod("spectraVariables", "Spectra", function(object) {
     spectraVariables(object@backend)
+})
+
+#' @rdname Spectra
+setMethod("tic", "Spectra", function(object, initial = TRUE) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+## FILTERING AND SUBSETTING
+
+#' @rdname Spectra
+setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
+    stop("Not implemented for ", class(x), ".")
 })
 
 ## DATA MANIPULATION METHODS
