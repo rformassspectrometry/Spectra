@@ -7,11 +7,21 @@
 \alias{Spectra,DataFrame-method}
 \alias{Spectra,missing-method}
 \alias{fromFile,Spectra-method}
+\alias{intensity,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
+\alias{mz,Spectra-method}
+\alias{peaks,Spectra-method}
+\alias{selectSpectraVariables,Spectra-method}
+\alias{smoothed,Spectra-method}
+\alias{smoothed<-,Spectra-method}
+\alias{spectraData,Spectra-method}
+\alias{spectraData<-,Spectra-method}
+\alias{spectraNames,Spectra-method}
+\alias{spectraNames<-,Spectra-method}
+\alias{spectraVariables,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
-\alias{peaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 \S4method{Spectra}{DataFrame}(object, processingQueue = list(),
@@ -24,15 +34,37 @@
 
 \S4method{fromFile}{Spectra}(object)
 
+\S4method{intensity}{Spectra}(object, ...)
+
 \S4method{length}{Spectra}(x)
 
 \S4method{msLevel}{Spectra}(object)
 
+\S4method{mz}{Spectra}(object, ...)
+
+\S4method{peaks}{Spectra}(object, ...)
+
+\S4method{selectSpectraVariables}{Spectra}(object,
+  spectraVariables = spectraVariables(object))
+
+\S4method{smoothed}{Spectra}(object)
+
+\S4method{smoothed}{Spectra}(object) <- value
+
+\S4method{spectraData}{Spectra}(object,
+  columns = spectraVariables(object))
+
+\S4method{spectraData}{Spectra}(object) <- value
+
+\S4method{spectraNames}{Spectra}(object)
+
+\S4method{spectraNames}{Spectra}(object) <- value
+
+\S4method{spectraVariables}{Spectra}(object)
+
 \S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
 
 \S4method{clean}{Spectra}(object, all = FALSE, msLevel.)
-
-\S4method{peaks}{Spectra}(object, ...)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -54,6 +86,16 @@ information. This is passed directly to the \code{\link[=backendInitialize]{back
 of the \linkS4class{MsBackend}.}
 
 \item{x}{A \code{Spectra} object.}
+
+\item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
+names of the spectra variables to which the backend should be subsetted.}
+
+\item{value}{replacement value for \code{<-} methods. See individual
+method description or expected data type.}
+
+\item{columns}{For \code{spectraData} accessor: optional \code{character} with column
+names (spectra variables) that should be included in the
+returned \code{DataFrame}. By default, all columns are returned.}
 
 \item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
@@ -105,13 +147,35 @@ spectrometry data files.
 \itemize{
 \item \code{fromFile}: get the file/sample assignment of each spectrum. Returns an
 integer vector of length equal to the number of spectra.
+\item \code{intensity}: gets the intensity values from the spectra. Returns
+a \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors (intensity values for each
+spectrum). The length of the \code{list} is equal to the number of
+\code{spectra} in \code{object}.
 \item \code{length}: get the number of spectra in the object.
 \item \code{msLevel}: get the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.
+\item \code{mz}: gets the mass-to-charge ratios (m/z) from the
+spectra. Returns a \code{\link[=SimpleList]{SimpleList()}} or length equal to the number of
+spectra, each element a \code{numeric} vector with the m/z values of
+one spectrum.
 \item \code{peaks}: get the \emph{peaks} matrices for all spectra in \code{object}. The function
 returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns \code{mz} and
 \code{intensity} with the m/z and intensity values for all peaks of a spectrum.
+\item \code{selectSpectraVariables}: reduce the information within the object to
+the selected spectra variables.
+\item \code{smoothed},\code{smoothed<-}: geta or sets whether a spectrum is
+\emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
+to the number of spectra. \code{smoothed<-} takes a \code{logical} vector
+of length 1 or equal to the number of spectra in \code{object}.
+\item \code{spectraData}, \code{spectraData<-}: get or sets general spectrum
+metadata (annotation, also called header). \code{spectraData} returns
+a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame}.
+\item \code{spectraNames}: returns a \code{character} vector with the names of
+the spectra in \code{object}.
+\item \code{spectraVariables}: returns a \code{character} vector with the
+available spectra variables (columns, fields or attributes)
+available in \code{object}.
 }
 }
 
@@ -151,7 +215,39 @@ spd$intensity <- list(c(200, 400, 34.2, 17), c(12.3, 15.2, 6.8))
 data <- Spectra(spd)
 data
 
+## ---- ACCESSING AND ADDING DATA ----
+
+## Get the MS level for each spectrum.
 msLevel(data)
+
+## Get the intensity and m/z values.
+intensity(data)
+mz(data)
+
+## Get the peak data (m/z and intensity values).
+pks <- peaks(data)
+pks
+pks[[1]]
+pks[[2]]
+
+## List all available spectra variables (i.e. spectrum data and metadata).
+spectraVariables(data)
+
+## For all *core* spectrum variables accessor functions are available.
+## fromFile(data)
+## rtime(data)
+## precursorMz(data)
+
+## Add an additional metadata column.
+## spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
+
+## List spectra variables.
+## spectraVariables(data)
+
+## Extract specific spectra variables.
+## spectraData(data, columns = c("spectrum_id", "msLevel"))
+
+## ---- DATA MANIPULATIONS ----
 }
 \author{
 Sebastian Gibb, Johannes Rainer

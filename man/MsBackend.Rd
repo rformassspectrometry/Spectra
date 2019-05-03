@@ -297,8 +297,7 @@ of length 1 or equal to the number of spectra in \code{object}.
 metadata (annotation, also called header).  \code{spectraData} returns
 a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
-the spectra in \code{object}. If names aren't set, should return
-\code{NULL}.
+the spectra in \code{object}.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
 available in \code{object}.

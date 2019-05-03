@@ -43,15 +43,44 @@ NULL
 #' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
 #'   integer vector of length equal to the number of spectra.
 #'
+#' - `intensity`: gets the intensity values from the spectra. Returns
+#'   a [SimpleList()] of `numeric` vectors (intensity values for each
+#'   spectrum). The length of the `list` is equal to the number of
+#'   `spectra` in `object`.
+#'
 #' - `length`: get the number of spectra in the object.
 #'
 #' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
 #'   being spectrum names, length equal to the number of spectra) with the MS
 #'   level for each spectrum.
 #'
+#' - `mz`: gets the mass-to-charge ratios (m/z) from the
+#'   spectra. Returns a [SimpleList()] or length equal to the number of
+#'   spectra, each element a `numeric` vector with the m/z values of
+#'   one spectrum.
+#'
 #' - `peaks`: get the *peaks* matrices for all spectra in `object`. The function
 #'   returns a [SimpleList()] of matrices, each `matrix` with columns `mz` and
 #'   `intensity` with the m/z and intensity values for all peaks of a spectrum.
+#'
+#' - `selectSpectraVariables`: reduce the information within the object to
+#'   the selected spectra variables.
+#'
+#' - `smoothed`,`smoothed<-`: geta or sets whether a spectrum is
+#'   *smoothed*. `smoothed` returns a `logical` vector of length equal
+#'   to the number of spectra. `smoothed<-` takes a `logical` vector
+#'   of length 1 or equal to the number of spectra in `object`.
+#'
+#' - `spectraData`, `spectraData<-`: get or sets general spectrum
+#'   metadata (annotation, also called header). `spectraData` returns
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`.
+#'
+#' - `spectraNames`: returns a `character` vector with the names of
+#'   the spectra in `object`.
+#'
+#' - `spectraVariables`: returns a `character` vector with the
+#'   available spectra variables (columns, fields or attributes)
+#'   available in `object`.
 #'
 #' @section Data manipulation and analysis methods:
 #'
@@ -85,6 +114,10 @@ NULL
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
 #'     section on creation of `Spectra` objects for details.
 #'
+#' @param columns For `spectraData` accessor: optional `character` with column
+#'     names (spectra variables) that should be included in the
+#'     returned `DataFrame`. By default, all columns are returned.
+#'
 #' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
 #'     information. This is passed directly to the [backendInitialize()] method
 #'     of the [MsBackend-class].
@@ -102,9 +135,15 @@ NULL
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
 #'
+#' @param spectraVariables For `selectSpectraVariables`: `character` with the
+#'     names of the spectra variables to which the backend should be subsetted.
+#'
 #' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
 #' @param x A `Spectra` object.
+#'
+#' @param value replacement value for `<-` methods. See individual
+#'     method description or expected data type.
 #'
 #' @param ... Additional arguments.
 #'
@@ -127,7 +166,39 @@ NULL
 #' data <- Spectra(spd)
 #' data
 #'
+#' ## ---- ACCESSING AND ADDING DATA ----
+#'
+#' ## Get the MS level for each spectrum.
 #' msLevel(data)
+#'
+#' ## Get the intensity and m/z values.
+#' intensity(data)
+#' mz(data)
+#'
+#' ## Get the peak data (m/z and intensity values).
+#' pks <- peaks(data)
+#' pks
+#' pks[[1]]
+#' pks[[2]]
+#'
+#' ## List all available spectra variables (i.e. spectrum data and metadata).
+#' spectraVariables(data)
+#'
+#' ## For all *core* spectrum variables accessor functions are available.
+#' ## fromFile(data)
+#' ## rtime(data)
+#' ## precursorMz(data)
+#'
+#' ## Add an additional metadata column.
+#' ## spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
+#'
+#' ## List spectra variables.
+#' ## spectraVariables(data)
+#'
+#' ## Extract specific spectra variables.
+#' ## spectraData(data, columns = c("spectrum_id", "msLevel"))
+#'
+#' ## ---- DATA MANIPULATIONS ----
 NULL
 
 #' The Spectra class
@@ -222,6 +293,11 @@ setMethod("Spectra", "missing", function(object, processingQueue = list(),
 setMethod("fromFile", "Spectra", function(object) fromFile(object@backend))
 
 #' @rdname Spectra
+setMethod("intensity", "Spectra", function(object, ...) {
+    SimpleList(lapply(.peaksapply(object, ...), function(z) z[, 2]))
+})
+
+#' @rdname Spectra
 #'
 #' @exportMethod length
 setMethod("length", "Spectra", function(x) length(x@backend))
@@ -229,6 +305,74 @@ setMethod("length", "Spectra", function(x) length(x@backend))
 #' @rdname Spectra
 setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
+#' @rdname Spectra
+setMethod("mz", "Spectra", function(object, ...) {
+    SimpleList(lapply(.peaksapply(object, ...), function(z) z[, 1]))
+})
+
+#' @rdname Spectra
+#'
+#' @importMethodsFrom ProtGenerics peaks
+#'
+#' @exportMethod peaks
+setMethod("peaks", "Spectra", function(object, ...) {
+    SimpleList(.peaksapply(object, ...))
+})
+
+#' @rdname Spectra
+setMethod("selectSpectraVariables", "Spectra",
+          function(object, spectraVariables = spectraVariables(object)) {
+              stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("smoothed", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setReplaceMethod("smoothed", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("spectraData", "Spectra", function(object,
+                                             columns = spectraVariables(object))
+{
+    skip_cols <- c("mz", "intensity") # Eventually also tic, peak count etc
+    if (all(columns %in% skip_cols))
+        res <- DataFrame(matrix(ncol = 0, nrow = length(object)))
+    else res <- spectraData(object@backend,
+                            columns = columns[!(columns %in% skip_cols)])
+    if (any(columns %in% skip_cols)) {
+        pks <- .peaksapply(object)
+        if (any(columns == "mz"))
+            res$mz <- SimpleList(lapply(pks, function(z) z[, 1]))
+        if (any(columns == "intensity"))
+            res$intensity <- SimpleList(lapply(pks, function(z) z[, 2]))
+    }
+    res[, columns, drop = FALSE]
+})
+
+#' @rdname Spectra
+setReplaceMethod("spectraData", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("spectraNames", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setReplaceMethod("spectraNames", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("spectraVariables", "Spectra", function(object) {
+    spectraVariables(object@backend)
+})
 
 ## DATA MANIPULATION METHODS
 
@@ -268,13 +412,4 @@ setMethod("clean", "Spectra", function(object, all = FALSE, msLevel.) {
                                   paste0(msLevel., collapse = ", "),
                                   " cleaned [", date(), "]"))
     object
-})
-
-#' @rdname Spectra
-#'
-#' @importMethodsFrom ProtGenerics peaks
-#'
-#' @exportMethod peaks
-setMethod("peaks", "Spectra", function(object, ...) {
-    SimpleList(.peaksapply(object, ...))
 })

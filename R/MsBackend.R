@@ -195,8 +195,7 @@ NULL
 #'   a `DataFrame`, `spectraData<-` expects a `DataFrame`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
-#'   the spectra in `object`. If names aren't set, should return
-#'   `NULL`.
+#'   the spectra in `object`.
 #'
 #' - `spectraVariables`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)
