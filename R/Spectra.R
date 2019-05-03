@@ -24,30 +24,128 @@ NULL
 #'
 #' @section Creation of objects, conversion and changing the backend:
 #'
-#' TODO @jo: update with the `Spectra` constructor.
+#' `Spectra` classes can be created with the `Spectra` constructor function
+#' which supports the following formats:
+#'
+#' - parameter `object` is a `DataFrame` containing the spectrum data. The
+#'   provided `backend` (by default a [MsBackendDataFrame-class]) will be
+#'   initialized with that data.
+#' - parameter `object` is missing, in which case it is supposed that the data
+#'   is provided by the [MsBackend-class] class passed along with the `backend`
+#'   argument.
 #'
 #' `Spectra` classes are usually created with the `readSpectra`
 #' function that reads general spectrum metadata information from the  mass
 #' spectrometry data files.
 #'
-#' Alternatively it is possible to create a new object from a list of `Spectrum`
-#' objects using the `Spectra` function. Additional spectrum metadata
-#' columns can be provided with the `spectraData` argument, sample annotations
-#' with the `sampleData` argument and arbitrary metadata with the `metadata`
-#' argument. Note that objects created with the `Spectra` constructor
-#' function can not use the `BackendMzR` as backend.
+#' @section Accessing data:
 #'
-#' `Spectra` objects can be converted to a `list` or
-#' [S4Vectors::List-class] of `Spectrum` objects with the `as(object, "list")`
-#' and `as(object, "List")` function, respectively.
+#' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
+#'   integer vector of length equal to the number of spectra.
 #'
-#' The [MsBackend-class] can be changed with the `setBackend` function by
-#' specifying the new [MsBackend-class] with the `backend` parameter. See
-#' examples for more details.
+#' - `intensity`: gets the intensity values from the spectra. Returns
+#'   a [SimpleList()] of `numeric` vectors (intensity values for each
+#'   spectrum). The length of the `list` is equal to the number of
+#'   `spectra` in `object`.
+#'
+#' - `length`: get the number of spectra in the object.
+#'
+#' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
+#'   being spectrum names, length equal to the number of spectra) with the MS
+#'   level for each spectrum.
+#'
+#' - `mz`: gets the mass-to-charge ratios (m/z) from the
+#'   spectra. Returns a [SimpleList()] or length equal to the number of
+#'   spectra, each element a `numeric` vector with the m/z values of
+#'   one spectrum.
+#'
+#' - `peaks`: get the *peaks* matrices for all spectra in `object`. The function
+#'   returns a [SimpleList()] of matrices, each `matrix` with columns `mz` and
+#'   `intensity` with the m/z and intensity values for all peaks of a spectrum.
+#'
+#' - `selectSpectraVariables`: reduce the information within the object to
+#'   the selected spectra variables.
+#'
+#' - `smoothed`,`smoothed<-`: geta or sets whether a spectrum is
+#'   *smoothed*. `smoothed` returns a `logical` vector of length equal
+#'   to the number of spectra. `smoothed<-` takes a `logical` vector
+#'   of length 1 or equal to the number of spectra in `object`.
+#'
+#' - `spectraData`, `spectraData<-`: get or sets general spectrum
+#'   metadata (annotation, also called header). `spectraData` returns
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`.
+#'
+#' - `spectraNames`: returns a `character` vector with the names of
+#'   the spectra in `object`.
+#'
+#' - `spectraVariables`: returns a `character` vector with the
+#'   available spectra variables (columns, fields or attributes)
+#'   available in `object`.
+#'
+#' @section Data manipulation and analysis methods:
+#'
+#' Many data manipulation operations, such as those listed in this section, are
+#' not applied immediately to the spectra, but added to a
+#' *lazy processinq queue*. Operations stored in this queue are applied
+#' on-the-fly to spectra data each time it is accessed. This lazy
+#' execution guarantees the same functionality for `Spectra` objects with
+#' any backend, i.e. backends supporting to save changes to spectrum data
+#' ([MsBackendDataFrame()] as well as read-only backends (such
+#' as the [MsBackendMzR()]).
+#'
+#' - `clean`: remove 0-intensity data points. For `all = FALSE` (the default)
+#'   0-intensity peaks next to non-zero intensity peaks are retained while with
+#'   `all = TRUE` all 0-intensity peaks are removed.
+#'
+#' - `removePeaks`: *remove* peaks lower or equal to a threshold intensity
+#'   value `t` by setting their intensity to `0`. With the default `t = "min"`
+#'   all peaks with an intensity smaller or equal to the minimal non-zero
+#'   intensity is set to `0`. If the spectrum is in profile mode, ranges of
+#'   successive non-0 peaks <= `t` are set to 0. If the spectrum is centroided,
+#'   then individual peaks <= `t` are set to 0. Note that the number of peaks
+#'   is not changed unless `clean` is called after `removePeaks`.
 #'
 #' @return See individual method description for the return value.
 #'
-#' TODO @jo: add all parameters (in alphabetic order).
+#' @param all for `clean`: `logical(1)` whether all 0 intensity peaks should be
+#'     removed (`TRUE`) or whether 0-intensity peaks directly adjacent to a
+#'     non-zero intensity peak should be kept (`FALSE`).
+#'
+#' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
+#'     section on creation of `Spectra` objects for details.
+#'
+#' @param columns For `spectraData` accessor: optional `character` with column
+#'     names (spectra variables) that should be included in the
+#'     returned `DataFrame`. By default, all columns are returned.
+#'
+#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
+#'     information. This is passed directly to the [backendInitialize()] method
+#'     of the [MsBackend-class].
+#'
+#' @param metadata For `Spectra`: optional `list` with metadata information.
+#'
+#' @param msLevel. `integer` defining the MS level(s) of the spectra to which
+#'     the function should be applied. For `filterMsLevel`: the MS level to
+#'     which `object` should be subsetted.
+#'
+#' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
+#'     on creation of `Spectra` objects for details. For all other methods a
+#'     `Spectra` object.
+#'
+#' @param processingQueue For `Spectra`: optional `list` of
+#'     [ProcessingStep-class] objects.
+#'
+#' @param spectraVariables For `selectSpectraVariables`: `character` with the
+#'     names of the spectra variables to which the backend should be subsetted.
+#'
+#' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
+#'
+#' @param x A `Spectra` object.
+#'
+#' @param value replacement value for `<-` methods. See individual
+#'     method description or expected data type.
+#'
+#' @param ... Additional arguments.
 #'
 #' @author Sebastian Gibb, Johannes Rainer
 #'
@@ -55,9 +153,52 @@ NULL
 #'
 #' @exportClass Spectra
 #'
+#' @exportMethod Spectra
+#'
 #' @examples
 #'
-#' ## Create an Spectra from a list of Spectrum objects
+#' ## Create a Spectra providing a `DataFrame` containing the spectrum data.
+#'
+#' spd <- DataFrame(msLevel = c(1L, 2L), rtime = c(1.1, 1.2))
+#' spd$mz <- list(c(100, 103.2, 104.3, 106.5), c(45.6, 120.4, 190.2))
+#' spd$intensity <- list(c(200, 400, 34.2, 17), c(12.3, 15.2, 6.8))
+#'
+#' data <- Spectra(spd)
+#' data
+#'
+#' ## ---- ACCESSING AND ADDING DATA ----
+#'
+#' ## Get the MS level for each spectrum.
+#' msLevel(data)
+#'
+#' ## Get the intensity and m/z values.
+#' intensity(data)
+#' mz(data)
+#'
+#' ## Get the peak data (m/z and intensity values).
+#' pks <- peaks(data)
+#' pks
+#' pks[[1]]
+#' pks[[2]]
+#'
+#' ## List all available spectra variables (i.e. spectrum data and metadata).
+#' spectraVariables(data)
+#'
+#' ## For all *core* spectrum variables accessor functions are available.
+#' ## fromFile(data)
+#' ## rtime(data)
+#' ## precursorMz(data)
+#'
+#' ## Add an additional metadata column.
+#' ## spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
+#'
+#' ## List spectra variables.
+#' ## spectraVariables(data)
+#'
+#' ## Extract specific spectra variables.
+#' ## spectraData(data, columns = c("spectrum_id", "msLevel"))
+#'
+#' ## ---- DATA MANIPULATIONS ----
 NULL
 
 #' The Spectra class
@@ -114,19 +255,47 @@ setValidity("Spectra", function(object) {
 setMethod("show", "Spectra",
     function(object) {
         cat("MSn data (", class(object)[1L], ") with ",
-            length(object@backend), " spectra:\n", sep = "")
+            length(object@backend), " spectra in a ", class(object@backend),
+            " backend:\n", sep = "")
         if (length(object@backend)) {
-            ## Replace later with spectraData(object@backend, c("msLevel", ...))
-            txt <- capture.output(
-                DataFrame(msLevel = msLevel(object@backend)))
+            txt <- capture.output(show(object@backend))
             cat(txt[-1], sep = "\n")
         }
-        show(object@backend)
         if (length(object@processingQueue))
             cat("Lazy evaluation queue:", length(object@processingQueue),
                 "processing step(s)\n")
         cat("Processing:\n", paste(object@processing, collapse="\n"), "\n")
     })
+
+#' @rdname Spectra
+setMethod("Spectra", "DataFrame", function(object, processingQueue = list(),
+                                           metadata = list(), ...,
+                                           backend = MsBackendDataFrame(),
+                                           BPPARAM = bpparam()) {
+    object$fromFile <- rep(1L, nrow(object))
+    new("Spectra", metadata = metadata, processingQueue = processingQueue,
+        backend = backendInitialize(
+            backend, files = if (nrow(object)) NA_character_ else character(),
+            object, BPPARAM = BPPARAM))
+})
+#' @rdname Spectra
+setMethod("Spectra", "missing", function(object, processingQueue = list(),
+                                         metadata = list(), ...,
+                                         backend = MsBackendDataFrame(),
+                                         BPPARAM = bpparam()) {
+    new("Spectra", metadata = metadata, processingQueue = processingQueue,
+        backend = backend)
+})
+
+## ACCESSOR METHODS
+
+#' @rdname Spectra
+setMethod("fromFile", "Spectra", function(object) fromFile(object@backend))
+
+#' @rdname Spectra
+setMethod("intensity", "Spectra", function(object, ...) {
+    SimpleList(lapply(.peaksapply(object, ...), function(z) z[, 2]))
+})
 
 #' @rdname Spectra
 #'
@@ -136,140 +305,111 @@ setMethod("length", "Spectra", function(x) length(x@backend))
 #' @rdname Spectra
 setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
-## Spectra constructor method:
-## files: read data
-## spectraData: DataFrame
-## individual fields???
+#' @rdname Spectra
+setMethod("mz", "Spectra", function(object, ...) {
+    SimpleList(lapply(.peaksapply(object, ...), function(z) z[, 1]))
+})
 
-## #' @rdname Spectra
-## #'
-## #' @importMethodsFrom BiocParallel bplapply
-## #'
-## #' @importFrom BiocParallel bpparam
-## #'
-## #' @export
-## readSpectra <- function(file, sampleData, backend = BackendMzR(),
-##                               smoothed = NA, metadata = list(), ...,
-##                               BPPARAM = bpparam()) {
-##     ## if (missing(backend) || !inherits(backend))
-##     if (missing(file) || length(file) == 0)
-##         stop("Parameter 'file' is required")
-##     if (!all(file.exists(file)))
-##         stop("Input file(s) can not be found")
-##     file <- normalizePath(file)
-##     if (!missing(sampleData)) {
-##         if (is.data.frame(sampleData))
-##             sampleData <- DataFrame(sampleData)
-##     } else {
-##         sampleData <- DataFrame(sampleIdx = seq_along(file))
-##     }
-##     if (!is.logical(smoothed))
-##         stop("smoothed should be a logical")
-##     .read_file <- function(z, files, smoothed) {
-##         file_number <- match(z, files)
-##         suppressPackageStartupMessages(
-##             require("MSnbase", quietly = TRUE, character.only = TRUE))
-##         msd <- mzR::openMSfile(z)
-##         on.exit(mzR::close(msd))
-##         hdr <- mzR::header(msd)
-##         sp_idx <- seq_len(nrow(hdr))
-##         rownames(hdr) <- formatFileSpectrumNames(fileIds = file_number,
-##                                                  spectrumIds = seq_along(sp_idx),
-##                                                  nSpectra = length(sp_idx),
-##                                                  nFiles = length(files))
-##         ## rename totIonCurrent and peaksCount, as detailed in
-##         ## https://github.com/lgatto/MSnbase/issues/105#issuecomment-229503816
-##         names(hdr) <- sub("peaksCount", "originalPeaksCount", names(hdr))
-##         ## Add also:
-##         ## o fileIdx -> links to fileNames property
-##         ## o spIdx -> the index of the spectrum in the file.
-##         hdr$fileIdx <- file_number
-##         hdr$spIdx <- sp_idx
-##         hdr$smoothed <- smoothed
-##         if (isCdfFile(z)) {
-##             if (!any(colnames(hdr) == "polarity"))
-##                 hdr$polarity <- NA
-##         }
-##         ## Order the fdData by acquisitionNum to force use of acquisitionNum
-##         ## as unique ID for the spectrum (issue #103). That way we can use
-##         ## the spIdx (is the index of the spectrum within the file) for
-##         ## subsetting and extracting.
-##         if (!all(sort(hdr$acquisitionNum) == hdr$acquisitionNum))
-##             warning(paste("Unexpected acquisition number order detected.",
-##                           "Please contact the maintainers or open an issue",
-##                           "on https://github.com/lgatto/MSnbase.",
-##                           sep = "\n")) ## see issue #160
-##         hdr[order(hdr$acquisitionNum), ]
-##     }
-##     spectraData <- DataFrame(
-##         do.call(rbind, bplapply(file, .read_file, files = file,
-##                                 smoothed = smoothed, BPPARAM = BPPARAM)))
-##     msnexp <- new("Spectra",
-##         backend = backendInitialize(BackendMzR(), file),
-##         sampleData = sampleData,
-##         spectraData = spectraData,
-##         processingQueue = list(),
-##         metadata = metadata,
-##         processing = paste0("Data loaded [", date(), "]")
-##     )
+#' @rdname Spectra
+#'
+#' @importMethodsFrom ProtGenerics peaks
+#'
+#' @exportMethod peaks
+setMethod("peaks", "Spectra", function(object, ...) {
+    SimpleList(.peaksapply(object, ...))
+})
 
-##     if (!inherits(backend, "BackendMzR"))
-##         msnexp <- setBackend(msnexp, backend, ..., BPPARAM = BPPARAM)
+#' @rdname Spectra
+setMethod("selectSpectraVariables", "Spectra",
+          function(object, spectraVariables = spectraVariables(object)) {
+              stop("Not implemented for ", class(object), ".")
+})
 
-##     msnexp
-## }
+#' @rdname Spectra
+setMethod("smoothed", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
 
-## #' @rdname Spectra
-## setGeneric("setBackend", function(object, backend, ..., BPPARAM = bpparam())
-##     standardGeneric("setBackend"))
-## #' @rdname hidden_aliases
-## #'
-## #' @importMethodsFrom BiocParallel bpmapply
-## setMethod(
-##     "setBackend",
-##     c("Spectra", "MsBackend"),
-##     function(object, backend, ..., BPPARAM = bpparam()) {
-##     backend <- backendInitialize(backend, fileNames(object), object@spectraData,
-##                                  ...)
-##     ## update fileIdx, useful to split src backends across cores
-##     spd <- object@spectraData
-##     spd$fileIdx <- 1L
-##     spd <- split(spd, object@spectraData$fileIdx)
+#' @rdname Spectra
+setReplaceMethod("smoothed", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
 
-##     ## keep current modCount
-##     backend@modCount <- object@backend@modCount
+#' @rdname Spectra
+setMethod("spectraData", "Spectra", function(object,
+                                             columns = spectraVariables(object))
+{
+    skip_cols <- c("mz", "intensity") # Eventually also tic, peak count etc
+    if (all(columns %in% skip_cols))
+        res <- DataFrame(matrix(ncol = 0, nrow = length(object)))
+    else res <- spectraData(object@backend,
+                            columns = columns[!(columns %in% skip_cols)])
+    if (any(columns %in% skip_cols)) {
+        pks <- .peaksapply(object)
+        if (any(columns == "mz"))
+            res$mz <- SimpleList(lapply(pks, function(z) z[, 1]))
+        if (any(columns == "intensity"))
+            res$intensity <- SimpleList(lapply(pks, function(z) z[, 2]))
+    }
+    res[, columns, drop = FALSE]
+})
 
-##     backendSplitByFile(backend, object@spectraData) <-
-##         bpmapply(function(dst, src, spd, queue) {
-##             backendWriteSpectra(
-##                 dst, backendReadSpectra(src, spd), spd, updateModCount=FALSE
-##             )
-##         },
-##         dst = backendSplitByFile(backend, object@spectraData),
-##         src = backendSplitByFile(object@backend, object@spectraData),
-##         spd = spd,
-##         SIMPLIFY = FALSE, USE.NAMES = FALSE, BPPARAM = BPPARAM)
+#' @rdname Spectra
+setReplaceMethod("spectraData", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
 
-##     object@backend <- backend
-##     object@processing <- c(object@processing,
-##                            paste0("Backend set to '", class(backend),
-##                                   "' [", date(), "]"))
-##     validObject(object)
-##     object
-## })
+#' @rdname Spectra
+setMethod("spectraNames", "Spectra", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
 
-## #' @rdname hidden_aliases
-## setMethod(
-##     "setBackend",
-##     c("Spectra", "BackendMzR"),
-##     function(object, backend, ..., BPPARAM = bpparam()) {
-##     if (any(object@backend@modCount))
-##         stop("Can not change backend to 'BackendMzR' because the ",
-##              "data was changed.")
-##     object@backend <- backendInitialize(backend, fileNames(object),
-##                                         object@spectraData, ...)
-##     object@processing <- c(object@processing,
-##                            paste0("Backend set to 'BackendMzR' [", date(), "]"))
-##     validObject(object)
-##     object
-## })
+#' @rdname Spectra
+setReplaceMethod("spectraNames", "Spectra", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname Spectra
+setMethod("spectraVariables", "Spectra", function(object) {
+    spectraVariables(object@backend)
+})
+
+## DATA MANIPULATION METHODS
+
+#' @rdname Spectra
+#'
+#' @exportMethod removePeaks
+setMethod("removePeaks", "Spectra", function(object, t = "min", msLevel.) {
+    if (!is.numeric(t) & t != "min")
+        stop("Argument 't' has to be either numeric of 'min'.")
+    if (missing(msLevel.))
+        msLevel. <- base::sort(unique(msLevel(object)))
+    if (!is.numeric(msLevel.))
+        stop("'msLevel' must be numeric.")
+    object <- addProcessingStep(object, .remove_peaks, t = t,
+                                msLevel. = msLevel.)
+    object@processing <- c(object@processing,
+                           paste0("Signal <= ", t, " in MS level(s) ",
+                                  paste0(msLevel., collapse = ", "),
+                                  " set to 0 [", date(), "]"))
+    object
+})
+
+#' @rdname Spectra
+#'
+#' @exportMethod clean
+setMethod("clean", "Spectra", function(object, all = FALSE, msLevel.) {
+    if (!is.logical(all) || length(all) != 1)
+        stop("Argument 'all' must be a logical of length 1")
+    if (missing(msLevel.))
+        msLevel. <- base::sort(unique(msLevel(object)))
+    if (!is.numeric(msLevel.))
+        stop("'msLevel' must be numeric.")
+    object <- addProcessingStep(object, .clean_peaks, all = all,
+                                msLevel. = msLevel.)
+    object@processing <- c(object@processing,
+                           paste0("Spectra of MS level(s) ",
+                                  paste0(msLevel., collapse = ", "),
+                                  " cleaned [", date(), "]"))
+    object
+})

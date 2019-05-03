@@ -17,6 +17,8 @@ setGeneric("centroided", function(object, ...)
 setGeneric("centroided<-", function(object, value)
     standardGeneric("centroided<-"))
 #' @rdname hidden_aliases
+setGeneric("clean", function(object, ...) standardGeneric("clean"))
+#' @rdname hidden_aliases
 setGeneric("collisionEnergy", function(object, ...)
     standardGeneric("collisionEnergy"))
 #' @rdname hidden_aliases
@@ -58,17 +60,25 @@ setGeneric("precursorIntensity", function(object, ...)
 setGeneric("precursorMz", function(object, ...)
     standardGeneric("precursorMz"))
 #' @rdname hidden_aliases
+setGeneric("removePeaks", function(object, t="min", ...)
+    standardGeneric("removePeaks"))
+#' @rdname hidden_aliases
 setGeneric("rtime<-", function(object, value)
     standardGeneric("rtime<-"))
 #' @rdname hidden_aliases
 setGeneric("scanIndex", function(object, ...)
     standardGeneric("scanIndex"))
 #' @rdname hidden_aliases
+setGeneric("selectSpectraVariables", function(object, ...)
+    standardGeneric("selectSpectraVariables"))
+#' @rdname hidden_aliases
 setGeneric("smoothed", function(object, ...)
     standardGeneric("smoothed"))
 #' @rdname hidden_aliases
 setGeneric("smoothed<-", function(object, value)
     standardGeneric("smoothed<-"))
+#' @rdname hidden_aliases
+setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
 #' @rdname hidden_aliases
 setGeneric("spectraData", function(object, ...)
     standardGeneric("spectraData"))

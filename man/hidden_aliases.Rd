@@ -22,6 +22,7 @@
 \alias{backendInitialize}
 \alias{centroided}
 \alias{centroided<-}
+\alias{clean}
 \alias{collisionEnergy}
 \alias{collisionEnergy<-}
 \alias{fileNames}
@@ -36,10 +37,13 @@
 \alias{precursorCharge}
 \alias{precursorIntensity}
 \alias{precursorMz}
+\alias{removePeaks}
 \alias{rtime<-}
 \alias{scanIndex}
+\alias{selectSpectraVariables}
 \alias{smoothed}
 \alias{smoothed<-}
+\alias{Spectra}
 \alias{spectraData}
 \alias{spectraData<-}
 \alias{spectraNames}
@@ -71,6 +75,7 @@
 \alias{rtime,MsBackendDataFrame-method}
 \alias{rtime<-,MsBackendDataFrame-method}
 \alias{scanIndex,MsBackendDataFrame-method}
+\alias{selectSpectraVariables,MsBackendDataFrame-method}
 \alias{smoothed,MsBackendDataFrame-method}
 \alias{smoothed<-,MsBackendDataFrame-method}
 \alias{spectraData,MsBackendDataFrame-method}
@@ -79,7 +84,6 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
-\alias{[,MsBackendDataFrame,ANY,ANY,ANY-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
@@ -126,6 +130,8 @@ centroided(object, ...)
 
 centroided(object) <- value
 
+clean(object, ...)
+
 collisionEnergy(object, ...)
 
 collisionEnergy(object) <- value
@@ -154,13 +160,19 @@ precursorIntensity(object, ...)
 
 precursorMz(object, ...)
 
+removePeaks(object, t = "min", ...)
+
 rtime(object) <- value
 
 scanIndex(object, ...)
 
+selectSpectraVariables(object, ...)
+
 smoothed(object, ...)
 
 smoothed(object) <- value
+
+Spectra(object, ...)
 
 spectraData(object, ...)
 
@@ -225,6 +237,9 @@ spectraVariables(object, ...)
 
 \S4method{scanIndex}{MsBackendDataFrame}(object)
 
+\S4method{selectSpectraVariables}{MsBackendDataFrame}(object,
+  spectraVariables = spectraVariables(object))
+
 \S4method{smoothed}{MsBackendDataFrame}(object)
 
 \S4method{smoothed}{MsBackendDataFrame}(object) <- value
@@ -242,7 +257,7 @@ spectraVariables(object, ...)
 
 \S4method{tic}{MsBackendDataFrame}(object, initial = TRUE)
 
-\S4method{[}{MsBackendDataFrame,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())

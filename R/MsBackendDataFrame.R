@@ -52,6 +52,8 @@ setMethod("show", "MsBackendDataFrame", function(object) {
     }
 })
 
+#' @importMethodsFrom S4Vectors $ $<-
+#'
 #' @rdname hidden_aliases
 setMethod("backendInitialize", signature = "MsBackendDataFrame",
           definition = function(object, files, spectraData, ...) {
@@ -243,6 +245,23 @@ setMethod("scanIndex", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "scanIndex"))
         object@spectraData$scanIndex
     else rep(NA_integer_, times = length(object))
+})
+
+#' @rdname hidden_aliases
+setMethod("selectSpectraVariables", "MsBackendDataFrame",
+          function(object, spectraVariables = spectraVariables(object)) {
+              if (!all(spectraVariables %in% spectraVariables(object)))
+                  stop("Spectra variables ",
+                       paste(spectraVariables[!(spectraVariables %in%
+                                                spectraVariables(object))],
+                             collapse = ", "), " not available")
+              to_subset <- spectraVariables[spectraVariables %in%
+                                            colnames(object@spectraData)]
+              if (length(to_subset))
+                  object@spectraData <- object@spectraData[, to_subset,
+                                                           drop = FALSE]
+              validObject(object)
+              object
 })
 
 #' @rdname hidden_aliases

@@ -1,7 +1,3 @@
-sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
-sciex_pks <- peaks(sciex_mzr)
-fl <- dir(system.file("proteomics", package = "msdata"), full.names = TRUE)
-tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
 test_that("initializeBackend,MsBackendMzR works", {
     fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
@@ -367,4 +363,15 @@ test_that("[,MsBackendMzR works", {
     expect_equal(length(tmp), 1)
     spd <- spectraData(tmp)
     expect_equal(spd$mz, mz(tmp))
+})
+
+test_that("selectSpectraVariables,MsBackendMzR works", {
+    be <- sciex_mzr
+
+    res <- selectSpectraVariables(be, c("fromFile", "msLevel", "rtime",
+                                        "scanIndex"))
+    expect_equal(colnames(res@spectraData), c("fromFile", "msLevel", "rtime",
+                                              "scanIndex"))
+    expect_error(selectSpectraVariables(be, c("fromFile", "msLevel")),
+                 "scanIndex is/are missing")
 })
