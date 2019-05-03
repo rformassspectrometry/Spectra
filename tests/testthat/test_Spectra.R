@@ -25,6 +25,20 @@ test_that("Spectra,missing works", {
     expect_equal(msLevel(res), c(1L, 2L))
 })
 
+test_that("acquisitionNum,Spectra works", {
+    sps <- Spectra()
+    res <- acquisitionNum(sps)
+    expect_equal(res, integer())
+    df <- DataFrame(msLevel = c(1L, 1L))
+    sps <- Spectra(df)
+    res <- acquisitionNum(sps)
+    expect_equal(res, c(NA_integer_, NA_integer_))
+    df$acquisitionNum <- 1:2
+    sps <- Spectra(df)
+    res <- acquisitionNum(sps)
+    expect_equal(res, 1:2)
+})
+
 test_that("fromFile,Spectra works", {
     sps <- Spectra()
     expect_equal(fromFile(sps), integer())

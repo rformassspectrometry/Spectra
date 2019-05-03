@@ -6,12 +6,31 @@
 \alias{Spectra-class}
 \alias{Spectra,DataFrame-method}
 \alias{Spectra,missing-method}
+\alias{acquisitionNum,Spectra-method}
+\alias{centroided,Spectra-method}
+\alias{centroided<-,Spectra-method}
+\alias{collisionEnergy,Spectra-method}
+\alias{collisionEnergy<-,Spectra-method}
+\alias{fileNames,Spectra-method}
 \alias{fromFile,Spectra-method}
 \alias{intensity,Spectra-method}
+\alias{ionCount,Spectra-method}
+\alias{isCentroided,Spectra-method}
+\alias{isEmpty,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{mz,Spectra-method}
 \alias{peaks,Spectra-method}
+\alias{peaksCount,Spectra-method}
+\alias{polarity,Spectra-method}
+\alias{polarity<-,Spectra-method}
+\alias{precScanNum,Spectra-method}
+\alias{precursorCharge,Spectra-method}
+\alias{precursorIntensity,Spectra-method}
+\alias{precursorMz,Spectra-method}
+\alias{rtime,Spectra-method}
+\alias{rtime<-,Spectra-method}
+\alias{scanIndex,Spectra-method}
 \alias{selectSpectraVariables,Spectra-method}
 \alias{smoothed,Spectra-method}
 \alias{smoothed<-,Spectra-method}
@@ -20,6 +39,8 @@
 \alias{spectraNames,Spectra-method}
 \alias{spectraNames<-,Spectra-method}
 \alias{spectraVariables,Spectra-method}
+\alias{tic,Spectra-method}
+\alias{[,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
 \title{The Spectra class to manage and access MS data}
@@ -32,9 +53,27 @@
   metadata = list(), ..., backend = MsBackendDataFrame(),
   BPPARAM = bpparam())
 
+\S4method{acquisitionNum}{Spectra}(object)
+
+\S4method{centroided}{Spectra}(object)
+
+\S4method{centroided}{Spectra}(object) <- value
+
+\S4method{collisionEnergy}{Spectra}(object)
+
+\S4method{collisionEnergy}{Spectra}(object) <- value
+
+\S4method{fileNames}{Spectra}(object)
+
 \S4method{fromFile}{Spectra}(object)
 
 \S4method{intensity}{Spectra}(object, ...)
+
+\S4method{ionCount}{Spectra}(object)
+
+\S4method{isCentroided}{Spectra}(object, ...)
+
+\S4method{isEmpty}{Spectra}(x)
 
 \S4method{length}{Spectra}(x)
 
@@ -43,6 +82,26 @@
 \S4method{mz}{Spectra}(object, ...)
 
 \S4method{peaks}{Spectra}(object, ...)
+
+\S4method{peaksCount}{Spectra}(object)
+
+\S4method{polarity}{Spectra}(object)
+
+\S4method{polarity}{Spectra}(object) <- value
+
+\S4method{precScanNum}{Spectra}(object)
+
+\S4method{precursorCharge}{Spectra}(object)
+
+\S4method{precursorIntensity}{Spectra}(object)
+
+\S4method{precursorMz}{Spectra}(object)
+
+\S4method{rtime}{Spectra}(object)
+
+\S4method{rtime}{Spectra}(object) <- value
+
+\S4method{scanIndex}{Spectra}(object)
 
 \S4method{selectSpectraVariables}{Spectra}(object,
   spectraVariables = spectraVariables(object))
@@ -61,6 +120,10 @@
 \S4method{spectraNames}{Spectra}(object) <- value
 
 \S4method{spectraVariables}{Spectra}(object)
+
+\S4method{tic}{Spectra}(object, initial = TRUE)
+
+\S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
 
 \S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
 
@@ -85,13 +148,13 @@ section on creation of \code{Spectra} objects for details.}
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
 of the \linkS4class{MsBackend}.}
 
+\item{value}{replacement value for \code{<-} methods. See individual
+method description or expected data type.}
+
 \item{x}{A \code{Spectra} object.}
 
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
-
-\item{value}{replacement value for \code{<-} methods. See individual
-method description or expected data type.}
 
 \item{columns}{For \code{spectraData} accessor: optional \code{character} with column
 names (spectra variables) that should be included in the
@@ -142,9 +205,12 @@ function that reads general spectrum metadata information from the  mass
 spectrometry data files.
 }
 
-\section{Accessing data}{
+\section{Accessing spectra data}{
 
 \itemize{
+\item \code{acquisitionNum}: returns the acquisition number of each
+spectrum. Returns an \code{integer} of length equal to the number of
+spectra (with \code{NA_integer_} if not available).
 \item \code{fromFile}: get the file/sample assignment of each spectrum. Returns an
 integer vector of length equal to the number of spectra.
 \item \code{intensity}: gets the intensity values from the spectra. Returns

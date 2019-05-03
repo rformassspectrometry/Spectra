@@ -38,7 +38,11 @@ NULL
 #' function that reads general spectrum metadata information from the  mass
 #' spectrometry data files.
 #'
-#' @section Accessing data:
+#' @section Accessing spectra data:
+#'
+#' - `acquisitionNum`: returns the acquisition number of each
+#'   spectrum. Returns an `integer` of length equal to the number of
+#'   spectra (with `NA_integer_` if not available).
 #'
 #' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
 #'   integer vector of length equal to the number of spectra.
@@ -290,9 +294,8 @@ setMethod("Spectra", "missing", function(object, processingQueue = list(),
 ## ACCESSOR METHODS
 
 #' @rdname Spectra
-setMethod("acquisitionNum", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("acquisitionNum", "Spectra", function(object)
+    acquisitionNum(object@backend))
 
 #' @rdname Spectra
 setMethod("centroided", "Spectra", function(object) {
