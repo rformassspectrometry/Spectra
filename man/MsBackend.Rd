@@ -236,7 +236,7 @@ a \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors (intensity v
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
 \item \code{ionCount}: returns a \code{numeric} with the sum of intensities for
-each spectrum. If the spectrum is empty (see \code{isEmptt}),
+each spectrum. If the spectrum is empty (see \code{isEmpty}),
 \code{NA_real_} is returned.
 \item \code{isCentroided}: a heuristic approach assessing if the spectra in
 \code{object} are in profile or centroided mode. The function takes

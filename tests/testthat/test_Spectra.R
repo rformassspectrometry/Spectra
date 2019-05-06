@@ -80,6 +80,22 @@ test_that("collisionEnergy,collisionEnergy<-,Spectra works", {
     expect_error(collisionEnergy(sps) <- c("a", "b", "c"), "'numeric'")
 })
 
+test_that("fileNames,Spectra works", {
+    sps <- Spectra()
+    res <- fileNames(sps)
+    expect_equal(res, character())
+
+    df <- DataFrame(msLevel = c(1L, 2L))
+    sps <- Spectra(df)
+    res <- fileNames(sps)
+    expect_equal(res, NA_character_)
+
+    be <- backendInitialize(MsBackendMzR(), file = sciex_file)
+    sps <- Spectra(backend = be)
+    res <- fileNames(sps)
+    expect_equal(res, sciex_file)
+})
+
 test_that("fromFile,Spectra works", {
     sps <- Spectra()
     expect_equal(fromFile(sps), integer())
@@ -118,6 +134,24 @@ test_that("intensity,Spectra works", {
     sps <- clean(sps, all = TRUE)
     res <- intensity(sps)
     expect_equal(res, SimpleList(c(1, 6, 3, 9, 1), c(9, 6, 3, 9, 4)))
+})
+
+test_that("ionCount,Spectra works", {
+    sps <- Spectra()
+    res <- ionCount(sps)
+    expect_equal(res, numeric())
+
+    df <- DataFrame(msLevel = c(1L, 2L), centroided = TRUE)
+    df$intensity <- list(c(5, 9, 3), c(9, 8, 2))
+    df$mz <- list(1:3, 1:3)
+    sps <- Spectra(df)
+
+    res <- ionCount(sps)
+    expect_equal(res, c(17, 19))
+
+    sps <- removePeaks(sps, t = 4)
+    res <- ionCount(sps)
+    expect_equal(res, c(14, 17))
 })
 
 test_that("msLevel,Spectra works", {

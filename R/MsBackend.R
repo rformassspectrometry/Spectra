@@ -119,7 +119,7 @@ NULL
 #'   `spectra` in `object`.
 #'
 #' - `ionCount`: returns a `numeric` with the sum of intensities for
-#'   each spectrum. If the spectrum is empty (see `isEmptt`),
+#'   each spectrum. If the spectrum is empty (see `isEmpty`),
 #'   `NA_real_` is returned.
 #'
 #' - `isCentroided`: a heuristic approach assessing if the spectra in

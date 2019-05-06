@@ -60,6 +60,9 @@ NULL
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
+#' - `fileNames`: returns a `character` with the file names, or
+#'   `NA_character_` if not relevant.
+#'
 #' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
 #'   integer vector of length equal to the number of spectra.
 #'
@@ -67,6 +70,10 @@ NULL
 #'   a [SimpleList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
+#'
+#' - `ionCount`: returns a `numeric` with the sum of intensities for
+#'   each spectrum. If the spectrum is empty (see `isEmpty`),
+#'   `NA_real_` is returned.
 #'
 #' - `length`: get the number of spectra in the object.
 #'
@@ -338,7 +345,7 @@ setReplaceMethod("collisionEnergy", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("fileNames", "Spectra", function(object) {
-    object@files
+    fileNames(object@backend)
 })
 
 #' @rdname Spectra
@@ -351,7 +358,10 @@ setMethod("intensity", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 setMethod("ionCount", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    if (length(object))
+        unlist(.peaksapply(object, FUN = function(z, spectrumMsLevel, centroided)
+            sum(z[, 2], na.rm = TRUE)), use.names = FALSE)
+    else numeric()
 })
 
 #' @rdname Spectra
