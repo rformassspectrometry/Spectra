@@ -242,7 +242,7 @@ each spectrum. If the spectrum is empty (see \code{isEmpty}),
 \code{object} are in profile or centroided mode. The function takes
 the \code{qtl}th quantile top peaks, then calculates the difference
 between adjacent m/z value and returns \code{TRUE} if the first
-quartile is greater than \code{k}. (See \code{MSnbase:::.isCentroided} for
+quartile is greater than \code{k}. (See \code{Spectra:::.isCentroided} for
 the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of

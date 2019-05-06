@@ -6,6 +6,7 @@
 \alias{Spectra-class}
 \alias{Spectra,DataFrame-method}
 \alias{Spectra,missing-method}
+\alias{Spectra,MsBackend-method}
 \alias{acquisitionNum,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
@@ -52,6 +53,9 @@
 \S4method{Spectra}{missing}(object, processingQueue = list(),
   metadata = list(), ..., backend = MsBackendDataFrame(),
   BPPARAM = bpparam())
+
+\S4method{Spectra}{MsBackend}(object, processingQueue = list(),
+  metadata = list(), ..., BPPARAM = bpparam())
 
 \S4method{acquisitionNum}{Spectra}(object)
 
@@ -195,6 +199,8 @@ which supports the following formats:
 \item parameter \code{object} is a \code{DataFrame} containing the spectrum data. The
 provided \code{backend} (by default a \linkS4class{MsBackendDataFrame}) will be
 initialized with that data.
+\item parameter \code{object} is a \linkS4class{MsBackend} (assumed to be already
+initialized).
 \item parameter \code{object} is missing, in which case it is supposed that the data
 is provided by the \linkS4class{MsBackend} class passed along with the \code{backend}
 argument.
@@ -235,6 +241,12 @@ spectrum). The length of the \code{list} is equal to the number of
 \item \code{ionCount}: returns a \code{numeric} with the sum of intensities for
 each spectrum. If the spectrum is empty (see \code{isEmpty}),
 \code{NA_real_} is returned.
+\item \code{isCentroided}: a heuristic approach assessing if the spectra in
+\code{object} are in profile or centroided mode. The function takes
+the \code{qtl}th quantile top peaks, then calculates the difference
+between adjacent m/z value and returns \code{TRUE} if the first
+quartile is greater than \code{k}. (See \code{Spectra:::.isCentroided} for
+the code.)
 \item \code{length}: get the number of spectra in the object.
 \item \code{msLevel}: get the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS

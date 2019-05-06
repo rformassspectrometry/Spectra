@@ -31,6 +31,9 @@ NULL
 #'   provided `backend` (by default a [MsBackendDataFrame-class]) will be
 #'   initialized with that data.
 #'
+#' - parameter `object` is a [MsBackend-class] (assumed to be already
+#'   initialized).
+#'
 #' - parameter `object` is missing, in which case it is supposed that the data
 #'   is provided by the [MsBackend-class] class passed along with the `backend`
 #'   argument.
@@ -74,6 +77,13 @@ NULL
 #' - `ionCount`: returns a `numeric` with the sum of intensities for
 #'   each spectrum. If the spectrum is empty (see `isEmpty`),
 #'   `NA_real_` is returned.
+#'
+#' - `isCentroided`: a heuristic approach assessing if the spectra in
+#'   `object` are in profile or centroided mode. The function takes
+#'   the `qtl`th quantile top peaks, then calculates the difference
+#'   between adjacent m/z value and returns `TRUE` if the first
+#'   quartile is greater than `k`. (See `Spectra:::.isCentroided` for
+#'   the code.)
 #'
 #' - `length`: get the number of spectra in the object.
 #'
@@ -314,6 +324,13 @@ setMethod("Spectra", "missing", function(object, processingQueue = list(),
     new("Spectra", metadata = metadata, processingQueue = processingQueue,
         backend = backend)
 })
+#' @rdname Spectra
+setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
+                                           metadata = list(), ...,
+                                           BPPARAM = bpparam()) {
+    new("Spectra", metadata = metadata, processingQueue = processingQueue,
+        backend = object)
+})
 
 ## ACCESSOR METHODS
 
@@ -366,7 +383,10 @@ setMethod("ionCount", "Spectra", function(object) {
 
 #' @rdname Spectra
 setMethod("isCentroided", "Spectra", function(object, ...) {
-    stop("Not implemented for ", class(object), ".")
+    if (length(object))
+        unlist(.peaksapply(object, FUN = .is_centroided_peaks),
+               use.names = FALSE)
+    else logical()
 })
 
 #' @rdname Spectra

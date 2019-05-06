@@ -154,6 +154,25 @@ test_that("ionCount,Spectra works", {
     expect_equal(res, c(14, 17))
 })
 
+test_that("isCentroided,Spectra works", {
+    sps <- Spectra()
+    res <- isCentroided(sps)
+    expect_equal(res, logical())
+
+    df <- DataFrame(msLevel = c(1L, 1L))
+    df$intensity <- list(c(5, 6, 1), c(5, 3, 1))
+    df$mz <- list(1:3, 1:3)
+    sps <- Spectra(df)
+
+    res <- isCentroided(sps)
+    expect_equal(res, c(NA, NA))
+
+    sps <- Spectra(backendInitialize(MsBackendMzR(), file = sciex_file))
+    res <- isCentroided(sps)
+    expect_true(length(res) == length(sps))
+    expect_true(all(!res))
+})
+
 test_that("msLevel,Spectra works", {
     sps <- Spectra()
     expect_equal(msLevel(sps), integer())

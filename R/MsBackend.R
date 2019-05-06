@@ -126,7 +126,7 @@ NULL
 #'   `object` are in profile or centroided mode. The function takes
 #'   the `qtl`th quantile top peaks, then calculates the difference
 #'   between adjacent m/z value and returns `TRUE` if the first
-#'   quartile is greater than `k`. (See `MSnbase:::.isCentroided` for
+#'   quartile is greater than `k`. (See `Spectra:::.isCentroided` for
 #'   the code.)
 #'
 #' - `isEmpty`: checks whether a spectrum in `object` is empty
