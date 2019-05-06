@@ -45,9 +45,6 @@ NULL
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
-#'   integer vector of length equal to the number of spectra.
-#'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
@@ -56,6 +53,15 @@ NULL
 #'   the spectrum data whether the spectrum is centroided.  `value`
 #'   for `centroided<-` is either a single `logical` or a `logical` of
 #'   length equal to the number of spectra in `object`.
+#'
+#' - `collisionEnergy`, `collisionEnergy<-`: gets or sets the
+#'   collision energy for all spectra in `object`. `collisionEnergy`
+#'   returns a `numeric` with length equal to the number of spectra
+#'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
+#'   `numeric` of length equal to the number of spectra in `object`.
+#'
+#' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
+#'   integer vector of length equal to the number of spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [SimpleList()] of `numeric` vectors (intensity values for each
@@ -321,12 +327,13 @@ setReplaceMethod("centroided", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("collisionEnergy", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    collisionEnergy(object@backend)
 })
 
 #' @rdname Spectra
 setReplaceMethod("collisionEnergy", "Spectra", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    collisionEnergy(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra

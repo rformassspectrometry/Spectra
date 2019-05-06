@@ -56,6 +56,30 @@ test_that("centroided,centroided<-,Spectra works", {
     expect_error(centroided(sps) <- c(TRUE, FALSE, FALSE, TRUE), "length 1 or 3")
 })
 
+test_that("collisionEnergy,collisionEnergy<-,Spectra works", {
+    sps <- Spectra()
+    res <- collisionEnergy(sps)
+    expect_equal(res, numeric())
+
+    df <- DataFrame(msLevel = c(1L, 2L, 2L))
+    sps <- Spectra(df)
+    res <- collisionEnergy(sps)
+    expect_true(all(is.na(res)))
+    expect_equal(length(res), length(sps))
+
+    collisionEnergy(sps) <- c(1.2, 1.4, 1.7)
+    res <- collisionEnergy(sps)
+    expect_equal(res, c(1.2, 1.4, 1.7))
+
+    df$collisionEnergy <- c(3.4, 4.3, 2.3)
+    sps <- Spectra(df)
+    res <- collisionEnergy(sps)
+    expect_equal(res, c(3.4, 4.3, 2.3))
+
+    expect_error(collisionEnergy(sps) <- 4, "of length 3")
+    expect_error(collisionEnergy(sps) <- c("a", "b", "c"), "'numeric'")
+})
+
 test_that("fromFile,Spectra works", {
     sps <- Spectra()
     expect_equal(fromFile(sps), integer())
