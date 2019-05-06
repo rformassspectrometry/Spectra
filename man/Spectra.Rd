@@ -261,6 +261,9 @@ one spectrum.
 \item \code{peaks}: get the \emph{peaks} matrices for all spectra in \code{object}. The function
 returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns \code{mz} and
 \code{intensity} with the m/z and intensity values for all peaks of a spectrum.
+\item \code{peaksCount}: gets the number of peaks (m/z-intensity values) per
+spectrum. Returns an \code{integer} vector (length equal to the
+number of spectra). For empty spectra, \code{NA_integer_} is returned.
 \item \code{selectSpectraVariables}: reduce the information within the object to
 the selected spectra variables.
 \item \code{smoothed},\code{smoothed<-}: geta or sets whether a spectrum is

@@ -104,6 +104,10 @@ NULL
 #'   returns a [SimpleList()] of matrices, each `matrix` with columns `mz` and
 #'   `intensity` with the m/z and intensity values for all peaks of a spectrum.
 #'
+#' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
+#'   spectrum. Returns an `integer` vector (length equal to the
+#'   number of spectra). For empty spectra, `NA_integer_` is returned.
+#'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables.
 #'
@@ -423,7 +427,10 @@ setMethod("peaks", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 setMethod("peaksCount", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    if (length(object))
+        unlist(.peaksapply(object, FUN = function(pks, ...) nrow(pks)),
+               use.names = FALSE)
+    else integer()
 })
 
 #' @rdname Spectra

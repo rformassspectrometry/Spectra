@@ -224,6 +224,45 @@ test_that("mz,Spectra works", {
     expect_equal(res, SimpleList(c(3, 4, 5, 8, 9), c(1, 2, 5, 6, 7)))
 })
 
+test_that("peaks,Spectra works", {
+    df <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L)
+    df$mz <- list(1:4, 1:5)
+    df$intensity <- list(1:4, 1:5)
+    be <- backendInitialize(MsBackendDataFrame(), file = NA_character_, df)
+    sps <- Spectra(backend = be)
+    res <- peaks(sps)
+    expect_true(is(res, "SimpleList"))
+    expect_equal(res[[1]][, 1], 1:4)
+    expect_equal(res[[2]][, 1], 1:5)
+
+    sps <- Spectra(backend = MsBackendDataFrame())
+    res <- peaks(sps)
+    expect_true(is(res, "SimpleList"))
+    expect_true(length(res) == 0)
+})
+
+test_that("peaksCount,Spectra works", {
+    sps <- Spectra()
+    res <- peaksCount(sps)
+    expect_equal(res, integer())
+
+    df <- DataFrame(msLevel = c(2L, 2L), centroided = TRUE)
+    df$intensity <- list(c(4, 6, 1), c(45, 2))
+    df$mz <- list(1:3, 1:2)
+
+    sps <- Spectra(df)
+    res <- peaksCount(sps)
+    expect_equal(res, c(3L, 2L))
+
+    sps <- removePeaks(sps, t = 100)
+    res <- peaksCount(sps)
+    expect_equal(res, c(3L, 2L))
+
+    sps <- clean(sps, all = TRUE)
+    res <- peaksCount(sps)
+    expect_equal(res, c(0L, 0L))
+})
+
 test_that("removePeaks,Spectra works", {
     sps <- Spectra()
     res <- removePeaks(sps, t = 10)
@@ -286,21 +325,4 @@ test_that("clean,Spectra works", {
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.clean_peaks,
                                 list(all = TRUE, msLevel. = 2L)))
-})
-
-test_that("peaks,Spectra works", {
-    df <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L)
-    df$mz <- list(1:4, 1:5)
-    df$intensity <- list(1:4, 1:5)
-    be <- backendInitialize(MsBackendDataFrame(), file = NA_character_, df)
-    sps <- Spectra(backend = be)
-    res <- peaks(sps)
-    expect_true(is(res, "SimpleList"))
-    expect_equal(res[[1]][, 1], 1:4)
-    expect_equal(res[[2]][, 1], 1:5)
-
-    sps <- Spectra(backend = MsBackendDataFrame())
-    res <- peaks(sps)
-    expect_true(is(res, "SimpleList"))
-    expect_true(length(res) == 0)
 })
