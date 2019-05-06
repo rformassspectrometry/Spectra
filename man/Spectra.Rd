@@ -247,6 +247,9 @@ the \code{qtl}th quantile top peaks, then calculates the difference
 between adjacent m/z value and returns \code{TRUE} if the first
 quartile is greater than \code{k}. (See \code{Spectra:::.isCentroided} for
 the code.)
+\item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
+(i.e. does not contain any peaks). Returns a \code{logical} vector of
+length equal number of spectra.
 \item \code{length}: get the number of spectra in the object.
 \item \code{msLevel}: get the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS

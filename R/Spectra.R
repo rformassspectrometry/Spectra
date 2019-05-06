@@ -85,6 +85,10 @@ NULL
 #'   quartile is greater than `k`. (See `Spectra:::.isCentroided` for
 #'   the code.)
 #'
+#' - `isEmpty`: checks whether a spectrum in `object` is empty
+#'   (i.e. does not contain any peaks). Returns a `logical` vector of
+#'   length equal number of spectra.
+#'
 #' - `length`: get the number of spectra in the object.
 #'
 #' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
@@ -376,8 +380,8 @@ setMethod("intensity", "Spectra", function(object, ...) {
 #' @rdname Spectra
 setMethod("ionCount", "Spectra", function(object) {
     if (length(object))
-        unlist(.peaksapply(object, FUN = function(z, spectrumMsLevel, centroided)
-            sum(z[, 2], na.rm = TRUE)), use.names = FALSE)
+        unlist(.peaksapply(object, FUN = function(pks, ...)
+            sum(pks[, 2], na.rm = TRUE)), use.names = FALSE)
     else numeric()
 })
 
@@ -391,7 +395,10 @@ setMethod("isCentroided", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 setMethod("isEmpty", "Spectra", function(x) {
-    stop("Not implemented for ", class(x), ".")
+    if (length(x))
+        unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks) == 0),
+               use.names = FALSE)
+    else logical()
 })
 
 #' @rdname Spectra

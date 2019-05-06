@@ -173,6 +173,28 @@ test_that("isCentroided,Spectra works", {
     expect_true(all(!res))
 })
 
+test_that("isEmpty,Spectra works", {
+    sps <- Spectra()
+    res <- isEmpty(sps)
+    expect_equal(res, logical())
+
+    df <- DataFrame(msLevel = c(2L, 2L), centroided = TRUE)
+    df$intensity <- list(c(4, 6, 1), c(45, 2))
+    df$mz <- list(1:3, 1:2)
+
+    sps <- Spectra(df)
+    res <- isEmpty(sps)
+    expect_equal(res, c(FALSE, FALSE))
+
+    sps <- removePeaks(sps, t = 100)
+    res <- isEmpty(sps)
+    expect_equal(res, c(FALSE, FALSE))
+
+    sps <- clean(sps, all = TRUE)
+    res <- isEmpty(sps)
+    expect_equal(res, c(TRUE, TRUE))
+})
+
 test_that("msLevel,Spectra works", {
     sps <- Spectra()
     expect_equal(msLevel(sps), integer())
