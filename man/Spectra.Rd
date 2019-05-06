@@ -213,6 +213,14 @@ spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
 \item \code{fromFile}: get the file/sample assignment of each spectrum. Returns an
 integer vector of length equal to the number of spectra.
+\item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
+information of the spectra. \code{centroided} returns a \code{logical}
+vector of length equal to the number of spectra with \code{TRUE} if a
+spectrum is centroided, \code{FALSE} if it is in profile mode and \code{NA}
+if it is undefined. See also \code{isCentroided} for estimating from
+the spectrum data whether the spectrum is centroided.  \code{value}
+for \code{centroided<-} is either a single \code{logical} or a \code{logical} of
+length equal to the number of spectra in \code{object}.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
 a \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
@@ -300,6 +308,7 @@ pks[[2]]
 spectraVariables(data)
 
 ## For all *core* spectrum variables accessor functions are available.
+centroided(data)
 ## fromFile(data)
 ## rtime(data)
 ## precursorMz(data)

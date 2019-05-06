@@ -30,6 +30,7 @@ NULL
 #' - parameter `object` is a `DataFrame` containing the spectrum data. The
 #'   provided `backend` (by default a [MsBackendDataFrame-class]) will be
 #'   initialized with that data.
+#'
 #' - parameter `object` is missing, in which case it is supposed that the data
 #'   is provided by the [MsBackend-class] class passed along with the `backend`
 #'   argument.
@@ -46,6 +47,15 @@ NULL
 #'
 #' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
 #'   integer vector of length equal to the number of spectra.
+#'
+#' - `centroided`, `centroided<-`: gets or sets the centroiding
+#'   information of the spectra. `centroided` returns a `logical`
+#'   vector of length equal to the number of spectra with `TRUE` if a
+#'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
+#'   if it is undefined. See also `isCentroided` for estimating from
+#'   the spectrum data whether the spectrum is centroided.  `value`
+#'   for `centroided<-` is either a single `logical` or a `logical` of
+#'   length equal to the number of spectra in `object`.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [SimpleList()] of `numeric` vectors (intensity values for each
@@ -189,6 +199,7 @@ NULL
 #' spectraVariables(data)
 #'
 #' ## For all *core* spectrum variables accessor functions are available.
+#' centroided(data)
 #' ## fromFile(data)
 #' ## rtime(data)
 #' ## precursorMz(data)
@@ -299,12 +310,13 @@ setMethod("acquisitionNum", "Spectra", function(object)
 
 #' @rdname Spectra
 setMethod("centroided", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    centroided(object@backend)
 })
 
 #' @rdname Spectra
 setReplaceMethod("centroided", "Spectra", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    centroided(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra

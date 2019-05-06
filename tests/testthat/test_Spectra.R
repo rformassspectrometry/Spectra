@@ -39,6 +39,23 @@ test_that("acquisitionNum,Spectra works", {
     expect_equal(res, 1:2)
 })
 
+test_that("centroided,centroided<-,Spectra works", {
+    sps <- Spectra()
+    res <- centroided(sps)
+    expect_equal(res, logical())
+    df <- DataFrame(msLevel = c(1L, 2L, 1L), centroided = c(TRUE, FALSE, TRUE))
+    sps <- Spectra(df)
+    res <- centroided(sps)
+    expect_equal(res, c(TRUE, FALSE, TRUE))
+    centroided(sps) <- c(FALSE, TRUE, FALSE)
+    res <- centroided(sps)
+    expect_equal(res, c(FALSE, TRUE, FALSE))
+    centroided(sps) <- FALSE
+    expect_true(all(centroided(sps) == FALSE))
+    expect_error(centroided(sps) <- 3, "'logical' of length")
+    expect_error(centroided(sps) <- c(TRUE, FALSE, FALSE, TRUE), "length 1 or 3")
+})
+
 test_that("fromFile,Spectra works", {
     sps <- Spectra()
     expect_equal(fromFile(sps), integer())
