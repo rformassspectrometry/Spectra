@@ -263,6 +263,22 @@ test_that("peaksCount,Spectra works", {
     expect_equal(res, c(0L, 0L))
 })
 
+test_that("polarity,polarity<-,Spectra works", {
+    sps <- Spectra()
+    expect_equal(polarity(sps), integer())
+
+    df <- DataFrame(msLevel = c(1L, 1L))
+    sps <- Spectra(df)
+    expect_equal(polarity(sps), c(NA_integer_, NA_integer_))
+    polarity(sps) <- c(1L, -1L)
+    expect_equal(polarity(sps), c(1L, -1L))
+    polarity(sps) <- 2L
+    expect_equal(polarity(sps), c(2L, 2L))
+
+    expect_error(polarity(sps) <- c(1L, 2L, 1L), "of length 1 or 2")
+    expect_error(polarity(sps) <- c("a", "b"), "an 'integer'")
+})
+
 test_that("removePeaks,Spectra works", {
     sps <- Spectra()
     res <- removePeaks(sps, t = 10)

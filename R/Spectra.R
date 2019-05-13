@@ -108,6 +108,12 @@ NULL
 #'   spectrum. Returns an `integer` vector (length equal to the
 #'   number of spectra). For empty spectra, `NA_integer_` is returned.
 #'
+#' - `polarity`, `polarity<-`: gets or sets the polarity for each
+#'   spectrum.  `polarity` returns an `integer` vector (length equal
+#'   to the number of spectra), with `0` and `1` representing negative
+#'   and positive polarities, respectively. `polarity<-` expects an
+#'   `integer` vector of length 1 or equal to the number of spectra.
+#'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables.
 #'
@@ -340,7 +346,11 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
         backend = object)
 })
 
-## ACCESSOR METHODS
+#### ---------------------------------------------------------------------------
+##
+##                          ACCESSOR METHODS
+##
+#### ---------------------------------------------------------------------------
 
 #' @rdname Spectra
 setMethod("acquisitionNum", "Spectra", function(object)
@@ -435,12 +445,13 @@ setMethod("peaksCount", "Spectra", function(object) {
 
 #' @rdname Spectra
 setMethod("polarity", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    polarity(object@backend)
 })
 
 #' @rdname Spectra
 setReplaceMethod("polarity", "Spectra", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    polarity(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra
@@ -538,14 +549,22 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
     stop("Not implemented for ", class(object), ".")
 })
 
-## FILTERING AND SUBSETTING
+#### ---------------------------------------------------------------------------
+##
+##                      FILTERING AND SUBSETTING
+##
+#### ---------------------------------------------------------------------------
 
 #' @rdname Spectra
 setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
     stop("Not implemented for ", class(x), ".")
 })
 
-## DATA MANIPULATION METHODS
+#### ---------------------------------------------------------------------------
+##
+##                      DATA MANIPULATION METHODS
+##
+#### ---------------------------------------------------------------------------
 
 #' @rdname Spectra
 #'

@@ -264,6 +264,11 @@ returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix
 \item \code{peaksCount}: gets the number of peaks (m/z-intensity values) per
 spectrum. Returns an \code{integer} vector (length equal to the
 number of spectra). For empty spectra, \code{NA_integer_} is returned.
+\item \code{polarity}, \code{polarity<-}: gets or sets the polarity for each
+spectrum.  \code{polarity} returns an \code{integer} vector (length equal
+to the number of spectra), with \code{0} and \code{1} representing negative
+and positive polarities, respectively. \code{polarity<-} expects an
+\code{integer} vector of length 1 or equal to the number of spectra.
 \item \code{selectSpectraVariables}: reduce the information within the object to
 the selected spectra variables.
 \item \code{smoothed},\code{smoothed<-}: geta or sets whether a spectrum is
