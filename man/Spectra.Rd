@@ -41,6 +41,7 @@
 \alias{spectraNames<-,Spectra-method}
 \alias{spectraVariables,Spectra-method}
 \alias{tic,Spectra-method}
+\alias{$,Spectra-method}
 \alias{[,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
@@ -126,6 +127,8 @@
 \S4method{spectraVariables}{Spectra}(object)
 
 \S4method{tic}{Spectra}(object, initial = TRUE)
+
+\S4method{$}{Spectra}(x, name)
 
 \S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
 
@@ -225,6 +228,8 @@ spectrometry data files.
 \section{Accessing spectra data}{
 
 \itemize{
+\item \code{$}, \code{$<-}: get (or set) a spectra variable for all spectra in \code{object}.
+See examples for details.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
@@ -298,11 +303,6 @@ for each spectrum. This represents the relative index of the
 spectrum within each file. Note that this can be different to the
 \code{acquisitionNum} of the spectrum which represents the index of the
 spectrum during acquisition/measurement (as reported in the mzML file).
-\item \code{selectSpectraVariables}: reduce the information within the object to
-the selected spectra variables: all data for variables not specified will
-be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
-the values will be dropped, while additional (user defined) spectra
-variables will be completely removed.
 \item \code{smoothed},\code{smoothed<-}: gets or sets whether a spectrum is
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \code{smoothed<-} takes a \code{logical} vector
@@ -332,6 +332,11 @@ listed methods.
 \itemize{
 \item \code{[}: subset the spectra keeping only selected elements (\code{i}). The method
 \strong{always} returns a \code{Spectra} object.
+\item \code{selectSpectraVariables}: reduce the information within the object to
+the selected spectra variables: all data for variables not specified will
+be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
+the values will be dropped, while additional (user defined) spectra
+variables will be completely removed.
 }
 }
 
@@ -376,6 +381,11 @@ data
 ## Get the MS level for each spectrum.
 msLevel(data)
 
+## Alternatively, we could also use $ to access a specific spectra variable.
+## This could also be used to add additional spectra variables to the
+## object (see further below).
+data$msLevel
+
 ## Get the intensity and m/z values.
 intensity(data)
 mz(data)
@@ -400,10 +410,13 @@ rtime(data)
 precursorMz(data)
 
 ## Add an additional metadata column.
-spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
+data$spectrum_id <- c("sp_1", "sp_2")
 
 ## List spectra variables.
 spectraVariables(data)
+
+## Get the values for the new spectra variable
+data$spectrum_id
 
 ## Extract specific spectra variables.
 spectraData(data, columns = c("spectrum_id", "msLevel"))

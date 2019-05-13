@@ -491,6 +491,31 @@ test_that("tic,Spectra works", {
     expect_identical(tic(sps, initial = FALSE), c(7, 9))
 })
 
+test_that("$, $<-,Spectra works", {
+    sps <- Spectra()
+    expect_identical(sps$msLevel, integer())
+
+    sps <- Spectra(DataFrame(msLevel = c(1L, 2L), other_column = "a"))
+    expect_identical(sps$msLevel, c(1L, 2L))
+    expect_identical(sps$other_column, c("a", "a"))
+
+    sps$second_col <- c(1, 4)
+    expect_identical(sps$second_col, c(1, 4))
+    expect_true(any(spectraVariables(sps) == "second_col"))
+
+    df <- DataFrame(msLevel = c(1L, 2L), other_column = "a")
+    df$mz <- list(1:3, 1:4)
+    df$intensity <- list(c(3, 6, 3), c(56, 6, 3, 2))
+    sps <- Spectra(df)
+
+    sps$intensity <- list(c(4, 4, 4), c(2, 4, 6, 3))
+    expect_equal(intensity(sps), SimpleList(c(4, 4, 4), c(2, 4, 6, 3)))
+
+    sps <- Spectra(sciex_mzr)
+    sps$add_col <- "something"
+    expect_true(all(sps$add_col == "something"))
+})
+
 #### ---------------------------------------------------------------------------
 ##
 ##                      FILTERING AND SUBSETTING

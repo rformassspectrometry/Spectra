@@ -311,12 +311,6 @@ setMethod("spectraData", "MsBackendDataFrame",
 
 #' @rdname hidden_aliases
 setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
-    ## if (!is(value, "DataFrame") || rownames(value) != length(object))
-    ##     stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
-    ## if (is.list(value$mz))
-    ##     value$mz <- SimpleList(value$mz)
-    ## if (is.list(value$intensity))
-    ##     value$intensity <- SimpleList(value$intensity)
     if (inherits(value, "DataFrame")) {
         if (nrow(value) != length(object))
             stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
@@ -374,6 +368,22 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     x@files <- orig_files[files_idx]
     x@modCount <- x@modCount[files_idx]
     x@spectraData$fromFile <- match(orig_files[fromFile(x)], x@files)
+    validObject(x)
+    x
+})
+
+#' @rdname hidden_aliases
+setMethod("$", "MsBackendDataFrame", function(x, name) {
+    if (!any(spectraVariables(x) == name))
+        stop("spectra variable '", name, "' not available")
+    spectraData(x, name)[, 1]
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
+    if (is.list(value) && any(c("mz", "intensity") == name))
+        value <- SimpleList(value)
+    x@spectraData[[name]] <- value
     validObject(x)
     x
 })

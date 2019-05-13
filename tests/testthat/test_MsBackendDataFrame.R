@@ -328,6 +328,15 @@ test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
     expect_equal(colnames(res), c("a", "intensity"))
     expect_equal(res$intensity, SimpleList(numeric(), numeric()))
     expect_equal(res$a, c("a", "a"))
+
+    spectraData(be) <- DataFrame(fromFile = 1L, mzLevel = c(3L, 4L),
+                                 rtime = c(1.2, 1.4), other_col = "b")
+    expect_identical(rtime(be), c(1.2, 1.4))
+    expect_true(any(spectraVariables(be) == "other_col"))
+    expect_identical(spectraData(be, "other_col")[, 1], c("b", "b"))
+
+    expect_error(spectraData(be) <- DataFrame(msLevel = 1:3, fromFile = 1),
+                 "with 2 rows")
 })
 
 test_that("show,MsBackendDataFrame works", {
@@ -394,4 +403,24 @@ test_that("selectSpectraVariables,MsBackendDataFrame works", {
     expect_error(selectSpectraVariables(be, "rtime"), "fromFile is/are missing")
     expect_error(selectSpectraVariables(be, "something"),
                  "something not available")
+})
+
+test_that("$,$<-,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_identical(be$msLevel, integer())
+
+    df <- DataFrame(fromFile = c(1L, 1L), msLevel = 1:2, rtime = c(2.3, 1.2),
+                    other_col = 2)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    expect_identical(be$msLevel, 1:2)
+    expect_identical(be$other_col, c(2, 2))
+
+    be$other_col <- 4
+    expect_equal(be$other_col, c(4, 4))
+
+    df$mz <- list(1:3, 1:4)
+    df$intensity <- list(c(3, 3, 3), c(4, 4, 4, 4))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    be$intensity <- list(c(5, 5, 5), 1:4)
+    expect_equal(be$intensity, SimpleList(c(5, 5, 5), 1:4))
 })

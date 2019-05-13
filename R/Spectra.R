@@ -44,6 +44,9 @@ NULL
 #'
 #' @section Accessing spectra data:
 #'
+#' - `$`, `$<-`: get (or set) a spectra variable for all spectra in `object`.
+#'   See examples for details.
+#'
 #' - `acquisitionNum`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
@@ -271,6 +274,11 @@ NULL
 #' ## Get the MS level for each spectrum.
 #' msLevel(data)
 #'
+#' ## Alternatively, we could also use $ to access a specific spectra variable.
+#' ## This could also be used to add additional spectra variables to the
+#' ## object (see further below).
+#' data$msLevel
+#'
 #' ## Get the intensity and m/z values.
 #' intensity(data)
 #' mz(data)
@@ -295,10 +303,13 @@ NULL
 #' precursorMz(data)
 #'
 #' ## Add an additional metadata column.
-#' spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
+#' data$spectrum_id <- c("sp_1", "sp_2")
 #'
 #' ## List spectra variables.
 #' spectraVariables(data)
+#'
+#' ## Get the values for the new spectra variable
+#' data$spectrum_id
 #'
 #' ## Extract specific spectra variables.
 #' spectraData(data, columns = c("spectrum_id", "msLevel"))
@@ -651,6 +662,22 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
     if (initial)
         tic(object@backend, initial = initial)
     else ionCount(object)
+})
+
+#' @rdname Spectra
+#'
+#' @importMethodsFrom S4Vectors $
+#'
+#' @exportMethod $
+setMethod("$", "Spectra", function(x, name) {
+    if (!(name %in% spectraVariables(x)))
+        stop("No spectra variable '", name, "' available")
+    spectraData(x, column = name)[, 1]
+})
+
+setReplaceMethod("$", "Spectra", function(x, name, value) {
+    spectraData(x)[[name]] <- value
+    x
 })
 
 #### ---------------------------------------------------------------------------

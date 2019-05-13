@@ -45,6 +45,8 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{tic,MsBackend-method}
+\alias{$,MsBackend-method}
+\alias{$<-,MsBackend-method}
 \alias{MsBackendDataFrame}
 \alias{MsBackendMzR}
 \title{Mass spectrometry data backends}
@@ -125,6 +127,10 @@
 
 \S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
 
+\S4method{$}{MsBackend}(x, name)
+
+\S4method{$}{MsBackend}(x, name) <- value
+
 MsBackendDataFrame()
 
 MsBackendMzR()
@@ -204,6 +210,8 @@ New backend classes \strong{must} extend the base \code{MsBackend} class and
 \itemize{
 \item \code{[}: subset the backend. Only subsetting by element (\emph{row}/\code{i}) is
 allowed
+\item \code{$}, \code{$<-}: access or set/add a single spectrum variable (column) in the
+backend.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
@@ -356,6 +364,14 @@ the raw files on-demand. This backend uses the \code{mzR} package for
 data import and retrieval and hence requires that package to be
 installed. Also, it can only be used to import and represent data
 stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files.
+
+The \code{MsBackendMzR} backend extends the \code{MsBackendDataFrame} backend using
+its \code{DataFrame} to keep spectra variables (except m/z and intensity) in
+memory.
+To further reduce memory requirement, all spectra variables with a single
+value (e.g. if all spectra are from MS level 1) are internally represented
+as an \code{\link[=Rle]{Rle()}} object that is converted into the original class (e.g.
+\code{integer}) when the column is accessed.
 
 New objects can be created with the \code{MsBackendMzR()} function which
 can be subsequently filled with data by calling \code{backendInitialize}

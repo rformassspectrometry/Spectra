@@ -324,3 +324,16 @@ setMethod("tic", "MsBackendMzR", function(object, initial = TRUE) {
 ##     validObject(x)
 ##     x
 ## })
+
+#' @rdname hidden_aliases
+setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
+    if (any(c("mz", "intensity") == name))
+        stop("'MsBackendMzR' does not support replacing mz or intensity values")
+    if (length(value) == 1)
+        value <- rep(value, length(x))
+    if (length(value) != length(x))
+        stop("Length of 'value' has to either 1 or ", length(x))
+    x@spectraData[[name]] <- .as_rle(value)
+    validObject(x)
+    x
+})

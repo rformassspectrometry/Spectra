@@ -70,6 +70,8 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
+\alias{$,MsBackendDataFrame-method}
+\alias{$<-,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
@@ -103,6 +105,7 @@
 \alias{spectraNames<-,MsBackendMzR-method}
 \alias{spectraVariables,MsBackendMzR-method}
 \alias{tic,MsBackendMzR-method}
+\alias{$<-,MsBackendMzR-method}
 \alias{ProcessingStep-class}
 \alias{show,ProcessingStep-method}
 \alias{show,Spectra-method}
@@ -243,6 +246,10 @@ spectraVariables(object, ...)
 
 \S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
 
+\S4method{$}{MsBackendDataFrame}(x, name)
+
+\S4method{$}{MsBackendDataFrame}(x, name) <- value
+
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
 
@@ -310,6 +317,8 @@ spectraVariables(object, ...)
 \S4method{spectraVariables}{MsBackendMzR}(object)
 
 \S4method{tic}{MsBackendMzR}(object, initial = TRUE)
+
+\S4method{$}{MsBackendMzR}(x, name) <- value
 
 \S4method{show}{ProcessingStep}(object)
 

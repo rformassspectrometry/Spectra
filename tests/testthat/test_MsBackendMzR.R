@@ -339,6 +339,15 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(is.numeric(res$new_col))
     expect_true(is.logical(res$smoothed))
     expect_true(all(is.na(res$smoothed)))
+
+    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "fromFile"))
+    expect_error(spectraData(tmp) <- spd, "scanIndex")
+    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "fromFile",
+                                        "scanIndex"))
+    spectraData(tmp) <- spd
+    expect_true(all(is.na(centroided(tmp))))
+    expect_true(all(is.na(polarity(tmp))))
+    expect_equal(mz(tmp), mz(sciex_mzr))
 })
 
 test_that("show,MsBackendMzR works", {
@@ -374,4 +383,17 @@ test_that("selectSpectraVariables,MsBackendMzR works", {
                                               "scanIndex"))
     expect_error(selectSpectraVariables(be, c("fromFile", "msLevel")),
                  "scanIndex is/are missing")
+})
+
+test_that("$,$<-,MsBackendDataFrame works", {
+    tmp <- sciex_mzr
+    tmp$new_col <- 5
+    expect_true(any(spectraVariables(tmp) == "new_col"))
+    expect_true(all(tmp$new_col == 5))
+    expect_equal(rtime(tmp), rtime(sciex_mzr))
+    expect_true(is.numeric(tmp$new_col))
+    expect_true(is(tmp@spectraData$new_col, "Rle"))
+
+    expect_error(tmp$mz <- SimpleList(1:4, 1:6), "not support replacing mz")
+    expect_error(tmp$new_col <- c(2, 4), "either 1 or")
 })

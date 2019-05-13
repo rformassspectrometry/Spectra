@@ -80,6 +80,9 @@ NULL
 #' - `[`: subset the backend. Only subsetting by element (*row*/`i`) is
 #'   allowed
 #'
+#' - `$`, `$<-`: access or set/add a single spectrum variable (column) in the
+#'   backend.
+#'
 #' - `acquisitionNum`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
@@ -251,6 +254,14 @@ NULL
 #' data import and retrieval and hence requires that package to be
 #' installed. Also, it can only be used to import and represent data
 #' stored in *mzML*, *mzXML* and *CDF* files.
+#'
+#' The `MsBackendMzR` backend extends the `MsBackendDataFrame` backend using
+#' its `DataFrame` to keep spectra variables (except m/z and intensity) in
+#' memory.
+#' To further reduce memory requirement, all spectra variables with a single
+#' value (e.g. if all spectra are from MS level 1) are internally represented
+#' as an [Rle()] object that is converted into the original class (e.g.
+#' `integer`) when the column is accessed.
 #'
 #' New objects can be created with the `MsBackendMzR()` function which
 #' can be subsequently filled with data by calling `backendInitialize`
@@ -567,5 +578,19 @@ setMethod("tic", "MsBackend", function(object, initial = TRUE) {
 #'
 #' @rdname MsBackend
 setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
+    stop("Not implemented for ", class(x), ".")
+})
+
+#' @exportMethod $
+#'
+#' @rdname MsBackend
+setMethod("$", "MsBackend", function(x, name) {
+    stop("Not implemented for ", class(x), ".")
+})
+
+#' @exportMethod $<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("$", "MsBackend", function(x, name, value) {
     stop("Not implemented for ", class(x), ".")
 })
