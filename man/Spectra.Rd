@@ -164,6 +164,17 @@ names of the spectra variables to which the backend should be subsetted.}
 names (spectra variables) that should be included in the
 returned \code{DataFrame}. By default, all columns are returned.}
 
+\item{initial}{For \code{tic}: \code{logical(1)} whether the initially
+reported total ion current should be reported, or whether the
+total ion current should be (re)calculated on the actual data
+(\code{initial = FALSE}, same as \code{ionCount}).}
+
+\item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
+
+\item{j}{For \code{[}: not supported.}
+
+\item{drop}{For \code{[}: not considered.}
+
 \item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
@@ -302,11 +313,25 @@ a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame}. Note that n
 backends support replacing all spectra variables (the \code{\link[=MsBackendMzR]{MsBackendMzR()}}
 does for example not allow to replace \code{mz} and \code{intensity} values with the
 \code{spectraData<-} method.
-\item \code{spectraNames}: returns a \code{character} vector with the names of
-the spectra in \code{object}.
+\item \code{spectraNames}, \code{spectraNames<-}: get or set the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
 available in \code{object}.
+\item \code{tic}: gets the total ion current/count (sum of signal of a
+spectrum) for all spectra in \code{object}. By default, the value
+reported in the original raw data file is returned. For an empty
+spectrum, \code{0} is returned.
+}
+}
+
+\section{Data subsetting and filtering}{
+
+
+Subseting and filtering of \code{Spectra} objects can be performed with the below
+listed methods.
+\itemize{
+\item \code{[}: subset the spectra keeping only selected elements (\code{i}). The method
+\strong{always} returns a \code{Spectra} object.
 }
 }
 
@@ -375,16 +400,30 @@ rtime(data)
 precursorMz(data)
 
 ## Add an additional metadata column.
-## spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
+spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
 
 ## List spectra variables.
 spectraVariables(data)
 
 ## Extract specific spectra variables.
-## spectraData(data, columns = c("spectrum_id", "msLevel"))
+spectraData(data, columns = c("spectrum_id", "msLevel"))
 
 ## Drop spectra variable data and/or columns
 res <- selectSpectraVariables(data, c("mz", "intensity"))
+
+## This removed the additional columns "spectrum_id" and deleted all values
+## for all spectra variables, except "mz" and "intensity"
+spectraData(res)
+
+## Compared to the data before selectSpectraVariables
+spectraData(data)
+
+
+## ---- SUBSETTING AND FILTERING
+
+## Subset to all MS2 spectra
+data[msLevel(data) == 2]
+
 
 ## ---- DATA MANIPULATIONS ----
 }

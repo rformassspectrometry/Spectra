@@ -77,7 +77,6 @@ setGeneric("smoothed", function(object, ...)
 #' @rdname hidden_aliases
 setGeneric("smoothed<-", function(object, value)
     standardGeneric("smoothed<-"))
-#' @rdname hidden_aliases
 setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
 #' @rdname hidden_aliases
 setGeneric("spectraData", function(object, ...)

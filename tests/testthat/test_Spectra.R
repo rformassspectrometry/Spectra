@@ -336,15 +336,6 @@ test_that("rtime,rtime<-,Spectra works", {
     expect_error(rtime(sps) <- 1.3, "'numeric' of length 2")
 })
 
-test_that("removePeaks,Spectra works", {
-    sps <- Spectra()
-    res <- removePeaks(sps, t = 10)
-    expect_true(length(res@processingQueue) == 1)
-    expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.remove_peaks,
-                                list(t = 10, msLevel. = integer())))
-})
-
 test_that("scanIndex,Spectra works", {
     sps <- Spectra()
     expect_identical(scanIndex(sps), integer())
@@ -482,6 +473,57 @@ test_that("spectraVariables,Spectra works", {
     expect_true(all(c(exp_col, "other_col") %in% res))
 })
 
+test_that("tic,Spectra works", {
+    sps <- Spectra()
+    expect_identical(tic(sps), numeric())
+
+    sps <- Spectra(DataFrame(msLevel = c(1L, 1L)))
+    expect_identical(tic(sps), c(NA_real_, NA_real_))
+
+    df <- DataFrame(msLevel = c(1L, 1L), totIonCurrent = c(5, 3))
+    sps <- Spectra(df)
+    expect_identical(tic(sps), c(5, 3))
+    expect_identical(tic(sps, initial = FALSE), c(0, 0))
+
+    df$intensity <- list(c(3, 3, 1), c(5, 3, 1))
+    df$mz <- list(1:3, 1:3)
+    sps <- Spectra(df)
+    expect_identical(tic(sps, initial = FALSE), c(7, 9))
+})
+
+#### ---------------------------------------------------------------------------
+##
+##                      FILTERING AND SUBSETTING
+##
+#### ---------------------------------------------------------------------------
+
+test_that("[,Spectra works", {
+    df <- DataFrame(msLevel = c(1L, 2L, 1L, 2L),
+                    rtime = c(1, 2, 1, 2))
+    sps <- Spectra(df)
+    res <- sps[c(2, 4), ]
+    expect_identical(msLevel(res), c(2L, 2L))
+    expect_identical(sps, sps[])
+
+    expect_error(sps[, 4], "columns is not")
+
+    res <- sps[integer()]
+    expect_true(is(res, "Spectra"))
+    expect_true(length(res) == 0)
+
+    sps <- Spectra(sciex_mzr)
+    tmp <- sps[fromFile(sps) == 2L, ]
+    expect_true(all(fromFile(tmp) == 1))
+    expect_equal(fileNames(tmp), fileNames(sps)[2])
+    expect_equal(rtime(tmp), rtime(sps)[fromFile(sps) == 2])
+})
+
+#### ---------------------------------------------------------------------------
+##
+##                      DATA MANIPULATION METHODS
+##
+#### ---------------------------------------------------------------------------
+
 test_that("clean,Spectra works", {
     sps <- Spectra()
     res <- clean(sps)
@@ -495,4 +537,13 @@ test_that("clean,Spectra works", {
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.clean_peaks,
                                 list(all = TRUE, msLevel. = 2L)))
+})
+
+test_that("removePeaks,Spectra works", {
+    sps <- Spectra()
+    res <- removePeaks(sps, t = 10)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.remove_peaks,
+                                list(t = 10, msLevel. = integer())))
 })

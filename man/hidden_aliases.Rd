@@ -5,19 +5,6 @@
 \name{hidden_aliases}
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
-\alias{For}
-\alias{S4}
-\alias{methods}
-\alias{that}
-\alias{require}
-\alias{a}
-\alias{documentation}
-\alias{entry}
-\alias{but}
-\alias{only}
-\alias{clutter}
-\alias{the}
-\alias{index.}
 \alias{acquisitionNum}
 \alias{backendInitialize}
 \alias{centroided}
@@ -43,7 +30,6 @@
 \alias{selectSpectraVariables}
 \alias{smoothed}
 \alias{smoothed<-}
-\alias{Spectra}
 \alias{spectraData}
 \alias{spectraData<-}
 \alias{spectraNames}
@@ -171,8 +157,6 @@ selectSpectraVariables(object, ...)
 smoothed(object, ...)
 
 smoothed(object) <- value
-
-Spectra(object, ...)
 
 spectraData(object, ...)
 
@@ -332,6 +316,6 @@ spectraVariables(object, ...)
 \S4method{show}{Spectra}(object)
 }
 \description{
-Internal page for hidden aliases
+For S4 methods that require a documentation entry but only clutter the index.
 }
 \keyword{internal}

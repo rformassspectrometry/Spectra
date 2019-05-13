@@ -152,12 +152,24 @@ NULL
 #'   does for example not allow to replace `mz` and `intensity` values with the
 #'   `spectraData<-` method.
 #'
-#' - `spectraNames`: returns a `character` vector with the names of
-#'   the spectra in `object`.
+#' - `spectraNames`, `spectraNames<-`: get or set the spectra names.
 #'
 #' - `spectraVariables`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)
 #'   available in `object`.
+#'
+#' - `tic`: gets the total ion current/count (sum of signal of a
+#'   spectrum) for all spectra in `object`. By default, the value
+#'   reported in the original raw data file is returned. For an empty
+#'   spectrum, `0` is returned.
+#'
+#' @section Data subsetting and filtering:
+#'
+#' Subseting and filtering of `Spectra` objects can be performed with the below
+#' listed methods.
+#'
+#' - `[`: subset the spectra keeping only selected elements (`i`). The method
+#'   **always** returns a `Spectra` object.
 #'
 #' @section Data manipulation and analysis methods:
 #'
@@ -191,13 +203,24 @@ NULL
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
 #'     section on creation of `Spectra` objects for details.
 #'
+#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
+#'     information. This is passed directly to the [backendInitialize()] method
+#'     of the [MsBackend-class].
+#'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
-#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
-#'     information. This is passed directly to the [backendInitialize()] method
-#'     of the [MsBackend-class].
+#' @param drop For `[`: not considered.
+#'
+#' @param i For `[`: `integer`, `logical` or `character` to subset the object.
+#'
+#' @param j For `[`: not supported.
+#'
+#' @param initial For `tic`: `logical(1)` whether the initially
+#'     reported total ion current should be reported, or whether the
+#'     total ion current should be (re)calculated on the actual data
+#'     (`initial = FALSE`, same as `ionCount`).
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
@@ -272,16 +295,30 @@ NULL
 #' precursorMz(data)
 #'
 #' ## Add an additional metadata column.
-#' ## spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
+#' spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
 #'
 #' ## List spectra variables.
 #' spectraVariables(data)
 #'
 #' ## Extract specific spectra variables.
-#' ## spectraData(data, columns = c("spectrum_id", "msLevel"))
+#' spectraData(data, columns = c("spectrum_id", "msLevel"))
 #'
 #' ## Drop spectra variable data and/or columns
 #' res <- selectSpectraVariables(data, c("mz", "intensity"))
+#'
+#' ## This removed the additional columns "spectrum_id" and deleted all values
+#' ## for all spectra variables, except "mz" and "intensity"
+#' spectraData(res)
+#'
+#' ## Compared to the data before selectSpectraVariables
+#' spectraData(data)
+#'
+#'
+#' ## ---- SUBSETTING AND FILTERING
+#'
+#' ## Subset to all MS2 spectra
+#' data[msLevel(data) == 2]
+#'
 #'
 #' ## ---- DATA MANIPULATIONS ----
 NULL
@@ -363,6 +400,7 @@ setMethod("Spectra", "DataFrame", function(object, processingQueue = list(),
             backend, files = if (nrow(object)) NA_character_ else character(),
             object, BPPARAM = BPPARAM))
 })
+
 #' @rdname Spectra
 setMethod("Spectra", "missing", function(object, processingQueue = list(),
                                          metadata = list(), ...,
@@ -371,6 +409,7 @@ setMethod("Spectra", "missing", function(object, processingQueue = list(),
     new("Spectra", metadata = metadata, processingQueue = processingQueue,
         backend = backend)
 })
+
 #' @rdname Spectra
 setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
                                            metadata = list(), ...,
@@ -586,7 +625,11 @@ setMethod("spectraVariables", "Spectra", function(object) {
 
 #' @rdname Spectra
 setMethod("tic", "Spectra", function(object, initial = TRUE) {
-    stop("Not implemented for ", class(object), ".")
+    if (!length(object))
+        return(numeric())
+    if (initial)
+        tic(object@backend, initial = initial)
+    else ionCount(object)
 })
 
 #### ---------------------------------------------------------------------------
@@ -597,7 +640,12 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
 
 #' @rdname Spectra
 setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
-    stop("Not implemented for ", class(x), ".")
+    if (!missing(j))
+        stop("Subsetting 'Spectra' by columns is not (yet) supported")
+    if (missing(i))
+        i <- seq_len(length(x))
+    x@backend <- x@backend[i = i, ..., drop = drop]
+    x
 })
 
 #### ---------------------------------------------------------------------------
