@@ -56,6 +56,9 @@ NULL
 #'
 #' @param j For `[`: not supported.
 #'
+#' @param name For `$` and `$<-`: the name of the spectra variable to return
+#'     or set.
+#'
 #' @param object Object extending `MsBackend`.
 #'
 #' @param spectraData For `backendInitialize`: `DataFrame` with spectrum

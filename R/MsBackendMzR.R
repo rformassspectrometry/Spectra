@@ -332,7 +332,7 @@ setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
     if (length(value) == 1)
         value <- rep(value, length(x))
     if (length(value) != length(x))
-        stop("Length of 'value' has to either 1 or ", length(x))
+        stop("Length of 'value' has to be either 1 or ", length(x))
     x@spectraData[[name]] <- .as_rle(value)
     validObject(x)
     x

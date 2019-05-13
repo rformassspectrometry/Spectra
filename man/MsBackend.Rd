@@ -170,6 +170,9 @@ total ion current should be (re)calculated on the actual data
 \item{j}{For \code{[}: not supported.}
 
 \item{drop}{For \code{[}: not considered.}
+
+\item{name}{For \code{$} and \code{$<-}: the name of the spectra variable to return
+or set.}
 }
 \description{
 Note that the classes described here are not meant to be used

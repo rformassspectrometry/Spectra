@@ -42,6 +42,7 @@
 \alias{spectraVariables,Spectra-method}
 \alias{tic,Spectra-method}
 \alias{$,Spectra-method}
+\alias{$<-,Spectra-method}
 \alias{[,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
@@ -130,6 +131,8 @@
 
 \S4method{$}{Spectra}(x, name)
 
+\S4method{$}{Spectra}(x, name) <- value
+
 \S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
 
 \S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
@@ -171,6 +174,9 @@ returned \code{DataFrame}. By default, all columns are returned.}
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (\code{initial = FALSE}, same as \code{ionCount}).}
+
+\item{name}{For \code{$} and \code{$<-}: the name of the spectra variable to return
+or set.}
 
 \item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
 

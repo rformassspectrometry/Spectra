@@ -514,6 +514,8 @@ test_that("$, $<-,Spectra works", {
     sps <- Spectra(sciex_mzr)
     sps$add_col <- "something"
     expect_true(all(sps$add_col == "something"))
+
+    expect_error(sps$add_col <- c(1, 2), "has to be either 1 or")
 })
 
 #### ---------------------------------------------------------------------------

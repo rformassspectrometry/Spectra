@@ -225,6 +225,9 @@ NULL
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`, same as `ionCount`).
 #'
+#' @param name For `$` and `$<-`: the name of the spectra variable to return
+#'     or set.
+#'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
 #' @param msLevel. `integer` defining the MS level(s) of the spectra to which
@@ -667,16 +670,17 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
 #' @rdname Spectra
 #'
 #' @importMethodsFrom S4Vectors $
-#'
-#' @exportMethod $
 setMethod("$", "Spectra", function(x, name) {
     if (!(name %in% spectraVariables(x)))
         stop("No spectra variable '", name, "' available")
+    ## Use spectraData instead of x@backend$name to support the processing
+    ## queue.
     spectraData(x, column = name)[, 1]
 })
 
+#' @rdname Spectra
 setReplaceMethod("$", "Spectra", function(x, name, value) {
-    spectraData(x)[[name]] <- value
+    x@backend <- do.call("$<-", list(x@backend, name, value))
     x
 })
 
