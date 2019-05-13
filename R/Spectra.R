@@ -134,12 +134,6 @@ NULL
 #'   `acquisitionNum` of the spectrum which represents the index of the
 #'   spectrum during acquisition/measurement (as reported in the mzML file).
 #'
-#' - `selectSpectraVariables`: reduce the information within the object to
-#'   the selected spectra variables: all data for variables not specified will
-#'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
-#'   the values will be dropped, while additional (user defined) spectra
-#'   variables will be completely removed.
-#'
 #' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
 #'   *smoothed*. `smoothed` returns a `logical` vector of length equal
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
@@ -170,6 +164,12 @@ NULL
 #'
 #' - `[`: subset the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
+#'
+#' - `selectSpectraVariables`: reduce the information within the object to
+#'   the selected spectra variables: all data for variables not specified will
+#'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
+#'   the values will be dropped, while additional (user defined) spectra
+#'   variables will be completely removed.
 #'
 #' @section Data manipulation and analysis methods:
 #'
