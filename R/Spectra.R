@@ -114,6 +114,14 @@ NULL
 #'   and positive polarities, respectively. `polarity<-` expects an
 #'   `integer` vector of length 1 or equal to the number of spectra.
 #'
+#' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
+#'   `precScanNum`, `precAcquisitionNum`: get the charge (`integer`),
+#'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
+#'   and acquisition number (`interger`) of the precursor for MS level
+#'   > 2 spectra from the object. Returns a vector of length equal to
+#'   the number of spectra in `object`. `NA` are reported for MS1
+#'   spectra of if no precursor information is available.
+#'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables.
 #'
@@ -456,22 +464,22 @@ setReplaceMethod("polarity", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("precScanNum", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    precScanNum(object@backend)
 })
 
 #' @rdname Spectra
 setMethod("precursorCharge", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    precursorCharge(object@backend)
 })
 
 #' @rdname Spectra
 setMethod("precursorIntensity", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    precursorIntensity(object@backend)
 })
 
 #' @rdname Spectra
 setMethod("precursorMz", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    precursorMz(object@backend)
 })
 
 #' @rdname Spectra

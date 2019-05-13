@@ -6,7 +6,7 @@ test_that("Spectra,DataFrame works", {
 
     df <- DataFrame(msLevel = c(1L, 2L))
     res <- Spectra(df)
-    expect_equal(msLevel(res), c(1L, 2L))
+    expect_identical(msLevel(res), c(1L, 2L))
     expect_true(length(res) == 2)
 
     df$polarity <- "NEG"
@@ -22,34 +22,34 @@ test_that("Spectra,missing works", {
                                                     fromFile = 1L))
     res <- Spectra(backend = be)
     expect_true(length(res) == 2)
-    expect_equal(msLevel(res), c(1L, 2L))
+    expect_identical(msLevel(res), c(1L, 2L))
 })
 
 test_that("acquisitionNum,Spectra works", {
     sps <- Spectra()
     res <- acquisitionNum(sps)
-    expect_equal(res, integer())
+    expect_identical(res, integer())
     df <- DataFrame(msLevel = c(1L, 1L))
     sps <- Spectra(df)
     res <- acquisitionNum(sps)
-    expect_equal(res, c(NA_integer_, NA_integer_))
+    expect_identical(res, c(NA_integer_, NA_integer_))
     df$acquisitionNum <- 1:2
     sps <- Spectra(df)
     res <- acquisitionNum(sps)
-    expect_equal(res, 1:2)
+    expect_identical(res, 1:2)
 })
 
 test_that("centroided,centroided<-,Spectra works", {
     sps <- Spectra()
     res <- centroided(sps)
-    expect_equal(res, logical())
+    expect_identical(res, logical())
     df <- DataFrame(msLevel = c(1L, 2L, 1L), centroided = c(TRUE, FALSE, TRUE))
     sps <- Spectra(df)
     res <- centroided(sps)
-    expect_equal(res, c(TRUE, FALSE, TRUE))
+    expect_identical(res, c(TRUE, FALSE, TRUE))
     centroided(sps) <- c(FALSE, TRUE, FALSE)
     res <- centroided(sps)
-    expect_equal(res, c(FALSE, TRUE, FALSE))
+    expect_identical(res, c(FALSE, TRUE, FALSE))
     centroided(sps) <- FALSE
     expect_true(all(centroided(sps) == FALSE))
     expect_error(centroided(sps) <- 3, "'logical' of length")
@@ -59,7 +59,7 @@ test_that("centroided,centroided<-,Spectra works", {
 test_that("collisionEnergy,collisionEnergy<-,Spectra works", {
     sps <- Spectra()
     res <- collisionEnergy(sps)
-    expect_equal(res, numeric())
+    expect_identical(res, numeric())
 
     df <- DataFrame(msLevel = c(1L, 2L, 2L))
     sps <- Spectra(df)
@@ -69,12 +69,12 @@ test_that("collisionEnergy,collisionEnergy<-,Spectra works", {
 
     collisionEnergy(sps) <- c(1.2, 1.4, 1.7)
     res <- collisionEnergy(sps)
-    expect_equal(res, c(1.2, 1.4, 1.7))
+    expect_identical(res, c(1.2, 1.4, 1.7))
 
     df$collisionEnergy <- c(3.4, 4.3, 2.3)
     sps <- Spectra(df)
     res <- collisionEnergy(sps)
-    expect_equal(res, c(3.4, 4.3, 2.3))
+    expect_identical(res, c(3.4, 4.3, 2.3))
 
     expect_error(collisionEnergy(sps) <- 4, "of length 3")
     expect_error(collisionEnergy(sps) <- c("a", "b", "c"), "'numeric'")
@@ -83,26 +83,26 @@ test_that("collisionEnergy,collisionEnergy<-,Spectra works", {
 test_that("fileNames,Spectra works", {
     sps <- Spectra()
     res <- fileNames(sps)
-    expect_equal(res, character())
+    expect_identical(res, character())
 
     df <- DataFrame(msLevel = c(1L, 2L))
     sps <- Spectra(df)
     res <- fileNames(sps)
-    expect_equal(res, NA_character_)
+    expect_identical(res, NA_character_)
 
     be <- backendInitialize(MsBackendMzR(), file = sciex_file)
     sps <- Spectra(backend = be)
     res <- fileNames(sps)
-    expect_equal(res, sciex_file)
+    expect_identical(res, sciex_file)
 })
 
 test_that("fromFile,Spectra works", {
     sps <- Spectra()
-    expect_equal(fromFile(sps), integer())
+    expect_identical(fromFile(sps), integer())
 
     df <- DataFrame(msLevel = c(1L, 2L))
     sps <- Spectra(df)
-    expect_equal(fromFile(sps), c(1L, 1L))
+    expect_identical(fromFile(sps), c(1L, 1L))
 })
 
 test_that("length,Spectra works", {
@@ -139,7 +139,7 @@ test_that("intensity,Spectra works", {
 test_that("ionCount,Spectra works", {
     sps <- Spectra()
     res <- ionCount(sps)
-    expect_equal(res, numeric())
+    expect_identical(res, numeric())
 
     df <- DataFrame(msLevel = c(1L, 2L), centroided = TRUE)
     df$intensity <- list(c(5, 9, 3), c(9, 8, 2))
@@ -147,17 +147,17 @@ test_that("ionCount,Spectra works", {
     sps <- Spectra(df)
 
     res <- ionCount(sps)
-    expect_equal(res, c(17, 19))
+    expect_identical(res, c(17, 19))
 
     sps <- removePeaks(sps, t = 4)
     res <- ionCount(sps)
-    expect_equal(res, c(14, 17))
+    expect_identical(res, c(14, 17))
 })
 
 test_that("isCentroided,Spectra works", {
     sps <- Spectra()
     res <- isCentroided(sps)
-    expect_equal(res, logical())
+    expect_identical(res, logical())
 
     df <- DataFrame(msLevel = c(1L, 1L))
     df$intensity <- list(c(5, 6, 1), c(5, 3, 1))
@@ -165,7 +165,7 @@ test_that("isCentroided,Spectra works", {
     sps <- Spectra(df)
 
     res <- isCentroided(sps)
-    expect_equal(res, c(NA, NA))
+    expect_identical(res, c(NA, NA))
 
     sps <- Spectra(backendInitialize(MsBackendMzR(), file = sciex_file))
     res <- isCentroided(sps)
@@ -176,7 +176,7 @@ test_that("isCentroided,Spectra works", {
 test_that("isEmpty,Spectra works", {
     sps <- Spectra()
     res <- isEmpty(sps)
-    expect_equal(res, logical())
+    expect_identical(res, logical())
 
     df <- DataFrame(msLevel = c(2L, 2L), centroided = TRUE)
     df$intensity <- list(c(4, 6, 1), c(45, 2))
@@ -184,24 +184,24 @@ test_that("isEmpty,Spectra works", {
 
     sps <- Spectra(df)
     res <- isEmpty(sps)
-    expect_equal(res, c(FALSE, FALSE))
+    expect_identical(res, c(FALSE, FALSE))
 
     sps <- removePeaks(sps, t = 100)
     res <- isEmpty(sps)
-    expect_equal(res, c(FALSE, FALSE))
+    expect_identical(res, c(FALSE, FALSE))
 
     sps <- clean(sps, all = TRUE)
     res <- isEmpty(sps)
-    expect_equal(res, c(TRUE, TRUE))
+    expect_identical(res, c(TRUE, TRUE))
 })
 
 test_that("msLevel,Spectra works", {
     sps <- Spectra()
-    expect_equal(msLevel(sps), integer())
+    expect_identical(msLevel(sps), integer())
 
     df <- DataFrame(msLevel = c(1L, 2L))
     sps <- Spectra(df)
-    expect_equal(msLevel(sps), c(1L, 2L))
+    expect_identical(msLevel(sps), c(1L, 2L))
 })
 
 test_that("mz,Spectra works", {
@@ -244,7 +244,7 @@ test_that("peaks,Spectra works", {
 test_that("peaksCount,Spectra works", {
     sps <- Spectra()
     res <- peaksCount(sps)
-    expect_equal(res, integer())
+    expect_identical(res, integer())
 
     df <- DataFrame(msLevel = c(2L, 2L), centroided = TRUE)
     df$intensity <- list(c(4, 6, 1), c(45, 2))
@@ -252,31 +252,73 @@ test_that("peaksCount,Spectra works", {
 
     sps <- Spectra(df)
     res <- peaksCount(sps)
-    expect_equal(res, c(3L, 2L))
+    expect_identical(res, c(3L, 2L))
 
     sps <- removePeaks(sps, t = 100)
     res <- peaksCount(sps)
-    expect_equal(res, c(3L, 2L))
+    expect_identical(res, c(3L, 2L))
 
     sps <- clean(sps, all = TRUE)
     res <- peaksCount(sps)
-    expect_equal(res, c(0L, 0L))
+    expect_identical(res, c(0L, 0L))
 })
 
 test_that("polarity,polarity<-,Spectra works", {
     sps <- Spectra()
-    expect_equal(polarity(sps), integer())
+    expect_identical(polarity(sps), integer())
 
     df <- DataFrame(msLevel = c(1L, 1L))
     sps <- Spectra(df)
-    expect_equal(polarity(sps), c(NA_integer_, NA_integer_))
+    expect_identical(polarity(sps), c(NA_integer_, NA_integer_))
     polarity(sps) <- c(1L, -1L)
-    expect_equal(polarity(sps), c(1L, -1L))
+    expect_identical(polarity(sps), c(1L, -1L))
     polarity(sps) <- 2L
-    expect_equal(polarity(sps), c(2L, 2L))
+    expect_identical(polarity(sps), c(2L, 2L))
 
     expect_error(polarity(sps) <- c(1L, 2L, 1L), "of length 1 or 2")
     expect_error(polarity(sps) <- c("a", "b"), "an 'integer'")
+})
+
+test_that("precScanNum,Spectra works", {
+    sps <- Spectra()
+    expect_identical(precScanNum(sps), integer())
+
+    sps <- Spectra(DataFrame(msLevel = c(2L, 2L)))
+    expect_identical(precScanNum(sps), c(NA_integer_, NA_integer_))
+    sps <- Spectra(DataFrame(msLevel = c(2L, 2L), precScanNum = c(1L, 2L)))
+    expect_identical(precScanNum(sps), c(1L, 2L))
+})
+
+test_that("precursorCharge,Spectra works", {
+    sps <- Spectra()
+    expect_identical(precursorCharge(sps), integer())
+
+    sps <- Spectra(DataFrame(msLevel = c(2L, 2L)))
+    expect_identical(precursorCharge(sps), c(NA_integer_, NA_integer_))
+    sps <- Spectra(DataFrame(msLevel = c(2L, 2L), precursorCharge = c(1L, 3L)))
+    expect_identical(precursorCharge(sps), c(1L, 3L))
+})
+
+test_that("precursorIntensity,Spectra works", {
+    sps <- Spectra()
+    expect_identical(precursorIntensity(sps), numeric())
+
+    sps <- Spectra(DataFrame(msLevel = c(2L, 2L)))
+    expect_identical(precursorIntensity(sps), c(NA_real_, NA_real_))
+    sps <- Spectra(DataFrame(msLevel = c(2L, 2L),
+                             precursorIntensity = c(1.3, 3.2)))
+    expect_identical(precursorIntensity(sps), c(1.3, 3.2))
+})
+
+test_that("precursorMz,Spectra works", {
+    sps <- Spectra()
+    expect_identical(precursorMz(sps), numeric())
+
+    sps <- Spectra(DataFrame(msLevel = c(2L, 2L)))
+    expect_identical(precursorMz(sps), c(NA_real_, NA_real_))
+    sps <- Spectra(DataFrame(msLevel = c(2L, 2L),
+                             precursorMz = c(234.2, 668.2)))
+    expect_identical(precursorMz(sps), c(234.2, 668.2))
 })
 
 test_that("removePeaks,Spectra works", {

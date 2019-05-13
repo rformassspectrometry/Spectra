@@ -269,6 +269,14 @@ spectrum.  \code{polarity} returns an \code{integer} vector (length equal
 to the number of spectra), with \code{0} and \code{1} representing negative
 and positive polarities, respectively. \code{polarity<-} expects an
 \code{integer} vector of length 1 or equal to the number of spectra.
+\item \code{precursorCharge}, \code{precursorIntensity}, \code{precursorMz},
+\code{precScanNum}, \code{precAcquisitionNum}: get the charge (\code{integer}),
+intensity (\code{numeric}), m/z (\code{numeric}), scan index (\code{integer})
+and acquisition number (\code{interger}) of the precursor for MS level
+
+2 spectra from the object. Returns a vector of length equal to
+the number of spectra in \code{object}. \code{NA} are reported for MS1
+spectra of if no precursor information is available.
 \item \code{selectSpectraVariables}: reduce the information within the object to
 the selected spectra variables.
 \item \code{smoothed},\code{smoothed<-}: geta or sets whether a spectrum is
