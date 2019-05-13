@@ -455,6 +455,19 @@ test_that("spectraData<-,Spectra works", {
     expect_true(all(msLevel(sps) == 2L))
 })
 
+test_that("spectraNames,spectraNames<-,Spectra works", {
+    sps <- Spectra()
+    expect_identical(spectraNames(sps), NULL)
+
+    sps <- Spectra(DataFrame(msLevel = c(1L, 1L)))
+    expect_identical(spectraNames(sps), NULL)
+
+    spectraNames(sps) <- c("a", "b")
+    expect_identical(spectraNames(sps), c("a", "b"))
+
+    expect_error(spectraNames(sps) <- 1, "invalid rownames length")
+})
+
 test_that("spectraVariables,Spectra works", {
     sps <- Spectra()
     res <- spectraVariables(sps)

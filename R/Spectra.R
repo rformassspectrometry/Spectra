@@ -570,12 +570,13 @@ setReplaceMethod("spectraData", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("spectraNames", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraNames(object@backend)
 })
 
 #' @rdname Spectra
 setReplaceMethod("spectraNames", "Spectra", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    spectraNames(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra
