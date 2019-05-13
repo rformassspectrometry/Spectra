@@ -380,7 +380,7 @@ msLevel(data)
 intensity(data)
 mz(data)
 
-## Get the m/z for the first spectrum
+## Get the m/z for the first spectrum.
 mz(data)[[1]]
 
 ## Get the peak data (m/z and intensity values).
@@ -408,24 +408,45 @@ spectraVariables(data)
 ## Extract specific spectra variables.
 spectraData(data, columns = c("spectrum_id", "msLevel"))
 
-## Drop spectra variable data and/or columns
+## Drop spectra variable data and/or columns.
 res <- selectSpectraVariables(data, c("mz", "intensity"))
 
 ## This removed the additional columns "spectrum_id" and deleted all values
-## for all spectra variables, except "mz" and "intensity"
+## for all spectra variables, except "mz" and "intensity".
 spectraData(res)
 
-## Compared to the data before selectSpectraVariables
+## Compared to the data before selectSpectraVariables.
 spectraData(data)
 
 
 ## ---- SUBSETTING AND FILTERING
 
-## Subset to all MS2 spectra
+## Subset to all MS2 spectra.
 data[msLevel(data) == 2]
 
 
 ## ---- DATA MANIPULATIONS ----
+
+## Set the data to be centroided
+centroided(data) <- TRUE
+
+## Remove peaks with an intensity below 40.
+res <- removePeaks(data, t = 40)
+res
+
+## Get the intensities of the first and second spectrum.
+intensity(res)[[1]]
+intensity(res)[[2]]
+
+## Clean all spectra removing all 0-intensity peaks.
+res <- clean(res, all = TRUE)
+
+## Get the intensities of the first and second spectrum.
+intensity(res)[[1]]
+intensity(res)[[2]]
+
+## Second spectrum is now empty:
+isEmpty(res)
 }
 \author{
 Sebastian Gibb, Johannes Rainer
