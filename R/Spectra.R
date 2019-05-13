@@ -122,6 +122,18 @@ NULL
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
+#' - `rtime`, `rtime<-`: gets or sets the retention times for each
+#'   spectrum.  `rtime` returns a `numeric` vector (length equal to
+#'   the number of spectra) with the retention time for each spectrum.
+#'   `rtime<-` expects a numeric vector with length equal to the
+#'   number of spectra.
+#'
+#' - `scanIndex`: returns an `integer` vector with the *scan index*
+#'   for each spectrum. This represents the relative index of the
+#'   spectrum within each file. Note that this can be different to the
+#'   `acquisitionNum` of the spectrum which represents the index of the
+#'   spectrum during acquisition/measurement (as reported in the mzML file).
+#'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables.
 #'
@@ -484,17 +496,18 @@ setMethod("precursorMz", "Spectra", function(object) {
 
 #' @rdname Spectra
 setMethod("rtime", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    rtime(object@backend)
 })
 
 #' @rdname Spectra
 setReplaceMethod("rtime", "Spectra", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    rtime(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra
 setMethod("scanIndex", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    scanIndex(object@backend)
 })
 
 #' @rdname Spectra

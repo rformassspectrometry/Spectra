@@ -321,6 +321,21 @@ test_that("precursorMz,Spectra works", {
     expect_identical(precursorMz(sps), c(234.2, 668.2))
 })
 
+test_that("rtime,rtime<-,Spectra works", {
+    sps <- Spectra()
+    expect_identical(rtime(sps), numeric())
+
+    sps <- Spectra(DataFrame(msLevel = c(1L, 2L)))
+    expect_identical(rtime(sps), c(NA_real_, NA_real_))
+    sps <- Spectra(DataFrame(msLevel = c(1L, 2L), rtime = c(2.1, 4.2)))
+    expect_identical(rtime(sps), c(2.1, 4.2))
+    rtime(sps) <- c(1.2, 1.3)
+    expect_identical(rtime(sps), c(1.2, 1.3))
+
+    expect_error(rtime(sps) <- c(TRUE, FALSE), "'numeric' of length 2")
+    expect_error(rtime(sps) <- 1.3, "'numeric' of length 2")
+})
+
 test_that("removePeaks,Spectra works", {
     sps <- Spectra()
     res <- removePeaks(sps, t = 10)
@@ -328,6 +343,16 @@ test_that("removePeaks,Spectra works", {
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.remove_peaks,
                                 list(t = 10, msLevel. = integer())))
+})
+
+test_that("scanIndex,Spectra works", {
+    sps <- Spectra()
+    expect_identical(scanIndex(sps), integer())
+    sps <- Spectra(DataFrame(msLevel = c(1L, 2L)))
+    expect_identical(scanIndex(sps), c(NA_integer_, NA_integer_))
+
+    sps <- Spectra(DataFrame(msLevel = c(1L, 2L), scanIndex = c(1L, 2L)))
+    expect_identical(scanIndex(sps), c(1L, 2L))
 })
 
 test_that("spectraData,Spectra works", {
