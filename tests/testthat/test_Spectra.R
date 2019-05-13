@@ -355,6 +355,44 @@ test_that("scanIndex,Spectra works", {
     expect_identical(scanIndex(sps), c(1L, 2L))
 })
 
+test_that("selectSpectraVariables,Spectra works", {
+    sps <- Spectra()
+    res <- selectSpectraVariables(sps, c("msLevel", "rtime"))
+    expect_equal(sps, res)
+
+    sps <- Spectra(DataFrame(msLevel = c(1L, 2L), rtime = c(1.2, 1.4),
+                             other_col = "a"))
+    res <- selectSpectraVariables(sps, c("rtime", "other_col"))
+    expect_equal(msLevel(res), c(NA_integer_, NA_integer_))
+    expect_equal(rtime(res), c(1.2, 1.4))
+    expect_equal(spectraData(res, "other_col")[, 1], c("a", "a"))
+
+    res <- selectSpectraVariables(sps, c("msLevel"))
+    expect_identical(rtime(res), c(NA_real_, NA_real_))
+    expect_identical(msLevel(res), 1:2)
+    expect_true(!any(spectraVariables(res) %in% "other_col"))
+
+    expect_error(selectSpectraVariables(sps, c("rtime", "something")), "not")
+})
+
+test_that("smoothed,smoothed<-,Spectra works", {
+    sps <- Spectra()
+    expect_identical(smoothed(sps), logical())
+
+    sps <- Spectra(DataFrame(msLevel = 1:2))
+    expect_identical(smoothed(sps), c(NA, NA))
+    sps <- Spectra(DataFrame(msLevel = 1:2, smoothed = TRUE))
+    expect_identical(smoothed(sps), c(TRUE, TRUE))
+
+    smoothed(sps) <- c(FALSE, TRUE)
+    expect_identical(smoothed(sps), c(FALSE, TRUE))
+    smoothed(sps) <- FALSE
+    expect_identical(smoothed(sps), c(FALSE, FALSE))
+
+    expect_error(smoothed(sps) <- c("a", "b"), "of length 1 or 2")
+    expect_error(smoothed(sps) <- c(TRUE, FALSE, TRUE), "of length 1 or 2")
+})
+
 test_that("spectraData,Spectra works", {
     sps <- Spectra()
     res <- spectraData(sps)

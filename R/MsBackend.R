@@ -185,7 +185,7 @@ NULL
 #' - `selectSpectraVariables`: reduce the information within the backend to
 #'   the selected spectra variables.
 #'
-#' - `smoothed`,`smoothed<-`: geta or sets whether a spectrum is
+#' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
 #'   *smoothed*. `smoothed` returns a `logical` vector of length equal
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.

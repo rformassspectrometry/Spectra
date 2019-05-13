@@ -135,9 +135,12 @@ NULL
 #'   spectrum during acquisition/measurement (as reported in the mzML file).
 #'
 #' - `selectSpectraVariables`: reduce the information within the object to
-#'   the selected spectra variables.
+#'   the selected spectra variables: all data for variables not specified will
+#'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
+#'   the values will be dropped, while additional (user defined) spectra
+#'   variables will be completely removed.
 #'
-#' - `smoothed`,`smoothed<-`: geta or sets whether a spectrum is
+#' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
 #'   *smoothed*. `smoothed` returns a `logical` vector of length equal
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
@@ -513,17 +516,21 @@ setMethod("scanIndex", "Spectra", function(object) {
 #' @rdname Spectra
 setMethod("selectSpectraVariables", "Spectra",
           function(object, spectraVariables = spectraVariables(object)) {
-              stop("Not implemented for ", class(object), ".")
+              spectraVariables <- union(spectraVariables, "fromFile")
+              object@backend <- selectSpectraVariables(
+                  object@backend, spectraVariables = spectraVariables)
+              object
 })
 
 #' @rdname Spectra
 setMethod("smoothed", "Spectra", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    smoothed(object@backend)
 })
 
 #' @rdname Spectra
 setReplaceMethod("smoothed", "Spectra", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    smoothed(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra

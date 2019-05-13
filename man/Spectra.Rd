@@ -288,8 +288,11 @@ spectrum within each file. Note that this can be different to the
 \code{acquisitionNum} of the spectrum which represents the index of the
 spectrum during acquisition/measurement (as reported in the mzML file).
 \item \code{selectSpectraVariables}: reduce the information within the object to
-the selected spectra variables.
-\item \code{smoothed},\code{smoothed<-}: geta or sets whether a spectrum is
+the selected spectra variables: all data for variables not specified will
+be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
+the values will be dropped, while additional (user defined) spectra
+variables will be completely removed.
+\item \code{smoothed},\code{smoothed<-}: gets or sets whether a spectrum is
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \code{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
