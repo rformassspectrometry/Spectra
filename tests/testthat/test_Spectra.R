@@ -419,6 +419,42 @@ test_that("spectraData,Spectra works", {
     expect_equal(res$intensity, SimpleList(c(1, 6, 3, 9, 1), c(9, 6, 3, 3, 2)))
 })
 
+test_that("spectraData<-,Spectra works", {
+    df <- DataFrame(msLevel = c(1L, 1L), rtime = c(1.2, 1.3), centroided = TRUE)
+    df$mz <- list(1:10, 1:10)
+    df$intensity <- list(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
+                         c(9, 6, 0, 0, 3, 0, 0, 0, 3, 2))
+    sps <- Spectra(df)
+
+    spectraData(sps)$add_col <- 3
+    expect_true(any(spectraVariables(sps) == "add_col"))
+    expect_equal(spectraData(sps)$add_col, c(3, 3))
+
+    df$mz <- list(11:20, 11:20)
+    df$precursorMz <- c(0, 0)
+    df$fromFile <- 1L
+
+    spectraData(sps) <- df
+    expect_true(!any(spectraVariables(sps) == "add_col"))
+    expect_equal(mz(sps), SimpleList(11:20, 11:20))
+
+    expect_error(spectraData(sps) <- c(1, 2, 4, 5), "has to be 2")
+
+    expect_error(spectraData(sps) <- df[c(1, 1, 2), ], "with 2 rows")
+
+    tmp <- sciex_mzr
+    sps <- Spectra(tmp)
+    spectraData(sps)$some_col <- "yes"
+    expect_true(any(spectraVariables(sps) == "some_col"))
+    expect_true(all(spectraData(sps, "some_col")[, 1] == "yes"))
+    expect_true(is(sps@backend@spectraData$some_col, "Rle"))
+
+    spd <- spectraData(sps)
+    spd$msLevel <- 2L
+    spectraData(sps) <- spd
+    expect_true(all(msLevel(sps) == 2L))
+})
+
 test_that("spectraVariables,Spectra works", {
     sps <- Spectra()
     res <- spectraVariables(sps)

@@ -271,9 +271,11 @@ setMethod("spectraData", "MsBackendMzR",
 
 #' @rdname hidden_aliases
 setReplaceMethod("spectraData", "MsBackendMzR", function(object, value) {
-    if (!is(value, "DataFrame") || nrow(value) != length(object))
-        stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
-    if (any(colnames(value) %in% c("mz", "intensity"))) {
+    if (inherits(value, "DataFrame") && any(colnames(value) %in%
+                                            c("mz", "intensity"))) {
+        warning("Ignoring columns \"mz\" and \"intensity\" as the ",
+                "'MzBackendMzR' backend currently does not support replacing ",
+                "them.")
         value <- value[, !(colnames(value) %in% c("mz", "intensity")),
                        drop = FALSE]
     }

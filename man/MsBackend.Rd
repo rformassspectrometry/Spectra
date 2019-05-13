@@ -289,7 +289,7 @@ spectrum within each file. Note that this can be different to the
 spectrum as reported in the mzML file.
 \item \code{selectSpectraVariables}: reduce the information within the backend to
 the selected spectra variables.
-\item \code{smoothed},\code{smoothed<-}: geta or sets whether a spectrum is
+\item \code{smoothed},\code{smoothed<-}: gets or sets whether a spectrum is
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \code{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.

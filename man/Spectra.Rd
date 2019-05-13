@@ -298,7 +298,10 @@ to the number of spectra. \code{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
 \item \code{spectraData}, \code{spectraData<-}: get or sets general spectrum
 metadata (annotation, also called header). \code{spectraData} returns
-a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame}.
+a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame}. Note that not all
+backends support replacing all spectra variables (the \code{\link[=MsBackendMzR]{MsBackendMzR()}}
+does for example not allow to replace \code{mz} and \code{intensity} values with the
+\code{spectraData<-} method.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
 the spectra in \code{object}.
 \item \code{spectraVariables}: returns a \code{character} vector with the
@@ -352,6 +355,9 @@ msLevel(data)
 intensity(data)
 mz(data)
 
+## Get the m/z for the first spectrum
+mz(data)[[1]]
+
 ## Get the peak data (m/z and intensity values).
 pks <- peaks(data)
 pks
@@ -361,20 +367,24 @@ pks[[2]]
 ## List all available spectra variables (i.e. spectrum data and metadata).
 spectraVariables(data)
 
-## For all *core* spectrum variables accessor functions are available.
+## For all *core* spectrum variables accessor functions are available. These
+## return NA if the variable was not set.
 centroided(data)
-## fromFile(data)
-## rtime(data)
-## precursorMz(data)
+fromFile(data)
+rtime(data)
+precursorMz(data)
 
 ## Add an additional metadata column.
 ## spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
 
 ## List spectra variables.
-## spectraVariables(data)
+spectraVariables(data)
 
 ## Extract specific spectra variables.
 ## spectraData(data, columns = c("spectrum_id", "msLevel"))
+
+## Drop spectra variable data and/or columns
+res <- selectSpectraVariables(data, c("mz", "intensity"))
 
 ## ---- DATA MANIPULATIONS ----
 }

@@ -147,7 +147,10 @@ NULL
 #'
 #' - `spectraData`, `spectraData<-`: get or sets general spectrum
 #'   metadata (annotation, also called header). `spectraData` returns
-#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`.
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`. Note that not all
+#'   backends support replacing all spectra variables (the [MsBackendMzR()]
+#'   does for example not allow to replace `mz` and `intensity` values with the
+#'   `spectraData<-` method.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
 #'   the spectra in `object`.
@@ -249,6 +252,9 @@ NULL
 #' intensity(data)
 #' mz(data)
 #'
+#' ## Get the m/z for the first spectrum
+#' mz(data)[[1]]
+#'
 #' ## Get the peak data (m/z and intensity values).
 #' pks <- peaks(data)
 #' pks
@@ -258,20 +264,24 @@ NULL
 #' ## List all available spectra variables (i.e. spectrum data and metadata).
 #' spectraVariables(data)
 #'
-#' ## For all *core* spectrum variables accessor functions are available.
+#' ## For all *core* spectrum variables accessor functions are available. These
+#' ## return NA if the variable was not set.
 #' centroided(data)
-#' ## fromFile(data)
-#' ## rtime(data)
-#' ## precursorMz(data)
+#' fromFile(data)
+#' rtime(data)
+#' precursorMz(data)
 #'
 #' ## Add an additional metadata column.
 #' ## spectraData(data)$spectrum_id <- c("sp_1", "sp_2")
 #'
 #' ## List spectra variables.
-#' ## spectraVariables(data)
+#' spectraVariables(data)
 #'
 #' ## Extract specific spectra variables.
 #' ## spectraData(data, columns = c("spectrum_id", "msLevel"))
+#'
+#' ## Drop spectra variable data and/or columns
+#' res <- selectSpectraVariables(data, c("mz", "intensity"))
 #'
 #' ## ---- DATA MANIPULATIONS ----
 NULL
@@ -554,7 +564,8 @@ setMethod("spectraData", "Spectra", function(object,
 
 #' @rdname Spectra
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra

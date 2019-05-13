@@ -311,12 +311,25 @@ setMethod("spectraData", "MsBackendDataFrame",
 
 #' @rdname hidden_aliases
 setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
-    if (!is(value, "DataFrame") || rownames(value) != length(object))
-        stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
-    if (is.list(value$mz))
-        value$mz <- SimpleList(value$mz)
-    if (is.list(value$intensity))
-        value$intensity <- SimpleList(value$intensity)
+    ## if (!is(value, "DataFrame") || rownames(value) != length(object))
+    ##     stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
+    ## if (is.list(value$mz))
+    ##     value$mz <- SimpleList(value$mz)
+    ## if (is.list(value$intensity))
+    ##     value$intensity <- SimpleList(value$intensity)
+    if (inherits(value, "DataFrame")) {
+        if (nrow(value) != length(object))
+            stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
+        if (is.list(value$mz))
+            value$mz <- SimpleList(value$mz)
+        if (is.list(value$intensity))
+            value$intensity <- SimpleList(value$intensity)
+    } else {
+        if (length(value) == 1)
+            value <- rep(value, length(object))
+        if (length(value) != length(object))
+            stop("length of 'value' has to be ", length(object))
+    }
     object@spectraData <- value
     validObject(object)
     object
