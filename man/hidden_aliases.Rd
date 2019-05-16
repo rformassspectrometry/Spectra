@@ -5,36 +5,16 @@
 \name{hidden_aliases}
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
-\alias{acquisitionNum}
 \alias{backendInitialize}
-\alias{centroided}
-\alias{centroided<-}
 \alias{clean}
-\alias{collisionEnergy}
-\alias{collisionEnergy<-}
 \alias{fileNames}
 \alias{fromFile}
 \alias{ionCount}
 \alias{isReadOnly}
-\alias{msLevel}
 \alias{peaksCount}
-\alias{polarity}
-\alias{polarity<-}
-\alias{precScanNum}
-\alias{precursorCharge}
-\alias{precursorIntensity}
-\alias{precursorMz}
 \alias{removePeaks}
-\alias{rtime<-}
-\alias{scanIndex}
 \alias{selectSpectraVariables}
-\alias{smoothed}
-\alias{smoothed<-}
-\alias{spectraData}
-\alias{spectraData<-}
-\alias{spectraNames}
-\alias{spectraNames<-}
-\alias{spectraVariables}
+\alias{Spectra}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
@@ -111,19 +91,9 @@
 \alias{show,Spectra-method}
 \title{Internal page for hidden aliases}
 \usage{
-acquisitionNum(object, ...)
-
 backendInitialize(object, files, spectraData, ...)
 
-centroided(object, ...)
-
-centroided(object) <- value
-
 clean(object, ...)
-
-collisionEnergy(object, ...)
-
-collisionEnergy(object) <- value
 
 fileNames(object, ...)
 
@@ -133,43 +103,13 @@ ionCount(object, ...)
 
 isReadOnly(object, ...)
 
-msLevel(object, ...)
-
 peaksCount(object, ...)
-
-polarity(object, ...)
-
-polarity(object) <- value
-
-precScanNum(object, ...)
-
-precursorCharge(object, ...)
-
-precursorIntensity(object, ...)
-
-precursorMz(object, ...)
 
 removePeaks(object, t = "min", ...)
 
-rtime(object) <- value
-
-scanIndex(object, ...)
-
 selectSpectraVariables(object, ...)
 
-smoothed(object, ...)
-
-smoothed(object) <- value
-
-spectraData(object, ...)
-
-spectraData(object) <- value
-
-spectraNames(object, ...)
-
-spectraNames(object) <- value
-
-spectraVariables(object, ...)
+Spectra(object, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 
