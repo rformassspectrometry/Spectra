@@ -337,3 +337,9 @@ setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
     validObject(x)
     x
 })
+
+#' @rdname hidden_aliases
+setMethod("filterEmptySpectra", "MsBackendDataFrame", function(object) {
+    if (!length(object)) return(object)
+    object[as.logical(peaksCount(object))]
+})

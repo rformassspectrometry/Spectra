@@ -43,7 +43,7 @@
 \alias{tic,Spectra-method}
 \alias{$,Spectra-method}
 \alias{$<-,Spectra-method}
-\alias{[,Spectra-method}
+\alias{[,Spectra,ANY-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
 \title{The Spectra class to manage and access MS data}
@@ -133,7 +133,7 @@
 
 \S4method{$}{Spectra}(x, name) <- value
 
-\S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
+\S4method{[}{Spectra,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
 

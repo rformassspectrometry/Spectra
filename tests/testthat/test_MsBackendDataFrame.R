@@ -424,3 +424,50 @@ test_that("$,$<-,MsBackendDataFrame works", {
     be$intensity <- list(c(5, 5, 5), 1:4)
     expect_equal(be$intensity, SimpleList(c(5, 5, 5), 1:4))
 })
+
+test_that("acquisitionNum,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterAcquisitionNum(be, n = 4))
+
+    df <- DataFrame(fromFile = c(1L, 1L, 1L, 2L, 2L, 3L, 3L, 3L),
+                    acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
+                    msLevel = 1L)
+    a <- tempfile()
+    b <- tempfile()
+    c <- tempfile()
+    cat("a", file = a)
+    cat("b", file = b)
+    cat("c", file = c)
+    be <- backendInitialize(MsBackendDataFrame(),
+                            c(a, b, c), df)
+    res <- filterAcquisitionNum(be, n = c(2L, 4L))
+    expect_equal(length(res), 4)
+    expect_equal(fromFile(res), c(1L, 2L, 3L, 3L))
+    expect_equal(acquisitionNum(res), c(2L, 2L, 2L, 4L))
+
+    res <- filterAcquisitionNum(be, n = 2L, file = 2L)
+    expect_equal(fromFile(res), c(1L, 1L, 1L, 2L, 3L, 3L, 3L))
+    expect_equal(acquisitionNum(res), c(1L, 2L, 3L, 2L, 1L, 2L, 4L))
+
+    expect_error(filterAcquisitionNum(be, n = "a"), "integer representing")
+    expect_error(filterAcquisitionNum(be, n = 4L, file = "d"), "integer with")
+    expect_equal(filterAcquisitionNum(be), be)
+})
+
+test_that("filterEmptySpectra,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(filterEmptySpectra(be), be)
+
+    df <- DataFrame(msLevel = c(1L, 1L, 1L), rtime = c(1.2, 1.3, 1.5),
+                    fromFile = 1L)
+    df$mz <- SimpleList(1:3, 1:4, integer())
+    df$intensity <- SimpleList(c(5, 12, 9), c(6, 9, 12, 5), numeric())
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    res <- filterEmptySpectra(be)
+    expect_true(length(res) == 2)
+    expect_equal(rtime(res), c(1.2, 1.3))
+
+    res <- filterEmptySpectra(be[3])
+    expect_true(length(res) == 0)
+})

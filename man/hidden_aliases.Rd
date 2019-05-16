@@ -8,13 +8,19 @@
 \alias{backendInitialize}
 \alias{clean}
 \alias{fileNames}
+\alias{filterAcquisitionNum}
+\alias{filterEmptySpectra}
+\alias{filterFile}
+\alias{filterMsLevel}
+\alias{filterPolarity}
+\alias{filterPrecursorScan}
+\alias{filterRt}
 \alias{fromFile}
 \alias{ionCount}
 \alias{isReadOnly}
 \alias{peaksCount}
 \alias{removePeaks}
 \alias{selectSpectraVariables}
-\alias{Spectra}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
@@ -50,6 +56,7 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
+\alias{[,MsBackendDataFrame,ANY-method}
 \alias{$,MsBackendDataFrame-method}
 \alias{$<-,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendMzR-method}
@@ -97,6 +104,20 @@ clean(object, ...)
 
 fileNames(object, ...)
 
+filterAcquisitionNum(object, ...)
+
+filterEmptySpectra(object, ...)
+
+filterFile(object, ...)
+
+filterMsLevel(object, ...)
+
+filterPolarity(object, ...)
+
+filterPrecursorScan(object, ...)
+
+filterRt(object, ...)
+
 fromFile(object, ...)
 
 ionCount(object, ...)
@@ -108,8 +129,6 @@ peaksCount(object, ...)
 removePeaks(object, t = "min", ...)
 
 selectSpectraVariables(object, ...)
-
-Spectra(object, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 
@@ -184,7 +203,7 @@ Spectra(object, ...)
 
 \S4method{tic}{MsBackendDataFrame}(object, initial = TRUE)
 
-\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackendDataFrame}(x, name)
 

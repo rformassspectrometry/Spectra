@@ -15,8 +15,15 @@
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
 \alias{collisionEnergy<-,MsBackend-method}
-\alias{fromFile,MsBackend-method}
 \alias{fileNames,MsBackend-method}
+\alias{filterAcquisitionNum,MsBackend-method}
+\alias{filterEmptySpectra,MsBackend-method}
+\alias{filterFile,MsBackend-method}
+\alias{filterMsLevel,MsBackend-method}
+\alias{filterPolarity,MsBackend-method}
+\alias{filterPrecursorScan,MsBackend-method}
+\alias{filterRt,MsBackend-method}
+\alias{fromFile,MsBackend-method}
 \alias{intensity,MsBackend-method}
 \alias{ionCount,MsBackend-method}
 \alias{isCentroided,MsBackend-method}
@@ -45,6 +52,7 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{tic,MsBackend-method}
+\alias{[,MsBackend,ANY-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
 \alias{MsBackendDataFrame}
@@ -63,9 +71,23 @@
 
 \S4method{collisionEnergy}{MsBackend}(object) <- value
 
-\S4method{fromFile}{MsBackend}(object)
-
 \S4method{fileNames}{MsBackend}(object)
+
+\S4method{filterAcquisitionNum}{MsBackend}(object, n, file, ...)
+
+\S4method{filterEmptySpectra}{MsBackend}(object, ...)
+
+\S4method{filterFile}{MsBackend}(object, file, ...)
+
+\S4method{filterMsLevel}{MsBackend}(object, msLevel)
+
+\S4method{filterPolarity}{MsBackend}(object, polarity)
+
+\S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum, ...)
+
+\S4method{filterRt}{MsBackend}(object, rt, msLevel, ...)
+
+\S4method{fromFile}{MsBackend}(object)
 
 \S4method{intensity}{MsBackend}(object)
 
@@ -125,7 +147,7 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackend}(x, name)
 
@@ -150,6 +172,23 @@ but needs to be provided for \code{MsBackendDataFrame} backends.}
 
 \item{value}{replacement value for \code{<-} methods. See individual
 method description or expected data type.}
+
+\item{n}{for \code{filterAcquisitionNum}: \code{integer} with the acquisition numbers
+to filter for.}
+
+\item{file}{For \code{filterFile}: index or name of the file(s) to which the data
+should be subsetted.}
+
+\item{msLevel}{\code{integer} defining the MS level of the spectra to which the
+function should be applied. For \code{filterMsLevel}: the MS level to which
+\code{object} should be subsetted.}
+
+\item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
+to subset \code{object}.}
+
+\item{acquisitionNum}{for \code{filterPrecursorScan}: \code{integer} with the
+acquisition number of the spectra to which the object should be
+subsetted.}
 
 \item{x}{Object extending \code{MsBackend}.}
 
@@ -238,6 +277,20 @@ returns a \code{numeric} with length equal to the number of spectra
 \code{numeric} of length equal to the number of spectra in \code{object}.
 \item \code{fileNames}: returns a \code{character} with the file names, or
 \code{NA_character_} if not relevant.
+\item \code{filterAcquisitionNum}: filter the object keeping only spectra matching the
+provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
+\code{object} is subsetted to the spectra with an acquisition number equal to
+\code{n} \strong{in this/these file(s)} and all spectra for the remaining files (not
+specified with \code{file}).
+\item \code{filterEmptySpectra}: remove empty spectra (i.e. spectra without peaks).
+\item \code{filterFile}: retain data of files matching the file index or file name
+provided with parameter \code{file}.
+\item \code{filterMsLevel}: retain spectra of MS level \code{msLevel}.
+\item \code{filterPolarity}: retain spectra of polarity \code{polarity}.
+\item \code{filterPrecursorScan}: retain parent (e.g. MS1) and children scans (e.g.
+MS2) of acquisition number \code{acquisitionNum}.
+\item \code{filterRt}: retain spectra of MS level \code{msLevel} with retention times
+within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
 \item \code{fromFile}: returns an \code{integer} vector of length equal to the
 number of spectra in \code{object} indicating the file index from
 which spectra originate. If no files are available,

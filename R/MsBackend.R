@@ -37,6 +37,10 @@ NULL
 #'
 #' See below for more details about individual backends.
 #'
+#' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
+#'     acquisition number of the spectra to which the object should be
+#'     subsetted.
+#'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
@@ -47,6 +51,9 @@ NULL
 #'     names from which the data is/will be imported. Should be set to
 #'     `NA_character_` if not applicable (e.g. for `MsBackendDataFrame`).
 #'
+#' @param file For `filterFile`: index or name of the file(s) to which the data
+#'     should be subsetted.
+#'
 #' @param initial For `tic`: `logical(1)` whether the initially
 #'     reported total ion current should be reported, or whether the
 #'     total ion current should be (re)calculated on the actual data
@@ -56,10 +63,23 @@ NULL
 #'
 #' @param j For `[`: not supported.
 #'
+#' @param msLevel `integer` defining the MS level of the spectra to which the
+#'     function should be applied. For `filterMsLevel`: the MS level to which
+#'     `object` should be subsetted.
+#'
+#' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
+#'     to filter for.
+#'
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
 #'
 #' @param object Object extending `MsBackend`.
+#'
+#' @param polarity for `filterPolarity`: `integer` specifying the polarity to
+#'     to subset `object`.
+#'
+#' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
+#'     be used to subset/filter `object`.
 #'
 #' @param spectraData For `backendInitialize`: `DataFrame` with spectrum
 #'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
@@ -113,6 +133,27 @@ NULL
 #'
 #' - `fileNames`: returns a `character` with the file names, or
 #'   `NA_character_` if not relevant.
+#'
+#' - `filterAcquisitionNum`: filter the object keeping only spectra matching the
+#'   provided acquisition numbers (argument `n`). If `file` is also provided,
+#'   `object` is subsetted to the spectra with an acquisition number equal to
+#'   `n` **in this/these file(s)** and all spectra for the remaining files (not
+#'   specified with `file`).
+#'
+#' - `filterEmptySpectra`: remove empty spectra (i.e. spectra without peaks).
+#'
+#' - `filterFile`: retain data of files matching the file index or file name
+#'    provided with parameter `file`.
+#'
+#' - `filterMsLevel`: retain spectra of MS level `msLevel`.
+#'
+#' - `filterPolarity`: retain spectra of polarity `polarity`.
+#'
+#' - `filterPrecursorScan`: retain parent (e.g. MS1) and children scans (e.g.
+#'    MS2) of acquisition number `acquisitionNum`.
+#'
+#' - `filterRt`: retain spectra of MS level `msLevel` with retention times
+#'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
 #'
 #' - `fromFile`: returns an `integer` vector of length equal to the
 #'   number of spectra in `object` indicating the file index from
@@ -361,18 +402,68 @@ setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod fromFile
-#'
-#' @rdname MsBackend
-setMethod("fromFile", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
-})
-
 #' @exportMethod fileNames
 #'
 #' @rdname MsBackend
 setMethod("fileNames", "MsBackend", function(object) {
     object@files
+})
+
+#' @exportMethod filterAcquisitionNum
+#'
+#' @rdname MsBackend
+setMethod("filterAcquisitionNum", "MsBackend", function(object, n, file, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterEmptySpectra
+#'
+#' @rdname MsBackend
+setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterFile
+#'
+#' @rdname MsBackend
+setMethod("filterFile", "MsBackend", function(object, file, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterMsLevel
+#'
+#' @rdname MsBackend
+setMethod("filterMsLevel", "MsBackend", function(object, msLevel) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterPolarity
+#'
+#' @rdname MsBackend
+setMethod("filterPolarity", "MsBackend", function(object, polarity) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterPrecursorScan
+#'
+#' @rdname MsBackend
+setMethod("filterPrecursorScan", "MsBackend", function(object,
+                                                       acquisitionNum, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterRt
+#'
+#' @rdname MsBackend
+setMethod("filterRt", "MsBackend", function(object, rt, msLevel, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod fromFile
+#'
+#' @rdname MsBackend
+setMethod("fromFile", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod intensity

@@ -700,6 +700,26 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
     x
 })
 
+#' @rdname Spectra
+setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
+                                                      file = integer()) {
+    object@backend <- filterAcquisitionNum(object@backend, n, file)
+    object@processing <- c(object@processing,
+                           paste0("Filter: select by: ", length(n),
+                                  " acquisition number(s) in ", length(file),
+                                  " file(s). [", date(), "]"))
+    object
+})
+
+#' @rdname Spectra
+setMethod("filterEmptySpectra", "Spectra", function(object) {
+    object@backend <- object@backend[as.logical(peaksCount(object))]
+    object@processing <- c(object@processing,
+                           paste0("Filter: removed empty spectra. [",
+                                  date(), "]"))
+    object
+})
+
 #### ---------------------------------------------------------------------------
 ##
 ##                      DATA MANIPULATION METHODS

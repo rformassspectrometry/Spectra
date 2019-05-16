@@ -574,3 +574,46 @@ test_that("removePeaks,Spectra works", {
                  ProcessingStep(.remove_peaks,
                                 list(t = 10, msLevel. = integer())))
 })
+
+test_that("filterAcquisitionNum,Spectra works", {
+    sps <- Spectra()
+    res <- filterAcquisitionNum(sps, n = 3L)
+    expect_equal(length(res), 0)
+    expect_equal(length(res@processing), 1)
+
+    sps <- Spectra(sciex_mzr)
+    res <- filterAcquisitionNum(sps, n = 1:10, file = 2L)
+    expect_equal(acquisitionNum(res), c(1:sum(fromFile(sps) == 1), 1:10))
+})
+
+test_that("filterEmptySpectra,Spectra works", {
+    sps <- Spectra()
+    res <- filterEmptySpectra(sps)
+    expect_true(length(res) == 0)
+    expect_true(length(res@processing) == 1)
+
+    df <- DataFrame(msLevel = c(1L, 2L, 1L, 2L),
+                    rtime = c(1, 2, 1, 2), centroided = TRUE)
+    df$mz <- SimpleList(1:3, integer(), 1:5, integer())
+    df$intensity <- SimpleList(c(4, 6, 3), numeric(), c(34, 2, 5, 9, 9), numeric())
+    sps <- Spectra(df)
+
+    res <- filterEmptySpectra(sps)
+    expect_equal(length(res), 2)
+    expect_equal(length(res@processing), 1)
+    expect_equal(rtime(res), c(1, 1))
+
+    sps <- clean(removePeaks(sps, t = 20), all = TRUE)
+    res <- filterEmptySpectra(sps)
+    expect_equal(length(res), 1)
+    expect_equal(rtime(res), 1)
+    expect_equal(length(res@processing), 3)
+
+    sps <- clean(removePeaks(sps, t = 50), all = TRUE)
+    res <- filterEmptySpectra(sps)
+    expect_equal(length(res), 0)
+
+    sps <- Spectra(sciex_mzr)
+    res <- filterEmptySpectra(sps)
+    expect_equal(rtime(res), rtime(sps))
+})

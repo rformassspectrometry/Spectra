@@ -12,6 +12,25 @@ setGeneric("clean", function(object, ...) standardGeneric("clean"))
 #' @rdname hidden_aliases
 setGeneric("fileNames", function(object, ...) standardGeneric("fileNames"))
 #' @rdname hidden_aliases
+setGeneric("filterAcquisitionNum", function(object, ...)
+    standardGeneric("filterAcquisitionNum"))
+#' @rdname hidden_aliases
+setGeneric("filterEmptySpectra", function(object, ...)
+    standardGeneric("filterEmptySpectra"))
+#' @rdname hidden_aliases
+setGeneric("filterFile", function(object, ...) standardGeneric("filterFile"))
+#' @rdname hidden_aliases
+setGeneric("filterMsLevel", function(object, ...)
+    standardGeneric("filterMsLevel"))
+#' @rdname hidden_aliases
+setGeneric("filterPolarity", function(object, ...)
+    standardGeneric("filterPolarity"))
+#' @rdname hidden_aliases
+setGeneric("filterPrecursorScan", function(object, ...)
+    standardGeneric("filterPrecursorScan"))
+#' @rdname hidden_aliases
+setGeneric("filterRt", function(object, ...) standardGeneric("filterRt"))
+#' @rdname hidden_aliases
 setGeneric("fromFile", function(object, ...)
     standardGeneric("fromFile"))
 #' @rdname hidden_aliases

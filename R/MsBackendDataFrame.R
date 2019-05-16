@@ -355,6 +355,28 @@ setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
     } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
 
+#' @rdname hidden_aliases
+setMethod("$", "MsBackendDataFrame", function(x, name) {
+    if (!any(spectraVariables(x) == name))
+        stop("spectra variable '", name, "' not available")
+    spectraData(x, name)[, 1]
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
+    if (is.list(value) && any(c("mz", "intensity") == name))
+        value <- SimpleList(value)
+    x@spectraData[[name]] <- value
+    validObject(x)
+    x
+})
+
+#### ---------------------------------------------------------------------------
+##
+##                      FILTERING AND SUBSETTING
+##
+#### ---------------------------------------------------------------------------
+
 #' @importMethodsFrom S4Vectors [
 #'
 #' @rdname hidden_aliases
@@ -373,17 +395,21 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
 })
 
 #' @rdname hidden_aliases
-setMethod("$", "MsBackendDataFrame", function(x, name) {
-    if (!any(spectraVariables(x) == name))
-        stop("spectra variable '", name, "' not available")
-    spectraData(x, name)[, 1]
+setMethod("filterAcquisitionNum", "MsBackendDataFrame", function(object, n,
+                                                                 file) {
+    if (!length(n) | !length(object)) return(object)
+    if (!length(file)) file <- unique(fromFile(object))
+    if (!is.integer(n)) stop("'n' has to be an integer representing the ",
+                             "acquisition number(s) for sub-setting")
+    if (!is.integer(file)) stop("'file' has to be an integer with the index ",
+                                "of the file(s) for subsetting")
+    sel_file <- fromFile(object) %in% file
+    sel_acq <- acquisitionNum(object) %in% n & sel_file
+    object[sel_acq | !sel_file]
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
-    if (is.list(value) && any(c("mz", "intensity") == name))
-        value <- SimpleList(value)
-    x@spectraData[[name]] <- value
-    validObject(x)
-    x
+setMethod("filterEmptySpectra", "MsBackendDataFrame", function(object) {
+    if (!length(object)) return(object)
+    object[as.logical(peaksCount(object))]
 })
