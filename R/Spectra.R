@@ -183,6 +183,9 @@ NULL
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra`.
 #'
+#' - `filterPolarity`: filter the object keeping only spectra matching the
+#'   provided polarity. Returns the subsetted `Spectra`.
+#'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
@@ -261,6 +264,9 @@ NULL
 #' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
 #'     on creation of `Spectra` objects for details. For all other methods a
 #'     `Spectra` object.
+#'
+#' @param polarity for `filterPolarity`: `integer` specifying the polarity to
+#'     to subset `object`.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -762,6 +768,16 @@ setMethod("filterMsLevel", "Spectra", function(object, msLevel = integer()) {
     object@processing <- c(object@processing,
                            paste0("Filter: select MS level(s) ",
                                   paste0(unique(msLevel), collapse = " "),
+                                  " [", date(), "]"))
+    object
+})
+
+#' @rdname Spectra
+setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
+    object@backend <- filterPolarity(object@backend, polarity = polarity)
+    object@processing <- c(object@processing,
+                           paste0("Filter: select spectra with polarity ",
+                                  paste0(polarity, collapse = " "),
                                   " [", date(), "]"))
     object
 })

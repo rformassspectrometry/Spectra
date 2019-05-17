@@ -651,3 +651,19 @@ test_that("filterMsLevel,Spectra works", {
     expect_false(all(1:2 %in% msLevel(res)))
     expect_true(all(msLevel(res) == 2))
 })
+
+test_that("filterPolarity,Spectra works", {
+    sps <- Spectra()
+    res <- filterPolarity(sps)
+    expect_true(length(res) == 0)
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(sciex_mzr)
+    res <- filterPolarity(sps, polarity = c(2, 0))
+    expect_true(length(res) == 0)
+
+    res <- filterPolarity(sps, 1)
+    expect_true(all(polarity(res) == 1))
+    expect_equal(rtime(res), rtime(sps))
+    expect_true(length(res@processing) == 1)
+})

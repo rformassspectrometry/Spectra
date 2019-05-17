@@ -49,6 +49,7 @@
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterFile,Spectra-method}
 \alias{filterMsLevel,Spectra-method}
+\alias{filterPolarity,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
 \title{The Spectra class to manage and access MS data}
@@ -149,6 +150,8 @@
 
 \S4method{filterMsLevel}{Spectra}(object, msLevel = integer())
 
+\S4method{filterPolarity}{Spectra}(object, polarity = integer())
+
 \S4method{removePeaks}{Spectra}(object, t = "min",
   msLevel. = unique(msLevel(object)))
 
@@ -208,6 +211,9 @@ should be subsetted.}
 
 \item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
 subsetted.}
+
+\item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
+to subset \code{object}.}
 
 \item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
@@ -374,6 +380,8 @@ provided with parameter \code{file}. Returns the filtered \code{Spectra}.
 \item \code{filterMsLevel}: filter object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra}.
+\item \code{filterPolarity}: filter the object keeping only spectra matching the
+provided polarity. Returns the subsetted \code{Spectra}.
 \item \code{selectSpectraVariables}: reduce the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only

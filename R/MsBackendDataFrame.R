@@ -436,3 +436,11 @@ setMethod("filterMsLevel", "MsBackendDataFrame", function(object,
         object[msLevel(object) %in% msLevel]
     } else object
 })
+
+#' @rdname hidden_aliases
+setMethod("filterPolarity", "MsBackendDataFrame",
+          function(object, polarity = integer()) {
+              if (length(polarity))
+                  object[polarity(object) %in% polarity]
+              else object
+          })

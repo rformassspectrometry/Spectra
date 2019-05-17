@@ -530,3 +530,19 @@ test_that("filterMsLevel,MsBackendDataFrame works", {
     res <- filterMsLevel(be, c(3L, 5L))
     expect_equal(rtime(res), 5)
 })
+
+test_that("filterPolarity,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterPolarity(be))
+
+    df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L, 3L, 1L, 2L, 3L),
+                    rtime = as.numeric(1:6), polarity = c(1L, 1L, -1L, 0L, 1L, 0L))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    res <- filterPolarity(be, c(1, 2))
+    expect_true(all(polarity(res) == 1L))
+    expect_equal(rtime(res), c(1, 2, 5))
+
+    res <- filterPolarity(be, c(0L, -1L))
+    expect_true(all(polarity(res) %in% c(0L, -1L)))
+    expect_equal(rtime(res), c(3, 4, 6))
+})
