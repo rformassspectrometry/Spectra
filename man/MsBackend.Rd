@@ -190,6 +190,9 @@ to subset \code{object}.}
 acquisition number of the spectra to which the object should be
 subsetted.}
 
+\item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
+be used to subset/filter \code{object}.}
+
 \item{x}{Object extending \code{MsBackend}.}
 
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the

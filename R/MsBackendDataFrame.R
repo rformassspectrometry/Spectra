@@ -395,8 +395,9 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
 })
 
 #' @rdname hidden_aliases
-setMethod("filterAcquisitionNum", "MsBackendDataFrame", function(object, n,
-                                                                 file) {
+setMethod("filterAcquisitionNum", "MsBackendDataFrame", function(object,
+                                                                 n = integer(),
+                                                                 file = integer()) {
     if (!length(n) | !length(object)) return(object)
     if (!length(file)) file <- unique(fromFile(object))
     if (!is.integer(n)) stop("'n' has to be an integer representing the ",
@@ -412,4 +413,18 @@ setMethod("filterAcquisitionNum", "MsBackendDataFrame", function(object, n,
 setMethod("filterEmptySpectra", "MsBackendDataFrame", function(object) {
     if (!length(object)) return(object)
     object[as.logical(peaksCount(object))]
+})
+
+#' @rdname hidden_aliases
+setMethod("filterFile", "MsBackendDataFrame", function(object,
+                                                       file = integer()) {
+    if (length(file)) {
+        file <- .i_to_index(file, length(fileNames(object)), fileNames(object))
+        file_names <- fileNames(object)
+        object <- object[fromFile(object) %in% file]
+        if (is.unsorted(file))
+            object[order(match(fileNames(object)[fromFile(object)],
+                               file_names[file]))]
+        else object
+    } else object
 })

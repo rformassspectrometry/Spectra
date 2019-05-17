@@ -617,3 +617,16 @@ test_that("filterEmptySpectra,Spectra works", {
     res <- filterEmptySpectra(sps)
     expect_equal(rtime(res), rtime(sps))
 })
+
+test_that("filterFile,Spectra works", {
+    sps <- Spectra()
+    res <- filterFile(sps)
+    expect_true(length(res) == 0)
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(sciex_mzr)
+    res <- filterFile(sps, 2)
+    expect_true(all(fromFile(res) == 1L))
+    expect_equal(fileNames(res), fileNames(sps)[2])
+    expect_equal(peaks(res), peaks(sps)[fromFile(sps) == 2])
+})

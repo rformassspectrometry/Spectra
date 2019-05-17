@@ -3,7 +3,7 @@ NULL
 
 #' @title The Spectra class to manage and access MS data
 #'
-#' @aliases Spectra-class
+#' @aliases Spectra-class [,Spectra-method
 #'
 #' @name Spectra
 #'
@@ -168,6 +168,17 @@ NULL
 #' - `[`: subset the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
+#' - `filterAcquisitionNum`: filter the object keeping only spectra matching the
+#'   provided acquisition numbers (argument `n`). If `file` is also provided,
+#'   `object` is subsetted to the spectra with an acquisition number equal to
+#'   `n` **in this/these file(s)** and all spectra for the remaining files (not
+#'   specified with `file`).
+#'
+#' - `filterEmptySpectra`: remove empty spectra (i.e. spectra without peaks).
+#'
+#' - `filterFile`: retain data of files matching the file index or file name
+#'    provided with parameter `file`.
+#'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
@@ -216,6 +227,9 @@ NULL
 #'
 #' @param drop For `[`: not considered.
 #'
+#' @param file For `filterFile`: index or name of the file(s) to which the data
+#'     should be subsetted.
+#'
 #' @param i For `[`: `integer`, `logical` or `character` to subset the object.
 #'
 #' @param j For `[`: not supported.
@@ -224,6 +238,9 @@ NULL
 #'     reported total ion current should be reported, or whether the
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`, same as `ionCount`).
+#'
+#' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
+#'     to filter for.
 #'
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
@@ -717,6 +734,16 @@ setMethod("filterEmptySpectra", "Spectra", function(object) {
     object@processing <- c(object@processing,
                            paste0("Filter: removed empty spectra. [",
                                   date(), "]"))
+    object
+})
+
+#' @rdname Spectra
+setMethod("filterFile", "Spectra", function(object, file = integer()) {
+    object@backend <- filterFile(object@backend, file = file)
+    object@processing <- c(object@processing,
+                           paste0("Filter: select file(s): ",
+                                  paste0(file, collapse = ", "),
+                                  " [", date(), "]"))
     object
 })
 

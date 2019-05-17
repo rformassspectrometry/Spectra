@@ -425,7 +425,7 @@ test_that("$,$<-,MsBackendDataFrame works", {
     expect_equal(be$intensity, SimpleList(c(5, 5, 5), 1:4))
 })
 
-test_that("acquisitionNum,MsBackendDataFrame works", {
+test_that("filterAcquisitionNum,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(be, filterAcquisitionNum(be, n = 4))
 
@@ -470,4 +470,45 @@ test_that("filterEmptySpectra,MsBackendDataFrame works", {
 
     res <- filterEmptySpectra(be[3])
     expect_true(length(res) == 0)
+})
+
+test_that("filterFile,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterFile(be))
+    df <- DataFrame(fromFile = c(1L, 1L, 1L, 2L, 2L, 3L, 3L, 3L),
+                    acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
+                    rtime = as.numeric(1:8),
+                    msLevel = 1L)
+    a <- tempfile()
+    b <- tempfile()
+    c <- tempfile()
+    cat("a", file = a)
+    cat("b", file = b)
+    cat("c", file = c)
+    be <- backendInitialize(MsBackendDataFrame(),
+                            c(a, b, c), df)
+    res <- filterFile(be, c(3, 1))
+    expect_equal(length(res), 6)
+    expect_equal(fromFile(res), c(1L, 1L, 1L, 2L, 2L, 2L))
+    expect_equal(rtime(res), c(6, 7, 8, 1, 2, 3))
+    expect_equal(fileNames(res), c(c, a))
+
+    res <- filterFile(be, 2)
+    expect_equal(rtime(res), c(4, 5))
+    expect_equal(fileNames(res), b)
+
+    res <- filterFile(be, c(2, 3))
+    expect_equal(rtime(res), c(4, 5, 6, 7, 8))
+    expect_equal(fileNames(res), c(b, c))
+
+    res <- filterFile(be)
+    expect_equal(res, be)
+
+    expect_error(filterFile(be, 5), "index out of")
+    expect_error(filterFile(be, "a"), "names present in")
+
+    df$fromFile <- 1L
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    res <- filterFile(be, 1L)
+    expect_equal(res, be)
 })

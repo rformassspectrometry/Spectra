@@ -4,6 +4,7 @@
 \name{Spectra}
 \alias{Spectra}
 \alias{Spectra-class}
+\alias{[,Spectra-method}
 \alias{Spectra,DataFrame-method}
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
@@ -44,6 +45,9 @@
 \alias{$,Spectra-method}
 \alias{$<-,Spectra-method}
 \alias{[,Spectra,ANY-method}
+\alias{filterAcquisitionNum,Spectra-method}
+\alias{filterEmptySpectra,Spectra-method}
+\alias{filterFile,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
 \title{The Spectra class to manage and access MS data}
@@ -135,6 +139,13 @@
 
 \S4method{[}{Spectra,ANY}(x, i, j, ..., drop = FALSE)
 
+\S4method{filterAcquisitionNum}{Spectra}(object, n = integer(),
+  file = integer())
+
+\S4method{filterEmptySpectra}{Spectra}(object)
+
+\S4method{filterFile}{Spectra}(object, file = integer())
+
 \S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
 
 \S4method{clean}{Spectra}(object, all = FALSE, msLevel.)
@@ -183,6 +194,12 @@ or set.}
 \item{j}{For \code{[}: not supported.}
 
 \item{drop}{For \code{[}: not considered.}
+
+\item{n}{for \code{filterAcquisitionNum}: \code{integer} with the acquisition numbers
+to filter for.}
+
+\item{file}{For \code{filterFile}: index or name of the file(s) to which the data
+should be subsetted.}
 
 \item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
@@ -338,6 +355,14 @@ listed methods.
 \itemize{
 \item \code{[}: subset the spectra keeping only selected elements (\code{i}). The method
 \strong{always} returns a \code{Spectra} object.
+\item \code{filterAcquisitionNum}: filter the object keeping only spectra matching the
+provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
+\code{object} is subsetted to the spectra with an acquisition number equal to
+\code{n} \strong{in this/these file(s)} and all spectra for the remaining files (not
+specified with \code{file}).
+\item \code{filterEmptySpectra}: remove empty spectra (i.e. spectra without peaks).
+\item \code{filterFile}: retain data of files matching the file index or file name
+provided with parameter \code{file}.
 \item \code{selectSpectraVariables}: reduce the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only

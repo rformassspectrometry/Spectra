@@ -56,9 +56,12 @@
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
 \alias{tic,MsBackendDataFrame-method}
-\alias{[,MsBackendDataFrame,ANY-method}
 \alias{$,MsBackendDataFrame-method}
 \alias{$<-,MsBackendDataFrame-method}
+\alias{[,MsBackendDataFrame,ANY-method}
+\alias{filterAcquisitionNum,MsBackendDataFrame-method}
+\alias{filterEmptySpectra,MsBackendDataFrame-method}
+\alias{filterFile,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
@@ -203,11 +206,18 @@ selectSpectraVariables(object, ...)
 
 \S4method{tic}{MsBackendDataFrame}(object, initial = TRUE)
 
-\S4method{[}{MsBackendDataFrame,ANY}(x, i, j, ..., drop = FALSE)
-
 \S4method{$}{MsBackendDataFrame}(x, name)
 
 \S4method{$}{MsBackendDataFrame}(x, name) <- value
+
+\S4method{[}{MsBackendDataFrame,ANY}(x, i, j, ..., drop = FALSE)
+
+\S4method{filterAcquisitionNum}{MsBackendDataFrame}(object,
+  n = integer(), file = integer())
+
+\S4method{filterEmptySpectra}{MsBackendDataFrame}(object)
+
+\S4method{filterFile}{MsBackendDataFrame}(object, file = integer())
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
