@@ -557,13 +557,13 @@ test_that("clean,Spectra works", {
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.clean_peaks,
-                                list(all = FALSE, msLevel. = integer())))
+                                list(all = FALSE, msLevel = integer())))
 
-    res <- clean(sps, all = TRUE, msLevel. = 2L)
+    res <- clean(sps, all = TRUE, msLevel = 2L)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.clean_peaks,
-                                list(all = TRUE, msLevel. = 2L)))
+                                list(all = TRUE, msLevel = 2L)))
 })
 
 test_that("removePeaks,Spectra works", {
@@ -572,7 +572,7 @@ test_that("removePeaks,Spectra works", {
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.remove_peaks,
-                                list(t = 10, msLevel. = integer())))
+                                list(t = 10, msLevel = integer())))
 })
 
 test_that("filterAcquisitionNum,Spectra works", {
@@ -629,4 +629,25 @@ test_that("filterFile,Spectra works", {
     expect_true(all(fromFile(res) == 1L))
     expect_equal(fileNames(res), fileNames(sps)[2])
     expect_equal(peaks(res), peaks(sps)[fromFile(sps) == 2])
+})
+
+test_that("filterMsLevel,Spectra works", {
+    sps <- Spectra()
+    res <- filterMsLevel(sps)
+    expect_true(length(res) == 0)
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(sciex_mzr)
+    res <- filterMsLevel(sps, 2L)
+    expect_true(length(res) == 0)
+
+    sps <- Spectra(tmt_mzr)
+    expect_true(all(1:2 %in% msLevel(sps)))
+    res <- filterMsLevel(sps, 1L)
+    expect_false(all(1:2 %in% msLevel(res)))
+    expect_true(all(msLevel(res) == 1))
+
+    res <- filterMsLevel(sps, c(2L, 4L))
+    expect_false(all(1:2 %in% msLevel(res)))
+    expect_true(all(msLevel(res) == 2))
 })

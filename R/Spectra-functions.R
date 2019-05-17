@@ -78,7 +78,7 @@ addProcessingStep <- function(object, FUN, ...) {
 #' @param centroided `logical(1)` defining whether the spectrum data is
 #'     centroided
 #'
-#' @param msLevel. optional `integer` defining the MS level(s) to which the
+#' @param msLevel optional `integer` defining the MS level(s) to which the
 #'     function should be applied.
 #'
 #' @return `matrix` with columns `"mz"` and `"intensity"`.
@@ -89,8 +89,8 @@ addProcessingStep <- function(object, FUN, ...) {
 #'
 #' @noRd
 .remove_peaks <- function(x, spectrumMsLevel, centroided = NA, t = "min",
-                          msLevel. = spectrumMsLevel, ...) {
-    if (!spectrumMsLevel %in% msLevel. || !length(x))
+                          msLevel = spectrumMsLevel, ...) {
+    if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
     if (is.na(centroided)) {
         warning("Centroided undefined (NA): keeping spectrum as is.")
@@ -121,8 +121,8 @@ addProcessingStep <- function(object, FUN, ...) {
 #'
 #' @noRd
 .clean_peaks <- function(x, spectrumMsLevel, all = FALSE,
-                         msLevel. = spectrumMsLevel, ...) {
-    if (!spectrumMsLevel %in% msLevel. || !length(x))
+                         msLevel = spectrumMsLevel, ...) {
+    if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
     x[utils.clean(x[, "intensity"], all), , drop = FALSE]
 }

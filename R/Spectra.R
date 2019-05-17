@@ -172,18 +172,22 @@ NULL
 #'   provided acquisition numbers (argument `n`). If `file` is also provided,
 #'   `object` is subsetted to the spectra with an acquisition number equal to
 #'   `n` **in this/these file(s)** and all spectra for the remaining files (not
-#'   specified with `file`).
+#'   specified with `file`). Returns the filtered `Spectra`.
 #'
 #' - `filterEmptySpectra`: remove empty spectra (i.e. spectra without peaks).
 #'
 #' - `filterFile`: retain data of files matching the file index or file name
-#'    provided with parameter `file`.
+#'    provided with parameter `file`. Returns the filtered `Spectra`.
+#'
+#' - `filterMsLevel`: filter object by MS level keeping only spectra matching
+#'   the MS level specified with argument `msLevel`. Returns the filtered
+#'   `Spectra`.
 #'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
 #'   the values will be dropped, while additional (user defined) spectra
-#'   variables will be completely removed.
+#'   variables will be completely removed. Returns the filtered `Spectra`.
 #'
 #' @section Data manipulation and analysis methods:
 #'
@@ -247,7 +251,7 @@ NULL
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
-#' @param msLevel. `integer` defining the MS level(s) of the spectra to which
+#' @param msLevel `integer` defining the MS level(s) of the spectra to which
 #'     the function should be applied. For `filterMsLevel`: the MS level to
 #'     which `object` should be subsetted.
 #'
@@ -350,6 +354,8 @@ NULL
 #' ## Subset to all MS2 spectra.
 #' data[msLevel(data) == 2]
 #'
+#' ## Same with the filterMsLevel function
+#' filterMsLevel(data, 2)
 #'
 #' ## ---- DATA MANIPULATIONS ----
 #'
@@ -741,8 +747,18 @@ setMethod("filterEmptySpectra", "Spectra", function(object) {
 setMethod("filterFile", "Spectra", function(object, file = integer()) {
     object@backend <- filterFile(object@backend, file = file)
     object@processing <- c(object@processing,
-                           paste0("Filter: select file(s): ",
+                           paste0("Filter: select file(s) ",
                                   paste0(file, collapse = ", "),
+                                  " [", date(), "]"))
+    object
+})
+
+#' @rdname Spectra
+setMethod("filterMsLevel", "Spectra", function(object, msLevel = integer()) {
+    object@backend <- filterMsLevel(object@backend, msLevel = msLevel)
+    object@processing <- c(object@processing,
+                           paste0("Filter: select MS level(s) ",
+                                  paste0(unique(msLevel), collapse = " "),
                                   " [", date(), "]"))
     object
 })
@@ -756,37 +772,35 @@ setMethod("filterFile", "Spectra", function(object, file = integer()) {
 #' @rdname Spectra
 #'
 #' @exportMethod removePeaks
-setMethod("removePeaks", "Spectra", function(object, t = "min", msLevel.) {
-    if (!is.numeric(t) & t != "min")
-        stop("Argument 't' has to be either numeric of 'min'.")
-    if (missing(msLevel.))
-        msLevel. <- base::sort(unique(msLevel(object)))
-    if (!is.numeric(msLevel.))
-        stop("'msLevel' must be numeric.")
-    object <- addProcessingStep(object, .remove_peaks, t = t,
-                                msLevel. = msLevel.)
-    object@processing <- c(object@processing,
-                           paste0("Signal <= ", t, " in MS level(s) ",
-                                  paste0(msLevel., collapse = ", "),
-                                  " set to 0 [", date(), "]"))
-    object
-})
+setMethod("removePeaks", "Spectra",
+          function(object, t = "min", msLevel = unique(msLevel(object))) {
+              if (!is.numeric(t) & t != "min")
+                  stop("Argument 't' has to be either numeric of 'min'.")
+              if (!is.numeric(msLevel))
+                  stop("'msLevel' must be numeric.")
+              object <- addProcessingStep(object, .remove_peaks, t = t,
+                                          msLevel = msLevel)
+              object@processing <- c(object@processing,
+                                     paste0("Signal <= ", t, " in MS level(s) ",
+                                            paste0(msLevel, collapse = ", "),
+                                            " set to 0 [", date(), "]"))
+              object
+          })
 
 #' @rdname Spectra
 #'
 #' @exportMethod clean
-setMethod("clean", "Spectra", function(object, all = FALSE, msLevel.) {
-    if (!is.logical(all) || length(all) != 1)
-        stop("Argument 'all' must be a logical of length 1")
-    if (missing(msLevel.))
-        msLevel. <- base::sort(unique(msLevel(object)))
-    if (!is.numeric(msLevel.))
-        stop("'msLevel' must be numeric.")
-    object <- addProcessingStep(object, .clean_peaks, all = all,
-                                msLevel. = msLevel.)
-    object@processing <- c(object@processing,
-                           paste0("Spectra of MS level(s) ",
-                                  paste0(msLevel., collapse = ", "),
-                                  " cleaned [", date(), "]"))
-    object
-})
+setMethod("clean", "Spectra",
+          function(object, all = FALSE, msLevel = unique(msLevel(object))) {
+              if (!is.logical(all) || length(all) != 1)
+                  stop("Argument 'all' must be a logical of length 1")
+              if (!is.numeric(msLevel))
+                  stop("'msLevel' must be numeric.")
+              object <- addProcessingStep(object, .clean_peaks, all = all,
+                                          msLevel = msLevel)
+              object@processing <- c(object@processing,
+                                     paste0("Spectra of MS level(s) ",
+                                            paste0(msLevel, collapse = ", "),
+                                            " cleaned [", date(), "]"))
+              object
+          })

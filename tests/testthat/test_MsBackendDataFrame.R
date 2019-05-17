@@ -512,3 +512,21 @@ test_that("filterFile,MsBackendDataFrame works", {
     res <- filterFile(be, 1L)
     expect_equal(res, be)
 })
+
+test_that("filterMsLevel,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterMsLevel(be))
+
+    df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L, 1L, 2L, 3L, 2L),
+                    rtime = as.numeric(1:6))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    res <- filterMsLevel(be, 2L)
+    expect_true(all(msLevel(res) == 2))
+    expect_equal(rtime(res), c(2, 4, 6))
+
+    res <- filterMsLevel(be, c(3L, 2L))
+    expect_equal(rtime(res), c(2, 4, 5, 6))
+
+    res <- filterMsLevel(be, c(3L, 5L))
+    expect_equal(rtime(res), 5)
+})

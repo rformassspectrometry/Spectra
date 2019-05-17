@@ -44,7 +44,7 @@ test_that(".remove_peaks works", {
                  0, 5, 10, 5, 0)
     expect_equal(res[, "intensity"], int_exp)
 
-    res <- .remove_peaks(x, 1L, centroided = TRUE, msLevel. = 2L)
+    res <- .remove_peaks(x, 1L, centroided = TRUE, msLevel = 2L)
     expect_equal(res[, "intensity"], int)
 })
 
@@ -61,8 +61,8 @@ test_that(".clean_peaks works", {
     expect_equal(res[, "intensity"], c(1, 2, 3, 1, 1, 3, 10, 6, 2, 1, 1, 2,
                                        1, 5, 10, 5, 1))
 
-    expect_equal(.clean_peaks(x, 2L, msLevel. = 1L), x)
-    expect_equal(.clean_peaks(x, 1L, msLevel. = 2L), x)
+    expect_equal(.clean_peaks(x, 2L, msLevel = 1L), x)
+    expect_equal(.clean_peaks(x, 1L, msLevel = 2L), x)
 })
 
 test_that(".apply_processing_queue works", {

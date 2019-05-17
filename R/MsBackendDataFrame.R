@@ -428,3 +428,11 @@ setMethod("filterFile", "MsBackendDataFrame", function(object,
         else object
     } else object
 })
+
+#' @rdname hidden_aliases
+setMethod("filterMsLevel", "MsBackendDataFrame", function(object,
+                                                          msLevel = integer()) {
+    if (length(msLevel)) {
+        object[msLevel(object) %in% msLevel]
+    } else object
+})

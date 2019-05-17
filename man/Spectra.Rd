@@ -48,6 +48,7 @@
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterFile,Spectra-method}
+\alias{filterMsLevel,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
 \title{The Spectra class to manage and access MS data}
@@ -146,9 +147,13 @@
 
 \S4method{filterFile}{Spectra}(object, file = integer())
 
-\S4method{removePeaks}{Spectra}(object, t = "min", msLevel.)
+\S4method{filterMsLevel}{Spectra}(object, msLevel = integer())
 
-\S4method{clean}{Spectra}(object, all = FALSE, msLevel.)
+\S4method{removePeaks}{Spectra}(object, t = "min",
+  msLevel = unique(msLevel(object)))
+
+\S4method{clean}{Spectra}(object, all = FALSE,
+  msLevel = unique(msLevel(object)))
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -201,11 +206,11 @@ to filter for.}
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
 should be subsetted.}
 
-\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
-
-\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
+\item{msLevel}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied. For \code{filterMsLevel}: the MS level to
 which \code{object} should be subsetted.}
+
+\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
 \item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
 removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
@@ -359,15 +364,18 @@ listed methods.
 provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
 \code{object} is subsetted to the spectra with an acquisition number equal to
 \code{n} \strong{in this/these file(s)} and all spectra for the remaining files (not
-specified with \code{file}).
+specified with \code{file}). Returns the filtered \code{Spectra}.
 \item \code{filterEmptySpectra}: remove empty spectra (i.e. spectra without peaks).
 \item \code{filterFile}: retain data of files matching the file index or file name
-provided with parameter \code{file}.
+provided with parameter \code{file}. Returns the filtered \code{Spectra}.
+\item \code{filterMsLevel}: filter object by MS level keeping only spectra matching
+the MS level specified with argument \code{msLevel}. Returns the filtered
+\code{Spectra}.
 \item \code{selectSpectraVariables}: reduce the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
 the values will be dropped, while additional (user defined) spectra
-variables will be completely removed.
+variables will be completely removed. Returns the filtered \code{Spectra}.
 }
 }
 
@@ -468,6 +476,8 @@ spectraData(data)
 ## Subset to all MS2 spectra.
 data[msLevel(data) == 2]
 
+## Same with the filterMsLevel function
+filterMsLevel(data, 2)
 
 ## ---- DATA MANIPULATIONS ----
 
