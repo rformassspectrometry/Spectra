@@ -150,10 +150,10 @@
 \S4method{filterMsLevel}{Spectra}(object, msLevel = integer())
 
 \S4method{removePeaks}{Spectra}(object, t = "min",
-  msLevel = unique(msLevel(object)))
+  msLevel. = unique(msLevel(object)))
 
 \S4method{clean}{Spectra}(object, all = FALSE,
-  msLevel = unique(msLevel(object)))
+  msLevel. = unique(msLevel(object)))
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -206,11 +206,14 @@ to filter for.}
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
 should be subsetted.}
 
-\item{msLevel}{\code{integer} defining the MS level(s) of the spectra to which
-the function should be applied. For \code{filterMsLevel}: the MS level to
-which \code{object} should be subsetted.}
+\item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
+subsetted.}
 
 \item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
+
+\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
+the function should be applied. For \code{filterMsLevel}: the MS level to
+which \code{object} should be subsetted.}
 
 \item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
 removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a

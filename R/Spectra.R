@@ -251,7 +251,10 @@ NULL
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
-#' @param msLevel `integer` defining the MS level(s) of the spectra to which
+#' @param msLevel For `filterMsLevel`: the MS level to which `object` should be
+#'     subsetted.
+#'
+#' @param msLevel. `integer` defining the MS level(s) of the spectra to which
 #'     the function should be applied. For `filterMsLevel`: the MS level to
 #'     which `object` should be subsetted.
 #'
@@ -773,16 +776,16 @@ setMethod("filterMsLevel", "Spectra", function(object, msLevel = integer()) {
 #'
 #' @exportMethod removePeaks
 setMethod("removePeaks", "Spectra",
-          function(object, t = "min", msLevel = unique(msLevel(object))) {
+          function(object, t = "min", msLevel. = unique(msLevel(object))) {
               if (!is.numeric(t) & t != "min")
                   stop("Argument 't' has to be either numeric of 'min'.")
-              if (!is.numeric(msLevel))
-                  stop("'msLevel' must be numeric.")
+              if (!is.numeric(msLevel.))
+                  stop("'msLevel.' must be numeric.")
               object <- addProcessingStep(object, .remove_peaks, t = t,
-                                          msLevel = msLevel)
+                                          msLevel = msLevel.)
               object@processing <- c(object@processing,
                                      paste0("Signal <= ", t, " in MS level(s) ",
-                                            paste0(msLevel, collapse = ", "),
+                                            paste0(msLevel., collapse = ", "),
                                             " set to 0 [", date(), "]"))
               object
           })
@@ -791,16 +794,16 @@ setMethod("removePeaks", "Spectra",
 #'
 #' @exportMethod clean
 setMethod("clean", "Spectra",
-          function(object, all = FALSE, msLevel = unique(msLevel(object))) {
+          function(object, all = FALSE, msLevel. = unique(msLevel(object))) {
               if (!is.logical(all) || length(all) != 1)
                   stop("Argument 'all' must be a logical of length 1")
-              if (!is.numeric(msLevel))
+              if (!is.numeric(msLevel.))
                   stop("'msLevel' must be numeric.")
               object <- addProcessingStep(object, .clean_peaks, all = all,
-                                          msLevel = msLevel)
+                                          msLevel = msLevel.)
               object@processing <- c(object@processing,
                                      paste0("Spectra of MS level(s) ",
-                                            paste0(msLevel, collapse = ", "),
+                                            paste0(msLevel., collapse = ", "),
                                             " cleaned [", date(), "]"))
               object
           })
