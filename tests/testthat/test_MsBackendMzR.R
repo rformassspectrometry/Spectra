@@ -107,6 +107,67 @@ test_that("isEmpty,MsBackendMzR works", {
     expect_true(all(!res))
 })
 
+test_that("isolationWindowLowerMz,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_identical(isolationWindowLowerMz(be), numeric())
+
+    be <- tmt_mzr
+    expect_true(is.numeric(isolationWindowLowerMz(be)))
+    expect_true(all(is.na(isolationWindowLowerMz(be)[msLevel(be) == 1])))
+    expect_true(all(!is.na(isolationWindowLowerMz(be)[msLevel(be) == 2])))
+
+    isolationWindowLowerMz(be) <- rep(2, length(be))
+    expect_true(is(be@spectraData$isolationWindowLowerMz, "Rle"))
+    expect_true(all(isolationWindowLowerMz(be) == 2))
+
+    expect_error(isolationWindowLowerMz(be) <- 2, "of length 509")
+
+    be <- sciex_mzr
+    expect_true(all(is.na(isolationWindowLowerMz(be))))
+})
+
+test_that("isolationWindowTargetMz,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_identical(isolationWindowTargetMz(be), numeric())
+
+    be <- tmt_mzr
+    expect_true(is.numeric(isolationWindowTargetMz(be)))
+    expect_true(all(is.na(isolationWindowTargetMz(be)[msLevel(be) == 1])))
+    expect_true(all(!is.na(isolationWindowTargetMz(be)[msLevel(be) == 2])))
+    expect_true(all(isolationWindowTargetMz(be)[msLevel(be) == 2] >
+                    isolationWindowLowerMz(be)[msLevel(be) == 2]))
+
+    isolationWindowTargetMz(be) <- rep(2, length(be))
+    expect_true(is(be@spectraData$isolationWindowTargetMz, "Rle"))
+    expect_true(all(isolationWindowTargetMz(be) == 2))
+
+    expect_error(isolationWindowTargetMz(be) <- 2, "of length 509")
+
+    be <- sciex_mzr
+    expect_true(all(is.na(isolationWindowTargetMz(be))))
+})
+
+test_that("isolationWindowUpperMz,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_identical(isolationWindowUpperMz(be), numeric())
+
+    be <- tmt_mzr
+    expect_true(is.numeric(isolationWindowUpperMz(be)))
+    expect_true(all(is.na(isolationWindowUpperMz(be)[msLevel(be) == 1])))
+    expect_true(all(!is.na(isolationWindowUpperMz(be)[msLevel(be) == 2])))
+    expect_true(all(isolationWindowUpperMz(be)[msLevel(be) == 2] >
+                    isolationWindowTargetMz(be)[msLevel(be) == 2]))
+
+    isolationWindowUpperMz(be) <- rep(2, length(be))
+    expect_true(is(be@spectraData$isolationWindowUpperMz, "Rle"))
+    expect_true(all(isolationWindowUpperMz(be) == 2))
+
+    expect_error(isolationWindowUpperMz(be) <- 2, "of length 509")
+
+    be <- sciex_mzr
+    expect_true(all(is.na(isolationWindowUpperMz(be))))
+})
+
 test_that("msLevel,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(msLevel(be), integer())

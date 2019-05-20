@@ -33,6 +33,12 @@
 \alias{ionCount,MsBackendDataFrame-method}
 \alias{isCentroided,MsBackendDataFrame-method}
 \alias{isEmpty,MsBackendDataFrame-method}
+\alias{isolationWindowLowerMz,MsBackendDataFrame-method}
+\alias{isolationWindowLowerMz<-,MsBackendDataFrame-method}
+\alias{isolationWindowTargetMz,MsBackendDataFrame-method}
+\alias{isolationWindowTargetMz<-,MsBackendDataFrame-method}
+\alias{isolationWindowUpperMz,MsBackendDataFrame-method}
+\alias{isolationWindowUpperMz<-,MsBackendDataFrame-method}
 \alias{length,MsBackendDataFrame-method}
 \alias{msLevel,MsBackendDataFrame-method}
 \alias{mz,MsBackendDataFrame-method}
@@ -78,6 +84,12 @@
 \alias{ionCount,MsBackendMzR-method}
 \alias{isCentroided,MsBackendMzR-method}
 \alias{isEmpty,MsBackendMzR-method}
+\alias{isolationWindowLowerMz,MsBackendMzR-method}
+\alias{isolationWindowLowerMz<-,MsBackendMzR-method}
+\alias{isolationWindowTargetMz,MsBackendMzR-method}
+\alias{isolationWindowTargetMz<-,MsBackendMzR-method}
+\alias{isolationWindowUpperMz,MsBackendMzR-method}
+\alias{isolationWindowUpperMz<-,MsBackendMzR-method}
 \alias{msLevel,MsBackendMzR-method}
 \alias{mz,MsBackendMzR-method}
 \alias{peaks,MsBackendMzR-method}
@@ -161,6 +173,18 @@ selectSpectraVariables(object, ...)
 \S4method{isCentroided}{MsBackendDataFrame}(object, ...)
 
 \S4method{isEmpty}{MsBackendDataFrame}(x)
+
+\S4method{isolationWindowLowerMz}{MsBackendDataFrame}(object)
+
+\S4method{isolationWindowLowerMz}{MsBackendDataFrame}(object) <- value
+
+\S4method{isolationWindowTargetMz}{MsBackendDataFrame}(object)
+
+\S4method{isolationWindowTargetMz}{MsBackendDataFrame}(object) <- value
+
+\S4method{isolationWindowUpperMz}{MsBackendDataFrame}(object)
+
+\S4method{isolationWindowUpperMz}{MsBackendDataFrame}(object) <- value
 
 \S4method{length}{MsBackendDataFrame}(x)
 
@@ -258,6 +282,18 @@ selectSpectraVariables(object, ...)
 \S4method{isCentroided}{MsBackendMzR}(object, ...)
 
 \S4method{isEmpty}{MsBackendMzR}(x)
+
+\S4method{isolationWindowLowerMz}{MsBackendMzR}(object)
+
+\S4method{isolationWindowLowerMz}{MsBackendMzR}(object) <- value
+
+\S4method{isolationWindowTargetMz}{MsBackendMzR}(object)
+
+\S4method{isolationWindowTargetMz}{MsBackendMzR}(object) <- value
+
+\S4method{isolationWindowUpperMz}{MsBackendMzR}(object)
+
+\S4method{isolationWindowUpperMz}{MsBackendMzR}(object) <- value
 
 \S4method{msLevel}{MsBackendMzR}(object, ...)
 

@@ -98,7 +98,10 @@ NULL
     precursorMz = "numeric",
     precursorIntensity = "numeric",
     precursorCharge = "integer",
-    collisionEnergy = "numeric"
+    collisionEnergy = "numeric",
+    isolationWindowLowerMz = "numeric",
+    isolationWindowTargetMz = "numeric",
+    isolationWindowUpperMz = "numeric"
 )
 
 #' accessor methods for spectraData columns.
@@ -119,7 +122,10 @@ NULL
     precursorMz = "precursorMz",
     precursorIntensity = "precursorIntensity",
     precursorCharge = "precursorCharge",
-    collisionEnergy = "collisionEnergy"
+    collisionEnergy = "collisionEnergy",
+    isolationWindowLowerMz = "isolationWindowLowerMz",
+    isolationWindowTargetMz = "isolationWindowTargetMz",
+    isolationWindowUpperMz = "isolationWindowUpperMz"
 )
 
 #' @rdname MsBackend

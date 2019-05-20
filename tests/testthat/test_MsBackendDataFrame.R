@@ -101,6 +101,63 @@ test_that("isEmpty,MsBackendDataFrame works", {
     expect_equal(isEmpty(be), c(FALSE, FALSE))
 })
 
+test_that("isolationWindowLowerMz,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_identical(isolationWindowLowerMz(be), numeric())
+
+    df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L, 2L, 2L, 2L))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    expect_identical(isolationWindowLowerMz(be), rep(NA_real_, 5))
+    isolationWindowLowerMz(be) <- c(NA_real_, 2, 2, 3, 3)
+    expect_identical(isolationWindowLowerMz(be), c(NA_real_, 2, 2, 3, 3))
+
+    df$isolationWindowLowerMz <- c(NA_real_, 4, 4, 3, 1)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    expect_identical(isolationWindowLowerMz(be), c(NA_real_, 4, 4, 3, 1))
+
+    expect_error(isolationWindowLowerMz(be) <- 2.1, "of length 5")
+    expect_error(isolationWindowLowerMz(be) <- 1:5, "wrong data type")
+})
+
+test_that("isolationWindowTargetMz,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_identical(isolationWindowTargetMz(be), numeric())
+
+    df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L, 2L, 2L, 2L))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    expect_identical(isolationWindowTargetMz(be), rep(NA_real_, 5))
+    isolationWindowTargetMz(be) <- c(NA_real_, 2, 2, 3, 3)
+    expect_identical(isolationWindowTargetMz(be), c(NA_real_, 2, 2, 3, 3))
+
+    df$isolationWindowTargetMz <- c(NA_real_, 4, 4, 3, 1)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    expect_identical(isolationWindowTargetMz(be), c(NA_real_, 4, 4, 3, 1))
+
+    expect_error(isolationWindowTargetMz(be) <- 2.1, "of length 5")
+    expect_error(isolationWindowTargetMz(be) <- 1:5, "wrong data type")
+})
+
+test_that("isolationWindowUpperMz,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_identical(isolationWindowUpperMz(be), numeric())
+
+    df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L, 2L, 2L, 2L))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    expect_identical(isolationWindowUpperMz(be), rep(NA_real_, 5))
+    isolationWindowUpperMz(be) <- c(NA_real_, 2, 2, 3, 3)
+    expect_identical(isolationWindowUpperMz(be), c(NA_real_, 2, 2, 3, 3))
+
+    df$isolationWindowUpperMz <- c(NA_real_, 4, 4, 3, 1)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    expect_identical(isolationWindowUpperMz(be), c(NA_real_, 4, 4, 3, 1))
+
+    expect_error(isolationWindowUpperMz(be) <- 2.1, "of length 5")
+    expect_error(isolationWindowUpperMz(be) <- 1:5, "wrong data type")
+})
+
 test_that("length,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(length(be), 0)

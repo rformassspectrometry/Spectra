@@ -132,6 +132,54 @@ setMethod("isEmpty", "MsBackendMzR", function(x) {
 })
 
 #' @rdname hidden_aliases
+setMethod("isolationWindowLowerMz", "MsBackendMzR", function(object) {
+    .get_rle_column(object@spectraData, "isolationWindowLowerMz")
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowLowerMz", "MsBackendMzR",
+                 function(object, value) {
+                     if (!is.numeric(value) | length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowLowerMz <- .as_rle(value)
+                     validObject(object)
+                     object
+                 })
+
+#' @rdname hidden_aliases
+setMethod("isolationWindowTargetMz", "MsBackendMzR", function(object) {
+    .get_rle_column(object@spectraData, "isolationWindowTargetMz")
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowTargetMz", "MsBackendMzR",
+                 function(object, value) {
+                     if (!is.numeric(value) | length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowTargetMz <- .as_rle(value)
+                     validObject(object)
+                     object
+                 })
+
+#' @rdname hidden_aliases
+setMethod("isolationWindowUpperMz", "MsBackendMzR", function(object) {
+    .get_rle_column(object@spectraData, "isolationWindowUpperMz")
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowUpperMz", "MsBackendMzR",
+                 function(object, value) {
+                     if (!is.numeric(value) | length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowUpperMz <- .as_rle(value)
+                     validObject(object)
+                     object
+                 })
+
+#' @rdname hidden_aliases
 setMethod("msLevel", "MsBackendMzR", function(object, ...) {
     .get_rle_column(object@spectraData, "msLevel")
 })

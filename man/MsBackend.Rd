@@ -28,6 +28,12 @@
 \alias{ionCount,MsBackend-method}
 \alias{isCentroided,MsBackend-method}
 \alias{isEmpty,MsBackend-method}
+\alias{isolationWindowLowerMz,MsBackend-method}
+\alias{isolationWindowLowerMz<-,MsBackend-method}
+\alias{isolationWindowTargetMz,MsBackend-method}
+\alias{isolationWindowTargetMz<-,MsBackend-method}
+\alias{isolationWindowUpperMz,MsBackend-method}
+\alias{isolationWindowUpperMz<-,MsBackend-method}
 \alias{isReadOnly,MsBackend-method}
 \alias{length,MsBackend-method}
 \alias{msLevel,MsBackend-method}
@@ -96,6 +102,18 @@
 \S4method{isCentroided}{MsBackend}(object, ...)
 
 \S4method{isEmpty}{MsBackend}(x)
+
+\S4method{isolationWindowLowerMz}{MsBackend}(object)
+
+\S4method{isolationWindowLowerMz}{MsBackend}(object) <- value
+
+\S4method{isolationWindowTargetMz}{MsBackend}(object)
+
+\S4method{isolationWindowTargetMz}{MsBackend}(object) <- value
+
+\S4method{isolationWindowUpperMz}{MsBackend}(object)
+
+\S4method{isolationWindowUpperMz}{MsBackend}(object) <- value
 
 \S4method{isReadOnly}{MsBackend}(object)
 
@@ -314,6 +332,12 @@ the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
 length equal number of spectra.
+\item \code{isolationWindowLowerMz}, \code{isolationWindowLowerMz<-}: get or set the lower
+m/z boundary of the isolation window.
+\item \code{isolationWindowTargetMz}, \code{isolationWindowTargetMz<-}: get or set the
+target m/z of the isolation window.
+\item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: get or set the upper
+m/z boundary of the isolation window.
 \item \code{isReadOnly}: returns a \code{logical(1)} whether the backend is \emph{read
 only} or does allow also to write/update data.
 \item \code{length}: returns the number of spectra in the object.

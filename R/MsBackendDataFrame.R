@@ -146,6 +146,60 @@ setMethod("isEmpty", "MsBackendDataFrame", function(x) {
 })
 
 #' @rdname hidden_aliases
+setMethod("isolationWindowLowerMz", "MsBackendDataFrame", function(object) {
+    if (any(colnames(object@spectraData) == "isolationWindowLowerMz"))
+        object@spectraData$isolationWindowLowerMz
+    else rep(NA_real_, times = length(object))
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowLowerMz", "MsBackendDataFrame",
+                 function(object, value) {
+                     if (!is.numeric(value) | length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowLowerMz <- value
+                     validObject(object)
+                     object
+                 })
+
+#' @rdname hidden_aliases
+setMethod("isolationWindowTargetMz", "MsBackendDataFrame", function(object) {
+    if (any(colnames(object@spectraData) == "isolationWindowTargetMz"))
+        object@spectraData$isolationWindowTargetMz
+    else rep(NA_real_, times = length(object))
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowTargetMz", "MsBackendDataFrame",
+                 function(object, value) {
+                     if (!is.numeric(value) | length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowTargetMz <- value
+                     validObject(object)
+                     object
+                 })
+
+#' @rdname hidden_aliases
+setMethod("isolationWindowUpperMz", "MsBackendDataFrame", function(object) {
+    if (any(colnames(object@spectraData) == "isolationWindowUpperMz"))
+        object@spectraData$isolationWindowUpperMz
+    else rep(NA_real_, times = length(object))
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowUpperMz", "MsBackendDataFrame",
+                 function(object, value) {
+                     if (!is.numeric(value) | length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowUpperMz <- value
+                     validObject(object)
+                     object
+                 })
+
+#' @rdname hidden_aliases
 setMethod("length", "MsBackendDataFrame", function(x) {
     nrow(x@spectraData)
 })

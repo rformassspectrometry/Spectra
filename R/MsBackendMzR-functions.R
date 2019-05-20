@@ -29,6 +29,14 @@ MsBackendMzR <- function() {
     colnames(hdr)[colnames(hdr) == "precursorScanNum"] <- "precScanNum"
     colnames(hdr)[colnames(hdr) == "precursorMZ"] <- "precursorMz"
     colnames(hdr)[colnames(hdr) == "retentionTime"] <- "rtime"
+    colnames(hdr)[colnames(hdr) == "isolationWindowTargetMZ"] <-
+        "isolationWindowTargetMz"
+    hdr$isolationWindowLowerMz <- hdr$isolationWindowTargetMz -
+        hdr$isolationWindowLowerOffset
+    hdr$isolationWindowUpperMz <- hdr$isolationWindowTargetMz +
+        hdr$isolationWindowUpperOffset
+    hdr$isolationWindowUpperOffset <- NULL
+    hdr$isolationWindowLowerOffset <- NULL
     S4Vectors::DataFrame(hdr)
 }
 
