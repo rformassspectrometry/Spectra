@@ -19,6 +19,12 @@
 \alias{ionCount,Spectra-method}
 \alias{isCentroided,Spectra-method}
 \alias{isEmpty,Spectra-method}
+\alias{isolationWindowLowerMz,Spectra-method}
+\alias{isolationWindowLowerMz<-,Spectra-method}
+\alias{isolationWindowTargetMz,Spectra-method}
+\alias{isolationWindowTargetMz<-,Spectra-method}
+\alias{isolationWindowUpperMz,Spectra-method}
+\alias{isolationWindowUpperMz<-,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{mz,Spectra-method}
@@ -88,6 +94,18 @@
 \S4method{isCentroided}{Spectra}(object, ...)
 
 \S4method{isEmpty}{Spectra}(x)
+
+\S4method{isolationWindowLowerMz}{Spectra}(object)
+
+\S4method{isolationWindowLowerMz}{Spectra}(object) <- value
+
+\S4method{isolationWindowTargetMz}{Spectra}(object)
+
+\S4method{isolationWindowTargetMz}{Spectra}(object) <- value
+
+\S4method{isolationWindowUpperMz}{Spectra}(object)
+
+\S4method{isolationWindowUpperMz}{Spectra}(object) <- value
 
 \S4method{length}{Spectra}(x)
 
@@ -318,6 +336,12 @@ the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
 length equal number of spectra.
+\item \code{isolationWindowLowerMz}, \code{isolationWindowLowerMz<-}: get or set the lower
+m/z boundary of the isolation window.
+\item \code{isolationWindowTargetMz}, \code{isolationWindowTargetMz<-}: get or set the
+target m/z of the isolation window.
+\item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: get or set the upper
+m/z boundary of the isolation window.
 \item \code{length}: get the number of spectra in the object.
 \item \code{msLevel}: get the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS

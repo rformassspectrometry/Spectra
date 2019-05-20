@@ -92,6 +92,15 @@ NULL
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
+#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: get or set the lower
+#'   m/z boundary of the isolation window.
+#'
+#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: get or set the
+#'   target m/z of the isolation window.
+#'
+#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: get or set the upper
+#'   m/z boundary of the isolation window.
+#'
 #' - `length`: get the number of spectra in the object.
 #'
 #' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
@@ -566,6 +575,39 @@ setMethod("isEmpty", "Spectra", function(x) {
         unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks) == 0),
                use.names = FALSE)
     else logical()
+})
+
+#' @rdname Spectra
+setMethod("isolationWindowLowerMz", "Spectra", function(object) {
+    isolationWindowLowerMz(object@backend)
+})
+
+#' @rdname Spectra
+setReplaceMethod("isolationWindowLowerMz", "Spectra", function(object, value) {
+    isolationWindowLowerMz(object) <- value
+    object
+})
+
+#' @rdname Spectra
+setMethod("isolationWindowTargetMz", "Spectra", function(object) {
+    isolationWindowTargetMz(object@backend)
+})
+
+#' @rdname Spectra
+setReplaceMethod("isolationWindowTargetMz", "Spectra", function(object, value) {
+    isolationWindowTargetMz(object@backend) <- value
+    object
+})
+
+#' @rdname Spectra
+setMethod("isolationWindowUpperMz", "Spectra", function(object) {
+    isolationWindowUpperMz(object@backend)
+})
+
+#' @rdname Spectra
+setReplaceMethod("isolationWindowUpperMz", "Spectra", function(object, value) {
+    isolationWindowUpperMz(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra

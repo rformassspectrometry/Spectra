@@ -195,6 +195,52 @@ test_that("isEmpty,Spectra works", {
     expect_identical(res, c(TRUE, TRUE))
 })
 
+test_that("isolationWindowLowerMz,Spectra works", {
+    sps <- Spectra()
+    expect_identical(isolationWindowLowerMz(sps), numeric())
+
+    sps <- sciex_mzr
+    expect_true(all(is.na(isolationWindowLowerMz(sps))))
+    isolationWindowLowerMz(sps) <- as.numeric(1:length(sps))
+    expect_identical(isolationWindowLowerMz(sps), as.numeric(1:length(sps)))
+
+    sps <- tmt_mzr
+    expect_true(all(is.na(isolationWindowLowerMz(sps)[msLevel(sps) == 1L])))
+    expect_true(all(!is.na(isolationWindowLowerMz(sps)[msLevel(sps) == 2L])))
+})
+
+test_that("isolationWindowTargetMz,Spectra works", {
+    sps <- Spectra()
+    expect_identical(isolationWindowTargetMz(sps), numeric())
+
+    sps <- sciex_mzr
+    expect_true(all(is.na(isolationWindowTargetMz(sps))))
+    isolationWindowTargetMz(sps) <- as.numeric(1:length(sps))
+    expect_identical(isolationWindowTargetMz(sps), as.numeric(1:length(sps)))
+
+    sps <- tmt_mzr
+    expect_true(all(is.na(isolationWindowTargetMz(sps)[msLevel(sps) == 1L])))
+    expect_true(all(!is.na(isolationWindowTargetMz(sps)[msLevel(sps) == 2L])))
+    expect_true(all(isolationWindowTargetMz(sps)[msLevel(sps) == 2L] >
+                    isolationWindowLowerMz(sps)[msLevel(sps) == 2L]))
+})
+
+test_that("isolationWindowUpperMz,Spectra works", {
+    sps <- Spectra()
+    expect_identical(isolationWindowUpperMz(sps), numeric())
+
+    sps <- sciex_mzr
+    expect_true(all(is.na(isolationWindowUpperMz(sps))))
+    isolationWindowUpperMz(sps) <- as.numeric(1:length(sps))
+    expect_identical(isolationWindowUpperMz(sps), as.numeric(1:length(sps)))
+
+    sps <- tmt_mzr
+    expect_true(all(is.na(isolationWindowUpperMz(sps)[msLevel(sps) == 1L])))
+    expect_true(all(!is.na(isolationWindowUpperMz(sps)[msLevel(sps) == 2L])))
+    expect_true(all(isolationWindowUpperMz(sps)[msLevel(sps) == 2L] >
+                    isolationWindowTargetMz(sps)[msLevel(sps) == 2L]))
+})
+
 test_that("msLevel,Spectra works", {
     sps <- Spectra()
     expect_identical(msLevel(sps), integer())
