@@ -180,6 +180,15 @@ NULL
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
+#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: get or set the lower
+#'   m/z boundary of the isolation window.
+#'
+#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: get or set the
+#'   target m/z of the isolation window.
+#'
+#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: get or set the upper
+#'   m/z boundary of the isolation window.
+#'
 #' - `isReadOnly`: returns a `logical(1)` whether the backend is *read
 #'   only* or does allow also to write/update data.
 #'
@@ -355,8 +364,6 @@ setMethod("backendInitialize", signature = "MsBackend",
               object
           })
 
-## Data accessors
-
 #' @exportMethod acquisitionNum
 #'
 #' @importMethodsFrom ProtGenerics acquisitionNum
@@ -499,6 +506,63 @@ setMethod("isCentroided", "MsBackend", function(object, ...) {
 setMethod("isEmpty", "MsBackend", function(x) {
     stop("Not implemented for ", class(x), ".")
 })
+
+#' @exportMethod isolationWindowLowerMz
+#'
+#' @importMethodsFrom ProtGenerics isolationWindowLowerMz
+#'
+#' @rdname MsBackend
+setMethod("isolationWindowLowerMz", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod isolationWindowLowerMz<-
+#'
+#' @importMethodsFrom ProtGenerics isolationWindowLowerMz<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("isolationWindowLowerMz", "MsBackend",
+                 function(object, value) {
+                     stop("Not implemented for ", class(object), ".")
+                 })
+
+#' @exportMethod isolationWindowTargetMz
+#'
+#' @importMethodsFrom ProtGenerics isolationWindowTargetMz
+#'
+#' @rdname MsBackend
+setMethod("isolationWindowTargetMz", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod isolationWindowTargetMz<-
+#'
+#' @importMethodsFrom ProtGenerics isolationWindowTargetMz<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("isolationWindowTargetMz", "MsBackend",
+                 function(object, value) {
+                     stop("Not implemented for ", class(object), ".")
+                 })
+
+#' @exportMethod isolationWindowUpperMz
+#'
+#' @importMethodsFrom ProtGenerics isolationWindowUpperMz
+#'
+#' @rdname MsBackend
+setMethod("isolationWindowUpperMz", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod isolationWindowUpperMz<-
+#'
+#' @importMethodsFrom ProtGenerics isolationWindowUpperMz<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("isolationWindowUpperMz", "MsBackend",
+                 function(object, value) {
+                     stop("Not implemented for ", class(object), ".")
+                 })
 
 #' @exportMethod isReadOnly
 #'

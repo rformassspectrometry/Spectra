@@ -190,6 +190,9 @@ NULL
 #'    MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'    `Spectra`.
 #'
+#' - `filterRt`: retain spectra of MS level `msLevel` with retention times
+#'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
+#'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
@@ -281,6 +284,9 @@ NULL
 #'
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
+#'
+#' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
+#'     be used to subset/filter `object`.
 #'
 #' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
@@ -771,11 +777,11 @@ setMethod("filterFile", "Spectra", function(object, file = integer()) {
 })
 
 #' @rdname Spectra
-setMethod("filterMsLevel", "Spectra", function(object, msLevel = integer()) {
-    object@backend <- filterMsLevel(object@backend, msLevel = msLevel)
+setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
+    object@backend <- filterMsLevel(object@backend, msLevel = msLevel.)
     object@processing <- c(object@processing,
                            paste0("Filter: select MS level(s) ",
-                                  paste0(unique(msLevel), collapse = " "),
+                                  paste0(unique(msLevel.), collapse = " "),
                                   " [", date(), "]"))
     object
 })
@@ -799,6 +805,19 @@ setMethod("filterPrecursorScan", "Spectra",
                   object@processing,
                   paste0("Filter: select parent/children scans for ",
                          paste0(acquisitionNum, collapse = " "),
+                         " [", date(), "]"))
+              object
+          })
+
+#' @rdname Spectra
+setMethod("filterRt", "Spectra",
+          function(object, rt = numeric(), msLevel. = unique(msLevel(object))) {
+              suppressWarnings(rt <- range(rt))
+              object@backend <- filterRt(object@backend, rt, msLevel.)
+              object@processing <- c(
+                  object@processing,
+                  paste0("Filter: select retention time [", rt[1], "..", rt[2],
+                         "] on MS level(s) ", paste0(msLevel., collapse = " "),
                          " [", date(), "]"))
               object
           })

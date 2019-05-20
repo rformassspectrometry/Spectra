@@ -65,6 +65,7 @@
 \alias{filterMsLevel,MsBackendDataFrame-method}
 \alias{filterPolarity,MsBackendDataFrame-method}
 \alias{filterPrecursorScan,MsBackendDataFrame-method}
+\alias{filterRt,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
@@ -229,6 +230,9 @@ selectSpectraVariables(object, ...)
 
 \S4method{filterPrecursorScan}{MsBackendDataFrame}(object,
   acquisitionNum = integer())
+
+\S4method{filterRt}{MsBackendDataFrame}(object, rt = numeric(),
+  msLevel = integer())
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())

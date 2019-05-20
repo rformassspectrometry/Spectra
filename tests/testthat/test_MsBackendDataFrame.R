@@ -576,3 +576,36 @@ test_that("filterPrecursorScan,MsBackendDataFrame works", {
     res <- filterAcquisitionNum(be, 6L)
     expect_equal(rtime(res), 7)
 })
+
+test_that("filterRt,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(filterRt(be), be)
+    expect_true(length(filterRt(be, rt = 2)) == 0)
+
+    df <- DataFrame(fromFile = 1L, rtime = c(1, 2, 3, 4, 1, 2, 6, 7, 9),
+                    index = 1:9)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    res <- filterRt(be, c(4, 6))
+    expect_equal(rtime(res), c(4, 6))
+    expect_equal(res@spectraData$index, c(4, 7))
+
+    res <- filterRt(be, c(4, 6), 2L)
+    expect_equal(res, be)
+
+    df$msLevel <- c(1L, 2L, 1L, 2L, 1L, 2L, 2L, 2L, 2L)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    res <- filterRt(be, c(2, 6), msLevel = 1L)
+    expect_equal(rtime(res), c(2, 3, 4, 2, 6, 7, 9))
+
+
+    df$rtime <- NULL
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    res <- filterRt(be, c(2, 6), msLevel = 1L)
+    expect_equal(res, filterMsLevel(be, 2L))
+
+    res <- filterRt(be, c(2, 6))
+    expect_true(length(res) == 0)
+})

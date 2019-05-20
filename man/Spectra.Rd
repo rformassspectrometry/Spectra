@@ -51,6 +51,7 @@
 \alias{filterMsLevel,Spectra-method}
 \alias{filterPolarity,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
+\alias{filterRt,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \alias{clean,Spectra-method}
 \title{The Spectra class to manage and access MS data}
@@ -149,12 +150,15 @@
 
 \S4method{filterFile}{Spectra}(object, file = integer())
 
-\S4method{filterMsLevel}{Spectra}(object, msLevel = integer())
+\S4method{filterMsLevel}{Spectra}(object, msLevel. = integer())
 
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
 
 \S4method{filterPrecursorScan}{Spectra}(object,
   acquisitionNum = integer())
+
+\S4method{filterRt}{Spectra}(object, rt = numeric(),
+  msLevel. = unique(msLevel(object)))
 
 \S4method{removePeaks}{Spectra}(object, t = "min",
   msLevel. = unique(msLevel(object)))
@@ -213,8 +217,9 @@ to filter for.}
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
 should be subsetted.}
 
-\item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
-subsetted.}
+\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
+the function should be applied. For \code{filterMsLevel}: the MS level to
+which \code{object} should be subsetted.}
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
@@ -223,15 +228,17 @@ to subset \code{object}.}
 acquisition number of the spectra to which the object should be
 subsetted.}
 
-\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
+\item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
+be used to subset/filter \code{object}.}
 
-\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
-the function should be applied. For \code{filterMsLevel}: the MS level to
-which \code{object} should be subsetted.}
+\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
 \item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
 removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
 non-zero intensity peak should be kept (\code{FALSE}).}
+
+\item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
+subsetted.}
 }
 \value{
 See individual method description for the return value.
@@ -393,6 +400,8 @@ provided polarity. Returns the subsetted \code{Spectra}.
 \item \code{filterPrecursorScan}: retain parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra}.
+\item \code{filterRt}: retain spectra of MS level \code{msLevel} with retention times
+within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
 \item \code{selectSpectraVariables}: reduce the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only

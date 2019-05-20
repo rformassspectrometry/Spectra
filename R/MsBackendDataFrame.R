@@ -416,26 +416,27 @@ setMethod("filterEmptySpectra", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("filterFile", "MsBackendDataFrame", function(object,
-                                                       file = integer()) {
-    if (length(file)) {
-        file <- .i_to_index(file, length(fileNames(object)), fileNames(object))
-        file_names <- fileNames(object)
-        object <- object[fromFile(object) %in% file]
-        if (is.unsorted(file))
-            object[order(match(fileNames(object)[fromFile(object)],
-                               file_names[file]))]
-        else object
-    } else object
-})
+setMethod("filterFile", "MsBackendDataFrame",
+          function(object, file = integer()) {
+              if (length(file)) {
+                  file <- .i_to_index(file, length(fileNames(object)),
+                                      fileNames(object))
+                  file_names <- fileNames(object)
+                  object <- object[fromFile(object) %in% file]
+                  if (is.unsorted(file))
+                      object[order(match(fileNames(object)[fromFile(object)],
+                                         file_names[file]))]
+                  else object
+              } else object
+          })
 
 #' @rdname hidden_aliases
-setMethod("filterMsLevel", "MsBackendDataFrame", function(object,
-                                                          msLevel = integer()) {
-    if (length(msLevel)) {
-        object[msLevel(object) %in% msLevel]
-    } else object
-})
+setMethod("filterMsLevel", "MsBackendDataFrame",
+          function(object, msLevel = integer()) {
+              if (length(msLevel)) {
+                  object[msLevel(object) %in% msLevel]
+              } else object
+          })
 
 #' @rdname hidden_aliases
 setMethod("filterPolarity", "MsBackendDataFrame",
@@ -452,5 +453,21 @@ setMethod("filterPrecursorScan", "MsBackendDataFrame",
                   object[.filterSpectraHierarchy(acquisitionNum(object),
                                                  precScanNum(object),
                                                  acquisitionNum)]
+              } else object
+          })
+
+#' @rdname hidden_aliases
+setMethod("filterRt", "MsBackendDataFrame",
+          function(object, rt = numeric(), msLevel = integer()) {
+              if (length(rt)) {
+                  rt <- range(rt)
+                  if (!is.numeric(rt))
+                      stop("'rt' must be a numeric")
+                  if (!length(msLevel))
+                      msLevel <- unique(msLevel(object))
+                  sel_ms <- msLevel(object) %in% msLevel
+                  sel_rt <- rtime(object) >= rt[1] &
+                      rtime(object) <= rt[2] & sel_ms
+                  object[sel_rt | !sel_ms]
               } else object
           })
