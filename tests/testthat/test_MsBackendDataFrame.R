@@ -546,3 +546,33 @@ test_that("filterPolarity,MsBackendDataFrame works", {
     expect_true(all(polarity(res) %in% c(0L, -1L)))
     expect_equal(rtime(res), c(3, 4, 6))
 })
+
+test_that("filterPrecursorScan,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterPrecursorScan(be))
+    expect_true(length(filterPrecursorScan(be, 3)) == 0)
+
+    df <- DataFrame(msLevel = c(1L, 2L, 3L, 4L, 1L, 2L, 3L),
+                    fromFile = 1L,
+                    rtime = as.numeric(1:7))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    res <- filterPrecursorScan(be, 2L)
+    expect_true(length(res) == 0)
+
+    df$acquisitionNum <- c(1L, 2L, 3L, 4L, 1L, 2L, 6L)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    res <- filterPrecursorScan(be, 2L)
+    expect_equal(acquisitionNum(res), c(2L, 2L))
+    expect_equal(rtime(res), c(2, 6))
+
+    df$precScanNum <- c(0L, 1L, 2L, 3L, 0L, 1L, 5L)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    res <- filterPrecursorScan(be, 2L)
+    expect_equal(rtime(res), 1:6)
+
+    res <- filterPrecursorScan(be, 5L)
+    expect_true(length(rtime(res)) == 0)
+
+    res <- filterAcquisitionNum(be, 6L)
+    expect_equal(rtime(res), 7)
+})

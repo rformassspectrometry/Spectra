@@ -667,3 +667,16 @@ test_that("filterPolarity,Spectra works", {
     expect_equal(rtime(res), rtime(sps))
     expect_true(length(res@processing) == 1)
 })
+
+test_that("filterPrecursorScan,Spectra works", {
+    sps <- Spectra()
+    res <- filterPrecursorScan(sps, 3)
+    expect_true(length(res) == 0)
+    expect_true(is(res, "Spectra"))
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(tmt_mzr)
+    res <- filterPrecursorScan(sps, c(1087L, 1214L))
+    expect_true(sum(msLevel(res) == 1) == 2)
+    expect_true(all(c(1087L, 1214L) %in% acquisitionNum(res)))
+})

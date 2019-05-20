@@ -99,3 +99,26 @@ test_that("utils.enableNeighbours works", {
     expect_equal(MSnbase:::utils.enableNeighbours(c(FALSE, TRUE, FALSE, FALSE)),
                  c(rep(TRUE, 3), FALSE))
 })
+
+test_that(".filterSpectraHierarchy works", {
+    msLevel <- c(1, 1, 2, 2, 2, 3, 3, 3, 4, 4)
+    acquisitionNum <- 1:10
+    precursorScanNum <- c(0, 0, 200, 2, 2, 4, 4, 5, 6, 20)
+
+    expect_error(.filterSpectraHierarchy(1:3, 2, 1), "have to be the same")
+
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 1)), 1)
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 2)), c(2, 4:9))
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 1:2)), c(1:2, 4:9))
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 8)), c(2, 5, 8))
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 9)), c(2, 4, 6, 9))
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 10)), 10)
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 11)), integer())
+})

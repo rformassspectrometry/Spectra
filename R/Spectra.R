@@ -186,6 +186,10 @@ NULL
 #' - `filterPolarity`: filter the object keeping only spectra matching the
 #'   provided polarity. Returns the subsetted `Spectra`.
 #'
+#' - `filterPrecursorScan`: retain parent (e.g. MS1) and children scans (e.g.
+#'    MS2) of acquisition number `acquisitionNum`. Returns the filtered
+#'    `Spectra`.
+#'
 #' - `selectSpectraVariables`: reduce the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
@@ -220,6 +224,10 @@ NULL
 #' @param all for `clean`: `logical(1)` whether all 0 intensity peaks should be
 #'     removed (`TRUE`) or whether 0-intensity peaks directly adjacent to a
 #'     non-zero intensity peak should be kept (`FALSE`).
+#'
+#' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
+#'     acquisition number of the spectra to which the object should be
+#'     subsetted.
 #'
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
 #'     section on creation of `Spectra` objects for details.
@@ -781,6 +789,19 @@ setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
                                   " [", date(), "]"))
     object
 })
+
+#' @rdname Spectra
+setMethod("filterPrecursorScan", "Spectra",
+          function(object, acquisitionNum= integer()) {
+              object@backend <- filterPrecursorScan(object@backend,
+                                                    acquisitionNum)
+              object@processing <- c(
+                  object@processing,
+                  paste0("Filter: select parent/children scans for ",
+                         paste0(acquisitionNum, collapse = " "),
+                         " [", date(), "]"))
+              object
+          })
 
 #### ---------------------------------------------------------------------------
 ##

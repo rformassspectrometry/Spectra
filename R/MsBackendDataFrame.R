@@ -444,3 +444,13 @@ setMethod("filterPolarity", "MsBackendDataFrame",
                   object[polarity(object) %in% polarity]
               else object
           })
+
+#' @rdname hidden_aliases
+setMethod("filterPrecursorScan", "MsBackendDataFrame",
+          function(object, acquisitionNum = integer()) {
+              if (length(acquisitionNum)) {
+                  object[.filterSpectraHierarchy(acquisitionNum(object),
+                                                 precScanNum(object),
+                                                 acquisitionNum)]
+              } else object
+          })
