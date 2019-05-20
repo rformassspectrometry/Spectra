@@ -647,6 +647,23 @@ test_that("filterFile,Spectra works", {
     expect_equal(peaks(res), peaks(sps)[fromFile(sps) == 2])
 })
 
+test_that("filterIsolationWindow,Spectra works", {
+    sps <- Spectra()
+    res <- filterIsolationWindow(sps)
+    expect_true(is(res, "Spectra"))
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(sciex_mzr)
+    res <- filterIsolationWindow(sps, 123.323)
+    expect_true(length(res) == 0)
+
+    res <- filterIsolationWindow(sps, 544)
+    expect_true(length(res) == 3)
+    expect_true(all(isolationWindowLowerMz(res) < 544))
+    expect_true(all(isolationWindowUpperMz(res) > 544))
+    expect_true(all(precursorMz(res) < 545 & precursorMz(res) > 543))
+})
+
 test_that("filterMsLevel,Spectra works", {
     sps <- Spectra()
     res <- filterMsLevel(sps)
@@ -682,6 +699,19 @@ test_that("filterPolarity,Spectra works", {
     expect_true(all(polarity(res) == 1))
     expect_equal(rtime(res), rtime(sps))
     expect_true(length(res@processing) == 1)
+})
+
+test_that("filterPrecursorMz,Spectra works", {
+    sps <- Spectra()
+    res <- filterPrecursorMz(sps)
+    expect_true(is(res, "Spectra"))
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(tmt_mzr)
+    res <- filterPrecursorMz(sps, mz = 544.75)
+    expect_true(length(res) == 0)
+    res <- filterPrecursorMz(sps, mz = 544.75, ppm = 40)
+    expect_true(length(res) == 2)
 })
 
 test_that("filterPrecursorScan,Spectra works", {

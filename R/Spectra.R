@@ -188,12 +188,21 @@ NULL
 #' - `filterFile`: retain data of files matching the file index or file name
 #'    provided with parameter `file`. Returns the filtered `Spectra`.
 #'
+#' - `filterIsolationWindow`: retain spectra that contain `mz` in their
+#'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
+#'   and `isolationWindowUpperMz` >= `mz`.
+#'
 #' - `filterMsLevel`: filter object by MS level keeping only spectra matching
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra`.
 #'
 #' - `filterPolarity`: filter the object keeping only spectra matching the
 #'   provided polarity. Returns the subsetted `Spectra`.
+#'
+#' - `filterPrecursorMz`: retain spectra with an m/z matching the provided `mz`
+#'   accepting also a small difference in m/z which can be defined by parameter
+#'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
+#'   m/z identical to `mz` are retained.
 #'
 #' - `filterPrecursorScan`: retain parent (e.g. MS1) and children scans (e.g.
 #'    MS2) of acquisition number `acquisitionNum`. Returns the filtered
@@ -281,12 +290,19 @@ NULL
 #'     the function should be applied. For `filterMsLevel`: the MS level to
 #'     which `object` should be subsetted.
 #'
+#' @param mz For `filterIsolationWindow` and `filterPrecursorMz`: `numeric(1)`
+#'     with the m/z value to filter the object.
+#'
 #' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
 #'     on creation of `Spectra` objects for details. For all other methods a
 #'     `Spectra` object.
 #'
 #' @param polarity for `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
+#'
+#' @param ppm For `filterPrecursorMz`: `numeric(1)` defining the accepted
+#'     difference between the provided m/z and the spectrum's m/z in parts per
+#'     million.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -819,6 +835,16 @@ setMethod("filterFile", "Spectra", function(object, file = integer()) {
 })
 
 #' @rdname Spectra
+setMethod("filterIsolationWindow", "Spectra", function(object, mz = numeric()) {
+    object@backend <- filterIsolationWindow(object@backend, mz = mz)
+    object@processing <- c(object@processing,
+                           paste0("Filter: select spectra containing m/z ",
+                                  mz, " in their isolation window [",
+                                  date(), "]"))
+    object
+})
+
+#' @rdname Spectra
 setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
     object@backend <- filterMsLevel(object@backend, msLevel = msLevel.)
     object@processing <- c(object@processing,
@@ -837,6 +863,18 @@ setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
                                   " [", date(), "]"))
     object
 })
+
+#' @rdname Spectra
+setMethod("filterPrecursorMz", "Spectra",
+          function(object, mz = numeric(), ppm = 0) {
+              object@backend <- filterPrecursorMz(object@backend, mz, ppm)
+              object@processing <- c(
+                  object@processing,
+                  paste0("Filter: select spectra with a precursor m/z of ",
+                         mz, " accepting ", ppm, " ppm difference [",
+                         date(), "]"))
+              object
+          })
 
 #' @rdname Spectra
 setMethod("filterPrecursorScan", "Spectra",

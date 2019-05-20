@@ -54,8 +54,10 @@
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterFile,Spectra-method}
+\alias{filterIsolationWindow,Spectra-method}
 \alias{filterMsLevel,Spectra-method}
 \alias{filterPolarity,Spectra-method}
+\alias{filterPrecursorMz,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
 \alias{removePeaks,Spectra-method}
@@ -168,9 +170,13 @@
 
 \S4method{filterFile}{Spectra}(object, file = integer())
 
+\S4method{filterIsolationWindow}{Spectra}(object, mz = numeric())
+
 \S4method{filterMsLevel}{Spectra}(object, msLevel. = integer())
 
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
+
+\S4method{filterPrecursorMz}{Spectra}(object, mz = numeric(), ppm = 0)
 
 \S4method{filterPrecursorScan}{Spectra}(object,
   acquisitionNum = integer())
@@ -235,12 +241,19 @@ to filter for.}
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
 should be subsetted.}
 
+\item{mz}{For \code{filterIsolationWindow} and \code{filterPrecursorMz}: \code{numeric(1)}
+with the m/z value to filter the object.}
+
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied. For \code{filterMsLevel}: the MS level to
 which \code{object} should be subsetted.}
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
+
+\item{ppm}{For \code{filterPrecursorMz}: \code{numeric(1)} defining the accepted
+difference between the provided m/z and the spectrum's m/z in parts per
+million.}
 
 \item{acquisitionNum}{for \code{filterPrecursorScan}: \code{integer} with the
 acquisition number of the spectra to which the object should be
@@ -416,11 +429,18 @@ specified with \code{file}). Returns the filtered \code{Spectra}.
 \item \code{filterEmptySpectra}: remove empty spectra (i.e. spectra without peaks).
 \item \code{filterFile}: retain data of files matching the file index or file name
 provided with parameter \code{file}. Returns the filtered \code{Spectra}.
+\item \code{filterIsolationWindow}: retain spectra that contain \code{mz} in their
+isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} <= \code{mz}
+and \code{isolationWindowUpperMz} >= \code{mz}.
 \item \code{filterMsLevel}: filter object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra}.
 \item \code{filterPolarity}: filter the object keeping only spectra matching the
 provided polarity. Returns the subsetted \code{Spectra}.
+\item \code{filterPrecursorMz}: retain spectra with an m/z matching the provided \code{mz}
+accepting also a small difference in m/z which can be defined by parameter
+\code{ppm} (parts per million). With the default (\code{ppm = 0}) only spectra with
+m/z identical to \code{mz} are retained.
 \item \code{filterPrecursorScan}: retain parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra}.
