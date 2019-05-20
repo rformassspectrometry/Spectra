@@ -485,6 +485,19 @@ setMethod("filterFile", "MsBackendDataFrame",
           })
 
 #' @rdname hidden_aliases
+setMethod("filterIsolationWindow", "MsBackendDataFrame", {
+    function(object, mz = numeric(), ...) {
+        if (length(mz)) {
+            if (length(mz) > 1)
+                stop("'mz' is expected to be a single m/z value", call. = FALSE)
+            keep <- which(isolationWindowLowerMz(object) <= mz &
+                          isolationWindowUpperMz(object) >= mz)
+            object[keep]
+        } else object
+    }
+})
+
+#' @rdname hidden_aliases
 setMethod("filterMsLevel", "MsBackendDataFrame",
           function(object, msLevel = integer()) {
               if (length(msLevel)) {
@@ -498,6 +511,20 @@ setMethod("filterPolarity", "MsBackendDataFrame",
               if (length(polarity))
                   object[polarity(object) %in% polarity]
               else object
+          })
+
+#' @rdname hidden_aliases
+setMethod("filterPrecursorMz", "MsBackendDataFrame",
+          function(object, mz = numeric(), ppm = 0) {
+              if (length(mz)) {
+                  if (length(mz) > 1)
+                      stop("'mz' is expected to be a single m/z value",
+                           call. = FALSE)
+                  mz_ppm <- ppm * mz / 1e6
+                  keep <- which(precursorMz(object) >= (mz - mz_ppm) &
+                                precursorMz(object) <= (mz + mz_ppm))
+                  object[keep]
+              } else object
           })
 
 #' @rdname hidden_aliases

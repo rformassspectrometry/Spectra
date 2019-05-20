@@ -570,6 +570,26 @@ test_that("filterFile,MsBackendDataFrame works", {
     expect_equal(res, be)
 })
 
+test_that("filterIsolationWindow,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterIsolationWindow(be))
+
+    df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L, 2L, 2L, 2L, 2L),
+                    rtime = as.numeric(1:6))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    expect_error(filterIsolationWindow(be, c(1.2, 1.3)), "single m/z value")
+    res <- filterIsolationWindow(be, 1.2)
+    expect_true(length(res) == 0)
+
+    df$isolationWindowLowerMz <- c(NA_real_, 1.2, 2.1, 3.1, 3, 3.4)
+    df$isolationWindowUpperMz <- c(NA_real_, 2.2, 3.2, 4.1, 4, 4.4)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    res <- filterIsolationWindow(be, 3)
+    expect_equal(rtime(res), c(3, 5))
+})
+
 test_that("filterMsLevel,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(be, filterMsLevel(be))
@@ -602,6 +622,29 @@ test_that("filterPolarity,MsBackendDataFrame works", {
     res <- filterPolarity(be, c(0L, -1L))
     expect_true(all(polarity(res) %in% c(0L, -1L)))
     expect_equal(rtime(res), c(3, 4, 6))
+})
+
+test_that("filterPrecursorMz,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterPrecursorMz(be))
+
+    df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L, 2L, 2L),
+                    rtime = as.numeric(1:4))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    res <- filterPrecursorMz(be, 1.4)
+    expect_true(length(res) == 0)
+
+    df$precursorMz <- c(NA_real_, 4.43, 4.4312, 5.4)
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+
+    res <- filterPrecursorMz(be, 5.4)
+    expect_equal(rtime(res), 4)
+
+    res <- filterPrecursorMz(be, 4.4311)
+    expect_true(length(res) == 0)
+
+    res <- filterPrecursorMz(be, 4.4311, ppm = 50)
+    expect_equal(rtime(res), 3)
 })
 
 test_that("filterPrecursorScan,MsBackendDataFrame works", {

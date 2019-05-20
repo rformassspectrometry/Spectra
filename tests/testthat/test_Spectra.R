@@ -591,36 +591,6 @@ test_that("[,Spectra works", {
     expect_equal(rtime(tmp), rtime(sps)[fromFile(sps) == 2])
 })
 
-#### ---------------------------------------------------------------------------
-##
-##                      DATA MANIPULATION METHODS
-##
-#### ---------------------------------------------------------------------------
-
-test_that("clean,Spectra works", {
-    sps <- Spectra()
-    res <- clean(sps)
-    expect_true(length(res@processingQueue) == 1)
-    expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.clean_peaks,
-                                list(all = FALSE, msLevel = integer())))
-
-    res <- clean(sps, all = TRUE, msLevel = 2L)
-    expect_true(length(res@processingQueue) == 1)
-    expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.clean_peaks,
-                                list(all = TRUE, msLevel = 2L)))
-})
-
-test_that("removePeaks,Spectra works", {
-    sps <- Spectra()
-    res <- removePeaks(sps, t = 10)
-    expect_true(length(res@processingQueue) == 1)
-    expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.remove_peaks,
-                                list(t = 10, msLevel = integer())))
-})
-
 test_that("filterAcquisitionNum,Spectra works", {
     sps <- Spectra()
     res <- filterAcquisitionNum(sps, n = 3L)
@@ -740,4 +710,34 @@ test_that("filterRt,Spectra works", {
 
     res <- filterRt(sps, rt = c(100, 120), msLevel = 2L)
     expect_equal(rtime(res), rtime(sps))
+})
+
+#### ---------------------------------------------------------------------------
+##
+##                      DATA MANIPULATION METHODS
+##
+#### ---------------------------------------------------------------------------
+
+test_that("clean,Spectra works", {
+    sps <- Spectra()
+    res <- clean(sps)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.clean_peaks,
+                                list(all = FALSE, msLevel = integer())))
+
+    res <- clean(sps, all = TRUE, msLevel = 2L)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.clean_peaks,
+                                list(all = TRUE, msLevel = 2L)))
+})
+
+test_that("removePeaks,Spectra works", {
+    sps <- Spectra()
+    res <- removePeaks(sps, t = 10)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.remove_peaks,
+                                list(t = 10, msLevel = integer())))
 })

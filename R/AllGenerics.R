@@ -20,11 +20,17 @@ setGeneric("filterEmptySpectra", function(object, ...)
 #' @rdname hidden_aliases
 setGeneric("filterFile", function(object, ...) standardGeneric("filterFile"))
 #' @rdname hidden_aliases
+setGeneric("filterIsolationWindow", function(object, ...)
+    standardGeneric("filterIsolationWindow"))
+#' @rdname hidden_aliases
 setGeneric("filterMsLevel", function(object, ...)
     standardGeneric("filterMsLevel"))
 #' @rdname hidden_aliases
 setGeneric("filterPolarity", function(object, ...)
     standardGeneric("filterPolarity"))
+#' @rdname hidden_aliases
+setGeneric("filterPrecursorMz", function(object, ...)
+    standardGeneric("filterPrecursorMz"))
 #' @rdname hidden_aliases
 setGeneric("filterPrecursorScan", function(object, ...)
     standardGeneric("filterPrecursorScan"))

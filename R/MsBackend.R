@@ -67,6 +67,9 @@ NULL
 #'     function should be applied. For `filterMsLevel`: the MS level to which
 #'     `object` should be subsetted.
 #'
+#' @param mz For `filterIsolationWindow` and `filterPrecursorMz`: `numeric(1)`
+#'     with the m/z value to filter the object.
+#'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
 #'
@@ -75,8 +78,12 @@ NULL
 #'
 #' @param object Object extending `MsBackend`.
 #'
-#' @param polarity for `filterPolarity`: `integer` specifying the polarity to
+#' @param polarity For `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
+#'
+#' @param ppm For `filterPrecursorMz`: `numeric(1)` defining the accepted
+#'     difference between the provided m/z and the spectrum's m/z in parts per
+#'     million.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
@@ -145,9 +152,18 @@ NULL
 #' - `filterFile`: retain data of files matching the file index or file name
 #'    provided with parameter `file`.
 #'
+#' - `filterIsolationWindow`: retain spectra that contain `mz` in their
+#'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
+#'   and `isolationWindowUpperMz` >= `mz`.
+#'
 #' - `filterMsLevel`: retain spectra of MS level `msLevel`.
 #'
 #' - `filterPolarity`: retain spectra of polarity `polarity`.
+#'
+#' - `filterPrecursorMz`: retain spectra with an m/z matching the provided `mz`
+#'   accepting also a small difference in m/z which can be defined by parameter
+#'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
+#'   m/z identical to `mz` are retained.
 #'
 #' - `filterPrecursorScan`: retain parent (e.g. MS1) and children scans (e.g.
 #'    MS2) of acquisition number `acquisitionNum`.
@@ -437,6 +453,13 @@ setMethod("filterFile", "MsBackend", function(object, file, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @exportMethod filterIsolationWindow
+#'
+#' @rdname MsBackend
+setMethod("filterIsolationWindow", "MsBackend", function(object, mz, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
 #' @exportMethod filterMsLevel
 #'
 #' @rdname MsBackend
@@ -448,6 +471,13 @@ setMethod("filterMsLevel", "MsBackend", function(object, msLevel) {
 #'
 #' @rdname MsBackend
 setMethod("filterPolarity", "MsBackend", function(object, polarity) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterPrecursorMz
+#'
+#' @rdname MsBackend
+setMethod("filterPrecursorMz", "MsBackend", function(object, mz, ppm) {
     stop("Not implemented for ", class(object), ".")
 })
 

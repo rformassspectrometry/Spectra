@@ -11,8 +11,10 @@
 \alias{filterAcquisitionNum}
 \alias{filterEmptySpectra}
 \alias{filterFile}
+\alias{filterIsolationWindow}
 \alias{filterMsLevel}
 \alias{filterPolarity}
+\alias{filterPrecursorMz}
 \alias{filterPrecursorScan}
 \alias{filterRt}
 \alias{fromFile}
@@ -68,8 +70,10 @@
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
 \alias{filterEmptySpectra,MsBackendDataFrame-method}
 \alias{filterFile,MsBackendDataFrame-method}
+\alias{filterIsolationWindow,MsBackendDataFrame-method}
 \alias{filterMsLevel,MsBackendDataFrame-method}
 \alias{filterPolarity,MsBackendDataFrame-method}
+\alias{filterPrecursorMz,MsBackendDataFrame-method}
 \alias{filterPrecursorScan,MsBackendDataFrame-method}
 \alias{filterRt,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendMzR-method}
@@ -129,9 +133,13 @@ filterEmptySpectra(object, ...)
 
 filterFile(object, ...)
 
+filterIsolationWindow(object, ...)
+
 filterMsLevel(object, ...)
 
 filterPolarity(object, ...)
+
+filterPrecursorMz(object, ...)
 
 filterPrecursorScan(object, ...)
 
@@ -247,10 +255,16 @@ selectSpectraVariables(object, ...)
 
 \S4method{filterFile}{MsBackendDataFrame}(object, file = integer())
 
+\S4method{filterIsolationWindow}{MsBackendDataFrame}(object,
+  mz = numeric(), ...)
+
 \S4method{filterMsLevel}{MsBackendDataFrame}(object, msLevel = integer())
 
 \S4method{filterPolarity}{MsBackendDataFrame}(object,
   polarity = integer())
+
+\S4method{filterPrecursorMz}{MsBackendDataFrame}(object, mz = numeric(),
+  ppm = 0)
 
 \S4method{filterPrecursorScan}{MsBackendDataFrame}(object,
   acquisitionNum = integer())
