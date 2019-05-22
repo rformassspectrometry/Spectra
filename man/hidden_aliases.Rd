@@ -24,6 +24,7 @@
 \alias{peaksCount}
 \alias{removePeaks}
 \alias{selectSpectraVariables}
+\alias{setBackend}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{backendMerge,MsBackendDataFrame-method}
@@ -160,6 +161,8 @@ peaksCount(object, ...)
 removePeaks(object, t = "min", ...)
 
 selectSpectraVariables(object, ...)
+
+setBackend(object, backend, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 

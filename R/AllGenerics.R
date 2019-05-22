@@ -58,4 +58,7 @@ setGeneric("removePeaks", function(object, t="min", ...)
 #' @rdname hidden_aliases
 setGeneric("selectSpectraVariables", function(object, ...)
     standardGeneric("selectSpectraVariables"))
+#' @rdname hidden_aliases
+setGeneric("setBackend", function(object, backend, ...)
+    standardGeneric("setBackend"))
 setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))

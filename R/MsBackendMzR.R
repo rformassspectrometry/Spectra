@@ -28,6 +28,11 @@ setClass("MsBackendMzR",
 setValidity("MsBackendMzR", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,
                                                 c("fromFile", "scanIndex"))
+    if (!all(file.exists(object@files)))
+        msg <- c(msg,
+                 paste0("File(s) ",
+                        paste(object@files[!file.exists(object@files)]),
+                        " not found"))
     if (length(msg)) msg
     else TRUE
 })
@@ -44,19 +49,28 @@ setMethod("backendInitialize", "MsBackendMzR",
               if (missing(files) || !length(files))
                   stop("Parameter 'files' is mandatory for 'MsBackendMzR'")
               files <- normalizePath(files)
+              if (!all(file.exists(files)))
+                  stop("File(s) ", paste(files[!file.exists(files)]),
+                       " not found")
               msg <- .valid_ms_backend_files(files)
               if (length(msg))
                   stop(msg)
-              spectraData <- do.call(
-                  rbind, bpmapply(files, seq_along(files),
-                                  FUN = function(fl, index) {
-                                      cbind(Spectra:::.mzR_header(fl),
-                                            fromFile = index)
-                                  }))
+              if (!missing(spectraData)) {
+                  spectraData$mz <- NULL
+                  spectraData$intensity <- NULL
+              } else {
+                  spectraData <- do.call(
+                      rbind, bpmapply(files, seq_along(files),
+                                      FUN = function(fl, index) {
+                                          cbind(Spectra:::.mzR_header(fl),
+                                                fromFile = index)
+                                      }))
+              }
               callNextMethod(object = object, files = files,
                              spectraData = .as_rle_spectra_data(spectraData),
                              ...)
           })
+
 #' @rdname hidden_aliases
 setMethod("backendMerge", "MsBackendMzR", function(object, ...) {
     res <- callNextMethod()

@@ -8,6 +8,7 @@
 \alias{Spectra,DataFrame-method}
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
+\alias{setBackend,Spectra,MsBackend-method}
 \alias{acquisitionNum,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
@@ -73,6 +74,9 @@
 
 \S4method{Spectra}{MsBackend}(object, processingQueue = list(),
   metadata = list(), ..., BPPARAM = bpparam())
+
+\S4method{setBackend}{Spectra,MsBackend}(object, backend,
+  f = fromFile(object), ..., BPPARAM = bpparam())
 
 \S4method{acquisitionNum}{Spectra}(object)
 
@@ -202,11 +206,16 @@ on creation of \code{Spectra} objects for details. For all other methods a
 \item{...}{Additional arguments.}
 
 \item{backend}{For \code{Spectra}: \linkS4class{MsBackend} to be used as backend. See
-section on creation of \code{Spectra} objects for details.}
+section on creation of \code{Spectra} objects for details. For \code{setBackend}:
+instance of \linkS4class{MsBackend}. See section on creation of \code{Spectra}
+objects for details.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
 of the \linkS4class{MsBackend}.}
+
+\item{f}{For \code{setBackend}: factor defining how to split the data should
+for the parallelized copying of the spectra data to the new backend.}
 
 \item{value}{replacement value for \code{<-} methods. See individual
 method description or expected data type.}
@@ -303,8 +312,35 @@ argument.
 }
 
 \code{Spectra} classes are usually created with the \code{readSpectra}
-function that reads general spectrum metadata information from the  mass
+function that reads general spectrum metadata information from the mass
 spectrometry data files.
+
+The backend of a \code{Spectra} object can be changed with the \code{setBackend}
+method that takes an instance of the new backend as second parameter
+\code{backend}. A call to \code{setBackend(sps, backend = MsBackendDataFrame())} would
+for example change the backend to the \emph{in-memory} \code{MsBackendDataFrame}.
+Note that it might not be possible to change from any backend to any other
+backend. Changing from a \code{MsBackendDataFrame} to a \code{MsBackendMzR} would only
+be possible if the original \code{MsBackendDataFrame} was generated on data from
+e.g. mzML files and if these original file names are set in the backend
+(slot \code{@files}). In contrast, it should be possible to convert almost every
+backend into a \code{MsBackendDataFrame} (given sufficient memory is available).
+
+The definition of the function is:
+\code{setBackend(object, backend, ..., f = fromFile(object), BPPARAM = bpparam())}
+and its parameters are:
+\itemize{
+\item parameter \code{object}: the \code{Spectra} object.
+\item parameter \code{backend}: an instance of the new backend, e.g.
+\code{MsBackendDataFrame()}.
+\item parameter \code{f}: factor allowing to parallelize the change of the backends.
+By default the process of copying the spectra data from the original to the
+new backend is performed separately (and in parallel) for each file.
+\item parameter \code{...}: optional additional arguments passed to the
+\code{\link[=backendInitialize]{backendInitialize()}} method of the new \code{backend}.
+\item parameter \code{BPPARAM}: setup for the parallel processing. See \code{\link[=bpparam]{bpparam()}} for
+details.
+}
 }
 
 \section{Accessing spectra data}{
@@ -488,6 +524,22 @@ spd$intensity <- list(c(200, 400, 34.2, 17), c(12.3, 15.2, 6.8))
 
 data <- Spectra(spd)
 data
+
+## Create a Spectra from a mzML file.
+sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
+sciex <- Spectra(sciex_mzr)
+sciex
+
+## The MS data is on-disk and will be read into memory on-demand. We can
+## however change the backend to a MsBackendDataFrame backend which will
+## keep all of the data in memory.
+sciex_im <- setBackend(sciex, MsBackendDataFrame())
+sciex_im
+
+## The size of the objects will obviously be different
+object.size(sciex)
+object.size(sciex_im)
 
 ## ---- ACCESSING AND ADDING DATA ----
 

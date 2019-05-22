@@ -39,8 +39,38 @@ NULL
 #'   argument.
 #'
 #' `Spectra` classes are usually created with the `readSpectra`
-#' function that reads general spectrum metadata information from the  mass
+#' function that reads general spectrum metadata information from the mass
 #' spectrometry data files.
+#'
+#' The backend of a `Spectra` object can be changed with the `setBackend`
+#' method that takes an instance of the new backend as second parameter
+#' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())` would
+#' for example change the backend to the *in-memory* `MsBackendDataFrame`.
+#' Note that it might not be possible to change from any backend to any other
+#' backend. Changing from a `MsBackendDataFrame` to a `MsBackendMzR` would only
+#' be possible if the original `MsBackendDataFrame` was generated on data from
+#' e.g. mzML files and if these original file names are set in the backend
+#' (slot `@files`). In contrast, it should be possible to convert almost every
+#' backend into a `MsBackendDataFrame` (given sufficient memory is available).
+#'
+#' The definition of the function is:
+#' `setBackend(object, backend, ..., f = fromFile(object), BPPARAM = bpparam())`
+#' and its parameters are:
+#'
+#' - parameter `object`: the `Spectra` object.
+#'
+#' - parameter `backend`: an instance of the new backend, e.g.
+#'   `MsBackendDataFrame()`.
+#'
+#' - parameter `f`: factor allowing to parallelize the change of the backends.
+#'   By default the process of copying the spectra data from the original to the
+#'   new backend is performed separately (and in parallel) for each file.
+#'
+#' - parameter `...`: optional additional arguments passed to the
+#'   [backendInitialize()] method of the new `backend`.
+#'
+#' - parameter `BPPARAM`: setup for the parallel processing. See [bpparam()] for
+#'   details.
 #'
 #' @section Accessing spectra data:
 #'
@@ -251,7 +281,9 @@ NULL
 #'     subsetted.
 #'
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
-#'     section on creation of `Spectra` objects for details.
+#'     section on creation of `Spectra` objects for details. For `setBackend`:
+#'     instance of [MsBackend-class]. See section on creation of `Spectra`
+#'     objects for details.
 #'
 #' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
 #'     information. This is passed directly to the [backendInitialize()] method
@@ -262,6 +294,9 @@ NULL
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
 #' @param drop For `[`: not considered.
+#'
+#' @param f For `setBackend`: factor defining how to split the data should
+#'     for the parallelized copying of the spectra data to the new backend.
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
 #'     should be subsetted.
@@ -340,6 +375,22 @@ NULL
 #'
 #' data <- Spectra(spd)
 #' data
+#'
+#' ## Create a Spectra from a mzML file.
+#' sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+#' sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
+#' sciex <- Spectra(sciex_mzr)
+#' sciex
+#'
+#' ## The MS data is on-disk and will be read into memory on-demand. We can
+#' ## however change the backend to a MsBackendDataFrame backend which will
+#' ## keep all of the data in memory.
+#' sciex_im <- setBackend(sciex, MsBackendDataFrame())
+#' sciex_im
+#'
+#' ## The size of the objects will obviously be different
+#' object.size(sciex)
+#' object.size(sciex_im)
 #'
 #' ## ---- ACCESSING AND ADDING DATA ----
 #'
@@ -524,17 +575,32 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
         backend = object)
 })
 
-## #' @rdname Spectra
-## #'
-## #' @note
-## #'
-## #' use a setAs to convert from one backend to another keeping/lifting over
-## #' required data. The standard implementation simply copies over the slot
-## #' values.
-## setMethod("setBackend", c("Spectra", "MsBackend"),
-##           function(object, backend, ..., BPPARAM = bpparam()) {
-
-##           })
+#' @rdname Spectra
+#'
+#' @exportMethod setBackend
+setMethod("setBackend", c("Spectra", "MsBackend"),
+          function(object, backend, f = fromFile(object), ...,
+                   BPPARAM = bpparam()) {
+              f <- factor(f, levels = unique(f))
+              if (length(f) != length(object))
+                  stop("length of 'f' has to match the length of 'object'")
+              bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
+                  if (isReadOnly(backend) && any(z@modCount))
+                      stop(class(backend), " backends are read-only but the ",
+                           "original data appears to be modified")
+                  res <- backendInitialize(backend, files = z@files,
+                                           spectraData = spectraData(z),
+                                           ...)
+                  res@modCount <- z@modCount
+                  res
+              }, ..., BPPARAM = BPPARAM)
+              bknds <- backendMerge(bknds)
+              if (is.unsorted(f))
+                  bknds <- bknds[order(unlist(split(seq_along(bknds), f),
+                                              use.names = FALSE))]
+              object@backend <- bknds
+              object
+          })
 
 #### ---------------------------------------------------------------------------
 ##

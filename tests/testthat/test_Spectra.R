@@ -25,6 +25,54 @@ test_that("Spectra,missing works", {
     expect_identical(msLevel(res), c(1L, 2L))
 })
 
+test_that("setBackend,Spectra works", {
+    df <- DataFrame(fromFile = 1L, rtime = as.numeric(1:9),
+                    fact = c(2L, 1L, 2L, 1L, 3L, 2L, 3L, 3L, 1L))
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    sps <- Spectra(be)
+    res <- setBackend(sps, MsBackendDataFrame())
+    expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
+    expect_identical(sps@backend@spectraData$fact,
+                     res@backend@spectraData$fact)
+    expect_identical(fromFile(res), fromFile(sps))
+    expect_identical(fileNames(res), fileNames(sps))
+    expect_identical(rtime(res), rtime(sps))
+
+    ## Use a different factor.
+    res <- setBackend(sps, MsBackendDataFrame(), f = df$fact)
+    expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
+    expect_identical(sps@backend@spectraData$fact,
+                     res@backend@spectraData$fact)
+    expect_identical(fromFile(res), fromFile(sps))
+    expect_identical(fileNames(res), fileNames(sps))
+    expect_identical(rtime(res), rtime(sps))
+
+    ## switch from mzR to DataFrame
+    sps <- Spectra(sciex_mzr)
+    res <- setBackend(sps, MsBackendDataFrame())
+    expect_identical(fileNames(sps), fileNames(res))
+    expect_identical(rtime(sps), rtime(res))
+    expect_identical(fromFile(sps), fromFile(res))
+    expect_identical(mz(sps), mz(res))
+    expect_true(is.integer(res@backend@spectraData$msLevel))
+    expect_true(is(sps@backend@spectraData$msLevel, "Rle"))
+
+    ## switch back to mzR
+    res2 <- setBackend(res, MsBackendMzR())
+    expect_equal(rtime(res2), rtime(sps))
+    expect_equal(msLevel(res2), msLevel(sps))
+    expect_equal(intensity(res2), intensity(res))
+    expect_true(is(res2@backend@spectraData$msLevel, "Rle"))
+
+    ## errors:
+    ## DataFrame without files to mzR
+    expect_error(setBackend(Spectra(be), MsBackendMzR()))
+
+    ## DataFrame with modCount > 0 to mzR
+    res@backend@modCount <- c(0L, 2L)
+    expect_error(setBackend(res, MsBackendMzR(), BPPARAM = SerialParam()))
+})
+
 test_that("acquisitionNum,Spectra works", {
     sps <- Spectra()
     res <- acquisitionNum(sps)
