@@ -524,6 +524,18 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
         backend = object)
 })
 
+## #' @rdname Spectra
+## #'
+## #' @note
+## #'
+## #' use a setAs to convert from one backend to another keeping/lifting over
+## #' required data. The standard implementation simply copies over the slot
+## #' values.
+## setMethod("setBackend", c("Spectra", "MsBackend"),
+##           function(object, backend, ..., BPPARAM = bpparam()) {
+
+##           })
+
 #### ---------------------------------------------------------------------------
 ##
 ##                          ACCESSOR METHODS

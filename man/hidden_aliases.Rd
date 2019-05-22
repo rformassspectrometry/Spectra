@@ -6,6 +6,7 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{backendInitialize}
+\alias{backendMerge}
 \alias{clean}
 \alias{fileNames}
 \alias{filterAcquisitionNum}
@@ -25,6 +26,7 @@
 \alias{selectSpectraVariables}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendDataFrame-method}
+\alias{backendMerge,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
 \alias{centroided,MsBackendDataFrame-method}
 \alias{centroided<-,MsBackendDataFrame-method}
@@ -66,7 +68,6 @@
 \alias{tic,MsBackendDataFrame-method}
 \alias{$,MsBackendDataFrame-method}
 \alias{$<-,MsBackendDataFrame-method}
-\alias{[,MsBackendDataFrame,ANY-method}
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
 \alias{filterEmptySpectra,MsBackendDataFrame-method}
 \alias{filterFile,MsBackendDataFrame-method}
@@ -77,6 +78,7 @@
 \alias{filterPrecursorScan,MsBackendDataFrame-method}
 \alias{filterRt,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendMzR-method}
+\alias{backendMerge,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{acquisitionNum,MsBackendMzR-method}
 \alias{centroided,MsBackendMzR-method}
@@ -123,6 +125,8 @@
 \usage{
 backendInitialize(object, files, spectraData, ...)
 
+backendMerge(object, ...)
+
 clean(object, ...)
 
 fileNames(object, ...)
@@ -161,6 +165,8 @@ selectSpectraVariables(object, ...)
 
 \S4method{backendInitialize}{MsBackendDataFrame}(object, files,
   spectraData, ...)
+
+\S4method{backendMerge}{MsBackendDataFrame}(object, ...)
 
 \S4method{acquisitionNum}{MsBackendDataFrame}(object)
 
@@ -246,7 +252,7 @@ selectSpectraVariables(object, ...)
 
 \S4method{$}{MsBackendDataFrame}(x, name) <- value
 
-\S4method{[}{MsBackendDataFrame,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
 
 \S4method{filterAcquisitionNum}{MsBackendDataFrame}(object,
   n = integer(), file = integer())
@@ -274,6 +280,8 @@ selectSpectraVariables(object, ...)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
+
+\S4method{backendMerge}{MsBackendMzR}(object, ...)
 
 \S4method{show}{MsBackendMzR}(object)
 

@@ -15,7 +15,26 @@ test_that("initializeBackend,MsBackendMzR works", {
     expect_true(isReadOnly(be))
 })
 
-test_that("acquisitionNum, MsBackendMzR works", {
+test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
+    splt <- split(sciex_mzr, fromFile(sciex_mzr))
+    res <- backendMerge(splt)
+    expect_equal(res, sciex_mzr)
+
+    res <- backendMerge(splt[2:1])
+    expect_equal(res@files, sciex_mzr@files[2:1])
+    expect_equal(rtime(res)[fromFile(res) == 2],
+                 rtime(sciex_mzr)[fromFile(sciex_mzr) == 1])
+    expect_equal(rtime(res)[fromFile(res) == 1],
+                 rtime(sciex_mzr)[fromFile(sciex_mzr) == 2])
+
+    splt[[2]]@spectraData$some_col <- "a"
+    res <- backendMerge(c(splt, tmt_mzr))
+    expect_equal(fileNames(res), c(fileNames(sciex_mzr), fileNames(tmt_mzr)))
+    expect_true(all(res@spectraData$some_col[fromFile(res) == 2] == "a"))
+    expect_true(all(is.na(res@spectraData$some_col[fromFile(res) != 2])))
+})
+
+test_that("acquisitionNum,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(acquisitionNum(be), integer())
     expect_true(is(sciex_mzr@spectraData$acquisitionNum, "integer"))

@@ -50,7 +50,6 @@
 \alias{tic,Spectra-method}
 \alias{$,Spectra-method}
 \alias{$<-,Spectra-method}
-\alias{[,Spectra,ANY-method}
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterFile,Spectra-method}
@@ -161,7 +160,7 @@
 
 \S4method{$}{Spectra}(x, name) <- value
 
-\S4method{[}{Spectra,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
 
 \S4method{filterAcquisitionNum}{Spectra}(object, n = integer(),
   file = integer())

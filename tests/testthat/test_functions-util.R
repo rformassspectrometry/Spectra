@@ -122,3 +122,42 @@ test_that(".filterSpectraHierarchy works", {
     expect_equal(which(.filterSpectraHierarchy(
         acquisitionNum, precursorScanNum, 11)), integer())
 })
+
+test_that(".rbind_fill works", {
+    ## matrix
+    a <- matrix(1:9, nrow = 3, ncol = 3)
+    colnames(a) <- c("a", "b", "c")
+    b <- matrix(1:12, nrow = 3, ncol = 4)
+    colnames(b) <- c("b", "a", "d", "e")
+    res <- .rbind_fill(a, b)
+    expect_equal(colnames(res), c("a", "b", "c", "d", "e"))
+    expect_equal(class(res), class(a))
+    expect_equal(res[, "a"], c(a[, "a"], b[, "a"]))
+    expect_equal(res[, "b"], c(a[, "b"], b[, "b"]))
+    expect_equal(res[, "d"], c(NA, NA, NA, b[, "d"]))
+
+    res <- .rbind_fill(a, b[, c("b", "a")])
+    expect_equal(colnames(res), c("a", "b", "c"))
+    expect_equal(res[, "a"], c(a[, "a"], b[, "a"]))
+
+    ## DataFrame
+    a <- DataFrame(a = 1:4, b = FALSE, c = letters[1:4])
+    b <- DataFrame(d = 1:4, b = TRUE)
+    res <- .rbind_fill(a, b)
+    expect_equal(colnames(res), c("a", "b", "c", "d"))
+    expect_equal(res$a, c(1:4, NA, NA, NA, NA))
+    expect_equal(res$b, rep(c(FALSE, TRUE), each = 4))
+
+    b$e <- Rle(1, 4)
+    res <- .rbind_fill(a, b)
+    expect_identical(res$e, Rle(c(NA_integer_, 1), c(4, 4)))
+
+    a$e <- Rle(2, 4)
+    res <- .rbind_fill(a, b)
+    expect_identical(res$e, Rle(c(2, 1), c(4, 4)))
+
+    res <- .rbind_fill(a, b, DataFrame(z = factor(1:5)))
+    expect_identical(res$z, factor(c(rep(NA, nrow(a) + nrow(b)), 1:5)))
+    expect_identical(res$a, c(1:4, rep(NA, nrow(b) + 5)))
+    expect_identical(res$b, c(rep(FALSE, nrow(a)), rep(TRUE, nrow(b)), rep(NA, 5)))
+})

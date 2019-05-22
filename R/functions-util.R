@@ -195,3 +195,47 @@ utils.enableNeighbours <- function(x) {
     }
     parents | children
 }
+
+#' @title Combine two two-dimensional arrays
+#'
+#' @importMethodsFrom S4Vectors cbind
+#'
+#' @description
+#'
+#' Combine instances of `matrix`, `data.frame` or `DataFrame` objects into a
+#' single instance adding eventually missing columns filling them with `NA`s.
+#'
+#' @param ... 2 or more: `matrix`, `data.frame` or `DataFrame`.
+#'
+#' @return The merged object.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.rbind_fill <- function(...) {
+    dots <- list(...)
+    cols_class <- lapply(dots, function(z) {
+        if (is.matrix(z)) {
+            res <- rep(class(z[, 1]), ncol(z))
+            names(res) <- colnames(z)
+        }
+        else res <- vapply(z, class, character(1))
+        res
+    })
+    cols_class <- unlist(cols_class)
+    cols_names <- unique(names(cols_class))
+    cols_class <- cols_class[cols_names]
+    res <- lapply(dots, function(z) {
+        cnz <- colnames(z)
+        mis_col <- setdiff(cols_names, cnz)
+        for (mc in mis_col) {
+            mc_class <- cols_class[mc]
+            if (mc_class == "factor")
+                z <- cbind(z, as.factor(NA))
+            else z <- cbind(z, as(NA, mc_class))
+        }
+        colnames(z) <- c(cnz, mis_col)
+        z[, cols_names]
+    })
+    do.call(rbind, res)
+}

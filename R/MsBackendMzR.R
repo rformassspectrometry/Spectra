@@ -57,6 +57,12 @@ setMethod("backendInitialize", "MsBackendMzR",
                              spectraData = .as_rle_spectra_data(spectraData),
                              ...)
           })
+#' @rdname hidden_aliases
+setMethod("backendMerge", "MsBackendMzR", function(object, ...) {
+    res <- callNextMethod()
+    res@spectraData$fromFile <- Rle(res@spectraData$fromFile)
+    res
+})
 
 #' @rdname hidden_aliases
 setMethod("show", "MsBackendMzR", function(object) {

@@ -657,6 +657,7 @@ test_that("filterIsolationWindow,Spectra works", {
     res <- filterIsolationWindow(sps, 123.323)
     expect_true(length(res) == 0)
 
+    sps <- Spectra(tmt_mzr)
     res <- filterIsolationWindow(sps, 544)
     expect_true(length(res) == 3)
     expect_true(all(isolationWindowLowerMz(res) < 544))

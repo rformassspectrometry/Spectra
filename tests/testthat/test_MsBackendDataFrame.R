@@ -14,6 +14,57 @@ test_that("backendInitialize,MsBackendDataFrame works", {
                  "'files' can not be empty")
 })
 
+test_that("backendMerge,MsBackendDataFrame works", {
+    df <- DataFrame(msLevel = c(1L, 2L, 2L), fromFile = 1L,
+                    rtime = as.numeric(1:3))
+    df2 <- DataFrame(msLevel = c(2L, 1L), fromFile = 1L,
+                     rtime = c(4.1, 5.2), scanIndex = 1:2)
+    df3 <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L,
+                     other_col = "z")
+    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
+    be2 <- backendInitialize(MsBackendDataFrame(), NA_character_, df2)
+    be3 <- backendInitialize(MsBackendDataFrame(), NA_character_, df3)
+
+    expect_equal(backendMerge(be), be)
+    expect_error(backendMerge(be, 4), "backends of the same type")
+
+    res <- backendMerge(be, be2, be3)
+    expect_true(is(res, "MsBackendDataFrame"))
+    expect_identical(res@files, NA_character_)
+    expect_identical(res@modCount, 0L)
+    expect_identical(msLevel(res), c(1L, 2L, 2L, 2L, 1L, 1L, 2L))
+    expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
+    expect_identical(res@spectraData$other_col,
+                     c(rep(NA_character_, 5), "z", "z"))
+
+    ## with multiple files
+    a <- tempfile()
+    cat("a", file = a)
+    b <- tempfile()
+    cat("b", file = b)
+    c <- tempfile()
+    cat("c", file = c)
+
+    df$fromFile <- c(1L, 1L, 2L)
+    be <- backendInitialize(MsBackendDataFrame(), c(b, a), df)
+    expect_equal(fileNames(be), c(b, a))
+    df2$fromFile <- c(1L, 2L)
+    be2 <- backendInitialize(MsBackendDataFrame(), c(a, b), df2)
+    be3 <- backendInitialize(MsBackendDataFrame(), c, df3)
+
+    res <- backendMerge(be, be2, be3)
+    expect_identical(res@files, c(b, a, c))
+    expect_identical(fromFile(res), c(1L, 1L, 2L, 2L, 1L, 3L, 3L))
+    expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
+    expect_identical(rtime(res)[fromFile(res) == 1], c(1, 2, 5.2))
+
+    ## different modCount
+    be@modCount <- c(0L, 1L)
+    be2@modCount <- c(0L, 3L)
+    res <- backendMerge(be, be2, be3)
+    expect_identical(res@modCount, c(3L, 1L, 0L))
+})
+
 test_that("acquisitionNum, MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(acquisitionNum(be), integer())

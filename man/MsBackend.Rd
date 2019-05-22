@@ -10,6 +10,8 @@
 \alias{MsBackendMzR-class}
 \alias{[,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
+\alias{backendMerge,list-method}
+\alias{backendMerge,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
 \alias{centroided,MsBackend-method}
 \alias{centroided<-,MsBackend-method}
@@ -60,7 +62,6 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{tic,MsBackend-method}
-\alias{[,MsBackend,ANY-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
 \alias{MsBackendDataFrame}
@@ -68,6 +69,10 @@
 \title{Mass spectrometry data backends}
 \usage{
 \S4method{backendInitialize}{MsBackend}(object, files, spectraData, ...)
+
+\S4method{backendMerge}{list}(object, ...)
+
+\S4method{backendMerge}{MsBackend}(object, ...)
 
 \S4method{acquisitionNum}{MsBackend}(object)
 
@@ -171,7 +176,7 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackend}(x, name)
 
@@ -296,6 +301,9 @@ supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
 for the memory backend or read the spectra header data for the
 \code{MsBackendMzR} backend).
+\item \code{backendMerge}: merge (combine) \code{MsBackend} objects into a single instance.
+All objects to be merged have to be of the same type (e.g.
+\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
 \item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -416,6 +424,29 @@ available in \code{object}.
 spectrum) for all spectra in \code{object}. By default, the value
 reported in the original raw data file is returned. For an empty
 spectrum, \code{NA_real_} is returned.
+}
+}
+
+\section{Subsetting and merging backend classes}{
+
+
+Backend classes must support (implement) the \code{[} method to subset the object.
+This method should only support subsetting by spectra (rows, \code{i}) and has
+to return a \code{MsBackend} class.
+
+Backends extending \code{MsBackend} should also implement the \code{backendMerge}
+method to support combining backend instances (only backend classes of the
+same type should be merged). Merging should follow the following rules:
+\itemize{
+\item The whole spectrum data of the various objects should be merged. The
+resulting merged object should contain the union of the individual objects'
+spectra variables (columns/fields), with eventually missing variables in
+one object being filled with \code{NA}.
+\item The \code{@files} slot of the merged object should contain the unique list of
+the individual objects' \code{@files} slot, spectra variable \code{fromFile} should
+be updated accordingly.
+\item The \code{@modCount} slot of the merged object should contain the maximal value
+from all individual object' \code{@modCount} slot for the corresponding file.
 }
 }
 

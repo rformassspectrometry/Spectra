@@ -123,6 +123,10 @@ NULL
 #'   for the memory backend or read the spectra header data for the
 #'   `MsBackendMzR` backend).
 #'
+#' - `backendMerge`: merge (combine) `MsBackend` objects into a single instance.
+#'   All objects to be merged have to be of the same type (e.g.
+#'   [MsBackendDataFrame()]).
+#'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
@@ -278,6 +282,25 @@ NULL
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `NA_real_` is returned.
 #'
+#' @section Subsetting and merging backend classes:
+#'
+#' Backend classes must support (implement) the `[` method to subset the object.
+#' This method should only support subsetting by spectra (rows, `i`) and has
+#' to return a `MsBackend` class.
+#'
+#' Backends extending `MsBackend` should also implement the `backendMerge`
+#' method to support combining backend instances (only backend classes of the
+#' same type should be merged). Merging should follow the following rules:
+#'
+#' - The whole spectrum data of the various objects should be merged. The
+#'   resulting merged object should contain the union of the individual objects'
+#'   spectra variables (columns/fields), with eventually missing variables in
+#'   one object being filled with `NA`.
+#' - The `@files` slot of the merged object should contain the unique list of
+#'   the individual objects' `@files` slot, spectra variable `fromFile` should
+#'   be updated accordingly.
+#' - The `@modCount` slot of the merged object should contain the maximal value
+#'   from all individual object' `@modCount` slot for the corresponding file.
 #'
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
@@ -379,6 +402,34 @@ setMethod("backendInitialize", signature = "MsBackend",
               validObject(object)
               object
           })
+
+## #' How could we do that on a per-file basis?
+## #' - option a
+## #'   - split the backend by file.
+## setMethod("backendCopy", signature = c("MsBackend", "MsBackend"),
+##           function(from, to, ..., BPPARAM = bpparam()) {
+##               if (isReadOnly(to) && any(from@modCount > 0))
+##                   stop("Can not convert from '", class(from), "' to '",
+##                        class(to), "' because 'to' is read-only but 'from'",
+##                        " contains modified original data.")
+##               to@files <- fileNames(from)
+##               to@modCount <- integer(length(fileNames(from)))
+##               spectraData(to) <- spectraData(from)
+##               validObject(to)
+##               to
+##           })
+
+#' @rdname MsBackend
+setMethod("backendMerge", "list", function(object, ...) {
+    backendMerge(object[[1]], object[-1])
+})
+
+#' @exportMethod backendMerge
+#'
+#' @rdname MsBackend
+setMethod("backendMerge", "MsBackend", function(object, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
 
 #' @exportMethod acquisitionNum
 #'

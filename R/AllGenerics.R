@@ -6,7 +6,11 @@ setGeneric("backendInitialize",
            def = function(object, files, spectraData, ...)
                standardGeneric("backendInitialize"),
            valueClass = "MsBackend"
-)
+           )
+#' @rdname hidden_aliases
+setGeneric("backendMerge", def = function(object, ...)
+    standardGeneric("backendMerge"),
+    valueClass = "MsBackend")
 #' @rdname hidden_aliases
 setGeneric("clean", function(object, ...) standardGeneric("clean"))
 #' @rdname hidden_aliases

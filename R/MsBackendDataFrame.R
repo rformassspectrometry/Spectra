@@ -70,6 +70,32 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
               object
           })
 
+#' @rdname hidden_aliases
+setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
+    object <- unname(c(object, ...))
+    object <- object[lengths(object) > 0]
+    if (length(object) == 1)
+        return(object[[1]])
+    if (!all(vapply(object, class, character(1)) == class(object[[1]])))
+        stop("Can only merge backends of the same type: ", class(object[[1]]))
+    mod_counts <- unlist(lapply(object, function(z) z@modCount))
+    files <- unlist(lapply(object, function(z) z@files))
+    from_file <- unlist(lapply(object, function(z) z@files[fromFile(z)]),
+                        use.names = FALSE)
+    res <- new(class(object[[1]]))
+    res@files <- unique(files)
+    suppressWarnings(
+        res@spectraData <- do.call(
+            .rbind_fill, lapply(object, function(z) z@spectraData))
+    )
+    res@spectraData$fromFile <- match(from_file, res@files)
+    ## modCount: take the largest modCount for all with the same file
+    res@modCount <- unname(vapply(
+        split(mod_counts, paste0(files))[paste0(res@files)], max, integer(1)))
+    validObject(res)
+    res
+})
+
 ## Data accessors
 
 #' @rdname hidden_aliases
@@ -366,7 +392,7 @@ setMethod("spectraData", "MsBackendDataFrame",
 #' @rdname hidden_aliases
 setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
     if (inherits(value, "DataFrame")) {
-        if (nrow(value) != length(object))
+        if (length(object) && nrow(value) != length(object))
             stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
         if (is.list(value$mz))
             value$mz <- SimpleList(value$mz)
