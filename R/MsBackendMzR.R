@@ -64,7 +64,7 @@ setMethod("backendInitialize", "MsBackendMzR",
                                       FUN = function(fl, index) {
                                           cbind(Spectra:::.mzR_header(fl),
                                                 fromFile = index)
-                                      }))
+                                      }, BPPARAM = BPPARAM))
               }
               callNextMethod(object = object, files = files,
                              spectraData = .as_rle_spectra_data(spectraData),
