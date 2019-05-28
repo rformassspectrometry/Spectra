@@ -1,6 +1,16 @@
 #' @include hidden_aliases.R
 NULL
 
+#' @rdname MsBackend
+#'
+#' @export MsBackendHdf5Peaks
+MsBackendHdf5Peaks <- function() {
+    if (!requireNamespace("rhdf5", quietly = TRUE))
+        stop("The use of 'MsBackendHdf5Peaks' requires package 'rhdf5'. ",
+             "Please install with 'Biobase::install(\"rhdf5\")'")
+    new("MsBackendHdf5Peaks")
+}
+
 #' @description
 #'
 #' - check that lengths of `x` and `files` matches.
@@ -10,15 +20,11 @@ NULL
 #'
 #' @param x `character` with the file names of the Hdf5 files.
 #'
-#' @param files `character` with the names of the files (`@files` slot).
-#'
 #' @author Johannes Rainer
 #'
 #' @noRd
-.valid_h5files <- function(x, files) {
+.valid_h5files <- function(x) {
     msg <- NULL
-    if (length(x) != length(files))
-        msg <- "Number of HDF5 files has to match the number of original files"
     if (length(x) != length(unique(x)))
         msg <- c(msg, paste0("No duplicated HDF5 files allowed"))
     if (!all(file.exists(x)))
@@ -34,14 +40,14 @@ NULL
 #' Initializes a **new** hdf5 file.
 #'
 #' @noRd
-.initialize_h5peaks_file <- function(x) {
+.initialize_h5peaks_file <- function(x, modCount = 0L) {
     h5 <- rhdf5::H5Fcreate(x)
     on.exit(invisible(rhdf5::H5Fclose(h5)))
     comp_level <- .hdf5_compression_level()
     rhdf5::h5createGroup(h5, "header")
     rhdf5::h5write("Spectra::MsBackendHdf5Peaks", h5, "/header/class",
                    level = comp_level)
-    rhdf5::h5write(0L, h5, "/header/modcount", level = comp_level)
+    rhdf5::h5write(modCount, h5, "/header/modcount", level = comp_level)
     rhdf5::h5createGroup(h5, "peaks")
 }
 

@@ -31,9 +31,13 @@ NULL
 #' - `MsBackendDataFrame`: stores all data in memory using a `DataFrame`.
 #'
 #' - `MsBackendMzR`: stores the m/z and intensities on-disk in raw
-#'    data files (typically `mzML` or `mzXML`) and the spectra
-#'    annotation information (header) in memory in a `DataFrame`. This
-#'    backend requires the `mzR` package.
+#'   data files (typically `mzML` or `mzXML`) and the spectra
+#'   annotation information (header) in memory in a `DataFrame`. This
+#'   backend requires the `mzR` package.
+#'
+#' - `MsBackendHdf5Peaks`: stores the m/z and intensities on-disk in custom hdf5
+#'   data files and the remaining spectra variables in memory (in a
+#'   `DataFrame`). This backend requires the `rhdf5` package.
 #'
 #' See below for more details about individual backends.
 #'
@@ -358,6 +362,22 @@ NULL
 #' New objects can be created with the `MsBackendMzR()` function which
 #' can be subsequently filled with data by calling `backendInitialize`
 #' passing the file names of the input data files with argument `files`.
+#'
+#' @section `MsBackendHdf5Peaks`, on-disk MS data backend:
+#'
+#' The `MsBackendHdf5Peaks` keeps, similar to the `MsBackendMzR`, peak data
+#' (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
+#' disk while the remaining spectra variables are kept in memory. This backend
+#' supports updating and writing of manipulated peak data to the data files.
+#'
+#' New objects can be created with the `MsBackendHdf5Peaks()` function which
+#' can be subsequently filled with data by calling the object's
+#' `backenInitialize` method passing the desired file names of the HDF5 data
+#' files along with the spectra variables in form of a `DataFrame` (see
+#' `MsBackendDataFrame` for the expected format). An optional parameter
+#' `hdf5path` allows to specify the folder where the HDF5 data files should be
+#' stored to. If provided, this is added as the path to the submitted file
+#' names (parameter `files`).
 #'
 #' @name MsBackend
 #'

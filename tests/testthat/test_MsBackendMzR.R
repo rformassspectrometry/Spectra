@@ -396,7 +396,7 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
 
     tmp <- sciex_mzr
-    res <- spectraData(tmp)
+    res <- .spectra_data_mzR(tmp)
     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
     expect_true(all(colnames(tmp@spectraData) %in% colnames(res)))
     expect_true(is.logical(res$smoothed))
@@ -407,7 +407,7 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(is(tmp@spectraData$new_col, "Rle"))
     expect_true(any(spectraVariables(tmp) == "new_col"))
 
-    res <- spectraData(tmp, columns = c("msLevel", "new_col", "rtime"))
+    res <- .spectra_data_mzR(tmp, columns = c("msLevel", "new_col", "rtime"))
     expect_equal(colnames(res), c("msLevel", "new_col", "rtime"))
     expect_true(is.integer(res$msLevel))
     expect_true(is.numeric(res$new_col))

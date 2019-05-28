@@ -304,37 +304,7 @@ setReplaceMethod("smoothed", "MsBackendMzR", function(object, value) {
 #' @importFrom methods as
 setMethod("spectraData", "MsBackendMzR",
           function(object, columns = spectraVariables(object)) {
-              cn <- colnames(object@spectraData)
-              if(!nrow(object@spectraData)) {
-                  res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
-                  res <- DataFrame(res)
-                  res$mz <- SimpleList()
-                  res$intensity <- SimpleList()
-                  return(res[, columns, drop = FALSE])
-              }
-              not_found <- setdiff(columns, c(cn, names(.SPECTRA_DATA_COLUMNS)))
-              if (length(not_found))
-                  stop("Column(s) ", paste(not_found, collapse = ", "),
-                       " not available")
-              sp_cols <- columns[columns %in% cn]
-              res <- .as_vector_spectra_data(
-                  object@spectraData[, sp_cols, drop = FALSE])
-              if (any(columns %in% c("mz", "intensity"))) {
-                  pks <- peaks(object)
-                  if (any(columns == "mz"))
-                      res$mz <- SimpleList(lapply(pks, function(z) z[, 1]))
-                  if (any(columns == "intensity"))
-                      res$intensity <- SimpleList(lapply(pks, function(z) z[, 2]))
-              }
-              other_cols <- setdiff(
-                  columns[!(columns %in% c("mz", "intensity"))], sp_cols)
-              if (length(other_cols)) {
-                  other_res <- lapply(other_cols, .get_spectra_data_column,
-                                      x = object)
-                  names(other_res) <- other_cols
-                  res <- cbind(res, as(other_res, "DataFrame"))
-              }
-              res[, columns, drop = FALSE]
+              .spectra_data_mzR(object, columns)
           })
 
 #' @rdname hidden_aliases

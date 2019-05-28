@@ -28,16 +28,16 @@ test_that(".valid_h5files works", {
     if (!requireNamespace("rhdf5", quietly = TRUE))
         stop("Unable to load package rhdf5")
     fls <- c("a", "a")
-    expect_true(is.character(.valid_h5files(fls, 1:2)))
+    expect_true(is.character(.valid_h5files(fls)))
     tmpa <- tempfile()
     tmpb <- tempfile()
     cat("dfd", file = tmpa)
     expect_true(.initialize_h5peaks_file(tmpb))
 
-    expect_null(.valid_h5files(tmpb, "1"))
-    expect_true(is.character(.valid_h5files(c(tmpa, tmpb), 1:2)))
+    expect_null(.valid_h5files(tmpb))
+    expect_true(is.character(.valid_h5files(c(tmpa, tmpb))))
     expect_true(.initialize_h5peaks_file(tmpa))
-    expect_null(.valid_h5files(c(tmpa, tmpb), 1:2))
+    expect_null(.valid_h5files(c(tmpa, tmpb)))
 })
 
 test_that(".h5_read_bare works", {
