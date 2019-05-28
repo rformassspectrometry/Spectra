@@ -75,9 +75,11 @@ NULL
 }
 
 .valid_intensity_mz_columns <- function(x) {
-    if (any(lengths(mz(x)) != lengths(intensity(x))))
-        "Length of mz and intensity values differ for some spectra"
-    else NULL
+    ## Don't want to have that tested on all on-disk objects.
+    if (length(x$intensity) && length(x$mz))
+        if (any(lengths(x$mz) != lengths(x$intensity)))
+            return("Length of mz and intensity values differ for some spectra")
+    NULL
 }
 
 #' data types of spectraData columns

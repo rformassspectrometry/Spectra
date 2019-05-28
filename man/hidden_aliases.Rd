@@ -36,6 +36,7 @@
 \alias{collisionEnergy<-,MsBackendDataFrame-method}
 \alias{fromFile,MsBackendDataFrame-method}
 \alias{intensity,MsBackendDataFrame-method}
+\alias{intensity<-,MsBackendDataFrame-method}
 \alias{ionCount,MsBackendDataFrame-method}
 \alias{isCentroided,MsBackendDataFrame-method}
 \alias{isEmpty,MsBackendDataFrame-method}
@@ -48,7 +49,9 @@
 \alias{length,MsBackendDataFrame-method}
 \alias{msLevel,MsBackendDataFrame-method}
 \alias{mz,MsBackendDataFrame-method}
+\alias{mz<-,MsBackendDataFrame-method}
 \alias{peaks,MsBackendDataFrame-method}
+\alias{peaks<-,MsBackendDataFrame-method}
 \alias{peaksCount,MsBackendDataFrame-method}
 \alias{polarity,MsBackendDataFrame-method}
 \alias{polarity<-,MsBackendDataFrame-method}
@@ -203,6 +206,8 @@ setBackend(object, backend, ...)
 
 \S4method{intensity}{MsBackendDataFrame}(object)
 
+\S4method{intensity}{MsBackendDataFrame}(object) <- value
+
 \S4method{ionCount}{MsBackendDataFrame}(object)
 
 \S4method{isCentroided}{MsBackendDataFrame}(object, ...)
@@ -227,7 +232,11 @@ setBackend(object, backend, ...)
 
 \S4method{mz}{MsBackendDataFrame}(object)
 
+\S4method{mz}{MsBackendDataFrame}(object) <- value
+
 \S4method{peaks}{MsBackendDataFrame}(object)
+
+\S4method{peaks}{MsBackendDataFrame}(object) <- value
 
 \S4method{peaksCount}{MsBackendDataFrame}(object)
 

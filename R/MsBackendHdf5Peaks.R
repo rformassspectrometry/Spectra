@@ -117,7 +117,7 @@ setMethod("intensity", "MsBackendHdf5Peaks", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
-    if (!is.list(value) | inherits(value, "SimpleList"))
+    if (!(is.list(value) | inherits(value, "SimpleList")))
         stop("'value' has to be a list")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
@@ -152,7 +152,7 @@ setMethod("mz", "MsBackendHdf5Peaks", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
-    if (!is.list(value) | inherits(value, "SimpleList"))
+    if (!(is.list(value) | inherits(value, "SimpleList")))
         stop("'value' has to be a list")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
@@ -188,7 +188,7 @@ setMethod("peaks", "MsBackendHdf5Peaks", function(object) {
 setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
-    if (!is.list(value) | inherits(value, "SimpleList"))
+    if (!(is.list(value) | inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     object@modCount <- object@modCount + 1L
     fromF <- factor(fromFile(object),

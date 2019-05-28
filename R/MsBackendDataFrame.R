@@ -35,7 +35,7 @@ setValidity("MsBackendDataFrame", function(object) {
         .valid_ms_backend_files_from_file(object@files,
                                           as.vector(fromFile(object))),
         .valid_ms_backend_mod_count(object@files, object@modCount),
-        .valid_intensity_mz_columns(object))
+        .valid_intensity_mz_columns(object@spectraData))
     if (is.null(msg)) TRUE
     else msg
 })
@@ -157,6 +157,23 @@ setMethod("intensity", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
+setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
+    if (!(is.list(value) | inherits(value, "SimpleList")))
+        stop("'value' has to be a list")
+    if (length(value) != length(object))
+        stop("length of 'value' has to match the length of 'object'")
+    if (!all(lengths(value) == peaksCount(object)))
+        stop("lengths of 'value' has to match the number of peaks ",
+             "(i.e. peaksCount(object))")
+    if (!is(value, "SimpleList"))
+        value <- SimpleList(value)
+    object@spectraData$intensity <- value
+    object@modCount <- object@modCount + 1L
+    validObject(object)
+    object
+})
+
+#' @rdname hidden_aliases
 setMethod("ionCount", "MsBackendDataFrame", function(object) {
     vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
@@ -248,9 +265,45 @@ setMethod("mz", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
+setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
+    if (!(is.list(value) | inherits(value, "SimpleList")))
+        stop("'value' has to be a list")
+    if (length(value) != length(object))
+        stop("length of 'value' has to match the length of 'object'")
+    if (!all(lengths(value) == peaksCount(object)))
+        stop("lengths of 'value' has to match the number of peaks ",
+             "(i.e. peaksCount(object))")
+    if (!is(value, "SimpleList"))
+        value <- SimpleList(value)
+    object@spectraData$mz <- value
+    object@modCount <- object@modCount + 1L
+    validObject(object)
+    object
+})
+
+#' @rdname hidden_aliases
 setMethod("peaks", "MsBackendDataFrame", function(object) {
     mapply(mz(object), intensity(object), FUN = function(m, i)
         cbind(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
+    if (!(is.list(value) | inherits(value, "SimpleList")))
+        stop("'value' has to be a list-like object")
+    if (length(value) != length(object))
+        stop("Length of 'value' has to match length of 'object'")
+    object@modCount <- object@modCount + 1L
+    vals <- lapply(value, function(z) z[, 1])
+    if (!is(vals, "SimpleList"))
+        vals <- SimpleList(vals)
+    object@spectraData$mz <- vals
+    vals <- lapply(value, function(z) z[, 2])
+    if (!is(vals, "SimpleList"))
+        vals <- SimpleList(vals)
+    object@spectraData$intensity <- vals
+    validObject(object)
+    object
 })
 
 #' @rdname hidden_aliases

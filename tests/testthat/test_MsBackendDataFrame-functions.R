@@ -54,16 +54,16 @@ test_that(".valid_intensity_column works", {
 
 test_that(".valid_intensity_mz_columns works", {
     be <- MsBackendDataFrame()
-    expect_null(.valid_intensity_mz_columns(be))
+    expect_null(.valid_intensity_mz_columns(be@spectraData))
     be <- backendInitialize(be, files = NA_character_,
                             DataFrame(fromFile = c(1L, 1L)))
-    expect_null(.valid_intensity_mz_columns(be))
+    expect_null(.valid_intensity_mz_columns(be@spectraData))
     be@spectraData$mz <- list(1:3, 1:2)
     be@spectraData$intensity <- list(1:3, 2)
-    expect_match(.valid_intensity_mz_columns(be),
+    expect_match(.valid_intensity_mz_columns(be@spectraData),
                  "Length of mz and intensity")
     be@spectraData$intensity <- list(1:3, 1:2)
-    expect_null(.valid_intensity_mz_columns(be))
+    expect_null(.valid_intensity_mz_columns(be@spectraData))
 })
 
 test_that(".get_spectra_data_column works", {

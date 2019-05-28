@@ -1,3 +1,7 @@
+test_df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
+test_df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
+test_df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
+
 test_that("backendInitialize,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     be <- backendInitialize(be)
@@ -130,6 +134,21 @@ test_that("intensity,MsBackendDataFrame works", {
     expect_equal(intensity(be), SimpleList(1:4, c(2.1, 3.4)))
 })
 
+test_that("intensity<-,MsBackendDataFrame works", {
+    test_df$fromFile <- 1L
+    be <- backendInitialize(MsBackendDataFrame(), files = NA_character_,
+                            spectraData = test_df)
+
+    new_ints <- lapply(test_df$intensity, function(z) z / 2)
+    intensity(be) <- new_ints
+    expect_identical(intensity(be), SimpleList(new_ints))
+    expect_identical(be@modCount, 1L)
+
+    expect_error(intensity(be) <- 3, "has to be a list")
+    expect_error(intensity(be) <- list(3, 2), "match the length")
+    expect_error(intensity(be) <- list(3, 2, 4), "number of peaks")
+})
+
 test_that("ionCound,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(ionCount(be), numeric())
@@ -240,6 +259,21 @@ test_that("mz,MsBackendDataFrame works", {
     expect_equal(mz(be), SimpleList(1:3, 2.1))
 })
 
+test_that("mz<-,MsBackendDataFrame works", {
+    test_df$fromFile <- 1L
+    be <- backendInitialize(MsBackendDataFrame(), files = NA_character_,
+                            spectraData = test_df)
+
+    new_mzs <- lapply(test_df$mz, function(z) z / 2)
+    mz(be) <- new_mzs
+    expect_identical(mz(be), SimpleList(new_mzs))
+    expect_identical(be@modCount, 1L)
+
+    expect_error(mz(be) <- 3, "has to be a list")
+    expect_error(mz(be) <- list(3, 2), "match the length")
+    expect_error(mz(be) <- list(3, 2, 4), "number of peaks")
+})
+
 test_that("peaks,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(peaks(be), list())
@@ -252,6 +286,21 @@ test_that("peaks,MsBackendDataFrame works", {
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
     expect_equal(peaks(be), list(cbind(mz = 1:3, intensity = 1:3),
                                  cbind(mz = 2.1, intensity = 4)))
+})
+
+test_that("peaks<-,MsBackendDataFrame works", {
+    test_df$fromFile <- 1L
+    be <- backendInitialize(MsBackendDataFrame(), files = NA_character_,
+                            spectraData = test_df)
+
+    pks <- lapply(peaks(be), function(z) z / 2)
+    peaks(be) <- pks
+    expect_identical(peaks(be), pks)
+    expect_identical(be@modCount, 1L)
+
+    expect_error(peaks(be) <- 3, "has to be a list")
+    expect_error(peaks(be) <- list(3, 2), "match length")
+    expect_error(peaks(be) <- list(3, 2, 4), "dimensions")
 })
 
 test_that("peaksCount,MsBackendDataFrame works", {
