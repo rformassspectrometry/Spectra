@@ -96,6 +96,12 @@ test_that("intensity,MsBackendMzR works", {
     expect_equal(length(res), length(sciex_mzr))
 })
 
+test_that("intensity<-,MsBackendMzR works", {
+    be <- MsBackendMzR()
+
+    expect_error(intensity(be) <- list, "does not support replacing intensity")
+})
+
 test_that("ionCount,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(ionCount(be), numeric())
@@ -207,6 +213,11 @@ test_that("mz,MsBackendMzR works", {
     expect_true(is.numeric(res[[1]]))
     expect_true(!any(vapply(res, is.unsorted, logical(1))))
     expect_equal(length(res), length(sciex_mzr))
+})
+
+test_that("mz<-,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_error(mz(be) <- list(), "does not support replacing")
 })
 
 test_that("peaks,MsBackendMzR works", {

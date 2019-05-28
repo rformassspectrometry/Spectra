@@ -183,7 +183,16 @@ MsBackendHdf5Peaks <- function() {
         rhdf5::h5createGroup(h5, "/spectra")
     spids <- paste0("/spectra/", scanIndex)
     for (i in seq_along(x)) {
-        rhdf5::h5write(x[[i]], h5, name = spids[i], level = comp_level)
+        xi <- x[[i]]
+        if (!is.matrix(xi))
+            stop("Peak data has to be provided as a matrix but I got ",
+                 class(xi))
+        if (ncol(xi) != 2 || !all(c("mz", "intensity") %in% colnames(xi)))
+            stop("A peak matrix should have two columns named \"mz\" and ",
+                 "\"intensity\"")
+        if (is.unsorted(xi[, 1]))
+            stop("m/z values have to be ordered")
+        rhdf5::h5write(xi, h5, name = spids[i], level = comp_level)
     }
     rhdf5::h5write(modCount, h5, "/header/modcount", level = comp_level)
 }

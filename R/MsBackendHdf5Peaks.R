@@ -70,7 +70,9 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
                                       cbind(mz, intensity)
                                   })
               } else {
-                  mt <- matrix(ncol = 2, nrow = 0)
+                  mt <- matrix(ncol = 2, nrow = 0,
+                               dimnames = list(character(),
+                                               c("mz", "intensity")))
                   peaks <- replicate(nrow(spectraData), mt)
               }
               spectraData$mz <- NULL
@@ -114,6 +116,21 @@ setMethod("intensity", "MsBackendHdf5Peaks", function(object) {
 })
 
 #' @rdname hidden_aliases
+setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
+    if (!is.list(value) | inherits(value, "SimpleList"))
+        stop("'value' has to be a list")
+    if (length(value) != length(object))
+        stop("length of 'value' has to match the length of 'object'")
+    mzs <- mz(object)
+    if (!all(lengths(value) == lengths(mzs)))
+        stop("lengths of 'value' has to match the number of peaks ",
+             "(i.e. peaksCount(object))")
+    pks <- mapply(function(mz, intensity) cbind(mz, intensity), mzs, value)
+    peaks(object) <- pks
+    object
+})
+
+#' @rdname hidden_aliases
 setMethod("ionCount", "MsBackendHdf5Peaks", function(object) {
     vapply(peaks(object), function(z) sum(z[, 2], na.rm = TRUE), numeric(1))
 })
@@ -131,6 +148,21 @@ setMethod("isEmpty", "MsBackendHdf5Peaks", function(x) {
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendHdf5Peaks", function(object) {
     SimpleList(lapply(peaks(object), function(z) z[, 1]))
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
+    if (!is.list(value) | inherits(value, "SimpleList"))
+        stop("'value' has to be a list")
+    if (length(value) != length(object))
+        stop("length of 'value' has to match the length of 'object'")
+    ints <- intensity(object)
+    if (!all(lengths(value) == lengths(ints)))
+        stop("lengths of 'value' has to match the number of peaks ",
+             "(i.e. peaksCount(object))")
+    pks <- mapply(function(mz, intensity) cbind(mz, intensity), value, ints)
+    peaks(object) <- pks
+    object
 })
 
 #' @rdname hidden_aliases
@@ -153,6 +185,28 @@ setMethod("peaks", "MsBackendHdf5Peaks", function(object) {
 })
 
 #' @rdname hidden_aliases
+setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
+    if (length(value) != length(object))
+        stop("Length of 'value' has to match length of 'object'")
+    if (!is.list(value) | inherits(value, "SimpleList"))
+        stop("'value' has to be a list-like object")
+    object@modCount <- object@modCount + 1L
+    fromF <- factor(fromFile(object),
+                    levels = unique(fromFile(object)))
+    res <- bpmapply(FUN = function(pks, sidx, h5file, modC) {
+        .h5_write_peaks(pks, scanIndex = sidx, h5file = h5file,
+                        modCount = modC)
+    },
+    split(value, fromF),
+    split(scanIndex(object), fromF),
+    fileNames(object)[as.integer(levels(fromF))],
+    object@modCount[as.integer(levels(fromF))],
+    BPPARAM = bpparam())
+    validObject(object)
+    object
+})
+
+#' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendHdf5Peaks", function(object) {
     vapply(peaks(object), nrow, integer(1))
 })
@@ -163,5 +217,40 @@ setMethod("spectraData", "MsBackendHdf5Peaks",
               .spectra_data_mzR(object, columns)
           })
 
-## spectraData<- (support m/z and intensity replacement) -> increase modCount
-## $<- (support m/z and intensity replacement) -> increase modCount
+#' @rdname hidden_aliases
+setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
+    pks <- NULL
+    if (!inherits(value, "DataFrame"))
+        stop("'value' has to be a 'DataFrame'")
+    if (nrow(value) != length(object))
+        stop("Number of rows of 'value' have to match the length of 'object'")
+    if (!any(colnames(value) == "fromFile"))
+        value$fromFile <- fromFile(object)
+    if (any(colnames(value) %in% c("mz", "intensity"))) {
+        ## Can not have peaks without m/z
+        if (!any(colnames(value) == "mz"))
+            stop("Column \"mz\" required if columns \"intensity\" present")
+        if (!any(colnames(value) == "intensity"))
+            value$intensity <- NA_real_
+        pks <- mapply(function(mz, intensity) cbind(mz, intensity),
+                      value$mz, value$intensity, SIMPLIFY = FALSE,
+                      USE.NAMES = FALSE)
+        value$mz <- NULL
+        value$intensity <- NULL
+    }
+    object <- callNextMethod(object, value = value)
+    if (length(pks))
+        peaks(object) <- pks
+    object
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("$", "MsBackendHdf5Peaks", function(x, name, value) {
+    if (name %in% c("mz", "intensity")) {
+        if (name == "mz")
+            mz(x) <- value
+        if (name == "intensity")
+            intensity(x) <- value
+        x
+    } else callNextMethod()
+})

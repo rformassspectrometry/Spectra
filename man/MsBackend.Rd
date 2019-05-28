@@ -29,6 +29,7 @@
 \alias{filterRt,MsBackend-method}
 \alias{fromFile,MsBackend-method}
 \alias{intensity,MsBackend-method}
+\alias{intensity<-,MsBackend-method}
 \alias{ionCount,MsBackend-method}
 \alias{isCentroided,MsBackend-method}
 \alias{isEmpty,MsBackend-method}
@@ -42,7 +43,9 @@
 \alias{length,MsBackend-method}
 \alias{msLevel,MsBackend-method}
 \alias{mz,MsBackend-method}
+\alias{mz<-,MsBackend-method}
 \alias{peaks,MsBackend-method}
+\alias{peaks<-,MsBackend-method}
 \alias{peaksCount,MsBackend-method}
 \alias{polarity,MsBackend-method}
 \alias{polarity<-,MsBackend-method}
@@ -109,6 +112,8 @@
 
 \S4method{intensity}{MsBackend}(object)
 
+\S4method{intensity}{MsBackend}(object) <- value
+
 \S4method{ionCount}{MsBackend}(object)
 
 \S4method{isCentroided}{MsBackend}(object, ...)
@@ -135,7 +140,11 @@
 
 \S4method{mz}{MsBackend}(object)
 
+\S4method{mz}{MsBackend}(object) <- value
+
 \S4method{peaks}{MsBackend}(object)
+
+\S4method{peaks}{MsBackend}(object) <- value
 
 \S4method{peaksCount}{MsBackend}(object)
 
@@ -354,6 +363,10 @@ which spectra originate. If no files are available,
 a \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
+\item \code{intensity<-}: replace the intensity values. \code{value} has to be a \code{list}
+of length equal to the number of spectra and the number of values within
+each list element identical to the number of peaks in each spectrum (i.e.
+the \code{peaksCount(x)}). Note that not all backends support this method.
 \item \code{ionCount}: returns a \code{numeric} with the sum of intensities for
 each spectrum. If the spectrum is empty (see \code{isEmpty}),
 \code{NA_real_} is returned.
@@ -382,10 +395,18 @@ level for each spectrum (or \code{NA_integer_} if not available).
 spectra. Returns a \code{\link[=SimpleList]{SimpleList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
+\item \code{mz<-}: replace the m/z values. \code{value} has to be a \code{list} of length equal
+to the number of spectra and the number of values within each list element
+identical to the number of peaks in each spectrum (i.e. the
+\code{peaksCount(x)}). Note that not all backends support this method.
 \item \code{peaks} returns a \code{list} of length equal to the number of spectra
 in \code{object}. Each element of the list is a \code{matrix} with columns
 \code{mz} and \code{intensity}. For an empty spectrum, a \code{matrix} with 0
 rows and two columns (named \code{mz} and \code{intensity}) is returned.
+\item \code{peaks<-} replace the peak data (m/z and intensity values) of the backend.
+This method expects a \code{list} of \code{matrix} objects with columns \code{"mz"} and
+\code{"intensity"} that has the same length than the number of spectra in the
+backend. Note that not all backends might support this method.
 \item \code{peaksCount}: gets the number of peaks (m/z-intensity values) per
 spectrum.  Returns an \code{integer} vector (length equal to the
 number of spectra). For empty spectra, \code{NA_integer_} is returned.
@@ -420,7 +441,8 @@ to the number of spectra. \code{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
 \item \code{spectraData}, \code{spectraData<-}: get or sets general spectrum
 metadata (annotation, also called header).  \code{spectraData} returns
-a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame}.
+a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame} with the same number
+of rows as there are spectra in \code{object}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
 the spectra in \code{object}.
 \item \code{spectraVariables}: returns a \code{character} vector with the

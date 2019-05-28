@@ -82,13 +82,18 @@
 \alias{backendInitialize,MsBackendHdf5Peaks-method}
 \alias{show,MsBackendHdf5Peaks-method}
 \alias{intensity,MsBackendHdf5Peaks-method}
+\alias{intensity<-,MsBackendHdf5Peaks-method}
 \alias{ionCount,MsBackendHdf5Peaks-method}
 \alias{isCentroided,MsBackendHdf5Peaks-method}
 \alias{isEmpty,MsBackendHdf5Peaks-method}
 \alias{mz,MsBackendHdf5Peaks-method}
+\alias{mz<-,MsBackendHdf5Peaks-method}
 \alias{peaks,MsBackendHdf5Peaks-method}
+\alias{peaks<-,MsBackendHdf5Peaks-method}
 \alias{peaksCount,MsBackendHdf5Peaks-method}
 \alias{spectraData,MsBackendHdf5Peaks-method}
+\alias{spectraData<-,MsBackendHdf5Peaks-method}
+\alias{$<-,MsBackendHdf5Peaks-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{backendMerge,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
@@ -99,6 +104,7 @@
 \alias{collisionEnergy<-,MsBackendMzR-method}
 \alias{fromFile,MsBackendMzR-method}
 \alias{intensity,MsBackendMzR-method}
+\alias{intensity<-,MsBackendMzR-method}
 \alias{ionCount,MsBackendMzR-method}
 \alias{isCentroided,MsBackendMzR-method}
 \alias{isEmpty,MsBackendMzR-method}
@@ -110,6 +116,7 @@
 \alias{isolationWindowUpperMz<-,MsBackendMzR-method}
 \alias{msLevel,MsBackendMzR-method}
 \alias{mz,MsBackendMzR-method}
+\alias{mz<-,MsBackendMzR-method}
 \alias{peaks,MsBackendMzR-method}
 \alias{peaksCount,MsBackendMzR-method}
 \alias{polarity,MsBackendMzR-method}
@@ -300,6 +307,8 @@ setBackend(object, backend, ...)
 
 \S4method{intensity}{MsBackendHdf5Peaks}(object)
 
+\S4method{intensity}{MsBackendHdf5Peaks}(object) <- value
+
 \S4method{ionCount}{MsBackendHdf5Peaks}(object)
 
 \S4method{isCentroided}{MsBackendHdf5Peaks}(object, ...)
@@ -308,12 +317,20 @@ setBackend(object, backend, ...)
 
 \S4method{mz}{MsBackendHdf5Peaks}(object)
 
+\S4method{mz}{MsBackendHdf5Peaks}(object) <- value
+
 \S4method{peaks}{MsBackendHdf5Peaks}(object)
+
+\S4method{peaks}{MsBackendHdf5Peaks}(object) <- value
 
 \S4method{peaksCount}{MsBackendHdf5Peaks}(object)
 
 \S4method{spectraData}{MsBackendHdf5Peaks}(object,
   columns = spectraVariables(object))
+
+\S4method{spectraData}{MsBackendHdf5Peaks}(object) <- value
+
+\S4method{$}{MsBackendHdf5Peaks}(x, name) <- value
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
@@ -336,6 +353,8 @@ setBackend(object, backend, ...)
 
 \S4method{intensity}{MsBackendMzR}(object)
 
+\S4method{intensity}{MsBackendMzR}(object) <- value
+
 \S4method{ionCount}{MsBackendMzR}(object)
 
 \S4method{isCentroided}{MsBackendMzR}(object, ...)
@@ -357,6 +376,8 @@ setBackend(object, backend, ...)
 \S4method{msLevel}{MsBackendMzR}(object, ...)
 
 \S4method{mz}{MsBackendMzR}(object)
+
+\S4method{mz}{MsBackendMzR}(object) <- value
 
 \S4method{peaks}{MsBackendMzR}(object)
 

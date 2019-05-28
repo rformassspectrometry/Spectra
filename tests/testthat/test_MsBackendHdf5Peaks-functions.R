@@ -86,4 +86,13 @@ test_that(".h5_read_peaks, .h5_write_peaks works", {
     expect_identical(res, matlist[3])
 
     expect_true(is.list(.h5_read_peaks(tmpf)))
+
+    tmp <- list(1:4, cbind(mz = c(1.4, 1.1, 1.4), intensity = 1:3),
+                cbind(bla = c(1.1, 1.3), intensity = 1:2))
+    expect_error(.h5_write_peaks(tmp, scanIndex = 1:3, tmpf, modCount = 0L),
+                 "but I got integer")
+    expect_error(.h5_write_peaks(tmp[2:3], scanIndex = 1:2, tmpf,
+                                 modCount = 0L), "have to be ordered")
+    expect_error(.h5_write_peaks(tmp[3], scanIndex = 2L, tmpf,
+                                 modCount = 0L), "two columns")
 })

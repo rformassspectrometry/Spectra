@@ -189,6 +189,11 @@ NULL
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
+#' - `intensity<-`: replace the intensity values. `value` has to be a `list`
+#'   of length equal to the number of spectra and the number of values within
+#'   each list element identical to the number of peaks in each spectrum (i.e.
+#'   the `peaksCount(x)`). Note that not all backends support this method.
+#'
 #' - `ionCount`: returns a `numeric` with the sum of intensities for
 #'   each spectrum. If the spectrum is empty (see `isEmpty`),
 #'   `NA_real_` is returned.
@@ -227,10 +232,20 @@ NULL
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
+#' - `mz<-`: replace the m/z values. `value` has to be a `list` of length equal
+#'   to the number of spectra and the number of values within each list element
+#'   identical to the number of peaks in each spectrum (i.e. the
+#'   `peaksCount(x)`). Note that not all backends support this method.
+#'
 #' - `peaks` returns a `list` of length equal to the number of spectra
-#'    in `object`. Each element of the list is a `matrix` with columns
-#'    `mz` and `intensity`. For an empty spectrum, a `matrix` with 0
-#'    rows and two columns (named `mz` and `intensity`) is returned.
+#'   in `object`. Each element of the list is a `matrix` with columns
+#'   `mz` and `intensity`. For an empty spectrum, a `matrix` with 0
+#'   rows and two columns (named `mz` and `intensity`) is returned.
+#'
+#' - `peaks<-` replace the peak data (m/z and intensity values) of the backend.
+#'   This method expects a `list` of `matrix` objects with columns `"mz"` and
+#'   `"intensity"` that has the same length than the number of spectra in the
+#'   backend. Note that not all backends might support this method.
 #'
 #' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum.  Returns an `integer` vector (length equal to the
@@ -272,7 +287,8 @@ NULL
 #'
 #' - `spectraData`, `spectraData<-`: get or sets general spectrum
 #'   metadata (annotation, also called header).  `spectraData` returns
-#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`.
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
+#'   of rows as there are spectra in `object`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
 #'   the spectra in `object`.
@@ -583,6 +599,15 @@ setMethod("intensity", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @exportMethod intensity<-
+#'
+#' @importMethodsFrom ProtGenerics intensity<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("intensity", "MsBackend", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
 #' @exportMethod ionCount
 #'
 #' @rdname MsBackend
@@ -697,12 +722,30 @@ setMethod("mz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @exportMethod mz<-
+#'
+#' @importMethodsFrom ProtGenerics mz<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("mz", "MsBackend", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
 #' @exportMethod peaks
 #'
 #' @importMethodsFrom ProtGenerics peaks
 #'
 #' @rdname MsBackend
 setMethod("peaks", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod peaks<-
+#'
+#' @importMethodsFrom ProtGenerics peaks<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("peaks", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 

@@ -73,6 +73,19 @@ test_that("intensity,MsBackendHdf5Peaks works", {
     expect_equal(length(res), length(test_be))
 })
 
+test_that("intensity<-,MsBackendHdf5Peaks works", {
+    be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(), test_df)
+
+    ints <- lapply(test_df$intensity, function(z) z/2)
+    intensity(be) <- ints
+    expect_identical(intensity(be), SimpleList(ints))
+    expect_identical(be@modCount, 1L)
+
+    expect_error(intensity(be) <- 4, "has to be a list")
+    expect_error(intensity(be) <- list(4), "has to match the length")
+    expect_error(intensity(be) <- list(4, 3, 5), "match the number of peaks")
+})
+
 test_that("ionCount,MsBackendHdf5Peaks works", {
     be <- MsBackendHdf5Peaks()
     expect_equal(ionCount(be), numeric())
@@ -124,6 +137,19 @@ test_that("mz,MsBackendHdf5Peaks works", {
     expect_identical(res, SimpleList(test_df$mz))
 })
 
+test_that("mz<-,MsBackendHdf5Peaks works", {
+    be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(), test_df)
+
+    mzs <- lapply(test_df$mz, function(z) z/2)
+    mz(be) <- mzs
+    expect_identical(mz(be), SimpleList(mzs))
+    expect_identical(be@modCount, 1L)
+
+    expect_error(mz(be) <- 4, "has to be a list")
+    expect_error(mz(be) <- list(4), "has to match the length")
+    expect_error(mz(be) <- list(4, 3, 5), "match the number of peaks")
+})
+
 test_that("peaks,MsBackendHdf5Peaks works", {
     if (!requireNamespace("rhdf5", quietly = TRUE))
         stop("Unable to load package rhdf5")
@@ -146,6 +172,24 @@ test_that("peaks,MsBackendHdf5Peaks works", {
     expect_identical(peaks(sciex_mzr), peaks(sciex_hd5))
 })
 
+test_that("peaks<-,MsBackendHdf5Peaks works", {
+    be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(),
+                            spectraData = test_df)
+    pks <- peaks(be)
+    pks_2 <- list(pks[[1]][2, , drop = FALSE],
+                  pks[[2]],
+                  pks[[3]][1:3, ])
+    peaks(be) <- pks_2
+    expect_identical(be@modCount, 1L)
+    expect_identical(peaks(be), pks_2)
+    pks_2[[2]] <- pks_2[[2]][0, ]
+
+    peaks(be) <- pks_2
+    expect_identical(be@modCount, 2L)
+    expect_identical(peaks(be), pks_2)
+    expect_identical(peaksCount(be), c(1L, 0L, 3L))
+})
+
 test_that("peaksCount,MsBackendHdf5Peaks works", {
     be <- MsBackendHdf5Peaks()
     expect_equal(peaksCount(be), integer())
@@ -166,4 +210,60 @@ test_that("spectraData,MsBackendHdf5Peaks works", {
     expect_identical(res$msLevel, test_df$msLevel)
     expect_identical(res$mz, SimpleList(test_df$mz))
     expect_identical(res$intensity, SimpleList(test_df$intensity))
+})
+
+test_that("spectraData<-,MsBackendHdf5Peaks works", {
+    be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(),
+                            spectraData = test_df)
+    df <- test_df
+    df$new_col <- "a"
+    df$msLevel <- 1L
+    df$intensity <- NULL
+    df$mz <- NULL
+
+    spectraData(be) <- df
+    expect_identical(be@modCount, 0L)
+    expect_identical(msLevel(be), rep(1L, 3))
+    expect_identical(intensity(be), SimpleList(test_df$intensity))
+    expect_identical(be$new_col, c("a", "a", "a"))
+
+    ## Only m/z, no intensities.
+    df$mz <- test_df$mz
+    spectraData(be) <- df
+    expect_identical(mz(be), SimpleList(test_df$mz))
+    expect_true(all(is.na(unlist(intensity(be)))))
+
+    ## Update the m/z and intensities.
+    df$mz <- list(c(1.1, 1.2), numeric(), c(1.3, 1.4))
+    df$intensity <- list(c(45.3, 345.1), numeric(), c(1234.2, 12.1))
+
+    spectraData(be) <- df
+    expect_identical(intensity(be), SimpleList(df$intensity))
+    expect_identical(mz(be), SimpleList(df$mz))
+    expect_identical(peaksCount(be), c(2L, 0L, 2L))
+
+    ## Error:
+    expect_error(spectraData(be) <- "a", "has to be a 'DataFrame'")
+    expect_error(spectraData(be) <- df[1:2, ], "have to match the length of")
+})
+
+test_that("$<-,MsBackendHdf5Peaks works", {
+    be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(), test_df)
+
+    be$msLevel <- 1L
+    expect_identical(msLevel(be), rep(1L, 3))
+
+    ints <- lapply(test_df$intensity, function(z) z/2)
+    be$intensity <- ints
+    expect_identical(intensity(be), SimpleList(ints))
+    expect_identical(be@modCount, 1L)
+
+    mzs <- lapply(test_df$mz, function(z) z/4)
+    be$mz <- mzs
+    expect_identical(mz(be), SimpleList(mzs))
+    expect_identical(be@modCount, 2L)
+
+    expect_error(be$mz <- 4, "has to be a list")
+    expect_error(be$intensity <- list(4), "has to match the length")
+    expect_error(be$intensity <- list(4, 3, 5), "match the number of peaks")
 })

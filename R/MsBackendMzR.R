@@ -137,6 +137,11 @@ setMethod("intensity", "MsBackendMzR", function(object) {
 })
 
 #' @rdname hidden_aliases
+setReplaceMethod("intensity", "MsBackendMzR", function(object, value) {
+    stop(class(object), " does not support replacing intensity values")
+})
+
+#' @rdname hidden_aliases
 setMethod("ionCount", "MsBackendMzR", function(object) {
     vapply(peaks(object), function(z) sum(z[, 2], na.rm = TRUE), numeric(1))
 })
@@ -207,6 +212,11 @@ setMethod("msLevel", "MsBackendMzR", function(object, ...) {
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendMzR", function(object) {
     SimpleList(lapply(peaks(object), function(z) z[, 1]))
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("mz", "MsBackendMzR", function(object, value) {
+    stop(class(object), " does not support replacing m/z values")
 })
 
 #' @rdname hidden_aliases
