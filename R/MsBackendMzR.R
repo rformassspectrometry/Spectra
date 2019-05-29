@@ -28,11 +28,7 @@ setClass("MsBackendMzR",
 setValidity("MsBackendMzR", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,
                                                 c("fromFile", "scanIndex"))
-    if (!all(file.exists(object@files)))
-        msg <- c(msg,
-                 paste0("File(s) ",
-                        paste(object@files[!file.exists(object@files)]),
-                        " not found"))
+    msg <- c(msg, .valid_ms_backend_files_exist(object@files))
     if (length(msg)) msg
     else TRUE
 })
