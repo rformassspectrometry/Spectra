@@ -265,6 +265,15 @@ NULL
 #' ([MsBackendDataFrame()] as well as read-only backends (such
 #' as the [MsBackendMzR()]).
 #'
+#' - `addProcessing`: add an arbitrary function that should be applied to the
+#'   peaks matrix of every spectrum in `object`. The function (can be passed
+#'   with parameter `FUN`) is expected to take a peaks matrix as input and to
+#'   return a peaks matrix. A peaks matrix is a numeric matrix with two columns,
+#'   the first containing the m/z values of the peaks and the second the
+#'   corresponding intensities. The function has to have `...` in its
+#'   definition. Additional arguments can be passed with `...`. Examples are
+#'   provided in the package vignette.
+#'
 #' - `clean`: remove 0-intensity data points. For `all = FALSE` (the default)
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
@@ -307,6 +316,10 @@ NULL
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
 #'     should be subsetted.
+#'
+#' @param FUN For `addProcessing`: function to be applied to the peak matrix
+#'     of each spectrum in `object`. See section *Data manipulations* below
+#'     for more details.
 #'
 #' @param i For `[`: `integer`, `logical` or `character` to subset the object.
 #'
@@ -1047,8 +1060,8 @@ setMethod("removePeaks", "Spectra",
                   stop("Argument 't' has to be either numeric of 'min'.")
               if (!is.numeric(msLevel.))
                   stop("'msLevel.' must be numeric.")
-              object <- addProcessingStep(object, .remove_peaks, t = t,
-                                          msLevel = msLevel.)
+              object <- addProcessing(object, .remove_peaks, t = t,
+                                      msLevel = msLevel.)
               object@processing <- c(object@processing,
                                      paste0("Signal <= ", t, " in MS level(s) ",
                                             paste0(msLevel., collapse = ", "),
@@ -1065,8 +1078,8 @@ setMethod("clean", "Spectra",
                   stop("Argument 'all' must be a logical of length 1")
               if (!is.numeric(msLevel.))
                   stop("'msLevel' must be numeric.")
-              object <- addProcessingStep(object, .clean_peaks, all = all,
-                                          msLevel = msLevel.)
+              object <- addProcessing(object, .clean_peaks, all = all,
+                                      msLevel = msLevel.)
               object@processing <- c(object@processing,
                                      paste0("Spectra of MS level(s) ",
                                             paste0(msLevel., collapse = ", "),

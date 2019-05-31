@@ -41,19 +41,10 @@ NULL
     x
 }
 
-#' Helper function to add an arbitrary function with its arguments as a
-#' processing step to the object's `processingQueue`.
+#' @export addProcessing
 #'
-#' @param object any object with an `processingQueue` slot.
-#'
-#' @param FUN function or name of a function.
-#'
-#' @param ... Additional arguments to `FUN`.
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-addProcessingStep <- function(object, FUN, ...) {
+#' @rdname Spectra
+addProcessing <- function(object, FUN, ...) {
     if (missing(FUN))
         return(object)
     object@processingQueue <- c(object@processingQueue,

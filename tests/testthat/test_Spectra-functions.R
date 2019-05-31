@@ -19,12 +19,12 @@ test_that(".combine_data_frame works", {
     expect_equal(res, a)
 })
 
-test_that("addProcessingStep works", {
+test_that("addProcessing works", {
     tst <- Spectra()
-    tst <- addProcessingStep(tst, mean)
+    tst <- addProcessing(tst, mean)
     expect_true(length(tst@processingQueue) == 1)
-    expect_error(addProcessingStep(tst, "4"))
-    tst <- addProcessingStep(tst, function(z, t) z * t, t = 4)
+    expect_error(addProcessing(tst, "4"))
+    tst <- addProcessing(tst, function(z, t) z * t, t = 4)
     expect_true(length(tst@processingQueue) == 2)
 })
 

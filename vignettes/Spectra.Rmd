@@ -383,6 +383,52 @@ processing steps can be seen below (next to *Lazy evaluation queue*).
 sps
 ```
 
+It is possible to add also custom functions to the processing queue of a
+`Spectra` object. Such a function must take a peaks matrix as its first
+argument, have `...` in the function definition and must return a peaks matrix
+(a peaks matrix is a numeric two column matrix with the first column containing
+the peaks' m/z values and the second the corresponding intensities. Below we
+define a function that divides the intensities of each peak by a value which can
+be passed with argument `y`.
+
+```{r define-function}
+## Define a function that takes a matrix as input, divides the second
+## column by parameter y and returns it. Note that ... is required in
+## the function's definition.
+divide_intensities <- function(x, y, ...) {
+    x[, 2] <- x[, 2] / y
+    x
+}
+
+## Add the function to the procesing queue
+sps_2 <- addProcessing(sps, divide_intensities, y = 2)
+sps_2
+```
+
+Object `sps_2` has now 3 processing steps in its lazy evaluation queue. Calling
+`intensity` on this object will now return intensities that are half of the
+intensities of the original objects `sps`.
+
+```{r custom-processing}
+intensity(sps_2)
+intensity(sps)
+```
+
+Alternatively we could define a function that returns the maximum peak from each
+spectrum:
+
+```{r return-max-peak}
+max_peak <- function(x, ...) {
+    x[which.max(x[, 2]), , drop = FALSE]
+}
+
+sps_2 <- addProcessing(sps, max_peak)
+peaksCount(sps_2)
+intensity(sps_2)
+```
+
+Each spectrum in `sps_2` thus contains only a single peak.
+
 
 ## Changing backends
 
