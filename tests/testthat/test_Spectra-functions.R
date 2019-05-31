@@ -105,6 +105,11 @@ test_that(".peaksapply works", {
     expect_equal(length(res), length(sps))
     expect_true(all(vapply(res, is.matrix, logical(1))))
 
+    ## Ensure that this works with arbitrary ordering of the factor f
+    res2 <- .peaksapply(sps, FUN = .remove_peaks, t = 50000,
+                        f = rep(1:2, length(sps)/2))
+    expect_identical(res, res2)
+
     sps@processingQueue <- list(ProcessingStep(.remove_peaks, list(t = 50000)))
     res_2 <- .peaksapply(sps)
     expect_equal(res, res_2)

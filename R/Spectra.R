@@ -912,6 +912,8 @@ setMethod("$", "Spectra", function(x, name) {
 
 #' @rdname Spectra
 setReplaceMethod("$", "Spectra", function(x, name, value) {
+    ## if (any(name %in% c("mz", "intensity")))
+    ##     stop("Replacing mz or intensity values is currently not supported")
     x@backend <- do.call("$<-", list(x@backend, name, value))
     x
 })

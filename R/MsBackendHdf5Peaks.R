@@ -52,7 +52,7 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
                   suppressWarnings(hdf5path <- normalizePath(hdf5path))
                   if (!dir.exists(hdf5path))
                       dir.create(hdf5path, recursive = TRUE)
-                  files <- file.path(hdf5path, files)
+                  files <- file.path(hdf5path, basename(files))
               }
               if (length(files) != length(modCount))
                   modCount <- rep(modCount[1], length(files))

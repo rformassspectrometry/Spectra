@@ -589,7 +589,7 @@ precursorMz(data)
 ## Add an additional metadata column.
 data$spectrum_id <- c("sp_1", "sp_2")
 
-## List spectra variables.
+## List spectra variables, "spectrum_id" is now also listed
 spectraVariables(data)
 
 ## Get the values for the new spectra variable
@@ -609,13 +609,21 @@ spectraData(res)
 spectraData(data)
 
 
-## ---- SUBSETTING AND FILTERING
+## ---- SUBSETTING, FILTERING AND COMBINING
 
 ## Subset to all MS2 spectra.
 data[msLevel(data) == 2]
 
 ## Same with the filterMsLevel function
 filterMsLevel(data, 2)
+
+## Below we combine the `data` and `sciex_im` objects into a single one.
+data_comb <- merge(data, sciex_im)
+
+## The combined Spectra contains a union of all spectra variables:
+head(data_comb$spectrum_id)
+head(data_comb$rtime)
+head(data_comb$fromFile)
 
 ## ---- DATA MANIPULATIONS ----
 
