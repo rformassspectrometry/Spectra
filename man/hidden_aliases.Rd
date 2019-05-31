@@ -20,7 +20,6 @@
 \alias{filterPrecursorScan}
 \alias{filterRt}
 \alias{fromFile}
-\alias{ionCount}
 \alias{isReadOnly}
 \alias{peaksCount}
 \alias{removePeaks}
@@ -172,8 +171,6 @@ filterPrecursorScan(object, ...)
 filterRt(object, ...)
 
 fromFile(object, ...)
-
-ionCount(object, ...)
 
 isReadOnly(object, ...)
 

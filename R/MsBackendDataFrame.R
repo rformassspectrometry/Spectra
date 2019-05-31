@@ -54,17 +54,22 @@ setMethod("show", "MsBackendDataFrame", function(object) {
 
 #' @importMethodsFrom S4Vectors $ $<-
 #'
+#' @importClassesFrom IRanges NumericList
+#'
+#' @importFrom IRanges NumericList
+#'
 #' @rdname hidden_aliases
 setMethod("backendInitialize", signature = "MsBackendDataFrame",
-          definition = function(object, files, spectraData, ...) {
+          function(object, files, spectraData, ...) {
               if (missing(files)) files <- character()
               if (missing(spectraData)) spectraData <- DataFrame()
               object@files <- files
               object@modCount <- integer(length(files))
-              if (is.list(spectraData$mz))
-                  spectraData$mz <- SimpleList(spectraData$mz)
-              if (is.list(spectraData$intensity))
-                  spectraData$intensity <- SimpleList(spectraData$intensity)
+              if (nrow(spectraData) && !is(spectraData$mz, "NumericList"))
+                  spectraData$mz <- NumericList(spectraData$mz, compress = FALSE)
+              if (nrow(spectraData) && !is(spectraData$intensity, "NumericList"))
+                  spectraData$intensity <- NumericList(spectraData$intensity,
+                                                       compress = FALSE)
               object@spectraData <- spectraData
               validObject(object)
               object
@@ -88,6 +93,11 @@ setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
         res@spectraData <- do.call(
             .rbind_fill, lapply(object, function(z) z@spectraData))
     )
+    if (any(colnames(res@spectraData) == "mz"))
+        res@spectraData$mz[any(is.na(res@spectraData$mz))] <- list(numeric())
+    if (any(colnames(res@spectraData) == "intensity"))
+        res@spectraData$intensity[any(is.na(res@spectraData$intensity))] <-
+            list(numeric())
     res@spectraData$fromFile <- match(from_file, res@files)
     ## modCount: take the largest modCount for all with the same file
     res@modCount <- unname(vapply(
@@ -126,7 +136,7 @@ setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
 #' @rdname hidden_aliases
 setMethod("collisionEnergy", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "collisionEnergy"))
-        object@spectraData$collisionEnergy
+        as.numeric(object@spectraData$collisionEnergy)
     else rep(NA_real_, times = length(object))
 })
 
@@ -151,22 +161,22 @@ setMethod("intensity", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "intensity"))
         object@spectraData$intensity
     else {
-        lst <- SimpleList(numeric())
+        lst <- NumericList(numeric(), compress = FALSE)
         lst[rep(1, times = length(object))]
     }
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) | inherits(value, "SimpleList")))
-        stop("'value' has to be a list")
+    if (!(is.list(value) | inherits(value, "NumericList")))
+        stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
     if (!all(lengths(value) == peaksCount(object)))
         stop("lengths of 'value' has to match the number of peaks ",
              "(i.e. peaksCount(object))")
-    if (!is(value, "SimpleList"))
-        value <- SimpleList(value)
+    if (!is(value, "NumericList"))
+        value <- NumericList(value, compress = FALSE)
     object@spectraData$intensity <- value
     object@modCount <- object@modCount + 1L
     validObject(object)
@@ -191,7 +201,7 @@ setMethod("isEmpty", "MsBackendDataFrame", function(x) {
 #' @rdname hidden_aliases
 setMethod("isolationWindowLowerMz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "isolationWindowLowerMz"))
-        object@spectraData$isolationWindowLowerMz
+        as.numeric(object@spectraData$isolationWindowLowerMz)
     else rep(NA_real_, times = length(object))
 })
 
@@ -201,7 +211,8 @@ setReplaceMethod("isolationWindowLowerMz", "MsBackendDataFrame",
                      if (!is.numeric(value) | length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
-                     object@spectraData$isolationWindowLowerMz <- value
+                     object@spectraData$isolationWindowLowerMz <-
+                         as.numeric(value)
                      validObject(object)
                      object
                  })
@@ -209,7 +220,7 @@ setReplaceMethod("isolationWindowLowerMz", "MsBackendDataFrame",
 #' @rdname hidden_aliases
 setMethod("isolationWindowTargetMz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "isolationWindowTargetMz"))
-        object@spectraData$isolationWindowTargetMz
+        as.numeric(object@spectraData$isolationWindowTargetMz)
     else rep(NA_real_, times = length(object))
 })
 
@@ -219,7 +230,8 @@ setReplaceMethod("isolationWindowTargetMz", "MsBackendDataFrame",
                      if (!is.numeric(value) | length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
-                     object@spectraData$isolationWindowTargetMz <- value
+                     object@spectraData$isolationWindowTargetMz <-
+                         as.numeric(value)
                      validObject(object)
                      object
                  })
@@ -227,7 +239,7 @@ setReplaceMethod("isolationWindowTargetMz", "MsBackendDataFrame",
 #' @rdname hidden_aliases
 setMethod("isolationWindowUpperMz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "isolationWindowUpperMz"))
-        object@spectraData$isolationWindowUpperMz
+        as.numeric(object@spectraData$isolationWindowUpperMz)
     else rep(NA_real_, times = length(object))
 })
 
@@ -237,7 +249,8 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackendDataFrame",
                      if (!is.numeric(value) | length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
-                     object@spectraData$isolationWindowUpperMz <- value
+                     object@spectraData$isolationWindowUpperMz <-
+                         as.numeric(value)
                      validObject(object)
                      object
                  })
@@ -259,22 +272,22 @@ setMethod("mz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "mz"))
         object@spectraData$mz
     else {
-        lst <- SimpleList(numeric())
+        lst <- NumericList(numeric(), compress = FALSE)
         lst[rep(1, times = length(object))]
     }
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) | inherits(value, "SimpleList")))
-        stop("'value' has to be a list")
+    if (!(is.list(value) | inherits(value, "NumericList")))
+        stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
     if (!all(lengths(value) == peaksCount(object)))
         stop("lengths of 'value' has to match the number of peaks ",
              "(i.e. peaksCount(object))")
-    if (!is(value, "SimpleList"))
-        value <- SimpleList(value)
+    if (!is(value, "NumericList"))
+        value <- NumericList(value, compress = FALSE)
     object@spectraData$mz <- value
     object@modCount <- object@modCount + 1L
     validObject(object)
@@ -295,12 +308,12 @@ setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
         stop("Length of 'value' has to match length of 'object'")
     object@modCount <- object@modCount + 1L
     vals <- lapply(value, function(z) z[, 1])
-    if (!is(vals, "SimpleList"))
-        vals <- SimpleList(vals)
+    if (!is(vals, "NumericList"))
+        vals <- NumericList(vals, compress = FALSE)
     object@spectraData$mz <- vals
     vals <- lapply(value, function(z) z[, 2])
-    if (!is(vals, "SimpleList"))
-        vals <- SimpleList(vals)
+    if (!is(vals, "NumericList"))
+        vals <- NumericList(vals, compress = FALSE)
     object@spectraData$intensity <- vals
     validObject(object)
     object
@@ -346,21 +359,21 @@ setMethod("precursorCharge", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 setMethod("precursorIntensity", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "precursorIntensity"))
-        object@spectraData$precursorIntensity
+        as.numeric(object@spectraData$precursorIntensity)
     else rep(NA_real_, times = length(object))
 })
 
 #' @rdname hidden_aliases
 setMethod("precursorMz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "precursorMz"))
-        object@spectraData$precursorMz
+        as.numeric(object@spectraData$precursorMz)
     else rep(NA_real_, times = length(object))
 })
 
 #' @rdname hidden_aliases
 setMethod("rtime", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "rtime"))
-        object@spectraData$rtime
+        as.numeric(object@spectraData$rtime)
     else rep(NA_real_, times = length(object))
 })
 
@@ -435,9 +448,11 @@ setMethod("spectraData", "MsBackendDataFrame",
                   if (!all(is_mz_int))
                       res <- cbind(res, as(other_res[!is_mz_int], "DataFrame"))
                   if (any(names(other_res) == "mz"))
-                      res$mz <- if (length(other_res$mz)) other_res$mz else SimpleList()
+                      res$mz <- if (length(other_res$mz)) other_res$mz
+                                else NumericList(compress = FALSE)
                   if (any(names(other_res) == "intensity"))
-                      res$intensity <- if (length(other_res$intensity)) other_res$intensity else SimpleList()
+                      res$intensity <- if (length(other_res$intensity)) other_res$intensity
+                                       else NumericList(compress = FALSE)
               }
               res[, columns, drop = FALSE]
           })
@@ -447,10 +462,10 @@ setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
     if (inherits(value, "DataFrame")) {
         if (length(object) && nrow(value) != length(object))
             stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
-        if (is.list(value$mz))
-            value$mz <- SimpleList(value$mz)
-        if (is.list(value$intensity))
-            value$intensity <- SimpleList(value$intensity)
+        if (!is(value$mz, "NumericList"))
+            value$mz <- NumericList(value$mz, compress = FALSE)
+        if (!is(value$intensity, "NumericList"))
+            value$intensity <- NumericList(value$intensity, compress = FALSE)
     } else {
         if (length(value) == 1)
             value <- rep(value, length(object))
@@ -498,7 +513,7 @@ setMethod("$", "MsBackendDataFrame", function(x, name) {
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
     if (is.list(value) && any(c("mz", "intensity") == name))
-        value <- SimpleList(value)
+        value <- NumericList(value, compress = FALSE)
     x@spectraData[[name]] <- value
     validObject(x)
     x

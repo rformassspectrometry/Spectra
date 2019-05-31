@@ -44,9 +44,6 @@ setGeneric("filterRt", function(object, ...) standardGeneric("filterRt"))
 setGeneric("fromFile", function(object, ...)
     standardGeneric("fromFile"))
 #' @rdname hidden_aliases
-setGeneric("ionCount", function(object, ...)
-    standardGeneric("ionCount"))
-#' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
 #' @rdname hidden_aliases

@@ -16,6 +16,26 @@ test_that("backendInitialize,MsBackendDataFrame works", {
                                    spectraData = DataFrame(msLevel = 1L,
                                                            fromFile = 1L)),
                  "'files' can not be empty")
+    df <- test_df
+    df$fromFile <- 1L
+    be <- backendInitialize(be, files = NA_character_, df)
+    expect_true(validObject(be))
+    expect_true(is(be@spectraData$mz, "NumericList"))
+    expect_true(is(be@spectraData$intensity, "NumericList"))
+
+    df$mz <- SimpleList(df$mz)
+    df$intensity <- SimpleList(df$intensity)
+    be <- backendInitialize(be, files = NA_character_, df)
+    expect_true(validObject(be))
+    expect_true(is(be@spectraData$mz, "NumericList"))
+    expect_true(is(be@spectraData$intensity, "NumericList"))
+
+    df$mz <- NumericList(df$mz)
+    df$intensity <- NumericList(df$intensity)
+    be <- backendInitialize(be, files = NA_character_, df)
+    expect_true(validObject(be))
+    expect_true(is(be@spectraData$mz, "NumericList"))
+    expect_true(is(be@spectraData$intensity, "NumericList"))
 })
 
 test_that("backendMerge,MsBackendDataFrame works", {
@@ -40,6 +60,13 @@ test_that("backendMerge,MsBackendDataFrame works", {
     expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
     expect_identical(res@spectraData$other_col,
                      c(rep(NA_character_, 5), "z", "z"))
+
+    ## One backend with and one without m/z
+    df2$mz <- list(c(1.1, 1.2), c(1.1, 1.2))
+    df2$intensity <- list(c(12.4, 3), c(123.4, 1))
+    be2 <- backendInitialize(MsBackendDataFrame(), NA_character_, df2)
+    res <- backendMerge(be, be2, be3)
+
 
     ## with multiple files
     a <- tempfile()
@@ -122,16 +149,17 @@ test_that("fromFile,MsBackendDataFrame works", {
 
 test_that("intensity,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_equal(intensity(be), SimpleList())
+    expect_equal(intensity(be), NumericList(compress = FALSE))
     be <- backendInitialize(be, files = NA_character_,
                             spectraData = DataFrame(fromFile = 1L,
                                                     msLevel = c(1L, 2L)))
-    expect_equal(intensity(be), SimpleList(numeric(), numeric()))
+    expect_equal(intensity(be), NumericList(numeric(), numeric(),
+                                            compress = FALSE))
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 2L))
     df$intensity <- list(1:4, c(2.1, 3.4))
     df$mz <- list(1:4, 1:2)
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-    expect_equal(intensity(be), SimpleList(1:4, c(2.1, 3.4)))
+    expect_equal(intensity(be), NumericList(1:4, c(2.1, 3.4), compress = FALSE))
 })
 
 test_that("intensity<-,MsBackendDataFrame works", {
@@ -141,7 +169,7 @@ test_that("intensity<-,MsBackendDataFrame works", {
 
     new_ints <- lapply(test_df$intensity, function(z) z / 2)
     intensity(be) <- new_ints
-    expect_identical(intensity(be), SimpleList(new_ints))
+    expect_identical(intensity(be), NumericList(new_ints, compress = FALSE))
     expect_identical(be@modCount, 1L)
 
     expect_error(intensity(be) <- 3, "has to be a list")
@@ -187,7 +215,6 @@ test_that("isolationWindowLowerMz,MsBackendDataFrame works", {
     expect_identical(isolationWindowLowerMz(be), c(NA_real_, 4, 4, 3, 1))
 
     expect_error(isolationWindowLowerMz(be) <- 2.1, "of length 5")
-    expect_error(isolationWindowLowerMz(be) <- 1:5, "wrong data type")
 })
 
 test_that("isolationWindowTargetMz,MsBackendDataFrame works", {
@@ -206,7 +233,6 @@ test_that("isolationWindowTargetMz,MsBackendDataFrame works", {
     expect_identical(isolationWindowTargetMz(be), c(NA_real_, 4, 4, 3, 1))
 
     expect_error(isolationWindowTargetMz(be) <- 2.1, "of length 5")
-    expect_error(isolationWindowTargetMz(be) <- 1:5, "wrong data type")
 })
 
 test_that("isolationWindowUpperMz,MsBackendDataFrame works", {
@@ -225,7 +251,6 @@ test_that("isolationWindowUpperMz,MsBackendDataFrame works", {
     expect_identical(isolationWindowUpperMz(be), c(NA_real_, 4, 4, 3, 1))
 
     expect_error(isolationWindowUpperMz(be) <- 2.1, "of length 5")
-    expect_error(isolationWindowUpperMz(be) <- 1:5, "wrong data type")
 })
 
 test_that("length,MsBackendDataFrame works", {
@@ -249,14 +274,14 @@ test_that("msLevel,MsBackendDataFrame works", {
 
 test_that("mz,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_equal(mz(be), SimpleList())
+    expect_equal(mz(be), NumericList(compress = FALSE))
     df <- DataFrame(fromFile = 1L, msLevel = c(1L, 1L))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-    expect_equal(mz(be), SimpleList(numeric(), numeric()))
+    expect_equal(mz(be), NumericList(numeric(), numeric(), compress = FALSE))
     df$intensity <- list(1:3, 4)
     df$mz <- list(1:3, c(2.1))
     be <- backendInitialize(be, files = NA_character_, spectraData = df)
-    expect_equal(mz(be), SimpleList(1:3, 2.1))
+    expect_equal(mz(be), NumericList(1:3, 2.1, compress = FALSE))
 })
 
 test_that("mz<-,MsBackendDataFrame works", {
@@ -266,7 +291,7 @@ test_that("mz<-,MsBackendDataFrame works", {
 
     new_mzs <- lapply(test_df$mz, function(z) z / 2)
     mz(be) <- new_mzs
-    expect_identical(mz(be), SimpleList(new_mzs))
+    expect_identical(mz(be), NumericList(new_mzs, compress = FALSE))
     expect_identical(be@modCount, 1L)
 
     expect_error(mz(be) <- 3, "has to be a list")
@@ -478,12 +503,13 @@ test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
     res <- spectraData(be, c("mz"))
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), "mz")
-    expect_equal(res$mz, SimpleList(numeric(), numeric()))
+    expect_equal(res$mz, NumericList(numeric(), numeric(), compress = FALSE))
 
     res <- spectraData(be, c("a", "intensity"))
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), c("a", "intensity"))
-    expect_equal(res$intensity, SimpleList(numeric(), numeric()))
+    expect_equal(res$intensity, NumericList(numeric(), numeric(),
+                                            compress = FALSE))
     expect_equal(res$a, c("a", "a"))
 
     spectraData(be) <- DataFrame(fromFile = 1L, mzLevel = c(3L, 4L),
@@ -579,7 +605,7 @@ test_that("$,$<-,MsBackendDataFrame works", {
     df$intensity <- list(c(3, 3, 3), c(4, 4, 4, 4))
     be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
     be$intensity <- list(c(5, 5, 5), 1:4)
-    expect_equal(be$intensity, SimpleList(c(5, 5, 5), 1:4))
+    expect_equal(be$intensity, NumericList(c(5, 5, 5), 1:4, compress = FALSE))
 })
 
 test_that("filterAcquisitionNum,MsBackendDataFrame works", {

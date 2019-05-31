@@ -48,13 +48,21 @@ NULL
 #' @noRd
 .valid_column_datatype <- function(x, datatypes = .SPECTRA_DATA_COLUMNS) {
     datatypes <- datatypes[names(datatypes) %in% colnames(x)]
-    x_class <- vapply(x, .class_rle, character(1))[names(datatypes)]
-    if (!all(datatypes == x_class))
+    res <- mapply(FUN = .is_class, x[, names(datatypes), drop = FALSE],
+                  datatypes)
+    if (!all(res))
         paste0("The following columns have a wrong data type: ",
-               paste(names(datatypes)[datatypes != x_class], collapse = ", "),
+               paste(names(res[!res]), collapse = ", "),
                ". The expected data type(s) is/are: ",
-               paste(datatypes[datatypes != x_class], collapse = ", "), ".")
+               paste(datatypes[names(res)[!res]], collapse = ", "), ".")
     else NULL
+    ## x_class <- vapply(x, .class_rle, character(1))[names(datatypes)]
+    ## if (!all(datatypes == x_class))
+    ##     paste0("The following columns have a wrong data type: ",
+    ##            paste(names(datatypes)[datatypes != x_class], collapse = ", "),
+    ##            ". The expected data type(s) is/are: ",
+    ##            paste(datatypes[datatypes != x_class], collapse = ", "), ".")
+    ## else NULL
 }
 
 .valid_mz_column <- function(x) {
@@ -90,8 +98,8 @@ NULL
     rtime = "numeric",
     acquisitionNum = "integer",
     scanIndex = "integer",
-    mz = "SimpleList",
-    intensity = "SimpleList",
+    mz = "NumericList",
+    intensity = "NumericList",
     fromFile = "integer",
     centroided = "logical",
     smoothed = "logical",

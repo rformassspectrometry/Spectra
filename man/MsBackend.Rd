@@ -360,7 +360,7 @@ number of spectra in \code{object} indicating the file index from
 which spectra originate. If no files are available,
 \code{NA_character_} is returned for all spectra.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
-a \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors (intensity values for each
+a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
 \item \code{intensity<-}: replace the intensity values. \code{value} has to be a \code{list}
@@ -392,7 +392,7 @@ only} or does allow also to write/update data.
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
 \item \code{mz}: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a \code{\link[=SimpleList]{SimpleList()}} or length equal to the number of
+spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
 \item \code{mz<-}: replace the m/z values. \code{value} has to be a \code{list} of length equal
@@ -504,9 +504,9 @@ containing the precursor of a (MS2) spectrum.
 precursor.
 \item \code{"precursorCharge"}: \code{integer} with the charge of the precursor.
 \item \code{"collisionEnergy"}: \code{numeric} with the collision energy.
-\item \code{"mz"}: \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors representing the m/z values
+\item \code{"mz"}: \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors representing the m/z values
 for each spectrum.
-\item \code{"intensity"}: \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors representing the
+\item \code{"intensity"}: \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors representing the
 intensity values for each spectrum.
 }
 

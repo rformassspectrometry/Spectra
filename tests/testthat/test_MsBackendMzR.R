@@ -88,10 +88,10 @@ test_that("fromFile,MsBackendMzR works", {
 
 test_that("intensity,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(intensity(be), SimpleList())
+    expect_equal(intensity(be), NumericList(compress = FALSE))
 
     res <- intensity(sciex_mzr)
-    expect_true(is(res, "SimpleList"))
+    expect_true(is(res, "NumericList"))
     expect_true(is.numeric(res[[1]]))
     expect_equal(length(res), length(sciex_mzr))
 })
@@ -206,10 +206,10 @@ test_that("msLevel,MsBackendMzR works", {
 
 test_that("mz,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(mz(be), SimpleList())
+    expect_equal(mz(be), NumericList(compress = FALSE))
 
     res <- mz(sciex_mzr)
-    expect_true(is(res, "SimpleList"))
+    expect_true(is(res, "NumericList"))
     expect_true(is.numeric(res[[1]]))
     expect_true(!any(vapply(res, is.unsorted, logical(1))))
     expect_equal(length(res), length(sciex_mzr))
@@ -485,6 +485,7 @@ test_that("$,$<-,MsBackendDataFrame works", {
     expect_true(is.numeric(tmp$new_col))
     expect_true(is(tmp@spectraData$new_col, "Rle"))
 
-    expect_error(tmp$mz <- SimpleList(1:4, 1:6), "not support replacing mz")
+    expect_error(tmp$mz <- NumericList(1:4, 1:6, compress = FALSE),
+                 "not support replacing mz")
     expect_error(tmp$new_col <- c(2, 4), "either 1 or")
 })

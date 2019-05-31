@@ -73,6 +73,79 @@ test_that("setBackend,Spectra works", {
     expect_error(setBackend(res, MsBackendMzR(), BPPARAM = SerialParam()))
 })
 
+test_that("merge,Spectra works", {
+    df1 <- DataFrame(msLevel = c(1L, 1L, 1L), fromFile = 1L)
+    df1$mz <- list(c(1.1, 1.2), c(1.5), c(1.4, 1.5, 1.6))
+    df1$intensity <- list(c(4.5, 23), 452.1, c(4.1, 342, 123))
+    sp1 <- Spectra(df1)
+
+    df2 <- DataFrame(msLevel = c(2L, 2L), fromFile = 1L, rtime = c(1.2, 1.5))
+    df2$mz <- list(1.5, 1.5)
+    df2$intensity <- list(1234.1, 34.23)
+    sp2 <- Spectra(df2)
+
+    df3 <- DataFrame(msLevel = c(3L, 3L), fromFile = 1L, other_col = "a")
+    df3$mz <- list(c(1.4, 1.5, 1.6), c(1.8, 1.9))
+    df3$intensity <- list(c(123.4, 12, 5), c(43.1, 5))
+    sp3 <- Spectra(df3)
+
+    df4 <- df3
+    df4$mz <- NULL
+    df4$intensity <- NULL
+    sp4 <- Spectra(df4)
+
+    res <- merge(sp1, sp2, sp3)
+    expect_true(is(res, "Spectra"))
+    expect_equal(length(res), sum(nrow(df1), nrow(df2), nrow(df3)))
+    expect_identical(msLevel(res), c(1L, 1L, 1L, 2L, 2L, 3L, 3L))
+    expect_identical(res$other_col, c(NA, NA, NA, NA, NA, "a", "a"))
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) == 1)
+
+    ## One Spectra without m/z and intensity
+    res <- merge(sp3, sp4)
+    expect_true(is(res, "Spectra"))
+    expect_identical(mz(res), NumericList(c(1.4, 1.5, 1.6), c(1.8, 1.9),
+                                          numeric(), numeric(),
+                                          compress = FALSE))
+    expect_identical(msLevel(res), rep(3L, 4))
+    expect_identical(intensity(res), NumericList(c(123.4, 12, 5), c(43.1, 5),
+                                                 numeric(), numeric(),
+                                                 compress = FALSE))
+    res <- merge(sp4, sp3)
+    expect_true(is(res, "Spectra"))
+    expect_identical(mz(res), NumericList(numeric(), numeric(),
+                                          c(1.4, 1.5, 1.6), c(1.8, 1.9),
+                                          compress = FALSE))
+    expect_identical(msLevel(res), rep(3L, 4))
+    expect_identical(intensity(res), NumericList(numeric(), numeric(),
+                                                 c(123.4, 12, 5), c(43.1, 5),
+                                                 compress = FALSE))
+
+    ## Two Spectra without m/z and intensity
+    res <- merge(sp4, sp4)
+    expect_true(is(res, "Spectra"))
+    expect_identical(mz(res), NumericList(numeric(), numeric(), numeric(),
+                                          numeric(), compress = FALSE))
+
+    sp1@metadata <- list(version = "1.0.0", date = date())
+    res <- merge(sp1, sp2)
+    expect_equal(res@metadata, sp1@metadata)
+
+    sp1@processingQueue <- list(ProcessingStep(sum))
+    expect_error(merge(sp1, sp2), "with non-empty processing")
+
+    ## Different backends
+    s1 <- Spectra(sciex_mzr)
+    s2 <- Spectra(sciex_hd5)
+    expect_error(merge(s1, s2), "backends of the same type")
+
+    ## BackendMzR
+    res <- merge(Spectra(tmt_mzr), Spectra(sciex_mzr))
+    expect_identical(msLevel(res), c(msLevel(tmt_mzr), msLevel(sciex_mzr)))
+    expect_identical(msLevel(sciex_mzr), msLevel(filterFile(res, 2:3)))
+})
+
 test_that("acquisitionNum,Spectra works", {
     sps <- Spectra()
     res <- acquisitionNum(sps)
@@ -165,7 +238,7 @@ test_that("length,Spectra works", {
 test_that("intensity,Spectra works", {
     sps <- Spectra()
     res <- intensity(sps)
-    expect_true(is(res, "SimpleList"))
+    expect_true(is(res, "NumericList"))
     expect_true(length(res) == 0)
 
     df <- DataFrame(msLevel = c(1L, 1L),
@@ -176,12 +249,14 @@ test_that("intensity,Spectra works", {
     df$mz <- list(c(1:10), c(1:10))
     sps <- Spectra(df)
     res <- intensity(sps)
-    expect_equal(res, SimpleList(
+    expect_identical(res, NumericList(
                           c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
-                          c(9, 6, 0, 0, 3, 9, 4, 0, 0, 0)))
+                          c(9, 6, 0, 0, 3, 9, 4, 0, 0, 0),
+                          compress = FALSE))
     sps <- clean(sps, all = TRUE)
     res <- intensity(sps)
-    expect_equal(res, SimpleList(c(1, 6, 3, 9, 1), c(9, 6, 3, 9, 4)))
+    expect_identical(res, NumericList(c(1, 6, 3, 9, 1), c(9, 6, 3, 9, 4),
+                                      compress = FALSE))
 })
 
 test_that("ionCount,Spectra works", {
@@ -301,7 +376,7 @@ test_that("msLevel,Spectra works", {
 test_that("mz,Spectra works", {
     sps <- Spectra()
     res <- mz(sps)
-    expect_true(is(res, "SimpleList"))
+    expect_true(is(res, "NumericList"))
     expect_true(length(res) == 0)
 
     df <- DataFrame(msLevel = c(1L, 1L),
@@ -312,10 +387,11 @@ test_that("mz,Spectra works", {
     df$mz <- list(c(1:10), c(1:10))
     sps <- Spectra(df)
     res <- mz(sps)
-    expect_equal(res, SimpleList(1:10, 1:10))
+    expect_identical(res, NumericList(1:10, 1:10, compress = FALSE))
     sps <- clean(sps, all = TRUE)
     res <- mz(sps)
-    expect_equal(res, SimpleList(c(3, 4, 5, 8, 9), c(1, 2, 5, 6, 7)))
+    expect_equal(res, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 6, 7),
+                                  compress = FALSE))
 })
 
 test_that("peaks,Spectra works", {
@@ -495,13 +571,16 @@ test_that("spectraData,Spectra works", {
     expect_equal(res$msLevel, c(1L, 1L))
     expect_equal(res$rtime, c(1.2, 1.3))
     expect_equal(res$precScanNum, c(NA_integer_, NA_integer_))
-    expect_equal(res$mz, SimpleList(1:10, 1:10))
-    expect_equal(res$intensity, SimpleList(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
-                                           c(9, 6, 0, 0, 3, 0, 0, 0, 3, 2)))
+    expect_equal(res$mz, NumericList(1:10, 1:10, compress = FALSE))
+    expect_equal(res$intensity, NumericList(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
+                                            c(9, 6, 0, 0, 3, 0, 0, 0, 3, 2),
+                                            compress = FALSE))
     sps <- clean(sps, all = TRUE)
     res <- spectraData(sps)
-    expect_equal(res$mz, SimpleList(c(3, 4, 5, 8, 9), c(1, 2, 5, 9, 10)))
-    expect_equal(res$intensity, SimpleList(c(1, 6, 3, 9, 1), c(9, 6, 3, 3, 2)))
+    expect_equal(res$mz, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 9, 10),
+                                     compress = FALSE))
+    expect_equal(res$intensity, NumericList(c(1, 6, 3, 9, 1), c(9, 6, 3, 3, 2),
+                                            compress = FALSE))
 })
 
 test_that("spectraData<-,Spectra works", {
@@ -521,7 +600,7 @@ test_that("spectraData<-,Spectra works", {
 
     spectraData(sps) <- df
     expect_true(!any(spectraVariables(sps) == "add_col"))
-    expect_equal(mz(sps), SimpleList(11:20, 11:20))
+    expect_equal(mz(sps), NumericList(11:20, 11:20, compress = FALSE))
 
     expect_error(spectraData(sps) <- c(1, 2, 4, 5), "has to be 2")
 
@@ -603,7 +682,8 @@ test_that("$, $<-,Spectra works", {
     sps <- Spectra(df)
 
     sps$intensity <- list(c(4, 4, 4), c(2, 4, 6, 3))
-    expect_equal(intensity(sps), SimpleList(c(4, 4, 4), c(2, 4, 6, 3)))
+    expect_equal(intensity(sps), NumericList(c(4, 4, 4), c(2, 4, 6, 3),
+                                             compress = FALSE))
 
     sps <- Spectra(sciex_mzr)
     sps$add_col <- "something"

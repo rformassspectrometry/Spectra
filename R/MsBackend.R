@@ -185,7 +185,7 @@ NULL
 #'   `NA_character_` is returned for all spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
-#'   a [SimpleList()] of `numeric` vectors (intensity values for each
+#'   a [NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
@@ -228,7 +228,7 @@ NULL
 #'   level for each spectrum (or `NA_integer_` if not available).
 #'
 #' - `mz`: gets the mass-to-charge ratios (m/z) from the
-#'   spectra. Returns a [SimpleList()] or length equal to the number of
+#'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
@@ -347,9 +347,9 @@ NULL
 #'   precursor.
 #' - `"precursorCharge"`: `integer` with the charge of the precursor.
 #' - `"collisionEnergy"`: `numeric` with the collision energy.
-#' - `"mz"`: [SimpleList()] of `numeric` vectors representing the m/z values
+#' - `"mz"`: [NumericList()] of `numeric` vectors representing the m/z values
 #'   for each spectrum.
-#' - `"intensity"`: [SimpleList()] of `numeric` vectors representing the
+#' - `"intensity"`: [NumericList()] of `numeric` vectors representing the
 #'   intensity values for each spectrum.
 #'
 #' Additional columns are allowed too.
@@ -438,22 +438,6 @@ setMethod("backendInitialize", signature = "MsBackend",
               validObject(object)
               object
           })
-
-## #' How could we do that on a per-file basis?
-## #' - option a
-## #'   - split the backend by file.
-## setMethod("backendCopy", signature = c("MsBackend", "MsBackend"),
-##           function(from, to, ..., BPPARAM = bpparam()) {
-##               if (isReadOnly(to) && any(from@modCount > 0))
-##                   stop("Can not convert from '", class(from), "' to '",
-##                        class(to), "' because 'to' is read-only but 'from'",
-##                        " contains modified original data.")
-##               to@files <- fileNames(from)
-##               to@modCount <- integer(length(fileNames(from)))
-##               spectraData(to) <- spectraData(from)
-##               validObject(to)
-##               to
-##           })
 
 #' @rdname MsBackend
 setMethod("backendMerge", "list", function(object, ...) {
@@ -609,6 +593,8 @@ setReplaceMethod("intensity", "MsBackend", function(object, value) {
 })
 
 #' @exportMethod ionCount
+#'
+#' @importMethodsFrom ProtGenerics ionCount
 #'
 #' @rdname MsBackend
 setMethod("ionCount", "MsBackend", function(object) {

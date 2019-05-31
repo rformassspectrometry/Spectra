@@ -103,7 +103,7 @@ NULL
 #'   integer vector of length equal to the number of spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
-#'   a [SimpleList()] of `numeric` vectors (intensity values for each
+#'   a [NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
@@ -138,7 +138,7 @@ NULL
 #'   level for each spectrum.
 #'
 #' - `mz`: gets the mass-to-charge ratios (m/z) from the
-#'   spectra. Returns a [SimpleList()] or length equal to the number of
+#'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
@@ -199,9 +199,9 @@ NULL
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `0` is returned.
 #'
-#' @section Data subsetting and filtering:
+#' @section Data subsetting, filtering and merging:
 #'
-#' Subseting and filtering of `Spectra` objects can be performed with the below
+#' Subsetting and filtering of `Spectra` objects can be performed with the below
 #' listed methods.
 #'
 #' - `[`: subset the spectra keeping only selected elements (`i`). The method
@@ -246,6 +246,13 @@ NULL
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
 #'   the values will be dropped, while additional (user defined) spectra
 #'   variables will be completely removed. Returns the filtered `Spectra`.
+#'
+#' Several `Spectra` objects can be merged into a single object with the
+#' `merge` function. Merging will fail if the processing queue of any of the
+#' `Spectra` objects is not empty, or if different backends are used in the
+#' various `Spectra` objects. The spectra variables of the resulting `Spectra`
+#' object is the union of the spectra variables of the individual `Spectra`
+#' objects.
 #'
 #' @section Data manipulation and analysis methods:
 #'
@@ -352,6 +359,8 @@ NULL
 #'
 #' @param x A `Spectra` object.
 #'
+#' @param y A `Spectra` object.
+#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
@@ -428,7 +437,7 @@ NULL
 #' ## Add an additional metadata column.
 #' data$spectrum_id <- c("sp_1", "sp_2")
 #'
-#' ## List spectra variables.
+#' ## List spectra variables, "spectrum_id" is now also listed
 #' spectraVariables(data)
 #'
 #' ## Get the values for the new spectra variable
@@ -448,13 +457,21 @@ NULL
 #' spectraData(data)
 #'
 #'
-#' ## ---- SUBSETTING AND FILTERING
+#' ## ---- SUBSETTING, FILTERING AND COMBINING
 #'
 #' ## Subset to all MS2 spectra.
 #' data[msLevel(data) == 2]
 #'
 #' ## Same with the filterMsLevel function
 #' filterMsLevel(data, 2)
+#'
+#' ## Below we combine the `data` and `sciex_im` objects into a single one.
+#' data_comb <- merge(data, sciex_im)
+#'
+#' ## The combined Spectra contains a union of all spectra variables:
+#' head(data_comb$spectrum_id)
+#' head(data_comb$rtime)
+#' head(data_comb$fromFile)
 #'
 #' ## ---- DATA MANIPULATIONS ----
 #'
@@ -581,6 +598,7 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 setMethod("setBackend", c("Spectra", "MsBackend"),
           function(object, backend, f = fromFile(object), ...,
                    BPPARAM = bpparam()) {
+              backend_class <- class(object@backend)
               f <- factor(f, levels = unique(f))
               if (length(f) != length(object))
                   stop("length of 'f' has to match the length of 'object'")
@@ -599,8 +617,36 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
                   bknds <- bknds[order(unlist(split(seq_along(bknds), f),
                                               use.names = FALSE))]
               object@backend <- bknds
+              object@processing <- c(
+                  object@processing,
+                  paste0("Switch backend from ", backend_class, " to ",
+                         class(object@backend), " [", date(), "]"))
               object
           })
+
+#' @rdname Spectra
+#'
+#' @importMethodsFrom S4Vectors merge
+#'
+#' @exportMethod merge
+setMethod("merge", c("Spectra", "Spectra"), function(x, y, ...) {
+    objs <- unname(c(x, y, ...))
+    pqs <- lapply(objs, function(z) z@processingQueue)
+    ## For now we stop if there is any of the processingQueues not empty. Later
+    ## we could even test if they are similar, and if so, merge.
+    if (any(lengths(pqs)))
+        stop("Can not merge Spectra objects with non-empty processing queue")
+    metad <- do.call(c, lapply(objs, function(z) z@metadata))
+    procs <- unique(unlist(lapply(objs, function(z) z@processing)))
+    object <- new(
+        "Spectra", metadata = metad,
+        backend = backendMerge(lapply(objs, function(z) z@backend)),
+        processing = c(procs, paste0("Merge ", length(objs),
+                                     " Spectra into one [", date(), "]"))
+    )
+    validObject(object)
+    object
+})
 
 #### ---------------------------------------------------------------------------
 ##
@@ -644,7 +690,8 @@ setMethod("fromFile", "Spectra", function(object) fromFile(object@backend))
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
-    SimpleList(lapply(.peaksapply(object, ...), function(z) z[, 2]))
+    NumericList(lapply(.peaksapply(object, ...), function(z) z[, 2]),
+                compress = FALSE)
 })
 
 #' @rdname Spectra
@@ -714,7 +761,8 @@ setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
 #' @rdname Spectra
 setMethod("mz", "Spectra", function(object, ...) {
-    SimpleList(lapply(.peaksapply(object, ...), function(z) z[, 1]))
+    NumericList(lapply(.peaksapply(object, ...), function(z) z[, 1]),
+                compress = FALSE)
 })
 
 #' @rdname Spectra
@@ -811,9 +859,11 @@ setMethod("spectraData", "Spectra", function(object,
     if (any(columns %in% skip_cols)) {
         pks <- .peaksapply(object)
         if (any(columns == "mz"))
-            res$mz <- SimpleList(lapply(pks, function(z) z[, 1]))
+            res$mz <- NumericList(lapply(pks, function(z) z[, 1]),
+                                  compress = FALSE)
         if (any(columns == "intensity"))
-            res$intensity <- SimpleList(lapply(pks, function(z) z[, 2]))
+            res$intensity <- NumericList(lapply(pks, function(z) z[, 2]),
+                                         compress = FALSE)
     }
     res[, columns, drop = FALSE]
 })

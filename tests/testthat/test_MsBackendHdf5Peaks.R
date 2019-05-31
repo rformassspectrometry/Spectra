@@ -65,10 +65,10 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
 
 test_that("intensity,MsBackendHdf5Peaks works", {
     be <- MsBackendHdf5Peaks()
-    expect_equal(intensity(be), SimpleList())
+    expect_identical(intensity(be), NumericList(compress = FALSE))
 
     res <- intensity(test_be)
-    expect_equal(res, SimpleList(test_df$intensity))
+    expect_identical(res, NumericList(test_df$intensity, compress = FALSE))
     expect_true(is.numeric(res[[1]]))
     expect_equal(length(res), length(test_be))
 })
@@ -78,7 +78,7 @@ test_that("intensity<-,MsBackendHdf5Peaks works", {
 
     ints <- lapply(test_df$intensity, function(z) z/2)
     intensity(be) <- ints
-    expect_identical(intensity(be), SimpleList(ints))
+    expect_identical(intensity(be), NumericList(ints, compress = FALSE))
     expect_identical(be@modCount, 1L)
 
     expect_error(intensity(be) <- 4, "has to be a list")
@@ -129,12 +129,12 @@ test_that("isEmpty,MsBackendHdf5Peaks works", {
 
 test_that("mz,MsBackendHdf5Peaks works", {
     be <- MsBackendHdf5Peaks()
-    expect_equal(mz(be), SimpleList())
+    expect_identical(mz(be), NumericList(compress = FALSE))
 
     res <- mz(test_be)
-    expect_true(is(res, "SimpleList"))
+    expect_true(is(res, "NumericList"))
     expect_true(is.numeric(res[[1]]))
-    expect_identical(res, SimpleList(test_df$mz))
+    expect_identical(res, NumericList(test_df$mz, compress = FALSE))
 })
 
 test_that("mz<-,MsBackendHdf5Peaks works", {
@@ -142,7 +142,7 @@ test_that("mz<-,MsBackendHdf5Peaks works", {
 
     mzs <- lapply(test_df$mz, function(z) z/2)
     mz(be) <- mzs
-    expect_identical(mz(be), SimpleList(mzs))
+    expect_identical(mz(be), NumericList(mzs, compress = FALSE))
     expect_identical(be@modCount, 1L)
 
     expect_error(mz(be) <- 4, "has to be a list")
@@ -208,8 +208,9 @@ test_that("spectraData,MsBackendHdf5Peaks works", {
 
     res <- spectraData(test_be)
     expect_identical(res$msLevel, test_df$msLevel)
-    expect_identical(res$mz, SimpleList(test_df$mz))
-    expect_identical(res$intensity, SimpleList(test_df$intensity))
+    expect_identical(res$mz, NumericList(test_df$mz, compress = FALSE))
+    expect_identical(res$intensity, NumericList(test_df$intensity,
+                                                compress = FALSE))
 })
 
 test_that("spectraData<-,MsBackendHdf5Peaks works", {
@@ -224,13 +225,14 @@ test_that("spectraData<-,MsBackendHdf5Peaks works", {
     spectraData(be) <- df
     expect_identical(be@modCount, 0L)
     expect_identical(msLevel(be), rep(1L, 3))
-    expect_identical(intensity(be), SimpleList(test_df$intensity))
+    expect_identical(intensity(be), NumericList(test_df$intensity,
+                                                compress = FALSE))
     expect_identical(be$new_col, c("a", "a", "a"))
 
     ## Only m/z, no intensities.
     df$mz <- test_df$mz
     spectraData(be) <- df
-    expect_identical(mz(be), SimpleList(test_df$mz))
+    expect_identical(mz(be), NumericList(test_df$mz, compress = FALSE))
     expect_true(all(is.na(unlist(intensity(be)))))
 
     ## Update the m/z and intensities.
@@ -238,8 +240,8 @@ test_that("spectraData<-,MsBackendHdf5Peaks works", {
     df$intensity <- list(c(45.3, 345.1), numeric(), c(1234.2, 12.1))
 
     spectraData(be) <- df
-    expect_identical(intensity(be), SimpleList(df$intensity))
-    expect_identical(mz(be), SimpleList(df$mz))
+    expect_identical(intensity(be), NumericList(df$intensity, compress = FALSE))
+    expect_identical(mz(be), NumericList(df$mz, compress = FALSE))
     expect_identical(peaksCount(be), c(2L, 0L, 2L))
 
     ## Error:
@@ -255,12 +257,12 @@ test_that("$<-,MsBackendHdf5Peaks works", {
 
     ints <- lapply(test_df$intensity, function(z) z/2)
     be$intensity <- ints
-    expect_identical(intensity(be), SimpleList(ints))
+    expect_identical(intensity(be), NumericList(ints, compress = FALSE))
     expect_identical(be@modCount, 1L)
 
     mzs <- lapply(test_df$mz, function(z) z/4)
     be$mz <- mzs
-    expect_identical(mz(be), SimpleList(mzs))
+    expect_identical(mz(be), NumericList(mzs, compress = FALSE))
     expect_identical(be@modCount, 2L)
 
     expect_error(be$mz <- 4, "has to be a list")

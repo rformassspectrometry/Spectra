@@ -9,6 +9,7 @@
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
 \alias{setBackend,Spectra,MsBackend-method}
+\alias{merge,Spectra,Spectra-method}
 \alias{acquisitionNum,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
@@ -77,6 +78,8 @@
 
 \S4method{setBackend}{Spectra,MsBackend}(object, backend,
   f = fromFile(object), ..., BPPARAM = bpparam())
+
+\S4method{merge}{Spectra,Spectra}(x, y, ...)
 
 \S4method{acquisitionNum}{Spectra}(object)
 
@@ -217,10 +220,12 @@ of the \linkS4class{MsBackend}.}
 \item{f}{For \code{setBackend}: factor defining how to split the data should
 for the parallelized copying of the spectra data to the new backend.}
 
+\item{x}{A \code{Spectra} object.}
+
+\item{y}{A \code{Spectra} object.}
+
 \item{value}{replacement value for \code{<-} methods. See individual
 method description or expected data type.}
-
-\item{x}{A \code{Spectra} object.}
 
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
@@ -369,7 +374,7 @@ returns a \code{numeric} with length equal to the number of spectra
 \item \code{fromFile}: get the file/sample assignment of each spectrum. Returns an
 integer vector of length equal to the number of spectra.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
-a \code{\link[=SimpleList]{SimpleList()}} of \code{numeric} vectors (intensity values for each
+a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
 \item \code{ionCount}: returns a \code{numeric} with the sum of intensities for
@@ -395,7 +400,7 @@ m/z boundary of the isolation window.
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.
 \item \code{mz}: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a \code{\link[=SimpleList]{SimpleList()}} or length equal to the number of
+spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
 \item \code{peaks}: get the \emph{peaks} matrices for all spectra in \code{object}. The function
@@ -448,10 +453,10 @@ spectrum, \code{0} is returned.
 }
 }
 
-\section{Data subsetting and filtering}{
+\section{Data subsetting, filtering and merging}{
 
 
-Subseting and filtering of \code{Spectra} objects can be performed with the below
+Subsetting and filtering of \code{Spectra} objects can be performed with the below
 listed methods.
 \itemize{
 \item \code{[}: subset the spectra keeping only selected elements (\code{i}). The method
@@ -487,6 +492,13 @@ be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) onl
 the values will be dropped, while additional (user defined) spectra
 variables will be completely removed. Returns the filtered \code{Spectra}.
 }
+
+Several \code{Spectra} objects can be merged into a single object with the
+\code{merge} function. Merging will fail if the processing queue of any of the
+\code{Spectra} objects is not empty, or if different backends are used in the
+various \code{Spectra} objects. The spectra variables of the resulting \code{Spectra}
+object is the union of the spectra variables of the individual \code{Spectra}
+objects.
 }
 
 \section{Data manipulation and analysis methods}{

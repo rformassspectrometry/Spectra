@@ -117,7 +117,7 @@ setMethod("collisionEnergy", "MsBackendMzR", function(object) {
 setReplaceMethod("collisionEnergy", "MsBackendMzR", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$collisionEnergy <- .as_rle(value)
+    object@spectraData$collisionEnergy <- .as_rle(as.numeric(value))
     validObject(object)
     object
 })
@@ -129,7 +129,7 @@ setMethod("fromFile", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMzR", function(object) {
-    SimpleList(lapply(peaks(object), function(z) z[, 2]))
+    NumericList(lapply(peaks(object), function(z) z[, 2]), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -163,7 +163,8 @@ setReplaceMethod("isolationWindowLowerMz", "MsBackendMzR",
                      if (!is.numeric(value) | length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
-                     object@spectraData$isolationWindowLowerMz <- .as_rle(value)
+                     object@spectraData$isolationWindowLowerMz <-
+                         .as_rle(as.numeric(value))
                      validObject(object)
                      object
                  })
@@ -179,7 +180,8 @@ setReplaceMethod("isolationWindowTargetMz", "MsBackendMzR",
                      if (!is.numeric(value) | length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
-                     object@spectraData$isolationWindowTargetMz <- .as_rle(value)
+                     object@spectraData$isolationWindowTargetMz <-
+                         .as_rle(as.numeric(value))
                      validObject(object)
                      object
                  })
@@ -195,7 +197,8 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackendMzR",
                      if (!is.numeric(value) | length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
-                     object@spectraData$isolationWindowUpperMz <- .as_rle(value)
+                     object@spectraData$isolationWindowUpperMz <-
+                         .as_rle(as.numeric(value))
                      validObject(object)
                      object
                  })
@@ -207,7 +210,7 @@ setMethod("msLevel", "MsBackendMzR", function(object, ...) {
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendMzR", function(object) {
-    SimpleList(lapply(peaks(object), function(z) z[, 1]))
+    NumericList(lapply(peaks(object), function(z) z[, 1]), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -279,7 +282,7 @@ setMethod("rtime", "MsBackendMzR", function(object) {
 setReplaceMethod("rtime", "MsBackendMzR", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$rtime <- .as_rle(value)
+    object@spectraData$rtime <- .as_rle(as.numeric(value))
     validObject(object)
     object
 })

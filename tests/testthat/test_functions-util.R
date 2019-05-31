@@ -160,4 +160,11 @@ test_that(".rbind_fill works", {
     expect_identical(res$z, factor(c(rep(NA, nrow(a) + nrow(b)), 1:5)))
     expect_identical(res$a, c(1:4, rep(NA, nrow(b) + 5)))
     expect_identical(res$b, c(rep(FALSE, nrow(a)), rep(TRUE, nrow(b)), rep(NA, 5)))
+
+    ## DataFrame containing SimpleList.
+    a$mz <- SimpleList(1:3, 1:4, 1:2, 1:3)
+    res <- .rbind_fill(a, b)
+    expect_true(is(res$mz, "SimpleList"))
+    expect_true(all(unlist(is.na(res$mz[5:8]))))
+    expect_true(is.logical(res$mz[[5]]))
 })

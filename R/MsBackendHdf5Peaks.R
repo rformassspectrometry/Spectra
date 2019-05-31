@@ -113,13 +113,13 @@ setMethod("show", "MsBackendHdf5Peaks", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendHdf5Peaks", function(object) {
-    SimpleList(lapply(peaks(object), function(z) z[, 2]))
+    NumericList(lapply(peaks(object), function(z) z[, 2]), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
-    if (!(is.list(value) | inherits(value, "SimpleList")))
-        stop("'value' has to be a list")
+    if (!(is.list(value) | inherits(value, "NumericList")))
+        stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
     mzs <- mz(object)
@@ -148,13 +148,13 @@ setMethod("isEmpty", "MsBackendHdf5Peaks", function(x) {
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendHdf5Peaks", function(object) {
-    SimpleList(lapply(peaks(object), function(z) z[, 1]))
+    NumericList(lapply(peaks(object), function(z) z[, 1]), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
-    if (!(is.list(value) | inherits(value, "SimpleList")))
-        stop("'value' has to be a list")
+    if (!(is.list(value) | inherits(value, "NumericList")))
+        stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
     ints <- intensity(object)

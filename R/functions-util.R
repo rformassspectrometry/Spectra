@@ -60,20 +60,20 @@
     i
 }
 
-## #' Helper function to check the data type even if `x` is an `Rle`.
-## #'
-## #' @param x
-## #'
-## #' @param class2 `character(1)` specifying the class for which should be tested.
-## #'
-## #' @author Johannes Rainer
-## #'
-## #' @noRd
-## .is_class <- function(x, class2) {
-##     if (is(x, "Rle"))
-##         is(x@values, class2)
-##     else is(x, class2)
-## }
+#' Helper function to check the data type even if `x` is an `Rle`.
+#'
+#' @param x
+#'
+#' @param class2 `character(1)` specifying the class for which should be tested.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.is_class <- function(x, class2) {
+    if (is(x, "Rle"))
+        is(x@values, class2)
+    else is(x, class2)
+}
 
 .class_rle <- function(x) {
     if (is(x, "Rle"))
@@ -196,6 +196,9 @@ utils.enableNeighbours <- function(x) {
     parents | children
 }
 
+#' These are S4 classes that need special attention in .rbind_fill.
+#' @noRd
+.RBIND_FILL_CLASSES <- c("SimpleList", "LogicalList", "IntegerList")
 #' @title Combine two two-dimensional arrays
 #'
 #' @importMethodsFrom S4Vectors cbind
@@ -204,6 +207,10 @@ utils.enableNeighbours <- function(x) {
 #'
 #' Combine instances of `matrix`, `data.frame` or `DataFrame` objects into a
 #' single instance adding eventually missing columns filling them with `NA`s.
+#'
+#' @note
+#'
+#' This function might not work if one of the columns contains S4classes.
 #'
 #' @param ... 2 or more: `matrix`, `data.frame` or `DataFrame`.
 #'
@@ -227,12 +234,22 @@ utils.enableNeighbours <- function(x) {
     cols_class <- cols_class[cols_names]
     res <- lapply(dots, function(z) {
         cnz <- colnames(z)
+        rnz <- nrow(z)
+        is_matrix <- is.matrix(z)
         mis_col <- setdiff(cols_names, cnz)
         for (mc in mis_col) {
             mc_class <- cols_class[mc]
             if (mc_class == "factor")
                 z <- cbind(z, as.factor(NA))
-            else z <- cbind(z, as(NA, mc_class))
+            else {
+                ## If we have a data.frame or DataFrame using cbind can result
+                ## in unwanted results if one of the columns is a S4class such
+                ## as SimpleList.
+                if (is_matrix)
+                    z <- cbind(z, as(NA, mc_class))
+                else
+                    z[[ncol(z) + 1]] <- as(rep(NA, rnz), mc_class)
+            }
         }
         colnames(z) <- c(cnz, mis_col)
         z[, cols_names]

@@ -145,41 +145,49 @@ MsBackendMzR <- function() {
     } else stop("column '", column, "' not available")
 }
 
+#' @importFrom IRanges NumericList
+#'
 #' @description
 #'
 #' Helper to build the spectraData `DataFrame` for `MsBackendMzR` backend.
 #'
 #' @noRd
 .spectra_data_mzR <- function(x, columns = spectraVariables(x)) {
-              cn <- colnames(x@spectraData)
-              if(!nrow(x@spectraData)) {
-                  res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
-                  res <- DataFrame(res)
-                  res$mz <- SimpleList()
-                  res$intensity <- SimpleList()
-                  return(res[, columns, drop = FALSE])
-              }
-              not_found <- setdiff(columns, c(cn, names(.SPECTRA_DATA_COLUMNS)))
-              if (length(not_found))
-                  stop("Column(s) ", paste(not_found, collapse = ", "),
-                       " not available")
-              sp_cols <- columns[columns %in% cn]
-              res <- .as_vector_spectra_data(
-                  x@spectraData[, sp_cols, drop = FALSE])
-              if (any(columns %in% c("mz", "intensity"))) {
-                  pks <- peaks(x)
-                  if (any(columns == "mz"))
-                      res$mz <- SimpleList(lapply(pks, function(z) z[, 1]))
-                  if (any(columns == "intensity"))
-                      res$intensity <- SimpleList(lapply(pks, function(z) z[, 2]))
-              }
-              other_cols <- setdiff(
-                  columns[!(columns %in% c("mz", "intensity"))], sp_cols)
-              if (length(other_cols)) {
-                  other_res <- lapply(other_cols, .get_spectra_data_column,
-                                      x = x)
-                  names(other_res) <- other_cols
-                  res <- cbind(res, as(other_res, "DataFrame"))
-              }
-              res[, columns, drop = FALSE]
+    cn <- colnames(x@spectraData)
+    if(!nrow(x@spectraData)) {
+        res <- lapply(
+            .SPECTRA_DATA_COLUMNS[!(names(.SPECTRA_DATA_COLUMNS) %in%
+                                    c("mz", "intensity"))], do.call,
+            args = list())
+        res <- DataFrame(res)
+        res$mz <- NumericList(compress = FALSE)
+        res$intensity <- NumericList(compress = FALSE)
+        return(res[, columns, drop = FALSE])
+    }
+    not_found <- setdiff(columns, c(cn, names(.SPECTRA_DATA_COLUMNS)))
+    if (length(not_found))
+        stop("Column(s) ", paste(not_found, collapse = ", "),
+             " not available")
+    sp_cols <- columns[columns %in% cn]
+    res <- .as_vector_spectra_data(
+        x@spectraData[, sp_cols, drop = FALSE])
+    if (any(columns %in% c("mz", "intensity"))) {
+        pks <- peaks(x)
+        if (any(columns == "mz"))
+            res$mz <- NumericList(lapply(pks, function(z) z[, 1]),
+                                  compress = FALSE)
+        if (any(columns == "intensity"))
+            res$intensity <- NumericList(lapply(pks,
+                                                function(z) z[, 2]),
+                                         compress = FALSE)
+    }
+    other_cols <- setdiff(
+        columns[!(columns %in% c("mz", "intensity"))], sp_cols)
+    if (length(other_cols)) {
+        other_res <- lapply(other_cols, .get_spectra_data_column,
+                            x = x)
+        names(other_res) <- other_cols
+        res <- cbind(res, as(other_res, "DataFrame"))
+    }
+    res[, columns, drop = FALSE]
 }
