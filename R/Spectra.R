@@ -12,7 +12,7 @@ NULL
 #' The `Spectra` class encapsules spectral mass spectrometry data and
 #' related metadata.
 #'
-#' It supports multiple data backends, e.g. in-memory ([MsBackendMemory()]),
+#' It supports multiple data backends, e.g. in-memory ([MsBackendDataFrame()]),
 #' on-disk as mzML ([MsBackendMzR()]).
 #'
 #' @details

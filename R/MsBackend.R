@@ -3,7 +3,7 @@ NULL
 
 #' @title Mass spectrometry data backends
 #'
-#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class
+#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class [,MsBackend-method
 #'
 #' @description
 #'
@@ -37,25 +37,35 @@ NULL
 #'
 #' See below for more details about individual backends.
 #'
-#' @param object Object extending `MsBackend`.
-#'
-#' @param x Object extending `MsBackend`.
-#'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
+#' @param drop For `[`: not considered.
+#'
 #' @param files For `backendInitialize`: `character` with the file
 #'     names from which the data is/will be imported. Should be set to
-#'     `NA_character_` if not applicable.
+#'     `NA_character_` if not applicable (e.g. for `MsBackendDataFrame`).
 #'
 #' @param initial For `tic`: `logical(1)` whether the initially
 #'     reported total ion current should be reported, or whether the
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`).
 #'
+#' @param i For `[`: `integer`, `logical` or `character` to subset the object.
+#'
+#' @param j For `[`: not supported.
+#'
+#' @param object Object extending `MsBackend`.
+#'
+#' @param spectraData For `backendInitialize`: `DataFrame` with spectrum
+#'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
+#'     but needs to be provided for `MsBackendDataFrame` backends.
+#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param x Object extending `MsBackend`.
 #'
 #' @param ... Additional arguments.
 #'
@@ -79,12 +89,12 @@ NULL
 #'   `NA_character_` is returned for all spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
-#'   a `list` of `numeric` vectors (intensity values for each
+#'   a [SimpleList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
 #' - `mz`: gets the mass-to-charge ratios (m/z) from the
-#'   spectra. Returns a `list` or length equal to the number of
+#'   spectra. Returns a [SimpleList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
@@ -188,6 +198,9 @@ NULL
 #'   for the memory backend or read the spectra header data for the
 #'   `MsBackendMzR` backend).
 #'
+#' - `[`: subset the backend. Only subsetting by element (*row*/`i`) is
+#'   allowed
+#'
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
 #' The `MsBackendDataFrame` objects keep all MS data in memory. New
@@ -213,17 +226,16 @@ NULL
 #'   precursor.
 #' - `"precursorCharge"`: `integer` with the charge of the precursor.
 #' - `"collisionEnergy"`: `numeric` with the collision energy.
-#' - `"mz"`: `list` of `numeric` vectors representing the m/z values for each
-#'   spectrum.
-#' - `"intensity"`: `list` of `numeric` vectors representing the intensity
-#'   values for each spectrum.
+#' - `"mz"`: [SimpleList()] of `numeric` vectors representing the m/z values
+#'   for each spectrum.
+#' - `"intensity"`: [SimpleList()] of `numeric` vectors representing the
+#'   intensity values for each spectrum.
 #'
 #' Additional columns are allowed too.
 #'
-#' The `backendInitialize` method for this backend takes the following
-#' argument:
-#'
-#' - @param spectraData For : `DataFrame` with spectrum metadata/data.
+#' The `backendInitialize` method for this backend takes arguments `files`
+#' (should be set to `NA_character`) and `spectraData` (`DataFrame` with the
+#' spectrum data).
 #'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
@@ -236,7 +248,7 @@ NULL
 #'
 #' New objects can be created with the `MsBackendMzR()` function which
 #' can be subsequently filled with data by calling `backendInitialize`
-#' passing the file names of the input data files.
+#' passing the file names of the input data files with argument `files`.
 #'
 #' @name MsBackend
 #'
@@ -497,9 +509,10 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
 #' @exportMethod spectraData
 #'
 #' @rdname MsBackend
-setMethod("spectraData", "MsBackend", function(object, columns = TRUE) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("spectraData", "MsBackend",
+          function(object, columns = spectraVariables(object)) {
+              stop("Not implemented for ", class(object), ".")
+          })
 
 #' @exportMethod spectraData<-
 #'
@@ -536,4 +549,11 @@ setMethod("spectraVariables", "MsBackend", function(object) {
 #' @rdname MsBackend
 setMethod("tic", "MsBackend", function(object, initial = TRUE) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod [
+#'
+#' @rdname MsBackend
+setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
+    stop("Not implemented for ", class(x), ".")
 })

@@ -8,10 +8,10 @@
 \alias{msLevel,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
-Spectra(spectraData = DataFrame(), msLevel, rt, acquisitionNum,
+Spectra(spectraData = DataFrame(), msLevel, rtime, acquisitionNum,
   scanIndex, fromFile, centroided, smoothed, polarity, precScanNum,
   precursorMz, precursorIntensity, precursorCharge, collisionEnergy, mz,
-  intensity, backend = MsBackendMemory(), processingQueue = list(),
+  intensity, backend = MsBackendDataFrame(), processingQueue = list(),
   metadata = list())
 
 \S4method{length}{Spectra}(x)
@@ -27,7 +27,7 @@ TODO @jo: add all parameters (in alphabetic order).
 The \code{Spectra} class encapsules spectral mass spectrometry data and
 related metadata.
 
-It supports multiple data backends, e.g. in-memory (\code{\link[=MsBackendMemory]{MsBackendMemory()}}),
+It supports multiple data backends, e.g. in-memory (\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}),
 on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}).
 }
 \details{
