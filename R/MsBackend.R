@@ -324,8 +324,13 @@ NULL
 #'
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
-#' The `MsBackendDataFrame` objects keep all MS data in memory. New
-#' objects can be created with the `MsBackendDataFrame()`
+#' The `MsBackendDataFrame` objects keep all MS data in memory.
+#' To reduce memory requirement, all spectra variables with a single
+#' value (e.g. if all spectra are from MS level 1) are internally represented
+#' as an [Rle()] object that are converted into the original class (e.g.
+#' `integer`) when the column is accessed.
+#'
+#' New objects can be created with the `MsBackendDataFrame()`
 #' function. The backend can be subsequently initialized with the
 #' `backendInitialize` method, taking a `DataFrame` with the MS data
 #' as parameter. Suggested columns of this `DataFrame` are:
@@ -370,10 +375,6 @@ NULL
 #' The `MsBackendMzR` backend extends the `MsBackendDataFrame` backend using
 #' its `DataFrame` to keep spectra variables (except m/z and intensity) in
 #' memory.
-#' To further reduce memory requirement, all spectra variables with a single
-#' value (e.g. if all spectra are from MS level 1) are internally represented
-#' as an [Rle()] object that is converted into the original class (e.g.
-#' `integer`) when the column is accessed.
 #'
 #' New objects can be created with the `MsBackendMzR()` function which
 #' can be subsequently filled with data by calling `backendInitialize`

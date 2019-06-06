@@ -63,16 +63,9 @@ setMethod("backendInitialize", "MsBackendMzR",
                                       }, BPPARAM = BPPARAM))
               }
               callNextMethod(object = object, files = files,
-                             spectraData = .as_rle_spectra_data(spectraData),
+                             spectraData = spectraData,
                              ...)
           })
-
-#' @rdname hidden_aliases
-setMethod("backendMerge", "MsBackendMzR", function(object, ...) {
-    res <- callNextMethod()
-    res@spectraData$fromFile <- Rle(res@spectraData$fromFile)
-    res
-})
 
 #' @rdname hidden_aliases
 setMethod("show", "MsBackendMzR", function(object) {
@@ -85,46 +78,6 @@ setMethod("show", "MsBackendMzR", function(object) {
         if (length(fls) > 3)
             cat(" ...", length(fls) - 3, "more files\n")
     }
-})
-
-#' @rdname hidden_aliases
-setMethod("acquisitionNum", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "acquisitionNum")
-})
-
-#' @rdname hidden_aliases
-setMethod("centroided", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "centroided")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("centroided", "MsBackendMzR", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.logical(value) | length(value) != length(object))
-        stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$centroided <- .as_rle(value)
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("collisionEnergy", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "collisionEnergy")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("collisionEnergy", "MsBackendMzR", function(object, value) {
-    if (!is.numeric(value) | length(value) != length(object))
-        stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$collisionEnergy <- .as_rle(as.numeric(value))
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("fromFile", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "fromFile")
 })
 
 #' @rdname hidden_aliases
@@ -150,62 +103,6 @@ setMethod("isCentroided", "MsBackendMzR", function(object, ...) {
 #' @rdname hidden_aliases
 setMethod("isEmpty", "MsBackendMzR", function(x) {
     peaksCount(x) == 0
-})
-
-#' @rdname hidden_aliases
-setMethod("isolationWindowLowerMz", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "isolationWindowLowerMz")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("isolationWindowLowerMz", "MsBackendMzR",
-                 function(object, value) {
-                     if (!is.numeric(value) | length(value) != length(object))
-                         stop("'value' has to be a 'numeric' of length ",
-                              length(object))
-                     object@spectraData$isolationWindowLowerMz <-
-                         .as_rle(as.numeric(value))
-                     validObject(object)
-                     object
-                 })
-
-#' @rdname hidden_aliases
-setMethod("isolationWindowTargetMz", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "isolationWindowTargetMz")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("isolationWindowTargetMz", "MsBackendMzR",
-                 function(object, value) {
-                     if (!is.numeric(value) | length(value) != length(object))
-                         stop("'value' has to be a 'numeric' of length ",
-                              length(object))
-                     object@spectraData$isolationWindowTargetMz <-
-                         .as_rle(as.numeric(value))
-                     validObject(object)
-                     object
-                 })
-
-#' @rdname hidden_aliases
-setMethod("isolationWindowUpperMz", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "isolationWindowUpperMz")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("isolationWindowUpperMz", "MsBackendMzR",
-                 function(object, value) {
-                     if (!is.numeric(value) | length(value) != length(object))
-                         stop("'value' has to be a 'numeric' of length ",
-                              length(object))
-                     object@spectraData$isolationWindowUpperMz <-
-                         .as_rle(as.numeric(value))
-                     validObject(object)
-                     object
-                 })
-
-#' @rdname hidden_aliases
-setMethod("msLevel", "MsBackendMzR", function(object, ...) {
-    .get_rle_column(object@spectraData, "msLevel")
 })
 
 #' @rdname hidden_aliases
@@ -235,77 +132,6 @@ setMethod("peaks", "MsBackendMzR", function(object) {
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendMzR", function(object) {
     vapply(peaks(object), nrow, integer(1))
-})
-
-#' @rdname hidden_aliases
-setMethod("polarity", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "polarity")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("polarity", "MsBackendMzR", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.numeric(value) | length(value) != length(object))
-        stop("'value' has to be an 'integer' of length 1 or ", length(object))
-    object@spectraData$polarity <- .as_rle(as.integer(value))
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("precScanNum", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "precScanNum")
-})
-
-#' @rdname hidden_aliases
-setMethod("precursorCharge", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "precursorCharge")
-})
-
-#' @rdname hidden_aliases
-setMethod("precursorIntensity", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "precursorIntensity")
-})
-
-#' @rdname hidden_aliases
-setMethod("precursorMz", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "precursorMz")
-})
-
-#' @rdname hidden_aliases
-setMethod("rtime", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "rtime")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("rtime", "MsBackendMzR", function(object, value) {
-    if (!is.numeric(value) | length(value) != length(object))
-        stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$rtime <- .as_rle(as.numeric(value))
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("scanIndex", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "scanIndex")
-})
-
-#' @rdname hidden_aliases
-setMethod("smoothed", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "smoothed")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("smoothed", "MsBackendMzR", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.logical(value) | length(value) != length(object))
-        stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$smoothed <- .as_rle(value)
-    validObject(object)
-    object
 })
 
 #' @rdname hidden_aliases
@@ -348,14 +174,6 @@ setMethod("spectraVariables", "MsBackendMzR", function(object) {
     unique(c(names(.SPECTRA_DATA_COLUMNS), colnames(object@spectraData)))
 })
 
-#' @rdname hidden_aliases
-setMethod("tic", "MsBackendMzR", function(object, initial = TRUE) {
-    if (initial) {
-        if (any(colnames(object@spectraData) == "totIonCurrent"))
-            .get_rle_column(object@spectraData, "totIonCurrent")
-        else rep(NA_real_, times = length(object))
-    } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
-})
 
 ## #' @rdname hidden_aliases
 ## setMethod("[", "MsBackendMzR", function(x, i, j, ..., drop = FALSE) {

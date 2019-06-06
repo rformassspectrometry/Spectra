@@ -481,8 +481,13 @@ from all individual object' \code{@modCount} slot for the corresponding file.
 \section{\code{MsBackendDataFrame}, in-memory MS data backend}{
 
 
-The \code{MsBackendDataFrame} objects keep all MS data in memory. New
-objects can be created with the \code{MsBackendDataFrame()}
+The \code{MsBackendDataFrame} objects keep all MS data in memory.
+To reduce memory requirement, all spectra variables with a single
+value (e.g. if all spectra are from MS level 1) are internally represented
+as an \code{\link[=Rle]{Rle()}} object that are converted into the original class (e.g.
+\code{integer}) when the column is accessed.
+
+New objects can be created with the \code{MsBackendDataFrame()}
 function. The backend can be subsequently initialized with the
 \code{backendInitialize} method, taking a \code{DataFrame} with the MS data
 as parameter. Suggested columns of this \code{DataFrame} are:
@@ -530,10 +535,6 @@ stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files.
 The \code{MsBackendMzR} backend extends the \code{MsBackendDataFrame} backend using
 its \code{DataFrame} to keep spectra variables (except m/z and intensity) in
 memory.
-To further reduce memory requirement, all spectra variables with a single
-value (e.g. if all spectra are from MS level 1) are internally represented
-as an \code{\link[=Rle]{Rle()}} object that is converted into the original class (e.g.
-\code{integer}) when the column is accessed.
 
 New objects can be created with the \code{MsBackendMzR()} function which
 can be subsequently filled with data by calling \code{backendInitialize}

@@ -97,47 +97,21 @@
 \alias{spectraData<-,MsBackendHdf5Peaks-method}
 \alias{$<-,MsBackendHdf5Peaks-method}
 \alias{backendInitialize,MsBackendMzR-method}
-\alias{backendMerge,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
-\alias{acquisitionNum,MsBackendMzR-method}
-\alias{centroided,MsBackendMzR-method}
-\alias{centroided<-,MsBackendMzR-method}
-\alias{collisionEnergy,MsBackendMzR-method}
-\alias{collisionEnergy<-,MsBackendMzR-method}
-\alias{fromFile,MsBackendMzR-method}
 \alias{intensity,MsBackendMzR-method}
 \alias{intensity<-,MsBackendMzR-method}
 \alias{ionCount,MsBackendMzR-method}
 \alias{isCentroided,MsBackendMzR-method}
 \alias{isEmpty,MsBackendMzR-method}
-\alias{isolationWindowLowerMz,MsBackendMzR-method}
-\alias{isolationWindowLowerMz<-,MsBackendMzR-method}
-\alias{isolationWindowTargetMz,MsBackendMzR-method}
-\alias{isolationWindowTargetMz<-,MsBackendMzR-method}
-\alias{isolationWindowUpperMz,MsBackendMzR-method}
-\alias{isolationWindowUpperMz<-,MsBackendMzR-method}
-\alias{msLevel,MsBackendMzR-method}
 \alias{mz,MsBackendMzR-method}
 \alias{mz<-,MsBackendMzR-method}
 \alias{peaks,MsBackendMzR-method}
 \alias{peaksCount,MsBackendMzR-method}
-\alias{polarity,MsBackendMzR-method}
-\alias{polarity<-,MsBackendMzR-method}
-\alias{precScanNum,MsBackendMzR-method}
-\alias{precursorCharge,MsBackendMzR-method}
-\alias{precursorIntensity,MsBackendMzR-method}
-\alias{precursorMz,MsBackendMzR-method}
-\alias{rtime,MsBackendMzR-method}
-\alias{rtime<-,MsBackendMzR-method}
-\alias{scanIndex,MsBackendMzR-method}
-\alias{smoothed,MsBackendMzR-method}
-\alias{smoothed<-,MsBackendMzR-method}
 \alias{spectraData,MsBackendMzR-method}
 \alias{spectraData<-,MsBackendMzR-method}
 \alias{spectraNames,MsBackendMzR-method}
 \alias{spectraNames<-,MsBackendMzR-method}
 \alias{spectraVariables,MsBackendMzR-method}
-\alias{tic,MsBackendMzR-method}
 \alias{$<-,MsBackendMzR-method}
 \alias{ProcessingStep-class}
 \alias{show,ProcessingStep-method}
@@ -341,21 +315,7 @@ setBackend(object, backend, ...)
 \S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
   BPPARAM = bpparam())
 
-\S4method{backendMerge}{MsBackendMzR}(object, ...)
-
 \S4method{show}{MsBackendMzR}(object)
-
-\S4method{acquisitionNum}{MsBackendMzR}(object)
-
-\S4method{centroided}{MsBackendMzR}(object)
-
-\S4method{centroided}{MsBackendMzR}(object) <- value
-
-\S4method{collisionEnergy}{MsBackendMzR}(object)
-
-\S4method{collisionEnergy}{MsBackendMzR}(object) <- value
-
-\S4method{fromFile}{MsBackendMzR}(object)
 
 \S4method{intensity}{MsBackendMzR}(object)
 
@@ -367,20 +327,6 @@ setBackend(object, backend, ...)
 
 \S4method{isEmpty}{MsBackendMzR}(x)
 
-\S4method{isolationWindowLowerMz}{MsBackendMzR}(object)
-
-\S4method{isolationWindowLowerMz}{MsBackendMzR}(object) <- value
-
-\S4method{isolationWindowTargetMz}{MsBackendMzR}(object)
-
-\S4method{isolationWindowTargetMz}{MsBackendMzR}(object) <- value
-
-\S4method{isolationWindowUpperMz}{MsBackendMzR}(object)
-
-\S4method{isolationWindowUpperMz}{MsBackendMzR}(object) <- value
-
-\S4method{msLevel}{MsBackendMzR}(object, ...)
-
 \S4method{mz}{MsBackendMzR}(object)
 
 \S4method{mz}{MsBackendMzR}(object) <- value
@@ -388,28 +334,6 @@ setBackend(object, backend, ...)
 \S4method{peaks}{MsBackendMzR}(object)
 
 \S4method{peaksCount}{MsBackendMzR}(object)
-
-\S4method{polarity}{MsBackendMzR}(object)
-
-\S4method{polarity}{MsBackendMzR}(object) <- value
-
-\S4method{precScanNum}{MsBackendMzR}(object)
-
-\S4method{precursorCharge}{MsBackendMzR}(object)
-
-\S4method{precursorIntensity}{MsBackendMzR}(object)
-
-\S4method{precursorMz}{MsBackendMzR}(object)
-
-\S4method{rtime}{MsBackendMzR}(object)
-
-\S4method{rtime}{MsBackendMzR}(object) <- value
-
-\S4method{scanIndex}{MsBackendMzR}(object)
-
-\S4method{smoothed}{MsBackendMzR}(object)
-
-\S4method{smoothed}{MsBackendMzR}(object) <- value
 
 \S4method{spectraData}{MsBackendMzR}(object,
   columns = spectraVariables(object))
@@ -421,8 +345,6 @@ setBackend(object, backend, ...)
 \S4method{spectraNames}{MsBackendMzR}(object) <- value
 
 \S4method{spectraVariables}{MsBackendMzR}(object)
-
-\S4method{tic}{MsBackendMzR}(object, initial = TRUE)
 
 \S4method{$}{MsBackendMzR}(x, name) <- value
 

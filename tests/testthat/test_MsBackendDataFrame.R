@@ -44,7 +44,7 @@ test_that("backendMerge,MsBackendDataFrame works", {
     df2 <- DataFrame(msLevel = c(2L, 1L), fromFile = 1L,
                      rtime = c(4.1, 5.2), scanIndex = 1:2)
     df3 <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L,
-                     other_col = "z")
+                     precScanNum = 1L, other_col = "z")
     be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
     be2 <- backendInitialize(MsBackendDataFrame(), NA_character_, df2)
     be3 <- backendInitialize(MsBackendDataFrame(), NA_character_, df3)
@@ -59,7 +59,9 @@ test_that("backendMerge,MsBackendDataFrame works", {
     expect_identical(msLevel(res), c(1L, 2L, 2L, 2L, 1L, 1L, 2L))
     expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
     expect_identical(res@spectraData$other_col,
-                     c(rep(NA_character_, 5), "z", "z"))
+                     Rle(c(rep(NA_character_, 5), "z", "z")))
+    expect_true(is(be3@spectraData$precScanNum, "Rle"))
+    expect_true(is(res@spectraData$precScanNum, "Rle"))
 
     ## One backend with and one without m/z
     df2$mz <- list(c(1.1, 1.2), c(1.1, 1.2))

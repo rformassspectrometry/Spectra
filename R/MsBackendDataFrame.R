@@ -63,6 +63,7 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
           function(object, files, spectraData, ...) {
               if (missing(files)) files <- character()
               if (missing(spectraData)) spectraData <- DataFrame()
+              spectraData <- .as_rle_spectra_data(spectraData)
               object@files <- files
               object@modCount <- integer(length(files))
               if (nrow(spectraData) && !is(spectraData$mz, "NumericList"))
@@ -98,7 +99,7 @@ setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
     if (any(colnames(res@spectraData) == "intensity"))
         res@spectraData$intensity[any(is.na(res@spectraData$intensity))] <-
             list(numeric())
-    res@spectraData$fromFile <- match(from_file, res@files)
+    res@spectraData$fromFile <- Rle(match(from_file, res@files))
     ## modCount: take the largest modCount for all with the same file
     res@modCount <- unname(vapply(
         split(mod_counts, paste0(files))[paste0(res@files)], max, integer(1)))
@@ -110,16 +111,12 @@ setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
 
 #' @rdname hidden_aliases
 setMethod("acquisitionNum", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "acquisitionNum"))
-        object@spectraData$acquisitionNum
-    else rep(NA_integer_, times = length(object))
+    .get_rle_column(object@spectraData, "acquisitionNum")
 })
 
 #' @rdname hidden_aliases
 setMethod("centroided", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "centroided"))
-        object@spectraData$centroided
-    else rep(NA, times = length(object))
+    .get_rle_column(object@spectraData, "centroided")
 })
 
 #' @rdname hidden_aliases
@@ -128,32 +125,28 @@ setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
         value <- rep(value, length(object))
     if (!is.logical(value) | length(value) != length(object))
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$centroided <- value
+    object@spectraData$centroided <- .as_rle(value)
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
 setMethod("collisionEnergy", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "collisionEnergy"))
-        as.numeric(object@spectraData$collisionEnergy)
-    else rep(NA_real_, times = length(object))
+    .get_rle_column(object@spectraData, "collisionEnergy")
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("collisionEnergy", "MsBackendDataFrame", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$collisionEnergy <- value
+    object@spectraData$collisionEnergy <- .as_rle(as.numeric(value))
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
 setMethod("fromFile", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "fromFile"))
-        object@spectraData$fromFile
-    else rep(NA_integer_, times = length(object))
+    .get_rle_column(object@spectraData, "fromFile")
 })
 
 #' @rdname hidden_aliases
@@ -200,9 +193,7 @@ setMethod("isEmpty", "MsBackendDataFrame", function(x) {
 
 #' @rdname hidden_aliases
 setMethod("isolationWindowLowerMz", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "isolationWindowLowerMz"))
-        as.numeric(object@spectraData$isolationWindowLowerMz)
-    else rep(NA_real_, times = length(object))
+    .get_rle_column(object@spectraData, "isolationWindowLowerMz")
 })
 
 #' @rdname hidden_aliases
@@ -212,16 +203,14 @@ setReplaceMethod("isolationWindowLowerMz", "MsBackendDataFrame",
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowLowerMz <-
-                         as.numeric(value)
+                         .as_rle(as.numeric(value))
                      validObject(object)
                      object
                  })
 
 #' @rdname hidden_aliases
 setMethod("isolationWindowTargetMz", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "isolationWindowTargetMz"))
-        as.numeric(object@spectraData$isolationWindowTargetMz)
-    else rep(NA_real_, times = length(object))
+    .get_rle_column(object@spectraData, "isolationWindowTargetMz")
 })
 
 #' @rdname hidden_aliases
@@ -231,16 +220,14 @@ setReplaceMethod("isolationWindowTargetMz", "MsBackendDataFrame",
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowTargetMz <-
-                         as.numeric(value)
+                         .as_rle(as.numeric(value))
                      validObject(object)
                      object
                  })
 
 #' @rdname hidden_aliases
 setMethod("isolationWindowUpperMz", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "isolationWindowUpperMz"))
-        as.numeric(object@spectraData$isolationWindowUpperMz)
-    else rep(NA_real_, times = length(object))
+    .get_rle_column(object@spectraData, "isolationWindowUpperMz")
 })
 
 #' @rdname hidden_aliases
@@ -250,7 +237,7 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackendDataFrame",
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowUpperMz <-
-                         as.numeric(value)
+                         .as_rle(as.numeric(value))
                      validObject(object)
                      object
                  })
@@ -262,9 +249,7 @@ setMethod("length", "MsBackendDataFrame", function(x) {
 
 #' @rdname hidden_aliases
 setMethod("msLevel", "MsBackendDataFrame", function(object, ...) {
-    if (any(colnames(object@spectraData) == "msLevel"))
-        object@spectraData$msLevel
-    else rep(NA_integer_, times = length(object))
+    .get_rle_column(object@spectraData, "msLevel")
 })
 
 #' @rdname hidden_aliases
@@ -326,9 +311,7 @@ setMethod("peaksCount", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("polarity", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "polarity"))
-        object@spectraData$polarity
-    else rep(NA_integer_, times = length(object))
+    .get_rle_column(object@spectraData, "polarity")
 })
 
 #' @rdname hidden_aliases
@@ -337,60 +320,48 @@ setReplaceMethod("polarity", "MsBackendDataFrame", function(object, value) {
         value <- rep(value, length(object))
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be an 'integer' of length 1 or ", length(object))
-    object@spectraData$polarity <- as.integer(value)
+    object@spectraData$polarity <- .as_rle(as.integer(value))
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
 setMethod("precScanNum", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "precScanNum"))
-        object@spectraData$precScanNum
-    else rep(NA_integer_, times = length(object))
+    .get_rle_column(object@spectraData, "precScanNum")
 })
 
 #' @rdname hidden_aliases
 setMethod("precursorCharge", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "precursorCharge"))
-        object@spectraData$precursorCharge
-    else rep(NA_integer_, times = length(object))
+    .get_rle_column(object@spectraData, "precursorCharge")
 })
 
 #' @rdname hidden_aliases
 setMethod("precursorIntensity", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "precursorIntensity"))
-        as.numeric(object@spectraData$precursorIntensity)
-    else rep(NA_real_, times = length(object))
+    .get_rle_column(object@spectraData, "precursorIntensity")
 })
 
 #' @rdname hidden_aliases
 setMethod("precursorMz", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "precursorMz"))
-        as.numeric(object@spectraData$precursorMz)
-    else rep(NA_real_, times = length(object))
+    .get_rle_column(object@spectraData, "precursorMz")
 })
 
 #' @rdname hidden_aliases
 setMethod("rtime", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "rtime"))
-        as.numeric(object@spectraData$rtime)
-    else rep(NA_real_, times = length(object))
+    .get_rle_column(object@spectraData, "rtime")
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("rtime", "MsBackendDataFrame", function(object, value) {
     if (!is.numeric(value) | length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$rtime <- value
+    object@spectraData$rtime <- .as_rle(as.numeric(value))
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
 setMethod("scanIndex", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "scanIndex"))
-        object@spectraData$scanIndex
-    else rep(NA_integer_, times = length(object))
+    .get_rle_column(object@spectraData, "scanIndex")
 })
 
 #' @rdname hidden_aliases
@@ -412,9 +383,7 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
 
 #' @rdname hidden_aliases
 setMethod("smoothed", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "smoothed"))
-        object@spectraData$smoothed
-    else rep(NA, times = length(object))
+    .get_rle_column(object@spectraData, "smoothed")
 })
 
 #' @rdname hidden_aliases
@@ -423,7 +392,7 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
         value <- rep(value, length(object))
     if (!is.logical(value) | length(value) != length(object))
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$smoothed <- value
+    object@spectraData$smoothed <- .as_rle(value)
     validObject(object)
     object
 })
@@ -454,7 +423,7 @@ setMethod("spectraData", "MsBackendDataFrame",
                       res$intensity <- if (length(other_res$intensity)) other_res$intensity
                                        else NumericList(compress = FALSE)
               }
-              res[, columns, drop = FALSE]
+              .as_vector_spectra_data(res[, columns, drop = FALSE])
           })
 
 #' @rdname hidden_aliases
@@ -472,7 +441,7 @@ setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
         if (length(value) != length(object))
             stop("length of 'value' has to be ", length(object))
     }
-    object@spectraData <- value
+    object@spectraData <- .as_rle_spectra_data(value)
     validObject(object)
     object
 })
@@ -498,7 +467,7 @@ setMethod("spectraVariables", "MsBackendDataFrame", function(object) {
 setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
     if (initial) {
         if (any(colnames(object@spectraData) == "totIonCurrent"))
-            object@spectraData$totIonCurrent
+            .get_rle_column(object@spectraData, "totIonCurrent")
         else rep(NA_real_, times = length(object))
     } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
@@ -514,7 +483,7 @@ setMethod("$", "MsBackendDataFrame", function(x, name) {
 setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
     if (is.list(value) && any(c("mz", "intensity") == name))
         value <- NumericList(value, compress = FALSE)
-    x@spectraData[[name]] <- value
+    x@spectraData[[name]] <- .as_rle(value)
     validObject(x)
     x
 })
@@ -537,7 +506,7 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     files_idx <- unique(fromFile(x))
     x@files <- orig_files[files_idx]
     x@modCount <- x@modCount[files_idx]
-    x@spectraData$fromFile <- match(orig_files[fromFile(x)], x@files)
+    x@spectraData$fromFile <- Rle(match(orig_files[fromFile(x)], x@files))
     validObject(x)
     x
 })

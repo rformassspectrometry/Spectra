@@ -478,10 +478,7 @@ base `MsBackend` class could be used instead. The default backends are:
 
 - `MsBackendMzR`: this backend keeps only general spectra variables in memory
   and relies on the `r Biocpkg("mzR")` package to read mass peaks (m/z and
-  intensity values) from the original MS files on-demand. By a special internal
-  encoding of certain spectra variables the memory requirement of this backend
-  is further reduced making it suitable to represent also very large MS
-  experiments.
+  intensity values) from the original MS files on-demand.
 
 - `MsBackendHdf5Peaks`: similar to `MsBackendMzR` this backend reads peak data
   only on-demand from disk while all other spectra variables are kept in

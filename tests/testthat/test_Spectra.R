@@ -41,8 +41,8 @@ test_that("setBackend,Spectra works", {
     ## Use a different factor.
     res <- setBackend(sps, MsBackendDataFrame(), f = df$fact)
     expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
-    expect_identical(sps@backend@spectraData$fact,
-                     res@backend@spectraData$fact)
+    expect_identical(as.vector(sps@backend@spectraData$fact),
+                     as.vector(res@backend@spectraData$fact))
     expect_identical(fromFile(res), fromFile(sps))
     expect_identical(fileNames(res), fileNames(sps))
     expect_identical(rtime(res), rtime(sps))
@@ -54,8 +54,9 @@ test_that("setBackend,Spectra works", {
     expect_identical(rtime(sps), rtime(res))
     expect_identical(fromFile(sps), fromFile(res))
     expect_identical(mz(sps), mz(res))
-    expect_true(is.integer(res@backend@spectraData$msLevel))
+    expect_true(is(res@backend@spectraData$msLevel, "Rle"))
     expect_true(is(sps@backend@spectraData$msLevel, "Rle"))
+    expect_true(is.integer(res$msLevel))
 
     ## switch back to mzR
     res2 <- setBackend(res, MsBackendMzR())
