@@ -573,7 +573,7 @@ setMethod("show", "Spectra",
         if (length(object@processingQueue))
             cat("Lazy evaluation queue:", length(object@processingQueue),
                 "processing step(s)\n")
-        cat("Processing:\n", paste(object@processing, collapse="\n"), "\n")
+        cat("Processing:\n", paste(object@processing, collapse="\n "), "\n")
     })
 
 #' @rdname Spectra
@@ -1086,3 +1086,24 @@ setMethod("clean", "Spectra",
                                             " cleaned [", date(), "]"))
               object
           })
+
+applyProcessing <- function(object, f = fromFile(object), BPPARAM = bpparam(),
+                            ...) {
+    if (!length(object@processingQueue))
+        return(object)
+}
+
+## applyProcessing:
+## bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
+##     if (isReadOnly(z))
+##         stop("Can not replace peaks data because ", class(z), " backends ",
+##         "are read-only")
+##     peaks(z) <- .apply_processing_queue(peaks(z), msLevel(z), centroided(z), queue)
+##     z@modCount <- 0
+##     z
+## }, ..., BPPARAM = BPPARAM)
+## bknds <- backendMerge(bknds)
+## if (is.unsorted(f))
+##     bknds <- bknds[order(unlist(split(seq_along(bknds), f),
+##                                 use.names = FALSE))]
+## object@backend <- bknds
