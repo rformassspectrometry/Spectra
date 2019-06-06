@@ -18,8 +18,6 @@ setClass("MsBackendDataFrame",
          contains = "MsBackend",
          slots = c(spectraData = "DataFrame"),
          prototype = prototype(spectraData = DataFrame(),
-                               files = character(),
-                               modCount = integer(),
                                readonly = FALSE,
                                version = "0.1"))
 
@@ -31,10 +29,6 @@ setValidity("MsBackendDataFrame", function(object) {
         .valid_column_datatype(object@spectraData, .SPECTRA_DATA_COLUMNS),
         .valid_intensity_column(object@spectraData),
         .valid_mz_column(object@spectraData),
-        .valid_ms_backend_files(object@files),
-        .valid_ms_backend_files_from_file(object@files,
-                                          as.vector(fromFile(object))),
-        .valid_ms_backend_mod_count(object@files, object@modCount),
         .valid_intensity_mz_columns(object@spectraData))
     if (is.null(msg)) TRUE
     else msg
@@ -60,12 +54,15 @@ setMethod("show", "MsBackendDataFrame", function(object) {
 #'
 #' @rdname hidden_aliases
 setMethod("backendInitialize", signature = "MsBackendDataFrame",
-          function(object, files, spectraData, ...) {
-              if (missing(files)) files <- character()
+          function(object, spectraData, ...) {
               if (missing(spectraData)) spectraData <- DataFrame()
+              if (is.data.frame(spectraData))
+                  spectraData <- DataFrame(spectraData)
+              if (!is(spectraData, "DataFrame"))
+                  stop("'spectraData' has to be a 'DataFrame'")
+              if (nrow(spectraData) && is.null(spectraData$dataStorage))
+                  spectraData$dataStorage <- "<memory>"
               spectraData <- .as_rle_spectra_data(spectraData)
-              object@files <- files
-              object@modCount <- integer(length(files))
               if (nrow(spectraData) && !is(spectraData$mz, "NumericList"))
                   spectraData$mz <- NumericList(spectraData$mz, compress = FALSE)
               if (nrow(spectraData) && !is(spectraData$intensity, "NumericList"))
@@ -84,25 +81,16 @@ setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
         return(object[[1]])
     if (!all(vapply(object, class, character(1)) == class(object[[1]])))
         stop("Can only merge backends of the same type: ", class(object[[1]]))
-    mod_counts <- unlist(lapply(object, function(z) z@modCount))
-    files <- unlist(lapply(object, function(z) z@files))
-    from_file <- unlist(lapply(object, function(z) z@files[fromFile(z)]),
-                        use.names = FALSE)
     res <- new(class(object[[1]]))
-    res@files <- unique(files)
     suppressWarnings(
-        res@spectraData <- do.call(
-            .rbind_fill, lapply(object, function(z) z@spectraData))
+        res@spectraData <- .as_rle_spectra_data(do.call(
+            .rbind_fill, lapply(object, function(z) z@spectraData)))
     )
     if (any(colnames(res@spectraData) == "mz"))
         res@spectraData$mz[any(is.na(res@spectraData$mz))] <- list(numeric())
     if (any(colnames(res@spectraData) == "intensity"))
         res@spectraData$intensity[any(is.na(res@spectraData$intensity))] <-
             list(numeric())
-    res@spectraData$fromFile <- Rle(match(from_file, res@files))
-    ## modCount: take the largest modCount for all with the same file
-    res@modCount <- unname(vapply(
-        split(mod_counts, paste0(files))[paste0(res@files)], max, integer(1)))
     validObject(res)
     res
 })
@@ -145,8 +133,38 @@ setReplaceMethod("collisionEnergy", "MsBackendDataFrame", function(object, value
 })
 
 #' @rdname hidden_aliases
-setMethod("fromFile", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "fromFile")
+setMethod("dataOrigin", "MsBackendDataFrame", function(object) {
+    .get_rle_column(object@spectraData, "dataOrigin")
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("dataOrigin", "MsBackendDataFrame", function(object, value) {
+    if (!is.character(value) | length(value) != length(object))
+        stop("'value' has to be a 'character' of length ", length(object))
+    object@spectraData$dataOrigin <- .as_rle(as.character(value))
+    validObject(object)
+    object
+})
+
+#' @rdname hidden_aliases
+setMethod("dataStorage", "MsBackendDataFrame", function(object) {
+    .get_rle_column(object@spectraData, "dataStorage")
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
+    if (!is.character(value) | length(value) != length(object))
+        stop("'value' has to be a 'character' of length ", length(object))
+    object@spectraData$dataStorage <- .as_rle(as.character(value))
+    validObject(object)
+    object
+})
+
+#' @rdname hidden_aliases
+setMethod("dataStorageNames", "MsBackendDataFrame", function(object) {
+    if (is(object@spectraData$dataStorage, "Rle"))
+        object@spectraData$dataStorage@values
+    else unique(dataStorage(object))
 })
 
 #' @rdname hidden_aliases
@@ -171,7 +189,6 @@ setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
     if (!is(value, "NumericList"))
         value <- NumericList(value, compress = FALSE)
     object@spectraData$intensity <- value
-    object@modCount <- object@modCount + 1L
     validObject(object)
     object
 })
@@ -274,7 +291,6 @@ setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
     if (!is(value, "NumericList"))
         value <- NumericList(value, compress = FALSE)
     object@spectraData$mz <- value
-    object@modCount <- object@modCount + 1L
     validObject(object)
     object
 })
@@ -291,7 +307,6 @@ setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
         stop("'value' has to be a list-like object")
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
-    object@modCount <- object@modCount + 1L
     vals <- lapply(value, function(z) z[, 1])
     if (!is(vals, "NumericList"))
         vals <- NumericList(vals, compress = FALSE)
@@ -377,6 +392,9 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
               if (length(to_subset))
                   object@spectraData <- object@spectraData[, to_subset,
                                                            drop = FALSE]
+              msg <- .valid_spectra_data_required_columns(object@spectraData)
+              if (length(msg))
+                  stop(msg)
               validObject(object)
               object
 })
@@ -435,6 +453,8 @@ setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
             value$mz <- NumericList(value$mz, compress = FALSE)
         if (!is(value$intensity, "NumericList"))
             value$intensity <- NumericList(value$intensity, compress = FALSE)
+        if (is.null(value$dataStorage))
+            value$dataStorage <- "<memory>"
     } else {
         if (length(value) == 1)
             value <- rep(value, length(object))
@@ -502,50 +522,55 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
         stop("Subsetting by column ('j = ", j, "' is not supported")
     i <- .i_to_index(i, length(x), rownames(x@spectraData))
     x@spectraData <- x@spectraData[i, , drop = FALSE]
-    orig_files <- x@files
-    files_idx <- unique(fromFile(x))
-    x@files <- orig_files[files_idx]
-    x@modCount <- x@modCount[files_idx]
-    x@spectraData$fromFile <- Rle(match(orig_files[fromFile(x)], x@files))
     validObject(x)
     x
 })
 
 #' @rdname hidden_aliases
-setMethod("filterAcquisitionNum", "MsBackendDataFrame", function(object,
-                                                                 n = integer(),
-                                                                 file = integer()) {
+setMethod("filterAcquisitionNum", "MsBackendDataFrame",
+          function(object, n = integer(), dataStorage = integer(),
+                   dataOrigin = integer()) {
     if (!length(n) | !length(object)) return(object)
-    if (!length(file)) file <- unique(fromFile(object))
     if (!is.integer(n)) stop("'n' has to be an integer representing the ",
                              "acquisition number(s) for sub-setting")
-    if (!is.integer(file)) stop("'file' has to be an integer with the index ",
-                                "of the file(s) for subsetting")
-    sel_file <- fromFile(object) %in% file
+    sel_file <- .sel_file(object, dataStorage, dataOrigin)
     sel_acq <- acquisitionNum(object) %in% n & sel_file
     object[sel_acq | !sel_file]
 })
+
+#' @rdname hidden_aliases
+setMethod("filterDataOrigin", "MsBackendDataFrame",
+          function(object, dataOrigin = integer()) {
+              if (length(dataOrigin)) {
+                  lvls <- unique(dataOrigin(object))
+                  dataOrigin <- .i_to_index(dataOrigin, length(lvls), lvls)
+                  object <- object[dataOrigin(object) %in% lvls[dataOrigin]]
+                  if (is.unsorted(dataOrigin))
+                      object[order(match(dataOrigin(object),
+                                         lvls[dataOrigin]))]
+                  else object
+              } else object
+          })
+
+#' @rdname hidden_aliases
+setMethod("filterDataStorage", "MsBackendDataFrame",
+          function(object, dataStorage = integer()) {
+              if (length(dataStorage)) {
+                  lvls <- dataStorageNames(object)
+                  dataStorage <- .i_to_index(dataStorage, length(lvls), lvls)
+                  object <- object[dataStorage(object) %in% lvls[dataStorage]]
+                  if (is.unsorted(dataStorage))
+                      object[order(match(dataStorage(object),
+                                         lvls[dataStorage]))]
+                  else object
+              } else object
+          })
 
 #' @rdname hidden_aliases
 setMethod("filterEmptySpectra", "MsBackendDataFrame", function(object) {
     if (!length(object)) return(object)
     object[as.logical(peaksCount(object))]
 })
-
-#' @rdname hidden_aliases
-setMethod("filterFile", "MsBackendDataFrame",
-          function(object, file = integer()) {
-              if (length(file)) {
-                  file <- .i_to_index(file, length(fileNames(object)),
-                                      fileNames(object))
-                  file_names <- fileNames(object)
-                  object <- object[fromFile(object) %in% file]
-                  if (is.unsorted(file))
-                      object[order(match(fileNames(object)[fromFile(object)],
-                                         file_names[file]))]
-                  else object
-              } else object
-          })
 
 #' @rdname hidden_aliases
 setMethod("filterIsolationWindow", "MsBackendDataFrame", {

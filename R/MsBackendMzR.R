@@ -41,30 +41,20 @@ setValidity("MsBackendMzR", function(object) {
 #'
 #' @importFrom BiocParallel bpparam
 setMethod("backendInitialize", "MsBackendMzR",
-          function(object, files, spectraData, ..., BPPARAM = bpparam()) {
+          function(object, files, ..., BPPARAM = bpparam()) {
               if (missing(files) || !length(files))
                   stop("Parameter 'files' is mandatory for 'MsBackendMzR'")
               files <- normalizePath(files)
-              if (!all(file.exists(files)))
-                  stop("File(s) ", paste(files[!file.exists(files)]),
-                       " not found")
-              msg <- .valid_ms_backend_files(files)
+              msg <- .valid_ms_backend_files_exist(files)
               if (length(msg))
                   stop(msg)
-              if (!missing(spectraData)) {
-                  spectraData$mz <- NULL
-                  spectraData$intensity <- NULL
-              } else {
-                  spectraData <- do.call(
-                      rbind, bpmapply(files, seq_along(files),
-                                      FUN = function(fl, index) {
-                                          cbind(Spectra:::.mzR_header(fl),
-                                                fromFile = index)
-                                      }, BPPARAM = BPPARAM))
-              }
-              callNextMethod(object = object, files = files,
-                             spectraData = spectraData,
-                             ...)
+              spectraData <- do.call(
+                  rbind, bplapply(files,
+                                  FUN = function(fl) {
+                                      cbind(Spectra:::.mzR_header(fl),
+                                            dataStorage = fl)
+                                  }, BPPARAM = BPPARAM))
+              callNextMethod(object = object, spectraData = spectraData, ...)
           })
 
 #' @rdname hidden_aliases

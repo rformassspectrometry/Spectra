@@ -20,8 +20,10 @@ NULL
 #' @noRd
 setClass("MsBackendHdf5Peaks",
          contains = "MsBackendDataFrame",
-         prototype = prototype(version = "0.1", readonly = FALSE,
-                               h4files = character()))
+         slots = c(
+             modCount = "integer"
+         ),
+         prototype = prototype(version = "0.1", readonly = FALSE))
 
 setValidity("MsBackendHdf5Peaks", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,

@@ -16,8 +16,8 @@
 \alias{centroided<-,Spectra-method}
 \alias{collisionEnergy,Spectra-method}
 \alias{collisionEnergy<-,Spectra-method}
-\alias{fileNames,Spectra-method}
-\alias{fromFile,Spectra-method}
+\alias{dataStorage,Spectra-method}
+\alias{dataOrigin,Spectra-method}
 \alias{intensity,Spectra-method}
 \alias{ionCount,Spectra-method}
 \alias{isCentroided,Spectra-method}
@@ -55,7 +55,6 @@
 \alias{$<-,Spectra-method}
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
-\alias{filterFile,Spectra-method}
 \alias{filterIsolationWindow,Spectra-method}
 \alias{filterMsLevel,Spectra-method}
 \alias{filterPolarity,Spectra-method}
@@ -94,9 +93,11 @@ addProcessing(object, FUN, ...)
 
 \S4method{collisionEnergy}{Spectra}(object) <- value
 
-\S4method{fileNames}{Spectra}(object)
+\S4method{dataStorage}{Spectra}(object)
 
-\S4method{fromFile}{Spectra}(object)
+\S4method{dataOrigin}{Spectra}(object)
+
+\S4method{dataStorage}{Spectra}(object)
 
 \S4method{intensity}{Spectra}(object, ...)
 
@@ -176,8 +177,6 @@ addProcessing(object, FUN, ...)
   file = integer())
 
 \S4method{filterEmptySpectra}{Spectra}(object)
-
-\S4method{filterFile}{Spectra}(object, file = integer())
 
 \S4method{filterIsolationWindow}{Spectra}(object, mz = numeric())
 

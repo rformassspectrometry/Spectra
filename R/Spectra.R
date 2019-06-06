@@ -616,13 +616,14 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               if (length(f) != length(object))
                   stop("length of 'f' has to match the length of 'object'")
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
-                  if (isReadOnly(backend) && any(z@modCount))
-                      stop(class(backend), " backends are read-only but the ",
-                           "original data appears to be modified")
+                  ## ## Is this check below really required???
+                  ## if (isReadOnly(backend) && any(z@modCount))
+                  ##     stop(class(backend), " backends are read-only but the ",
+                  ##          "original data appears to be modified")
                   res <- backendInitialize(backend, files = z@files,
                                            spectraData = spectraData(z),
                                            ...)
-                  res@modCount <- z@modCount
+                  ## res@modCount <- z@modCount
                   res
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
@@ -694,12 +695,15 @@ setReplaceMethod("collisionEnergy", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
-setMethod("fileNames", "Spectra", function(object) {
-    fileNames(object@backend)
+setMethod("dataStorage", "Spectra", function(object) {
+    dataStorage(object@backend)
 })
 
 #' @rdname Spectra
-setMethod("fromFile", "Spectra", function(object) fromFile(object@backend))
+setMethod("dataOrigin", "Spectra", function(object) dataOrigin(object@backend))
+
+#' @rdname Spectra
+setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
@@ -967,15 +971,15 @@ setMethod("filterEmptySpectra", "Spectra", function(object) {
     object
 })
 
-#' @rdname Spectra
-setMethod("filterFile", "Spectra", function(object, file = integer()) {
-    object@backend <- filterFile(object@backend, file = file)
-    object@processing <- c(object@processing,
-                           paste0("Filter: select file(s) ",
-                                  paste0(file, collapse = ", "),
-                                  " [", date(), "]"))
-    object
-})
+## #' @rdname Spectra
+## setMethod("filterFile", "Spectra", function(object, file = integer()) {
+##     object@backend <- filterFile(object@backend, file = file)
+##     object@processing <- c(object@processing,
+##                            paste0("Filter: select file(s) ",
+##                                   paste0(file, collapse = ", "),
+##                                   " [", date(), "]"))
+##     object
+## })
 
 #' @rdname Spectra
 setMethod("filterIsolationWindow", "Spectra", function(object, mz = numeric()) {

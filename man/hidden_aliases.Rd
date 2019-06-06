@@ -9,17 +9,21 @@
 \alias{backendInitialize}
 \alias{backendMerge}
 \alias{clean}
-\alias{fileNames}
+\alias{dataOrigin}
+\alias{dataOrigin<-}
+\alias{dataStorage}
+\alias{dataStorage<-}
+\alias{dataStorageNames}
 \alias{filterAcquisitionNum}
+\alias{filterDataOrigin}
+\alias{filterDataStorage}
 \alias{filterEmptySpectra}
-\alias{filterFile}
 \alias{filterIsolationWindow}
 \alias{filterMsLevel}
 \alias{filterPolarity}
 \alias{filterPrecursorMz}
 \alias{filterPrecursorScan}
 \alias{filterRt}
-\alias{fromFile}
 \alias{isReadOnly}
 \alias{peaksCount}
 \alias{removePeaks}
@@ -33,7 +37,11 @@
 \alias{centroided<-,MsBackendDataFrame-method}
 \alias{collisionEnergy,MsBackendDataFrame-method}
 \alias{collisionEnergy<-,MsBackendDataFrame-method}
-\alias{fromFile,MsBackendDataFrame-method}
+\alias{dataOrigin,MsBackendDataFrame-method}
+\alias{dataOrigin<-,MsBackendDataFrame-method}
+\alias{dataStorage,MsBackendDataFrame-method}
+\alias{dataStorage<-,MsBackendDataFrame-method}
+\alias{dataStorageNames,MsBackendDataFrame-method}
 \alias{intensity,MsBackendDataFrame-method}
 \alias{intensity<-,MsBackendDataFrame-method}
 \alias{ionCount,MsBackendDataFrame-method}
@@ -73,8 +81,9 @@
 \alias{$,MsBackendDataFrame-method}
 \alias{$<-,MsBackendDataFrame-method}
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
+\alias{filterDataOrigin,MsBackendDataFrame-method}
+\alias{filterDataStorage,MsBackendDataFrame-method}
 \alias{filterEmptySpectra,MsBackendDataFrame-method}
-\alias{filterFile,MsBackendDataFrame-method}
 \alias{filterIsolationWindow,MsBackendDataFrame-method}
 \alias{filterMsLevel,MsBackendDataFrame-method}
 \alias{filterPolarity,MsBackendDataFrame-method}
@@ -118,19 +127,29 @@
 \alias{show,Spectra-method}
 \title{Internal page for hidden aliases}
 \usage{
-backendInitialize(object, files, spectraData, ...)
+backendInitialize(object, ...)
 
 backendMerge(object, ...)
 
 clean(object, ...)
 
-fileNames(object, ...)
+dataOrigin(object, ...)
+
+dataOrigin(object) <- value
+
+dataStorage(object, ...)
+
+dataStorage(object) <- value
+
+dataStorageNames(object, ...)
 
 filterAcquisitionNum(object, ...)
 
-filterEmptySpectra(object, ...)
+filterDataOrigin(object, ...)
 
-filterFile(object, ...)
+filterDataStorage(object, ...)
+
+filterEmptySpectra(object, ...)
 
 filterIsolationWindow(object, ...)
 
@@ -144,8 +163,6 @@ filterPrecursorScan(object, ...)
 
 filterRt(object, ...)
 
-fromFile(object, ...)
-
 isReadOnly(object, ...)
 
 peaksCount(object, ...)
@@ -158,8 +175,7 @@ setBackend(object, backend, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 
-\S4method{backendInitialize}{MsBackendDataFrame}(object, files,
-  spectraData, ...)
+\S4method{backendInitialize}{MsBackendDataFrame}(object, spectraData, ...)
 
 \S4method{backendMerge}{MsBackendDataFrame}(object, ...)
 
@@ -173,7 +189,15 @@ setBackend(object, backend, ...)
 
 \S4method{collisionEnergy}{MsBackendDataFrame}(object) <- value
 
-\S4method{fromFile}{MsBackendDataFrame}(object)
+\S4method{dataOrigin}{MsBackendDataFrame}(object)
+
+\S4method{dataOrigin}{MsBackendDataFrame}(object) <- value
+
+\S4method{dataStorage}{MsBackendDataFrame}(object)
+
+\S4method{dataStorage}{MsBackendDataFrame}(object) <- value
+
+\S4method{dataStorageNames}{MsBackendDataFrame}(object)
 
 \S4method{intensity}{MsBackendDataFrame}(object)
 
@@ -256,11 +280,15 @@ setBackend(object, backend, ...)
 \S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
 
 \S4method{filterAcquisitionNum}{MsBackendDataFrame}(object,
-  n = integer(), file = integer())
+  n = integer(), dataStorage = integer(), dataOrigin = integer())
+
+\S4method{filterDataOrigin}{MsBackendDataFrame}(object,
+  dataOrigin = integer())
+
+\S4method{filterDataStorage}{MsBackendDataFrame}(object,
+  dataStorage = integer())
 
 \S4method{filterEmptySpectra}{MsBackendDataFrame}(object)
-
-\S4method{filterFile}{MsBackendDataFrame}(object, file = integer())
 
 \S4method{filterIsolationWindow}{MsBackendDataFrame}(object,
   mz = numeric(), ...)
@@ -312,7 +340,7 @@ setBackend(object, backend, ...)
 
 \S4method{$}{MsBackendHdf5Peaks}(x, name) <- value
 
-\S4method{backendInitialize}{MsBackendMzR}(object, files, spectraData, ...,
+\S4method{backendInitialize}{MsBackendMzR}(object, files, ...,
   BPPARAM = bpparam())
 
 \S4method{show}{MsBackendMzR}(object)

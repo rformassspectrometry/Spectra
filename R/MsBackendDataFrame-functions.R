@@ -25,7 +25,7 @@ NULL
 #' @noRd
 #'
 #' @param x spectraData `DataFrame`
-.valid_spectra_data_required_columns <- function(x, columns = c("fromFile")) {
+.valid_spectra_data_required_columns <- function(x, columns = c("dataStorage")) {
     if (nrow(x)) {
         missing_cn <- setdiff(columns, colnames(x))
         if (length(missing_cn))
@@ -100,7 +100,8 @@ NULL
     scanIndex = "integer",
     mz = "NumericList",
     intensity = "NumericList",
-    fromFile = "integer",
+    dataStorage = "character",
+    dataOrigin = "character",
     centroided = "logical",
     smoothed = "logical",
     polarity = "integer",
@@ -124,7 +125,8 @@ NULL
     scanIndex = "scanIndex",
     mz = "mz",
     intensity = "intensity",
-    fromFile = "fromFile",
+    dataStorage = "dataStorage",
+    dataOrigin = "dataOrigin",
     centroided = "centroided",
     smoothed = "smoothed",
     polarity = "polarity",
@@ -185,7 +187,7 @@ MsBackendDataFrame <- function() {
 #' @importFrom S4Vectors Rle
 #'
 #' @noRd
-.as_rle_spectra_data <- function(x, columns = c("fromFile")) {
+.as_rle_spectra_data <- function(x, columns = c("dataStorage", "dataOrigin")) {
     if (nrow(x) <= 1)
         return(x)
     for (col in colnames(x)) {
@@ -244,4 +246,39 @@ MsBackendDataFrame <- function() {
         else
             do.call(.SPECTRA_DATA_COLUMNS[column], args = list())
     } else stop("column '", column, "' not available")
+}
+
+#' @description
+#'
+#' Helper to be used in the filter functions to select the file/origin in
+#' which the filtering should be performed.
+#'
+#' @param object `MsBackend`
+#'
+#' @param dataStorage `character` or `integer` with either the names of the
+#'     `dataStorage` or their index (in `dataStorageNames(object)`) in which
+#'     the filtering should be performed.
+#'
+#' @param dataOrigin same as `dataStorage`, but for the `dataOrigin` spectra
+#'     variable.
+#'
+#' @return `logical` of length equal to the number of spectra in `object`.
+#'
+#' @noRd
+.sel_file <- function(object, dataStorage = integer(), dataOrigin = integer()) {
+    if (length(dataStorage)) {
+        if (!(is.numeric(dataStorage) | is.character(dataStorage)))
+            stop("'dataStorage' has to be either an integer with the index of",
+                 " the data storage, or its name")
+        if (is.numeric(dataStorage))
+            dataStorage <- dataStorageNames(object)[dataStorage]
+        dataStorage(object) %in% dataStorage
+    } else if (length(dataOrigin)) {
+        if (!(is.numeric(dataOrigin) | is.character(dataOrigin)))
+            stop("'dataOrigin' has to be either an integer with the index of",
+                 " the data origin, or its name")
+        if (is.numeric(dataOrigin))
+            dataOrigin <- unique(dataOrigin(object))[dataOrigin]
+        dataOrigin(object) %in% dataOrigin
+    } else rep(TRUE, length(object))
 }

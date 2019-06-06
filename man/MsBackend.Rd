@@ -17,17 +17,21 @@
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
 \alias{collisionEnergy<-,MsBackend-method}
-\alias{fileNames,MsBackend-method}
+\alias{dataOrigin,MsBackend-method}
+\alias{dataOrigin<-,MsBackend-method}
+\alias{dataStorage,MsBackend-method}
+\alias{dataStorage<-,MsBackend-method}
+\alias{dataStorageNames,MsBackend-method}
 \alias{filterAcquisitionNum,MsBackend-method}
+\alias{filterDataOrigin,MsBackend-method}
+\alias{filterDataStorage,MsBackend-method}
 \alias{filterEmptySpectra,MsBackend-method}
-\alias{filterFile,MsBackend-method}
 \alias{filterIsolationWindow,MsBackend-method}
 \alias{filterMsLevel,MsBackend-method}
 \alias{filterPolarity,MsBackend-method}
 \alias{filterPrecursorMz,MsBackend-method}
 \alias{filterPrecursorScan,MsBackend-method}
 \alias{filterRt,MsBackend-method}
-\alias{fromFile,MsBackend-method}
 \alias{intensity,MsBackend-method}
 \alias{intensity<-,MsBackend-method}
 \alias{ionCount,MsBackend-method}
@@ -72,7 +76,7 @@
 \alias{MsBackendMzR}
 \title{Mass spectrometry data backends}
 \usage{
-\S4method{backendInitialize}{MsBackend}(object, files, spectraData, ...)
+\S4method{backendInitialize}{MsBackend}(object, ...)
 
 \S4method{backendMerge}{list}(object, ...)
 
@@ -88,13 +92,23 @@
 
 \S4method{collisionEnergy}{MsBackend}(object) <- value
 
-\S4method{fileNames}{MsBackend}(object)
+\S4method{dataOrigin}{MsBackend}(object)
+
+\S4method{dataOrigin}{MsBackend}(object) <- value
+
+\S4method{dataStorage}{MsBackend}(object)
+
+\S4method{dataStorage}{MsBackend}(object) <- value
+
+\S4method{dataStorageNames}{MsBackend}(object)
 
 \S4method{filterAcquisitionNum}{MsBackend}(object, n, file, ...)
 
-\S4method{filterEmptySpectra}{MsBackend}(object, ...)
+\S4method{filterDataOrigin}{MsBackend}(object, dataOrigin, ...)
 
-\S4method{filterFile}{MsBackend}(object, file, ...)
+\S4method{filterDataStorage}{MsBackend}(object, dataStorage, ...)
+
+\S4method{filterEmptySpectra}{MsBackend}(object, ...)
 
 \S4method{filterIsolationWindow}{MsBackend}(object, mz, ...)
 
@@ -107,8 +121,6 @@
 \S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum, ...)
 
 \S4method{filterRt}{MsBackend}(object, rt, msLevel, ...)
-
-\S4method{fromFile}{MsBackend}(object)
 
 \S4method{intensity}{MsBackend}(object)
 
@@ -201,14 +213,6 @@ MsBackendMzR()
 \arguments{
 \item{object}{Object extending \code{MsBackend}.}
 
-\item{files}{For \code{backendInitialize}: \code{character} with the file
-names from which the data is/will be imported. Should be set to
-\code{NA_character_} if not applicable (e.g. for \code{MsBackendDataFrame}).}
-
-\item{spectraData}{For \code{backendInitialize}: \code{DataFrame} with spectrum
-metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
-but needs to be provided for \code{MsBackendDataFrame} backends.}
-
 \item{...}{Additional arguments.}
 
 \item{value}{replacement value for \code{<-} methods. See individual
@@ -263,6 +267,14 @@ total ion current should be (re)calculated on the actual data
 
 \item{name}{For \code{$} and \code{$<-}: the name of the spectra variable to return
 or set.}
+
+\item{files}{For \code{backendInitialize}: \code{character} with the file
+names from which the data is/will be imported. Should be set to
+\code{NA_character_} if not applicable (e.g. for \code{MsBackendDataFrame}).}
+
+\item{spectraData}{For \code{backendInitialize}: \code{DataFrame} with spectrum
+metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
+but needs to be provided for \code{MsBackendDataFrame} backends.}
 }
 \description{
 Note that the classes described here are not meant to be used
@@ -298,7 +310,7 @@ data files and the remaining spectra variables in memory (in a
 
 See below for more details about individual backends.
 }
-\section{Backend functions and implementation notes for new backend classes}{
+\section{Backend functions}{
 
 
 New backend classes \strong{must} extend the base \code{MsBackend} class and
@@ -557,6 +569,44 @@ files along with the spectra variables in form of a \code{DataFrame} (see
 \code{hdf5path} allows to specify the folder where the HDF5 data files should be
 stored to. If provided, this is added as the path to the submitted file
 names (parameter \code{files}).
+}
+
+\section{Implementation notes}{
+
+
+Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
+above).
+\itemize{
+\item [ ] move \code{modCount} to \code{MsBackendHdf5Peaks}.
+\item [X] add \code{dataStorage} spectrum variable. \code{NA} values are \strong{not} allowed.
+\item [X] add \code{dataOrigin} spectrum variable.
+\item [ ] It is no longer allowed to change from \code{MsBackendDataFrame} to
+\code{MsBackendMzR}, i.e. it is not allowed to change to a \code{readonly} backend;
+\code{setBackend} only supports write backends.
+\item [ ] Replace fromFile with
+\item [ ] fileNames or dataStorageLevels lists unique dataStorage?
+\item [ ] dataStorageIndex or fromDataStorage as replacement for fromFile?
+}
+
+The \code{MsBackend} defines the following slots:
+\itemize{
+\item \code{@dataStorage}: \code{character} defining the place where the data is stored.
+Can be \code{NA_character_} for backends keeping the data in memory.
+\item \code{@modCount}: \code{integer} with the same length than \code{@dataStorage} which can
+be used to check if the data in the data storage files has been changed
+by an other process. Every process that changes \emph{peak} data (m/z and/or
+intensity values) should increment the \code{modCount}.
+\item \code{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
+of m/z or intensity values.
+}
+
+[ ]: R:%20
+[X]: R:X
+[X]: R:X
+[ ]: R:%20
+[ ]: R:%20
+[ ]: R:%20
+[ ]: R:%20
 }
 
 \author{

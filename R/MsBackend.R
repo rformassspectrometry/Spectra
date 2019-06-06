@@ -106,7 +106,7 @@ NULL
 #'
 #' @param ... Additional arguments.
 #'
-#' @section Backend functions and implementation notes for new backend classes:
+#' @section Backend functions:
 #'
 #' New backend classes **must** extend the base `MsBackend` class and
 #' **have** to implement the following methods:
@@ -396,6 +396,42 @@ NULL
 #' stored to. If provided, this is added as the path to the submitted file
 #' names (parameter `files`).
 #'
+#' @section Implementation notes:
+#'
+#' Backends extending `MsBackend` **must** implement all of its methods (listed
+#' above).
+#'
+#'
+#' - [ ] move `modCount` to `MsBackendHdf5Peaks`.
+#'
+#' - [X] add `dataStorage` spectrum variable. `NA` values are **not** allowed.
+#'
+#' - [X] add `dataOrigin` spectrum variable.
+#'
+#' - [ ] It is no longer allowed to change from `MsBackendDataFrame` to
+#'   `MsBackendMzR`, i.e. it is not allowed to change to a `readonly` backend;
+#'   `setBackend` only supports write backends.
+#'
+#' - [ ] Replace fromFile with
+#'
+#' - [ ] fileNames or dataStorageLevels lists unique dataStorage?
+#'
+#' - [ ] dataStorageIndex or fromDataStorage as replacement for fromFile?
+#'
+#' The `MsBackend` defines the following slots:
+#'
+#' - `@dataStorage`: `character` defining the place where the data is stored.
+#'   Can be `NA_character_` for backends keeping the data in memory.
+#'
+#' - `@modCount`: `integer` with the same length than `@dataStorage` which can
+#'   be used to check if the data in the data storage files has been changed
+#'   by an other process. Every process that changes *peak* data (m/z and/or
+#'   intensity values) should increment the `modCount`.
+#'
+#' - `@readonly`: `logical(1)` whether the backend supports writing/replacing
+#'   of m/z or intensity values.
+#'
+#'
 #' @name MsBackend
 #'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
@@ -408,22 +444,18 @@ NULL
 setClass("MsBackend",
          contains = "VIRTUAL",
          slots = c(
-             files = "character",  # Can also be NA_character_
-             modCount = "integer", # Same length than files.
              readonly = "logical",
              version = "character"),
-         prototype = prototype(files = character(),
-                               modCount = integer(),
-                               readonly = FALSE,
+         prototype = prototype(readonly = FALSE,
                                version = "0.1"))
 
 #' @importFrom methods .valueClassTest is new validObject
 #'
 #' @noRd
 setValidity("MsBackend", function(object) {
-    msg <- c(
-        .valid_ms_backend_files(object@files),
-        .valid_ms_backend_mod_count(object@files, object@modCount))
+    msg <- .valid_ms_backend_data_storage(dataStorage(object))
+    if (length(dataStorage(object)) != length(object))
+        msg <- c(msg, "length of object and 'dataStorage' have to match")
     if (is.null(msg)) TRUE
     else msg
 })
@@ -432,10 +464,7 @@ setValidity("MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackend",
-          definition = function(object, files, ...) {
-              if (missing(files)) files <- character()
-              object@files <- files
-              object@modCount <- integer(length(files))
+          definition = function(object, ...) {
               validObject(object)
               object
           })
@@ -497,11 +526,39 @@ setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod fileNames
+#' @exportMethod dataOrigin
 #'
 #' @rdname MsBackend
-setMethod("fileNames", "MsBackend", function(object) {
-    object@files
+setMethod("dataOrigin", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataOrigin<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataStorage
+#'
+#' @rdname MsBackend
+setMethod("dataStorage", "MsBackend", function(object) {
+    stop("Method 'dataStorage' is not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataStorage<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
+    stop("Method 'dataStorage' is not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataStorageNames
+#'
+#' @rdname MsBackend
+setMethod("dataStorageNames", "MsBackend", function(object) {
+    stop("Method 'dataStorageNames' is not implemented for ", class(object), ".")
 })
 
 #' @exportMethod filterAcquisitionNum
@@ -511,17 +568,24 @@ setMethod("filterAcquisitionNum", "MsBackend", function(object, n, file, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @exportMethod filterDataOrigin
+#'
+#' @rdname MsBackend
+setMethod("filterDataOrigin", "MsBackend", function(object, dataOrigin, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterDataStorage
+#'
+#' @rdname MsBackend
+setMethod("filterDataStorage", "MsBackend", function(object, dataStorage, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
 #' @exportMethod filterEmptySpectra
 #'
 #' @rdname MsBackend
 setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
-
-#' @exportMethod filterFile
-#'
-#' @rdname MsBackend
-setMethod("filterFile", "MsBackend", function(object, file, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
@@ -565,13 +629,6 @@ setMethod("filterPrecursorScan", "MsBackend", function(object,
 #'
 #' @rdname MsBackend
 setMethod("filterRt", "MsBackend", function(object, rt, msLevel, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
-
-#' @exportMethod fromFile
-#'
-#' @rdname MsBackend
-setMethod("fromFile", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 

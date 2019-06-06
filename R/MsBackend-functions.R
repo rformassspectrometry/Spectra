@@ -1,10 +1,9 @@
 #' @include hidden_aliases.R
 NULL
 
-.valid_ms_backend_files <- function(x) {
-    x <- x[!is.na(x)]
-    if (length(x) && anyDuplicated(x))
-        return("Duplicated file names found.")
+.valid_ms_backend_data_storage <- function(x) {
+    if (any(is.na(x)))
+        return("'NA' values in dataStorage are not allowed.")
     NULL
 }
 
@@ -14,11 +13,4 @@ NULL
         return(paste0("File(s) ", paste(x[!file.exists(x)], collapse = ", "),
                       " not found"))
     NULL
-}
-
-.valid_ms_backend_mod_count <- function(x, y) {
-    if (length(x) != length(y))
-        "Different number of source files and modification counters."
-    else
-        NULL
 }
