@@ -503,6 +503,8 @@ setMethod("$", "MsBackendDataFrame", function(x, name) {
 setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
     if (is.list(value) && any(c("mz", "intensity") == name))
         value <- NumericList(value, compress = FALSE)
+    if (name == "dataStorage")
+        value <- Rle(value)
     x@spectraData[[name]] <- .as_rle(value)
     validObject(x)
     x

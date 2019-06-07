@@ -598,15 +598,17 @@ test_that("filterAcquisitionNum,MsBackendDataFrame works", {
     be <- backendInitialize(MsBackendDataFrame(), df)
     res <- filterAcquisitionNum(be, n = c(2L, 4L))
     expect_equal(length(res), 4)
-    expect_equal(fromFile(res), c(1L, 2L, 3L, 3L))
+    expect_equal(dataStorage(res), c("1", "2", "3", "3"))
     expect_equal(acquisitionNum(res), c(2L, 2L, 2L, 4L))
 
-    res <- filterAcquisitionNum(be, n = 2L, file = 2L)
-    expect_equal(fromFile(res), c(1L, 1L, 1L, 2L, 3L, 3L, 3L))
+    res <- filterAcquisitionNum(be, n = 2L, dataStorage = "2")
+    expect_equal(dataStorage(res), c("1", "1", "1", "2", "3", "3", "3"))
     expect_equal(acquisitionNum(res), c(1L, 2L, 3L, 2L, 1L, 2L, 4L))
+    expect_identical(res, filterAcquisitionNum(be, n = 2L, dataStorage = 2L))
 
     expect_error(filterAcquisitionNum(be, n = "a"), "integer representing")
-    expect_error(filterAcquisitionNum(be, n = 4L, file = "d"), "integer with")
+    expect_error(filterAcquisitionNum(be, n = 4L, dataStorage = TRUE),
+                 "integer with")
     expect_equal(filterAcquisitionNum(be), be)
 })
 

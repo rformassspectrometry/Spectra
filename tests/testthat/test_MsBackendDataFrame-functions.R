@@ -17,7 +17,7 @@ test_that(".valid_spectra_data_required_columns works", {
     df <- DataFrame(msLevel = 1L)
     expect_match(.valid_spectra_data_required_columns(df),
                  "Required column")
-    df$fromFile <- 1L
+    df$dataStorage <- "some"
     expect_null(.valid_spectra_data_required_columns(df))
 })
 
@@ -82,21 +82,21 @@ test_that(".get_spectra_data_column works", {
 
 test_that(".as_rle_spectra_data works", {
     df <- DataFrame()
-    res <- .as_rle_spectra_data(df)
+    res <- Spectra:::.as_rle_spectra_data(df)
     expect_equal(df, res)
     df <- DataFrame(msLevel = c(NA_integer_, NA_integer_), a = "a", b = 1:2)
-    res <- .as_rle_spectra_data(df)
+    res <- Spectra:::.as_rle_spectra_data(df)
     expect_equal(res$msLevel, Rle(NA_integer_, 2))
     expect_equal(res$a, Rle("a", 2))
-    res$fromFile <- c(1L, 1L)
+    res$dataStorage <- c("a", "a")
     res <- .as_rle_spectra_data(res)
     expect_equal(res$msLevel, Rle(NA_integer_, 2))
     expect_equal(res$a, Rle("a", 2))
     expect_equal(res$b, 1:2)
-    expect_equal(res$fromFile, Rle(1L, 2))
-    res$fromFile <- c(1L, 2L)
+    expect_equal(res$dataStorage, Rle("a", 2))
+    res$dataStorage <- c("a", "b")
     res <- .as_rle_spectra_data(res)
-    expect_equal(res$fromFile, Rle(1:2))
+    expect_equal(res$dataStorage, Rle(c("a", "b")))
 })
 
 test_that(".as_vector_spectra_data works", {
