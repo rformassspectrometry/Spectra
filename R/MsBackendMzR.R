@@ -10,13 +10,11 @@ NULL
 #' `intensity` methods as well as `peaks` to read the respective data from
 #' the original raw data files.
 #'
-#' The validator function has to ensure that the files provided in the
-#' `files` slot exist.
+#' The validator function has to ensure that the files exist and that required
+#' column names are present.
 #'
 #' The `backendInitialize` method reads the header data from the raw files and
-#' hence fills the `spectraData` slot. Note that this method could be called
-#' several times, e.g. also to *re-fill* `spectraData` after dropping some of
-#' its columns.
+#' hence fills the `spectraData` slot.
 #'
 #' @author Johannes Rainer
 #'
@@ -27,8 +25,8 @@ setClass("MsBackendMzR",
 
 setValidity("MsBackendMzR", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,
-                                                c("fromFile", "scanIndex"))
-    msg <- c(msg, .valid_ms_backend_files_exist(object@files))
+                                                c("dataStorage", "scanIndex"))
+    msg <- c(msg, .valid_ms_backend_files_exist(dataStorageNames(object)))
     if (length(msg)) msg
     else TRUE
 })
@@ -44,6 +42,10 @@ setMethod("backendInitialize", "MsBackendMzR",
           function(object, files, ..., BPPARAM = bpparam()) {
               if (missing(files) || !length(files))
                   stop("Parameter 'files' is mandatory for 'MsBackendMzR'")
+              if (!is.character(files))
+                  stop("Parameter 'files' is expected to be a character vector",
+                       " with the files names from where data should be",
+                       " imported")
               files <- normalizePath(files)
               msg <- .valid_ms_backend_files_exist(files)
               if (length(msg))
@@ -60,7 +62,7 @@ setMethod("backendInitialize", "MsBackendMzR",
 #' @rdname hidden_aliases
 setMethod("show", "MsBackendMzR", function(object) {
     callNextMethod()
-    fls <- basename(object@files)
+    fls <- dataStorageNames(object)
     if (length(fls)) {
         to <- min(3, length(fls))
         cat("\nfile(s):\n", paste(basename(fls[1:to]), collapse = "\n"),
@@ -109,14 +111,13 @@ setReplaceMethod("mz", "MsBackendMzR", function(object, value) {
 setMethod("peaks", "MsBackendMzR", function(object) {
     if (!length(object))
         return(list())
-    if (length(object@files) > 1) {
-            unlist(mapply(FUN = .mzR_peaks, object@files,
-                          split(object@spectraData$scanIndex,
-                                as.factor(object@spectraData$fromFile)),
-                          SIMPLIFY = FALSE, USE.NAMES = FALSE),
-                   use.names = FALSE, recursive = FALSE)
+    fls <- dataStorageNames(object)
+    if (length(fls) > 1) {
+        f <- factor(dataStorage(object), level = fls)
+        unsplit(mapply(FUN = .mzR_peaks, fls, split(scanIndex(object), f),
+                       SIMPLIFY = FALSE, USE.NAMES = FALSE), f)
     } else
-        .mzR_peaks(object@files, object@spectraData$scanIndex)
+        .mzR_peaks(fls, scanIndex(object))
 })
 
 #' @rdname hidden_aliases
@@ -163,22 +164,6 @@ setReplaceMethod("spectraNames", "MsBackendMzR", function(object, value) {
 setMethod("spectraVariables", "MsBackendMzR", function(object) {
     unique(c(names(.SPECTRA_DATA_COLUMNS), colnames(object@spectraData)))
 })
-
-
-## #' @rdname hidden_aliases
-## setMethod("[", "MsBackendMzR", function(x, i, j, ..., drop = FALSE) {
-##     if (!missing(j))
-##         stop("Subsetting by column ('j = ", j, "' is not supported")
-##     i <- .i_to_index(i, length(x), rownames(x@spectraData))
-##     x@spectraData <- x@spectraData[i, , drop = FALSE]
-##     orig_files <- x@files
-##     files_idx <- unique(fromFile(x))
-##     x@files <- orig_files[files_idx]
-##     x@modCount <- x@modCount[files_idx]
-##     x@spectraData$fromFile <- match(orig_files[fromFile(x)], x@files)
-##     validObject(x)
-##     x
-## })
 
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {

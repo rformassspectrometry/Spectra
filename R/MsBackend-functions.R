@@ -14,3 +14,7 @@ NULL
                       " not found"))
     NULL
 }
+
+.from_data_storage <- function(x) {
+    match(dataStorage(x), dataStorageNames(x))
+}

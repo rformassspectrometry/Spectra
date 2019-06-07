@@ -163,7 +163,7 @@ setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
 #' @rdname hidden_aliases
 setMethod("dataStorageNames", "MsBackendDataFrame", function(object) {
     if (is(object@spectraData$dataStorage, "Rle"))
-        object@spectraData$dataStorage@values
+        unique(object@spectraData$dataStorage@values)
     else unique(dataStorage(object))
 })
 
