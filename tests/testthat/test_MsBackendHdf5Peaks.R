@@ -1,67 +1,93 @@
-## test_df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
-## test_df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
-## test_df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
+test_df <- DataFrame(msLevel = c(1L, 2L, 2L))
+test_df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
+test_df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
 
-## test_be <- backendInitialize(MsBackendHdf5Peaks(), file = tempfile(),
-##                              spectraData = test_df)
+test_be <- backendInitialize(MsBackendHdf5Peaks(), file = tempfile(),
+                             spectraData = test_df)
 
-## test_that("backendInitialize,MsBackendHdf5Peaks works", {
-##     if (!requireNamespace("rhdf5", quietly = TRUE))
-##         stop("Unable to load package rhdf5")
-##     res <- MsBackendHdf5Peaks()
-##     expect_true(is(res, "MsBackendHdf5Peaks"))
-##     expect_true(length(res) == 0)
-##     expect_true(validObject(res))
+test_that("backendInitialize,MsBackendHdf5Peaks works", {
+    if (!requireNamespace("rhdf5", quietly = TRUE))
+        stop("Unable to load package rhdf5")
+    res <- MsBackendHdf5Peaks()
+    expect_true(is(res, "MsBackendHdf5Peaks"))
+    expect_true(length(res) == 0)
+    expect_true(validObject(res))
 
-##     ## Start with a file NA. need fromFile, need scanIndex.
-##     df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
-##     df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
-##     df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
+    ## Start with missing file, no scanIndex
+    df <- DataFrame(msLevel = c(1L, 2L, 2L))
+    df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
+    df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
+    df$dataStorage <- "myfile"
 
-##     dr <- tempdir()
-##     res <- backendInitialize(MsBackendHdf5Peaks(), files = NA_character_,
-##                              spectraData = df, hdf5path = dr)
-##     expect_true(is(res, "MsBackendHdf5Peaks"))
-##     expect_identical(res$msLevel, c(1L, 2L, 2L))
-##     expect_equal(res@files, normalizePath(paste0(dr, "/spectra_peaks.h5")))
-##     expect_true(validObject(res))
+    dr <- tempdir()
+    res <- backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
+                             hdf5path = dr)
+    expect_true(is(res, "MsBackendHdf5Peaks"))
+    expect_identical(res$msLevel, c(1L, 2L, 2L))
+    expect_equal(dataStorageNames(res), normalizePath(paste0(dr, "/myfile.h5")))
+    expect_true(validObject(res))
+    expect_identical(mz(res), IRanges::NumericList(df$mz))
+    expect_identical(scanIndex(res), 1:3)
 
-##     ## Two files.
-##     df$fromFile <- c(2L, 1L, 2L)
-##     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("a.h5", "b.h5"),
-##                              spectraData = df, hdf5path = dr)
-##     expect_true(is(res, "MsBackendHdf5Peaks"))
-##     expect_equal(res@files, normalizePath(paste0(dr, c("/a.h5", "/b.h5"))))
-##     expect_identical(fromFile(res), c(2L, 1L, 2L))
-##     expect_true(validObject(res))
+    ## Two dataStorage, two file names.
+    df$dataStorage <- c("2", "1", "2")
+    res <- backendInitialize(MsBackendHdf5Peaks(), files = c("a.h5", "b.h5"),
+                             spectraData = df, hdf5path = dr)
+    expect_true(is(res, "MsBackendHdf5Peaks"))
+    expect_equal(dataStorageNames(res),
+                 normalizePath(paste0(dr, c("/a.h5", "/b.h5"))))
+    expect_true(validObject(res))
+    expect_identical(scanIndex(res), 1:3)
 
-##     ## Errors
-##     expect_error(backendInitialize(MsBackendHdf5Peaks(), files = NA_character_,
-##                                    spectraData = df, hdf5path = dr),
-##                  "do already exist")
-##     expect_error(backendInitialize(MsBackendHdf5Peaks(), spectraData = "a"),
-##                  "with spectrum data")
-##     expect_error(backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
-##                                    files = c("a", "b", "c", "d")),
-##                  "Number of files does not match")
+    ## Two dataStorage, no files provided
+    res <- backendInitialize(MsBackendHdf5Peaks(),
+                             spectraData = df, hdf5path = dr)
+    expect_true(is(res, "MsBackendHdf5Peaks"))
+    expect_equal(dataStorageNames(res),
+                 normalizePath(paste0(dr, c("/2.h5", "/1.h5"))))
+    expect_true(validObject(res))
+    expect_identical(scanIndex(res), 1:3)
 
-##     ## Special cases
-##     res <- backendInitialize(MsBackendHdf5Peaks())
-##     expect_true(is(res, "MsBackendHdf5Peaks"))
-##     expect_true(length(res) == 0)
-##     expect_true(validObject(res))
+    ## Same but with scanIndex provide
+    df$scanIndex <- c(1L, 1L, 2L)
+    res <- backendInitialize(MsBackendHdf5Peaks(), files = c("c", "d"),
+                             spectraData = df, hdf5path = dr)
+    expect_true(is(res, "MsBackendHdf5Peaks"))
+    expect_equal(dataStorageNames(res),
+                 normalizePath(paste0(dr, c("/c", "/d"))))
+    expect_true(validObject(res))
+    expect_identical(scanIndex(res), c(1L, 1L, 2L))
 
-##     ## Empty m/z and/or intensity
-##     spd <- df
-##     spd$mz <- NULL
-##     spd$fromFile <- 1L
-##     expect_true(file.remove(paste0(dr, "/spectra_peaks.h5")))
-##     res <- backendInitialize(MsBackendHdf5Peaks(), files = NA_character_,
-##                              spectraData = spd, hdf5path = dr)
-##     expect_true(is(res, "MsBackendHdf5Peaks"))
-##     expect_true(validObject(res))
-##     expect_true(length(res) == 3)
-## })
+    ## Errors
+    expect_error(backendInitialize(MsBackendHdf5Peaks(), files = "single",
+                                   spectraData = df, hdf5path = dr),
+                 "provided file names has to match")
+    expect_error(backendInitialize(MsBackendHdf5Peaks(), spectraData = "a"),
+                 "with spectrum data")
+    expect_error(backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
+                                   files = c("a", "b", "c", "d")),
+                 "Number of provided")
+    df$dataStorage <- NULL
+    expect_error(backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
+                                   hdf5path = dr),
+                 "Column \"dataStorage\" is required")
+
+    ## Special cases
+    res <- backendInitialize(MsBackendHdf5Peaks())
+    expect_true(is(res, "MsBackendHdf5Peaks"))
+    expect_true(length(res) == 0)
+    expect_true(validObject(res))
+
+    ## Empty m/z and/or intensity
+    spd <- df
+    spd$mz <- NULL
+    spd$scanIndex <- 1:3
+    res <- backendInitialize(MsBackendHdf5Peaks(), files = "no-peak-data",
+                             spectraData = spd, hdf5path = dr)
+    expect_true(is(res, "MsBackendHdf5Peaks"))
+    expect_true(validObject(res))
+    expect_true(length(res) == 3)
+})
 
 ## test_that("intensity,MsBackendHdf5Peaks works", {
 ##     be <- MsBackendHdf5Peaks()

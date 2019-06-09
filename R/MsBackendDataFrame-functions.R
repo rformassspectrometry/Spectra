@@ -1,13 +1,6 @@
 #' @include hidden_aliases.R
 NULL
 
-.valid_ms_backend_mod_count <- function(x, y) {
-    if (length(x) != length(y))
-        "Different number of source files and modification counters."
-    else
-        NULL
-}
-
 .valid_ms_backend_files_from_file <- function(x, y) {
     if (length(x) && !length(y))
         return("'fromFile' can not be empty if 'files' are defined.")

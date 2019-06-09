@@ -308,8 +308,8 @@ setBackend(object, backend, ...)
   msLevel = integer())
 
 \S4method{backendInitialize}{MsBackendHdf5Peaks}(object,
-  files = character(), spectraData, hdf5path = character(),
-  modCount = 0L, ..., BPPARAM = bpparam())
+  files = character(), spectraData = DataFrame(),
+  hdf5path = character(), ..., BPPARAM = bpparam())
 
 \S4method{show}{MsBackendHdf5Peaks}(object)
 
