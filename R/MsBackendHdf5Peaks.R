@@ -42,29 +42,11 @@ setValidity("MsBackendHdf5Peaks", function(object) {
 setMethod("backendInitialize", "MsBackendHdf5Peaks",
           function(object, files = character(), spectraData = DataFrame(),
                    hdf5path = character(), ..., BPPARAM = bpparam()) {
-              ## Use case 1:
-              ## - Simple DataFrame, no dataStorage, no scanIndex:
-              ##   files provided.
-              ## - DataFrame from a MsBackendMzR, several files, dataStorage
-              ##   defined. Save to hdf5 file per dataStorage.
               if (!is(spectraData, "DataFrame"))
                   stop("'spectraData' is supposed to be a 'DataFrame' with ",
                        "spectrum data")
               if (!nrow(spectraData))
                   return(object)
-              ## files allows to specify the file name(s) of the HDF5 file(s).
-              ## Note that if length of files is > 1 its length has to match
-              ## the length of unique elements in the `spectraData` column
-              ## `"dataStorage"`. If files is not specified, names in column
-              ## `"dataStorage"` are used, replacing any file ending with `".h5"`.
-              ## Parameter `hdf5path` allows to specify the folder where the
-              ## Hdf5 files should be stored.
-              ## Define H5 file names:
-              ## - no files provided: require and use $dataStorage column.
-              ## - files provided: if length > 1 require $dataStorage column,
-              ##   if length == 1 accept also missing $dataStorage column.
-              ## - length of files and unique $dataStorage have to match.
-              ## - if hdf5path provided: replace path of files with that.
               if (length(files) != 1) {
                   if (!any(colnames(spectraData) == "dataStorage"))
                       stop("Column \"dataStorage\" is required in 'spectraData'",
@@ -128,7 +110,7 @@ setMethod("show", "MsBackendHdf5Peaks", function(object) {
     fls <- dataStorageNames(object)
     if (length(fls)) {
         to <- min(3, length(fls))
-        cat("\nfile(s):\n", paste(basename(fls[1:to]), collapse = "\n"),
+        cat("\nfile(s):\n ", paste(basename(fls[1:to]), collapse = "\n "),
             "\n", sep = "")
         if (length(fls) > 3)
             cat(" ...", length(fls) - 3, "more files\n")
@@ -194,19 +176,18 @@ setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
 setMethod("peaks", "MsBackendHdf5Peaks", function(object) {
     if (!length(object))
         return(list())
-    fromF <- factor(object@spectraData$fromFile,
-                    levels = unique(object@spectraData$fromFile))
-    if (length(object@files) > 1) {
-        unsplit(mapply(
+    fls <- dataStorageNames(object)
+    if (length(fls) > 1) {
+        f <- factor(dataStorage(object), levels = fls)
+        unsplit(bpmapply(
             FUN = .h5_read_peaks,
-            object@files[as.integer(levels(fromF))],
-            split(scanIndex(object), fromF),
-            object@modCount[as.integer(levels(fromF))],
-            SIMPLIFY = FALSE, USE.NAMES = FALSE),
-            fromF)
+            fls,
+            split(scanIndex(object), f),
+            object@modCount,
+            SIMPLIFY = FALSE, USE.NAMES = FALSE, BPPARAM = bpparam()),
+            f)
     } else
-        .h5_read_peaks(object@files, object@spectraData$scanIndex,
-                       object@modCount)
+        .h5_read_peaks(fls, scanIndex(object), object@modCount)
 })
 
 #' @rdname hidden_aliases
@@ -216,17 +197,21 @@ setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
     if (!(is.list(value) | inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     object@modCount <- object@modCount + 1L
-    fromF <- factor(fromFile(object),
-                    levels = unique(fromFile(object)))
-    res <- bpmapply(FUN = function(pks, sidx, h5file, modC) {
-        .h5_write_peaks(pks, scanIndex = sidx, h5file = h5file,
-                        modCount = modC)
-    },
-    split(value, fromF),
-    split(scanIndex(object), fromF),
-    fileNames(object)[as.integer(levels(fromF))],
-    object@modCount[as.integer(levels(fromF))],
-    BPPARAM = bpparam())
+    fls <- dataStorageNames(object)
+    if (length(fls)) {
+        f <- factor(dataStorage(object), levels = fls)
+        res <- bpmapply(FUN = function(pks, sidx, h5file, modC) {
+            .h5_write_peaks(pks, scanIndex = sidx, h5file = h5file,
+                            modCount = modC)
+        },
+        split(value, f),
+        split(scanIndex(object), f),
+        fls,
+        object@modCount,
+        BPPARAM = bpparam())
+    } else
+        .h5_write_peaks(value, scanIndex = scanIndex(object), h5file = fls,
+                        modCount = object@modCount)
     validObject(object)
     object
 })
@@ -249,8 +234,12 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
         stop("'value' has to be a 'DataFrame'")
     if (nrow(value) != length(object))
         stop("Number of rows of 'value' have to match the length of 'object'")
-    if (!any(colnames(value) == "fromFile"))
-        value$fromFile <- fromFile(object)
+    if (!any(colnames(value) == "dataStorage"))
+        value$dataStorage <- object@spectraData$dataStorage
+    if (!any(colnames(value) == "scanIndex"))
+        if (any(colnames(object@spectraData) == "scanIndex"))
+            value$scanIndex <- object@spectraData$scanIndex
+        else value$scanIndex <- seq_len(nrow(value))
     if (any(colnames(value) %in% c("mz", "intensity"))) {
         ## Can not have peaks without m/z
         if (!any(colnames(value) == "mz"))
@@ -278,4 +267,29 @@ setReplaceMethod("$", "MsBackendHdf5Peaks", function(x, name, value) {
             intensity(x) <- value
         x
     } else callNextMethod()
+})
+
+#' @rdname hidden_aliases
+setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
+    fls <- dataStorageNames(x)
+    if (!missing(j))
+        stop("Subsetting by column ('j = ", j, "' is not supported")
+    i <- .i_to_index(i, length(x), rownames(x@spectraData))
+    x@spectraData <- x@spectraData[i, , drop = FALSE]
+    x@modCount <- x@modCount[match(dataStorageNames(x), fls)]
+    validObject(x)
+    x
+})
+
+#' @rdname hidden_aliases
+setMethod("backendMerge", "MsBackendHdf5Peaks", function(object, ...) {
+    object <- unname(c(object, ...))
+    fls <- lapply(object, dataStorageNames)
+    if (any(duplicated(unlist(fls, use.names = FALSE))))
+        stop("Combining backends with the same 'dataStorage' is not supported")
+    res <- .combine_backend_data_frame(object)
+    res@modCount <- unlist(lapply(object, function(z) z@modCount),
+                           use.names = FALSE)
+    validObject(res)
+    res
 })

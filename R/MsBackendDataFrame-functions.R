@@ -275,3 +275,30 @@ MsBackendDataFrame <- function() {
         dataOrigin(object) %in% dataOrigin
     } else rep(TRUE, length(object))
 }
+
+#' Helper function to combine backends that base on [MsBackendDataFrame()].
+#'
+#' @param objects `list` of `MsBackend` objects.
+#'
+#' @return [MsBackend()] object with combined content.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.combine_backend_data_frame <- function(objects) {
+    if (length(objects) == 1)
+        return(objects[[1]])
+    if (!all(vapply(objects, class, character(1)) == class(objects[[1]])))
+        stop("Can only merge backends of the same type: ", class(objects[[1]]))
+    res <- new(class(objects[[1]]))
+    suppressWarnings(
+        res@spectraData <- .as_rle_spectra_data(do.call(
+            .rbind_fill, lapply(objects, function(z) z@spectraData)))
+    )
+    if (any(colnames(res@spectraData) == "mz"))
+        res@spectraData$mz[any(is.na(res@spectraData$mz))] <- list(numeric())
+    if (any(colnames(res@spectraData) == "intensity"))
+        res@spectraData$intensity[any(is.na(res@spectraData$intensity))] <-
+            list(numeric())
+    res
+}

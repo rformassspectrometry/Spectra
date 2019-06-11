@@ -331,6 +331,11 @@ for the memory backend or read the spectra header data for the
 \item \code{backendMerge}: merge (combine) \code{MsBackend} objects into a single instance.
 All objects to be merged have to be of the same type (e.g.
 \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
+\item \code{dataStorage}: get a \code{character} of length equal to the number of spectra
+in \code{object} with the data storage of each spectrum. Note that a
+\code{dataStorage} of \code{NA_character_} is not supported.
+\item \code{dataStorageNames}: get unique data storage elements from the backend (in
+order of appearance). Returns a \code{character}.
 \item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -344,8 +349,6 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \code{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
-\item \code{fileNames}: returns a \code{character} with the file names, or
-\code{NA_character_} if not relevant.
 \item \code{filterAcquisitionNum}: filter the object keeping only spectra matching the
 provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
 \code{object} is subsetted to the spectra with an acquisition number equal to
@@ -482,11 +485,6 @@ same type should be merged). Merging should follow the following rules:
 resulting merged object should contain the union of the individual objects'
 spectra variables (columns/fields), with eventually missing variables in
 one object being filled with \code{NA}.
-\item The \code{@files} slot of the merged object should contain the unique list of
-the individual objects' \code{@files} slot, spectra variable \code{fromFile} should
-be updated accordingly.
-\item The \code{@modCount} slot of the merged object should contain the maximal value
-from all individual object' \code{@modCount} slot for the corresponding file.
 }
 }
 
@@ -509,8 +507,9 @@ as parameter. Suggested columns of this \code{DataFrame} are:
 \item \code{"acquisitionNum"}: \code{integer} with the acquisition number of the spectrum.
 \item \code{"scanIndex"}: \code{integer} with the index of the scan/spectrum within the
 \emph{mzML}/\emph{mzXML}/\emph{CDF} file.
-\item \code{"fromFile"}: \code{integer} indicating in which file in an experiment the
-spectrum was measured.
+\item \code{"dataOrigin"}: \code{character} defining the \emph{data origin}.
+\item \code{"dataStorage"}: \code{character} indicating grouping of spectra in different
+e.g. input files. Note that missing values are not supported.
 \item \code{"centroided"}: \code{logical} whether the spectrum is centroided.
 \item \code{"smoothed"}: \code{logical} whether the spectrum was smoothed.
 \item \code{"polarity"}: \code{integer} with the polarity information of the spectra.
@@ -542,7 +541,9 @@ while the spectra data (m/z and intensity values) are fetched from
 the raw files on-demand. This backend uses the \code{mzR} package for
 data import and retrieval and hence requires that package to be
 installed. Also, it can only be used to import and represent data
-stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files.
+stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files. \code{dataStorageNames} lists all
+original input files and \code{dataStorage} lists the input file from which peak
+data of an individual spectrum is read.
 
 The \code{MsBackendMzR} backend extends the \code{MsBackendDataFrame} backend using
 its \code{DataFrame} to keep spectra variables (except m/z and intensity) in
@@ -560,15 +561,29 @@ The \code{MsBackendHdf5Peaks} keeps, similar to the \code{MsBackendMzR}, peak da
 (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 disk while the remaining spectra variables are kept in memory. This backend
 supports updating and writing of manipulated peak data to the data files.
+\code{dataStorageNames} lists all HDF5 files of the \code{object}, \code{dataStorage}
+indicates for each spectrum in which file its peak data is stored.
 
 New objects can be created with the \code{MsBackendHdf5Peaks()} function which
 can be subsequently filled with data by calling the object's
-\code{backenInitialize} method passing the desired file names of the HDF5 data
+\code{backendInitialize} method passing the desired file names of the HDF5 data
 files along with the spectra variables in form of a \code{DataFrame} (see
 \code{MsBackendDataFrame} for the expected format). An optional parameter
 \code{hdf5path} allows to specify the folder where the HDF5 data files should be
 stored to. If provided, this is added as the path to the submitted file
 names (parameter \code{files}).
+
+By default \code{backendInitialize} will store all peak data into a single HDF5
+file which name has to be provided with the parameter \code{files}. To store peak
+data across several HDF5 files \code{spectraData} has to contain a column
+\code{"dataStorage"} that defines the grouping of spectra/peaks into files: peaks
+for spectra with the same value in \code{"dataStorage"} are saved into the same
+HDF5 file. If parameter \code{files} is omitted, the value in \code{dataStorage} is
+used as file name (replacing any file ending with \code{".h5"}. To specify the
+file names, \code{files}' length has to match the number of unique elements in
+\code{"dataStorage"}.
+
+For details see examples on the \code{\link[=Spectra]{Spectra()}} help page.
 }
 
 \section{Implementation notes}{
@@ -576,37 +591,12 @@ names (parameter \code{files}).
 
 Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
 above).
-\itemize{
-\item [ ] move \code{modCount} to \code{MsBackendHdf5Peaks}.
-\item [X] add \code{dataStorage} spectrum variable. \code{NA} values are \strong{not} allowed.
-\item [X] add \code{dataOrigin} spectrum variable.
-\item [ ] It is no longer allowed to change from \code{MsBackendDataFrame} to
-\code{MsBackendMzR}, i.e. it is not allowed to change to a \code{readonly} backend;
-\code{setBackend} only supports write backends.
-\item [ ] Replace fromFile with
-\item [ ] fileNames or dataStorageLevels lists unique dataStorage?
-\item [ ] dataStorageIndex or fromDataStorage as replacement for fromFile?
-}
 
 The \code{MsBackend} defines the following slots:
 \itemize{
-\item \code{@dataStorage}: \code{character} defining the place where the data is stored.
-Can be \code{NA_character_} for backends keeping the data in memory.
-\item \code{@modCount}: \code{integer} with the same length than \code{@dataStorage} which can
-be used to check if the data in the data storage files has been changed
-by an other process. Every process that changes \emph{peak} data (m/z and/or
-intensity values) should increment the \code{modCount}.
 \item \code{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
 of m/z or intensity values.
 }
-
-[ ]: R:%20
-[X]: R:X
-[X]: R:X
-[ ]: R:%20
-[ ]: R:%20
-[ ]: R:%20
-[ ]: R:%20
 }
 
 \author{

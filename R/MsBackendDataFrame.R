@@ -77,20 +77,7 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
 setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
     object <- unname(c(object, ...))
     object <- object[lengths(object) > 0]
-    if (length(object) == 1)
-        return(object[[1]])
-    if (!all(vapply(object, class, character(1)) == class(object[[1]])))
-        stop("Can only merge backends of the same type: ", class(object[[1]]))
-    res <- new(class(object[[1]]))
-    suppressWarnings(
-        res@spectraData <- .as_rle_spectra_data(do.call(
-            .rbind_fill, lapply(object, function(z) z@spectraData)))
-    )
-    if (any(colnames(res@spectraData) == "mz"))
-        res@spectraData$mz[any(is.na(res@spectraData$mz))] <- list(numeric())
-    if (any(colnames(res@spectraData) == "intensity"))
-        res@spectraData$intensity[any(is.na(res@spectraData$intensity))] <-
-            list(numeric())
+    res <- .combine_backend_data_frame(object)
     validObject(res)
     res
 })

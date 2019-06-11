@@ -105,6 +105,8 @@
 \alias{spectraData,MsBackendHdf5Peaks-method}
 \alias{spectraData<-,MsBackendHdf5Peaks-method}
 \alias{$<-,MsBackendHdf5Peaks-method}
+\alias{[,MsBackendHdf5Peaks-method}
+\alias{backendMerge,MsBackendHdf5Peaks-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{intensity,MsBackendMzR-method}
@@ -339,6 +341,10 @@ setBackend(object, backend, ...)
 \S4method{spectraData}{MsBackendHdf5Peaks}(object) <- value
 
 \S4method{$}{MsBackendHdf5Peaks}(x, name) <- value
+
+\S4method{[}{MsBackendHdf5Peaks}(x, i, j, ..., drop = FALSE)
+
+\S4method{backendMerge}{MsBackendHdf5Peaks}(object, ...)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, ...,
   BPPARAM = bpparam())

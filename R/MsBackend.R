@@ -131,6 +131,13 @@ NULL
 #'   All objects to be merged have to be of the same type (e.g.
 #'   [MsBackendDataFrame()]).
 #'
+#' - `dataStorage`: get a `character` of length equal to the number of spectra
+#'   in `object` with the data storage of each spectrum. Note that a
+#'   `dataStorage` of `NA_character_` is not supported.
+#'
+#' - `dataStorageNames`: get unique data storage elements from the backend (in
+#'   order of appearance). Returns a `character`.
+#'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
@@ -145,9 +152,6 @@ NULL
 #'   returns a `numeric` with length equal to the number of spectra
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
-#'
-#' - `fileNames`: returns a `character` with the file names, or
-#'   `NA_character_` if not relevant.
 #'
 #' - `filterAcquisitionNum`: filter the object keeping only spectra matching the
 #'   provided acquisition numbers (argument `n`). If `file` is also provided,
@@ -316,11 +320,6 @@ NULL
 #'   resulting merged object should contain the union of the individual objects'
 #'   spectra variables (columns/fields), with eventually missing variables in
 #'   one object being filled with `NA`.
-#' - The `@files` slot of the merged object should contain the unique list of
-#'   the individual objects' `@files` slot, spectra variable `fromFile` should
-#'   be updated accordingly.
-#' - The `@modCount` slot of the merged object should contain the maximal value
-#'   from all individual object' `@modCount` slot for the corresponding file.
 #'
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
@@ -340,8 +339,9 @@ NULL
 #' - `"acquisitionNum"`: `integer` with the acquisition number of the spectrum.
 #' - `"scanIndex"`: `integer` with the index of the scan/spectrum within the
 #'   *mzML*/*mzXML*/*CDF* file.
-#' - `"fromFile"`: `integer` indicating in which file in an experiment the
-#'   spectrum was measured.
+#' - `"dataOrigin"`: `character` defining the *data origin*.
+#' - `"dataStorage"`: `character` indicating grouping of spectra in different
+#'   e.g. input files. Note that missing values are not supported.
 #' - `"centroided"`: `logical` whether the spectrum is centroided.
 #' - `"smoothed"`: `logical` whether the spectrum was smoothed.
 #' - `"polarity"`: `integer` with the polarity information of the spectra.
@@ -370,7 +370,9 @@ NULL
 #' the raw files on-demand. This backend uses the `mzR` package for
 #' data import and retrieval and hence requires that package to be
 #' installed. Also, it can only be used to import and represent data
-#' stored in *mzML*, *mzXML* and *CDF* files.
+#' stored in *mzML*, *mzXML* and *CDF* files. `dataStorageNames` lists all
+#' original input files and `dataStorage` lists the input file from which peak
+#' data of an individual spectrum is read.
 #'
 #' The `MsBackendMzR` backend extends the `MsBackendDataFrame` backend using
 #' its `DataFrame` to keep spectra variables (except m/z and intensity) in
@@ -386,51 +388,39 @@ NULL
 #' (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 #' disk while the remaining spectra variables are kept in memory. This backend
 #' supports updating and writing of manipulated peak data to the data files.
+#' `dataStorageNames` lists all HDF5 files of the `object`, `dataStorage`
+#' indicates for each spectrum in which file its peak data is stored.
 #'
 #' New objects can be created with the `MsBackendHdf5Peaks()` function which
 #' can be subsequently filled with data by calling the object's
-#' `backenInitialize` method passing the desired file names of the HDF5 data
+#' `backendInitialize` method passing the desired file names of the HDF5 data
 #' files along with the spectra variables in form of a `DataFrame` (see
 #' `MsBackendDataFrame` for the expected format). An optional parameter
 #' `hdf5path` allows to specify the folder where the HDF5 data files should be
 #' stored to. If provided, this is added as the path to the submitted file
 #' names (parameter `files`).
 #'
+#' By default `backendInitialize` will store all peak data into a single HDF5
+#' file which name has to be provided with the parameter `files`. To store peak
+#' data across several HDF5 files `spectraData` has to contain a column
+#' `"dataStorage"` that defines the grouping of spectra/peaks into files: peaks
+#' for spectra with the same value in `"dataStorage"` are saved into the same
+#' HDF5 file. If parameter `files` is omitted, the value in `dataStorage` is
+#' used as file name (replacing any file ending with `".h5"`. To specify the
+#' file names, `files`' length has to match the number of unique elements in
+#' `"dataStorage"`.
+#'
+#' For details see examples on the [Spectra()] help page.
+#'
 #' @section Implementation notes:
 #'
 #' Backends extending `MsBackend` **must** implement all of its methods (listed
 #' above).
 #'
-#'
-#' - [ ] move `modCount` to `MsBackendHdf5Peaks`.
-#'
-#' - [X] add `dataStorage` spectrum variable. `NA` values are **not** allowed.
-#'
-#' - [X] add `dataOrigin` spectrum variable.
-#'
-#' - [ ] It is no longer allowed to change from `MsBackendDataFrame` to
-#'   `MsBackendMzR`, i.e. it is not allowed to change to a `readonly` backend;
-#'   `setBackend` only supports write backends.
-#'
-#' - [ ] Replace fromFile with
-#'
-#' - [ ] fileNames or dataStorageLevels lists unique dataStorage?
-#'
-#' - [ ] dataStorageIndex or fromDataStorage as replacement for fromFile?
-#'
 #' The `MsBackend` defines the following slots:
-#'
-#' - `@dataStorage`: `character` defining the place where the data is stored.
-#'   Can be `NA_character_` for backends keeping the data in memory.
-#'
-#' - `@modCount`: `integer` with the same length than `@dataStorage` which can
-#'   be used to check if the data in the data storage files has been changed
-#'   by an other process. Every process that changes *peak* data (m/z and/or
-#'   intensity values) should increment the `modCount`.
 #'
 #' - `@readonly`: `logical(1)` whether the backend supports writing/replacing
 #'   of m/z or intensity values.
-#'
 #'
 #' @name MsBackend
 #'
@@ -440,6 +430,24 @@ NULL
 #'
 #' @exportClass MsBackend MsBackendDataFrame MsBackendMzR
 NULL
+
+#' Internal implementation notes:
+#'
+#' - [X] move `modCount` to `MsBackendHdf5Peaks`.
+#'
+#' - [X] add `dataStorage` spectrum variable. `NA` values are **not** allowed.
+#'
+#' - [X] add `dataOrigin` spectrum variable.
+#'
+#' - [ ] It is no longer allowed to change from `MsBackendDataFrame` to
+#'   `MsBackendMzR`, i.e. it is not allowed to change to a `readonly` backend;
+#'   `setBackend` only supports write backends.
+#'
+#' - [X] dataStorageNames or dataStorageLevels lists unique dataStorage?
+#'
+#' - [ ] dataStorageIndex or fromDataStorage as replacement for fromFile?
+#'
+#' @noRd
 
 setClass("MsBackend",
          contains = "VIRTUAL",
