@@ -11,17 +11,16 @@ NULL
 #' directly by the end-users and the material in this man page is
 #' aimed at package developers.
 #'
-#' `MsBackend` is a vitual class that defines what each different
+#' `MsBackend` is a virtual class that defines what each different
 #' backend needs to provide. `MsBackend` objects provide access to
-#' mass spectrometry data. Such backends can be generally classified
-#' into *in-memory* or *on-disk*, depending where the data, i.e
+#' mass spectrometry data. Such backends can be classified into
+#' *in-memory* or *on-disk* backends, depending on where the data, i.e
 #' spectra (m/z and intensities) and spectra annotation (MS level,
-#' charge, polarity, ...) are stored. Typically, in-memory backends
-#' keep all data in memory ensuring fast data access, while on-disk
-#' backends store their data on disk and access it on demand. Note
-#' that some backends will have a mixed model and store parts of the
-#' data in memory and parts on disk, to stike a good balance between
-#' fast access and small memory footprint.
+#' charge, polarity, ...) are stored.
+#'
+#' Typically, in-memory backends keep all data in memory ensuring fast
+#' data access, while on-disk backends store (parts of) their data on
+#' disk and retrieve it on demand.
 #'
 #' The *Backend functions and implementation notes for new backend
 #' classes* section documents the API that a backend must implement.
