@@ -188,7 +188,7 @@ NULL
 #'   does for example not allow to replace `mz` and `intensity` values with the
 #'   `spectraData<-` method.
 #'
-#' - `spectraNames`, `spectraNames<-`: get or set the spectra names.
+#' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
 #'
 #' - `spectraVariables`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)
