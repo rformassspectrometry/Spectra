@@ -264,7 +264,7 @@ setMethod("mz", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) | inherits(value, "NumericList")))
+    if (!(is.list(value) || inherits(value, "NumericList")))
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
