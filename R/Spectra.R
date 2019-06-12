@@ -218,7 +218,7 @@ NULL
 #' - `filterFile`: retains data of files matching the file index or file name
 #'    provided with parameter `file`. Returns the filtered `Spectra`.
 #'
-#' - `filterIsolationWindow`: retain spectra that contain `mz` in their
+#' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
 #'   and `isolationWindowUpperMz` >= `mz`.
 #'
