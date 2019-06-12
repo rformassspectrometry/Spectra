@@ -82,7 +82,7 @@ setMethod("show", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMzR", function(object) {
-    NumericList(lapply(peaks(object), function(z) z[, 2]), compress = FALSE)
+    NumericList(lapply(peaks(object), "[", , 2), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
