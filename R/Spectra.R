@@ -122,7 +122,7 @@ NULL
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: get or set the lower
+#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the lower
 #'   m/z boundary of the isolation window.
 #'
 #' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: get or set the
