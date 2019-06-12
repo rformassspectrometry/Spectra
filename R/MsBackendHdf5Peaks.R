@@ -27,7 +27,7 @@ setValidity("MsBackendHdf5Peaks", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,
                                                 c("fromFile", "scanIndex"))
     msg <- c(msg, .valid_ms_backend_files_exist(object@files))
-    msg <- c(msg, .valid_h5files(object@files))
+    msg <- c(msg, .valid_h5files(object@h5files))
     if (is.null(msg)) TRUE
     else msg
 })
