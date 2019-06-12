@@ -372,7 +372,7 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
                        paste(spectraVariables[!(spectraVariables %in%
                                                 spectraVariables(object))],
                              collapse = ", "), " not available")
-              to_subset <- spectraVariables[spectraVariables %in%
+              keep <- spectraVariables[spectraVariables %in%
                                             colnames(object@spectraData)]
               if (length(to_subset))
                   object@spectraData <- object@spectraData[, to_subset,
