@@ -128,7 +128,7 @@ NULL
 #' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: get or set the upper
+#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the upper
 #'   m/z boundary of the isolation window.
 #'
 #' - `length`: get the number of spectra in the object.
