@@ -287,7 +287,7 @@ setMethod("peaks", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) | inherits(value, "SimpleList")))
+    if (!(is.list(value) || inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
