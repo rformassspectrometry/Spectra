@@ -246,7 +246,7 @@ NULL
 #' - `peaks<-` replaces the peak data (m/z and intensity values) of the backend.
 #'   This method expects a `list` of `matrix` objects with columns `"mz"` and
 #'   `"intensity"` that has the same length than the number of spectra in the
-#'   backend. Note that not all backends might support this method.
+#'   backend. Note that just writeable backends support this method.
 #'
 #' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum.  Returns an `integer` vector (length equal to the
