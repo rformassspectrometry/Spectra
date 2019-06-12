@@ -274,7 +274,7 @@ NULL
 #'   definition. Additional arguments can be passed with `...`. Examples are
 #'   provided in the package vignette.
 #'
-#' - `clean`: remove 0-intensity data points. For `all = FALSE` (the default)
+#' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
