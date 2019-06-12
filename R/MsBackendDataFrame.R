@@ -390,7 +390,7 @@ setMethod("smoothed", "MsBackendDataFrame", function(object) {
 setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
     if (length(value) == 1)
         value <- rep(value, length(object))
-    if (!is.logical(value) | length(value) != length(object))
+    if (!is.logical(value) || length(value) != length(object))
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
     object@spectraData$smoothed <- .as_rle(value)
     validObject(object)
