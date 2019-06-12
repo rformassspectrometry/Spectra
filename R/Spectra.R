@@ -241,7 +241,7 @@ NULL
 #' - `filterRt`: retains spectra of MS level `msLevel` with retention times
 #'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
 #'
-#' - `selectSpectraVariables`: reduce the information within the object to
+#' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
 #'   the values will be dropped, while additional (user defined) spectra
