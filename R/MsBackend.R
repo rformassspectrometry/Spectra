@@ -236,7 +236,7 @@ NULL
 #' - `mz<-`: replaces the m/z values. `value` has to be a `list` of length equal
 #'   to the number of spectra and the number of values within each list element
 #'   identical to the number of peaks in each spectrum (i.e. the
-#'   `peaksCount(x)`). Note that not all backends support this method.
+#'   `peaksCount(x)`). Note that just writeable backends support this method.
 #'
 #' - `peaks` returns a `list` of length equal to the number of spectra
 #'   in `object`. Each element of the list is a `matrix` with columns
