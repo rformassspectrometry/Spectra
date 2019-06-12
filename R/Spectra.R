@@ -125,7 +125,7 @@ NULL
 #' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the lower
 #'   m/z boundary of the isolation window.
 #'
-#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: get or set the
+#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
 #' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: get or set the upper
