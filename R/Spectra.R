@@ -215,7 +215,7 @@ NULL
 #'
 #' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
 #'
-#' - `filterFile`: retain data of files matching the file index or file name
+#' - `filterFile`: retains data of files matching the file index or file name
 #'    provided with parameter `file`. Returns the filtered `Spectra`.
 #'
 #' - `filterIsolationWindow`: retain spectra that contain `mz` in their
