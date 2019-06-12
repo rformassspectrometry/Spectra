@@ -406,9 +406,9 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
 #' @importMethodsFrom S4Vectors lapply
 setMethod("spectraData", "MsBackendDataFrame",
           function(object, columns = spectraVariables(object)) {
-              df_columns <- columns[columns %in% colnames(object@spectraData)]
+              df_columns <- intersect(columns,colnames(object@spectraData))
               res <- object@spectraData[, df_columns, drop = FALSE]
-              other_columns <- columns[!(columns %in% colnames(object@spectraData))]
+              other_columns <- setdiff(columns,colnames(object@spectraData))
               if (length(other_columns)) {
                   other_res <- lapply(other_columns, .get_spectra_data_column,
                                       x = object)
