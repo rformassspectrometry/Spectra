@@ -204,7 +204,7 @@ NULL
 #' Subsetting and filtering of `Spectra` objects can be performed with the below
 #' listed methods.
 #'
-#' - `[`: subset the spectra keeping only selected elements (`i`). The method
+#' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
 #' - `filterAcquisitionNum`: filter the object keeping only spectra matching the
