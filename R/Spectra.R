@@ -74,7 +74,7 @@ NULL
 #'
 #' @section Accessing spectra data:
 #'
-#' - `$`, `$<-`: get (or set) a spectra variable for all spectra in `object`.
+#' - `$`, `$<-`: gets (or sets) a spectra variable for all spectra in `object`.
 #'   See examples for details.
 #'
 #' - `acquisitionNum`: returns the acquisition number of each
