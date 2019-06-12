@@ -209,7 +209,7 @@ setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendHdf5Peaks", function(object) {
-    vapply(peaks(object), nrow, integer(1))
+    lengths(peaks(object)) / 2L
 })
 
 #' @rdname hidden_aliases
