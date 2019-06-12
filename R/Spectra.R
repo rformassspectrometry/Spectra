@@ -234,7 +234,7 @@ NULL
 #'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
 #'   m/z identical to `mz` are retained.
 #'
-#' - `filterPrecursorScan`: retain parent (e.g. MS1) and children scans (e.g.
+#' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'    MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'    `Spectra`.
 #'
