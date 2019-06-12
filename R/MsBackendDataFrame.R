@@ -216,7 +216,7 @@ setMethod("isolationWindowTargetMz", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 setReplaceMethod("isolationWindowTargetMz", "MsBackendDataFrame",
                  function(object, value) {
-                     if (!is.numeric(value) | length(value) != length(object))
+                     if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowTargetMz <-
