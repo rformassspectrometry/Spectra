@@ -278,7 +278,7 @@ NULL
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
-#' - `removePeaks`: *remove* peaks lower or equal to a threshold intensity
+#' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
 #'   value `t` by setting their intensity to `0`. With the default `t = "min"`
 #'   all peaks with an intensity smaller or equal to the minimal non-zero
 #'   intensity is set to `0`. If the spectrum is in profile mode, ranges of
