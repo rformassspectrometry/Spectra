@@ -196,9 +196,6 @@ utils.enableNeighbours <- function(x) {
     parents | children
 }
 
-#' These are S4 classes that need special attention in .rbind_fill.
-#' @noRd
-.RBIND_FILL_CLASSES <- c("SimpleList", "LogicalList", "IntegerList")
 #' @title Combine two two-dimensional arrays
 #'
 #' @importMethodsFrom S4Vectors cbind
