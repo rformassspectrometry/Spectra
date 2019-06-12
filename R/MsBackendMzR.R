@@ -107,7 +107,7 @@ setMethod("isEmpty", "MsBackendMzR", function(x) {
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendMzR", function(object) {
-    NumericList(lapply(peaks(object), function(z) z[, 1]), compress = FALSE)
+    NumericList(lapply(peaks(object), "[", , 1), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
