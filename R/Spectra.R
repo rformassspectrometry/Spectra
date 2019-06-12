@@ -238,7 +238,7 @@ NULL
 #'    MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'    `Spectra`.
 #'
-#' - `filterRt`: retain spectra of MS level `msLevel` with retention times
+#' - `filterRt`: retains spectra of MS level `msLevel` with retention times
 #'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
 #'
 #' - `selectSpectraVariables`: reduce the information within the object to
