@@ -296,7 +296,7 @@ setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
     if (!is(vals, "NumericList"))
         vals <- NumericList(vals, compress = FALSE)
     object@spectraData$mz <- vals
-    vals <- lapply(value, function(z) z[, 2])
+    vals <- lapply(value, "[", , 2L)
     if (!is(vals, "NumericList"))
         vals <- NumericList(vals, compress = FALSE)
     object@spectraData$intensity <- vals
