@@ -99,7 +99,7 @@ NULL
 #' - `fileNames`: returns a `character` with the file names, or
 #'   `NA_character_` if not relevant.
 #'
-#' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
+#' - `fromFile`: gets the file/sample assignment of each spectrum. Returns an
 #'   integer vector of length equal to the number of spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
