@@ -374,7 +374,7 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
                              collapse = ", "), " not available")
               keep <- spectraVariables[spectraVariables %in%
                                             colnames(object@spectraData)]
-              if (length(to_subset))
+              if (length(keep))
                   object@spectraData <- object@spectraData[, to_subset,
                                                            drop = FALSE]
               validObject(object)
