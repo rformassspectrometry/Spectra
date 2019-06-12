@@ -222,7 +222,7 @@ NULL
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
 #'   and `isolationWindowUpperMz` >= `mz`.
 #'
-#' - `filterMsLevel`: filter object by MS level keeping only spectra matching
+#' - `filterMsLevel`: filters object by MS level keeping only spectra matching
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra`.
 #'
