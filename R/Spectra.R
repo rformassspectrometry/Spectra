@@ -74,7 +74,7 @@ NULL
 #'
 #' @section Accessing spectra data:
 #'
-#' - `$`, `$<-`: get (or set) a spectra variable for all spectra in `object`.
+#' - `$`, `$<-`: gets (or sets) a spectra variable for all spectra in `object`.
 #'   See examples for details.
 #'
 #' - `acquisitionNum`: returns the acquisition number of each
@@ -99,12 +99,12 @@ NULL
 #' - `fileNames`: returns a `character` with the file names, or
 #'   `NA_character_` if not relevant.
 #'
-#' - `fromFile`: get the file/sample assignment of each spectrum. Returns an
+#' - `fromFile`: gets the file/sample assignment of each spectrum. Returns an
 #'   integer vector of length equal to the number of spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
-#'   spectrum). The length of the `list` is equal to the number of
+#'   spectrum). The length of the list is equal to the number of
 #'   `spectra` in `object`.
 #'
 #' - `ionCount`: returns a `numeric` with the sum of intensities for
@@ -122,18 +122,18 @@ NULL
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: get or set the lower
+#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the lower
 #'   m/z boundary of the isolation window.
 #'
-#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: get or set the
+#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: get or set the upper
+#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the upper
 #'   m/z boundary of the isolation window.
 #'
-#' - `length`: get the number of spectra in the object.
+#' - `length`: gets the number of spectra in the object.
 #'
-#' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
+#' - `msLevel`: gets the spectra's MS level. Returns an integer vector (names
 #'   being spectrum names, length equal to the number of spectra) with the MS
 #'   level for each spectrum.
 #'
@@ -142,7 +142,7 @@ NULL
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
-#' - `peaks`: get the *peaks* matrices for all spectra in `object`. The function
+#' - `peaks`: gets the *peaks* matrices for all spectra in `object`. The function
 #'   returns a [SimpleList()] of matrices, each `matrix` with columns `mz` and
 #'   `intensity` with the m/z and intensity values for all peaks of a spectrum.
 #'
@@ -157,7 +157,7 @@ NULL
 #'   `integer` vector of length 1 or equal to the number of spectra.
 #'
 #' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
-#'   `precScanNum`, `precAcquisitionNum`: get the charge (`integer`),
+#'   `precScanNum`, `precAcquisitionNum`: gets the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
 #'   and acquisition number (`interger`) of the precursor for MS level
 #'   > 2 spectra from the object. Returns a vector of length equal to
@@ -181,14 +181,14 @@ NULL
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraData`, `spectraData<-`: get or sets general spectrum
+#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
 #'   metadata (annotation, also called header). `spectraData` returns
 #'   a `DataFrame`, `spectraData<-` expects a `DataFrame`. Note that not all
 #'   backends support replacing all spectra variables (the [MsBackendMzR()]
 #'   does for example not allow to replace `mz` and `intensity` values with the
 #'   `spectraData<-` method.
 #'
-#' - `spectraNames`, `spectraNames<-`: get or set the spectra names.
+#' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
 #'
 #' - `spectraVariables`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)
@@ -204,44 +204,44 @@ NULL
 #' Subsetting and filtering of `Spectra` objects can be performed with the below
 #' listed methods.
 #'
-#' - `[`: subset the spectra keeping only selected elements (`i`). The method
+#' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
-#' - `filterAcquisitionNum`: filter the object keeping only spectra matching the
+#' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
 #'   provided acquisition numbers (argument `n`). If `file` is also provided,
 #'   `object` is subsetted to the spectra with an acquisition number equal to
 #'   `n` **in this/these file(s)** and all spectra for the remaining files (not
 #'   specified with `file`). Returns the filtered `Spectra`.
 #'
-#' - `filterEmptySpectra`: remove empty spectra (i.e. spectra without peaks).
+#' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
 #'
-#' - `filterFile`: retain data of files matching the file index or file name
+#' - `filterFile`: retains data of files matching the file index or file name
 #'    provided with parameter `file`. Returns the filtered `Spectra`.
 #'
-#' - `filterIsolationWindow`: retain spectra that contain `mz` in their
+#' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
 #'   and `isolationWindowUpperMz` >= `mz`.
 #'
-#' - `filterMsLevel`: filter object by MS level keeping only spectra matching
+#' - `filterMsLevel`: filters object by MS level keeping only spectra matching
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra`.
 #'
-#' - `filterPolarity`: filter the object keeping only spectra matching the
+#' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the subsetted `Spectra`.
 #'
-#' - `filterPrecursorMz`: retain spectra with an m/z matching the provided `mz`
+#' - `filterPrecursorMz`: retains spectra with an m/z matching the provided `mz`
 #'   accepting also a small difference in m/z which can be defined by parameter
 #'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
 #'   m/z identical to `mz` are retained.
 #'
-#' - `filterPrecursorScan`: retain parent (e.g. MS1) and children scans (e.g.
+#' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'    MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'    `Spectra`.
 #'
-#' - `filterRt`: retain spectra of MS level `msLevel` with retention times
+#' - `filterRt`: retains spectra of MS level `msLevel` with retention times
 #'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
 #'
-#' - `selectSpectraVariables`: reduce the information within the object to
+#' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
 #'   the values will be dropped, while additional (user defined) spectra
@@ -265,7 +265,7 @@ NULL
 #' ([MsBackendDataFrame()] as well as read-only backends (such
 #' as the [MsBackendMzR()]).
 #'
-#' - `addProcessing`: add an arbitrary function that should be applied to the
+#' - `addProcessing`: adds an arbitrary function that should be applied to the
 #'   peaks matrix of every spectrum in `object`. The function (can be passed
 #'   with parameter `FUN`) is expected to take a peaks matrix as input and to
 #'   return a peaks matrix. A peaks matrix is a numeric matrix with two columns,
@@ -274,11 +274,11 @@ NULL
 #'   definition. Additional arguments can be passed with `...`. Examples are
 #'   provided in the package vignette.
 #'
-#' - `clean`: remove 0-intensity data points. For `all = FALSE` (the default)
+#' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
-#' - `removePeaks`: *remove* peaks lower or equal to a threshold intensity
+#' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
 #'   value `t` by setting their intensity to `0`. With the default `t = "min"`
 #'   all peaks with an intensity smaller or equal to the minimal non-zero
 #'   intensity is set to `0`. If the spectrum is in profile mode, ranges of
