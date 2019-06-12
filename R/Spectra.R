@@ -213,7 +213,7 @@ NULL
 #'   `n` **in this/these file(s)** and all spectra for the remaining files (not
 #'   specified with `file`). Returns the filtered `Spectra`.
 #'
-#' - `filterEmptySpectra`: remove empty spectra (i.e. spectra without peaks).
+#' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
 #'
 #' - `filterFile`: retain data of files matching the file index or file name
 #'    provided with parameter `file`. Returns the filtered `Spectra`.
