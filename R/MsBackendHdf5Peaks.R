@@ -227,11 +227,12 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
         stop("Number of rows of 'value' have to match the length of 'object'")
     if (!any(colnames(value) == "fromFile"))
         value$fromFile <- fromFile(object)
-    if (any(colnames(value) %in% c("mz", "intensity"))) {
-        ## Can not have peaks without m/z
-        if (!any(colnames(value) == "mz"))
-            stop("Column \"mz\" required if columns \"intensity\" present")
-        if (!any(colnames(value) == "intensity"))
+    any_mz <- any(colnames(value) == "mz")
+    any_int <- any(colnames(value) == "intensity")
+    if (!any_mz && any_int)
+        stop("Column \"mz\" required if columns \"intensity\" present")
+    if (any_mz) {
+        if (!any_int)
             value$intensity <- NA_real_
         pks <- mapply(function(mz, intensity) cbind(mz, intensity),
                       value$mz, value$intensity, SIMPLIFY = FALSE,
@@ -247,11 +248,10 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendHdf5Peaks", function(x, name, value) {
-    if (name %in% c("mz", "intensity")) {
-        if (name == "mz")
-            mz(x) <- value
-        if (name == "intensity")
-            intensity(x) <- value
-        x
-    } else callNextMethod()
+    if (name == "mz")
+        mz(x) <- value
+    else if (name == "intensity")
+        intensity(x) <- value
+    else x <- callNextMethod()
+    x
 })
