@@ -189,7 +189,7 @@ setMethod("peaks", "MsBackendHdf5Peaks", function(object) {
 setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
-    if (!(is.list(value) | inherits(value, "SimpleList")))
+    if (!(is.list(value) || inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     object@modCount <- object@modCount + 1L
     fromF <- factor(fromFile(object),
