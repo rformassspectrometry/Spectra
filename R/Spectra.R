@@ -131,7 +131,7 @@ NULL
 #' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the upper
 #'   m/z boundary of the isolation window.
 #'
-#' - `length`: get the number of spectra in the object.
+#' - `length`: gets the number of spectra in the object.
 #'
 #' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
 #'   being spectrum names, length equal to the number of spectra) with the MS
