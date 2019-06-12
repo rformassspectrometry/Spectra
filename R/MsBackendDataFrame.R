@@ -292,7 +292,7 @@ setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
     object@modCount <- object@modCount + 1L
-    vals <- lapply(value, function(z) z[, 1])
+    vals <- lapply(value, "[", , 1L)
     if (!is(vals, "NumericList"))
         vals <- NumericList(vals, compress = FALSE)
     object@spectraData$mz <- vals
