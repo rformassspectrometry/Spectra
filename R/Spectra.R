@@ -142,7 +142,7 @@ NULL
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
-#' - `peaks`: get the *peaks* matrices for all spectra in `object`. The function
+#' - `peaks`: gets the *peaks* matrices for all spectra in `object`. The function
 #'   returns a [SimpleList()] of matrices, each `matrix` with columns `mz` and
 #'   `intensity` with the m/z and intensity values for all peaks of a spectrum.
 #'
