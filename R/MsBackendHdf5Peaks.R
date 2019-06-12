@@ -113,7 +113,7 @@ setMethod("show", "MsBackendHdf5Peaks", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendHdf5Peaks", function(object) {
-    NumericList(lapply(peaks(object), function(z) z[, 2]), compress = FALSE)
+    NumericList(lapply(peaks(object), "[", , 2), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
