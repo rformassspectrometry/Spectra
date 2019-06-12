@@ -133,7 +133,7 @@ NULL
 #'
 #' - `length`: gets the number of spectra in the object.
 #'
-#' - `msLevel`: get the spectra's MS level. Returns an integer vector (names
+#' - `msLevel`: gets the spectra's MS level. Returns an integer vector (names
 #'   being spectrum names, length equal to the number of spectra) with the MS
 #'   level for each spectrum.
 #'
