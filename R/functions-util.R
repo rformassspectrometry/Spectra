@@ -256,3 +256,7 @@ utils.enableNeighbours <- function(x) {
     })
     do.call(rbind, res)
 }
+
+.logging <- function(x, ...) {
+    c(x, paste0(..., " [", date(), "]"))
+}

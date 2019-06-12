@@ -630,10 +630,10 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
                   bknds <- bknds[order(unlist(split(seq_along(bknds), f),
                                               use.names = FALSE))]
               object@backend <- bknds
-              object@processing <- c(
-                  object@processing,
-                  paste0("Switch backend from ", backend_class, " to ",
-                         class(object@backend), " [", date(), "]"))
+              object@processing <- .logging(object@processing,
+                                            "Switch backend from ",
+                                            backend_class, " to ",
+                                            class(object@backend))
               object
           })
 
@@ -951,59 +951,54 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
 setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
                                                       file = integer()) {
     object@backend <- filterAcquisitionNum(object@backend, n, file)
-    object@processing <- c(object@processing,
-                           paste0("Filter: select by: ", length(n),
+    object@processing <- .logging(object@processing,
+                                  "Filter: select by: ", length(n),
                                   " acquisition number(s) in ", length(file),
-                                  " file(s). [", date(), "]"))
+                                  " file(s)")
     object
 })
 
 #' @rdname Spectra
 setMethod("filterEmptySpectra", "Spectra", function(object) {
     object@backend <- object@backend[as.logical(peaksCount(object))]
-    object@processing <- c(object@processing,
-                           paste0("Filter: removed empty spectra. [",
-                                  date(), "]"))
+    object@processing <- .logging(object@processing,
+                                  "Filter: removed empty spectra.")
     object
 })
 
 #' @rdname Spectra
 setMethod("filterFile", "Spectra", function(object, file = integer()) {
     object@backend <- filterFile(object@backend, file = file)
-    object@processing <- c(object@processing,
-                           paste0("Filter: select file(s) ",
-                                  paste0(file, collapse = ", "),
-                                  " [", date(), "]"))
+    object@processing <- .logging(object@processing,
+                                  "Filter: select file(s) ",
+                                  paste0(file, collapse = ", "))
     object
 })
 
 #' @rdname Spectra
 setMethod("filterIsolationWindow", "Spectra", function(object, mz = numeric()) {
     object@backend <- filterIsolationWindow(object@backend, mz = mz)
-    object@processing <- c(object@processing,
-                           paste0("Filter: select spectra containing m/z ",
-                                  mz, " in their isolation window [",
-                                  date(), "]"))
+    object@processing <- .logging(object@processing,
+                                  "Filter: select spectra containing m/z ",
+                                  mz, " in their isolation window")
     object
 })
 
 #' @rdname Spectra
 setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
     object@backend <- filterMsLevel(object@backend, msLevel = msLevel.)
-    object@processing <- c(object@processing,
-                           paste0("Filter: select MS level(s) ",
-                                  paste0(unique(msLevel.), collapse = " "),
-                                  " [", date(), "]"))
+    object@processing <- .logging(object@processing,
+                                  "Filter: select MS level(s) ",
+                                  paste0(unique(msLevel.), collapse = " "))
     object
 })
 
 #' @rdname Spectra
 setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
     object@backend <- filterPolarity(object@backend, polarity = polarity)
-    object@processing <- c(object@processing,
-                           paste0("Filter: select spectra with polarity ",
-                                  paste0(polarity, collapse = " "),
-                                  " [", date(), "]"))
+    object@processing <- .logging(object@processing,
+                                  "Filter: select spectra with polarity ",
+                                  paste0(polarity, collapse = " "))
     object
 })
 
@@ -1011,11 +1006,10 @@ setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
 setMethod("filterPrecursorMz", "Spectra",
           function(object, mz = numeric(), ppm = 0) {
               object@backend <- filterPrecursorMz(object@backend, mz, ppm)
-              object@processing <- c(
+              object@processing <- .logging(
                   object@processing,
-                  paste0("Filter: select spectra with a precursor m/z of ",
-                         mz, " accepting ", ppm, " ppm difference [",
-                         date(), "]"))
+                  "Filter: select spectra with a precursor m/z of ",
+                  mz, " accepting ", ppm, " ppm difference")
               object
           })
 
@@ -1024,11 +1018,10 @@ setMethod("filterPrecursorScan", "Spectra",
           function(object, acquisitionNum= integer()) {
               object@backend <- filterPrecursorScan(object@backend,
                                                     acquisitionNum)
-              object@processing <- c(
+              object@processing <- .logging(
                   object@processing,
-                  paste0("Filter: select parent/children scans for ",
-                         paste0(acquisitionNum, collapse = " "),
-                         " [", date(), "]"))
+                  "Filter: select parent/children scans for ",
+                  paste0(acquisitionNum, collapse = " "))
               object
           })
 
@@ -1037,11 +1030,10 @@ setMethod("filterRt", "Spectra",
           function(object, rt = numeric(), msLevel. = unique(msLevel(object))) {
               suppressWarnings(rt <- range(rt))
               object@backend <- filterRt(object@backend, rt, msLevel.)
-              object@processing <- c(
+              object@processing <- .logging(
                   object@processing,
-                  paste0("Filter: select retention time [", rt[1], "..", rt[2],
-                         "] on MS level(s) ", paste0(msLevel., collapse = " "),
-                         " [", date(), "]"))
+                  "Filter: select retention time [", rt[1], "..", rt[2],
+                  "] on MS level(s) ", paste0(msLevel., collapse = " "))
               object
           })
 
@@ -1062,10 +1054,10 @@ setMethod("removePeaks", "Spectra",
                   stop("'msLevel.' must be numeric.")
               object <- addProcessing(object, .remove_peaks, t = t,
                                       msLevel = msLevel.)
-              object@processing <- c(object@processing,
-                                     paste0("Signal <= ", t, " in MS level(s) ",
+              object@processing <- .logging(object@processing,
+                                            "Signal <= ", t, " in MS level(s) ",
                                             paste0(msLevel., collapse = ", "),
-                                            " set to 0 [", date(), "]"))
+                                            " set to 0")
               object
           })
 
@@ -1080,10 +1072,10 @@ setMethod("clean", "Spectra",
                   stop("'msLevel' must be numeric.")
               object <- addProcessing(object, .clean_peaks, all = all,
                                       msLevel = msLevel.)
-              object@processing <- c(object@processing,
-                                     paste0("Spectra of MS level(s) ",
+              object@processing <- .logging(object@processing,
+                                            "Spectra of MS level(s) ",
                                             paste0(msLevel., collapse = ", "),
-                                            " cleaned [", date(), "]"))
+                                            " cleaned ")
               object
           })
 
