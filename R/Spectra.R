@@ -181,7 +181,7 @@ NULL
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraData`, `spectraData<-`: get or sets general spectrum
+#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
 #'   metadata (annotation, also called header). `spectraData` returns
 #'   a `DataFrame`, `spectraData<-` expects a `DataFrame`. Note that not all
 #'   backends support replacing all spectra variables (the [MsBackendMzR()]
