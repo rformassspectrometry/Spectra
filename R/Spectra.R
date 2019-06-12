@@ -229,7 +229,7 @@ NULL
 #' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the subsetted `Spectra`.
 #'
-#' - `filterPrecursorMz`: retain spectra with an m/z matching the provided `mz`
+#' - `filterPrecursorMz`: retains spectra with an m/z matching the provided `mz`
 #'   accepting also a small difference in m/z which can be defined by parameter
 #'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
 #'   m/z identical to `mz` are retained.
