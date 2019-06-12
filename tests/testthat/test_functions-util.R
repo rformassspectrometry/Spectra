@@ -33,12 +33,14 @@ test_that(".class_rle works", {
 })
 
 test_that(".as_rle works", {
-    expect_equal(.as_rle(c("a", "a")), Rle("a", 2))
     expect_equal(.as_rle("a"), "a")
+    expect_equal(.as_rle(c("a", "a")), rep("a", 2))
+    expect_equal(.as_rle(c("a", "a", "a")), Rle("a", 3))
     expect_equal(.as_rle(1:4), 1:4)
     expect_equal(.as_rle(rep(1, 10)), Rle(1, 10))
     expect_equal(.as_rle(TRUE), TRUE)
-    expect_equal(.as_rle(c(TRUE, TRUE)), Rle(TRUE, 2))
+    expect_equal(.as_rle(c(TRUE, TRUE)), rep(TRUE, 2))
+    expect_equal(.as_rle(c(TRUE, TRUE, TRUE)), Rle(TRUE, 3))
     expect_equal(.as_rle(list(a = 1:3, b = 2:3)), list(a = 1:3, b = 2:3))
 })
 

@@ -81,21 +81,23 @@
     else class(x)
 }
 
-#' Function to *compress* a `numeric`, `logical` or `character` vector into an
-#' Rle if it has only a single element.
+#' Function to convert a `numeric`, `logical` or `character` vector into an
+#' `Rle` if it will use less memory than the bare vector.
 #'
 #' @param x vector to convert to Rle.
 #'
-#' @return `x` or an `Rle` version if `x`
+#' @return `x` or an `Rle` version of `x`
 #'
-#' @author Johannes Rainer
+#' @author Johannes Rainer, Sebastian Gibb
+#'
+#' @importFrom S4Vectors nrun
 #'
 #' @noRd
 .as_rle <- function(x) {
-    len_x <- length(x)
-    if (len_x > 1 && (is.numeric(x) | is.character(x) | is.logical(x))) {
-        if (length(unique(x)) == 1)
-            x <- Rle(x[1], len_x)
+    if (length(x) > 2L && (is.numeric(x) || is.character(x) || is.logical(x))) {
+        r <- Rle(x)
+        if (nrun(r) < length(x) / 2L)
+            return(r)
     }
     x
 }
