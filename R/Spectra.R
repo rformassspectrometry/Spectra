@@ -104,7 +104,7 @@ NULL
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
-#'   spectrum). The length of the `list` is equal to the number of
+#'   spectrum). The length of the list is equal to the number of
 #'   `spectra` in `object`.
 #'
 #' - `ionCount`: returns a `numeric` with the sum of intensities for
