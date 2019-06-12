@@ -192,7 +192,7 @@ setMethod("spectraVariables", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
-    if (any(c("mz", "intensity") == name))
+    if (name == "mz" || name == "intensity")
         stop("'MsBackendMzR' does not support replacing mz or intensity values")
     if (length(value) == 1)
         value <- rep(value, length(x))
