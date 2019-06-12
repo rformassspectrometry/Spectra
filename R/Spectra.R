@@ -207,7 +207,7 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
-#' - `filterAcquisitionNum`: filter the object keeping only spectra matching the
+#' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
 #'   provided acquisition numbers (argument `n`). If `file` is also provided,
 #'   `object` is subsetted to the spectra with an acquisition number equal to
 #'   `n` **in this/these file(s)** and all spectra for the remaining files (not
