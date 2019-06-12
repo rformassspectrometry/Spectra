@@ -204,10 +204,8 @@ MsBackendDataFrame <- function() {
 #'
 #' @noRd
 .as_vector_spectra_data <- function(x) {
-    cols <- colnames(x)[vapply(x, is, logical(1), "Rle")]
-    for (col in cols) {
-        x[[col]] <- as.vector(x[[col]])
-    }
+    isRle <- vapply(x, is, logical(1L), "Rle")
+    x[isRle] <- lapply(x[isRle], as.vector)
     x
 }
 
