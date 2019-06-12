@@ -157,7 +157,7 @@ NULL
 #'   `integer` vector of length 1 or equal to the number of spectra.
 #'
 #' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
-#'   `precScanNum`, `precAcquisitionNum`: get the charge (`integer`),
+#'   `precScanNum`, `precAcquisitionNum`: gets the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
 #'   and acquisition number (`interger`) of the precursor for MS level
 #'   > 2 spectra from the object. Returns a vector of length equal to
