@@ -515,7 +515,7 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
 setMethod("filterAcquisitionNum", "MsBackendDataFrame", function(object,
                                                                  n = integer(),
                                                                  file = integer()) {
-    if (!length(n) | !length(object)) return(object)
+    if (!length(n) || !length(object)) return(object)
     if (!length(file)) file <- unique(fromFile(object))
     if (!is.integer(n)) stop("'n' has to be an integer representing the ",
                              "acquisition number(s) for sub-setting")
