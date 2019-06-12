@@ -226,7 +226,7 @@ NULL
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra`.
 #'
-#' - `filterPolarity`: filter the object keeping only spectra matching the
+#' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the subsetted `Spectra`.
 #'
 #' - `filterPrecursorMz`: retain spectra with an m/z matching the provided `mz`
