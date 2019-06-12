@@ -265,7 +265,7 @@ NULL
 #' ([MsBackendDataFrame()] as well as read-only backends (such
 #' as the [MsBackendMzR()]).
 #'
-#' - `addProcessing`: add an arbitrary function that should be applied to the
+#' - `addProcessing`: adds an arbitrary function that should be applied to the
 #'   peaks matrix of every spectrum in `object`. The function (can be passed
 #'   with parameter `FUN`) is expected to take a peaks matrix as input and to
 #'   return a peaks matrix. A peaks matrix is a numeric matrix with two columns,
