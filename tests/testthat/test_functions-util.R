@@ -164,9 +164,19 @@ test_that(".rbind_fill works", {
     expect_identical(res$b, c(rep(FALSE, nrow(a)), rep(TRUE, nrow(b)), rep(NA, 5)))
 
     ## DataFrame containing SimpleList.
-    a$mz <- SimpleList(1:3, 1:4, 1:2, 1:3)
+    a$mz <- NumericList(1:3, 1:4, 1:2, 1:3)
     res <- .rbind_fill(a, b)
-    expect_true(is(res$mz, "SimpleList"))
+    expect_true(is(res$mz, "NumericList"))
     expect_true(all(unlist(is.na(res$mz[5:8]))))
-    expect_true(is.logical(res$mz[[5]]))
+    expect_true(is.na(res$mz[[5]]))
+
+    ## If the first DataFrame doesn't contain a SimpleList but the second one
+    res <- DataFrame(d = c(1L:4L, rep(NA_real_, 4L)),
+                     b = rep(c(TRUE, FALSE), each = 4L),
+                     e = Rle(1:2, 4),
+                     a = c(rep(NA_real_, 4L), 1L:4L),
+                     c = c(rep(NA_character_, 4L), letters[1L:4L]),
+                     mz = NumericList(NA_real_, NA_real_, NA_real_, NA_real_,
+                                      1:3, 1:4, 1:2, 1:3))
+    expect_equal(.rbind_fill(b, a), res)
 })
