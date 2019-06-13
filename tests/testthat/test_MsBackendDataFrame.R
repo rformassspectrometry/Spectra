@@ -67,6 +67,7 @@ test_that("backendMerge,MsBackendDataFrame works", {
     df2$intensity <- list(c(12.4, 3), c(123.4, 1))
     be2 <- backendInitialize(MsBackendDataFrame(), df2)
     res <- backendMerge(be, be2, be3)
+    expect_identical(lengths(mz(res)), c(0L, 0L, 0L, 2L, 2L, 0L, 0L))
 
     ## With different dataStorage
     be$dataStorage <- c("a", "a", "a")

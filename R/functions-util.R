@@ -215,47 +215,44 @@ utils.enableNeighbours <- function(x) {
 #'
 #' @return The merged object.
 #'
-#' @author Johannes Rainer
+#' @author Johannes Rainer, Sebastian Gibb
 #'
 #' @noRd
 .rbind_fill <- function(...) {
-    dots <- list(...)
-    cols_class <- lapply(dots, function(z) {
-        if (is.matrix(z)) {
-            res <- rep(class(z[, 1]), ncol(z))
-            names(res) <- colnames(z)
-        }
-        else res <- vapply(z, class, character(1))
-        res
-    })
-    cols_class <- unlist(cols_class)
-    cols_names <- unique(names(cols_class))
-    cols_class <- cols_class[cols_names]
-    res <- lapply(dots, function(z) {
-        cnz <- colnames(z)
-        rnz <- nrow(z)
-        is_matrix <- is.matrix(z)
-        mis_col <- setdiff(cols_names, cnz)
-        for (mc in mis_col) {
-            mc_class <- cols_class[mc]
-            if (mc_class == "factor")
-                z <- cbind(z, as.factor(NA))
-            else {
-                ## If we have a data.frame or DataFrame using cbind can result
-                ## in unwanted results if one of the columns is a S4class such
-                ## as SimpleList.
-                if (is_matrix)
-                    z <- cbind(z, as(NA, mc_class))
-                else
-                    z[[ncol(z) + 1]] <- as(rep(NA, rnz), mc_class)
-            }
-        }
-        colnames(z) <- c(cnz, mis_col)
-        z[, cols_names]
-    })
-    do.call(rbind, res)
+    l <- list(...)
+
+    if (length(l) == 1L)
+        l <- l[[1L]]
+
+    cl <- vapply(l, class, character(1L))
+
+    stopifnot(all(cl %in% c("matrix", "data.frame", "DataFrame")))
+
+    ## convert matrix to data.frame for easier and equal subsetting and class
+    ## determination
+    isMatrix <- cl == "matrix"
+    l[isMatrix] <- lapply(l[isMatrix], as.data.frame)
+
+    allcl <- unlist(lapply(l, vapply, class, character(1L)))
+    allnms <- unique(names(allcl))
+    allcl <- allcl[allnms]
+
+    for (i in seq(along=l)) {
+        diffcn <- setdiff(allnms, names(l[[i]]))
+        if (length(diffcn))
+            l[[i]][, diffcn] <- lapply(allcl[diffcn], as, object = NA)
+    }
+    r <- do.call(rbind, l)
+
+    ## if we had just matrices as input we need to convert our temporary
+    ## data.frame back to a matrix
+    if (all(isMatrix))
+        r <- as.matrix(r)
+    r
 }
 
 .logging <- function(x, ...) {
     c(x, paste0(..., " [", date(), "]"))
 }
+
+setAs("logical", "factor", function(from, to) factor(from))
