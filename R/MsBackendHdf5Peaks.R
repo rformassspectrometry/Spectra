@@ -218,7 +218,7 @@ setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendHdf5Peaks", function(object) {
-    lengths(peaks(object)) / 2L
+    as.integer(lengths(peaks(object)) / 2L)
 })
 
 #' @rdname hidden_aliases
@@ -240,11 +240,12 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
         if (any(colnames(object@spectraData) == "scanIndex"))
             value$scanIndex <- object@spectraData$scanIndex
         else value$scanIndex <- seq_len(nrow(value))
-    if (any(colnames(value) %in% c("mz", "intensity"))) {
-        ## Can not have peaks without m/z
-        if (!any(colnames(value) == "mz"))
-            stop("Column \"mz\" required if columns \"intensity\" present")
-        if (!any(colnames(value) == "intensity"))
+    any_mz <- any(colnames(value) == "mz")
+    any_int <- any(colnames(value) == "intensity")
+    if (!any_mz && any_int)
+        stop("Column \"mz\" required if columns \"intensity\" present")
+    if (any_mz) {
+        if (!any_int)
             value$intensity <- NA_real_
         pks <- mapply(function(mz, intensity) cbind(mz, intensity),
                       value$mz, value$intensity, SIMPLIFY = FALSE,

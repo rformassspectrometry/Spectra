@@ -970,14 +970,14 @@ setMethod("filterEmptySpectra", "Spectra", function(object) {
     object
 })
 
-#' @rdname Spectra
-setMethod("filterFile", "Spectra", function(object, file = integer()) {
-    object@backend <- filterFile(object@backend, file = file)
-    object@processing <- .logging(object@processing,
-                                  "Filter: select file(s) ",
-                                  paste0(file, collapse = ", "))
-    object
-})
+## #' @rdname Spectra
+## setMethod("filterFile", "Spectra", function(object, file = integer()) {
+##     object@backend <- filterFile(object@backend, file = file)
+##     object@processing <- .logging(object@processing,
+##                                   "Filter: select file(s) ",
+##                                   paste0(file, collapse = ", "))
+##     object
+## })
 
 #' @rdname Spectra
 setMethod("filterIsolationWindow", "Spectra", function(object, mz = numeric()) {

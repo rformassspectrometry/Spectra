@@ -55,8 +55,7 @@ test_that(".valid_intensity_column works", {
 test_that(".valid_intensity_mz_columns works", {
     be <- MsBackendDataFrame()
     expect_null(.valid_intensity_mz_columns(be@spectraData))
-    be <- backendInitialize(be, files = NA_character_,
-                            DataFrame(fromFile = c(1L, 1L)))
+    be <- backendInitialize(be, DataFrame(fromFile = c(1L, 1L)))
     expect_null(.valid_intensity_mz_columns(be@spectraData))
     be@spectraData$mz <- list(1:3, 1:2)
     be@spectraData$intensity <- list(1:3, 2)
@@ -68,10 +67,11 @@ test_that(".valid_intensity_mz_columns works", {
 
 test_that(".get_spectra_data_column works", {
     be <- MsBackendDataFrame()
-    expect_equal(.get_spectra_data_column(be, "rtime"), numeric())
-    df <- DataFrame(fromFile = c(1L, 1L), scanIndex = c(1L, 2L), other_col = "a")
-    be <- backendInitialize(be, files = NA_character_, df)
-    expect_equal(.get_spectra_data_column(be, "fromFile"), Rle(c(1L, 1L)))
+    expect_equal(Spectra:::.get_spectra_data_column(be, "rtime"), numeric())
+    df <- DataFrame(scanIndex = c(1L, 2L), other_col = "a")
+    be <- backendInitialize(be, df)
+    expect_equal(.get_spectra_data_column(be, "dataStorage"),
+                 Rle(rep("<memory>", 2)))
     expect_equal(.get_spectra_data_column(be, "scanIndex"), 1:2)
     expect_equal(.get_spectra_data_column(be, "other_col"), c("a", "a"))
     expect_equal(.get_spectra_data_column(be, "precScanNum"), c(NA_integer_,
@@ -82,7 +82,7 @@ test_that(".get_spectra_data_column works", {
 
 test_that(".as_rle_spectra_data works", {
     df <- DataFrame()
-    res <- Spectra:::.as_rle_spectra_data(df)
+    res <- .as_rle_spectra_data(df)
     expect_equal(df, res)
     df <- DataFrame(msLevel = rep(NA_integer_, 3), a = "a", b = 1:3)
     res <- .as_rle_spectra_data(df)
@@ -94,9 +94,9 @@ test_that(".as_rle_spectra_data works", {
     expect_equal(res$a, Rle("a", 3))
     expect_equal(res$b, 1:3)
     expect_equal(res$fromFile, Rle(1L, 3))
-    res$fromFile <- 1:3
+    res$dataStorage <- as.character(1:3)
     res <- .as_rle_spectra_data(res)
-    expect_equal(res$fromFile, Rle(1:3))
+    expect_equal(res$dataStorage, Rle(as.character(1:3)))
 })
 
 test_that(".as_vector_spectra_data works", {
@@ -176,7 +176,7 @@ test_that(".combine_backend_data_frame works", {
     expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
     expect_identical(res@spectraData$other_col,
                      Rle(c(rep(NA_character_, 5), "z", "z")))
-    expect_true(is(be3@spectraData$precScanNum, "Rle"))
+    expect_true(is(be3@spectraData$precScanNum, "integer"))
     expect_true(is(res@spectraData$precScanNum, "Rle"))
 
     ## One backend with and one without m/z
@@ -184,6 +184,7 @@ test_that(".combine_backend_data_frame works", {
     df2$intensity <- list(c(12.4, 3), c(123.4, 1))
     be2 <- backendInitialize(MsBackendDataFrame(), df2)
     res <- .combine_backend_data_frame(list(be, be2, be3))
+    expect_equal(lengths(mz(res)), c(0, 0, 0, 2, 2, 0, 0))
 
     ## With different dataStorage
     be$dataStorage <- c("a", "a", "a")

@@ -294,7 +294,6 @@ setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
         stop("'value' has to be a list-like object")
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
-    object@modCount <- object@modCount + 1L
     vals <- lapply(value, "[", , 1L)
     if (!is(vals, "NumericList"))
         vals <- NumericList(vals, compress = FALSE)
@@ -520,7 +519,7 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
 setMethod("filterAcquisitionNum", "MsBackendDataFrame",
           function(object, n = integer(), dataStorage = integer(),
                    dataOrigin = integer()) {
-    if (!length(n) | !length(object)) return(object)
+    if (!length(n) || !length(object)) return(object)
     if (!is.integer(n)) stop("'n' has to be an integer representing the ",
                              "acquisition number(s) for sub-setting")
     sel_file <- .sel_file(object, dataStorage, dataOrigin)

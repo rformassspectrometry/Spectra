@@ -148,7 +148,7 @@ MsBackendDataFrame <- function() {
     if (missing(column) || length(column) != 1)
         stop("'column' should be a 'character' of length 1.")
     if (any(colnames(x@spectraData) == column))
-        x@spectraData[, column]
+        x@spectraData[[column]]
     else {
         if (any(names(.SPECTRA_DATA_COLUMN_METHODS) == column))
             do.call(.SPECTRA_DATA_COLUMN_METHODS[column], args = list(x))
