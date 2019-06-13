@@ -240,7 +240,7 @@ utils.enableNeighbours <- function(x) {
     for (i in seq(along=l)) {
         diffcn <- setdiff(allnms, names(l[[i]]))
         if (length(diffcn))
-            l[[i]][, diffcn] <- lapply(allcl[diffcn], as, object=NA_real_)
+            l[[i]][, diffcn] <- lapply(allcl[diffcn], as, object = NA)
     }
     r <- do.call(rbind, l)
 
@@ -254,3 +254,5 @@ utils.enableNeighbours <- function(x) {
 .logging <- function(x, ...) {
     c(x, paste0(..., " [", date(), "]"))
 }
+
+setAs("logical", "factor", function(from, to) factor(from))

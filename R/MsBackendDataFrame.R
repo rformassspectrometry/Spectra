@@ -91,8 +91,8 @@ setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
     res <- new(class(object[[1]]))
     res@files <- unique(files)
     suppressWarnings(
-        res@spectraData <- do.call(
-            .rbind_fill, lapply(object, function(z) z@spectraData))
+        res@spectraData <- .as_rle_spectra_data(do.call(
+            .rbind_fill, lapply(object, function(z) z@spectraData)))
     )
     if (any(colnames(res@spectraData) == "mz"))
         res@spectraData$mz[any(is.na(res@spectraData$mz))] <- list(numeric())

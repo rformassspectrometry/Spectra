@@ -131,7 +131,7 @@ setMethod("peaks", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendMzR", function(object) {
-    lengths(peaks(object)) / 2L
+    as.integer(lengths(peaks(object)) / 2L)
 })
 
 #' @rdname hidden_aliases

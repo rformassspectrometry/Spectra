@@ -358,7 +358,7 @@ details.
 \section{Accessing spectra data}{
 
 \itemize{
-\item \code{$}, \code{$<-}: get (or set) a spectra variable for all spectra in \code{object}.
+\item \code{$}, \code{$<-}: gets (or sets) a spectra variable for all spectra in \code{object}.
 See examples for details.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
@@ -378,11 +378,11 @@ returns a \code{numeric} with length equal to the number of spectra
 \code{numeric} of length equal to the number of spectra in \code{object}.
 \item \code{fileNames}: returns a \code{character} with the file names, or
 \code{NA_character_} if not relevant.
-\item \code{fromFile}: get the file/sample assignment of each spectrum. Returns an
+\item \code{fromFile}: gets the file/sample assignment of each spectrum. Returns an
 integer vector of length equal to the number of spectra.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
 a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
-spectrum). The length of the \code{list} is equal to the number of
+spectrum). The length of the list is equal to the number of
 \code{spectra} in \code{object}.
 \item \code{ionCount}: returns a \code{numeric} with the sum of intensities for
 each spectrum. If the spectrum is empty (see \code{isEmpty}),
@@ -396,21 +396,21 @@ the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
 length equal number of spectra.
-\item \code{isolationWindowLowerMz}, \code{isolationWindowLowerMz<-}: get or set the lower
+\item \code{isolationWindowLowerMz}, \code{isolationWindowLowerMz<-}: gets or sets the lower
 m/z boundary of the isolation window.
-\item \code{isolationWindowTargetMz}, \code{isolationWindowTargetMz<-}: get or set the
+\item \code{isolationWindowTargetMz}, \code{isolationWindowTargetMz<-}: gets or sets the
 target m/z of the isolation window.
-\item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: get or set the upper
+\item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: gets or sets the upper
 m/z boundary of the isolation window.
-\item \code{length}: get the number of spectra in the object.
-\item \code{msLevel}: get the spectra's MS level. Returns an integer vector (names
+\item \code{length}: gets the number of spectra in the object.
+\item \code{msLevel}: gets the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.
 \item \code{mz}: gets the mass-to-charge ratios (m/z) from the
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
-\item \code{peaks}: get the \emph{peaks} matrices for all spectra in \code{object}. The function
+\item \code{peaks}: gets the \emph{peaks} matrices for all spectra in \code{object}. The function
 returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns \code{mz} and
 \code{intensity} with the m/z and intensity values for all peaks of a spectrum.
 \item \code{peaksCount}: gets the number of peaks (m/z-intensity values) per
@@ -422,7 +422,7 @@ to the number of spectra), with \code{0} and \code{1} representing negative
 and positive polarities, respectively. \code{polarity<-} expects an
 \code{integer} vector of length 1 or equal to the number of spectra.
 \item \code{precursorCharge}, \code{precursorIntensity}, \code{precursorMz},
-\code{precScanNum}, \code{precAcquisitionNum}: get the charge (\code{integer}),
+\code{precScanNum}, \code{precAcquisitionNum}: gets the charge (\code{integer}),
 intensity (\code{numeric}), m/z (\code{numeric}), scan index (\code{integer})
 and acquisition number (\code{interger}) of the precursor for MS level
 
@@ -443,13 +443,13 @@ spectrum during acquisition/measurement (as reported in the mzML file).
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \code{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
-\item \code{spectraData}, \code{spectraData<-}: get or sets general spectrum
+\item \code{spectraData}, \code{spectraData<-}: gets or sets general spectrum
 metadata (annotation, also called header). \code{spectraData} returns
 a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame}. Note that not all
 backends support replacing all spectra variables (the \code{\link[=MsBackendMzR]{MsBackendMzR()}}
 does for example not allow to replace \code{mz} and \code{intensity} values with the
 \code{spectraData<-} method.
-\item \code{spectraNames}, \code{spectraNames<-}: get or set the spectra names.
+\item \code{spectraNames}, \code{spectraNames<-}: gets or sets the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
 available in \code{object}.
@@ -466,34 +466,34 @@ spectrum, \code{0} is returned.
 Subsetting and filtering of \code{Spectra} objects can be performed with the below
 listed methods.
 \itemize{
-\item \code{[}: subset the spectra keeping only selected elements (\code{i}). The method
+\item \code{[}: subsets the spectra keeping only selected elements (\code{i}). The method
 \strong{always} returns a \code{Spectra} object.
-\item \code{filterAcquisitionNum}: filter the object keeping only spectra matching the
+\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching the
 provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
 \code{object} is subsetted to the spectra with an acquisition number equal to
 \code{n} \strong{in this/these file(s)} and all spectra for the remaining files (not
 specified with \code{file}). Returns the filtered \code{Spectra}.
-\item \code{filterEmptySpectra}: remove empty spectra (i.e. spectra without peaks).
-\item \code{filterFile}: retain data of files matching the file index or file name
+\item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
+\item \code{filterFile}: retains data of files matching the file index or file name
 provided with parameter \code{file}. Returns the filtered \code{Spectra}.
-\item \code{filterIsolationWindow}: retain spectra that contain \code{mz} in their
+\item \code{filterIsolationWindow}: retains spectra that contain \code{mz} in their
 isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} <= \code{mz}
 and \code{isolationWindowUpperMz} >= \code{mz}.
-\item \code{filterMsLevel}: filter object by MS level keeping only spectra matching
+\item \code{filterMsLevel}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra}.
-\item \code{filterPolarity}: filter the object keeping only spectra matching the
+\item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the subsetted \code{Spectra}.
-\item \code{filterPrecursorMz}: retain spectra with an m/z matching the provided \code{mz}
+\item \code{filterPrecursorMz}: retains spectra with an m/z matching the provided \code{mz}
 accepting also a small difference in m/z which can be defined by parameter
 \code{ppm} (parts per million). With the default (\code{ppm = 0}) only spectra with
 m/z identical to \code{mz} are retained.
-\item \code{filterPrecursorScan}: retain parent (e.g. MS1) and children scans (e.g.
+\item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra}.
-\item \code{filterRt}: retain spectra of MS level \code{msLevel} with retention times
+\item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times
 within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
-\item \code{selectSpectraVariables}: reduce the information within the object to
+\item \code{selectSpectraVariables}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
 the values will be dropped, while additional (user defined) spectra
@@ -520,7 +520,7 @@ any backend, i.e. backends supporting to save changes to spectrum data
 (\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} as well as read-only backends (such
 as the \code{\link[=MsBackendMzR]{MsBackendMzR()}}).
 \itemize{
-\item \code{addProcessing}: add an arbitrary function that should be applied to the
+\item \code{addProcessing}: adds an arbitrary function that should be applied to the
 peaks matrix of every spectrum in \code{object}. The function (can be passed
 with parameter \code{FUN}) is expected to take a peaks matrix as input and to
 return a peaks matrix. A peaks matrix is a numeric matrix with two columns,
@@ -528,10 +528,10 @@ the first containing the m/z values of the peaks and the second the
 corresponding intensities. The function has to have \code{...} in its
 definition. Additional arguments can be passed with \code{...}. Examples are
 provided in the package vignette.
-\item \code{clean}: remove 0-intensity data points. For \code{all = FALSE} (the default)
+\item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
 0-intensity peaks next to non-zero intensity peaks are retained while with
 \code{all = TRUE} all 0-intensity peaks are removed.
-\item \code{removePeaks}: \emph{remove} peaks lower or equal to a threshold intensity
+\item \code{removePeaks}: \emph{removes} peaks lower or equal to a threshold intensity
 value \code{t} by setting their intensity to \code{0}. With the default \code{t = "min"}
 all peaks with an intensity smaller or equal to the minimal non-zero
 intensity is set to \code{0}. If the spectrum is in profile mode, ranges of
