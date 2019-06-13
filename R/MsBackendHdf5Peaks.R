@@ -161,7 +161,7 @@ setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
     if (!all(lengths(value) == lengths(ints)))
         stop("lengths of 'value' has to match the number of peaks ",
              "(i.e. peaksCount(object))")
-    pks <- mapply(function(mz, intensity) cbind(mz, intensity), value, ints)
+    pks <- mapply(cbind, mz=value, intensity=ints)
     peaks(object) <- pks
     object
 })
