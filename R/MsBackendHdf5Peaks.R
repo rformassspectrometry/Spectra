@@ -21,7 +21,7 @@ NULL
 setClass("MsBackendHdf5Peaks",
          contains = "MsBackendDataFrame",
          prototype = prototype(version = "0.1", readonly = FALSE,
-                               h4files = character()))
+                               h5files = character()))
 
 setValidity("MsBackendHdf5Peaks", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,
@@ -209,7 +209,7 @@ setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendHdf5Peaks", function(object) {
-    lengths(peaks(object)) / 2L
+    as.integer(lengths(peaks(object)) / 2L)
 })
 
 #' @rdname hidden_aliases

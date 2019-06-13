@@ -316,8 +316,8 @@ supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
 for the memory backend or read the spectra header data for the
 \code{MsBackendMzR} backend).
-\item \code{backendMerge}: merge (combine) \code{MsBackend} objects into a single instance.
-All objects to be merged have to be of the same type (e.g.
+\item \code{backendMerge}: merges (combines) \code{MsBackend} objects into a single
+instance. All objects to be merged have to be of the same type (e.g.
 \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
 \item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
@@ -334,26 +334,26 @@ returns a \code{numeric} with length equal to the number of spectra
 \code{numeric} of length equal to the number of spectra in \code{object}.
 \item \code{fileNames}: returns a \code{character} with the file names, or
 \code{NA_character_} if not relevant.
-\item \code{filterAcquisitionNum}: filter the object keeping only spectra matching the
-provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
-\code{object} is subsetted to the spectra with an acquisition number equal to
-\code{n} \strong{in this/these file(s)} and all spectra for the remaining files (not
-specified with \code{file}).
-\item \code{filterEmptySpectra}: remove empty spectra (i.e. spectra without peaks).
-\item \code{filterFile}: retain data of files matching the file index or file name
+\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
+the provided acquisition numbers (argument \code{n}). If \code{file} is also
+provided, \code{object} is subsetted to the spectra with an acquisition number
+equal to \code{n} \strong{in this/these file(s)} and all spectra for the remaining
+files (not specified with \code{file}).
+\item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
+\item \code{filterFile}: retains data of files matching the file index or file name
 provided with parameter \code{file}.
-\item \code{filterIsolationWindow}: retain spectra that contain \code{mz} in their
+\item \code{filterIsolationWindow}: retains spectra that contain \code{mz} in their
 isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} <= \code{mz}
 and \code{isolationWindowUpperMz} >= \code{mz}.
-\item \code{filterMsLevel}: retain spectra of MS level \code{msLevel}.
-\item \code{filterPolarity}: retain spectra of polarity \code{polarity}.
-\item \code{filterPrecursorMz}: retain spectra with an m/z matching the provided \code{mz}
+\item \code{filterMsLevel}: retains spectra of MS level \code{msLevel}.
+\item \code{filterPolarity}: retains spectra of polarity \code{polarity}.
+\item \code{filterPrecursorMz}: retains spectra with an m/z matching the provided \code{mz}
 accepting also a small difference in m/z which can be defined by parameter
 \code{ppm} (parts per million). With the default (\code{ppm = 0}) only spectra with
 m/z identical to \code{mz} are retained.
-\item \code{filterPrecursorScan}: retain parent (e.g. MS1) and children scans (e.g.
+\item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}.
-\item \code{filterRt}: retain spectra of MS level \code{msLevel} with retention times
+\item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times
 within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
 \item \code{fromFile}: returns an \code{integer} vector of length equal to the
 number of spectra in \code{object} indicating the file index from
@@ -363,10 +363,11 @@ which spectra originate. If no files are available,
 a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
-\item \code{intensity<-}: replace the intensity values. \code{value} has to be a \code{list}
-of length equal to the number of spectra and the number of values within
-each list element identical to the number of peaks in each spectrum (i.e.
-the \code{peaksCount(x)}). Note that not all backends support this method.
+\item \code{intensity<-}: replaces the intensity values. \code{value} has to be a \code{list}
+(or \code{\link[=NumericList]{NumericList()}}) of length equal to the number of spectra and the
+number of values within each list element identical to the number of
+peaks in each spectrum (i.e. the \code{peaksCount(x)}). Note that just
+writeable backends support this method.
 \item \code{ionCount}: returns a \code{numeric} with the sum of intensities for
 each spectrum. If the spectrum is empty (see \code{isEmpty}),
 \code{NA_real_} is returned.
@@ -395,18 +396,18 @@ level for each spectrum (or \code{NA_integer_} if not available).
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
-\item \code{mz<-}: replace the m/z values. \code{value} has to be a \code{list} of length equal
+\item \code{mz<-}: replaces the m/z values. \code{value} has to be a \code{list} of length equal
 to the number of spectra and the number of values within each list element
 identical to the number of peaks in each spectrum (i.e. the
-\code{peaksCount(x)}). Note that not all backends support this method.
+\code{peaksCount(x)}). Note that just writeable backends support this method.
 \item \code{peaks} returns a \code{list} of length equal to the number of spectra
 in \code{object}. Each element of the list is a \code{matrix} with columns
 \code{mz} and \code{intensity}. For an empty spectrum, a \code{matrix} with 0
 rows and two columns (named \code{mz} and \code{intensity}) is returned.
-\item \code{peaks<-} replace the peak data (m/z and intensity values) of the backend.
+\item \code{peaks<-} replaces the peak data (m/z and intensity values) of the backend.
 This method expects a \code{list} of \code{matrix} objects with columns \code{"mz"} and
 \code{"intensity"} that has the same length than the number of spectra in the
-backend. Note that not all backends might support this method.
+backend. Note that just writeable backends support this method.
 \item \code{peaksCount}: gets the number of peaks (m/z-intensity values) per
 spectrum.  Returns an \code{integer} vector (length equal to the
 number of spectra). For empty spectra, \code{NA_integer_} is returned.
@@ -433,13 +434,13 @@ for each spectrum. This represents the relative index of the
 spectrum within each file. Note that this can be different to the
 \code{acquisitionNum} of the spectrum which is the index of the
 spectrum as reported in the mzML file.
-\item \code{selectSpectraVariables}: reduce the information within the backend to
+\item \code{selectSpectraVariables}: reduces the information within the backend to
 the selected spectra variables.
 \item \code{smoothed},\code{smoothed<-}: gets or sets whether a spectrum is
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \code{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
-\item \code{spectraData}, \code{spectraData<-}: get or sets general spectrum
+\item \code{spectraData}, \code{spectraData<-}: gets or sets general spectrum
 metadata (annotation, also called header).  \code{spectraData} returns
 a \code{DataFrame}, \code{spectraData<-} expects a \code{DataFrame} with the same number
 of rows as there are spectra in \code{object}.

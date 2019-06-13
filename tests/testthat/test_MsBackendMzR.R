@@ -270,7 +270,7 @@ test_that("precScanNum,MsBackendMzR works", {
     expect_true(is(sciex_mzr@spectraData$precScanNum, "Rle"))
     expect_true(all(precScanNum(sciex_mzr) == 0L))
 
-    expect_true(is(tmt_mzr@spectraData$precScanNum, "integer"))
+    expect_true(is(tmt_mzr@spectraData$precScanNum, "Rle"))
     expect_true(length(unique(precScanNum(tmt_mzr))) > 1)
 })
 
