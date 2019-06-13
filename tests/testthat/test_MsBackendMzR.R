@@ -1,7 +1,3 @@
-sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
-sciex_pks <- peaks(sciex_mzr)
-fl <- dir(system.file("proteomics", package = "msdata"), full.names = TRUE)
-tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
 test_that("initializeBackend,MsBackendMzR works", {
     fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
@@ -19,7 +15,26 @@ test_that("initializeBackend,MsBackendMzR works", {
     expect_true(isReadOnly(be))
 })
 
-test_that("acquisitionNum, MsBackendMzR works", {
+test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
+    splt <- split(sciex_mzr, fromFile(sciex_mzr))
+    res <- backendMerge(splt)
+    expect_equal(res, sciex_mzr)
+
+    res <- backendMerge(splt[2:1])
+    expect_equal(res@files, sciex_mzr@files[2:1])
+    expect_equal(rtime(res)[fromFile(res) == 2],
+                 rtime(sciex_mzr)[fromFile(sciex_mzr) == 1])
+    expect_equal(rtime(res)[fromFile(res) == 1],
+                 rtime(sciex_mzr)[fromFile(sciex_mzr) == 2])
+
+    splt[[2]]@spectraData$some_col <- "a"
+    res <- backendMerge(c(splt, tmt_mzr))
+    expect_equal(fileNames(res), c(fileNames(sciex_mzr), fileNames(tmt_mzr)))
+    expect_true(all(res@spectraData$some_col[fromFile(res) == 2] == "a"))
+    expect_true(all(is.na(res@spectraData$some_col[fromFile(res) != 2])))
+})
+
+test_that("acquisitionNum,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(acquisitionNum(be), integer())
     expect_true(is(sciex_mzr@spectraData$acquisitionNum, "integer"))
@@ -73,12 +88,18 @@ test_that("fromFile,MsBackendMzR works", {
 
 test_that("intensity,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(intensity(be), SimpleList())
+    expect_equal(intensity(be), NumericList(compress = FALSE))
 
     res <- intensity(sciex_mzr)
-    expect_true(is(res, "SimpleList"))
+    expect_true(is(res, "NumericList"))
     expect_true(is.numeric(res[[1]]))
     expect_equal(length(res), length(sciex_mzr))
+})
+
+test_that("intensity<-,MsBackendMzR works", {
+    be <- MsBackendMzR()
+
+    expect_error(intensity(be) <- list, "does not support replacing intensity")
 })
 
 test_that("ionCount,MsBackendMzR works", {
@@ -111,6 +132,67 @@ test_that("isEmpty,MsBackendMzR works", {
     expect_true(all(!res))
 })
 
+test_that("isolationWindowLowerMz,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_identical(isolationWindowLowerMz(be), numeric())
+
+    be <- tmt_mzr
+    expect_true(is.numeric(isolationWindowLowerMz(be)))
+    expect_true(all(is.na(isolationWindowLowerMz(be)[msLevel(be) == 1])))
+    expect_true(all(!is.na(isolationWindowLowerMz(be)[msLevel(be) == 2])))
+
+    isolationWindowLowerMz(be) <- rep(2, length(be))
+    expect_true(is(be@spectraData$isolationWindowLowerMz, "Rle"))
+    expect_true(all(isolationWindowLowerMz(be) == 2))
+
+    expect_error(isolationWindowLowerMz(be) <- 2, "of length 509")
+
+    be <- sciex_mzr
+    expect_true(all(is.na(isolationWindowLowerMz(be))))
+})
+
+test_that("isolationWindowTargetMz,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_identical(isolationWindowTargetMz(be), numeric())
+
+    be <- tmt_mzr
+    expect_true(is.numeric(isolationWindowTargetMz(be)))
+    expect_true(all(is.na(isolationWindowTargetMz(be)[msLevel(be) == 1])))
+    expect_true(all(!is.na(isolationWindowTargetMz(be)[msLevel(be) == 2])))
+    expect_true(all(isolationWindowTargetMz(be)[msLevel(be) == 2] >
+                    isolationWindowLowerMz(be)[msLevel(be) == 2]))
+
+    isolationWindowTargetMz(be) <- rep(2, length(be))
+    expect_true(is(be@spectraData$isolationWindowTargetMz, "Rle"))
+    expect_true(all(isolationWindowTargetMz(be) == 2))
+
+    expect_error(isolationWindowTargetMz(be) <- 2, "of length 509")
+
+    be <- sciex_mzr
+    expect_true(all(is.na(isolationWindowTargetMz(be))))
+})
+
+test_that("isolationWindowUpperMz,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_identical(isolationWindowUpperMz(be), numeric())
+
+    be <- tmt_mzr
+    expect_true(is.numeric(isolationWindowUpperMz(be)))
+    expect_true(all(is.na(isolationWindowUpperMz(be)[msLevel(be) == 1])))
+    expect_true(all(!is.na(isolationWindowUpperMz(be)[msLevel(be) == 2])))
+    expect_true(all(isolationWindowUpperMz(be)[msLevel(be) == 2] >
+                    isolationWindowTargetMz(be)[msLevel(be) == 2]))
+
+    isolationWindowUpperMz(be) <- rep(2, length(be))
+    expect_true(is(be@spectraData$isolationWindowUpperMz, "Rle"))
+    expect_true(all(isolationWindowUpperMz(be) == 2))
+
+    expect_error(isolationWindowUpperMz(be) <- 2, "of length 509")
+
+    be <- sciex_mzr
+    expect_true(all(is.na(isolationWindowUpperMz(be))))
+})
+
 test_that("msLevel,MsBackendMzR works", {
     be <- MsBackendMzR()
     expect_equal(msLevel(be), integer())
@@ -124,13 +206,18 @@ test_that("msLevel,MsBackendMzR works", {
 
 test_that("mz,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(mz(be), SimpleList())
+    expect_equal(mz(be), NumericList(compress = FALSE))
 
     res <- mz(sciex_mzr)
-    expect_true(is(res, "SimpleList"))
+    expect_true(is(res, "NumericList"))
     expect_true(is.numeric(res[[1]]))
     expect_true(!any(vapply(res, is.unsorted, logical(1))))
     expect_equal(length(res), length(sciex_mzr))
+})
+
+test_that("mz<-,MsBackendMzR works", {
+    be <- MsBackendMzR()
+    expect_error(mz(be) <- list(), "does not support replacing")
 })
 
 test_that("peaks,MsBackendMzR works", {
@@ -320,7 +407,7 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
 
     tmp <- sciex_mzr
-    res <- spectraData(tmp)
+    res <- .spectra_data_mzR(tmp)
     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
     expect_true(all(colnames(tmp@spectraData) %in% colnames(res)))
     expect_true(is.logical(res$smoothed))
@@ -331,7 +418,7 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(is(tmp@spectraData$new_col, "Rle"))
     expect_true(any(spectraVariables(tmp) == "new_col"))
 
-    res <- spectraData(tmp, columns = c("msLevel", "new_col", "rtime"))
+    res <- .spectra_data_mzR(tmp, columns = c("msLevel", "new_col", "rtime"))
     expect_equal(colnames(res), c("msLevel", "new_col", "rtime"))
     expect_true(is.integer(res$msLevel))
     expect_true(is.numeric(res$new_col))
@@ -343,6 +430,15 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(is.numeric(res$new_col))
     expect_true(is.logical(res$smoothed))
     expect_true(all(is.na(res$smoothed)))
+
+    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "fromFile"))
+    expect_error(spectraData(tmp) <- spd, "scanIndex")
+    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "fromFile",
+                                        "scanIndex"))
+    spectraData(tmp) <- spd
+    expect_true(all(is.na(centroided(tmp))))
+    expect_true(all(is.na(polarity(tmp))))
+    expect_equal(mz(tmp), mz(sciex_mzr))
 })
 
 test_that("show,MsBackendMzR works", {
@@ -367,4 +463,29 @@ test_that("[,MsBackendMzR works", {
     expect_equal(length(tmp), 1)
     spd <- spectraData(tmp)
     expect_equal(spd$mz, mz(tmp))
+})
+
+test_that("selectSpectraVariables,MsBackendMzR works", {
+    be <- sciex_mzr
+
+    res <- selectSpectraVariables(be, c("fromFile", "msLevel", "rtime",
+                                        "scanIndex"))
+    expect_equal(colnames(res@spectraData), c("fromFile", "msLevel", "rtime",
+                                              "scanIndex"))
+    expect_error(selectSpectraVariables(be, c("fromFile", "msLevel")),
+                 "scanIndex is/are missing")
+})
+
+test_that("$,$<-,MsBackendDataFrame works", {
+    tmp <- sciex_mzr
+    tmp$new_col <- 5
+    expect_true(any(spectraVariables(tmp) == "new_col"))
+    expect_true(all(tmp$new_col == 5))
+    expect_equal(rtime(tmp), rtime(sciex_mzr))
+    expect_true(is.numeric(tmp$new_col))
+    expect_true(is(tmp@spectraData$new_col, "Rle"))
+
+    expect_error(tmp$mz <- NumericList(1:4, 1:6, compress = FALSE),
+                 "not support replacing mz")
+    expect_error(tmp$new_col <- c(2, 4), "either 1 or")
 })

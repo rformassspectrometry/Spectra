@@ -15,15 +15,3 @@ test_that("ProcessingStep executeProcessingStep", {
     ## Pass optional arguments to ...
     expect_identical(executeProcessingStep(ps, na.rm = TRUE), 10)
 })
-
-test_that(".apply_processing_queue works", {
-    inp <- list(1:5, 1:3, 5)
-    expect_equal(.apply_processing_queue(inp), inp)
-    res <- .apply_processing_queue(inp, list(ProcessingStep("sum")))
-    expect_equal(res, list(sum(1:5), sum(1:3), 5))
-
-    q <- list(ProcessingStep(function(x, y) x + y, ARGS = list(y = 3)),
-              ProcessingStep(function(x, y) x - y, ARGS = list(y = 1)))
-    res <- .apply_processing_queue(inp, q)
-    expect_equal(res, list((1:5 + 2), (1:3 + 2), 7))
-})

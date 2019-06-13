@@ -29,6 +29,14 @@ MsBackendMzR <- function() {
     colnames(hdr)[colnames(hdr) == "precursorScanNum"] <- "precScanNum"
     colnames(hdr)[colnames(hdr) == "precursorMZ"] <- "precursorMz"
     colnames(hdr)[colnames(hdr) == "retentionTime"] <- "rtime"
+    colnames(hdr)[colnames(hdr) == "isolationWindowTargetMZ"] <-
+        "isolationWindowTargetMz"
+    hdr$isolationWindowLowerMz <- hdr$isolationWindowTargetMz -
+        hdr$isolationWindowLowerOffset
+    hdr$isolationWindowUpperMz <- hdr$isolationWindowTargetMz +
+        hdr$isolationWindowUpperOffset
+    hdr$isolationWindowUpperOffset <- NULL
+    hdr$isolationWindowLowerOffset <- NULL
     S4Vectors::DataFrame(hdr)
 }
 
@@ -59,80 +67,48 @@ MsBackendMzR <- function() {
     })
 }
 
-#' Utility function to convert columns in the `x` `DataFrame` that have only
-#' a single element to `Rle`. Also columns specified with parameter `columns`
-#' will be converted (if present).
+#' @importFrom IRanges NumericList
 #'
-#' @param x `DataFrame`
+#' @description
 #'
-#' @param columns `character` of column names that should be converted to `Rle`
-#'
-#' @return `DataFrame`
-#'
-#' @author Johannes Rainer
-#'
-#' @importClassesFrom S4Vectors Rle
-#'
-#' @importFrom S4Vectors Rle
+#' Helper to build the spectraData `DataFrame` for `MsBackendMzR` backend.
 #'
 #' @noRd
-.as_rle_spectra_data <- function(x, columns = c("fromFile")) {
-    if (nrow(x) <= 1)
-        return(x)
-    for (col in colnames(x)) {
-        x[[col]] <- .as_rle(x[[col]])
+.spectra_data_mzR <- function(x, columns = spectraVariables(x)) {
+    cn <- colnames(x@spectraData)
+    if(!nrow(x@spectraData)) {
+        res <- lapply(
+            .SPECTRA_DATA_COLUMNS[!(names(.SPECTRA_DATA_COLUMNS) %in%
+                                    c("mz", "intensity"))], do.call,
+            args = list())
+        res <- DataFrame(res)
+        res$mz <- NumericList(compress = FALSE)
+        res$intensity <- NumericList(compress = FALSE)
+        return(res[, columns, drop = FALSE])
     }
-    columns <- intersect(columns, colnames(x))
-    for (col in columns) {
-        if (!is(x[[col]], "Rle"))
-            x[[col]] <- Rle(x[[col]])
+    not_found <- setdiff(columns, c(cn, names(.SPECTRA_DATA_COLUMNS)))
+    if (length(not_found))
+        stop("Column(s) ", paste(not_found, collapse = ", "),
+             " not available")
+    sp_cols <- columns[columns %in% cn]
+    res <- .as_vector_spectra_data(
+        x@spectraData[, sp_cols, drop = FALSE])
+    any_mz <- any(columns == "mz")
+    any_int <- any(columns == "intensity")
+    if (any_mz || any_int) {
+        pks <- peaks(x)
+        if (any_mz)
+            res$mz <- NumericList(lapply(pks, "[", , 1), compress = FALSE)
+        if (any_int)
+            res$intensity <- NumericList(lapply(pks, "[", , 2),
+                                         compress = FALSE)
     }
-    x
-}
-
-
-#' *Uncompress* a `DataFrame` by converting all of its columns that contain
-#' an `Rle` with `as.vector`.
-#'
-#' @param x `DataFrame`
-#'
-#' @return `DataFrame` with all `Rle` columns converted to vectors.
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-.as_vector_spectra_data <- function(x) {
-    cols <- colnames(x)[vapply(x, is, logical(1), "Rle")]
-    for (col in cols) {
-        x[[col]] <- as.vector(x[[col]])
+    other_cols <- setdiff(columns, c(sp_cols, "mz", "intensity"))
+    if (length(other_cols)) {
+        other_res <- lapply(other_cols, .get_spectra_data_column,
+                            x = x)
+        names(other_res) <- other_cols
+        res <- cbind(res, as(other_res, "DataFrame"))
     }
-    x
-}
-
-#' Helper function to return a column from the (spectra data) `DataFrame`. If
-#' the column `column` is an `Rle` `as.vector` is called on it. If column is
-#' the name of a mandatory variable but it is not available it is created on
-#' the fly.
-#'
-#' @param x `DataFrame`
-#'
-#' @param column `character(1)` with the name of the column to return.
-#'
-#' @importMethodsFrom S4Vectors [[
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-.get_rle_column <- function(x, column) {
-    if (any(colnames(x) == column)) {
-        if (is(x[[column]], "Rle"))
-            as.vector(x[[column]])
-        else x[[column]]
-    } else if (any(names(.SPECTRA_DATA_COLUMNS) == column)) {
-        nr_x <- nrow(x)
-        if (nr_x)
-            as(rep(NA, nr_x), .SPECTRA_DATA_COLUMNS[column])
-        else
-            do.call(.SPECTRA_DATA_COLUMNS[column], args = list())
-    } else stop("column '", column, "' not available")
+    res[, columns, drop = FALSE]
 }

@@ -3,13 +3,16 @@ NULL
 
 .valid_ms_backend_files <- function(x) {
     x <- x[!is.na(x)]
-    if (length(x)) {
-        if (anyDuplicated(x))
-            return("Duplicated file names found.")
-        if (!all(file.exists(x)))
-            return(paste0("File(s) ", paste(x[!file.exists(x)], collapse = ", "),
-                          " not found."))
-    }
+    if (length(x) && anyDuplicated(x))
+        return("Duplicated file names found.")
+    NULL
+}
+
+.valid_ms_backend_files_exist <- function(x) {
+    x <- x[!is.na(x)]
+    if (length(x) && !all(file.exists(x)))
+        return(paste0("File(s) ", paste(x[!file.exists(x)], collapse = ", "),
+                      " not found"))
     NULL
 }
 

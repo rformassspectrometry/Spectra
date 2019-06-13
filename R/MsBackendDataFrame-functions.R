@@ -48,12 +48,13 @@ NULL
 #' @noRd
 .valid_column_datatype <- function(x, datatypes = .SPECTRA_DATA_COLUMNS) {
     datatypes <- datatypes[names(datatypes) %in% colnames(x)]
-    x_class <- vapply(x, .class_rle, character(1))[names(datatypes)]
-    if (!all(datatypes == x_class))
+    res <- mapply(FUN = .is_class, x[, names(datatypes), drop = FALSE],
+                  datatypes)
+    if (!all(res))
         paste0("The following columns have a wrong data type: ",
-               paste(names(datatypes)[datatypes != x_class], collapse = ", "),
+               paste(names(res[!res]), collapse = ", "),
                ". The expected data type(s) is/are: ",
-               paste(datatypes[datatypes != x_class], collapse = ", "), ".")
+               paste(datatypes[names(res)[!res]], collapse = ", "), ".")
     else NULL
 }
 
@@ -75,9 +76,11 @@ NULL
 }
 
 .valid_intensity_mz_columns <- function(x) {
-    if (any(lengths(mz(x)) != lengths(intensity(x))))
-        "Length of mz and intensity values differ for some spectra"
-    else NULL
+    ## Don't want to have that tested on all on-disk objects.
+    if (length(x$intensity) && length(x$mz))
+        if (any(lengths(x$mz) != lengths(x$intensity)))
+            return("Length of mz and intensity values differ for some spectra")
+    NULL
 }
 
 #' data types of spectraData columns
@@ -88,8 +91,8 @@ NULL
     rtime = "numeric",
     acquisitionNum = "integer",
     scanIndex = "integer",
-    mz = "SimpleList",
-    intensity = "SimpleList",
+    mz = "NumericList",
+    intensity = "NumericList",
     fromFile = "integer",
     centroided = "logical",
     smoothed = "logical",
@@ -98,7 +101,10 @@ NULL
     precursorMz = "numeric",
     precursorIntensity = "numeric",
     precursorCharge = "integer",
-    collisionEnergy = "numeric"
+    collisionEnergy = "numeric",
+    isolationWindowLowerMz = "numeric",
+    isolationWindowTargetMz = "numeric",
+    isolationWindowUpperMz = "numeric"
 )
 
 #' accessor methods for spectraData columns.
@@ -119,7 +125,10 @@ NULL
     precursorMz = "precursorMz",
     precursorIntensity = "precursorIntensity",
     precursorCharge = "precursorCharge",
-    collisionEnergy = "collisionEnergy"
+    collisionEnergy = "collisionEnergy",
+    isolationWindowLowerMz = "isolationWindowLowerMz",
+    isolationWindowTargetMz = "isolationWindowTargetMz",
+    isolationWindowUpperMz = "isolationWindowUpperMz"
 )
 
 #' @rdname MsBackend
@@ -150,4 +159,82 @@ MsBackendDataFrame <- function() {
             do.call(.SPECTRA_DATA_COLUMN_METHODS[column], args = list(x))
         else stop("No column '", column, "' available")
     }
+}
+
+#' Utility function to convert columns in the `x` `DataFrame` that have only
+#' a single element to `Rle`. Also columns specified with parameter `columns`
+#' will be converted (if present).
+#'
+#' @param x `DataFrame`
+#'
+#' @param columns `character` of column names that should be converted to `Rle`
+#'
+#' @return `DataFrame`
+#'
+#' @author Johannes Rainer
+#'
+#' @importClassesFrom S4Vectors Rle
+#'
+#' @importFrom S4Vectors Rle
+#'
+#' @noRd
+.as_rle_spectra_data <- function(x, columns = c("fromFile")) {
+    if (nrow(x) <= 1)
+        return(x)
+    for (col in colnames(x)) {
+        x[[col]] <- .as_rle(x[[col]])
+    }
+    columns <- intersect(columns, colnames(x))
+    for (col in columns) {
+        if (!is(x[[col]], "Rle"))
+            x[[col]] <- Rle(x[[col]])
+    }
+    x
+}
+
+
+#' *Uncompress* a `DataFrame` by converting all of its columns that contain
+#' an `Rle` with `as.vector`.
+#'
+#' @param x `DataFrame`
+#'
+#' @return `DataFrame` with all `Rle` columns converted to vectors.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.as_vector_spectra_data <- function(x) {
+    cols <- colnames(x)[vapply(x, is, logical(1), "Rle")]
+    for (col in cols) {
+        x[[col]] <- as.vector(x[[col]])
+    }
+    x
+}
+
+#' Helper function to return a column from the (spectra data) `DataFrame`. If
+#' the column `column` is an `Rle` `as.vector` is called on it. If column is
+#' the name of a mandatory variable but it is not available it is created on
+#' the fly.
+#'
+#' @param x `DataFrame`
+#'
+#' @param column `character(1)` with the name of the column to return.
+#'
+#' @importMethodsFrom S4Vectors [[
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.get_rle_column <- function(x, column) {
+    if (any(colnames(x) == column)) {
+        if (is(x[[column]], "Rle"))
+            as.vector(x[[column]])
+        else x[[column]]
+    } else if (any(names(.SPECTRA_DATA_COLUMNS) == column)) {
+        nr_x <- nrow(x)
+        if (nr_x)
+            as(rep(NA, nr_x), .SPECTRA_DATA_COLUMNS[column])
+        else
+            do.call(.SPECTRA_DATA_COLUMNS[column], args = list())
+    } else stop("column '", column, "' not available")
 }

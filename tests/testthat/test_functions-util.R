@@ -33,11 +33,140 @@ test_that(".class_rle works", {
 })
 
 test_that(".as_rle works", {
-    expect_equal(.as_rle(c("a", "a")), Rle("a", 2))
     expect_equal(.as_rle("a"), "a")
+    expect_equal(.as_rle(c("a", "a")), rep("a", 2))
+    expect_equal(.as_rle(c("a", "a", "a")), Rle("a", 3))
     expect_equal(.as_rle(1:4), 1:4)
     expect_equal(.as_rle(rep(1, 10)), Rle(1, 10))
     expect_equal(.as_rle(TRUE), TRUE)
-    expect_equal(.as_rle(c(TRUE, TRUE)), Rle(TRUE, 2))
+    expect_equal(.as_rle(c(TRUE, TRUE)), rep(TRUE, 2))
+    expect_equal(.as_rle(c(TRUE, TRUE, TRUE)), Rle(TRUE, 3))
     expect_equal(.as_rle(list(a = 1:3, b = 2:3)), list(a = 1:3, b = 2:3))
+})
+
+test_that("utils.clean works", {
+    x <- list(c(0, 0, 0, 1, 0, 1, 0, 0, 0),
+              c(0, 0, 0, 1, 0, 0, 1, 0, 0, 0),
+              c(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0),
+              c(0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0),
+              c(1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0),
+              c(1, NA, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, NA, 1, 0, 0, 0))
+    a <- list(c(FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE),
+              c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE,
+                FALSE),
+              c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,
+                FALSE, FALSE), c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE,
+                FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE),
+              c(TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
+                TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE),
+              c(TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE,
+                TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE))
+    b <- list(c(FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE),
+              c(FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE,
+                FALSE),
+              c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE,
+                FALSE, FALSE),
+              c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE,
+                TRUE, TRUE, TRUE, FALSE, FALSE),
+              c(TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+                TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE),
+              c(TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+                TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE))
+    d <- list(c(FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE),
+              c(FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE,
+                FALSE),
+              c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE,
+                FALSE, FALSE),
+              c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE,
+                TRUE, TRUE, TRUE, FALSE, FALSE),
+              c(TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+                TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE),
+              c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+                TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE))
+    for (i in seq(along=x)) {
+      expect_identical(MSnbase:::utils.clean(x[[i]], all=TRUE), a[[i]],
+                       label=paste0("all=TRUE, i=", i))
+      expect_identical(MSnbase:::utils.clean(x[[i]], all=FALSE), b[[i]],
+                       label=paste0("all=FALSE, i=", i))
+      expect_identical(MSnbase:::utils.clean(x[[i]], na.rm=TRUE), d[[i]],
+                       label=paste0("na.rm=TRUE, i=", i))
+    }
+})
+
+test_that("utils.enableNeighbours works", {
+    expect_error(MSnbase:::utils.enableNeighbours(1:10))
+    expect_error(MSnbase:::utils.enableNeighbours(LETTERS[1:10]))
+    expect_equal(MSnbase:::utils.enableNeighbours(c(FALSE, TRUE, FALSE)),
+                 rep(TRUE, 3))
+    expect_equal(MSnbase:::utils.enableNeighbours(c(FALSE, TRUE, FALSE, FALSE)),
+                 c(rep(TRUE, 3), FALSE))
+})
+
+test_that(".filterSpectraHierarchy works", {
+    msLevel <- c(1, 1, 2, 2, 2, 3, 3, 3, 4, 4)
+    acquisitionNum <- 1:10
+    precursorScanNum <- c(0, 0, 200, 2, 2, 4, 4, 5, 6, 20)
+
+    expect_error(.filterSpectraHierarchy(1:3, 2, 1), "have to be the same")
+
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 1)), 1)
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 2)), c(2, 4:9))
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 1:2)), c(1:2, 4:9))
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 8)), c(2, 5, 8))
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 9)), c(2, 4, 6, 9))
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 10)), 10)
+    expect_equal(which(.filterSpectraHierarchy(
+        acquisitionNum, precursorScanNum, 11)), integer())
+})
+
+test_that(".rbind_fill works", {
+    ## matrix
+    a <- matrix(1:9, nrow = 3, ncol = 3)
+    colnames(a) <- c("a", "b", "c")
+    b <- matrix(1:12, nrow = 3, ncol = 4)
+    colnames(b) <- c("b", "a", "d", "e")
+    res <- .rbind_fill(a, b)
+    expect_equal(colnames(res), c("a", "b", "c", "d", "e"))
+    expect_equal(class(res), class(a))
+    expect_equal(res[, "a"], c(a[, "a"], b[, "a"]))
+    expect_equal(res[, "b"], c(a[, "b"], b[, "b"]))
+    expect_equal(res[, "d"], c(NA, NA, NA, b[, "d"]))
+
+    res <- .rbind_fill(a, b[, c("b", "a")])
+    expect_equal(colnames(res), c("a", "b", "c"))
+    expect_equal(res[, "a"], c(a[, "a"], b[, "a"]))
+
+    ## DataFrame
+    a <- DataFrame(a = 1:4, b = FALSE, c = letters[1:4])
+    b <- DataFrame(d = 1:4, b = TRUE)
+    res <- .rbind_fill(a, b)
+    expect_equal(colnames(res), c("a", "b", "c", "d"))
+    expect_equal(res$a, c(1:4, NA, NA, NA, NA))
+    expect_equal(res$b, rep(c(FALSE, TRUE), each = 4))
+
+    b$e <- Rle(1, 4)
+    res <- .rbind_fill(a, b)
+    expect_identical(res$e, Rle(c(NA_integer_, 1), c(4, 4)))
+
+    a$e <- Rle(2, 4)
+    res <- .rbind_fill(a, b)
+    expect_identical(res$e, Rle(c(2, 1), c(4, 4)))
+
+    res <- .rbind_fill(a, b, DataFrame(z = factor(1:5)))
+    expect_identical(res$z, factor(c(rep(NA, nrow(a) + nrow(b)), 1:5)))
+    expect_identical(res$a, c(1:4, rep(NA, nrow(b) + 5)))
+    expect_identical(res$b, c(rep(FALSE, nrow(a)), rep(TRUE, nrow(b)), rep(NA, 5)))
+
+    ## DataFrame containing SimpleList.
+    a$mz <- SimpleList(1:3, 1:4, 1:2, 1:3)
+    res <- .rbind_fill(a, b)
+    expect_true(is(res$mz, "SimpleList"))
+    expect_true(all(unlist(is.na(res$mz[5:8]))))
+    expect_true(is.logical(res$mz[[5]]))
 })

@@ -54,16 +54,16 @@ test_that(".valid_intensity_column works", {
 
 test_that(".valid_intensity_mz_columns works", {
     be <- MsBackendDataFrame()
-    expect_null(.valid_intensity_mz_columns(be))
+    expect_null(.valid_intensity_mz_columns(be@spectraData))
     be <- backendInitialize(be, files = NA_character_,
                             DataFrame(fromFile = c(1L, 1L)))
-    expect_null(.valid_intensity_mz_columns(be))
+    expect_null(.valid_intensity_mz_columns(be@spectraData))
     be@spectraData$mz <- list(1:3, 1:2)
     be@spectraData$intensity <- list(1:3, 2)
-    expect_match(.valid_intensity_mz_columns(be),
+    expect_match(.valid_intensity_mz_columns(be@spectraData),
                  "Length of mz and intensity")
     be@spectraData$intensity <- list(1:3, 1:2)
-    expect_null(.valid_intensity_mz_columns(be))
+    expect_null(.valid_intensity_mz_columns(be@spectraData))
 })
 
 test_that(".get_spectra_data_column works", {
@@ -71,11 +71,56 @@ test_that(".get_spectra_data_column works", {
     expect_equal(.get_spectra_data_column(be, "rtime"), numeric())
     df <- DataFrame(fromFile = c(1L, 1L), scanIndex = c(1L, 2L), other_col = "a")
     be <- backendInitialize(be, files = NA_character_, df)
-    expect_equal(.get_spectra_data_column(be, "fromFile"), c(1L, 1L))
+    expect_equal(.get_spectra_data_column(be, "fromFile"), Rle(c(1L, 1L)))
     expect_equal(.get_spectra_data_column(be, "scanIndex"), 1:2)
     expect_equal(.get_spectra_data_column(be, "other_col"), c("a", "a"))
     expect_equal(.get_spectra_data_column(be, "precScanNum"), c(NA_integer_,
                                                                 NA_integer_))
     expect_error(.get_spectra_data_column(be, c("a", "b")), "of length 1")
     expect_error(.get_spectra_data_column(be, "something"), "No column")
+})
+
+test_that(".as_rle_spectra_data works", {
+    df <- DataFrame()
+    res <- .as_rle_spectra_data(df)
+    expect_equal(df, res)
+    df <- DataFrame(msLevel = rep(NA_integer_, 3), a = "a", b = 1:3)
+    res <- .as_rle_spectra_data(df)
+    expect_equal(res$msLevel, Rle(NA_integer_, 3))
+    expect_equal(res$a, Rle("a", 3))
+    res$fromFile <- c(1L, 1L, 1L)
+    res <- .as_rle_spectra_data(res)
+    expect_equal(res$msLevel, Rle(NA_integer_, 3))
+    expect_equal(res$a, Rle("a", 3))
+    expect_equal(res$b, 1:3)
+    expect_equal(res$fromFile, Rle(1L, 3))
+    res$fromFile <- 1:3
+    res <- .as_rle_spectra_data(res)
+    expect_equal(res$fromFile, Rle(1:3))
+})
+
+test_that(".as_vector_spectra_data works", {
+    df <- DataFrame(msLevel = c(NA_integer_, NA_integer_),
+                    fromFile = Rle(1L, 2), other_col = Rle("a", 2))
+    res <- .as_vector_spectra_data(df)
+    expect_true(is.integer(res$msLevel))
+    expect_true(is.integer(res$fromFile))
+    expect_true(is(res$other_col, "character"))
+})
+
+test_that(".get_rle_column works", {
+    df <- DataFrame(msLevel = c(NA_integer_, NA_integer_),
+                    fromFile = Rle(1L, 2), other_col = Rle("a", 2))
+    res <- .get_rle_column(df, column = "fromFile")
+    expect_equal(res, c(1L, 1L))
+    res <- .get_rle_column(df, column = "other_col")
+    expect_equal(res, c("a", "a"))
+    res <- .get_rle_column(df, column = "msLevel")
+    expect_equal(res, c(NA_integer_, NA_integer_))
+    res <- .get_rle_column(df, column = "precursorCharge")
+    expect_equal(res, c(NA_integer_, NA_integer_))
+    expect_error(.get_rle_column(df, column = "a"), "not available")
+    df <- DataFrame()
+    res <- .get_rle_column(df, column = "msLevel")
+    expect_equal(res, integer())
 })

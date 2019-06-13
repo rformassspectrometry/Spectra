@@ -28,6 +28,7 @@ setClass("MsBackendMzR",
 setValidity("MsBackendMzR", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,
                                                 c("fromFile", "scanIndex"))
+    msg <- c(msg, .valid_ms_backend_files_exist(object@files))
     if (length(msg)) msg
     else TRUE
 })
@@ -44,17 +45,25 @@ setMethod("backendInitialize", "MsBackendMzR",
               if (missing(files) || !length(files))
                   stop("Parameter 'files' is mandatory for 'MsBackendMzR'")
               files <- normalizePath(files)
+              if (!all(file.exists(files)))
+                  stop("File(s) ", paste(files[!file.exists(files)]),
+                       " not found")
               msg <- .valid_ms_backend_files(files)
               if (length(msg))
                   stop(msg)
-              spectraData <- do.call(
-                  rbind, bpmapply(files, seq_along(files),
-                                  FUN = function(fl, index) {
-                                      cbind(Spectra:::.mzR_header(fl),
-                                            fromFile = index)
-                                  }))
+              if (!missing(spectraData)) {
+                  spectraData$mz <- NULL
+                  spectraData$intensity <- NULL
+              } else {
+                  spectraData <- do.call(
+                      rbind, bpmapply(files, seq_along(files),
+                                      FUN = function(fl, index) {
+                                          cbind(Spectra:::.mzR_header(fl),
+                                                fromFile = index)
+                                      }, BPPARAM = BPPARAM))
+              }
               callNextMethod(object = object, files = files,
-                             spectraData = .as_rle_spectra_data(spectraData),
+                             spectraData = spectraData,
                              ...)
           })
 
@@ -72,48 +81,13 @@ setMethod("show", "MsBackendMzR", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("acquisitionNum", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "acquisitionNum")
-})
-
-#' @rdname hidden_aliases
-setMethod("centroided", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "centroided")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("centroided", "MsBackendMzR", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.logical(value) | length(value) != length(object))
-        stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$centroided <- .as_rle(value)
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("collisionEnergy", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "collisionEnergy")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("collisionEnergy", "MsBackendMzR", function(object, value) {
-    if (!is.numeric(value) | length(value) != length(object))
-        stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$collisionEnergy <- .as_rle(value)
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("fromFile", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "fromFile")
-})
-
-#' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMzR", function(object) {
-    SimpleList(lapply(peaks(object), function(z) z[, 2]))
+    NumericList(lapply(peaks(object), "[", , 2), compress = FALSE)
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("intensity", "MsBackendMzR", function(object, value) {
+    stop(class(object), " does not support replacing intensity values")
 })
 
 #' @rdname hidden_aliases
@@ -132,13 +106,13 @@ setMethod("isEmpty", "MsBackendMzR", function(x) {
 })
 
 #' @rdname hidden_aliases
-setMethod("msLevel", "MsBackendMzR", function(object, ...) {
-    .get_rle_column(object@spectraData, "msLevel")
+setMethod("mz", "MsBackendMzR", function(object) {
+    NumericList(lapply(peaks(object), "[", , 1), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
-setMethod("mz", "MsBackendMzR", function(object) {
-    SimpleList(lapply(peaks(object), function(z) z[, 1]))
+setReplaceMethod("mz", "MsBackendMzR", function(object, value) {
+    stop(class(object), " does not support replacing m/z values")
 })
 
 #' @rdname hidden_aliases
@@ -157,78 +131,7 @@ setMethod("peaks", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendMzR", function(object) {
-    vapply(peaks(object), nrow, integer(1))
-})
-
-#' @rdname hidden_aliases
-setMethod("polarity", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "polarity")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("polarity", "MsBackendMzR", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.numeric(value) | length(value) != length(object))
-        stop("'value' has to be an 'integer' of length 1 or ", length(object))
-    object@spectraData$polarity <- .as_rle(as.integer(value))
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("precScanNum", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "precScanNum")
-})
-
-#' @rdname hidden_aliases
-setMethod("precursorCharge", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "precursorCharge")
-})
-
-#' @rdname hidden_aliases
-setMethod("precursorIntensity", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "precursorIntensity")
-})
-
-#' @rdname hidden_aliases
-setMethod("precursorMz", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "precursorMz")
-})
-
-#' @rdname hidden_aliases
-setMethod("rtime", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "rtime")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("rtime", "MsBackendMzR", function(object, value) {
-    if (!is.numeric(value) | length(value) != length(object))
-        stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$rtime <- .as_rle(value)
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("scanIndex", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "scanIndex")
-})
-
-#' @rdname hidden_aliases
-setMethod("smoothed", "MsBackendMzR", function(object) {
-    .get_rle_column(object@spectraData, "smoothed")
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("smoothed", "MsBackendMzR", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.logical(value) | length(value) != length(object))
-        stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$smoothed <- .as_rle(value)
-    validObject(object)
-    object
+    lengths(peaks(object)) / 2L
 })
 
 #' @rdname hidden_aliases
@@ -236,44 +139,16 @@ setReplaceMethod("smoothed", "MsBackendMzR", function(object, value) {
 #' @importFrom methods as
 setMethod("spectraData", "MsBackendMzR",
           function(object, columns = spectraVariables(object)) {
-              cn <- colnames(object@spectraData)
-              if(!nrow(object@spectraData)) {
-                  res <- lapply(.SPECTRA_DATA_COLUMNS, do.call, args = list())
-                  res <- DataFrame(res)
-                  res$mz <- SimpleList()
-                  res$intensity <- SimpleList()
-                  return(res[, columns, drop = FALSE])
-              }
-              not_found <- setdiff(columns, c(cn, names(.SPECTRA_DATA_COLUMNS)))
-              if (length(not_found))
-                  stop("Column(s) ", paste(not_found, collapse = ", "),
-                       " not available")
-              sp_cols <- columns[columns %in% cn]
-              res <- .as_vector_spectra_data(
-                  object@spectraData[, sp_cols, drop = FALSE])
-              if (any(columns %in% c("mz", "intensity"))) {
-                  pks <- peaks(object)
-                  if (any(columns == "mz"))
-                      res$mz <- SimpleList(lapply(pks, function(z) z[, 1]))
-                  if (any(columns == "intensity"))
-                      res$intensity <- SimpleList(lapply(pks, function(z) z[, 2]))
-              }
-              other_cols <- setdiff(
-                  columns[!(columns %in% c("mz", "intensity"))], sp_cols)
-              if (length(other_cols)) {
-                  other_res <- lapply(other_cols, .get_spectra_data_column,
-                                      x = object)
-                  names(other_res) <- other_cols
-                  res <- cbind(res, as(other_res, "DataFrame"))
-              }
-              res[, columns, drop = FALSE]
+              .spectra_data_mzR(object, columns)
           })
 
 #' @rdname hidden_aliases
 setReplaceMethod("spectraData", "MsBackendMzR", function(object, value) {
-    if (!is(value, "DataFrame") || nrow(value) != length(object))
-        stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
-    if (any(colnames(value) %in% c("mz", "intensity"))) {
+    if (inherits(value, "DataFrame") && any(colnames(value) %in%
+                                            c("mz", "intensity"))) {
+        warning("Ignoring columns \"mz\" and \"intensity\" as the ",
+                "'MzBackendMzR' backend currently does not support replacing ",
+                "them.")
         value <- value[, !(colnames(value) %in% c("mz", "intensity")),
                        drop = FALSE]
     }
@@ -299,14 +174,6 @@ setMethod("spectraVariables", "MsBackendMzR", function(object) {
     unique(c(names(.SPECTRA_DATA_COLUMNS), colnames(object@spectraData)))
 })
 
-#' @rdname hidden_aliases
-setMethod("tic", "MsBackendMzR", function(object, initial = TRUE) {
-    if (initial) {
-        if (any(colnames(object@spectraData) == "totIonCurrent"))
-            .get_rle_column(object@spectraData, "totIonCurrent")
-        else rep(NA_real_, times = length(object))
-    } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
-})
 
 ## #' @rdname hidden_aliases
 ## setMethod("[", "MsBackendMzR", function(x, i, j, ..., drop = FALSE) {
@@ -322,3 +189,16 @@ setMethod("tic", "MsBackendMzR", function(object, initial = TRUE) {
 ##     validObject(x)
 ##     x
 ## })
+
+#' @rdname hidden_aliases
+setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
+    if (name == "mz" || name == "intensity")
+        stop("'MsBackendMzR' does not support replacing mz or intensity values")
+    if (length(value) == 1)
+        value <- rep(value, length(x))
+    if (length(value) != length(x))
+        stop("Length of 'value' has to be either 1 or ", length(x))
+    x@spectraData[[name]] <- .as_rle(value)
+    validObject(x)
+    x
+})

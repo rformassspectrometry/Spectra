@@ -48,6 +48,7 @@ setClass("ProcessingStep",
          ),
          validity = function(object) {
              msg <- character()
+             ## Fails with un-exported functions.
              if (length(object@FUN)) {
                  if (!is.function(object@FUN)) {
                      res <- try(match.fun(object@FUN), silent = TRUE)
@@ -105,30 +106,4 @@ executeProcessingStep <- function(object, ...) {
     if (!is(object, "ProcessingStep"))
         stop("'object' is supposed to be a 'ProcessingStep' object!")
     do.call(object@FUN, args = c(list(...), object@ARGS))
-}
-
-#' Internal function to apply the lazy processing queue to each spectrum
-#' in the provided list.
-#'
-#' @param x `list` of `Spectrum` objects.
-#'
-#' @param queue `list` (or `NULL`) of `ProcessingStep` objects.
-#'
-#' @author Johannes Rainer
-#'
-#' @md
-#'
-#' @noRd
-.apply_processing_queue <- function(x, queue = NULL) {
-    if (length(queue)) {
-        if (!is.list(x))
-            x <- list(x)
-        x <- lapply(x, function(z, q) {
-            for (pStep in q) {
-                z <- executeProcessingStep(pStep, z)
-            }
-            z
-        }, q = queue)
-    }
-    x
 }

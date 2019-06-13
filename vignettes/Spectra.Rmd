@@ -1,0 +1,493 @@
+---
+title: "Description and usage of Spectra objects"
+output:
+    BiocStyle::html_document:
+        toc_float: true
+vignette: >
+    %\VignetteIndexEntry{Description and usage of Spectra object}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+    %\VignettePackage{Spectra}
+    %\VignetteDepends{Spectra,mzR,BiocStyle}
+---
+
+```{r style, echo = FALSE, results = 'asis', message=FALSE}
+BiocStyle::markdown()
+```
+
+**Package**: `r Biocpkg("Spectra")`<br />
+**Authors**: `r packageDescription("Spectra")[["Author"]] `<br />
+**Last modified:** `r file.info("Spectra.Rmd")$mtime`<br />
+**Compiled**: `r date()`
+
+```{r, echo = FALSE, message = FALSE}
+library(Spectra)
+library(BiocStyle)
+```
+
+# Introduction
+
+The `Spectra` package provides a scalable and flexible infrastructure to
+represent, retrieve and handle mass spectrometry (MS) data. The `Spectra` object
+provides the user with a single standardized interface to access and manipulate
+MS data for while supporting, through the concept of exchangeable *backends*, a
+large variety of different ways to store and retrieve mass spectrometry
+data. Such backends can range from mzML/mzXML/CDF files, simple flat files, or
+database systems.
+
+# General usage
+
+Mass spectrometry data in `Spectra` objects can be thought of as a list of
+individual spectra, with each spectrum having a set of variables associated with
+it. Besides *core* spectra variables (such as MS level or retention time)
+an arbitrary number of optional variables can be assigned to a spectrum. The
+core spectra variables all have their own accessor method and it is
+guaranteed that a value is returned by it (or `NA` if the information is not
+available). The core variables and their data type are (alphabetically
+ordered):
+
+- *acquisitionNum* `integer(1)`: the index of acquisition of a spectrum during a
+  MS run.
+- *centroided* `logical(1)`: whether the spectrum is in profile or centroid
+  mode.
+- *collisionEnergy* `numeric(1)`: collision energy used to create an MSn
+  spectrum.
+- *fromFile* `integer(1)`: the index of the file in `fileNames` the spectra
+  belongs to.
+- *intensity* `numeric`: intensity values for the spectrum's peaks.
+- *isolationWindowLowerMz* `numeric(1)`: lower m/z for the isolation window in
+  which the (MSn) spectrum was measured.
+- *isolationWindowTargetMz* `numeric(1)`: the target m/z for the isolation
+  window in which the (MSn) spectrum was measured.
+- *isolationWindowUpperMz* `numeric(1)`: upper m/z for the isolation window in
+  which the (MSn) spectrum was measured.
+- *msLevel* `integer(1)`: the MS level of the spectrum.
+- *mz* `numeric`: the m/z values for the spectrum's peaks.
+- *polarity* `integer(1)`: the polarity of the spectrum (`0` and `1`
+  representing negative and positive polarity, respectively).
+- *precScanNum* `integer(1)`: the scan (acquisition) number of the precursor for
+  an MSn spectrum.
+- *precursorCharge* `integer(1)`: the charge of the precursor of an MSn
+  spectrum.
+- *precursorIntensity* `numeric(1)`: the intensity of the precursor of an MSn
+  spectrum.
+- *precursorMz* `numeric(1)`: the m/z of the precursor of an MSn spectrum.
+- *rtime* `numeric(1)`: the retention time of a spectrum.
+- *scanIndex* `integer(1)`: the index of a spectrum within a (raw) file.
+- *smoothed* `logical(1)`: whether the spectrum was smoothed.
+
+For details on the individual variables and their getter/setter function see the
+help for `Spectra` (`?Spectra`). Also note that these variables are suggested,
+but not required to characterize a spectrum. Also, some only make sense for MSn,
+but not for MS1 spectra.
+
+
+## Creating `Spectra` objects
+
+The simplest way to create a `Spectra` object is by defining a `DataFrame` with
+the corresponding spectra data (using the corresponding spectra variable names
+as column names) and passing that to the `Spectra` constructor function. Below
+we create such an object for a set of 3 spectra providing their MS level,
+polarity but also additional annotations such as their ID in
+[HMDB](http://hmdb.ca) (human metabolome database) and their name. The m/z and
+intensity values for each spectrum have to be provided as a `list` of `numeric`
+values.
+
+```{r spectra-dataframe, message = FALSE}
+library(Spectra)
+
+spd <- DataFrame(
+    msLevel = c(2L, 2L, 2L), polarity = c(1L, 1L, 1L),
+    id = c("HMDB0000001", "HMDB0000001", "HMDB0001847"),
+    name = c("1-Methylhistidine", "1-Methylhistidine", "Caffeine"))
+## Assign m/z and intensity values.
+spd$mz <- list(
+    c(109.2, 124.2, 124.5, 170.16, 170.52),
+    c(83.1, 96.12, 97.14, 109.14, 124.08, 125.1, 170.16),
+    c(56.0494, 69.0447, 83.0603, 109.0395, 110.0712,
+      111.0551, 123.0429, 138.0662, 195.0876))
+spd$intensity <- list(
+    c(3.407, 47.494, 3.094, 100.0, 13.240),
+    c(6.685, 4.381, 3.022, 16.708, 100.0, 4.565, 40.643),
+    c(0.459, 2.585, 2.446, 0.508, 8.968, 0.524, 0.974, 100.0, 40.994))
+
+sps <- Spectra(spd)
+sps
+```
+
+Alternatively, it is possible to import spectra data from mass spectrometry raw
+files in mzML/mzXML or CDF format. Below we first initialize a `MsBackendMzR`
+backend with the data from two mzML files and pass this to the `Spectra`
+constructor (note that this requires the `r Biocpkg("mzR")` package to be
+installed). This backend, specifically designed for raw MS data,
+keeps only a subset of spectra variables in memory while reading the m/z and
+intensity values from the original data files only on demand. See section
+[Backends](#backends) for more details on backends and their properties. The
+`backendInitialize` method will import spectra variables from the raw mzML files
+and we can pass this backend object subsequently to the `Spectra` function to
+create the object.
+
+```{r spectra-msbackendmzr, message = FALSE}
+fls <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+be <- backendInitialize(MsBackendMzR(), files = fls)
+sps_sciex <- Spectra(be)
+sps_sciex
+```
+
+The `Spectra` object `sps_sciex` allows now to access spectra data from 1862 MS1
+spectra and uses `MsBackendMzR` as backend (the `Spectra` object `sps` created in
+the previous code block uses the default `MsBackendDataFrame`).
+
+
+## Accessing spectrum data
+
+As detailed above `Spectra` objects can contain an arbitrary number of
+properties of a spectrum (so called *spectra variables*). The available
+variables can be listed with the `spectraVariables` method:
+
+```{r spectravariables}
+spectraVariables(sps)
+spectraVariables(sps_sciex)
+```
+
+The two `Spectra` contain a different set of variables: besides `"msLevel"`,
+`"polarity"`, `"id"` and `"name"`, that were specified for the `Spectra` object
+`sps`, it contains more variables such as `"rtime"`, `"acquisitionNum"` and
+`"scanIndex"`. These are part of the core variables defining a spectrum and for
+all of these accessor methods exist. Below we use `msLevel` and `rtime` to
+access the MS levels and retention times for the spectra in `sps`.
+
+```{r mslevel-sps}
+msLevel(sps)
+rtime(sps)
+```
+
+We did not specify retention times for the spectra in `sps` thus an `NA` is
+returned for them. The `Spectra` object `sps_sciex` contains many more
+variables, all of which were extracted from the mzML files. Below we extract the
+retention times for the first spectra in the object.
+
+```{r rtime-spssciex}
+head(rtime(sps_sciex))
+```
+
+`Spectra` are one-dimensional objects storing spectra, even from different files
+or samples, in a single list. Specific variables have thus to be used to define
+the file from which they were extracted or the sample in which they were
+measured. The `fileNames` function can be used to list all files containing the
+spectra data of a `Spectra` and the `fromFile` variable defines from which of
+these files one spectrum derives.
+
+```{r fromfile}
+basename(fileNames(sps_sciex))
+head(fromFile(sps_sciex))
+```
+
+Because the `Spectra` object `sps` was created from a `DataFrame` and not
+imported from a file, it does not have a file associated with it:
+
+```{r fromfile-sps}
+fileNames(sps)
+fromFile(sps)
+```
+
+Note that in addition to the accessor functions it is also possible to use `$`
+to extract a specific spectra variable. To extract the name of the compounds in
+`sps` we can use `sps$name`, or, to extract the MS levels `sps$msLevel`.
+
+```{r dollar-extract}
+sps$name
+sps$msLevel
+```
+
+We could also replace specific spectra variables using either the dedicated
+method or `$`. Below we specify that all spectra in `sps` represent centroided
+data.
+
+```{r dollar-set}
+sps$centroided <- TRUE
+
+centroided(sps)
+```
+
+The `$` operator can also be used to add arbitrary new spectra variables to a
+`Spectra` object. Below we add the SPLASH key to each of the spectra.
+
+```{r new-spectra-variable}
+sps$splash <- c(
+    "splash10-00di-0900000000-037d24a7d65676b7e356",
+    "splash10-00di-0900000000-03e99316bd6c098f5d11",
+    "splash10-000i-0900000000-9af60e39c843cb715435")
+```
+
+This new spectra variable will now be listed as an additional variable in the
+result of the `spectraVariables` function and we can directly access its
+content with `sps$splash`.
+
+Each spectrum can have a different number of mass peaks, each consisting of a
+mass-to-charge (m/z) and associated intensity value. These can be extracted with
+the `mz` or `intensity` functions, each of which return a `list` of `numeric`
+values.
+
+```{r mz-intensity}
+mz(sps)
+intensity(sps)
+```
+
+Peak data can also be extracted with the `peaks` function that returns a list of
+matrices, each with columns `"mz"` and `"intensity"` containing the m/z and
+intensity values for one spectrum.
+
+```{r peaks}
+pks <- peaks(sps)
+pks[[1]]
+```
+
+The `spectraData` function returns a `DataFrame` with the full data for each
+spectrum, or with selected spectra variables (which can be specified with the
+`columns` parameter). Below we extract the spectra data for variables
+`"msLevel"`, `"id"` and `"name"`.
+
+```{r spectradata}
+spectraData(sps, columns = c("msLevel", "id", "name"))
+```
+
+
+## Filtering, subsetting and merging
+
+A set of filter functions are defined that allow to subset `Spectra` objects
+(for detailed help please see the `?Spectra` help):
+
+- `filterAcquisitionNum`: retain spectra with certain acquisition numbers.
+- `filterEmptySpectra`: remove spectra without mass peaks.
+- `filterFile`: subset to spectra from specific files.
+- `filterIsolationWindow`: keep spectra with the provided `mz` in their
+  isolation window (m/z range).
+- `filterMsLevel`: filter by MS level.
+- `filterPolarity`: filter by polarity.
+- `filterPrecursorMz`: retain (MSn) spectra with a precursor m/z equal to the
+  provided one.
+- `filterPrecursorScan`: retain (parent and children) scans of an acquisition
+  number.
+- `filterRt`: filter based on retention time ranges.
+
+In the example below we select all spectra measured in the second mzML file and
+subsequently filter them to retain spectra measured between 175 and 189 seconds
+in the measurement run.
+
+```{r filterfile-filterrt}
+file_2 <- filterFile(sps_sciex, file = 2)
+length(file_2)
+
+sps_sub <- filterRt(file_2, rt = c(175, 189))
+length(sps_sub)
+```
+
+In addition, `Spectra` support also subsetting with `[`. Below we perform the
+filtering above with `[` -based subsetting.
+
+```{r subset-square-bracket}
+sps_sciex[sps_sciex$fromFile == 2 & sps_sciex$rtime >= 175 &
+          sps_sciex$rtime <= 189]
+```
+
+While subsetting with `[` is more intuitive, for some backends
+the use of the filter functions, depending on their implementation, might be
+more efficient (e.g. database-based backends could *translate* the filter
+function into a SQL condition to perform the subsetting already within the
+database).
+
+`Spectra` objects can also be combined with the `merge` function. The resulting
+`Spectra` object will contain an union of the spectra variables of the
+individual objects. Below we combine the `Spectra` object `sps` with an
+additional object containing another MS2 spectrum for Caffeine.
+
+```{r caf}
+caf_df <- DataFrame(msLevel = 2L, name = "Caffeine", id = "HMDB0001847",
+                    instrument = "Agilent 1200 RRLC; Agilent 6520 QTOF",
+                    splash = "splash10-0002-0900000000-413259091ba7edc46b87",
+                    centroided = TRUE)
+caf_df$mz <- list(c(110.0710, 138.0655, 138.1057, 138.1742, 195.9864))
+caf_df$intensity <- list(c(3.837, 32.341, 0.84, 0.534, 100))
+
+caf <- Spectra(caf_df)
+```
+
+Next we merge the two objects.
+
+```{r merge}
+sps <- merge(sps, caf)
+sps
+```
+
+The resulting object contains now the data for all 4 MS2 spectra and an union of
+all spectra variables from both objects.
+
+```{r merge-spectravariables}
+spectraVariables(sps)
+```
+
+The second object had an additional spectra variable *instrument* that was not
+present in `sps` and all the spectra in this object will thus get a value of
+`NA` for this variable.
+
+```{r merge-add-column}
+sps$instrument
+```
+
+Sometimes not all spectra variables might be required (e.g. also because many of
+them are empty). This might be specifically interesting also for `Spectra`
+containing the data from very large experiments, because it can significantly
+reduce the object's size in memory. In such cases the `selectSpectraVariables`
+function can be used to retain only specified spectra variables.
+
+
+## Data manipulations
+
+Some analyses require manipulation of the mass peak data (i.e. the m/z and/or
+intensity values). One example would be to remove all peaks from a spectrum that
+have an intensity lower than a certain threshold. Below we perform such an
+operation with the `removePeaks` function to remove peaks in each spectrum in
+`sps` with an intensity below 10. Note that this function does not actually
+*remove* the peaks, but sets their intensity to `0`.
+
+```{r removepeaks}
+sps <- removePeaks(sps, t = 10)
+```
+
+As a result intensities below 10 were set to 0 for all peaks.
+
+```{r removepeaks-intensity}
+intensity(sps)
+```
+
+Zero-intensity peaks can then be removed with the `clean` function.
+
+```{r clean}
+sps <- clean(sps, all = TRUE)
+```
+
+```{r clean-intensity}
+intensity(sps)
+```
+
+Note that any data manipulations on `Spectra` objects are not immediately
+applied to the peak data. They are added to a so called *processing queue* which
+is applied each time peak data is accessed (with the `peaks`, `mz` or
+`intensity` functions). Thanks to this processing queue data manipulation
+operations are also possible for *read-only* backends (e.g. mzML-file based
+backends or database-based backends). The information about the number of such
+processing steps can be seen below (next to *Lazy evaluation queue*).
+
+```{r processing-queue}
+sps
+```
+
+It is possible to add also custom functions to the processing queue of a
+`Spectra` object. Such a function must take a peaks matrix as its first
+argument, have `...` in the function definition and must return a peaks matrix
+(a peaks matrix is a numeric two column matrix with the first column containing
+the peaks' m/z values and the second the corresponding intensities. Below we
+define a function that divides the intensities of each peak by a value which can
+be passed with argument `y`.
+
+```{r define-function}
+## Define a function that takes a matrix as input, divides the second
+## column by parameter y and returns it. Note that ... is required in
+## the function's definition.
+divide_intensities <- function(x, y, ...) {
+    x[, 2] <- x[, 2] / y
+    x
+}
+
+## Add the function to the procesing queue
+sps_2 <- addProcessing(sps, divide_intensities, y = 2)
+sps_2
+```
+
+Object `sps_2` has now 3 processing steps in its lazy evaluation queue. Calling
+`intensity` on this object will now return intensities that are half of the
+intensities of the original objects `sps`.
+
+```{r custom-processing}
+intensity(sps_2)
+intensity(sps)
+```
+
+Alternatively we could define a function that returns the maximum peak from each
+spectrum:
+
+```{r return-max-peak}
+max_peak <- function(x, ...) {
+    x[which.max(x[, 2]), , drop = FALSE]
+}
+
+sps_2 <- addProcessing(sps, max_peak)
+peaksCount(sps_2)
+intensity(sps_2)
+```
+
+Each spectrum in `sps_2` thus contains only a single peak.
+
+
+## Changing backends
+
+In the previous sections we learned already that a `Spectra` object can use
+different backends to perform the actual data handling. It is also possible to
+change the backend of a `Spectra` to a different one. We could for example
+change the (`MsBackendMzR`) backend of the `sps_sciex` object to a
+`MsBackendDataFrame` backend to enable use of the data even without the need to
+keep the original mzML files. Below we change the backend of `sps_sciex` to the
+in-memory `MsBackendDataFrame` backend.
+
+```{r setbackend}
+object.size(sps_sciex)
+sps_sciex <- setBackend(sps_sciex, MsBackendDataFrame())
+sps_sciex
+```
+
+With the call the full peak data was imported from the original mzML files into
+the object. This has obviously an impact on the object's size, which is now much
+larger than before.
+
+```{r memory-after-import}
+object.size(sps_sciex)
+```
+
+
+## Parallel processing notes
+
+Most functions on `Spectra` support (and use) parallel processing out of the
+box. Peak data access and manipulation methods perform by default parallel
+processing on a per-file basis. `Spectra` uses `r Biocpkg("BiocParallel")` for
+parallel processing and all functions use the default registered parallel
+processing setup of that package.
+
+
+# Backends
+
+Backends allow to use different *backends* to store mass spectrometry data while
+providing *via* the `Spectra` class a unified interface to use that data. The
+`Spectra` package defines a set of example backends but any object extending the
+base `MsBackend` class could be used instead. The default backends are:
+
+- `MsBackendDataFrame`: the mass spectrometry data is stored (in-memory) in a
+  `DataFrame`. Keeping the data in memory guarantees high performance but has
+  also, depending on the number of mass peaks in each spectrum, a much higher
+  memory footprint.
+
+- `MsBackendMzR`: this backend keeps only general spectra variables in memory
+  and relies on the `r Biocpkg("mzR")` package to read mass peaks (m/z and
+  intensity values) from the original MS files on-demand.
+
+- `MsBackendHdf5Peaks`: similar to `MsBackendMzR` this backend reads peak data
+  only on-demand from disk while all other spectra variables are kept in
+  memory. The peak data are stored in Hdf5 files which guarantees scalability.
+
+All of the above mentioned backends support changing all of their their spectra
+variables, **except** the `MsBackendMzR` that does not support changing m/z or
+intensity values for the mass peaks.
+
+# Session information
+
+# References
