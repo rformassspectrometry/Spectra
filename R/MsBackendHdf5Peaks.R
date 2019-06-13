@@ -119,12 +119,12 @@ setMethod("show", "MsBackendHdf5Peaks", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendHdf5Peaks", function(object) {
-    NumericList(lapply(peaks(object), function(z) z[, 2]), compress = FALSE)
+    NumericList(lapply(peaks(object), "[", , 2), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
-    if (!(is.list(value) | inherits(value, "NumericList")))
+    if (!(is.list(value) || inherits(value, "NumericList")))
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
@@ -154,12 +154,12 @@ setMethod("isEmpty", "MsBackendHdf5Peaks", function(x) {
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendHdf5Peaks", function(object) {
-    NumericList(lapply(peaks(object), function(z) z[, 1]), compress = FALSE)
+    NumericList(lapply(peaks(object), "[", , 1), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
-    if (!(is.list(value) | inherits(value, "NumericList")))
+    if (!(is.list(value) || inherits(value, "NumericList")))
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
@@ -194,7 +194,7 @@ setMethod("peaks", "MsBackendHdf5Peaks", function(object) {
 setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
-    if (!(is.list(value) | inherits(value, "SimpleList")))
+    if (!(is.list(value) || inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     object@modCount <- object@modCount + 1L
     fls <- dataStorageNames(object)
@@ -218,7 +218,7 @@ setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendHdf5Peaks", function(object) {
-    vapply(peaks(object), nrow, integer(1))
+    lengths(peaks(object)) / 2L
 })
 
 #' @rdname hidden_aliases
@@ -260,13 +260,12 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendHdf5Peaks", function(x, name, value) {
-    if (name %in% c("mz", "intensity")) {
-        if (name == "mz")
-            mz(x) <- value
-        if (name == "intensity")
-            intensity(x) <- value
-        x
-    } else callNextMethod()
+    if (name == "mz")
+        mz(x) <- value
+    else if (name == "intensity")
+        intensity(x) <- value
+    else x <- callNextMethod()
+    x
 })
 
 #' @rdname hidden_aliases

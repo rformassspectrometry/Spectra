@@ -59,8 +59,8 @@ test_that("backendMerge,MsBackendDataFrame works", {
     expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
     expect_identical(res@spectraData$other_col,
                      Rle(c(rep(NA_character_, 5), "z", "z")))
-    expect_true(is(be3@spectraData$precScanNum, "Rle"))
-    expect_true(is(res@spectraData$precScanNum, "Rle"))
+    expect_true(is(be3@spectraData$precScanNum, "integer"))
+    expect_true(is(res@spectraData$precScanNum, "integer"))
 
     ## One backend with and one without m/z
     df2$mz <- list(c(1.1, 1.2), c(1.1, 1.2))

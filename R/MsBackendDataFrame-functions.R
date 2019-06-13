@@ -49,13 +49,6 @@ NULL
                ". The expected data type(s) is/are: ",
                paste(datatypes[names(res)[!res]], collapse = ", "), ".")
     else NULL
-    ## x_class <- vapply(x, .class_rle, character(1))[names(datatypes)]
-    ## if (!all(datatypes == x_class))
-    ##     paste0("The following columns have a wrong data type: ",
-    ##            paste(names(datatypes)[datatypes != x_class], collapse = ", "),
-    ##            ". The expected data type(s) is/are: ",
-    ##            paste(datatypes[datatypes != x_class], collapse = ", "), ".")
-    ## else NULL
 }
 
 .valid_mz_column <- function(x) {

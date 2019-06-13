@@ -166,7 +166,7 @@ setMethod("intensity", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) | inherits(value, "NumericList")))
+    if (!(is.list(value) || inherits(value, "NumericList")))
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
@@ -220,7 +220,7 @@ setMethod("isolationWindowTargetMz", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 setReplaceMethod("isolationWindowTargetMz", "MsBackendDataFrame",
                  function(object, value) {
-                     if (!is.numeric(value) | length(value) != length(object))
+                     if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowTargetMz <-
@@ -237,7 +237,7 @@ setMethod("isolationWindowUpperMz", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 setReplaceMethod("isolationWindowUpperMz", "MsBackendDataFrame",
                  function(object, value) {
-                     if (!is.numeric(value) | length(value) != length(object))
+                     if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowUpperMz <-
@@ -268,7 +268,7 @@ setMethod("mz", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) | inherits(value, "NumericList")))
+    if (!(is.list(value) || inherits(value, "NumericList")))
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
@@ -290,15 +290,16 @@ setMethod("peaks", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) | inherits(value, "SimpleList")))
+    if (!(is.list(value) || inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
-    vals <- lapply(value, function(z) z[, 1])
+    object@modCount <- object@modCount + 1L
+    vals <- lapply(value, "[", , 1L)
     if (!is(vals, "NumericList"))
         vals <- NumericList(vals, compress = FALSE)
     object@spectraData$mz <- vals
-    vals <- lapply(value, function(z) z[, 2])
+    vals <- lapply(value, "[", , 2L)
     if (!is(vals, "NumericList"))
         vals <- NumericList(vals, compress = FALSE)
     object@spectraData$intensity <- vals
@@ -374,10 +375,10 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
                        paste(spectraVariables[!(spectraVariables %in%
                                                 spectraVariables(object))],
                              collapse = ", "), " not available")
-              to_subset <- spectraVariables[spectraVariables %in%
+              keep <- spectraVariables[spectraVariables %in%
                                             colnames(object@spectraData)]
-              if (length(to_subset))
-                  object@spectraData <- object@spectraData[, to_subset,
+              if (length(keep))
+                  object@spectraData <- object@spectraData[, keep,
                                                            drop = FALSE]
               msg <- .valid_spectra_data_required_columns(object@spectraData)
               if (length(msg))
@@ -395,7 +396,7 @@ setMethod("smoothed", "MsBackendDataFrame", function(object) {
 setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
     if (length(value) == 1)
         value <- rep(value, length(object))
-    if (!is.logical(value) | length(value) != length(object))
+    if (!is.logical(value) || length(value) != length(object))
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
     object@spectraData$smoothed <- .as_rle(value)
     validObject(object)
@@ -411,9 +412,9 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
 #' @importMethodsFrom S4Vectors lapply
 setMethod("spectraData", "MsBackendDataFrame",
           function(object, columns = spectraVariables(object)) {
-              df_columns <- columns[columns %in% colnames(object@spectraData)]
+              df_columns <- intersect(columns,colnames(object@spectraData))
               res <- object@spectraData[, df_columns, drop = FALSE]
-              other_columns <- columns[!(columns %in% colnames(object@spectraData))]
+              other_columns <- setdiff(columns,colnames(object@spectraData))
               if (length(other_columns)) {
                   other_res <- lapply(other_columns, .get_spectra_data_column,
                                       x = object)

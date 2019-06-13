@@ -93,18 +93,17 @@ MsBackendMzR <- function() {
     sp_cols <- columns[columns %in% cn]
     res <- .as_vector_spectra_data(
         x@spectraData[, sp_cols, drop = FALSE])
-    if (any(columns %in% c("mz", "intensity"))) {
+    any_mz <- any(columns == "mz")
+    any_int <- any(columns == "intensity")
+    if (any_mz || any_int) {
         pks <- peaks(x)
-        if (any(columns == "mz"))
-            res$mz <- NumericList(lapply(pks, function(z) z[, 1]),
-                                  compress = FALSE)
-        if (any(columns == "intensity"))
-            res$intensity <- NumericList(lapply(pks,
-                                                function(z) z[, 2]),
+        if (any_mz)
+            res$mz <- NumericList(lapply(pks, "[", , 1), compress = FALSE)
+        if (any_int)
+            res$intensity <- NumericList(lapply(pks, "[", , 2),
                                          compress = FALSE)
     }
-    other_cols <- setdiff(
-        columns[!(columns %in% c("mz", "intensity"))], sp_cols)
+    other_cols <- setdiff(columns, c(sp_cols, "mz", "intensity"))
     if (length(other_cols)) {
         other_res <- lapply(other_cols, .get_spectra_data_column,
                             x = x)

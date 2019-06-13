@@ -14,7 +14,7 @@ NULL
 MsBackendHdf5Peaks <- function() {
     if (!requireNamespace("rhdf5", quietly = TRUE))
         stop("The use of 'MsBackendHdf5Peaks' requires package 'rhdf5'. ",
-             "Please install with 'Biobase::install(\"rhdf5\")'")
+             "Please install with 'BiocManager::install(\"rhdf5\")'")
     new("MsBackendHdf5Peaks")
 }
 

@@ -126,8 +126,8 @@ NULL
 #'   for the memory backend or read the spectra header data for the
 #'   `MsBackendMzR` backend).
 #'
-#' - `backendMerge`: merge (combine) `MsBackend` objects into a single instance.
-#'   All objects to be merged have to be of the same type (e.g.
+#' - `backendMerge`: merges (combines) `MsBackend` objects into a single
+#'   instance. All objects to be merged have to be of the same type (e.g.
 #'   [MsBackendDataFrame()]).
 #'
 #' - `dataStorage`: get a `character` of length equal to the number of spectra
@@ -158,28 +158,28 @@ NULL
 #'   `n` **in this/these file(s)** and all spectra for the remaining files (not
 #'   specified with `file`).
 #'
-#' - `filterEmptySpectra`: remove empty spectra (i.e. spectra without peaks).
+#' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
 #'
-#' - `filterFile`: retain data of files matching the file index or file name
+#' - `filterFile`: retains data of files matching the file index or file name
 #'    provided with parameter `file`.
 #'
-#' - `filterIsolationWindow`: retain spectra that contain `mz` in their
+#' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
 #'   and `isolationWindowUpperMz` >= `mz`.
 #'
-#' - `filterMsLevel`: retain spectra of MS level `msLevel`.
+#' - `filterMsLevel`: retains spectra of MS level `msLevel`.
 #'
-#' - `filterPolarity`: retain spectra of polarity `polarity`.
+#' - `filterPolarity`: retains spectra of polarity `polarity`.
 #'
-#' - `filterPrecursorMz`: retain spectra with an m/z matching the provided `mz`
+#' - `filterPrecursorMz`: retains spectra with an m/z matching the provided `mz`
 #'   accepting also a small difference in m/z which can be defined by parameter
 #'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
 #'   m/z identical to `mz` are retained.
 #'
-#' - `filterPrecursorScan`: retain parent (e.g. MS1) and children scans (e.g.
+#' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'    MS2) of acquisition number `acquisitionNum`.
 #'
-#' - `filterRt`: retain spectra of MS level `msLevel` with retention times
+#' - `filterRt`: retains spectra of MS level `msLevel` with retention times
 #'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
 #'
 #' - `fromFile`: returns an `integer` vector of length equal to the
@@ -192,10 +192,11 @@ NULL
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
-#' - `intensity<-`: replace the intensity values. `value` has to be a `list`
-#'   of length equal to the number of spectra and the number of values within
-#'   each list element identical to the number of peaks in each spectrum (i.e.
-#'   the `peaksCount(x)`). Note that not all backends support this method.
+#' - `intensity<-`: replaces the intensity values. `value` has to be a `list`
+#'   (or [NumericList()]) of length equal to the number of spectra and the
+#'   number of values within each list element identical to the number of
+#'   peaks in each spectrum (i.e. the `peaksCount(x)`). Note that just
+#'   writeable backends support this method.
 #'
 #' - `ionCount`: returns a `numeric` with the sum of intensities for
 #'   each spectrum. If the spectrum is empty (see `isEmpty`),
@@ -235,20 +236,20 @@ NULL
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
-#' - `mz<-`: replace the m/z values. `value` has to be a `list` of length equal
+#' - `mz<-`: replaces the m/z values. `value` has to be a `list` of length equal
 #'   to the number of spectra and the number of values within each list element
 #'   identical to the number of peaks in each spectrum (i.e. the
-#'   `peaksCount(x)`). Note that not all backends support this method.
+#'   `peaksCount(x)`). Note that just writeable backends support this method.
 #'
 #' - `peaks` returns a `list` of length equal to the number of spectra
 #'   in `object`. Each element of the list is a `matrix` with columns
 #'   `mz` and `intensity`. For an empty spectrum, a `matrix` with 0
 #'   rows and two columns (named `mz` and `intensity`) is returned.
 #'
-#' - `peaks<-` replace the peak data (m/z and intensity values) of the backend.
+#' - `peaks<-` replaces the peak data (m/z and intensity values) of the backend.
 #'   This method expects a `list` of `matrix` objects with columns `"mz"` and
 #'   `"intensity"` that has the same length than the number of spectra in the
-#'   backend. Note that not all backends might support this method.
+#'   backend. Note that just writeable backends support this method.
 #'
 #' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum.  Returns an `integer` vector (length equal to the
@@ -280,7 +281,7 @@ NULL
 #'   `acquisitionNum` of the spectrum which is the index of the
 #'   spectrum as reported in the mzML file.
 #'
-#' - `selectSpectraVariables`: reduce the information within the backend to
+#' - `selectSpectraVariables`: reduces the information within the backend to
 #'   the selected spectra variables.
 #'
 #' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
@@ -288,7 +289,7 @@ NULL
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraData`, `spectraData<-`: get or sets general spectrum
+#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
 #'   metadata (annotation, also called header).  `spectraData` returns
 #'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
 #'   of rows as there are spectra in `object`.

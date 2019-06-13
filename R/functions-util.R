@@ -81,21 +81,23 @@
     else class(x)
 }
 
-#' Function to *compress* a `numeric`, `logical` or `character` vector into an
-#' Rle if it has only a single element.
+#' Function to convert a `numeric`, `logical` or `character` vector into an
+#' `Rle` if it will use less memory than the bare vector.
 #'
 #' @param x vector to convert to Rle.
 #'
-#' @return `x` or an `Rle` version if `x`
+#' @return `x` or an `Rle` version of `x`
 #'
-#' @author Johannes Rainer
+#' @author Johannes Rainer, Sebastian Gibb
+#'
+#' @importFrom S4Vectors nrun
 #'
 #' @noRd
 .as_rle <- function(x) {
-    len_x <- length(x)
-    if (len_x > 1 && (is.numeric(x) | is.character(x) | is.logical(x))) {
-        if (length(unique(x)) == 1)
-            x <- Rle(x[1], len_x)
+    if (length(x) > 2L && (is.numeric(x) || is.character(x) || is.logical(x))) {
+        r <- Rle(x)
+        if (nrun(r) < length(x) / 2L)
+            return(r)
     }
     x
 }
@@ -196,9 +198,6 @@ utils.enableNeighbours <- function(x) {
     parents | children
 }
 
-#' These are S4 classes that need special attention in .rbind_fill.
-#' @noRd
-.RBIND_FILL_CLASSES <- c("SimpleList", "LogicalList", "IntegerList")
 #' @title Combine two two-dimensional arrays
 #'
 #' @importMethodsFrom S4Vectors cbind
@@ -255,4 +254,8 @@ utils.enableNeighbours <- function(x) {
         z[, cols_names]
     })
     do.call(rbind, res)
+}
+
+.logging <- function(x, ...) {
+    c(x, paste0(..., " [", date(), "]"))
 }

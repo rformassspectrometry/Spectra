@@ -74,7 +74,7 @@ setMethod("show", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMzR", function(object) {
-    NumericList(lapply(peaks(object), function(z) z[, 2]), compress = FALSE)
+    NumericList(lapply(peaks(object), "[", , 2), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -99,7 +99,7 @@ setMethod("isEmpty", "MsBackendMzR", function(x) {
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendMzR", function(object) {
-    NumericList(lapply(peaks(object), function(z) z[, 1]), compress = FALSE)
+    NumericList(lapply(peaks(object), "[", , 1), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -122,7 +122,7 @@ setMethod("peaks", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("peaksCount", "MsBackendMzR", function(object) {
-    vapply(peaks(object), nrow, integer(1))
+    lengths(peaks(object)) / 2L
 })
 
 #' @rdname hidden_aliases
@@ -167,7 +167,7 @@ setMethod("spectraVariables", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
-    if (any(c("mz", "intensity") == name))
+    if (name == "mz" || name == "intensity")
         stop("'MsBackendMzR' does not support replacing mz or intensity values")
     if (length(value) == 1)
         value <- rep(value, length(x))
