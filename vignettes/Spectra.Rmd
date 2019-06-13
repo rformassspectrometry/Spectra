@@ -30,9 +30,9 @@ library(BiocStyle)
 The `Spectra` package provides a scalable and flexible infrastructure to
 represent, retrieve and handle mass spectrometry (MS) data. The `Spectra` object
 provides the user with a single standardized interface to access and manipulate
-MS data for while supporting, through the concept of exchangeable *backends*, a
+MS data while supporting, through the concept of exchangeable *backends*, a
 large variety of different ways to store and retrieve mass spectrometry
-data. Such backends can range from mzML/mzXML/CDF files, simple flat files, or
+data. Such backends range from mzML/mzXML/CDF files, simple flat files, or
 database systems.
 
 # General usage
@@ -97,9 +97,11 @@ values.
 library(Spectra)
 
 spd <- DataFrame(
-    msLevel = c(2L, 2L, 2L), polarity = c(1L, 1L, 1L),
+    msLevel = c(2L, 2L, 2L),
+    polarity = c(1L, 1L, 1L),
     id = c("HMDB0000001", "HMDB0000001", "HMDB0001847"),
     name = c("1-Methylhistidine", "1-Methylhistidine", "Caffeine"))
+
 ## Assign m/z and intensity values.
 spd$mz <- list(
     c(109.2, 124.2, 124.5, 170.16, 170.52),
@@ -287,15 +289,24 @@ In addition, `Spectra` support also subsetting with `[`. Below we perform the
 filtering above with `[` -based subsetting.
 
 ```{r subset-square-bracket}
-sps_sciex[sps_sciex$fromFile == 2 & sps_sciex$rtime >= 175 &
+sps_sciex[sps_sciex$fromFile == 2 &
+          sps_sciex$rtime >= 175 &
           sps_sciex$rtime <= 189]
 ```
+The equivalent using filter 
+function would be 
 
-While subsetting with `[` is more intuitive, for some backends
-the use of the filter functions, depending on their implementation, might be
-more efficient (e.g. database-based backends could *translate* the filter
-function into a SQL condition to perform the subsetting already within the
-database).
+```{r subset-filter-pipes}
+sps_sciex %>%
+    filterFile(2) %>%
+    filterRt(c(175, 189)) 
+```
+
+
+Note that the use of the filter functions might be more efficient for
+some backends, depending on their implementation, (e.g. database-based
+backends could *translate* the filter function into a SQL condition to
+perform the subsetting already within the database).
 
 `Spectra` objects can also be combined with the `merge` function. The resulting
 `Spectra` object will contain an union of the spectra variables of the
@@ -303,7 +314,8 @@ individual objects. Below we combine the `Spectra` object `sps` with an
 additional object containing another MS2 spectrum for Caffeine.
 
 ```{r caf}
-caf_df <- DataFrame(msLevel = 2L, name = "Caffeine", id = "HMDB0001847",
+caf_df <- DataFrame(msLevel = 2L, name = "Caffeine",
+                    id = "HMDB0001847",
                     instrument = "Agilent 1200 RRLC; Agilent 6520 QTOF",
                     splash = "splash10-0002-0900000000-413259091ba7edc46b87",
                     centroided = TRUE)
