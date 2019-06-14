@@ -48,11 +48,24 @@ NULL
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
-#' @param drop For `[`: not considered.
+#' @param dataOrigin For `filterDataOrigin`: `integer`, `logical` or
+#'     `character` to define which spectra to keep. If a `logical` is provided
+#'     its length has to match the length of unique elements in `dataOrigin`
+#'     (i.e. `unique(dataOrigin(object))`). If `dataOrigin` is of type `integer`
+#'     it is expected to represent the index of the element in
+#'     `unique(dataOrigin(object))`. If `dataOrigin` is of type `character` it
+#'     has to match exactly the `dataOrigin` of the spectra that should be
+#'     retained.
 #'
-#' @param files For `backendInitialize`: `character` with the file
-#'     names from which the data is/will be imported. Should be set to
-#'     `NA_character_` if not applicable (e.g. for `MsBackendDataFrame`).
+#' @param dataStorage For `filterDataStorage`: `integer`, `logical` or
+#'     `character` to define which spectra to keep. If a `logical` is provided
+#'     its length has to match the length of `dataStorageNames(object)`.
+#'     If `dataStorage` is of type `integer` it is expected to represent the
+#'     index of the element in `dataStorageNames(object)`. If `dataStorage` is
+#'     of type `character` it has to match exactly the `dataStorage` of the
+#'     spectra that should be retained.
+#'
+#' @param drop For `[`: not considered.
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
 #'     should be subsetted.

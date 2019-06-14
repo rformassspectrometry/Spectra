@@ -224,6 +224,23 @@ to filter for.}
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
 should be subsetted.}
 
+\item{dataOrigin}{For \code{filterDataOrigin}: \code{integer}, \code{logical} or
+\code{character} to define which spectra to keep. If a \code{logical} is provided
+its length has to match the length of unique elements in \code{dataOrigin}
+(i.e. \code{unique(dataOrigin(object))}). If \code{dataOrigin} is of type \code{integer}
+it is expected to represent the index of the element in
+\code{unique(dataOrigin(object))}. If \code{dataOrigin} is of type \code{character} it
+has to match exactly the \code{dataOrigin} of the spectra that should be
+retained.}
+
+\item{dataStorage}{For \code{filterDataStorage}: \code{integer}, \code{logical} or
+\code{character} to define which spectra to keep. If a \code{logical} is provided
+its length has to match the length of \code{dataStorageNames(object)}.
+If \code{dataStorage} is of type \code{integer} it is expected to represent the
+index of the element in \code{dataStorageNames(object)}. If \code{dataStorage} is
+of type \code{character} it has to match exactly the \code{dataStorage} of the
+spectra that should be retained.}
+
 \item{mz}{For \code{filterIsolationWindow} and \code{filterPrecursorMz}: \code{numeric(1)}
 with the m/z value to filter the object.}
 
@@ -267,10 +284,6 @@ total ion current should be (re)calculated on the actual data
 
 \item{name}{For \code{$} and \code{$<-}: the name of the spectra variable to return
 or set.}
-
-\item{files}{For \code{backendInitialize}: \code{character} with the file
-names from which the data is/will be imported. Should be set to
-\code{NA_character_} if not applicable (e.g. for \code{MsBackendDataFrame}).}
 
 \item{spectraData}{For \code{backendInitialize}: \code{DataFrame} with spectrum
 metadata/data. This parameter can be empty for \code{MsBackendMzR} backends

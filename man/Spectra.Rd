@@ -11,7 +11,7 @@
 \alias{Spectra,MsBackend-method}
 \alias{Spectra,character-method}
 \alias{setBackend,Spectra,MsBackend-method}
-\alias{merge,Spectra,Spectra-method}
+\alias{c,Spectra-method}
 \alias{acquisitionNum,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
@@ -86,7 +86,7 @@ addProcessing(object, FUN, ...)
 \S4method{setBackend}{Spectra,MsBackend}(object, backend,
   f = dataStorage(object), ..., BPPARAM = bpparam())
 
-\S4method{merge}{Spectra,Spectra}(x, y, ...)
+\S4method{c}{Spectra}(x, ...)
 
 \S4method{acquisitionNum}{Spectra}(object)
 
@@ -228,12 +228,15 @@ objects for details.}
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
 of the \linkS4class{MsBackend}.}
 
-\item{f}{For \code{setBackend}: factor defining how to split the data should
-for the parallelized copying of the spectra data to the new backend.}
+\item{source}{For \code{Spectra}: instance of \linkS4class{MsBackend} that can be used
+to import spectrum data from the provided files. See section \emph{Creation
+of objects, conversion and changing the backend} for more details.}
+
+\item{f}{For \code{setBackend}: factor defining how to split the data for
+parallelized copying of the spectra data to the new backend. For some
+backends changing this parameter can lead to errors.}
 
 \item{x}{A \code{Spectra} object.}
-
-\item{y}{A \code{Spectra} object.}
 
 \item{value}{replacement value for \code{<-} methods. See individual
 method description or expected data type.}
@@ -294,6 +297,8 @@ non-zero intensity peak should be kept (\code{FALSE}).}
 
 \item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
 subsetted.}
+
+\item{y}{A \code{Spectra} object.}
 }
 \value{
 See individual method description for the return value.
@@ -341,7 +346,9 @@ method that takes an instance of the new backend as second parameter
 \code{backend}. A call to \code{setBackend(sps, backend = MsBackendDataFrame())} would
 for example change the backend or \code{sps} to the \emph{in-memory}
 \code{MsBackendDataFrame}. Note that it is not possible to change the backend
-to a \emph{read-only} backend (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}} backend).
+to a \emph{read-only} backend (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}} backend). \code{setBackend}
+changes the \code{"dataOrigin"} variable of the resulting \code{Spectra} object to the
+\code{"dataStorage"} variable of the backend before the switch.
 
 The definition of the function is:
 \code{setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())}
@@ -352,7 +359,8 @@ and its parameters are:
 \code{MsBackendDataFrame()}.
 \item parameter \code{f}: factor allowing to parallelize the change of the backends.
 By default the process of copying the spectra data from the original to the
-new backend is performed separately (and in parallel) for each file.
+new backend is performed separately (and in parallel) for each file. Users
+are advised to use the default setting.
 \item parameter \code{...}: optional additional arguments passed to the
 \code{\link[=backendInitialize]{backendInitialize()}} method of the new \code{backend}.
 \item parameter \code{BPPARAM}: setup for the parallel processing. See \code{\link[=bpparam]{bpparam()}} for
@@ -505,10 +513,10 @@ the values will be dropped, while additional (user defined) spectra
 variables will be completely removed. Returns the filtered \code{Spectra}.
 }
 
-Several \code{Spectra} objects can be merged into a single object with the
-\code{merge} function. Merging will fail if the processing queue of any of the
-\code{Spectra} objects is not empty, or if different backends are used in the
-various \code{Spectra} objects. The spectra variables of the resulting \code{Spectra}
+Several \code{Spectra} objects can be concatenated into a single object with the
+\code{c} function. Concatenation will fail if the processing queue of any of the
+\code{Spectra} objects is not empty or if different backends are used in the
+\code{Spectra} objects. The spectra variables of the resulting \code{Spectra}
 object is the union of the spectra variables of the individual \code{Spectra}
 objects.
 }
@@ -638,12 +646,12 @@ data[msLevel(data) == 2]
 filterMsLevel(data, 2)
 
 ## Below we combine the `data` and `sciex_im` objects into a single one.
-data_comb <- merge(data, sciex_im)
+data_comb <- c(data, sciex_im)
 
 ## The combined Spectra contains a union of all spectra variables:
 head(data_comb$spectrum_id)
 head(data_comb$rtime)
-head(data_comb$fromFile)
+head(data_comb$dataStorage)
 
 ## ---- DATA MANIPULATIONS ----
 

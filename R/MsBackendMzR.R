@@ -113,7 +113,7 @@ setMethod("peaks", "MsBackendMzR", function(object) {
         return(list())
     fls <- dataStorageNames(object)
     if (length(fls) > 1) {
-        f <- factor(dataStorage(object), level = fls)
+        f <- factor(dataStorage(object), levels = fls)
         unsplit(mapply(FUN = .mzR_peaks, fls, split(scanIndex(object), f),
                        SIMPLIFY = FALSE, USE.NAMES = FALSE), f)
     } else

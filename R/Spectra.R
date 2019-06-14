@@ -252,10 +252,10 @@ NULL
 #'   the values will be dropped, while additional (user defined) spectra
 #'   variables will be completely removed. Returns the filtered `Spectra`.
 #'
-#' Several `Spectra` objects can be merged into a single object with the
-#' `merge` function. Merging will fail if the processing queue of any of the
-#' `Spectra` objects is not empty, or if different backends are used in the
-#' various `Spectra` objects. The spectra variables of the resulting `Spectra`
+#' Several `Spectra` objects can be concatenated into a single object with the
+#' `c` function. Concatenation will fail if the processing queue of any of the
+#' `Spectra` objects is not empty or if different backends are used in the
+#' `Spectra` objects. The spectra variables of the resulting `Spectra`
 #' object is the union of the spectra variables of the individual `Spectra`
 #' objects.
 #'
@@ -367,6 +367,10 @@ NULL
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
+#'
+#' @param source For `Spectra`: instance of [MsBackend-class] that can be used
+#'     to import spectrum data from the provided files. See section *Creation
+#'     of objects, conversion and changing the backend* for more details.
 #'
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
@@ -485,12 +489,12 @@ NULL
 #' filterMsLevel(data, 2)
 #'
 #' ## Below we combine the `data` and `sciex_im` objects into a single one.
-#' data_comb <- merge(data, sciex_im)
+#' data_comb <- c(data, sciex_im)
 #'
 #' ## The combined Spectra contains a union of all spectra variables:
 #' head(data_comb$spectrum_id)
 #' head(data_comb$rtime)
-#' head(data_comb$fromFile)
+#' head(data_comb$dataStorage)
 #'
 #' ## ---- DATA MANIPULATIONS ----
 #'
@@ -658,16 +662,18 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
 
 #' @rdname Spectra
 #'
-#' @importMethodsFrom S4Vectors merge
-#'
-#' @exportMethod merge
-setMethod("merge", c("Spectra", "Spectra"), function(x, y, ...) {
-    objs <- unname(c(x, y, ...))
+#' @exportMethod c
+setMethod("c", "Spectra", function(x, ...) {
+    objs <- unname(c(list(x), list(...)))
+    cls <- vapply(objs, class, character(1))
+    if (!all(cls == "Spectra"))
+        stop("Can only concatenate 'Spectra' objects")
     pqs <- lapply(objs, function(z) z@processingQueue)
     ## For now we stop if there is any of the processingQueues not empty. Later
     ## we could even test if they are similar, and if so, merge.
     if (any(lengths(pqs)))
-        stop("Can not merge Spectra objects with non-empty processing queue")
+        stop("Can not concatenate 'Spectra' objects with non-empty ",
+             "processing queue")
     metad <- do.call(c, lapply(objs, function(z) z@metadata))
     procs <- unique(unlist(lapply(objs, function(z) z@processing)))
     object <- new(
