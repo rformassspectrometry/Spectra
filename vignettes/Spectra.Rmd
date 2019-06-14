@@ -293,15 +293,16 @@ sps_sciex[sps_sciex$fromFile == 2 &
           sps_sciex$rtime >= 175 &
           sps_sciex$rtime <= 189]
 ```
-The equivalent using filter 
-function would be 
+
+The equivalent using filter function is shown below, with the added
+benefit that the filtering is recorded in the processing slot.
 
 ```{r subset-filter-pipes}
+library("magrittr")
 sps_sciex %>%
     filterFile(2) %>%
     filterRt(c(175, 189)) 
 ```
-
 
 Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
@@ -398,8 +399,8 @@ sps
 It is possible to add also custom functions to the processing queue of a
 `Spectra` object. Such a function must take a peaks matrix as its first
 argument, have `...` in the function definition and must return a peaks matrix
-(a peaks matrix is a numeric two column matrix with the first column containing
-the peaks' m/z values and the second the corresponding intensities. Below we
+(a peaks matrix is a numeric two-column matrix with the first column containing
+the peaks' m/z values and the second the corresponding intensities). Below we
 define a function that divides the intensities of each peak by a value which can
 be passed with argument `y`.
 
@@ -453,7 +454,7 @@ keep the original mzML files. Below we change the backend of `sps_sciex` to the
 in-memory `MsBackendDataFrame` backend.
 
 ```{r setbackend}
-object.size(sps_sciex)
+print(object.size(sps_sciex), units = "Mb")
 sps_sciex <- setBackend(sps_sciex, MsBackendDataFrame())
 sps_sciex
 ```
@@ -463,9 +464,8 @@ the object. This has obviously an impact on the object's size, which is now much
 larger than before.
 
 ```{r memory-after-import}
-object.size(sps_sciex)
+print(object.size(sps_sciex), units = "Mb")
 ```
-
 
 ## Parallel processing notes
 
@@ -501,5 +501,9 @@ variables, **except** the `MsBackendMzR` that does not support changing m/z or
 intensity values for the mass peaks.
 
 # Session information
+
+```{r si}
+sessionInfo()
+```
 
 # References
