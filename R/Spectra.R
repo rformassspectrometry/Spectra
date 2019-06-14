@@ -53,7 +53,9 @@ NULL
 #' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())` would
 #' for example change the backend or `sps` to the *in-memory*
 #' `MsBackendDataFrame`. Note that it is not possible to change the backend
-#' to a *read-only* backend (such as the [MsBackendMzR()] backend).
+#' to a *read-only* backend (such as the [MsBackendMzR()] backend). `setBackend`
+#' changes the `"dataOrigin"` variable of the resulting `Spectra` object to the
+#' `"dataStorage"` variable of the backend before the switch.
 #'
 #' The definition of the function is:
 #' `setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())`
@@ -66,7 +68,8 @@ NULL
 #'
 #' - parameter `f`: factor allowing to parallelize the change of the backends.
 #'   By default the process of copying the spectra data from the original to the
-#'   new backend is performed separately (and in parallel) for each file.
+#'   new backend is performed separately (and in parallel) for each file. Users
+#'   are advised to use the default setting.
 #'
 #' - parameter `...`: optional additional arguments passed to the
 #'   [backendInitialize()] method of the new `backend`.
@@ -313,8 +316,9 @@ NULL
 #'
 #' @param drop For `[`: not considered.
 #'
-#' @param f For `setBackend`: factor defining how to split the data should
-#'     for the parallelized copying of the spectra data to the new backend.
+#' @param f For `setBackend`: factor defining how to split the data for
+#'     parallelized copying of the spectra data to the new backend. For some
+#'     backends changing this parameter can lead to errors.
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
 #'     should be subsetted.
@@ -626,11 +630,12 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
                    BPPARAM = bpparam()) {
               backend_class <- class(object@backend)
               if (isReadOnly(backend))
-                  stop(backend_class, "is read-only. Changing backend to a ",
+                  stop(backend_class, " is read-only. Changing backend to a ",
                        "read-only backend is not supported.")
               f <- factor(f, levels = unique(f))
               if (length(f) != length(object))
                   stop("length of 'f' has to match the length of 'object'")
+              data_storage <- object@backend$dataStorage
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
                   backendInitialize(backend,
                                     spectraData = spectraData(z),
@@ -642,6 +647,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               if (is.unsorted(f))
                   bknds <- bknds[order(unlist(split(seq_along(bknds), f),
                                               use.names = FALSE))]
+              bknds$dataOrigin <- data_storage
               object@backend <- bknds
               object@processing <- .logging(object@processing,
                                             "Switch backend from ",

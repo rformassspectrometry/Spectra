@@ -46,54 +46,54 @@ test_that("Spectra,character works", {
     expect_identical(rtime(res), rtime(res_2))
 })
 
-## test_that("setBackend,Spectra works", {
-##     df <- DataFrame(fromFile = 1L, rtime = as.numeric(1:9),
-##                     fact = c(2L, 1L, 2L, 1L, 3L, 2L, 3L, 3L, 1L))
-##     be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
-##     sps <- Spectra(be)
-##     res <- setBackend(sps, MsBackendDataFrame())
-##     expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
-##     expect_identical(sps@backend@spectraData$fact,
-##                      res@backend@spectraData$fact)
-##     expect_identical(fromFile(res), fromFile(sps))
-##     expect_identical(fileNames(res), fileNames(sps))
-##     expect_identical(rtime(res), rtime(sps))
+test_that("setBackend,Spectra works", {
+    df <- DataFrame(rtime = as.numeric(1:9),
+                    fact = c(2L, 1L, 2L, 1L, 3L, 2L, 3L, 3L, 1L))
+    sps <- Spectra(df)
+    res <- setBackend(sps, MsBackendDataFrame())
+    expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
+    expect_identical(sps@backend@spectraData$fact,
+                     res@backend@spectraData$fact)
+    expect_identical(rtime(res), rtime(sps))
+    expect_identical(dataStorage(res), dataStorage(sps))
+    expect_identical(dataOrigin(res), dataStorage(sps))
 
-##     ## Use a different factor.
-##     res <- setBackend(sps, MsBackendDataFrame(), f = df$fact)
-##     expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
-##     expect_identical(as.vector(sps@backend@spectraData$fact),
-##                      as.vector(res@backend@spectraData$fact))
-##     expect_identical(fromFile(res), fromFile(sps))
-##     expect_identical(fileNames(res), fileNames(sps))
-##     expect_identical(rtime(res), rtime(sps))
+    ## Use a different factor.
+    res <- setBackend(sps, MsBackendDataFrame(), f = df$fact)
+    expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
+    expect_identical(as.vector(sps@backend@spectraData$fact),
+                     as.vector(res@backend@spectraData$fact))
+    expect_identical(dataStorage(res), dataStorage(sps))
+    expect_identical(rtime(res), rtime(sps))
 
-##     ## switch from mzR to DataFrame
-##     sps <- Spectra(sciex_mzr)
-##     res <- setBackend(sps, MsBackendDataFrame())
-##     expect_identical(fileNames(sps), fileNames(res))
-##     expect_identical(rtime(sps), rtime(res))
-##     expect_identical(fromFile(sps), fromFile(res))
-##     expect_identical(mz(sps), mz(res))
-##     expect_true(is(res@backend@spectraData$msLevel, "Rle"))
-##     expect_true(is(sps@backend@spectraData$msLevel, "Rle"))
-##     expect_true(is.integer(res$msLevel))
+    ## switch from mzR to DataFrame
+    sps <- Spectra(sciex_mzr)
+    res <- setBackend(sps, MsBackendDataFrame())
+    expect_identical(rtime(sps), rtime(res))
+    expect_identical(mz(sps), mz(res))
+    expect_true(is(res@backend@spectraData$msLevel, "Rle"))
+    expect_true(is(sps@backend@spectraData$msLevel, "Rle"))
+    expect_true(is.integer(res$msLevel))
+    expect_identical(dataOrigin(res), dataStorage(sps))
 
-##     ## switch back to mzR
-##     res2 <- setBackend(res, MsBackendMzR())
-##     expect_equal(rtime(res2), rtime(sps))
-##     expect_equal(msLevel(res2), msLevel(sps))
-##     expect_equal(intensity(res2), intensity(res))
-##     expect_true(is(res2@backend@spectraData$msLevel, "Rle"))
+    ## switch from DataFrame to hdf5
+    tdir <- paste0(tempdir(), "/a")
+    res <- setBackend(sps, MsBackendHdf5Peaks(), hdf5path = tdir)
+    expect_identical(rtime(sps), rtime(res))
+    expect_identical(peaks(sps), peaks(res))
+    expect_identical(dataOrigin(res), dataStorage(sps))
 
-##     ## errors:
-##     ## DataFrame without files to mzR
-##     expect_error(setBackend(Spectra(be), MsBackendMzR()))
+    ## from DataFrame to hdf5 providing file names - need to disable
+    ## parallelization
+    res <- setBackend(sps, MsBackendHdf5Peaks(),
+                      files = c(tempfile(), tempfile()),
+                      f = rep(1, length(sps)))
+    expect_identical(rtime(sps), rtime(res))
+    expect_identical(peaks(sps), peaks(res))
 
-##     ## DataFrame with modCount > 0 to mzR
-##     res@backend@modCount <- c(0L, 2L)
-##     expect_error(setBackend(res, MsBackendMzR(), BPPARAM = SerialParam()))
-## })
+    ## errors:
+    expect_error(setBackend(sps, MsBackendMzR()), "is read-only")
+})
 
 ## test_that("merge,Spectra works", {
 ##     df1 <- DataFrame(msLevel = c(1L, 1L, 1L), fromFile = 1L)
