@@ -330,10 +330,10 @@ for the memory backend or read the spectra header data for the
 \item \code{backendMerge}: merges (combines) \code{MsBackend} objects into a single
 instance. All objects to be merged have to be of the same type (e.g.
 \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
-\item \code{dataStorage}: get a \code{character} of length equal to the number of spectra
+\item \code{dataStorage}: gets a \code{character} of length equal to the number of spectra
 in \code{object} with the data storage of each spectrum. Note that a
 \code{dataStorage} of \code{NA_character_} is not supported.
-\item \code{dataStorageNames}: get unique data storage elements from the backend (in
+\item \code{dataStorageNames}: gets unique data storage elements from the backend (in
 order of appearance). Returns a \code{character}.
 \item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
@@ -348,7 +348,7 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \code{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
-\item \code{filterAcquisitionNum}: filter the object keeping only spectra matching the
+\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching the
 provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
 \code{object} is subsetted to the spectra with an acquisition number equal to
 \code{n} \strong{in this/these file(s)} and all spectra for the remaining files (not
@@ -394,12 +394,12 @@ the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
 length equal number of spectra.
-\item \code{isolationWindowLowerMz}, \code{isolationWindowLowerMz<-}: get or set the lower
-m/z boundary of the isolation window.
-\item \code{isolationWindowTargetMz}, \code{isolationWindowTargetMz<-}: get or set the
+\item \code{isolationWindowLowerMz}, \code{isolationWindowLowerMz<-}: gets or sets the
+lower m/z boundary of the isolation window.
+\item \code{isolationWindowTargetMz}, \code{isolationWindowTargetMz<-}: gets or sets the
 target m/z of the isolation window.
-\item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: get or set the upper
-m/z boundary of the isolation window.
+\item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: gets or sets the
+upper m/z boundary of the isolation window.
 \item \code{isReadOnly}: returns a \code{logical(1)} whether the backend is \emph{read
 only} or does allow also to write/update data.
 \item \code{length}: returns the number of spectra in the object.

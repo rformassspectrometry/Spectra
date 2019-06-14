@@ -1,29 +1,50 @@
-## test_that("Spectra,DataFrame works", {
-##     df <- DataFrame()
-##     res <- Spectra(df)
-##     expect_true(validObject(res))
-##     expect_true(length(res) == 0)
+test_that("Spectra,DataFrame works", {
+    df <- DataFrame()
+    res <- Spectra(df)
+    expect_true(validObject(res))
+    expect_true(length(res) == 0)
 
-##     df <- DataFrame(msLevel = c(1L, 2L))
-##     res <- Spectra(df)
-##     expect_identical(msLevel(res), c(1L, 2L))
-##     expect_true(length(res) == 2)
+    df <- DataFrame(msLevel = c(1L, 2L))
+    res <- Spectra(df)
+    expect_identical(msLevel(res), c(1L, 2L))
+    expect_true(length(res) == 2)
 
-##     df$polarity <- "NEG"
-##     expect_error(Spectra(df), "wrong data type: polarity")
-## })
+    df$polarity <- "NEG"
+    expect_error(Spectra(df), "wrong data type: polarity")
+})
 
-## test_that("Spectra,missing works", {
-##     res <- Spectra()
-##     expect_true(length(res) == 0)
+test_that("Spectra,missing works", {
+    res <- Spectra()
+    expect_true(length(res) == 0)
 
-##     be <- backendInitialize(MsBackendDataFrame(), files = NA_character_,
-##                             spectraData = DataFrame(msLevel = c(1L, 2L),
-##                                                     fromFile = 1L))
-##     res <- Spectra(backend = be)
-##     expect_true(length(res) == 2)
-##     expect_identical(msLevel(res), c(1L, 2L))
-## })
+    be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
+                                                            fromFile = 1L))
+    res <- Spectra(backend = be)
+    expect_true(length(res) == 2)
+    expect_identical(msLevel(res), c(1L, 2L))
+})
+
+test_that("Spectra,MsBackend works", {
+    res <- Spectra()
+    expect_true(length(res) == 0)
+
+    be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
+                                                            fromFile = 1L))
+    res <- Spectra(be)
+    expect_true(length(res) == 2)
+    expect_identical(msLevel(res), c(1L, 2L))
+})
+
+test_that("Spectra,character works", {
+    res <- Spectra(sciex_file, backend = MsBackendMzR())
+    expect_true(is(res@backend, "MsBackendMzR"))
+    expect_equal(dataStorageNames(res@backend), sciex_file)
+    expect_identical(rtime(res), rtime(sciex_mzr))
+
+    res_2 <- Spectra(sciex_file)
+    expect_true(is(res@backend, "MsBackendDataFrame"))
+    expect_identical(rtime(res), rtime(res_2))
+})
 
 ## test_that("setBackend,Spectra works", {
 ##     df <- DataFrame(fromFile = 1L, rtime = as.numeric(1:9),

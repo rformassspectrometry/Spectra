@@ -130,11 +130,11 @@ NULL
 #'   instance. All objects to be merged have to be of the same type (e.g.
 #'   [MsBackendDataFrame()]).
 #'
-#' - `dataStorage`: get a `character` of length equal to the number of spectra
+#' - `dataStorage`: gets a `character` of length equal to the number of spectra
 #'   in `object` with the data storage of each spectrum. Note that a
 #'   `dataStorage` of `NA_character_` is not supported.
 #'
-#' - `dataStorageNames`: get unique data storage elements from the backend (in
+#' - `dataStorageNames`: gets unique data storage elements from the backend (in
 #'   order of appearance). Returns a `character`.
 #'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
@@ -152,7 +152,7 @@ NULL
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `filterAcquisitionNum`: filter the object keeping only spectra matching the
+#' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
 #'   provided acquisition numbers (argument `n`). If `file` is also provided,
 #'   `object` is subsetted to the spectra with an acquisition number equal to
 #'   `n` **in this/these file(s)** and all spectra for the remaining files (not
@@ -213,14 +213,14 @@ NULL
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: get or set the lower
-#'   m/z boundary of the isolation window.
+#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the
+#'   lower m/z boundary of the isolation window.
 #'
-#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: get or set the
+#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: get or set the upper
-#'   m/z boundary of the isolation window.
+#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the
+#'   upper m/z boundary of the isolation window.
 #'
 #' - `isReadOnly`: returns a `logical(1)` whether the backend is *read
 #'   only* or does allow also to write/update data.

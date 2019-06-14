@@ -13,7 +13,7 @@ NULL
 #' related metadata.
 #'
 #' It supports multiple data backends, e.g. in-memory ([MsBackendDataFrame()]),
-#' on-disk as mzML ([MsBackendMzR()]).
+#' on-disk as mzML ([MsBackendMzR()]) or HDF5 ([MsBackendHdf5Peaks()]).
 #'
 #' @details
 #'
@@ -38,23 +38,25 @@ NULL
 #'   is provided by the [MsBackend-class] class passed along with the `backend`
 #'   argument.
 #'
-#' `Spectra` classes are usually created with the `readSpectra`
-#' function that reads general spectrum metadata information from the mass
-#' spectrometry data files.
+#' - parameter `object` is of type `character` and is expected to be the file
+#'   names(s) from which spectra should be imported. Parameter `source` allows
+#'   to define a [MsBackend-class] that is able to import the data from the
+#'   provided source files. The default value for `source` is [MsBackendMzR()]
+#'   which allows to import spectra data from mzML, mzXML or CDF files.
+#'
+#' With `...` additional arguments can be passed to the backend's
+#' [backendInitialize()] method. Parameter `backend` allows to specify which
+#' [MsBackend-class] should be used for data storage.
 #'
 #' The backend of a `Spectra` object can be changed with the `setBackend`
 #' method that takes an instance of the new backend as second parameter
 #' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())` would
-#' for example change the backend to the *in-memory* `MsBackendDataFrame`.
-#' Note that it might not be possible to change from any backend to any other
-#' backend. Changing from a `MsBackendDataFrame` to a `MsBackendMzR` would only
-#' be possible if the original `MsBackendDataFrame` was generated on data from
-#' e.g. mzML files and if these original file names are set in the backend
-#' (slot `@files`). In contrast, it should be possible to convert almost every
-#' backend into a `MsBackendDataFrame` (given sufficient memory is available).
+#' for example change the backend or `sps` to the *in-memory*
+#' `MsBackendDataFrame`. Note that it is not possible to change the backend
+#' to a *read-only* backend (such as the [MsBackendMzR()] backend).
 #'
 #' The definition of the function is:
-#' `setBackend(object, backend, ..., f = fromFile(object), BPPARAM = bpparam())`
+#' `setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())`
 #' and its parameters are:
 #'
 #' - parameter `object`: the `Spectra` object.
@@ -398,13 +400,13 @@ NULL
 #' data <- Spectra(spd)
 #' data
 #'
-#' ## Create a Spectra from a mzML file.
+#' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
+#' ## backend.
 #' sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
-#' sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
-#' sciex <- Spectra(sciex_mzr)
+#' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 #' sciex
 #'
-#' ## The MS data is on-disk and will be read into memory on-demand. We can
+#' ## The MS data is on disk and will be read into memory on-demand. We can
 #' ## however change the backend to a MsBackendDataFrame backend which will
 #' ## keep all of the data in memory.
 #' sciex_im <- setBackend(sciex, MsBackendDataFrame())
@@ -581,11 +583,8 @@ setMethod("Spectra", "DataFrame", function(object, processingQueue = list(),
                                            metadata = list(), ...,
                                            backend = MsBackendDataFrame(),
                                            BPPARAM = bpparam()) {
-    object$fromFile <- rep(1L, nrow(object))
     new("Spectra", metadata = metadata, processingQueue = processingQueue,
-        backend = backendInitialize(
-            backend, files = if (nrow(object)) NA_character_ else character(),
-            object, BPPARAM = BPPARAM))
+        backend = backendInitialize(backend, object, ..., BPPARAM = BPPARAM))
 })
 
 #' @rdname Spectra
@@ -606,27 +605,40 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 })
 
 #' @rdname Spectra
+setMethod("Spectra", "character", function(object, processingQueue = list(),
+                                           metadata = list(),
+                                           source = MsBackendMzR(),
+                                           backend = MsBackendDataFrame(),
+                                           ..., BPPARAM = bpparam()) {
+    be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
+    sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
+              backend = be)
+    if (class(source) != class(backend))
+        setBackend(sp, backend, ..., BPPARAM = BPPARAM)
+    else sp
+})
+
+#' @rdname Spectra
 #'
 #' @exportMethod setBackend
 setMethod("setBackend", c("Spectra", "MsBackend"),
-          function(object, backend, f = fromFile(object), ...,
+          function(object, backend, f = dataStorage(object), ...,
                    BPPARAM = bpparam()) {
               backend_class <- class(object@backend)
+              if (isReadOnly(backend))
+                  stop(backend_class, "is read-only. Changing backend to a ",
+                       "read-only backend is not supported.")
               f <- factor(f, levels = unique(f))
               if (length(f) != length(object))
                   stop("length of 'f' has to match the length of 'object'")
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
-                  ## ## Is this check below really required???
-                  ## if (isReadOnly(backend) && any(z@modCount))
-                  ##     stop(class(backend), " backends are read-only but the ",
-                  ##          "original data appears to be modified")
-                  res <- backendInitialize(backend, files = z@files,
-                                           spectraData = spectraData(z),
-                                           ...)
-                  ## res@modCount <- z@modCount
-                  res
+                  backendInitialize(backend,
+                                    spectraData = spectraData(z),
+                                    ...)
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
+              ## That below ensures the backend is returned in its original
+              ## order - unsplit does unfortunately not work.
               if (is.unsorted(f))
                   bknds <- bknds[order(unlist(split(seq_along(bknds), f),
                                               use.names = FALSE))]

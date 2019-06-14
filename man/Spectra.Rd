@@ -9,6 +9,7 @@
 \alias{Spectra,DataFrame-method}
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
+\alias{Spectra,character-method}
 \alias{setBackend,Spectra,MsBackend-method}
 \alias{merge,Spectra,Spectra-method}
 \alias{acquisitionNum,Spectra-method}
@@ -78,8 +79,12 @@ addProcessing(object, FUN, ...)
 \S4method{Spectra}{MsBackend}(object, processingQueue = list(),
   metadata = list(), ..., BPPARAM = bpparam())
 
+\S4method{Spectra}{character}(object, processingQueue = list(),
+  metadata = list(), source = MsBackendMzR(),
+  backend = MsBackendDataFrame(), ..., BPPARAM = bpparam())
+
 \S4method{setBackend}{Spectra,MsBackend}(object, backend,
-  f = fromFile(object), ..., BPPARAM = bpparam())
+  f = dataStorage(object), ..., BPPARAM = bpparam())
 
 \S4method{merge}{Spectra,Spectra}(x, y, ...)
 
@@ -298,7 +303,7 @@ The \code{Spectra} class encapsules spectral mass spectrometry data and
 related metadata.
 
 It supports multiple data backends, e.g. in-memory (\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}),
-on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}).
+on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}) or HDF5 (\code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}).
 }
 \details{
 The \code{Spectra} class uses by default a lazy data manipulation strategy,
@@ -320,25 +325,26 @@ initialized).
 \item parameter \code{object} is missing, in which case it is supposed that the data
 is provided by the \linkS4class{MsBackend} class passed along with the \code{backend}
 argument.
+\item parameter \code{object} is of type \code{character} and is expected to be the file
+names(s) from which spectra should be imported. Parameter \code{source} allows
+to define a \linkS4class{MsBackend} that is able to import the data from the
+provided source files. The default value for \code{source} is \code{\link[=MsBackendMzR]{MsBackendMzR()}}
+which allows to import spectra data from mzML, mzXML or CDF files.
 }
 
-\code{Spectra} classes are usually created with the \code{readSpectra}
-function that reads general spectrum metadata information from the mass
-spectrometry data files.
+With \code{...} additional arguments can be passed to the backend's
+\code{\link[=backendInitialize]{backendInitialize()}} method. Parameter \code{backend} allows to specify which
+\linkS4class{MsBackend} should be used for data storage.
 
 The backend of a \code{Spectra} object can be changed with the \code{setBackend}
 method that takes an instance of the new backend as second parameter
 \code{backend}. A call to \code{setBackend(sps, backend = MsBackendDataFrame())} would
-for example change the backend to the \emph{in-memory} \code{MsBackendDataFrame}.
-Note that it might not be possible to change from any backend to any other
-backend. Changing from a \code{MsBackendDataFrame} to a \code{MsBackendMzR} would only
-be possible if the original \code{MsBackendDataFrame} was generated on data from
-e.g. mzML files and if these original file names are set in the backend
-(slot \code{@files}). In contrast, it should be possible to convert almost every
-backend into a \code{MsBackendDataFrame} (given sufficient memory is available).
+for example change the backend or \code{sps} to the \emph{in-memory}
+\code{MsBackendDataFrame}. Note that it is not possible to change the backend
+to a \emph{read-only} backend (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}} backend).
 
 The definition of the function is:
-\code{setBackend(object, backend, ..., f = fromFile(object), BPPARAM = bpparam())}
+\code{setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())}
 and its parameters are:
 \itemize{
 \item parameter \code{object}: the \code{Spectra} object.
@@ -551,13 +557,13 @@ spd$intensity <- list(c(200, 400, 34.2, 17), c(12.3, 15.2, 6.8))
 data <- Spectra(spd)
 data
 
-## Create a Spectra from a mzML file.
+## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
+## backend.
 sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
-sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
-sciex <- Spectra(sciex_mzr)
+sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 sciex
 
-## The MS data is on-disk and will be read into memory on-demand. We can
+## The MS data is on disk and will be read into memory on-demand. We can
 ## however change the backend to a MsBackendDataFrame backend which will
 ## keep all of the data in memory.
 sciex_im <- setBackend(sciex, MsBackendDataFrame())
