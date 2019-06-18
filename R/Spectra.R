@@ -360,7 +360,7 @@ NULL
 #'     index of the element in `dataStorageLevels(object)`. If `dataStorage` is
 #'     of type `character` it has to match exactly the `dataStorage` of the
 #'     spectra that should be retained.
-#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occur
 #'     only for spectra of selected `dataStorage`.
 #'
 #' @param drop For `[`: not considered.
