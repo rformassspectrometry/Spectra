@@ -254,7 +254,7 @@ NULL
 #'
 #' - `filterMsLevel`: filters object by MS level keeping only spectra matching
 #'   the MS level specified with argument `msLevel`. Returns the filtered
-#'   `Spectra` (with spectra in their original order)
+#'   `Spectra` (with spectra in their original order).
 #'
 #' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
