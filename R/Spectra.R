@@ -1028,6 +1028,8 @@ setMethod("filterPrecursorScan", "Spectra",
 #' @rdname Spectra
 setMethod("filterRt", "Spectra",
           function(object, rt = numeric(), msLevel. = unique(msLevel(object))) {
+              if (!identical(length(rt), 2L) || rt[1] >= rt[2])
+                  stop("Please provide a lower and upper retention time range.")
               suppressWarnings(rt <- range(rt))
               object@backend <- filterRt(object@backend, rt, msLevel.)
               object@processing <- .logging(

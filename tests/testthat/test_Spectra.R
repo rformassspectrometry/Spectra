@@ -861,7 +861,7 @@ test_that("filterPrecursorScan,Spectra works", {
 
 test_that("filterRt,Spectra works", {
     sps <- Spectra()
-    res <- filterRt(sps)
+    res <- filterRt(sps, c(1, 2))
     expect_true(is(res, "Spectra"))
     expect_true(length(res) == 0)
     expect_true(length(res@processing) == 1)
@@ -869,6 +869,8 @@ test_that("filterRt,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- filterRt(sps, rt = c(100, 120))
     expect_true(all(rtime(res) >= 100 & rtime(res) <= 120))
+    expect_error(filterRt(sps, rt = c(100)))
+    expect_error(filterRt(sps, rt = c(120, 100)))
 
     res <- filterRt(sps, rt = c(100, 120), msLevel = 2L)
     expect_equal(rtime(res), rtime(sps))
