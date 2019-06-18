@@ -101,8 +101,11 @@ NULL
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `dataOrigin`: returns a `character` vector (same length than `object`)
-#'   with the origin of the spectra.
+#' - `dataOrigin`, `dataOrigin<-`: gets or sets the *data origin* for each
+#'   spectrum. `dataOrigin` returns a `character` vector (same length than
+#'   `object`) with the origin of the spectra. `dataOrigin<-` expects a
+#'   `character` vector (same length than `object`) with the replacement
+#'   values for the data origin of each spectrum.
 #'
 #' - `dataStorage`: returns a `character` vector (same length than `object`)
 #'   with the data storage location of each spectrum.
@@ -228,6 +231,8 @@ NULL
 #'   `logical` (length equal to `length(unique(dataOrigin(object)))` specifying
 #'   from which `dataOrigin` spectra should be kept) or `character` (defining
 #'   the name of the `dataOrigin` from which spectra should be retained).
+#'   Returns the filtered `Spectra` object (with spectra ordered according to
+#'   the provided `dataOrigin` parameter).
 #'
 #' - `filterDataStorage`: filters the object retaining spectra stored in the
 #'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
@@ -235,31 +240,39 @@ NULL
 #'   `logical` (length equal to `dataStorageNames(object)` specifying
 #'   from which `dataStorage` spectra should be kept) or `character` (defining
 #'   the name of the `dataStorage` from which spectra should be retained).
+#'   Returns the filtered `Spectra` object (with spectra ordered according to
+#'   the provided `dataStorage` parameter).
 #'
 #' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
+#'   Returns the filtered `Spectra` object (with spectra in their
+#'   original order).
 #'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
-#'   and `isolationWindowUpperMz` >= `mz`.
+#'   and `isolationWindowUpperMz` >= `mz`. Returns the filtered `Spectra`
+#'   object (with spectra in their original order).
 #'
 #' - `filterMsLevel`: filters object by MS level keeping only spectra matching
 #'   the MS level specified with argument `msLevel`. Returns the filtered
-#'   `Spectra`.
+#'   `Spectra` (with spectra in their original order)
 #'
 #' - `filterPolarity`: filters the object keeping only spectra matching the
-#'   provided polarity. Returns the subsetted `Spectra`.
+#'   provided polarity. Returns the filtered `Spectra` (with spectra in their
+#'   original order).
 #'
 #' - `filterPrecursorMz`: retains spectra with an m/z matching the provided `mz`
 #'   accepting also a small difference in m/z which can be defined by parameter
 #'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
-#'   m/z identical to `mz` are retained.
+#'   m/z identical to `mz` are retained. Returns the filtered `Spectra` (with
+#'   spectra in their original order).
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
-#'    MS2) of acquisition number `acquisitionNum`. Returns the filtered
-#'    `Spectra`.
+#'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
+#'   `Spectra` (with spectra in their original order).
 #'
 #' - `filterRt`: retains spectra of MS level `msLevel` with retention times
-#'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
+#'   within (`>=`) `rt[1]` and (`<=`) `rt[2]`. Returns the filtered `Spectra`
+#'   (with spectra in their original order).
 #'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
@@ -356,9 +369,6 @@ NULL
 #'     parallelized copying of the spectra data to the new backend. For some
 #'     backends changing this parameter can lead to errors.
 #'
-#' @param file For `filterFile`: index or name of the file(s) to which the data
-#'     should be subsetted.
-#'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. See section *Data manipulations* below
 #'     for more details.
@@ -418,8 +428,6 @@ NULL
 #'
 #' @param x A `Spectra` object.
 #'
-#' @param y A `Spectra` object.
-#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
@@ -456,9 +464,32 @@ NULL
 #' sciex_im <- setBackend(sciex, MsBackendDataFrame())
 #' sciex_im
 #'
-#' ## The size of the objects will obviously be different
+#' ## The on-disk object `sciex` is light-weight, because it does not keep the
+#' ## MS peak data in memory. The `sciex_im` object in contrast keeps all the
+#' ## data in memory and its size is thus much larger.
 #' object.size(sciex)
 #' object.size(sciex_im)
+#'
+#' ## The spectra variable `dataStorage` returns for each spectrum the location
+#' ## where the data is stored. For in-memory objects:
+#' head(dataStorage(sciex_im))
+#'
+#' ## While objects that use an on-disk backend will list the files where the
+#' ## data is stored.
+#' head(dataStorage(sciex))
+#'
+#' ## The spectra variable `dataOrigin` returns for each spectrum the *origin*
+#' ## of the data. If the data is read from e.g. mzML files, this will be the
+#' ## original mzML file name:
+#' head(dataOrigin(sciex))
+#' head(dataOrigin(sciex_im))
+#'
+#' ## The unique elements of dataStorage and dataOrigin can be retrieved with
+#' ## `dataStorageNames` and `dataOriginNames`, respectively.
+#' dataStorageNames(sciex)
+#' dataStorageNames(sciex_im)
+#' dataOriginNames(sciex)
+#' dataOriginNames(sciex_im)
 #'
 #' ## ---- ACCESSING AND ADDING DATA ----
 #'
@@ -473,6 +504,10 @@ NULL
 #' ## Get the intensity and m/z values.
 #' intensity(data)
 #' mz(data)
+#'
+#' ## Accessing spectra variables works for all backends:
+#' intensity(sciex)
+#' intensity(sciex_im)
 #'
 #' ## Get the m/z for the first spectrum.
 #' mz(data)[[1]]
@@ -489,7 +524,7 @@ NULL
 #' ## For all *core* spectrum variables accessor functions are available. These
 #' ## return NA if the variable was not set.
 #' centroided(data)
-#' fromFile(data)
+#' dataStorage(data)
 #' rtime(data)
 #' precursorMz(data)
 #'
@@ -531,6 +566,7 @@ NULL
 #' head(data_comb$spectrum_id)
 #' head(data_comb$rtime)
 #' head(data_comb$dataStorage)
+#' head(data_comb$dataOrigin)
 #'
 #' ## ---- DATA MANIPULATIONS ----
 #'
@@ -672,7 +708,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               if (isReadOnly(backend))
                   stop(backend_class, " is read-only. Changing backend to a ",
                        "read-only backend is not supported.")
-              f <- factor(f, levels = unique(f))
+              f <- force(factor(f, levels = unique(f)))
               if (length(f) != length(object))
                   stop("length of 'f' has to match the length of 'object'")
               data_storage <- object@backend$dataStorage
@@ -762,6 +798,10 @@ setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
     dataOrigin(object@backend) <- value
     object
 })
+
+#' @rdname Spectra
+setMethod("dataOriginNames", "Spectra",
+          function(object) dataOriginNames(object@backend))
 
 #' @rdname Spectra
 setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
@@ -1162,7 +1202,8 @@ setMethod("clean", "Spectra",
               object
           })
 
-applyProcessing <- function(object, f = fromFile(object), BPPARAM = bpparam(),
+applyProcessing <- function(object, f = dataStorage(object),
+                            BPPARAM = bpparam(),
                             ...) {
     if (!length(object@processingQueue))
         return(object)

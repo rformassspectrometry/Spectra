@@ -19,6 +19,7 @@
 \alias{collisionEnergy<-,MsBackend-method}
 \alias{dataOrigin,MsBackend-method}
 \alias{dataOrigin<-,MsBackend-method}
+\alias{dataOriginNames,MsBackend-method}
 \alias{dataStorage,MsBackend-method}
 \alias{dataStorage<-,MsBackend-method}
 \alias{dataStorageNames,MsBackend-method}
@@ -95,6 +96,8 @@
 \S4method{dataOrigin}{MsBackend}(object)
 
 \S4method{dataOrigin}{MsBackend}(object) <- value
+
+\S4method{dataOriginNames}{MsBackend}(object)
 
 \S4method{dataStorage}{MsBackend}(object)
 
@@ -231,7 +234,9 @@ its length has to match the length of unique elements in \code{dataOrigin}
 it is expected to represent the index of the element in
 \code{unique(dataOrigin(object))}. If \code{dataOrigin} is of type \code{character} it
 has to match exactly the \code{dataOrigin} of the spectra that should be
-retained.}
+retained.
+For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
+only for spectra of selected \code{dataOrigin}.}
 
 \item{dataStorage}{For \code{filterDataStorage}: \code{integer}, \code{logical} or
 \code{character} to define which spectra to keep. If a \code{logical} is provided
@@ -239,7 +244,9 @@ its length has to match the length of \code{dataStorageNames(object)}.
 If \code{dataStorage} is of type \code{integer} it is expected to represent the
 index of the element in \code{dataStorageNames(object)}. If \code{dataStorage} is
 of type \code{character} it has to match exactly the \code{dataStorage} of the
-spectra that should be retained.}
+spectra that should be retained.
+For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
+only for spectra of selected \code{dataStorage}.}
 
 \item{mz}{For \code{filterIsolationWindow} and \code{filterPrecursorMz}: \code{numeric(1)}
 with the m/z value to filter the object.}
@@ -339,10 +346,16 @@ spectra (with \code{NA_integer_} if not available).
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
 for the memory backend or read the spectra header data for the
-\code{MsBackendMzR} backend).
+\code{MsBackendMzR} backend). This method has to ensure to set the
+spectra variable \code{dataStorage} correctly.
 \item \code{backendMerge}: merges (combines) \code{MsBackend} objects into a single
 instance. All objects to be merged have to be of the same type (e.g.
 \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
+\item \code{dataOrigin}: gets a \code{character} of length equal to the number of spectra
+in \code{object} with the \emph{data origin} of each spectrum. This could e.g. be
+the mzML file from which the data was read.
+\item \code{dataOriginNames}: gets unique data origin elements from the backend (in
+order of appearance). Returns a \code{character}.
 \item \code{dataStorage}: gets a \code{character} of length equal to the number of spectra
 in \code{object} with the data storage of each spectrum. Note that a
 \code{dataStorage} of \code{NA_character_} is not supported.
@@ -362,10 +375,32 @@ returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \code{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
 \item \code{filterAcquisitionNum}: filters the object keeping only spectra matching the
-provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
-\code{object} is subsetted to the spectra with an acquisition number equal to
-\code{n} \strong{in this/these file(s)} and all spectra for the remaining files (not
-specified with \code{file}).
+provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
+\code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
+an acquisition number equal to \code{n} \strong{in spectra with matching dataOrigin
+or dataStorage values} retaining all other spectra.
+\item \code{filterDataOrigin}: filters the object retaining spectra matching the
+provided \code{dataOrigin}. Parameter \code{dataOrigin} can be of type \code{integer}
+(specifying the \code{dataOrigin} in \code{unique(dataOrigin(object))} to keep),
+\code{logical} (length equal to \code{length(unique(dataOrigin(object)))} specifying
+from which \code{dataOrigin} spectra should be kept) or \code{character} (defining
+the name of the \code{dataOrigin} from which spectra should be retained).
+\code{filterDataOrigin} should return the data ordered by the provided
+\code{dataOrigin} parameter, i.e. if \code{dataOrigin = c(2, 1)} was provided, the
+spectra in the resulting object should be ordered accordingly (first
+spectra from the second data origin, then the first). See the
+implementation of \code{MsBackendDataFrame}.
+\item \code{filterDataStorage}: filters the object retaining spectra stored in the
+specified \code{dataStorage}. Parameter \code{dataStorage} can be of type \code{integer}
+(specifying the \code{dataStorage} in \code{dataStorageNames(object)} to keep),
+\code{logical} (length equal to \code{dataStorageNames(object)} specifying
+from which \code{dataStorage} spectra should be kept) or \code{character} (defining
+the name of the \code{dataStorage} from which spectra should be retained).
+\code{filterDataStorage} should return the data ordered by the provided
+\code{dataStorage} parameter, i.e. if \code{dataStorage = c(2, 1)} was provided, the
+spectra in the resulting object should be ordered accordingly (first
+spectra from the second data storage, then the first). See the
+implementation of \code{MsBackendDataFrame}.
 \item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
 \item \code{filterFile}: retains data of files matching the file index or file name
 provided with parameter \code{file}.
@@ -452,7 +487,7 @@ and acquisition number (\code{interger}) of the precursor for MS level
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
 \item \code{rtime}, \code{rtime<-}: gets or sets the retention times for each
-spectrum.  \code{rtime} returns a \code{numeric} vector (length equal to
+spectrum (in seconds). \code{rtime} returns a \code{numeric} vector (length equal to
 the number of spectra) with the retention time for each spectrum.
 \code{rtime<-} expects a numeric vector with length equal to the
 number of spectra.
@@ -603,7 +638,8 @@ For details see examples on the \code{\link[=Spectra]{Spectra()}} help page.
 
 
 Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
-above).
+above). Developers of new \code{MsBackend}s should follow the
+\code{MsBackendDataFrame} implementation.
 
 The \code{MsBackend} defines the following slots:
 \itemize{

@@ -69,7 +69,6 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
               if (any(file.exists(files)))
                   stop("File(s) ", files[file.exists(files)],
                        " does/do already exist")
-              cat("files: ", paste(files, collapse = "\n"), "\n")
               data_storage_levels <- unique(spectraData$dataStorage)
               file_idx <- match(spectraData$dataStorage, data_storage_levels)
               spectraData$dataStorage <- files[file_idx]
@@ -101,7 +100,9 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
               files,
               BPPARAM = BPPARAM)
               object@modCount <- rep(0L, length(files))
-              callNextMethod(object = object, spectraData = spectraData, ...)
+              object@spectraData <- .as_rle_spectra_data(spectraData)
+              validObject(object)
+              object
           })
 
 #' @rdname hidden_aliases

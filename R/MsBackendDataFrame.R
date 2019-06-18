@@ -60,8 +60,9 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
                   spectraData <- DataFrame(spectraData)
               if (!is(spectraData, "DataFrame"))
                   stop("'spectraData' has to be a 'DataFrame'")
-              if (nrow(spectraData) && is.null(spectraData$dataStorage))
-                  spectraData$dataStorage <- "<memory>"
+              if (!nrow(spectraData))
+                  return(object)
+              spectraData$dataStorage <- "<memory>"
               spectraData <- .as_rle_spectra_data(spectraData)
               if (nrow(spectraData) && !is(spectraData$mz, "NumericList"))
                   spectraData$mz <- NumericList(spectraData$mz, compress = FALSE)
@@ -131,6 +132,13 @@ setReplaceMethod("dataOrigin", "MsBackendDataFrame", function(object, value) {
     object@spectraData$dataOrigin <- .as_rle(as.character(value))
     validObject(object)
     object
+})
+
+#' @rdname hidden_aliases
+setMethod("dataOriginNames", "MsBackendDataFrame", function(object) {
+    if (is(object@spectraData$dataOrigin, "Rle"))
+        unique(object@spectraData$dataOrigin@values)
+    else unique(dataOrigin(object))
 })
 
 #' @rdname hidden_aliases
@@ -531,7 +539,7 @@ setMethod("filterAcquisitionNum", "MsBackendDataFrame",
 setMethod("filterDataOrigin", "MsBackendDataFrame",
           function(object, dataOrigin = integer()) {
               if (length(dataOrigin)) {
-                  lvls <- unique(dataOrigin(object))
+                  lvls <- dataOriginNames(object)
                   dataOrigin <- .i_to_index(dataOrigin, length(lvls), lvls)
                   object <- object[dataOrigin(object) %in% lvls[dataOrigin]]
                   if (is.unsorted(dataOrigin))

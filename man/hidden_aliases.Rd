@@ -11,6 +11,7 @@
 \alias{clean}
 \alias{dataOrigin}
 \alias{dataOrigin<-}
+\alias{dataOriginNames}
 \alias{dataStorage}
 \alias{dataStorage<-}
 \alias{dataStorageNames}
@@ -39,6 +40,7 @@
 \alias{collisionEnergy<-,MsBackendDataFrame-method}
 \alias{dataOrigin,MsBackendDataFrame-method}
 \alias{dataOrigin<-,MsBackendDataFrame-method}
+\alias{dataOriginNames,MsBackendDataFrame-method}
 \alias{dataStorage,MsBackendDataFrame-method}
 \alias{dataStorage<-,MsBackendDataFrame-method}
 \alias{dataStorageNames,MsBackendDataFrame-method}
@@ -139,6 +141,8 @@ dataOrigin(object, ...)
 
 dataOrigin(object) <- value
 
+dataOriginNames(object, ...)
+
 dataStorage(object, ...)
 
 dataStorage(object) <- value
@@ -194,6 +198,8 @@ setBackend(object, backend, ...)
 \S4method{dataOrigin}{MsBackendDataFrame}(object)
 
 \S4method{dataOrigin}{MsBackendDataFrame}(object) <- value
+
+\S4method{dataOriginNames}{MsBackendDataFrame}(object)
 
 \S4method{dataStorage}{MsBackendDataFrame}(object)
 

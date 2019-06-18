@@ -141,11 +141,19 @@ NULL
 #'   supposed to be called rights after creating an instance of the
 #'   backend class and should prepare the backend (e.g. set the data
 #'   for the memory backend or read the spectra header data for the
-#'   `MsBackendMzR` backend).
+#'   `MsBackendMzR` backend). This method has to ensure to set the
+#'   spectra variable `dataStorage` correctly.
 #'
 #' - `backendMerge`: merges (combines) `MsBackend` objects into a single
 #'   instance. All objects to be merged have to be of the same type (e.g.
 #'   [MsBackendDataFrame()]).
+#'
+#' - `dataOrigin`: gets a `character` of length equal to the number of spectra
+#'   in `object` with the *data origin* of each spectrum. This could e.g. be
+#'   the mzML file from which the data was read.
+#'
+#' - `dataOriginNames`: gets unique data origin elements from the backend (in
+#'   order of appearance). Returns a `character`.
 #'
 #' - `dataStorage`: gets a `character` of length equal to the number of spectra
 #'   in `object` with the data storage of each spectrum. Note that a
@@ -181,6 +189,11 @@ NULL
 #'   `logical` (length equal to `length(unique(dataOrigin(object)))` specifying
 #'   from which `dataOrigin` spectra should be kept) or `character` (defining
 #'   the name of the `dataOrigin` from which spectra should be retained).
+#'   `filterDataOrigin` should return the data ordered by the provided
+#'   `dataOrigin` parameter, i.e. if `dataOrigin = c(2, 1)` was provided, the
+#'   spectra in the resulting object should be ordered accordingly (first
+#'   spectra from the second data origin, then the first). See the
+#'   implementation of `MsBackendDataFrame`.
 #'
 #' - `filterDataStorage`: filters the object retaining spectra stored in the
 #'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
@@ -188,6 +201,11 @@ NULL
 #'   `logical` (length equal to `dataStorageNames(object)` specifying
 #'   from which `dataStorage` spectra should be kept) or `character` (defining
 #'   the name of the `dataStorage` from which spectra should be retained).
+#'   `filterDataStorage` should return the data ordered by the provided
+#'   `dataStorage` parameter, i.e. if `dataStorage = c(2, 1)` was provided, the
+#'   spectra in the resulting object should be ordered accordingly (first
+#'   spectra from the second data storage, then the first). See the
+#'   implementation of `MsBackendDataFrame`.
 #'
 #' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
 #'
@@ -446,7 +464,8 @@ NULL
 #' @section Implementation notes:
 #'
 #' Backends extending `MsBackend` **must** implement all of its methods (listed
-#' above).
+#' above). Developers of new `MsBackend`s should follow the
+#' `MsBackendDataFrame` implementation.
 #'
 #' The `MsBackend` defines the following slots:
 #'
@@ -470,7 +489,7 @@ NULL
 #'
 #' - [X] add `dataOrigin` spectrum variable.
 #'
-#' - [ ] It is no longer allowed to change from `MsBackendDataFrame` to
+#' - [X] It is no longer allowed to change from `MsBackendDataFrame` to
 #'   `MsBackendMzR`, i.e. it is not allowed to change to a `readonly` backend;
 #'   `setBackend` only supports write backends.
 #'
@@ -577,6 +596,13 @@ setMethod("dataOrigin", "MsBackend", function(object) {
 #' @rdname MsBackend
 setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataOriginNames
+#'
+#' @rdname MsBackend
+setMethod("dataOriginNames", "MsBackend", function(object) {
+    stop("Method 'dataOriginNames' is not implemented for ", class(object), ".")
 })
 
 #' @exportMethod dataStorage

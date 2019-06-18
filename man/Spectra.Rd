@@ -17,8 +17,11 @@
 \alias{centroided<-,Spectra-method}
 \alias{collisionEnergy,Spectra-method}
 \alias{collisionEnergy<-,Spectra-method}
-\alias{dataStorage,Spectra-method}
 \alias{dataOrigin,Spectra-method}
+\alias{dataOrigin<-,Spectra-method}
+\alias{dataOriginNames,Spectra-method}
+\alias{dataStorage,Spectra-method}
+\alias{dataStorageNames,Spectra-method}
 \alias{intensity,Spectra-method}
 \alias{ionCount,Spectra-method}
 \alias{isCentroided,Spectra-method}
@@ -56,6 +59,8 @@
 \alias{$<-,Spectra-method}
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
+\alias{filterDataOrigin,Spectra-method}
+\alias{filterDataStorage,Spectra-method}
 \alias{filterIsolationWindow,Spectra-method}
 \alias{filterMsLevel,Spectra-method}
 \alias{filterPolarity,Spectra-method}
@@ -98,11 +103,15 @@ addProcessing(object, FUN, ...)
 
 \S4method{collisionEnergy}{Spectra}(object) <- value
 
-\S4method{dataStorage}{Spectra}(object)
-
 \S4method{dataOrigin}{Spectra}(object)
 
+\S4method{dataOrigin}{Spectra}(object) <- value
+
+\S4method{dataOriginNames}{Spectra}(object)
+
 \S4method{dataStorage}{Spectra}(object)
+
+\S4method{dataStorageNames}{Spectra}(object)
 
 \S4method{intensity}{Spectra}(object, ...)
 
@@ -179,9 +188,13 @@ addProcessing(object, FUN, ...)
 \S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
 
 \S4method{filterAcquisitionNum}{Spectra}(object, n = integer(),
-  file = integer())
+  dataStorage = integer(), dataOrigin = integer())
 
 \S4method{filterEmptySpectra}{Spectra}(object)
+
+\S4method{filterDataOrigin}{Spectra}(object, dataOrigin = integer())
+
+\S4method{filterDataStorage}{Spectra}(object, dataStorage = integer())
 
 \S4method{filterIsolationWindow}{Spectra}(object, mz = numeric())
 
@@ -265,8 +278,26 @@ or set.}
 \item{n}{for \code{filterAcquisitionNum}: \code{integer} with the acquisition numbers
 to filter for.}
 
-\item{file}{For \code{filterFile}: index or name of the file(s) to which the data
-should be subsetted.}
+\item{dataStorage}{For \code{filterDataStorage}: \code{integer}, \code{logical} or
+\code{character} to define which spectra to keep. If a \code{logical} is provided
+its length has to match the length of \code{dataStorageNames(object)}.
+If \code{dataStorage} is of type \code{integer} it is expected to represent the
+index of the element in \code{dataStorageNames(object)}. If \code{dataStorage} is
+of type \code{character} it has to match exactly the \code{dataStorage} of the
+spectra that should be retained.
+For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
+only for spectra of selected \code{dataStorage}.}
+
+\item{dataOrigin}{For \code{filterDataOrigin}: \code{integer}, \code{logical} or
+\code{character} to define which spectra to keep. If a \code{logical} is provided
+its length has to match the length of unique elements in \code{dataOrigin}
+(i.e. \code{unique(dataOrigin(object))}). If \code{dataOrigin} is of type \code{integer}
+it is expected to represent the index of the element in
+\code{unique(dataOrigin(object))}. If \code{dataOrigin} is of type \code{character} it
+has to match exactly the \code{dataOrigin} of the spectra that should be
+retained.
+For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
+only for spectra of selected \code{dataOrigin}.}
 
 \item{mz}{For \code{filterIsolationWindow} and \code{filterPrecursorMz}: \code{numeric(1)}
 with the m/z value to filter the object.}
@@ -297,8 +328,6 @@ non-zero intensity peak should be kept (\code{FALSE}).}
 
 \item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
 subsetted.}
-
-\item{y}{A \code{Spectra} object.}
 }
 \value{
 See individual method description for the return value.
@@ -389,10 +418,15 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \code{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
-\item \code{fileNames}: returns a \code{character} with the file names, or
-\code{NA_character_} if not relevant.
-\item \code{fromFile}: gets the file/sample assignment of each spectrum. Returns an
-integer vector of length equal to the number of spectra.
+\item \code{dataOrigin}, \code{dataOrigin<-}: gets or sets the \emph{data origin} for each
+spectrum. \code{dataOrigin} returns a \code{character} vector (same length than
+\code{object}) with the origin of the spectra. \code{dataOrigin<-} expects a
+\code{character} vector (same length than \code{object}) with the replacement
+values for the data origin of each spectrum.
+\item \code{dataStorage}: returns a \code{character} vector (same length than \code{object})
+with the data storage location of each spectrum.
+\item \code{dataStorageNames}: returns a \code{character} with the unique data storage
+locations of the spectra.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
 a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the list is equal to the number of
@@ -481,31 +515,52 @@ listed methods.
 \itemize{
 \item \code{[}: subsets the spectra keeping only selected elements (\code{i}). The method
 \strong{always} returns a \code{Spectra} object.
-\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching the
-provided acquisition numbers (argument \code{n}). If \code{file} is also provided,
-\code{object} is subsetted to the spectra with an acquisition number equal to
-\code{n} \strong{in this/these file(s)} and all spectra for the remaining files (not
-specified with \code{file}). Returns the filtered \code{Spectra}.
+\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
+the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
+\code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
+an acquisition number equal to \code{n} \strong{in spectra with matching dataOrigin
+or dataStorage values} retaining all other spectra.
+Returns the filtered \code{Spectra}.
+\item \code{filterDataOrigin}: filters the object retaining spectra matching the
+provided \code{dataOrigin}. Parameter \code{dataOrigin} can be of type \code{integer}
+(specifying the \code{dataOrigin} in \code{unique(dataOrigin(object))} to keep),
+\code{logical} (length equal to \code{length(unique(dataOrigin(object)))} specifying
+from which \code{dataOrigin} spectra should be kept) or \code{character} (defining
+the name of the \code{dataOrigin} from which spectra should be retained).
+Returns the filtered \code{Spectra} object (with spectra ordered according to
+the provided \code{dataOrigin} parameter).
+\item \code{filterDataStorage}: filters the object retaining spectra stored in the
+specified \code{dataStorage}. Parameter \code{dataStorage} can be of type \code{integer}
+(specifying the \code{dataStorage} in \code{dataStorageNames(object)} to keep),
+\code{logical} (length equal to \code{dataStorageNames(object)} specifying
+from which \code{dataStorage} spectra should be kept) or \code{character} (defining
+the name of the \code{dataStorage} from which spectra should be retained).
+Returns the filtered \code{Spectra} object (with spectra ordered according to
+the provided \code{dataStorage} parameter).
 \item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
-\item \code{filterFile}: retains data of files matching the file index or file name
-provided with parameter \code{file}. Returns the filtered \code{Spectra}.
+Returns the filtered \code{Spectra} object (with spectra in their
+original order).
 \item \code{filterIsolationWindow}: retains spectra that contain \code{mz} in their
 isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} <= \code{mz}
-and \code{isolationWindowUpperMz} >= \code{mz}.
+and \code{isolationWindowUpperMz} >= \code{mz}. Returns the filtered \code{Spectra}
+object (with spectra in their original order).
 \item \code{filterMsLevel}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
-\code{Spectra}.
+\code{Spectra} (with spectra in their original order)
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
-provided polarity. Returns the subsetted \code{Spectra}.
+provided polarity. Returns the filtered \code{Spectra} (with spectra in their
+original order).
 \item \code{filterPrecursorMz}: retains spectra with an m/z matching the provided \code{mz}
 accepting also a small difference in m/z which can be defined by parameter
 \code{ppm} (parts per million). With the default (\code{ppm = 0}) only spectra with
-m/z identical to \code{mz} are retained.
+m/z identical to \code{mz} are retained. Returns the filtered \code{Spectra} (with
+spectra in their original order).
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
-\code{Spectra}.
+\code{Spectra} (with spectra in their original order).
 \item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times
-within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
+within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}. Returns the filtered \code{Spectra}
+(with spectra in their original order).
 \item \code{selectSpectraVariables}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
@@ -577,9 +632,32 @@ sciex
 sciex_im <- setBackend(sciex, MsBackendDataFrame())
 sciex_im
 
-## The size of the objects will obviously be different
+## The on-disk object `sciex` is light-weight, because it does not keep the
+## MS peak data in memory. The `sciex_im` object in contrast keeps all the
+## data in memory and its size is thus much larger.
 object.size(sciex)
 object.size(sciex_im)
+
+## The spectra variable `dataStorage` returns for each spectrum the location
+## where the data is stored. For in-memory objects:
+head(dataStorage(sciex_im))
+
+## While objects that use an on-disk backend will list the files where the
+## data is stored.
+head(dataStorage(sciex))
+
+## The spectra variable `dataOrigin` returns for each spectrum the *origin*
+## of the data. If the data is read from e.g. mzML files, this will be the
+## original mzML file name:
+head(dataOrigin(sciex))
+head(dataOrigin(sciex_im))
+
+## The unique elements of dataStorage and dataOrigin can be retrieved with
+## `dataStorageNames` and `dataOriginNames`, respectively.
+dataStorageNames(sciex)
+dataStorageNames(sciex_im)
+dataOriginNames(sciex)
+dataOriginNames(sciex_im)
 
 ## ---- ACCESSING AND ADDING DATA ----
 
@@ -594,6 +672,10 @@ data$msLevel
 ## Get the intensity and m/z values.
 intensity(data)
 mz(data)
+
+## Accessing spectra variables works for all backends:
+intensity(sciex)
+intensity(sciex_im)
 
 ## Get the m/z for the first spectrum.
 mz(data)[[1]]
@@ -610,7 +692,7 @@ spectraVariables(data)
 ## For all *core* spectrum variables accessor functions are available. These
 ## return NA if the variable was not set.
 centroided(data)
-fromFile(data)
+dataStorage(data)
 rtime(data)
 precursorMz(data)
 
@@ -652,6 +734,7 @@ data_comb <- c(data, sciex_im)
 head(data_comb$spectrum_id)
 head(data_comb$rtime)
 head(data_comb$dataStorage)
+head(data_comb$dataOrigin)
 
 ## ---- DATA MANIPULATIONS ----
 

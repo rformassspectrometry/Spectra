@@ -126,11 +126,12 @@ test_that(".get_rle_column works", {
 })
 
 test_that(".sel_file works", {
-    df <- DataFrame(msLevel = 1L, dataStorage = c("a", "a", "b", "b", "c", "c"),
+    df <- DataFrame(msLevel = 1L,
                     dataOrigin = c("a", "a", "a", "a", "b", "c"))
     be <- backendInitialize(MsBackendDataFrame(), df)
     res <- .sel_file(be)
     expect_identical(res, rep(TRUE, length(be)))
+    dataStorage(be) <- c("a", "a", "b", "b", "c", "c")
     res <- .sel_file(be, dataStorage = c("c", "a"))
     expect_identical(res, c(TRUE, TRUE, FALSE, FALSE, TRUE, TRUE))
     res <- .sel_file(be, dataStorage = "z")

@@ -19,6 +19,9 @@ setGeneric("dataOrigin", function(object, ...) standardGeneric("dataOrigin"))
 setGeneric("dataOrigin<-", function(object, value)
     standardGeneric("dataOrigin<-"))
 #' @rdname hidden_aliases
+setGeneric("dataOriginNames", function(object, ...)
+    standardGeneric("dataOriginNames"))
+#' @rdname hidden_aliases
 setGeneric("dataStorage", function(object, ...) standardGeneric("dataStorage"))
 #' @rdname hidden_aliases
 setGeneric("dataStorage<-", function(object, value)

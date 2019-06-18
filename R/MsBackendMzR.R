@@ -56,7 +56,10 @@ setMethod("backendInitialize", "MsBackendMzR",
                                       cbind(Spectra:::.mzR_header(fl),
                                             dataStorage = fl)
                                   }, BPPARAM = BPPARAM))
-              callNextMethod(object = object, spectraData = spectraData, ...)
+              spectraData$dataOrigin <- spectraData$dataStorage
+              object@spectraData <- .as_rle_spectra_data(spectraData)
+              validObject(object)
+              object
           })
 
 #' @rdname hidden_aliases

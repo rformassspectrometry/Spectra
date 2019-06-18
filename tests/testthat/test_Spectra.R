@@ -243,7 +243,7 @@ test_that("dataOrigin,Spectra works", {
 
     sps <- Spectra(backend = sciex_mzr)
     res <- dataOrigin(sps)
-    expect_identical(res, rep(NA_character_, length(sps)))
+    expect_identical(res, dataStorage(sps))
 })
 
 test_that("dataStorage,Spectra works", {
@@ -657,7 +657,7 @@ test_that("spectraData<-,Spectra works", {
 
     tmp <- sciex_mzr
     sps <- Spectra(tmp)
-    exect_warning(spectraData(sps)$some_col <- "yes")
+    expect_warning(spectraData(sps)$some_col <- "yes")
     expect_true(any(spectraVariables(sps) == "some_col"))
     expect_true(all(spectraData(sps, "some_col")[, 1] == "yes"))
     expect_true(is(sps@backend@spectraData$some_col, "Rle"))
@@ -794,7 +794,7 @@ test_that("filterDataOrigin,Spectra works", {
     sps <- Spectra(sciex_mzr)
     expect_error(filterDataOrigin(sps, dataOrigin = "2"), "not all names")
     res <- filterDataOrigin(sps, 1L)
-    expect_identical(rtime(res), rtime(sps))
+    expect_identical(rtime(res), rtime(sps)[1:931])
     expect_true(length(res@processing) > length(sps@processing))
 
     dorig <- rep(letters[1:7], each = length(sps)/7)
@@ -949,32 +949,44 @@ test_that("filterRt,Spectra works", {
     expect_equal(rtime(res), rtime(sps))
 })
 
-## #### ---------------------------------------------------------------------------
-## ##
-## ##                      DATA MANIPULATION METHODS
-## ##
-## #### ---------------------------------------------------------------------------
+#### ---------------------------------------------------------------------------
+##
+##                      DATA MANIPULATION METHODS
+##
+#### ---------------------------------------------------------------------------
 
-## test_that("clean,Spectra works", {
-##     sps <- Spectra()
-##     res <- clean(sps)
-##     expect_true(length(res@processingQueue) == 1)
-##     expect_equal(res@processingQueue[[1]],
-##                  ProcessingStep(.clean_peaks,
-##                                 list(all = FALSE, msLevel = integer())))
+test_that("clean,Spectra works", {
+    sps <- Spectra()
+    res <- clean(sps)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.clean_peaks,
+                                list(all = FALSE, msLevel = integer())))
 
-##     res <- clean(sps, all = TRUE, msLevel = 2L)
-##     expect_true(length(res@processingQueue) == 1)
-##     expect_equal(res@processingQueue[[1]],
-##                  ProcessingStep(.clean_peaks,
-##                                 list(all = TRUE, msLevel = 2L)))
-## })
+    res <- clean(sps, all = TRUE, msLevel = 2L)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.clean_peaks,
+                                list(all = TRUE, msLevel = 2L)))
 
-## test_that("removePeaks,Spectra works", {
-##     sps <- Spectra()
-##     res <- removePeaks(sps, t = 10)
-##     expect_true(length(res@processingQueue) == 1)
-##     expect_equal(res@processingQueue[[1]],
-##                  ProcessingStep(.remove_peaks,
-##                                 list(t = 10, msLevel = integer())))
-## })
+    res <- clean(Spectra(sciex_mzr), all = TRUE)
+    pks_res <- lapply(sciex_pks, .clean_peaks, all = TRUE,
+                      spectrumMsLevel = 1L)
+    expect_identical(peaks(res), SimpleList(pks_res))
+})
+
+test_that("removePeaks,Spectra works", {
+    sps <- Spectra()
+    res <- removePeaks(sps, t = 10)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.remove_peaks,
+                                list(t = 10, msLevel = integer())))
+
+    sps <- Spectra(sciex_mzr)
+    centroided(sps) <- TRUE
+    res <- removePeaks(sps, t = 5000)
+    pks_res <- lapply(sciex_pks, Spectra:::.remove_peaks, t = 5000,
+                      spectrumMsLevel = 1L, centroided = TRUE)
+    expect_identical(peaks(res), SimpleList(pks_res))
+})

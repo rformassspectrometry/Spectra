@@ -10,10 +10,7 @@ test_that("backendInitialize,MsBackendDataFrame works", {
     be <- backendInitialize(be, spectraData = DataFrame(msLevel = 2L))
     expect_true(validObject(be))
     expect_equal(dataStorage(be), "<memory>")
-    expect_error(
-        backendInitialize(be, spectraData = DataFrame(msLevel = 1L,
-                                                      dataStorage = NA)),
-        "not allowed")
+
     df <- test_df
     be <- backendInitialize(be, df)
     expect_true(validObject(be))
@@ -534,10 +531,10 @@ test_that("[,MsBackendDataFrame works", {
     expect_error(be[TRUE], "match the length of")
     expect_error(be["a"], "does not have names")
 
-    df <- DataFrame(dataStorage = c("1", "1", "2", "2"),
-                    scanIndex = c(1L, 2L, 1L, 2L),
+    df <- DataFrame(scanIndex = c(1L, 2L, 1L, 2L),
                     file = c("a", "a", "b", "b"))
     be <- backendInitialize(be, df)
+    dataStorage(be) <- c("1", "1", "2", "2")
     res <- be[3]
     expect_equal(dataStorage(res), "2")
     expect_equal(dataStorageNames(res), "2")
@@ -593,10 +590,10 @@ test_that("filterAcquisitionNum,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(be, filterAcquisitionNum(be, n = 4))
 
-    df <- DataFrame(dataStorage = c("1", "1", "1", "2", "2", "3", "3", "3"),
-                    acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
+    df <- DataFrame(acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
                     msLevel = 1L)
     be <- backendInitialize(MsBackendDataFrame(), df)
+    dataStorage(be) <- c("1", "1", "1", "2", "2", "3", "3", "3")
     res <- filterAcquisitionNum(be, n = c(2L, 4L))
     expect_equal(length(res), 4)
     expect_equal(dataStorage(res), c("1", "2", "3", "3"))
@@ -616,11 +613,11 @@ test_that("filterAcquisitionNum,MsBackendDataFrame works", {
 test_that("filterDataOrigin,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(be, filterDataOrigin(be))
-    df <- DataFrame(dataStorage = c("1", "1", "1", "2", "2", "3", "3", "3"),
-                    acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
+    df <- DataFrame(acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
                     rtime = as.numeric(1:8),
                     msLevel = 1L)
     be <- backendInitialize(MsBackendDataFrame(), df)
+    dataStorage(be) <- c("1", "1", "1", "2", "2", "3", "3", "3")
     expect_error(filterDataOrigin(be, c(3, 1)), "index out")
     expect_equal(be, filterDataOrigin(be, 1))
     expect_equal(be, filterDataOrigin(be, NA_character_))
@@ -660,11 +657,11 @@ test_that("filterDataOrigin,MsBackendDataFrame works", {
 test_that("filterDataStorage,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(be, filterDataStorage(be))
-    df <- DataFrame(dataStorage = c("1", "1", "1", "2", "2", "3", "3", "3"),
-                    acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
+    df <- DataFrame(acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
                     rtime = as.numeric(1:8),
                     msLevel = 1L)
     be <- backendInitialize(MsBackendDataFrame(), df)
+    dataStorage(be) <- c("1", "1", "1", "2", "2", "3", "3", "3")
     res <- filterDataStorage(be, c(3, 1))
     expect_equal(length(res), 6)
     expect_equal(dataStorage(res), c("3", "3", "3", "1", "1", "1"))
