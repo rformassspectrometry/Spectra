@@ -148,7 +148,7 @@ setMethod("dataStorage", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
-    if (!is.character(value) | length(value) != length(object))
+    if (!is.character(value) || length(value) != length(object))
         stop("'value' has to be a 'character' of length ", length(object))
     object@spectraData$dataStorage <- .as_rle(as.character(value))
     validObject(object)
