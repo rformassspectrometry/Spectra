@@ -54,7 +54,7 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
                   if (!length(files))
                       files <- unique(paste0(
                           file_path_sans_ext(spectraData$dataStorage), ".h5"))
-              } else if (!any(colnames(spectraData) == "dataStorage"))
+              } else if (all(colnames(spectraData) != "dataStorage"))
                   spectraData$dataStorage <- files
               if (length(files) != length(unique(spectraData$dataStorage)))
                   stop("Number of provided file names has to match unique ",
