@@ -109,3 +109,28 @@ test_that(".peaksapply works", {
     res_4 <- .peaksapply(sps)
     expect_equal(res_3, res_4)
 })
+
+test_that("applyProcessing works", {
+    ## Initialize required objects.
+    sps_mzr <- filterRt(Spectra(sciex_mzr), rt = c(10, 20))
+    ## Add processings.
+    centroided(sps_mzr) <- TRUE
+    sps_mzr <- removePeaks(sps_mzr, t = 5000)
+    sps_mzr <- clean(sps_mzr, all = TRUE)
+    expect_true(length(sps_mzr@processingQueue) == 2)
+
+    ## Create writeable backends.
+    sps_mem <- setBackend(sps_mzr, backend = MsBackendDataFrame())
+    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
+                         files = c(tempfile(), tempfile()),
+                         f = rep(1, length(sps_mzr)))
+    expect_true(length(sps_mem@processingQueue) == 2)
+    expect_true(length(sps_h5@processingQueue) == 2)
+    expect_identical(peaks(sps_mzr), peaks(sps_mem))
+    expect_identical(peaks(sps_h5), peaks(sps_mem))
+
+    expect_error(Spectra:::applyProcessing(sps_mzr), "is read-only")
+    ## Use an arbitrary splitting factor ensuring that the results are OK.
+
+    ## Use an HDF5 backend ensuring that modCount is incremented correctly.
+})

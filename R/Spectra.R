@@ -1202,12 +1202,6 @@ setMethod("clean", "Spectra",
               object
           })
 
-applyProcessing <- function(object, f = dataStorage(object),
-                            BPPARAM = bpparam(),
-                            ...) {
-    if (!length(object@processingQueue))
-        return(object)
-}
 
 ## applyProcessing:
 ## bknds <- bplapply(split(object@backend, f = f), function(z, ...) {

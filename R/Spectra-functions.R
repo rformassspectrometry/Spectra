@@ -176,3 +176,37 @@ addProcessing <- function(object, FUN, ...) {
     unsplit(res, f = f, drop = TRUE)
     ## unlist(res, recursive = FALSE, use.names = FALSE)
 }
+
+#' @export applyProcessing
+#'
+#' @rdname Spectra
+applyProcessing <- function(object, f = dataStorage(object),
+                            BPPARAM = bpparam(),
+                            ...) {
+    if (!length(object@processingQueue))
+        return(object)
+    if (isReadOnly(object@backend))
+        stop(class(object@backend), " is read-only. 'applyProcessing' works ",
+             "only with backends that support writing data.")
+    if (!is.factor(f))
+        f <- factor(f, levels = unique(f))
+    if (length(f) != length(object))
+        stop("length 'f' has to be equal to the length of 'object' (",
+             length(object), ")")
+    bknds <- bplapply(split(object@backend, f = f), function(z, queue) {
+        peaks(z) <- .apply_processing_queue(peaks(z), msLevel(z),
+                                            centroided(z), queue)
+        z
+    }, queue = object@processingQueue, BPPARAM = BPPARAM)
+    bknds <- backendMerge(bknds)
+    if (is.unsorted(f))
+        bknds <- bknds[order(unlist(split(seq_along(bknds), f),
+                                    use.names = FALSE))]
+    object@backend <- bnkds
+    object@processing <- .logging(object@processing,
+                                  "Apply processing queue with ",
+                                  length(object@processingQueue),
+                                  " steps")
+    object@processingQueue <- list()
+    object
+}
