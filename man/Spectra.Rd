@@ -285,7 +285,7 @@ If \code{dataStorage} is of type \code{integer} it is expected to represent the
 index of the element in \code{dataStorageLevels(object)}. If \code{dataStorage} is
 of type \code{character} it has to match exactly the \code{dataStorage} of the
 spectra that should be retained.
-For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
+For \code{filterAcquisitionNum}: optionally specify if filtering should occur
 only for spectra of selected \code{dataStorage}.}
 
 \item{dataOrigin}{For \code{filterDataOrigin}: \code{integer}, \code{logical} or
@@ -546,7 +546,7 @@ and \code{isolationWindowUpperMz} >= \code{mz}. Returns the filtered \code{Spect
 object (with spectra in their original order).
 \item \code{filterMsLevel}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
-\code{Spectra} (with spectra in their original order)
+\code{Spectra} (with spectra in their original order).
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
