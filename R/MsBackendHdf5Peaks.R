@@ -48,7 +48,7 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
               if (!nrow(spectraData))
                   return(object)
               if (length(files) != 1) {
-                  if (!any(colnames(spectraData) == "dataStorage"))
+                  if (all(colnames(spectraData) != "dataStorage"))
                       stop("Column \"dataStorage\" is required in 'spectraData'",
                            " if 'files' is missing or length > 1.")
                   if (!length(files))
