@@ -260,7 +260,7 @@ MsBackendDataFrame <- function() {
             dataStorage <- dataStorageLevels(object)[dataStorage]
         dataStorage(object) %in% dataStorage
     } else if (length(dataOrigin)) {
-        if (!(is.numeric(dataOrigin) | is.character(dataOrigin)))
+        if (!(is.numeric(dataOrigin) || is.character(dataOrigin)))
             stop("'dataOrigin' has to be either an integer with the index of",
                  " the data origin, or its name")
         if (is.numeric(dataOrigin))
