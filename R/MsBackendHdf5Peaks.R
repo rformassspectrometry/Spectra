@@ -237,7 +237,7 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
         stop("Number of rows of 'value' have to match the length of 'object'")
     if (all(colnames(value) != "dataStorage"))
         value$dataStorage <- object@spectraData$dataStorage
-    if (!any(colnames(value) == "scanIndex"))
+    if (all(colnames(value) != "scanIndex"))
         if (any(colnames(object@spectraData) == "scanIndex"))
             value$scanIndex <- object@spectraData$scanIndex
         else value$scanIndex <- seq_len(nrow(value))
