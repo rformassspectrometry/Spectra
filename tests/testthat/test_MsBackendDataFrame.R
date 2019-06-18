@@ -132,14 +132,14 @@ test_that("dataStorage,MsBackendDataFrame works", {
     expect_error(dataStorage(be) <- c("a", NA), "not allowed")
 })
 
-test_that("dataStorageNames,MsBackendDataFrame works", {
+test_that("dataStorageLevels,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_identical(dataStorageNames(be), character())
+    expect_identical(dataStorageLevels(be), character())
 
     be <- backendInitialize(be, DataFrame(msLevel = c(1L, 2L)))
-    expect_identical(dataStorageNames(be), "<memory>")
+    expect_identical(dataStorageLevels(be), "<memory>")
     be$dataStorage <- c("b", "a")
-    expect_identical(dataStorageNames(be), c("b", "a"))
+    expect_identical(dataStorageLevels(be), c("b", "a"))
 })
 
 test_that("intensity,MsBackendDataFrame works", {
@@ -537,12 +537,12 @@ test_that("[,MsBackendDataFrame works", {
     dataStorage(be) <- c("1", "1", "2", "2")
     res <- be[3]
     expect_equal(dataStorage(res), "2")
-    expect_equal(dataStorageNames(res), "2")
+    expect_equal(dataStorageLevels(res), "2")
     expect_equal(res@spectraData$file, "b")
 
     res <- be[c(3, 1)]
     expect_equal(dataStorage(res), c("2", "1"))
-    expect_equal(dataStorageNames(res), c("2", "1"))
+    expect_equal(dataStorageLevels(res), c("2", "1"))
     expect_equal(res@spectraData$file, c("b", "a"))
 })
 
@@ -627,7 +627,7 @@ test_that("filterDataOrigin,MsBackendDataFrame works", {
     expect_equal(length(res), 6)
     expect_equal(dataOrigin(res), c("3", "3", "3", "1", "1", "1"))
     expect_equal(rtime(res), c(6, 7, 8, 1, 2, 3))
-    expect_equal(dataStorageNames(res), c("3", "1"))
+    expect_equal(dataStorageLevels(res), c("3", "1"))
 
     res <- filterDataOrigin(be, c("2", "1"))
     expect_equal(length(res), 5)
@@ -636,11 +636,11 @@ test_that("filterDataOrigin,MsBackendDataFrame works", {
 
     res <- filterDataOrigin(be, 2)
     expect_equal(rtime(res), c(4, 5))
-    expect_equal(dataStorageNames(res), "2")
+    expect_equal(dataStorageLevels(res), "2")
 
     res <- filterDataOrigin(be, c(2, 3))
     expect_equal(rtime(res), c(4, 5, 6, 7, 8))
-    expect_equal(dataStorageNames(res), c("2", "3"))
+    expect_equal(dataStorageLevels(res), c("2", "3"))
 
     res <- filterDataOrigin(be)
     expect_equal(res, be)
@@ -666,7 +666,7 @@ test_that("filterDataStorage,MsBackendDataFrame works", {
     expect_equal(length(res), 6)
     expect_equal(dataStorage(res), c("3", "3", "3", "1", "1", "1"))
     expect_equal(rtime(res), c(6, 7, 8, 1, 2, 3))
-    expect_equal(dataStorageNames(res), c("3", "1"))
+    expect_equal(dataStorageLevels(res), c("3", "1"))
 
     res <- filterDataStorage(be, c("2", "1"))
     expect_equal(length(res), 5)
@@ -675,11 +675,11 @@ test_that("filterDataStorage,MsBackendDataFrame works", {
 
     res <- filterDataStorage(be, 2)
     expect_equal(rtime(res), c(4, 5))
-    expect_equal(dataStorageNames(res), "2")
+    expect_equal(dataStorageLevels(res), "2")
 
     res <- filterDataStorage(be, c(2, 3))
     expect_equal(rtime(res), c(4, 5, 6, 7, 8))
-    expect_equal(dataStorageNames(res), c("2", "3"))
+    expect_equal(dataStorageLevels(res), c("2", "3"))
 
     res <- filterDataStorage(be)
     expect_equal(res, be)

@@ -61,9 +61,9 @@ NULL
 #'
 #' @param dataStorage For `filterDataStorage`: `integer`, `logical` or
 #'     `character` to define which spectra to keep. If a `logical` is provided
-#'     its length has to match the length of `dataStorageNames(object)`.
+#'     its length has to match the length of `dataStorageLevels(object)`.
 #'     If `dataStorage` is of type `integer` it is expected to represent the
-#'     index of the element in `dataStorageNames(object)`. If `dataStorage` is
+#'     index of the element in `dataStorageLevels(object)`. If `dataStorage` is
 #'     of type `character` it has to match exactly the `dataStorage` of the
 #'     spectra that should be retained.
 #'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
@@ -152,14 +152,14 @@ NULL
 #'   in `object` with the *data origin* of each spectrum. This could e.g. be
 #'   the mzML file from which the data was read.
 #'
-#' - `dataOriginNames`: gets unique data origin elements from the backend (in
+#' - `dataOriginLevels`: gets unique data origin elements from the backend (in
 #'   order of appearance). Returns a `character`.
 #'
 #' - `dataStorage`: gets a `character` of length equal to the number of spectra
 #'   in `object` with the data storage of each spectrum. Note that a
 #'   `dataStorage` of `NA_character_` is not supported.
 #'
-#' - `dataStorageNames`: gets unique data storage elements from the backend (in
+#' - `dataStorageLevels`: gets unique data storage elements from the backend (in
 #'   order of appearance). Returns a `character`.
 #'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
@@ -185,8 +185,8 @@ NULL
 #'
 #' - `filterDataOrigin`: filters the object retaining spectra matching the
 #'   provided `dataOrigin`. Parameter `dataOrigin` can be of type `integer`
-#'   (specifying the `dataOrigin` in `unique(dataOrigin(object))` to keep),
-#'   `logical` (length equal to `length(unique(dataOrigin(object)))` specifying
+#'   (specifying the `dataOrigin` in `dataOriginLevels(object)` to keep),
+#'   `logical` (length equal to `length(dataOriginLevels(object))` specifying
 #'   from which `dataOrigin` spectra should be kept) or `character` (defining
 #'   the name of the `dataOrigin` from which spectra should be retained).
 #'   `filterDataOrigin` should return the data ordered by the provided
@@ -197,8 +197,8 @@ NULL
 #'
 #' - `filterDataStorage`: filters the object retaining spectra stored in the
 #'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
-#'   (specifying the `dataStorage` in `dataStorageNames(object)` to keep),
-#'   `logical` (length equal to `dataStorageNames(object)` specifying
+#'   (specifying the `dataStorage` in `dataStorageLevels(object)` to keep),
+#'   `logical` (length equal to `dataStorageLevels(object)` specifying
 #'   from which `dataStorage` spectra should be kept) or `character` (defining
 #'   the name of the `dataStorage` from which spectra should be retained).
 #'   `filterDataStorage` should return the data ordered by the provided
@@ -419,7 +419,7 @@ NULL
 #' the raw files on-demand. This backend uses the `mzR` package for
 #' data import and retrieval and hence requires that package to be
 #' installed. Also, it can only be used to import and represent data
-#' stored in *mzML*, *mzXML* and *CDF* files. `dataStorageNames` lists all
+#' stored in *mzML*, *mzXML* and *CDF* files. `dataStorageLevels` lists all
 #' original input files and `dataStorage` lists the input file from which peak
 #' data of an individual spectrum is read.
 #'
@@ -437,7 +437,7 @@ NULL
 #' (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 #' disk while the remaining spectra variables are kept in memory. This backend
 #' supports updating and writing of manipulated peak data to the data files.
-#' `dataStorageNames` lists all HDF5 files of the `object`, `dataStorage`
+#' `dataStorageLevels` lists all HDF5 files of the `object`, `dataStorage`
 #' indicates for each spectrum in which file its peak data is stored.
 #'
 #' New objects can be created with the `MsBackendHdf5Peaks()` function which
@@ -480,24 +480,6 @@ NULL
 #'
 #' @exportClass MsBackend MsBackendDataFrame MsBackendMzR
 NULL
-
-#' Internal implementation notes:
-#'
-#' - [X] move `modCount` to `MsBackendHdf5Peaks`.
-#'
-#' - [X] add `dataStorage` spectrum variable. `NA` values are **not** allowed.
-#'
-#' - [X] add `dataOrigin` spectrum variable.
-#'
-#' - [X] It is no longer allowed to change from `MsBackendDataFrame` to
-#'   `MsBackendMzR`, i.e. it is not allowed to change to a `readonly` backend;
-#'   `setBackend` only supports write backends.
-#'
-#' - [X] dataStorageNames or dataStorageLevels lists unique dataStorage?
-#'
-#' - [ ] dataStorageIndex or fromDataStorage as replacement for fromFile?
-#'
-#' @noRd
 
 setClass("MsBackend",
          contains = "VIRTUAL",
@@ -598,11 +580,11 @@ setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod dataOriginNames
+#' @exportMethod dataOriginLevels
 #'
 #' @rdname MsBackend
-setMethod("dataOriginNames", "MsBackend", function(object) {
-    stop("Method 'dataOriginNames' is not implemented for ", class(object), ".")
+setMethod("dataOriginLevels", "MsBackend", function(object) {
+    stop("Method 'dataOriginLevels' is not implemented for ", class(object), ".")
 })
 
 #' @exportMethod dataStorage
@@ -619,11 +601,11 @@ setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
     stop("Method 'dataStorage' is not implemented for ", class(object), ".")
 })
 
-#' @exportMethod dataStorageNames
+#' @exportMethod dataStorageLevels
 #'
 #' @rdname MsBackend
-setMethod("dataStorageNames", "MsBackend", function(object) {
-    stop("Method 'dataStorageNames' is not implemented for ", class(object), ".")
+setMethod("dataStorageLevels", "MsBackend", function(object) {
+    stop("Method 'dataStorageLevels' is not implemented for ", class(object))
 })
 
 #' @exportMethod filterAcquisitionNum

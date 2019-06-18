@@ -110,7 +110,7 @@ NULL
 #' - `dataStorage`: returns a `character` vector (same length than `object`)
 #'   with the data storage location of each spectrum.
 #'
-#' - `dataStorageNames`: returns a `character` with the unique data storage
+#' - `dataStorageLevels`: returns a `character` with the unique data storage
 #'   locations of the spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
@@ -236,8 +236,8 @@ NULL
 #'
 #' - `filterDataStorage`: filters the object retaining spectra stored in the
 #'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
-#'   (specifying the `dataStorage` in `dataStorageNames(object)` to keep),
-#'   `logical` (length equal to `dataStorageNames(object)` specifying
+#'   (specifying the `dataStorage` in `dataStorageLevels(object)` to keep),
+#'   `logical` (length equal to `dataStorageLevels(object)` specifying
 #'   from which `dataStorage` spectra should be kept) or `character` (defining
 #'   the name of the `dataStorage` from which spectra should be retained).
 #'   Returns the filtered `Spectra` object (with spectra ordered according to
@@ -355,9 +355,9 @@ NULL
 #'
 #' @param dataStorage For `filterDataStorage`: `integer`, `logical` or
 #'     `character` to define which spectra to keep. If a `logical` is provided
-#'     its length has to match the length of `dataStorageNames(object)`.
+#'     its length has to match the length of `dataStorageLevels(object)`.
 #'     If `dataStorage` is of type `integer` it is expected to represent the
-#'     index of the element in `dataStorageNames(object)`. If `dataStorage` is
+#'     index of the element in `dataStorageLevels(object)`. If `dataStorage` is
 #'     of type `character` it has to match exactly the `dataStorage` of the
 #'     spectra that should be retained.
 #'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
@@ -485,11 +485,11 @@ NULL
 #' head(dataOrigin(sciex_im))
 #'
 #' ## The unique elements of dataStorage and dataOrigin can be retrieved with
-#' ## `dataStorageNames` and `dataOriginNames`, respectively.
-#' dataStorageNames(sciex)
-#' dataStorageNames(sciex_im)
-#' dataOriginNames(sciex)
-#' dataOriginNames(sciex_im)
+#' ## `dataStorageLevels` and `dataOriginLevels`, respectively.
+#' dataStorageLevels(sciex)
+#' dataStorageLevels(sciex_im)
+#' dataOriginLevels(sciex)
+#' dataOriginLevels(sciex_im)
 #'
 #' ## ---- ACCESSING AND ADDING DATA ----
 #'
@@ -800,15 +800,15 @@ setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
-setMethod("dataOriginNames", "Spectra",
-          function(object) dataOriginNames(object@backend))
+setMethod("dataOriginLevels", "Spectra",
+          function(object) dataOriginLevels(object@backend))
 
 #' @rdname Spectra
 setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
 
 #' @rdname Spectra
-setMethod("dataStorageNames", "Spectra",
-          function(object) dataStorageNames(object@backend))
+setMethod("dataStorageLevels", "Spectra",
+          function(object) dataStorageLevels(object@backend))
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {

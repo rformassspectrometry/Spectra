@@ -135,7 +135,7 @@ setReplaceMethod("dataOrigin", "MsBackendDataFrame", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("dataOriginNames", "MsBackendDataFrame", function(object) {
+setMethod("dataOriginLevels", "MsBackendDataFrame", function(object) {
     if (is(object@spectraData$dataOrigin, "Rle"))
         unique(object@spectraData$dataOrigin@values)
     else unique(dataOrigin(object))
@@ -156,7 +156,7 @@ setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("dataStorageNames", "MsBackendDataFrame", function(object) {
+setMethod("dataStorageLevels", "MsBackendDataFrame", function(object) {
     if (is(object@spectraData$dataStorage, "Rle"))
         unique(object@spectraData$dataStorage@values)
     else unique(dataStorage(object))
@@ -539,7 +539,7 @@ setMethod("filterAcquisitionNum", "MsBackendDataFrame",
 setMethod("filterDataOrigin", "MsBackendDataFrame",
           function(object, dataOrigin = integer()) {
               if (length(dataOrigin)) {
-                  lvls <- dataOriginNames(object)
+                  lvls <- dataOriginLevels(object)
                   dataOrigin <- .i_to_index(dataOrigin, length(lvls), lvls)
                   object <- object[dataOrigin(object) %in% lvls[dataOrigin]]
                   if (is.unsorted(dataOrigin))
@@ -553,7 +553,7 @@ setMethod("filterDataOrigin", "MsBackendDataFrame",
 setMethod("filterDataStorage", "MsBackendDataFrame",
           function(object, dataStorage = integer()) {
               if (length(dataStorage)) {
-                  lvls <- dataStorageNames(object)
+                  lvls <- dataStorageLevels(object)
                   dataStorage <- .i_to_index(dataStorage, length(lvls), lvls)
                   object <- object[dataStorage(object) %in% lvls[dataStorage]]
                   if (is.unsorted(dataStorage))

@@ -8,7 +8,7 @@ vignette: >
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
     %\VignettePackage{Spectra}
-    %\VignetteDepends{Spectra,mzR,BiocStyle}
+    %\VignetteDepends{Spectra,mzR,BiocStyle,msdata,magrittr}
 ---
 
 ```{r style, echo = FALSE, results = 'asis', message=FALSE}
@@ -264,13 +264,13 @@ head(basename(dataStorage(sps_sciex)))
 ```
 
 The unique elements (or levels) for `dataOrigin` and `dataStorage` can be
-retrieved with `dataOriginNames` and `dataStorageNames`, respectively.
+retrieved with `dataOriginLevels` and `dataStorageLevels`, respectively.
 
-```{r dataOriginNames}
-dataOriginNames(sps)
-dataStorageNames(sps)
-basename(dataOriginNames(sps_sciex))
-basename(dataStorageNames(sps_sciex))
+```{r dataOriginLevels}
+dataOriginLevels(sps)
+dataStorageLevels(sps)
+basename(dataOriginLevels(sps_sciex))
+basename(dataStorageLevels(sps_sciex))
 ```
 
 
@@ -297,7 +297,7 @@ A set of filter functions are defined that allow to subset `Spectra` objects
 In the example below we select all spectra measured in the second mzML file and
 subsequently filter them to retain spectra measured between 175 and 189 seconds
 in the measurement run. Note that we can either specify the index of the
-origin in `dataOriginNames` or the actual name of the data origin.
+origin in `dataOriginLevels` or the actual name of the data origin.
 
 ```{r filterfile-filterrt}
 file_2 <- filterDataOrigin(sps_sciex, dataOrigin = 2)
@@ -311,7 +311,7 @@ In addition, `Spectra` support also subsetting with `[`. Below we perform the
 filtering above with `[` -based subsetting.
 
 ```{r subset-square-bracket}
-sps_sciex[sps_sciex$dataOrigin == dataOriginNames(sps_sciex)[2] &
+sps_sciex[sps_sciex$dataOrigin == dataOriginLevels(sps_sciex)[2] &
           sps_sciex$rtime >= 175 &
           sps_sciex$rtime <= 189]
 ```
@@ -495,7 +495,7 @@ keeps the information about the originating files:
 
 ```{r new-datastorage}
 head(dataStorage(sps_sciex))
-head(basename(dataOriginNames(sps_sciex)))
+head(basename(dataOriginLevels(sps_sciex)))
 ```
 
 ## Parallel processing notes
@@ -540,7 +540,7 @@ library(msdata)
 fl <- proteomics(full.names = TRUE)[5]
 
 sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
-dataStorageNames(sps_tmt)
+dataStorageLevels(sps_tmt)
 ```
 
 

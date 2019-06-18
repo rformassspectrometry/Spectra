@@ -38,7 +38,7 @@ test_that("Spectra,MsBackend works", {
 test_that("Spectra,character works", {
     res <- Spectra(sciex_file, backend = MsBackendMzR())
     expect_true(is(res@backend, "MsBackendMzR"))
-    expect_equal(dataStorageNames(res@backend), sciex_file)
+    expect_equal(dataStorageLevels(res@backend), sciex_file)
     expect_identical(rtime(res), rtime(sciex_mzr))
 
     res_2 <- Spectra(sciex_file)
@@ -261,18 +261,18 @@ test_that("dataStorage,Spectra works", {
     expect_identical(res, rep(sciex_file, each = 931))
 })
 
-test_that("dataStorageNames,Spectra works", {
+test_that("dataStorageLevels,Spectra works", {
     sps <- Spectra()
-    res <- dataStorageNames(sps)
+    res <- dataStorageLevels(sps)
     expect_identical(res, character())
 
     df <- DataFrame(msLevel = c(1L, 2L))
     sps <- Spectra(df)
-    res <- dataStorageNames(sps)
+    res <- dataStorageLevels(sps)
     expect_identical(res, "<memory>")
 
     sps <- Spectra(sciex_mzr)
-    res <- dataStorageNames(sps)
+    res <- dataStorageLevels(sps)
     expect_identical(res, sciex_file)
 })
 
@@ -769,7 +769,7 @@ test_that("[,Spectra works", {
     sps <- Spectra(sciex_mzr)
     tmp <- sps[dataStorage(sps) == sciex_file[2], ]
     expect_true(all(dataStorage(tmp) == sciex_file[2]))
-    expect_equal(dataStorageNames(tmp), sciex_file[2])
+    expect_equal(dataStorageLevels(tmp), sciex_file[2])
     expect_equal(rtime(tmp), rtime(sps)[dataStorage(sps) == sciex_file[2]])
 })
 

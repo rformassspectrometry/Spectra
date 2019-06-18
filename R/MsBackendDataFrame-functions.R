@@ -242,7 +242,7 @@ MsBackendDataFrame <- function() {
 #' @param object `MsBackend`
 #'
 #' @param dataStorage `character` or `integer` with either the names of the
-#'     `dataStorage` or their index (in `dataStorageNames(object)`) in which
+#'     `dataStorage` or their index (in `dataStorageLevels(object)`) in which
 #'     the filtering should be performed.
 #'
 #' @param dataOrigin same as `dataStorage`, but for the `dataOrigin` spectra
@@ -257,14 +257,14 @@ MsBackendDataFrame <- function() {
             stop("'dataStorage' has to be either an integer with the index of",
                  " the data storage, or its name")
         if (is.numeric(dataStorage))
-            dataStorage <- dataStorageNames(object)[dataStorage]
+            dataStorage <- dataStorageLevels(object)[dataStorage]
         dataStorage(object) %in% dataStorage
     } else if (length(dataOrigin)) {
         if (!(is.numeric(dataOrigin) | is.character(dataOrigin)))
             stop("'dataOrigin' has to be either an integer with the index of",
                  " the data origin, or its name")
         if (is.numeric(dataOrigin))
-            dataOrigin <- unique(dataOrigin(object))[dataOrigin]
+            dataOrigin <- dataOriginLevels(object)[dataOrigin]
         dataOrigin(object) %in% dataOrigin
     } else rep(TRUE, length(object))
 }

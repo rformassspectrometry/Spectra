@@ -33,6 +33,7 @@ Suggests:
     BiocStyle (>= 2.5.19),
     mzR (>= 2.15.1),
     rhdf5,
+    magrittr,
     rmarkdown
 License: Artistic-2.0
 LazyData: yes

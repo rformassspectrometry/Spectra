@@ -19,10 +19,10 @@
 \alias{collisionEnergy<-,MsBackend-method}
 \alias{dataOrigin,MsBackend-method}
 \alias{dataOrigin<-,MsBackend-method}
-\alias{dataOriginNames,MsBackend-method}
+\alias{dataOriginLevels,MsBackend-method}
 \alias{dataStorage,MsBackend-method}
 \alias{dataStorage<-,MsBackend-method}
-\alias{dataStorageNames,MsBackend-method}
+\alias{dataStorageLevels,MsBackend-method}
 \alias{filterAcquisitionNum,MsBackend-method}
 \alias{filterDataOrigin,MsBackend-method}
 \alias{filterDataStorage,MsBackend-method}
@@ -97,13 +97,13 @@
 
 \S4method{dataOrigin}{MsBackend}(object) <- value
 
-\S4method{dataOriginNames}{MsBackend}(object)
+\S4method{dataOriginLevels}{MsBackend}(object)
 
 \S4method{dataStorage}{MsBackend}(object)
 
 \S4method{dataStorage}{MsBackend}(object) <- value
 
-\S4method{dataStorageNames}{MsBackend}(object)
+\S4method{dataStorageLevels}{MsBackend}(object)
 
 \S4method{filterAcquisitionNum}{MsBackend}(object, n, file, ...)
 
@@ -240,9 +240,9 @@ only for spectra of selected \code{dataOrigin}.}
 
 \item{dataStorage}{For \code{filterDataStorage}: \code{integer}, \code{logical} or
 \code{character} to define which spectra to keep. If a \code{logical} is provided
-its length has to match the length of \code{dataStorageNames(object)}.
+its length has to match the length of \code{dataStorageLevels(object)}.
 If \code{dataStorage} is of type \code{integer} it is expected to represent the
-index of the element in \code{dataStorageNames(object)}. If \code{dataStorage} is
+index of the element in \code{dataStorageLevels(object)}. If \code{dataStorage} is
 of type \code{character} it has to match exactly the \code{dataStorage} of the
 spectra that should be retained.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
@@ -354,12 +354,12 @@ instance. All objects to be merged have to be of the same type (e.g.
 \item \code{dataOrigin}: gets a \code{character} of length equal to the number of spectra
 in \code{object} with the \emph{data origin} of each spectrum. This could e.g. be
 the mzML file from which the data was read.
-\item \code{dataOriginNames}: gets unique data origin elements from the backend (in
+\item \code{dataOriginLevels}: gets unique data origin elements from the backend (in
 order of appearance). Returns a \code{character}.
 \item \code{dataStorage}: gets a \code{character} of length equal to the number of spectra
 in \code{object} with the data storage of each spectrum. Note that a
 \code{dataStorage} of \code{NA_character_} is not supported.
-\item \code{dataStorageNames}: gets unique data storage elements from the backend (in
+\item \code{dataStorageLevels}: gets unique data storage elements from the backend (in
 order of appearance). Returns a \code{character}.
 \item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
@@ -381,8 +381,8 @@ an acquisition number equal to \code{n} \strong{in spectra with matching dataOri
 or dataStorage values} retaining all other spectra.
 \item \code{filterDataOrigin}: filters the object retaining spectra matching the
 provided \code{dataOrigin}. Parameter \code{dataOrigin} can be of type \code{integer}
-(specifying the \code{dataOrigin} in \code{unique(dataOrigin(object))} to keep),
-\code{logical} (length equal to \code{length(unique(dataOrigin(object)))} specifying
+(specifying the \code{dataOrigin} in \code{dataOriginLevels(object)} to keep),
+\code{logical} (length equal to \code{length(dataOriginLevels(object))} specifying
 from which \code{dataOrigin} spectra should be kept) or \code{character} (defining
 the name of the \code{dataOrigin} from which spectra should be retained).
 \code{filterDataOrigin} should return the data ordered by the provided
@@ -392,8 +392,8 @@ spectra from the second data origin, then the first). See the
 implementation of \code{MsBackendDataFrame}.
 \item \code{filterDataStorage}: filters the object retaining spectra stored in the
 specified \code{dataStorage}. Parameter \code{dataStorage} can be of type \code{integer}
-(specifying the \code{dataStorage} in \code{dataStorageNames(object)} to keep),
-\code{logical} (length equal to \code{dataStorageNames(object)} specifying
+(specifying the \code{dataStorage} in \code{dataStorageLevels(object)} to keep),
+\code{logical} (length equal to \code{dataStorageLevels(object)} specifying
 from which \code{dataStorage} spectra should be kept) or \code{character} (defining
 the name of the \code{dataStorage} from which spectra should be retained).
 \code{filterDataStorage} should return the data ordered by the provided
@@ -589,7 +589,7 @@ while the spectra data (m/z and intensity values) are fetched from
 the raw files on-demand. This backend uses the \code{mzR} package for
 data import and retrieval and hence requires that package to be
 installed. Also, it can only be used to import and represent data
-stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files. \code{dataStorageNames} lists all
+stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files. \code{dataStorageLevels} lists all
 original input files and \code{dataStorage} lists the input file from which peak
 data of an individual spectrum is read.
 
@@ -609,7 +609,7 @@ The \code{MsBackendHdf5Peaks} keeps, similar to the \code{MsBackendMzR}, peak da
 (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 disk while the remaining spectra variables are kept in memory. This backend
 supports updating and writing of manipulated peak data to the data files.
-\code{dataStorageNames} lists all HDF5 files of the \code{object}, \code{dataStorage}
+\code{dataStorageLevels} lists all HDF5 files of the \code{object}, \code{dataStorage}
 indicates for each spectrum in which file its peak data is stored.
 
 New objects can be created with the \code{MsBackendHdf5Peaks()} function which

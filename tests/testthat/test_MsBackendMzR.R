@@ -7,7 +7,7 @@ test_that("initializeBackend,MsBackendMzR works", {
     be <- backendInitialize(MsBackendMzR(), files = fl)
     expect_true(validObject(be))
     expect_true(is(be, "MsBackendMzR"))
-    expect_equal(dataStorageNames(be), fl)
+    expect_equal(dataStorageLevels(be), fl)
     expect_equal(nrow(be@spectraData), 1862)
     expect_equal(be@spectraData$scanIndex, c(1:931, 1:931))
     expect_equal(be@spectraData$dataStorage, Rle(rep(fl, each = 931)))
@@ -22,7 +22,7 @@ test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
     expect_equal(res, sciex_mzr)
 
     res <- backendMerge(splt[2:1])
-    expect_equal(dataStorageNames(res), dataStorageNames(sciex_mzr)[2:1])
+    expect_equal(dataStorageLevels(res), dataStorageLevels(sciex_mzr)[2:1])
     expect_equal(rtime(res)[.from_data_storage(res) == 2],
                  rtime(sciex_mzr)[.from_data_storage(sciex_mzr) == 1])
     expect_equal(rtime(res)[.from_data_storage(res) == 1],
@@ -30,8 +30,8 @@ test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
 
     splt[[2]]@spectraData$some_col <- "a"
     res <- backendMerge(c(splt, tmt_mzr))
-    expect_equal(dataStorageNames(res), c(dataStorageNames(sciex_mzr),
-                                          dataStorageNames(tmt_mzr)))
+    expect_equal(dataStorageLevels(res), c(dataStorageLevels(sciex_mzr),
+                                          dataStorageLevels(tmt_mzr)))
     expect_true(all(res@spectraData$some_col[.from_data_storage(res) == 2] == "a"))
     expect_true(all(is.na(res@spectraData$some_col[.from_data_storage(res) != 2])))
 })

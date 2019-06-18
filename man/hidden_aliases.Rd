@@ -11,10 +11,10 @@
 \alias{clean}
 \alias{dataOrigin}
 \alias{dataOrigin<-}
-\alias{dataOriginNames}
+\alias{dataOriginLevels}
 \alias{dataStorage}
 \alias{dataStorage<-}
-\alias{dataStorageNames}
+\alias{dataStorageLevels}
 \alias{filterAcquisitionNum}
 \alias{filterDataOrigin}
 \alias{filterDataStorage}
@@ -40,10 +40,10 @@
 \alias{collisionEnergy<-,MsBackendDataFrame-method}
 \alias{dataOrigin,MsBackendDataFrame-method}
 \alias{dataOrigin<-,MsBackendDataFrame-method}
-\alias{dataOriginNames,MsBackendDataFrame-method}
+\alias{dataOriginLevels,MsBackendDataFrame-method}
 \alias{dataStorage,MsBackendDataFrame-method}
 \alias{dataStorage<-,MsBackendDataFrame-method}
-\alias{dataStorageNames,MsBackendDataFrame-method}
+\alias{dataStorageLevels,MsBackendDataFrame-method}
 \alias{intensity,MsBackendDataFrame-method}
 \alias{intensity<-,MsBackendDataFrame-method}
 \alias{ionCount,MsBackendDataFrame-method}
@@ -141,13 +141,13 @@ dataOrigin(object, ...)
 
 dataOrigin(object) <- value
 
-dataOriginNames(object, ...)
+dataOriginLevels(object, ...)
 
 dataStorage(object, ...)
 
 dataStorage(object) <- value
 
-dataStorageNames(object, ...)
+dataStorageLevels(object, ...)
 
 filterAcquisitionNum(object, ...)
 
@@ -199,13 +199,13 @@ setBackend(object, backend, ...)
 
 \S4method{dataOrigin}{MsBackendDataFrame}(object) <- value
 
-\S4method{dataOriginNames}{MsBackendDataFrame}(object)
+\S4method{dataOriginLevels}{MsBackendDataFrame}(object)
 
 \S4method{dataStorage}{MsBackendDataFrame}(object)
 
 \S4method{dataStorage}{MsBackendDataFrame}(object) <- value
 
-\S4method{dataStorageNames}{MsBackendDataFrame}(object)
+\S4method{dataStorageLevels}{MsBackendDataFrame}(object)
 
 \S4method{intensity}{MsBackendDataFrame}(object)
 

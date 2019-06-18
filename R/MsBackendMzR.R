@@ -26,7 +26,7 @@ setClass("MsBackendMzR",
 setValidity("MsBackendMzR", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,
                                                 c("dataStorage", "scanIndex"))
-    msg <- c(msg, .valid_ms_backend_files_exist(dataStorageNames(object)))
+    msg <- c(msg, .valid_ms_backend_files_exist(dataStorageLevels(object)))
     if (length(msg)) msg
     else TRUE
 })
@@ -65,7 +65,7 @@ setMethod("backendInitialize", "MsBackendMzR",
 #' @rdname hidden_aliases
 setMethod("show", "MsBackendMzR", function(object) {
     callNextMethod()
-    fls <- dataStorageNames(object)
+    fls <- dataStorageLevels(object)
     if (length(fls)) {
         to <- min(3, length(fls))
         cat("\nfile(s):\n", paste(basename(fls[1:to]), collapse = "\n"),
@@ -114,7 +114,7 @@ setReplaceMethod("mz", "MsBackendMzR", function(object, value) {
 setMethod("peaks", "MsBackendMzR", function(object) {
     if (!length(object))
         return(list())
-    fls <- dataStorageNames(object)
+    fls <- dataStorageLevels(object)
     if (length(fls) > 1) {
         f <- factor(dataStorage(object), levels = fls)
         unsplit(mapply(FUN = .mzR_peaks, fls, split(scanIndex(object), f),

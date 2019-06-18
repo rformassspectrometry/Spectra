@@ -24,7 +24,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
                              hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
     expect_identical(res$msLevel, c(1L, 2L, 2L))
-    expect_equal(dataStorageNames(res), normalizePath(paste0(dr, "/myfile.h5")))
+    expect_equal(dataStorageLevels(res), normalizePath(paste0(dr, "/myfile.h5")))
     expect_true(validObject(res))
     expect_identical(mz(res), as(df$mz, "NumericList"))
     expect_identical(scanIndex(res), 1:3)
@@ -34,7 +34,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("a.h5", "b.h5"),
                              spectraData = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
-    expect_equal(dataStorageNames(res),
+    expect_equal(dataStorageLevels(res),
                  normalizePath(paste0(dr, c("/a.h5", "/b.h5"))))
     expect_true(validObject(res))
     expect_identical(scanIndex(res), 1:3)
@@ -43,7 +43,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     res <- backendInitialize(MsBackendHdf5Peaks(),
                              spectraData = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
-    expect_equal(dataStorageNames(res),
+    expect_equal(dataStorageLevels(res),
                  normalizePath(paste0(dr, c("/2.h5", "/1.h5"))))
     expect_true(validObject(res))
     expect_identical(scanIndex(res), 1:3)
@@ -53,7 +53,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("c", "d"),
                              spectraData = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
-    expect_equal(dataStorageNames(res),
+    expect_equal(dataStorageLevels(res),
                  normalizePath(paste0(dr, c("/c", "/d"))))
     expect_true(validObject(res))
     expect_identical(scanIndex(res), c(1L, 1L, 2L))
@@ -338,9 +338,9 @@ test_that("backendMerge,MsBackendHdf5Peaks works", {
 
     ## Test merging of backends with different modCount.
     res <- backendMerge(be1, be2, be3)
-    expect_identical(dataStorageNames(res), c(dataStorageNames(be1),
-                                              dataStorageNames(be2),
-                                              dataStorageNames(be3)))
+    expect_identical(dataStorageLevels(res), c(dataStorageLevels(be1),
+                                               dataStorageLevels(be2),
+                                               dataStorageLevels(be3)))
     expect_identical(rtime(res), as.numeric(1:9))
     expect_identical(intensity(res), c(intensity(be1), intensity(be2),
                                        intensity(be3)))
@@ -349,14 +349,14 @@ test_that("backendMerge,MsBackendHdf5Peaks works", {
 
     ## Subsetting of backend with different modCount.
     tmp <- res[9:1]
-    expect_identical(dataStorageNames(tmp), rev(dataStorageNames(res)))
+    expect_identical(dataStorageLevels(tmp), rev(dataStorageLevels(res)))
     expect_identical(tmp@modCount, rev(res@modCount))
     expect_identical(peaks(tmp)[[1]], peaks(res)[[9]])
     expect_identical(peaks(tmp)[[8]], peaks(res)[[2]])
 
     tmp <- res[7]
     expect_identical(tmp@modCount, 1L)
-    expect_identical(dataStorageNames(tmp), dataStorageNames(be3))
+    expect_identical(dataStorageLevels(tmp), dataStorageLevels(be3))
 
     ## Changing the data in the original object, invalidates the joined.
     be3$intensity <- be3$intensity * 2
