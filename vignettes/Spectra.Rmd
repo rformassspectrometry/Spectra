@@ -312,7 +312,8 @@ filtering above with `[` -based subsetting.
 
 ```{r subset-square-bracket}
 sps_sciex[sps_sciex$dataOrigin == dataOriginNames(sps_sciex)[2] &
-          sps_sciex$rtime >= 175 & sps_sciex$rtime <= 189]
+          sps_sciex$rtime >= 175 &
+          sps_sciex$rtime <= 189]
 ```
 
 The equivalent using filter function is shown below, with the added
@@ -321,7 +322,7 @@ benefit that the filtering is recorded in the processing slot.
 ```{r subset-filter-pipes}
 library("magrittr")
 sps_sciex %>%
-    filterFile(2) %>%
+    filterDataOrigin(2) %>%
     filterRt(c(175, 189))
 ```
 
