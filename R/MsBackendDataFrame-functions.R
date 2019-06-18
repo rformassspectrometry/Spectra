@@ -253,7 +253,7 @@ MsBackendDataFrame <- function() {
 #' @noRd
 .sel_file <- function(object, dataStorage = integer(), dataOrigin = integer()) {
     if (length(dataStorage)) {
-        if (!(is.numeric(dataStorage) | is.character(dataStorage)))
+        if (!(is.numeric(dataStorage) || is.character(dataStorage)))
             stop("'dataStorage' has to be either an integer with the index of",
                  " the data storage, or its name")
         if (is.numeric(dataStorage))
