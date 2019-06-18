@@ -254,7 +254,7 @@ NULL
 #'
 #' - `filterMsLevel`: filters object by MS level keeping only spectra matching
 #'   the MS level specified with argument `msLevel`. Returns the filtered
-#'   `Spectra` (with spectra in their original order)
+#'   `Spectra` (with spectra in their original order).
 #'
 #' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
@@ -360,7 +360,7 @@ NULL
 #'     index of the element in `dataStorageLevels(object)`. If `dataStorage` is
 #'     of type `character` it has to match exactly the `dataStorage` of the
 #'     spectra that should be retained.
-#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occur
 #'     only for spectra of selected `dataStorage`.
 #'
 #' @param drop For `[`: not considered.
