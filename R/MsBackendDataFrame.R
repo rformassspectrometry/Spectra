@@ -135,10 +135,12 @@ setReplaceMethod("dataOrigin", "MsBackendDataFrame", function(object, value) {
 })
 
 #' @rdname hidden_aliases
+#'
+#' @importMethodsFrom S4Vectors unique
 setMethod("dataOriginLevels", "MsBackendDataFrame", function(object) {
-    if (is(object@spectraData$dataOrigin, "Rle"))
-        unique(object@spectraData$dataOrigin@values)
-    else unique(dataOrigin(object))
+    if (any(colnames(object@spectraData) == "dataOrigin"))
+        unique(object@spectraData$dataOrigin)
+    else NA_character_
 })
 
 #' @rdname hidden_aliases
@@ -157,9 +159,9 @@ setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("dataStorageLevels", "MsBackendDataFrame", function(object) {
-    if (is(object@spectraData$dataStorage, "Rle"))
-        unique(object@spectraData$dataStorage@values)
-    else unique(dataStorage(object))
+    if (any(colnames(object@spectraData) == "dataStorage"))
+        unique(object@spectraData$dataStorage)
+    else NA_character_
 })
 
 #' @rdname hidden_aliases
