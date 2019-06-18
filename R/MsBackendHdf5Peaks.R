@@ -77,10 +77,10 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
               if (any(colnames(spectraData) == "mz")) {
                   if (is.null(spectraData$intensity))
                       spectraData$intensity <- NA
-                  peaks <- mapply(spectraData$mz, spectraData$intensity,
-                                  FUN = function(mz, intensity) {
-                                      cbind(mz, intensity)
-                                  })
+                  peaks <- mapply(cbind,
+                                  mz=spectraData$mz,
+                                  intensity=spectraData$intensity,
+                                  SIMPLIFY=FALSE, USE.NAMES=FALSE)
               } else {
                   mt <- matrix(ncol = 2, nrow = 0,
                                dimnames = list(character(),
@@ -133,7 +133,8 @@ setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
     if (!all(lengths(value) == lengths(mzs)))
         stop("lengths of 'value' has to match the number of peaks ",
              "(i.e. peaksCount(object))")
-    pks <- mapply(cbind, mz=mzs, intensity=value)
+    pks <- mapply(cbind, mz=mzs, intensity=value,
+                  SIMPLIFY = FALSE, USE.NAMES = FALSE)
     peaks(object) <- pks
     object
 })
@@ -168,7 +169,8 @@ setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
     if (!all(lengths(value) == lengths(ints)))
         stop("lengths of 'value' has to match the number of peaks ",
              "(i.e. peaksCount(object))")
-    pks <- mapply(cbind, mz=value, intensity=ints)
+    pks <- mapply(cbind, mz=value, intensity=ints,
+                  SIMPLIFY = FALSE, USE.NAMES = FALSE)
     peaks(object) <- pks
     object
 })
@@ -248,9 +250,8 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
     if (any_mz) {
         if (!any_int)
             value$intensity <- NA_real_
-        pks <- mapply(function(mz, intensity) cbind(mz, intensity),
-                      value$mz, value$intensity, SIMPLIFY = FALSE,
-                      USE.NAMES = FALSE)
+        pks <- mapply(cbind, mz=value$mz, intensity=value$intensity,
+                      SIMPLIFY = FALSE, USE.NAMES = FALSE)
         value$mz <- NULL
         value$intensity <- NULL
     }
