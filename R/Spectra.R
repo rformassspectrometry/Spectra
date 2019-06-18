@@ -738,7 +738,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
 setMethod("c", "Spectra", function(x, ...) {
     objs <- unname(c(list(x), list(...)))
     cls <- vapply(objs, class, character(1))
-    if (!all(cls == "Spectra"))
+    if (any(cls != "Spectra"))
         stop("Can only concatenate 'Spectra' objects")
     pqs <- lapply(objs, function(z) z@processingQueue)
     ## For now we stop if there is any of the processingQueues not empty. Later
