@@ -38,7 +38,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     expect_equal(NumericList(m$intensity, compress = FALSE), intensity(res))
 
     ## Two files.
-    df$fromFile <- c(2L, 1L, 2L)
+    df$dataStorage <- c("2", "1", "2")
     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("a.h5", "b.h5"),
                              spectraData = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
