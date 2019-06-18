@@ -286,7 +286,7 @@ setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
 setMethod("backendMerge", "MsBackendHdf5Peaks", function(object, ...) {
     object <- unname(c(object, ...))
     fls <- lapply(object, dataStorageLevels)
-    if (any(duplicated(unlist(fls, use.names = FALSE))))
+    if (anyDuplicated(unlist(fls, use.names = FALSE)))
         stop("Combining backends with the same 'dataStorage' is not supported")
     res <- .combine_backend_data_frame(object)
     res@modCount <- unlist(lapply(object, function(z) z@modCount),
