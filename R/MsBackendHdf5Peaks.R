@@ -73,7 +73,7 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
               file_idx <- match(spectraData$dataStorage, data_storage_levels)
               spectraData$dataStorage <- files[file_idx]
               if (!any(colnames(spectraData) == "scanIndex"))
-                  spectraData$scanIndex <- 1:nrow(spectraData)
+                  spectraData$scanIndex <- seq_len(nrow(spectraData))
               if (any(colnames(spectraData) == "mz")) {
                   if (is.null(spectraData$intensity))
                       spectraData$intensity <- NA
