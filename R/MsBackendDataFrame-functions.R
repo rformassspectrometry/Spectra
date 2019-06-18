@@ -253,18 +253,28 @@ MsBackendDataFrame <- function() {
 #' @noRd
 .sel_file <- function(object, dataStorage = integer(), dataOrigin = integer()) {
     if (length(dataStorage)) {
+        lvls <- dataStorageLevels(object)
         if (!(is.numeric(dataStorage) || is.character(dataStorage)))
             stop("'dataStorage' has to be either an integer with the index of",
                  " the data storage, or its name")
-        if (is.numeric(dataStorage))
-            dataStorage <- dataStorageLevels(object)[dataStorage]
+        if (is.numeric(dataStorage)) {
+            if (dataStorage < 1 || dataStorage > length(lvls))
+                stop("'dataStorage' should be an integer between 1 and ",
+                     length(lvls))
+            dataStorage <- lvls[dataStorage]
+        }
         dataStorage(object) %in% dataStorage
     } else if (length(dataOrigin)) {
+        lvls <- dataOriginLevels(object)
         if (!(is.numeric(dataOrigin) || is.character(dataOrigin)))
             stop("'dataOrigin' has to be either an integer with the index of",
                  " the data origin, or its name")
-        if (is.numeric(dataOrigin))
-            dataOrigin <- dataOriginLevels(object)[dataOrigin]
+        if (is.numeric(dataOrigin)) {
+            if (dataOrigin < 1 || dataOrigin > length(lvls))
+                stop("'dataOrigin' should be an integer between 1 and ",
+                     length(lvls))
+            dataOrigin <- lvls[dataOrigin]
+        }
         dataOrigin(object) %in% dataOrigin
     } else rep(TRUE, length(object))
 }
@@ -289,9 +299,9 @@ MsBackendDataFrame <- function() {
             .rbind_fill, lapply(objects, function(z) z@spectraData)))
     )
     if (any(colnames(res@spectraData) == "mz"))
-        res@spectraData$mz[any(is.na(res@spectraData$mz))] <- list(numeric())
+        res@spectraData$mz[is.na(res@spectraData$mz)] <- list(numeric())
     if (any(colnames(res@spectraData) == "intensity"))
-        res@spectraData$intensity[any(is.na(res@spectraData$intensity))] <-
+        res@spectraData$intensity[is.na(res@spectraData$intensity)] <-
             list(numeric())
     res
 }
