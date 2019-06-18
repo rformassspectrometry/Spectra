@@ -101,11 +101,14 @@ NULL
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `fileNames`: returns a `character` with the file names, or
-#'   `NA_character_` if not relevant.
+#' - `dataOrigin`: returns a `character` vector (same length than `object`)
+#'   with the origin of the spectra.
 #'
-#' - `fromFile`: gets the file/sample assignment of each spectrum. Returns an
-#'   integer vector of length equal to the number of spectra.
+#' - `dataStorage`: returns a `character` vector (same length than `object`)
+#'   with the data storage location of each spectrum.
+#'
+#' - `dataStorageNames`: returns a `character` with the unique data storage
+#'   locations of the spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
@@ -212,16 +215,28 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
-#' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
-#'   provided acquisition numbers (argument `n`). If `file` is also provided,
-#'   `object` is subsetted to the spectra with an acquisition number equal to
-#'   `n` **in this/these file(s)** and all spectra for the remaining files (not
-#'   specified with `file`). Returns the filtered `Spectra`.
+#' - `filterAcquisitionNum`: filters the object keeping only spectra matching
+#'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
+#'   `dataStorage` is also provided, `object` is subsetted to the spectra with
+#'   an acquisition number equal to `n` **in spectra with matching dataOrigin
+#'   or dataStorage values** retaining all other spectra.
+#'   Returns the filtered `Spectra`.
+#'
+#' - `filterDataOrigin`: filters the object retaining spectra matching the
+#'   provided `dataOrigin`. Parameter `dataOrigin` can be of type `integer`
+#'   (specifying the `dataOrigin` in `unique(dataOrigin(object))` to keep),
+#'   `logical` (length equal to `length(unique(dataOrigin(object)))` specifying
+#'   from which `dataOrigin` spectra should be kept) or `character` (defining
+#'   the name of the `dataOrigin` from which spectra should be retained).
+#'
+#' - `filterDataStorage`: filters the object retaining spectra stored in the
+#'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
+#'   (specifying the `dataStorage` in `dataStorageNames(object)` to keep),
+#'   `logical` (length equal to `dataStorageNames(object)` specifying
+#'   from which `dataStorage` spectra should be kept) or `character` (defining
+#'   the name of the `dataStorage` from which spectra should be retained).
 #'
 #' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
-#'
-#' - `filterFile`: retains data of files matching the file index or file name
-#'    provided with parameter `file`. Returns the filtered `Spectra`.
 #'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
@@ -313,6 +328,27 @@ NULL
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
+#'
+#' @param dataOrigin For `filterDataOrigin`: `integer`, `logical` or
+#'     `character` to define which spectra to keep. If a `logical` is provided
+#'     its length has to match the length of unique elements in `dataOrigin`
+#'     (i.e. `unique(dataOrigin(object))`). If `dataOrigin` is of type `integer`
+#'     it is expected to represent the index of the element in
+#'     `unique(dataOrigin(object))`. If `dataOrigin` is of type `character` it
+#'     has to match exactly the `dataOrigin` of the spectra that should be
+#'     retained.
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     only for spectra of selected `dataOrigin`.
+#'
+#' @param dataStorage For `filterDataStorage`: `integer`, `logical` or
+#'     `character` to define which spectra to keep. If a `logical` is provided
+#'     its length has to match the length of `dataStorageNames(object)`.
+#'     If `dataStorage` is of type `integer` it is expected to represent the
+#'     index of the element in `dataStorageNames(object)`. If `dataStorage` is
+#'     of type `character` it has to match exactly the `dataStorage` of the
+#'     spectra that should be retained.
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     only for spectra of selected `dataStorage`.
 #'
 #' @param drop For `[`: not considered.
 #'
@@ -719,15 +755,20 @@ setReplaceMethod("collisionEnergy", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
-setMethod("dataStorage", "Spectra", function(object) {
-    dataStorage(object@backend)
-})
-
-#' @rdname Spectra
 setMethod("dataOrigin", "Spectra", function(object) dataOrigin(object@backend))
 
 #' @rdname Spectra
+setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
+    dataOrigin(object@backend) <- value
+    object
+})
+
+#' @rdname Spectra
 setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
+
+#' @rdname Spectra
+setMethod("dataStorageNames", "Spectra",
+          function(object) dataStorageNames(object@backend))
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
@@ -766,7 +807,7 @@ setMethod("isolationWindowLowerMz", "Spectra", function(object) {
 
 #' @rdname Spectra
 setReplaceMethod("isolationWindowLowerMz", "Spectra", function(object, value) {
-    isolationWindowLowerMz(object) <- value
+    isolationWindowLowerMz(object@backend) <- value
     object
 })
 
@@ -871,7 +912,7 @@ setMethod("scanIndex", "Spectra", function(object) {
 #' @rdname Spectra
 setMethod("selectSpectraVariables", "Spectra",
           function(object, spectraVariables = spectraVariables(object)) {
-              spectraVariables <- union(spectraVariables, "fromFile")
+              spectraVariables <- union(spectraVariables, "dataStorage")
               object@backend <- selectSpectraVariables(
                   object@backend, spectraVariables = spectraVariables)
               object
@@ -977,11 +1018,14 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
 
 #' @rdname Spectra
 setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
-                                                      file = integer()) {
-    object@backend <- filterAcquisitionNum(object@backend, n, file)
+                                                      dataStorage = integer(),
+                                                      dataOrigin = integer()) {
+    object@backend <- filterAcquisitionNum(object@backend, n,
+                                           dataStorage, dataOrigin)
     object@processing <- .logging(object@processing,
                                   "Filter: select by: ", length(n),
-                                  " acquisition number(s) in ", length(file),
+                                  " acquisition number(s) in ",
+                                  max(length(dataStorage), length(dataOrigin)),
                                   " file(s)")
     object
 })
@@ -994,14 +1038,25 @@ setMethod("filterEmptySpectra", "Spectra", function(object) {
     object
 })
 
-## #' @rdname Spectra
-## setMethod("filterFile", "Spectra", function(object, file = integer()) {
-##     object@backend <- filterFile(object@backend, file = file)
-##     object@processing <- .logging(object@processing,
-##                                   "Filter: select file(s) ",
-##                                   paste0(file, collapse = ", "))
-##     object
-## })
+#' @rdname Spectra
+setMethod("filterDataOrigin", "Spectra", function(object,
+                                                  dataOrigin = integer()) {
+    object@backend <- filterDataOrigin(object@backend, dataOrigin = dataOrigin)
+    object@processing <- .logging(object@processing,
+                                  "Filter: select data origin(s) ",
+                                  paste0(dataOrigin, collapse = ", "))
+    object
+})
+
+#' @rdname Spectra
+setMethod("filterDataStorage", "Spectra", function(object,
+                                                   dataStorage = integer()) {
+    object@backend <- filterDataStorage(object@backend, dataStorage)
+    object@processing <- .logging(object@processing,
+                                  "Filter: select data storage(s) ",
+                                  paste0(dataStorage, collapse = ", "))
+    object
+})
 
 #' @rdname Spectra
 setMethod("filterIsolationWindow", "Spectra", function(object, mz = numeric()) {

@@ -56,6 +56,8 @@ NULL
 #'     `unique(dataOrigin(object))`. If `dataOrigin` is of type `character` it
 #'     has to match exactly the `dataOrigin` of the spectra that should be
 #'     retained.
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     only for spectra of selected `dataOrigin`.
 #'
 #' @param dataStorage For `filterDataStorage`: `integer`, `logical` or
 #'     `character` to define which spectra to keep. If a `logical` is provided
@@ -64,6 +66,8 @@ NULL
 #'     index of the element in `dataStorageNames(object)`. If `dataStorage` is
 #'     of type `character` it has to match exactly the `dataStorage` of the
 #'     spectra that should be retained.
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     only for spectra of selected `dataStorage`.
 #'
 #' @param drop For `[`: not considered.
 #'
@@ -166,10 +170,24 @@ NULL
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
 #' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
-#'   provided acquisition numbers (argument `n`). If `file` is also provided,
-#'   `object` is subsetted to the spectra with an acquisition number equal to
-#'   `n` **in this/these file(s)** and all spectra for the remaining files (not
-#'   specified with `file`).
+#'   provided acquisition numbers (argument `n`). If `dataOrigin` or
+#'   `dataStorage` is also provided, `object` is subsetted to the spectra with
+#'   an acquisition number equal to `n` **in spectra with matching dataOrigin
+#'   or dataStorage values** retaining all other spectra.
+#'
+#' - `filterDataOrigin`: filters the object retaining spectra matching the
+#'   provided `dataOrigin`. Parameter `dataOrigin` can be of type `integer`
+#'   (specifying the `dataOrigin` in `unique(dataOrigin(object))` to keep),
+#'   `logical` (length equal to `length(unique(dataOrigin(object)))` specifying
+#'   from which `dataOrigin` spectra should be kept) or `character` (defining
+#'   the name of the `dataOrigin` from which spectra should be retained).
+#'
+#' - `filterDataStorage`: filters the object retaining spectra stored in the
+#'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
+#'   (specifying the `dataStorage` in `dataStorageNames(object)` to keep),
+#'   `logical` (length equal to `dataStorageNames(object)` specifying
+#'   from which `dataStorage` spectra should be kept) or `character` (defining
+#'   the name of the `dataStorage` from which spectra should be retained).
 #'
 #' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
 #'
@@ -283,7 +301,7 @@ NULL
 #'   spectra of if no precursor information is available.
 #'
 #' - `rtime`, `rtime<-`: gets or sets the retention times for each
-#'   spectrum.  `rtime` returns a `numeric` vector (length equal to
+#'   spectrum (in seconds). `rtime` returns a `numeric` vector (length equal to
 #'   the number of spectra) with the retention time for each spectrum.
 #'   `rtime<-` expects a numeric vector with length equal to the
 #'   number of spectra.
