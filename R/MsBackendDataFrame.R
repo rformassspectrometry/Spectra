@@ -281,8 +281,8 @@ setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("peaks", "MsBackendDataFrame", function(object) {
-    mapply(mz(object), intensity(object), FUN = function(m, i)
-        cbind(mz = m, intensity = i), SIMPLIFY = FALSE, USE.NAMES = FALSE)
+    mapply(cbind, mz = mz(object), intensity = intensity(object),
+           SIMPLIFY = FALSE, USE.NAMES = FALSE)
 })
 
 #' @rdname hidden_aliases

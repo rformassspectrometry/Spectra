@@ -26,6 +26,14 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     expect_equal(res@files, normalizePath(paste0(dr, "/spectra_peaks.h5")))
     expect_true(validObject(res))
 
+    ## Fails if SIMPLIFY=FALSE is missing in mapply
+    m <- DataFrame(msLevel=1L, scanIndex=1:2)
+    m$mz <- list(1:4, 1:4)
+    m$intensity <- list(1:4, 5:8)
+    res <- backendInitialize(MsBackendHdf5Peaks(), files = "mapply.h5",
+                             spectraData = m, hdf5path = dr)
+    expect_equal(NumericList(m$intensity, compress = FALSE), intensity(res))
+
     ## Two files.
     df$fromFile <- c(2L, 1L, 2L)
     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("a.h5", "b.h5"),
