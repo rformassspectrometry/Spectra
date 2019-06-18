@@ -2,7 +2,7 @@
 NULL
 
 .valid_ms_backend_data_storage <- function(x) {
-    if (any(is.na(x)))
+    if (anyNA(x))
         return("'NA' values in dataStorage are not allowed.")
     NULL
 }
