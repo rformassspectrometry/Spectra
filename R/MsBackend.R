@@ -11,17 +11,16 @@ NULL
 #' directly by the end-users and the material in this man page is
 #' aimed at package developers.
 #'
-#' `MsBackend` is a vitual class that defines what each different
+#' `MsBackend` is a virtual class that defines what each different
 #' backend needs to provide. `MsBackend` objects provide access to
-#' mass spectrometry data. Such backends can be generally classified
-#' into *in-memory* or *on-disk*, depending where the data, i.e
+#' mass spectrometry data. Such backends can be classified into
+#' *in-memory* or *on-disk* backends, depending on where the data, i.e
 #' spectra (m/z and intensities) and spectra annotation (MS level,
-#' charge, polarity, ...) are stored. Typically, in-memory backends
-#' keep all data in memory ensuring fast data access, while on-disk
-#' backends store their data on disk and access it on demand. Note
-#' that some backends will have a mixed model and store parts of the
-#' data in memory and parts on disk, to stike a good balance between
-#' fast access and small memory footprint.
+#' charge, polarity, ...) are stored.
+#'
+#' Typically, in-memory backends keep all data in memory ensuring fast
+#' data access, while on-disk backends store (parts of) their data on
+#' disk and retrieve it on demand.
 #'
 #' The *Backend functions and implementation notes for new backend
 #' classes* section documents the API that a backend must implement.
@@ -49,11 +48,28 @@ NULL
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
-#' @param drop For `[`: not considered.
+#' @param dataOrigin For `filterDataOrigin`: `integer`, `logical` or
+#'     `character` to define which spectra to keep. If a `logical` is provided
+#'     its length has to match the length of unique elements in `dataOrigin`
+#'     (i.e. `unique(dataOrigin(object))`). If `dataOrigin` is of type `integer`
+#'     it is expected to represent the index of the element in
+#'     `unique(dataOrigin(object))`. If `dataOrigin` is of type `character` it
+#'     has to match exactly the `dataOrigin` of the spectra that should be
+#'     retained.
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     only for spectra of selected `dataOrigin`.
 #'
-#' @param files For `backendInitialize`: `character` with the file
-#'     names from which the data is/will be imported. Should be set to
-#'     `NA_character_` if not applicable (e.g. for `MsBackendDataFrame`).
+#' @param dataStorage For `filterDataStorage`: `integer`, `logical` or
+#'     `character` to define which spectra to keep. If a `logical` is provided
+#'     its length has to match the length of `dataStorageNames(object)`.
+#'     If `dataStorage` is of type `integer` it is expected to represent the
+#'     index of the element in `dataStorageNames(object)`. If `dataStorage` is
+#'     of type `character` it has to match exactly the `dataStorage` of the
+#'     spectra that should be retained.
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     only for spectra of selected `dataStorage`.
+#'
+#' @param drop For `[`: not considered.
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
 #'     should be subsetted.
@@ -106,7 +122,7 @@ NULL
 #'
 #' @param ... Additional arguments.
 #'
-#' @section Backend functions and implementation notes for new backend classes:
+#' @section Backend functions:
 #'
 #' New backend classes **must** extend the base `MsBackend` class and
 #' **have** to implement the following methods:
@@ -125,11 +141,26 @@ NULL
 #'   supposed to be called rights after creating an instance of the
 #'   backend class and should prepare the backend (e.g. set the data
 #'   for the memory backend or read the spectra header data for the
-#'   `MsBackendMzR` backend).
+#'   `MsBackendMzR` backend). This method has to ensure to set the
+#'   spectra variable `dataStorage` correctly.
 #'
 #' - `backendMerge`: merges (combines) `MsBackend` objects into a single
 #'   instance. All objects to be merged have to be of the same type (e.g.
 #'   [MsBackendDataFrame()]).
+#'
+#' - `dataOrigin`: gets a `character` of length equal to the number of spectra
+#'   in `object` with the *data origin* of each spectrum. This could e.g. be
+#'   the mzML file from which the data was read.
+#'
+#' - `dataOriginNames`: gets unique data origin elements from the backend (in
+#'   order of appearance). Returns a `character`.
+#'
+#' - `dataStorage`: gets a `character` of length equal to the number of spectra
+#'   in `object` with the data storage of each spectrum. Note that a
+#'   `dataStorage` of `NA_character_` is not supported.
+#'
+#' - `dataStorageNames`: gets unique data storage elements from the backend (in
+#'   order of appearance). Returns a `character`.
 #'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
@@ -146,14 +177,35 @@ NULL
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `fileNames`: returns a `character` with the file names, or
-#'   `NA_character_` if not relevant.
+#' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
+#'   provided acquisition numbers (argument `n`). If `dataOrigin` or
+#'   `dataStorage` is also provided, `object` is subsetted to the spectra with
+#'   an acquisition number equal to `n` **in spectra with matching dataOrigin
+#'   or dataStorage values** retaining all other spectra.
 #'
-#' - `filterAcquisitionNum`: filters the object keeping only spectra matching
-#'   the provided acquisition numbers (argument `n`). If `file` is also
-#'   provided, `object` is subsetted to the spectra with an acquisition number
-#'   equal to `n` **in this/these file(s)** and all spectra for the remaining
-#'   files (not specified with `file`).
+#' - `filterDataOrigin`: filters the object retaining spectra matching the
+#'   provided `dataOrigin`. Parameter `dataOrigin` can be of type `integer`
+#'   (specifying the `dataOrigin` in `unique(dataOrigin(object))` to keep),
+#'   `logical` (length equal to `length(unique(dataOrigin(object)))` specifying
+#'   from which `dataOrigin` spectra should be kept) or `character` (defining
+#'   the name of the `dataOrigin` from which spectra should be retained).
+#'   `filterDataOrigin` should return the data ordered by the provided
+#'   `dataOrigin` parameter, i.e. if `dataOrigin = c(2, 1)` was provided, the
+#'   spectra in the resulting object should be ordered accordingly (first
+#'   spectra from the second data origin, then the first). See the
+#'   implementation of `MsBackendDataFrame`.
+#'
+#' - `filterDataStorage`: filters the object retaining spectra stored in the
+#'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
+#'   (specifying the `dataStorage` in `dataStorageNames(object)` to keep),
+#'   `logical` (length equal to `dataStorageNames(object)` specifying
+#'   from which `dataStorage` spectra should be kept) or `character` (defining
+#'   the name of the `dataStorage` from which spectra should be retained).
+#'   `filterDataStorage` should return the data ordered by the provided
+#'   `dataStorage` parameter, i.e. if `dataStorage = c(2, 1)` was provided, the
+#'   spectra in the resulting object should be ordered accordingly (first
+#'   spectra from the second data storage, then the first). See the
+#'   implementation of `MsBackendDataFrame`.
 #'
 #' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
 #'
@@ -210,14 +262,14 @@ NULL
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: get or set the lower
-#'   m/z boundary of the isolation window.
+#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the
+#'   lower m/z boundary of the isolation window.
 #'
-#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: get or set the
+#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: get or set the upper
-#'   m/z boundary of the isolation window.
+#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the
+#'   upper m/z boundary of the isolation window.
 #'
 #' - `isReadOnly`: returns a `logical(1)` whether the backend is *read
 #'   only* or does allow also to write/update data.
@@ -267,7 +319,7 @@ NULL
 #'   spectra of if no precursor information is available.
 #'
 #' - `rtime`, `rtime<-`: gets or sets the retention times for each
-#'   spectrum.  `rtime` returns a `numeric` vector (length equal to
+#'   spectrum (in seconds). `rtime` returns a `numeric` vector (length equal to
 #'   the number of spectra) with the retention time for each spectrum.
 #'   `rtime<-` expects a numeric vector with length equal to the
 #'   number of spectra.
@@ -317,11 +369,6 @@ NULL
 #'   resulting merged object should contain the union of the individual objects'
 #'   spectra variables (columns/fields), with eventually missing variables in
 #'   one object being filled with `NA`.
-#' - The `@files` slot of the merged object should contain the unique list of
-#'   the individual objects' `@files` slot, spectra variable `fromFile` should
-#'   be updated accordingly.
-#' - The `@modCount` slot of the merged object should contain the maximal value
-#'   from all individual object' `@modCount` slot for the corresponding file.
 #'
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
@@ -341,8 +388,9 @@ NULL
 #' - `"acquisitionNum"`: `integer` with the acquisition number of the spectrum.
 #' - `"scanIndex"`: `integer` with the index of the scan/spectrum within the
 #'   *mzML*/*mzXML*/*CDF* file.
-#' - `"fromFile"`: `integer` indicating in which file in an experiment the
-#'   spectrum was measured.
+#' - `"dataOrigin"`: `character` defining the *data origin*.
+#' - `"dataStorage"`: `character` indicating grouping of spectra in different
+#'   e.g. input files. Note that missing values are not supported.
 #' - `"centroided"`: `logical` whether the spectrum is centroided.
 #' - `"smoothed"`: `logical` whether the spectrum was smoothed.
 #' - `"polarity"`: `integer` with the polarity information of the spectra.
@@ -371,7 +419,9 @@ NULL
 #' the raw files on-demand. This backend uses the `mzR` package for
 #' data import and retrieval and hence requires that package to be
 #' installed. Also, it can only be used to import and represent data
-#' stored in *mzML*, *mzXML* and *CDF* files.
+#' stored in *mzML*, *mzXML* and *CDF* files. `dataStorageNames` lists all
+#' original input files and `dataStorage` lists the input file from which peak
+#' data of an individual spectrum is read.
 #'
 #' The `MsBackendMzR` backend extends the `MsBackendDataFrame` backend using
 #' its `DataFrame` to keep spectra variables (except m/z and intensity) in
@@ -387,15 +437,40 @@ NULL
 #' (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 #' disk while the remaining spectra variables are kept in memory. This backend
 #' supports updating and writing of manipulated peak data to the data files.
+#' `dataStorageNames` lists all HDF5 files of the `object`, `dataStorage`
+#' indicates for each spectrum in which file its peak data is stored.
 #'
 #' New objects can be created with the `MsBackendHdf5Peaks()` function which
 #' can be subsequently filled with data by calling the object's
-#' `backenInitialize` method passing the desired file names of the HDF5 data
+#' `backendInitialize` method passing the desired file names of the HDF5 data
 #' files along with the spectra variables in form of a `DataFrame` (see
 #' `MsBackendDataFrame` for the expected format). An optional parameter
 #' `hdf5path` allows to specify the folder where the HDF5 data files should be
 #' stored to. If provided, this is added as the path to the submitted file
 #' names (parameter `files`).
+#'
+#' By default `backendInitialize` will store all peak data into a single HDF5
+#' file which name has to be provided with the parameter `files`. To store peak
+#' data across several HDF5 files `spectraData` has to contain a column
+#' `"dataStorage"` that defines the grouping of spectra/peaks into files: peaks
+#' for spectra with the same value in `"dataStorage"` are saved into the same
+#' HDF5 file. If parameter `files` is omitted, the value in `dataStorage` is
+#' used as file name (replacing any file ending with `".h5"`. To specify the
+#' file names, `files`' length has to match the number of unique elements in
+#' `"dataStorage"`.
+#'
+#' For details see examples on the [Spectra()] help page.
+#'
+#' @section Implementation notes:
+#'
+#' Backends extending `MsBackend` **must** implement all of its methods (listed
+#' above). Developers of new `MsBackend`s should follow the
+#' `MsBackendDataFrame` implementation.
+#'
+#' The `MsBackend` defines the following slots:
+#'
+#' - `@readonly`: `logical(1)` whether the backend supports writing/replacing
+#'   of m/z or intensity values.
 #'
 #' @name MsBackend
 #'
@@ -406,25 +481,39 @@ NULL
 #' @exportClass MsBackend MsBackendDataFrame MsBackendMzR
 NULL
 
+#' Internal implementation notes:
+#'
+#' - [X] move `modCount` to `MsBackendHdf5Peaks`.
+#'
+#' - [X] add `dataStorage` spectrum variable. `NA` values are **not** allowed.
+#'
+#' - [X] add `dataOrigin` spectrum variable.
+#'
+#' - [X] It is no longer allowed to change from `MsBackendDataFrame` to
+#'   `MsBackendMzR`, i.e. it is not allowed to change to a `readonly` backend;
+#'   `setBackend` only supports write backends.
+#'
+#' - [X] dataStorageNames or dataStorageLevels lists unique dataStorage?
+#'
+#' - [ ] dataStorageIndex or fromDataStorage as replacement for fromFile?
+#'
+#' @noRd
+
 setClass("MsBackend",
          contains = "VIRTUAL",
          slots = c(
-             files = "character",  # Can also be NA_character_
-             modCount = "integer", # Same length than files.
              readonly = "logical",
              version = "character"),
-         prototype = prototype(files = character(),
-                               modCount = integer(),
-                               readonly = FALSE,
+         prototype = prototype(readonly = FALSE,
                                version = "0.1"))
 
 #' @importFrom methods .valueClassTest is new validObject
 #'
 #' @noRd
 setValidity("MsBackend", function(object) {
-    msg <- c(
-        .valid_ms_backend_files(object@files),
-        .valid_ms_backend_mod_count(object@files, object@modCount))
+    msg <- .valid_ms_backend_data_storage(dataStorage(object))
+    if (length(dataStorage(object)) != length(object))
+        msg <- c(msg, "length of object and 'dataStorage' have to match")
     if (is.null(msg)) TRUE
     else msg
 })
@@ -433,10 +522,7 @@ setValidity("MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackend",
-          definition = function(object, files, ...) {
-              if (missing(files)) files <- character()
-              object@files <- files
-              object@modCount <- integer(length(files))
+          definition = function(object, ...) {
               validObject(object)
               object
           })
@@ -498,11 +584,46 @@ setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod fileNames
+#' @exportMethod dataOrigin
 #'
 #' @rdname MsBackend
-setMethod("fileNames", "MsBackend", function(object) {
-    object@files
+setMethod("dataOrigin", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataOrigin<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataOriginNames
+#'
+#' @rdname MsBackend
+setMethod("dataOriginNames", "MsBackend", function(object) {
+    stop("Method 'dataOriginNames' is not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataStorage
+#'
+#' @rdname MsBackend
+setMethod("dataStorage", "MsBackend", function(object) {
+    stop("Method 'dataStorage' is not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataStorage<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
+    stop("Method 'dataStorage' is not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dataStorageNames
+#'
+#' @rdname MsBackend
+setMethod("dataStorageNames", "MsBackend", function(object) {
+    stop("Method 'dataStorageNames' is not implemented for ", class(object), ".")
 })
 
 #' @exportMethod filterAcquisitionNum
@@ -512,17 +633,24 @@ setMethod("filterAcquisitionNum", "MsBackend", function(object, n, file, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @exportMethod filterDataOrigin
+#'
+#' @rdname MsBackend
+setMethod("filterDataOrigin", "MsBackend", function(object, dataOrigin, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod filterDataStorage
+#'
+#' @rdname MsBackend
+setMethod("filterDataStorage", "MsBackend", function(object, dataStorage, ...) {
+    stop("Not implemented for ", class(object), ".")
+})
+
 #' @exportMethod filterEmptySpectra
 #'
 #' @rdname MsBackend
 setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
-
-#' @exportMethod filterFile
-#'
-#' @rdname MsBackend
-setMethod("filterFile", "MsBackend", function(object, file, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
@@ -566,13 +694,6 @@ setMethod("filterPrecursorScan", "MsBackend", function(object,
 #'
 #' @rdname MsBackend
 setMethod("filterRt", "MsBackend", function(object, rt, msLevel, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
-
-#' @exportMethod fromFile
-#'
-#' @rdname MsBackend
-setMethod("fromFile", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 

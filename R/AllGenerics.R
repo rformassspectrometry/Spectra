@@ -3,7 +3,7 @@ NULL
 
 #' @rdname hidden_aliases
 setGeneric("backendInitialize",
-           def = function(object, files, spectraData, ...)
+           def = function(object, ...)
                standardGeneric("backendInitialize"),
            valueClass = "MsBackend"
            )
@@ -14,15 +14,33 @@ setGeneric("backendMerge", def = function(object, ...)
 #' @rdname hidden_aliases
 setGeneric("clean", function(object, ...) standardGeneric("clean"))
 #' @rdname hidden_aliases
-setGeneric("fileNames", function(object, ...) standardGeneric("fileNames"))
+setGeneric("dataOrigin", function(object, ...) standardGeneric("dataOrigin"))
+#' @rdname hidden_aliases
+setGeneric("dataOrigin<-", function(object, value)
+    standardGeneric("dataOrigin<-"))
+#' @rdname hidden_aliases
+setGeneric("dataOriginNames", function(object, ...)
+    standardGeneric("dataOriginNames"))
+#' @rdname hidden_aliases
+setGeneric("dataStorage", function(object, ...) standardGeneric("dataStorage"))
+#' @rdname hidden_aliases
+setGeneric("dataStorage<-", function(object, value)
+    standardGeneric("dataStorage<-"))
+#' @rdname hidden_aliases
+setGeneric("dataStorageNames", function(object, ...)
+    standardGeneric("dataStorageNames"))
 #' @rdname hidden_aliases
 setGeneric("filterAcquisitionNum", function(object, ...)
     standardGeneric("filterAcquisitionNum"))
 #' @rdname hidden_aliases
+setGeneric("filterDataOrigin", function(object, ...)
+    standardGeneric("filterDataOrigin"))
+#' @rdname hidden_aliases
+setGeneric("filterDataStorage", function(object, ...)
+    standardGeneric("filterDataStorage"))
+#' @rdname hidden_aliases
 setGeneric("filterEmptySpectra", function(object, ...)
     standardGeneric("filterEmptySpectra"))
-#' @rdname hidden_aliases
-setGeneric("filterFile", function(object, ...) standardGeneric("filterFile"))
 #' @rdname hidden_aliases
 setGeneric("filterIsolationWindow", function(object, ...)
     standardGeneric("filterIsolationWindow"))
@@ -40,9 +58,6 @@ setGeneric("filterPrecursorScan", function(object, ...)
     standardGeneric("filterPrecursorScan"))
 #' @rdname hidden_aliases
 setGeneric("filterRt", function(object, ...) standardGeneric("filterRt"))
-#' @rdname hidden_aliases
-setGeneric("fromFile", function(object, ...)
-    standardGeneric("fromFile"))
 #' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))

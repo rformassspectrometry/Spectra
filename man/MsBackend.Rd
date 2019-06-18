@@ -17,17 +17,22 @@
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
 \alias{collisionEnergy<-,MsBackend-method}
-\alias{fileNames,MsBackend-method}
+\alias{dataOrigin,MsBackend-method}
+\alias{dataOrigin<-,MsBackend-method}
+\alias{dataOriginNames,MsBackend-method}
+\alias{dataStorage,MsBackend-method}
+\alias{dataStorage<-,MsBackend-method}
+\alias{dataStorageNames,MsBackend-method}
 \alias{filterAcquisitionNum,MsBackend-method}
+\alias{filterDataOrigin,MsBackend-method}
+\alias{filterDataStorage,MsBackend-method}
 \alias{filterEmptySpectra,MsBackend-method}
-\alias{filterFile,MsBackend-method}
 \alias{filterIsolationWindow,MsBackend-method}
 \alias{filterMsLevel,MsBackend-method}
 \alias{filterPolarity,MsBackend-method}
 \alias{filterPrecursorMz,MsBackend-method}
 \alias{filterPrecursorScan,MsBackend-method}
 \alias{filterRt,MsBackend-method}
-\alias{fromFile,MsBackend-method}
 \alias{intensity,MsBackend-method}
 \alias{intensity<-,MsBackend-method}
 \alias{ionCount,MsBackend-method}
@@ -72,7 +77,7 @@
 \alias{MsBackendMzR}
 \title{Mass spectrometry data backends}
 \usage{
-\S4method{backendInitialize}{MsBackend}(object, files, spectraData, ...)
+\S4method{backendInitialize}{MsBackend}(object, ...)
 
 \S4method{backendMerge}{list}(object, ...)
 
@@ -88,13 +93,25 @@
 
 \S4method{collisionEnergy}{MsBackend}(object) <- value
 
-\S4method{fileNames}{MsBackend}(object)
+\S4method{dataOrigin}{MsBackend}(object)
+
+\S4method{dataOrigin}{MsBackend}(object) <- value
+
+\S4method{dataOriginNames}{MsBackend}(object)
+
+\S4method{dataStorage}{MsBackend}(object)
+
+\S4method{dataStorage}{MsBackend}(object) <- value
+
+\S4method{dataStorageNames}{MsBackend}(object)
 
 \S4method{filterAcquisitionNum}{MsBackend}(object, n, file, ...)
 
-\S4method{filterEmptySpectra}{MsBackend}(object, ...)
+\S4method{filterDataOrigin}{MsBackend}(object, dataOrigin, ...)
 
-\S4method{filterFile}{MsBackend}(object, file, ...)
+\S4method{filterDataStorage}{MsBackend}(object, dataStorage, ...)
+
+\S4method{filterEmptySpectra}{MsBackend}(object, ...)
 
 \S4method{filterIsolationWindow}{MsBackend}(object, mz, ...)
 
@@ -107,8 +124,6 @@
 \S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum, ...)
 
 \S4method{filterRt}{MsBackend}(object, rt, msLevel, ...)
-
-\S4method{fromFile}{MsBackend}(object)
 
 \S4method{intensity}{MsBackend}(object)
 
@@ -201,14 +216,6 @@ MsBackendMzR()
 \arguments{
 \item{object}{Object extending \code{MsBackend}.}
 
-\item{files}{For \code{backendInitialize}: \code{character} with the file
-names from which the data is/will be imported. Should be set to
-\code{NA_character_} if not applicable (e.g. for \code{MsBackendDataFrame}).}
-
-\item{spectraData}{For \code{backendInitialize}: \code{DataFrame} with spectrum
-metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
-but needs to be provided for \code{MsBackendDataFrame} backends.}
-
 \item{...}{Additional arguments.}
 
 \item{value}{replacement value for \code{<-} methods. See individual
@@ -219,6 +226,27 @@ to filter for.}
 
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
 should be subsetted.}
+
+\item{dataOrigin}{For \code{filterDataOrigin}: \code{integer}, \code{logical} or
+\code{character} to define which spectra to keep. If a \code{logical} is provided
+its length has to match the length of unique elements in \code{dataOrigin}
+(i.e. \code{unique(dataOrigin(object))}). If \code{dataOrigin} is of type \code{integer}
+it is expected to represent the index of the element in
+\code{unique(dataOrigin(object))}. If \code{dataOrigin} is of type \code{character} it
+has to match exactly the \code{dataOrigin} of the spectra that should be
+retained.
+For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
+only for spectra of selected \code{dataOrigin}.}
+
+\item{dataStorage}{For \code{filterDataStorage}: \code{integer}, \code{logical} or
+\code{character} to define which spectra to keep. If a \code{logical} is provided
+its length has to match the length of \code{dataStorageNames(object)}.
+If \code{dataStorage} is of type \code{integer} it is expected to represent the
+index of the element in \code{dataStorageNames(object)}. If \code{dataStorage} is
+of type \code{character} it has to match exactly the \code{dataStorage} of the
+spectra that should be retained.
+For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
+only for spectra of selected \code{dataStorage}.}
 
 \item{mz}{For \code{filterIsolationWindow} and \code{filterPrecursorMz}: \code{numeric(1)}
 with the m/z value to filter the object.}
@@ -263,23 +291,26 @@ total ion current should be (re)calculated on the actual data
 
 \item{name}{For \code{$} and \code{$<-}: the name of the spectra variable to return
 or set.}
+
+\item{spectraData}{For \code{backendInitialize}: \code{DataFrame} with spectrum
+metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
+but needs to be provided for \code{MsBackendDataFrame} backends.}
 }
 \description{
 Note that the classes described here are not meant to be used
 directly by the end-users and the material in this man page is
 aimed at package developers.
 
-\code{MsBackend} is a vitual class that defines what each different
+\code{MsBackend} is a virtual class that defines what each different
 backend needs to provide. \code{MsBackend} objects provide access to
-mass spectrometry data. Such backends can be generally classified
-into \emph{in-memory} or \emph{on-disk}, depending where the data, i.e
+mass spectrometry data. Such backends can be classified into
+\emph{in-memory} or \emph{on-disk} backends, depending on where the data, i.e
 spectra (m/z and intensities) and spectra annotation (MS level,
-charge, polarity, ...) are stored. Typically, in-memory backends
-keep all data in memory ensuring fast data access, while on-disk
-backends store their data on disk and access it on demand. Note
-that some backends will have a mixed model and store parts of the
-data in memory and parts on disk, to stike a good balance between
-fast access and small memory footprint.
+charge, polarity, ...) are stored.
+
+Typically, in-memory backends keep all data in memory ensuring fast
+data access, while on-disk backends store (parts of) their data on
+disk and retrieve it on demand.
 
 The \emph{Backend functions and implementation notes for new backend
 classes} section documents the API that a backend must implement.
@@ -298,7 +329,7 @@ data files and the remaining spectra variables in memory (in a
 
 See below for more details about individual backends.
 }
-\section{Backend functions and implementation notes for new backend classes}{
+\section{Backend functions}{
 
 
 New backend classes \strong{must} extend the base \code{MsBackend} class and
@@ -315,10 +346,21 @@ spectra (with \code{NA_integer_} if not available).
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
 for the memory backend or read the spectra header data for the
-\code{MsBackendMzR} backend).
+\code{MsBackendMzR} backend). This method has to ensure to set the
+spectra variable \code{dataStorage} correctly.
 \item \code{backendMerge}: merges (combines) \code{MsBackend} objects into a single
 instance. All objects to be merged have to be of the same type (e.g.
 \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
+\item \code{dataOrigin}: gets a \code{character} of length equal to the number of spectra
+in \code{object} with the \emph{data origin} of each spectrum. This could e.g. be
+the mzML file from which the data was read.
+\item \code{dataOriginNames}: gets unique data origin elements from the backend (in
+order of appearance). Returns a \code{character}.
+\item \code{dataStorage}: gets a \code{character} of length equal to the number of spectra
+in \code{object} with the data storage of each spectrum. Note that a
+\code{dataStorage} of \code{NA_character_} is not supported.
+\item \code{dataStorageNames}: gets unique data storage elements from the backend (in
+order of appearance). Returns a \code{character}.
 \item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -332,13 +374,33 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \code{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
-\item \code{fileNames}: returns a \code{character} with the file names, or
-\code{NA_character_} if not relevant.
-\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
-the provided acquisition numbers (argument \code{n}). If \code{file} is also
-provided, \code{object} is subsetted to the spectra with an acquisition number
-equal to \code{n} \strong{in this/these file(s)} and all spectra for the remaining
-files (not specified with \code{file}).
+\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching the
+provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
+\code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
+an acquisition number equal to \code{n} \strong{in spectra with matching dataOrigin
+or dataStorage values} retaining all other spectra.
+\item \code{filterDataOrigin}: filters the object retaining spectra matching the
+provided \code{dataOrigin}. Parameter \code{dataOrigin} can be of type \code{integer}
+(specifying the \code{dataOrigin} in \code{unique(dataOrigin(object))} to keep),
+\code{logical} (length equal to \code{length(unique(dataOrigin(object)))} specifying
+from which \code{dataOrigin} spectra should be kept) or \code{character} (defining
+the name of the \code{dataOrigin} from which spectra should be retained).
+\code{filterDataOrigin} should return the data ordered by the provided
+\code{dataOrigin} parameter, i.e. if \code{dataOrigin = c(2, 1)} was provided, the
+spectra in the resulting object should be ordered accordingly (first
+spectra from the second data origin, then the first). See the
+implementation of \code{MsBackendDataFrame}.
+\item \code{filterDataStorage}: filters the object retaining spectra stored in the
+specified \code{dataStorage}. Parameter \code{dataStorage} can be of type \code{integer}
+(specifying the \code{dataStorage} in \code{dataStorageNames(object)} to keep),
+\code{logical} (length equal to \code{dataStorageNames(object)} specifying
+from which \code{dataStorage} spectra should be kept) or \code{character} (defining
+the name of the \code{dataStorage} from which spectra should be retained).
+\code{filterDataStorage} should return the data ordered by the provided
+\code{dataStorage} parameter, i.e. if \code{dataStorage = c(2, 1)} was provided, the
+spectra in the resulting object should be ordered accordingly (first
+spectra from the second data storage, then the first). See the
+implementation of \code{MsBackendDataFrame}.
 \item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
 \item \code{filterFile}: retains data of files matching the file index or file name
 provided with parameter \code{file}.
@@ -380,12 +442,12 @@ the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
 length equal number of spectra.
-\item \code{isolationWindowLowerMz}, \code{isolationWindowLowerMz<-}: get or set the lower
-m/z boundary of the isolation window.
-\item \code{isolationWindowTargetMz}, \code{isolationWindowTargetMz<-}: get or set the
+\item \code{isolationWindowLowerMz}, \code{isolationWindowLowerMz<-}: gets or sets the
+lower m/z boundary of the isolation window.
+\item \code{isolationWindowTargetMz}, \code{isolationWindowTargetMz<-}: gets or sets the
 target m/z of the isolation window.
-\item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: get or set the upper
-m/z boundary of the isolation window.
+\item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: gets or sets the
+upper m/z boundary of the isolation window.
 \item \code{isReadOnly}: returns a \code{logical(1)} whether the backend is \emph{read
 only} or does allow also to write/update data.
 \item \code{length}: returns the number of spectra in the object.
@@ -425,7 +487,7 @@ and acquisition number (\code{interger}) of the precursor for MS level
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
 \item \code{rtime}, \code{rtime<-}: gets or sets the retention times for each
-spectrum.  \code{rtime} returns a \code{numeric} vector (length equal to
+spectrum (in seconds). \code{rtime} returns a \code{numeric} vector (length equal to
 the number of spectra) with the retention time for each spectrum.
 \code{rtime<-} expects a numeric vector with length equal to the
 number of spectra.
@@ -471,11 +533,6 @@ same type should be merged). Merging should follow the following rules:
 resulting merged object should contain the union of the individual objects'
 spectra variables (columns/fields), with eventually missing variables in
 one object being filled with \code{NA}.
-\item The \code{@files} slot of the merged object should contain the unique list of
-the individual objects' \code{@files} slot, spectra variable \code{fromFile} should
-be updated accordingly.
-\item The \code{@modCount} slot of the merged object should contain the maximal value
-from all individual object' \code{@modCount} slot for the corresponding file.
 }
 }
 
@@ -498,8 +555,9 @@ as parameter. Suggested columns of this \code{DataFrame} are:
 \item \code{"acquisitionNum"}: \code{integer} with the acquisition number of the spectrum.
 \item \code{"scanIndex"}: \code{integer} with the index of the scan/spectrum within the
 \emph{mzML}/\emph{mzXML}/\emph{CDF} file.
-\item \code{"fromFile"}: \code{integer} indicating in which file in an experiment the
-spectrum was measured.
+\item \code{"dataOrigin"}: \code{character} defining the \emph{data origin}.
+\item \code{"dataStorage"}: \code{character} indicating grouping of spectra in different
+e.g. input files. Note that missing values are not supported.
 \item \code{"centroided"}: \code{logical} whether the spectrum is centroided.
 \item \code{"smoothed"}: \code{logical} whether the spectrum was smoothed.
 \item \code{"polarity"}: \code{integer} with the polarity information of the spectra.
@@ -531,7 +589,9 @@ while the spectra data (m/z and intensity values) are fetched from
 the raw files on-demand. This backend uses the \code{mzR} package for
 data import and retrieval and hence requires that package to be
 installed. Also, it can only be used to import and represent data
-stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files.
+stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files. \code{dataStorageNames} lists all
+original input files and \code{dataStorage} lists the input file from which peak
+data of an individual spectrum is read.
 
 The \code{MsBackendMzR} backend extends the \code{MsBackendDataFrame} backend using
 its \code{DataFrame} to keep spectra variables (except m/z and intensity) in
@@ -549,15 +609,43 @@ The \code{MsBackendHdf5Peaks} keeps, similar to the \code{MsBackendMzR}, peak da
 (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 disk while the remaining spectra variables are kept in memory. This backend
 supports updating and writing of manipulated peak data to the data files.
+\code{dataStorageNames} lists all HDF5 files of the \code{object}, \code{dataStorage}
+indicates for each spectrum in which file its peak data is stored.
 
 New objects can be created with the \code{MsBackendHdf5Peaks()} function which
 can be subsequently filled with data by calling the object's
-\code{backenInitialize} method passing the desired file names of the HDF5 data
+\code{backendInitialize} method passing the desired file names of the HDF5 data
 files along with the spectra variables in form of a \code{DataFrame} (see
 \code{MsBackendDataFrame} for the expected format). An optional parameter
 \code{hdf5path} allows to specify the folder where the HDF5 data files should be
 stored to. If provided, this is added as the path to the submitted file
 names (parameter \code{files}).
+
+By default \code{backendInitialize} will store all peak data into a single HDF5
+file which name has to be provided with the parameter \code{files}. To store peak
+data across several HDF5 files \code{spectraData} has to contain a column
+\code{"dataStorage"} that defines the grouping of spectra/peaks into files: peaks
+for spectra with the same value in \code{"dataStorage"} are saved into the same
+HDF5 file. If parameter \code{files} is omitted, the value in \code{dataStorage} is
+used as file name (replacing any file ending with \code{".h5"}. To specify the
+file names, \code{files}' length has to match the number of unique elements in
+\code{"dataStorage"}.
+
+For details see examples on the \code{\link[=Spectra]{Spectra()}} help page.
+}
+
+\section{Implementation notes}{
+
+
+Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
+above). Developers of new \code{MsBackend}s should follow the
+\code{MsBackendDataFrame} implementation.
+
+The \code{MsBackend} defines the following slots:
+\itemize{
+\item \code{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
+of m/z or intensity values.
+}
 }
 
 \author{

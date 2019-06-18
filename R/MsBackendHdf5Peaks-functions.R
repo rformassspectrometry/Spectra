@@ -1,6 +1,13 @@
 #' @include hidden_aliases.R
 NULL
 
+.valid_ms_backend_mod_count <- function(x, y) {
+    if (length(x) != length(y))
+        "Different number of source files and modification counters."
+    else
+        NULL
+}
+
 #' @rdname MsBackend
 #'
 #' @export MsBackendHdf5Peaks
@@ -172,6 +179,8 @@ MsBackendHdf5Peaks <- function() {
                               modCount = 0L, prune = TRUE) {
     if (length(x) != length(scanIndex))
         stop("lengths of 'x' and 'scanIndex' have to match")
+    if (any(duplicated(scanIndex)))
+        stop("no duplicated values in 'scanIndex' allowed")
     requireNamespace("rhdf5", quitely = TRUE)
     h5 <- rhdf5::H5Fopen(h5file)
     on.exit(invisible(rhdf5::H5Fclose(h5)))

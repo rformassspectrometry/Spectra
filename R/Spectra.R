@@ -13,7 +13,7 @@ NULL
 #' related metadata.
 #'
 #' It supports multiple data backends, e.g. in-memory ([MsBackendDataFrame()]),
-#' on-disk as mzML ([MsBackendMzR()]).
+#' on-disk as mzML ([MsBackendMzR()]) or HDF5 ([MsBackendHdf5Peaks()]).
 #'
 #' @details
 #'
@@ -38,23 +38,27 @@ NULL
 #'   is provided by the [MsBackend-class] class passed along with the `backend`
 #'   argument.
 #'
-#' `Spectra` classes are usually created with the `readSpectra`
-#' function that reads general spectrum metadata information from the mass
-#' spectrometry data files.
+#' - parameter `object` is of type `character` and is expected to be the file
+#'   names(s) from which spectra should be imported. Parameter `source` allows
+#'   to define a [MsBackend-class] that is able to import the data from the
+#'   provided source files. The default value for `source` is [MsBackendMzR()]
+#'   which allows to import spectra data from mzML, mzXML or CDF files.
+#'
+#' With `...` additional arguments can be passed to the backend's
+#' [backendInitialize()] method. Parameter `backend` allows to specify which
+#' [MsBackend-class] should be used for data storage.
 #'
 #' The backend of a `Spectra` object can be changed with the `setBackend`
 #' method that takes an instance of the new backend as second parameter
 #' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())` would
-#' for example change the backend to the *in-memory* `MsBackendDataFrame`.
-#' Note that it might not be possible to change from any backend to any other
-#' backend. Changing from a `MsBackendDataFrame` to a `MsBackendMzR` would only
-#' be possible if the original `MsBackendDataFrame` was generated on data from
-#' e.g. mzML files and if these original file names are set in the backend
-#' (slot `@files`). In contrast, it should be possible to convert almost every
-#' backend into a `MsBackendDataFrame` (given sufficient memory is available).
+#' for example change the backend or `sps` to the *in-memory*
+#' `MsBackendDataFrame`. Note that it is not possible to change the backend
+#' to a *read-only* backend (such as the [MsBackendMzR()] backend). `setBackend`
+#' changes the `"dataOrigin"` variable of the resulting `Spectra` object to the
+#' `"dataStorage"` variable of the backend before the switch.
 #'
 #' The definition of the function is:
-#' `setBackend(object, backend, ..., f = fromFile(object), BPPARAM = bpparam())`
+#' `setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())`
 #' and its parameters are:
 #'
 #' - parameter `object`: the `Spectra` object.
@@ -64,7 +68,8 @@ NULL
 #'
 #' - parameter `f`: factor allowing to parallelize the change of the backends.
 #'   By default the process of copying the spectra data from the original to the
-#'   new backend is performed separately (and in parallel) for each file.
+#'   new backend is performed separately (and in parallel) for each file. Users
+#'   are advised to use the default setting.
 #'
 #' - parameter `...`: optional additional arguments passed to the
 #'   [backendInitialize()] method of the new `backend`.
@@ -96,11 +101,17 @@ NULL
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `fileNames`: returns a `character` with the file names, or
-#'   `NA_character_` if not relevant.
+#' - `dataOrigin`, `dataOrigin<-`: gets or sets the *data origin* for each
+#'   spectrum. `dataOrigin` returns a `character` vector (same length than
+#'   `object`) with the origin of the spectra. `dataOrigin<-` expects a
+#'   `character` vector (same length than `object`) with the replacement
+#'   values for the data origin of each spectrum.
 #'
-#' - `fromFile`: gets the file/sample assignment of each spectrum. Returns an
-#'   integer vector of length equal to the number of spectra.
+#' - `dataStorage`: returns a `character` vector (same length than `object`)
+#'   with the data storage location of each spectrum.
+#'
+#' - `dataStorageNames`: returns a `character` with the unique data storage
+#'   locations of the spectra.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
@@ -207,39 +218,61 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
-#' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
-#'   provided acquisition numbers (argument `n`). If `file` is also provided,
-#'   `object` is subsetted to the spectra with an acquisition number equal to
-#'   `n` **in this/these file(s)** and all spectra for the remaining files (not
-#'   specified with `file`). Returns the filtered `Spectra`.
+#' - `filterAcquisitionNum`: filters the object keeping only spectra matching
+#'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
+#'   `dataStorage` is also provided, `object` is subsetted to the spectra with
+#'   an acquisition number equal to `n` **in spectra with matching dataOrigin
+#'   or dataStorage values** retaining all other spectra.
+#'   Returns the filtered `Spectra`.
+#'
+#' - `filterDataOrigin`: filters the object retaining spectra matching the
+#'   provided `dataOrigin`. Parameter `dataOrigin` can be of type `integer`
+#'   (specifying the `dataOrigin` in `unique(dataOrigin(object))` to keep),
+#'   `logical` (length equal to `length(unique(dataOrigin(object)))` specifying
+#'   from which `dataOrigin` spectra should be kept) or `character` (defining
+#'   the name of the `dataOrigin` from which spectra should be retained).
+#'   Returns the filtered `Spectra` object (with spectra ordered according to
+#'   the provided `dataOrigin` parameter).
+#'
+#' - `filterDataStorage`: filters the object retaining spectra stored in the
+#'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
+#'   (specifying the `dataStorage` in `dataStorageNames(object)` to keep),
+#'   `logical` (length equal to `dataStorageNames(object)` specifying
+#'   from which `dataStorage` spectra should be kept) or `character` (defining
+#'   the name of the `dataStorage` from which spectra should be retained).
+#'   Returns the filtered `Spectra` object (with spectra ordered according to
+#'   the provided `dataStorage` parameter).
 #'
 #' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
-#'
-#' - `filterFile`: retains data of files matching the file index or file name
-#'    provided with parameter `file`. Returns the filtered `Spectra`.
+#'   Returns the filtered `Spectra` object (with spectra in their
+#'   original order).
 #'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
-#'   and `isolationWindowUpperMz` >= `mz`.
+#'   and `isolationWindowUpperMz` >= `mz`. Returns the filtered `Spectra`
+#'   object (with spectra in their original order).
 #'
 #' - `filterMsLevel`: filters object by MS level keeping only spectra matching
 #'   the MS level specified with argument `msLevel`. Returns the filtered
-#'   `Spectra`.
+#'   `Spectra` (with spectra in their original order)
 #'
 #' - `filterPolarity`: filters the object keeping only spectra matching the
-#'   provided polarity. Returns the subsetted `Spectra`.
+#'   provided polarity. Returns the filtered `Spectra` (with spectra in their
+#'   original order).
 #'
 #' - `filterPrecursorMz`: retains spectra with an m/z matching the provided `mz`
 #'   accepting also a small difference in m/z which can be defined by parameter
 #'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
-#'   m/z identical to `mz` are retained.
+#'   m/z identical to `mz` are retained. Returns the filtered `Spectra` (with
+#'   spectra in their original order).
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
-#'    MS2) of acquisition number `acquisitionNum`. Returns the filtered
-#'    `Spectra`.
+#'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
+#'   `Spectra` (with spectra in their original order).
 #'
 #' - `filterRt`: retains spectra of MS level `msLevel` with retention times
-#'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
+#'   within (`>=`) `rt[1]` and (`<=`) `rt[2]`. Returns the filtered `Spectra`
+#'   (with spectra in their original order).
 #'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
@@ -247,10 +280,10 @@ NULL
 #'   the values will be dropped, while additional (user defined) spectra
 #'   variables will be completely removed. Returns the filtered `Spectra`.
 #'
-#' Several `Spectra` objects can be merged into a single object with the
-#' `merge` function. Merging will fail if the processing queue of any of the
-#' `Spectra` objects is not empty, or if different backends are used in the
-#' various `Spectra` objects. The spectra variables of the resulting `Spectra`
+#' Several `Spectra` objects can be concatenated into a single object with the
+#' `c` function. Concatenation will fail if the processing queue of any of the
+#' `Spectra` objects is not empty or if different backends are used in the
+#' `Spectra` objects. The spectra variables of the resulting `Spectra`
 #' object is the union of the spectra variables of the individual `Spectra`
 #' objects.
 #'
@@ -309,13 +342,32 @@ NULL
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
+#' @param dataOrigin For `filterDataOrigin`: `integer`, `logical` or
+#'     `character` to define which spectra to keep. If a `logical` is provided
+#'     its length has to match the length of unique elements in `dataOrigin`
+#'     (i.e. `unique(dataOrigin(object))`). If `dataOrigin` is of type `integer`
+#'     it is expected to represent the index of the element in
+#'     `unique(dataOrigin(object))`. If `dataOrigin` is of type `character` it
+#'     has to match exactly the `dataOrigin` of the spectra that should be
+#'     retained.
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     only for spectra of selected `dataOrigin`.
+#'
+#' @param dataStorage For `filterDataStorage`: `integer`, `logical` or
+#'     `character` to define which spectra to keep. If a `logical` is provided
+#'     its length has to match the length of `dataStorageNames(object)`.
+#'     If `dataStorage` is of type `integer` it is expected to represent the
+#'     index of the element in `dataStorageNames(object)`. If `dataStorage` is
+#'     of type `character` it has to match exactly the `dataStorage` of the
+#'     spectra that should be retained.
+#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     only for spectra of selected `dataStorage`.
+#'
 #' @param drop For `[`: not considered.
 #'
-#' @param f For `setBackend`: factor defining how to split the data should
-#'     for the parallelized copying of the spectra data to the new backend.
-#'
-#' @param file For `filterFile`: index or name of the file(s) to which the data
-#'     should be subsetted.
+#' @param f For `setBackend`: factor defining how to split the data for
+#'     parallelized copying of the spectra data to the new backend. For some
+#'     backends changing this parameter can lead to errors.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. See section *Data manipulations* below
@@ -362,6 +414,10 @@ NULL
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
 #'
+#' @param source For `Spectra`: instance of [MsBackend-class] that can be used
+#'     to import spectrum data from the provided files. See section *Creation
+#'     of objects, conversion and changing the backend* for more details.
+#'
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
 #'
@@ -371,8 +427,6 @@ NULL
 #' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
 #' @param x A `Spectra` object.
-#'
-#' @param y A `Spectra` object.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
@@ -398,21 +452,44 @@ NULL
 #' data <- Spectra(spd)
 #' data
 #'
-#' ## Create a Spectra from a mzML file.
+#' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
+#' ## backend.
 #' sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
-#' sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
-#' sciex <- Spectra(sciex_mzr)
+#' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 #' sciex
 #'
-#' ## The MS data is on-disk and will be read into memory on-demand. We can
+#' ## The MS data is on disk and will be read into memory on-demand. We can
 #' ## however change the backend to a MsBackendDataFrame backend which will
 #' ## keep all of the data in memory.
 #' sciex_im <- setBackend(sciex, MsBackendDataFrame())
 #' sciex_im
 #'
-#' ## The size of the objects will obviously be different
+#' ## The on-disk object `sciex` is light-weight, because it does not keep the
+#' ## MS peak data in memory. The `sciex_im` object in contrast keeps all the
+#' ## data in memory and its size is thus much larger.
 #' object.size(sciex)
 #' object.size(sciex_im)
+#'
+#' ## The spectra variable `dataStorage` returns for each spectrum the location
+#' ## where the data is stored. For in-memory objects:
+#' head(dataStorage(sciex_im))
+#'
+#' ## While objects that use an on-disk backend will list the files where the
+#' ## data is stored.
+#' head(dataStorage(sciex))
+#'
+#' ## The spectra variable `dataOrigin` returns for each spectrum the *origin*
+#' ## of the data. If the data is read from e.g. mzML files, this will be the
+#' ## original mzML file name:
+#' head(dataOrigin(sciex))
+#' head(dataOrigin(sciex_im))
+#'
+#' ## The unique elements of dataStorage and dataOrigin can be retrieved with
+#' ## `dataStorageNames` and `dataOriginNames`, respectively.
+#' dataStorageNames(sciex)
+#' dataStorageNames(sciex_im)
+#' dataOriginNames(sciex)
+#' dataOriginNames(sciex_im)
 #'
 #' ## ---- ACCESSING AND ADDING DATA ----
 #'
@@ -427,6 +504,10 @@ NULL
 #' ## Get the intensity and m/z values.
 #' intensity(data)
 #' mz(data)
+#'
+#' ## Accessing spectra variables works for all backends:
+#' intensity(sciex)
+#' intensity(sciex_im)
 #'
 #' ## Get the m/z for the first spectrum.
 #' mz(data)[[1]]
@@ -443,7 +524,7 @@ NULL
 #' ## For all *core* spectrum variables accessor functions are available. These
 #' ## return NA if the variable was not set.
 #' centroided(data)
-#' fromFile(data)
+#' dataStorage(data)
 #' rtime(data)
 #' precursorMz(data)
 #'
@@ -479,12 +560,13 @@ NULL
 #' filterMsLevel(data, 2)
 #'
 #' ## Below we combine the `data` and `sciex_im` objects into a single one.
-#' data_comb <- merge(data, sciex_im)
+#' data_comb <- c(data, sciex_im)
 #'
 #' ## The combined Spectra contains a union of all spectra variables:
 #' head(data_comb$spectrum_id)
 #' head(data_comb$rtime)
-#' head(data_comb$fromFile)
+#' head(data_comb$dataStorage)
+#' head(data_comb$dataOrigin)
 #'
 #' ## ---- DATA MANIPULATIONS ----
 #'
@@ -581,11 +663,8 @@ setMethod("Spectra", "DataFrame", function(object, processingQueue = list(),
                                            metadata = list(), ...,
                                            backend = MsBackendDataFrame(),
                                            BPPARAM = bpparam()) {
-    object$fromFile <- rep(1L, nrow(object))
     new("Spectra", metadata = metadata, processingQueue = processingQueue,
-        backend = backendInitialize(
-            backend, files = if (nrow(object)) NA_character_ else character(),
-            object, BPPARAM = BPPARAM))
+        backend = backendInitialize(backend, object, ..., BPPARAM = BPPARAM))
 })
 
 #' @rdname Spectra
@@ -606,29 +685,45 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 })
 
 #' @rdname Spectra
+setMethod("Spectra", "character", function(object, processingQueue = list(),
+                                           metadata = list(),
+                                           source = MsBackendMzR(),
+                                           backend = MsBackendDataFrame(),
+                                           ..., BPPARAM = bpparam()) {
+    be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
+    sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
+              backend = be)
+    if (class(source) != class(backend))
+        setBackend(sp, backend, ..., BPPARAM = BPPARAM)
+    else sp
+})
+
+#' @rdname Spectra
 #'
 #' @exportMethod setBackend
 setMethod("setBackend", c("Spectra", "MsBackend"),
-          function(object, backend, f = fromFile(object), ...,
+          function(object, backend, f = dataStorage(object), ...,
                    BPPARAM = bpparam()) {
               backend_class <- class(object@backend)
-              f <- factor(f, levels = unique(f))
+              if (isReadOnly(backend))
+                  stop(backend_class, " is read-only. Changing backend to a ",
+                       "read-only backend is not supported.")
+              f <- force(factor(f, levels = unique(f)))
               if (length(f) != length(object))
                   stop("length of 'f' has to match the length of 'object'")
+              data_storage <- object@backend$dataStorage
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
-                  if (isReadOnly(backend) && any(z@modCount))
-                      stop(class(backend), " backends are read-only but the ",
-                           "original data appears to be modified")
-                  res <- backendInitialize(backend, files = z@files,
-                                           spectraData = spectraData(z),
-                                           ...)
-                  res@modCount <- z@modCount
-                  res
+                  backendInitialize(backend,
+                                    spectraData = spectraData(z),
+                                    ...)
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
+              ## That below ensures the backend is returned in its original
+              ## order - unsplit does unfortunately not work.
               if (is.unsorted(f))
                   bknds <- bknds[order(unlist(split(seq_along(bknds), f),
                                               use.names = FALSE))]
+              bknds$dataOrigin <- data_storage
               object@backend <- bknds
               object@processing <- .logging(object@processing,
                                             "Switch backend from ",
@@ -639,16 +734,18 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
 
 #' @rdname Spectra
 #'
-#' @importMethodsFrom S4Vectors merge
-#'
-#' @exportMethod merge
-setMethod("merge", c("Spectra", "Spectra"), function(x, y, ...) {
-    objs <- unname(c(x, y, ...))
+#' @exportMethod c
+setMethod("c", "Spectra", function(x, ...) {
+    objs <- unname(c(list(x), list(...)))
+    cls <- vapply(objs, class, character(1))
+    if (!all(cls == "Spectra"))
+        stop("Can only concatenate 'Spectra' objects")
     pqs <- lapply(objs, function(z) z@processingQueue)
     ## For now we stop if there is any of the processingQueues not empty. Later
     ## we could even test if they are similar, and if so, merge.
     if (any(lengths(pqs)))
-        stop("Can not merge Spectra objects with non-empty processing queue")
+        stop("Can not concatenate 'Spectra' objects with non-empty ",
+             "processing queue")
     metad <- do.call(c, lapply(objs, function(z) z@metadata))
     procs <- unique(unlist(lapply(objs, function(z) z@processing)))
     object <- new(
@@ -694,12 +791,24 @@ setReplaceMethod("collisionEnergy", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
-setMethod("fileNames", "Spectra", function(object) {
-    fileNames(object@backend)
+setMethod("dataOrigin", "Spectra", function(object) dataOrigin(object@backend))
+
+#' @rdname Spectra
+setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
+    dataOrigin(object@backend) <- value
+    object
 })
 
 #' @rdname Spectra
-setMethod("fromFile", "Spectra", function(object) fromFile(object@backend))
+setMethod("dataOriginNames", "Spectra",
+          function(object) dataOriginNames(object@backend))
+
+#' @rdname Spectra
+setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
+
+#' @rdname Spectra
+setMethod("dataStorageNames", "Spectra",
+          function(object) dataStorageNames(object@backend))
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
@@ -738,7 +847,7 @@ setMethod("isolationWindowLowerMz", "Spectra", function(object) {
 
 #' @rdname Spectra
 setReplaceMethod("isolationWindowLowerMz", "Spectra", function(object, value) {
-    isolationWindowLowerMz(object) <- value
+    isolationWindowLowerMz(object@backend) <- value
     object
 })
 
@@ -843,7 +952,7 @@ setMethod("scanIndex", "Spectra", function(object) {
 #' @rdname Spectra
 setMethod("selectSpectraVariables", "Spectra",
           function(object, spectraVariables = spectraVariables(object)) {
-              spectraVariables <- union(spectraVariables, "fromFile")
+              spectraVariables <- union(spectraVariables, "dataStorage")
               object@backend <- selectSpectraVariables(
                   object@backend, spectraVariables = spectraVariables)
               object
@@ -949,11 +1058,14 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
 
 #' @rdname Spectra
 setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
-                                                      file = integer()) {
-    object@backend <- filterAcquisitionNum(object@backend, n, file)
+                                                      dataStorage = integer(),
+                                                      dataOrigin = integer()) {
+    object@backend <- filterAcquisitionNum(object@backend, n,
+                                           dataStorage, dataOrigin)
     object@processing <- .logging(object@processing,
                                   "Filter: select by: ", length(n),
-                                  " acquisition number(s) in ", length(file),
+                                  " acquisition number(s) in ",
+                                  max(length(dataStorage), length(dataOrigin)),
                                   " file(s)")
     object
 })
@@ -967,11 +1079,22 @@ setMethod("filterEmptySpectra", "Spectra", function(object) {
 })
 
 #' @rdname Spectra
-setMethod("filterFile", "Spectra", function(object, file = integer()) {
-    object@backend <- filterFile(object@backend, file = file)
+setMethod("filterDataOrigin", "Spectra", function(object,
+                                                  dataOrigin = integer()) {
+    object@backend <- filterDataOrigin(object@backend, dataOrigin = dataOrigin)
     object@processing <- .logging(object@processing,
-                                  "Filter: select file(s) ",
-                                  paste0(file, collapse = ", "))
+                                  "Filter: select data origin(s) ",
+                                  paste0(dataOrigin, collapse = ", "))
+    object
+})
+
+#' @rdname Spectra
+setMethod("filterDataStorage", "Spectra", function(object,
+                                                   dataStorage = integer()) {
+    object@backend <- filterDataStorage(object@backend, dataStorage)
+    object@processing <- .logging(object@processing,
+                                  "Filter: select data storage(s) ",
+                                  paste0(dataStorage, collapse = ", "))
     object
 })
 
@@ -1079,7 +1202,8 @@ setMethod("clean", "Spectra",
               object
           })
 
-applyProcessing <- function(object, f = fromFile(object), BPPARAM = bpparam(),
+applyProcessing <- function(object, f = dataStorage(object),
+                            BPPARAM = bpparam(),
                             ...) {
     if (!length(object@processingQueue))
         return(object)

@@ -200,7 +200,7 @@ utils.enableNeighbours <- function(x) {
 
 #' @title Combine two two-dimensional arrays
 #'
-#' @importMethodsFrom S4Vectors cbind
+#' @importMethodsFrom S4Vectors cbind nrow rownames colnames
 #'
 #' @description
 #'
