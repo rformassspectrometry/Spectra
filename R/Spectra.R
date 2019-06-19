@@ -1166,23 +1166,7 @@ setMethod("filterRt", "Spectra",
 ##
 #### ---------------------------------------------------------------------------
 
-#' @rdname Spectra
-#'
-#' @exportMethod removePeaks
-setMethod("removePeaks", "Spectra",
-          function(object, t = "min", msLevel. = unique(msLevel(object))) {
-              if (!is.numeric(t) & t != "min")
-                  stop("Argument 't' has to be either numeric of 'min'.")
-              if (!is.numeric(msLevel.))
-                  stop("'msLevel.' must be numeric.")
-              object <- addProcessing(object, .remove_peaks, t = t,
-                                      msLevel = msLevel.)
-              object@processing <- .logging(object@processing,
-                                            "Signal <= ", t, " in MS level(s) ",
-                                            paste0(msLevel., collapse = ", "),
-                                            " set to 0")
-              object
-          })
+## bin
 
 #' @rdname Spectra
 #'
@@ -1202,24 +1186,40 @@ setMethod("clean", "Spectra",
               object
           })
 
-applyProcessing <- function(object, f = dataStorage(object),
-                            BPPARAM = bpparam(),
-                            ...) {
-    if (!length(object@processingQueue))
-        return(object)
-}
+## compareSpectra
 
-## applyProcessing:
-## bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
-##     if (isReadOnly(z))
-##         stop("Can not replace peaks data because ", class(z), " backends ",
-##         "are read-only")
-##     peaks(z) <- .apply_processing_queue(peaks(z), msLevel(z), centroided(z), queue)
-##     z@modCount <- 0
-##     z
-## }, ..., BPPARAM = BPPARAM)
-## bknds <- backendMerge(bknds)
-## if (is.unsorted(f))
-##     bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-##                                 use.names = FALSE))]
-## object@backend <- bknds
+## combineSpectra
+
+## estimateMzResolution
+
+## estimateNoise
+
+## normalize
+
+## peaksapply
+
+## pickPeaks
+
+## quantify
+
+## removeReporters
+
+#' @rdname Spectra
+#'
+#' @exportMethod removePeaks
+setMethod("removePeaks", "Spectra",
+          function(object, t = "min", msLevel. = unique(msLevel(object))) {
+              if (!is.numeric(t) & t != "min")
+                  stop("Argument 't' has to be either numeric of 'min'.")
+              if (!is.numeric(msLevel.))
+                  stop("'msLevel.' must be numeric.")
+              object <- addProcessing(object, .remove_peaks, t = t,
+                                      msLevel = msLevel.)
+              object@processing <- .logging(object@processing,
+                                            "Signal <= ", t, " in MS level(s) ",
+                                            paste0(msLevel., collapse = ", "),
+                                            " set to 0")
+              object
+          })
+
+## smooth
