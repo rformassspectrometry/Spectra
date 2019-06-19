@@ -391,9 +391,7 @@ NULL
 #' the raw files on-demand. This backend uses the `mzR` package for
 #' data import and retrieval and hence requires that package to be
 #' installed. Also, it can only be used to import and represent data
-#' stored in *mzML*, *mzXML* and *CDF* files. `dataStorageLevels` lists all
-#' original input files and `dataStorage` lists the input file from which peak
-#' data of an individual spectrum is read.
+#' stored in *mzML*, *mzXML* and *CDF* files.
 #'
 #' The `MsBackendMzR` backend extends the `MsBackendDataFrame` backend using
 #' its `DataFrame` to keep spectra variables (except m/z and intensity) in
@@ -409,8 +407,6 @@ NULL
 #' (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 #' disk while the remaining spectra variables are kept in memory. This backend
 #' supports updating and writing of manipulated peak data to the data files.
-#' `dataStorageLevels` lists all HDF5 files of the `object`, `dataStorage`
-#' indicates for each spectrum in which file its peak data is stored.
 #'
 #' New objects can be created with the `MsBackendHdf5Peaks()` function which
 #' can be subsequently filled with data by calling the object's

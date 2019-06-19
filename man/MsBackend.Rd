@@ -558,9 +558,7 @@ while the spectra data (m/z and intensity values) are fetched from
 the raw files on-demand. This backend uses the \code{mzR} package for
 data import and retrieval and hence requires that package to be
 installed. Also, it can only be used to import and represent data
-stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files. \code{dataStorageLevels} lists all
-original input files and \code{dataStorage} lists the input file from which peak
-data of an individual spectrum is read.
+stored in \emph{mzML}, \emph{mzXML} and \emph{CDF} files.
 
 The \code{MsBackendMzR} backend extends the \code{MsBackendDataFrame} backend using
 its \code{DataFrame} to keep spectra variables (except m/z and intensity) in
@@ -578,8 +576,6 @@ The \code{MsBackendHdf5Peaks} keeps, similar to the \code{MsBackendMzR}, peak da
 (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 disk while the remaining spectra variables are kept in memory. This backend
 supports updating and writing of manipulated peak data to the data files.
-\code{dataStorageLevels} lists all HDF5 files of the \code{object}, \code{dataStorage}
-indicates for each spectrum in which file its peak data is stored.
 
 New objects can be created with the \code{MsBackendHdf5Peaks()} function which
 can be subsequently filled with data by calling the object's
