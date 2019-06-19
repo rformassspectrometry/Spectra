@@ -32,13 +32,15 @@ MsBackendHdf5Peaks <- function() {
 #' @noRd
 .valid_h5files <- function(x) {
     msg <- NULL
-    if (length(x) != length(unique(x)))
-        msg <- c(msg, paste0("No duplicated HDF5 files allowed"))
-    if (!all(file.exists(x)))
-        msg <- c(msg, paste0("File(s) ", paste(x[!file.exists(x)],
-                                               collapse = ", "),
-                             " do not exist"))
-    msg <- c(msg, unlist(lapply(x, .valid_h5peaks_file), use.names = FALSE))
+    if (length(x)) {
+        if (length(x) != length(unique(x)))
+            msg <- c(msg, paste0("No duplicated HDF5 files allowed"))
+        if (!all(file.exists(x)))
+            msg <- c(msg, paste0("File(s) ", paste(x[!file.exists(x)],
+                                                   collapse = ", "),
+                                 " do not exist"))
+        msg <- c(msg, unlist(lapply(x, .valid_h5peaks_file), use.names = FALSE))
+    }
     msg
 }
 

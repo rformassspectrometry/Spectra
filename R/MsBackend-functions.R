@@ -14,7 +14,3 @@ NULL
                       " not found"))
     NULL
 }
-
-.from_data_storage <- function(x) {
-    match(dataStorage(x), dataStorageLevels(x))
-}

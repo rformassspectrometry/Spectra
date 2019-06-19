@@ -19,9 +19,7 @@
 \alias{collisionEnergy<-,Spectra-method}
 \alias{dataOrigin,Spectra-method}
 \alias{dataOrigin<-,Spectra-method}
-\alias{dataOriginLevels,Spectra-method}
 \alias{dataStorage,Spectra-method}
-\alias{dataStorageLevels,Spectra-method}
 \alias{intensity,Spectra-method}
 \alias{ionCount,Spectra-method}
 \alias{isCentroided,Spectra-method}
@@ -107,11 +105,7 @@ addProcessing(object, FUN, ...)
 
 \S4method{dataOrigin}{Spectra}(object) <- value
 
-\S4method{dataOriginLevels}{Spectra}(object)
-
 \S4method{dataStorage}{Spectra}(object)
-
-\S4method{dataStorageLevels}{Spectra}(object)
 
 \S4method{intensity}{Spectra}(object, ...)
 
@@ -188,13 +182,13 @@ addProcessing(object, FUN, ...)
 \S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
 
 \S4method{filterAcquisitionNum}{Spectra}(object, n = integer(),
-  dataStorage = integer(), dataOrigin = integer())
+  dataStorage = character(), dataOrigin = character())
 
 \S4method{filterEmptySpectra}{Spectra}(object)
 
-\S4method{filterDataOrigin}{Spectra}(object, dataOrigin = integer())
+\S4method{filterDataOrigin}{Spectra}(object, dataOrigin = character())
 
-\S4method{filterDataStorage}{Spectra}(object, dataStorage = integer())
+\S4method{filterDataStorage}{Spectra}(object, dataStorage = character())
 
 \S4method{filterIsolationWindow}{Spectra}(object, mz = numeric())
 
@@ -278,24 +272,13 @@ or set.}
 \item{n}{for \code{filterAcquisitionNum}: \code{integer} with the acquisition numbers
 to filter for.}
 
-\item{dataStorage}{For \code{filterDataStorage}: \code{integer}, \code{logical} or
-\code{character} to define which spectra to keep. If a \code{logical} is provided
-its length has to match the length of \code{dataStorageLevels(object)}.
-If \code{dataStorage} is of type \code{integer} it is expected to represent the
-index of the element in \code{dataStorageLevels(object)}. If \code{dataStorage} is
-of type \code{character} it has to match exactly the \code{dataStorage} of the
-spectra that should be retained.
+\item{dataStorage}{For \code{filterDataStorage}: \code{character} to define which
+spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occur
 only for spectra of selected \code{dataStorage}.}
 
-\item{dataOrigin}{For \code{filterDataOrigin}: \code{integer}, \code{logical} or
-\code{character} to define which spectra to keep. If a \code{logical} is provided
-its length has to match the length of unique elements in \code{dataOrigin}
-(i.e. \code{unique(dataOrigin(object))}). If \code{dataOrigin} is of type \code{integer}
-it is expected to represent the index of the element in
-\code{unique(dataOrigin(object))}. If \code{dataOrigin} is of type \code{character} it
-has to match exactly the \code{dataOrigin} of the spectra that should be
-retained.
+\item{dataOrigin}{For \code{filterDataOrigin}: \code{character} to define which
+spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
@@ -425,8 +408,6 @@ spectrum. \code{dataOrigin} returns a \code{character} vector (same length than
 values for the data origin of each spectrum.
 \item \code{dataStorage}: returns a \code{character} vector (same length than \code{object})
 with the data storage location of each spectrum.
-\item \code{dataStorageLevels}: returns a \code{character} with the unique data storage
-locations of the spectra.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
 a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the list is equal to the number of
@@ -522,19 +503,15 @@ an acquisition number equal to \code{n} \strong{in spectra with matching dataOri
 or dataStorage values} retaining all other spectra.
 Returns the filtered \code{Spectra}.
 \item \code{filterDataOrigin}: filters the object retaining spectra matching the
-provided \code{dataOrigin}. Parameter \code{dataOrigin} can be of type \code{integer}
-(specifying the \code{dataOrigin} in \code{unique(dataOrigin(object))} to keep),
-\code{logical} (length equal to \code{length(unique(dataOrigin(object)))} specifying
-from which \code{dataOrigin} spectra should be kept) or \code{character} (defining
-the name of the \code{dataOrigin} from which spectra should be retained).
+provided \code{dataOrigin}. Parameter \code{dataOrigin} has to be of type
+\code{character} and needs to match exactly the data origin value of the
+spectra to subset.
 Returns the filtered \code{Spectra} object (with spectra ordered according to
 the provided \code{dataOrigin} parameter).
 \item \code{filterDataStorage}: filters the object retaining spectra stored in the
-specified \code{dataStorage}. Parameter \code{dataStorage} can be of type \code{integer}
-(specifying the \code{dataStorage} in \code{dataStorageLevels(object)} to keep),
-\code{logical} (length equal to \code{dataStorageLevels(object)} specifying
-from which \code{dataStorage} spectra should be kept) or \code{character} (defining
-the name of the \code{dataStorage} from which spectra should be retained).
+specified \code{dataStorage}. Parameter \code{dataStorage} has to be of type
+\code{character} and needs to match exactly the data storage value of the
+spectra to subset.
 Returns the filtered \code{Spectra} object (with spectra ordered according to
 the provided \code{dataStorage} parameter).
 \item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
@@ -651,13 +628,6 @@ head(dataStorage(sciex))
 ## original mzML file name:
 head(dataOrigin(sciex))
 head(dataOrigin(sciex_im))
-
-## The unique elements of dataStorage and dataOrigin can be retrieved with
-## `dataStorageLevels` and `dataOriginLevels`, respectively.
-dataStorageLevels(sciex)
-dataStorageLevels(sciex_im)
-dataOriginLevels(sciex)
-dataOriginLevels(sciex_im)
 
 ## ---- ACCESSING AND ADDING DATA ----
 

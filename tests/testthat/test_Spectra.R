@@ -38,7 +38,7 @@ test_that("Spectra,MsBackend works", {
 test_that("Spectra,character works", {
     res <- Spectra(sciex_file, backend = MsBackendMzR())
     expect_true(is(res@backend, "MsBackendMzR"))
-    expect_equal(dataStorageLevels(res@backend), sciex_file)
+    expect_equal(unique(res@backend$dataStorage), sciex_file)
     expect_identical(rtime(res), rtime(sciex_mzr))
 
     res_2 <- Spectra(sciex_file)
@@ -259,21 +259,6 @@ test_that("dataStorage,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- dataStorage(sps)
     expect_identical(res, rep(sciex_file, each = 931))
-})
-
-test_that("dataStorageLevels,Spectra works", {
-    sps <- Spectra()
-    res <- dataStorageLevels(sps)
-    expect_identical(res, character())
-
-    df <- DataFrame(msLevel = c(1L, 2L))
-    sps <- Spectra(df)
-    res <- dataStorageLevels(sps)
-    expect_identical(res, "<memory>")
-
-    sps <- Spectra(sciex_mzr)
-    res <- dataStorageLevels(sps)
-    expect_identical(res, sciex_file)
 })
 
 test_that("length,Spectra works", {
@@ -769,7 +754,7 @@ test_that("[,Spectra works", {
     sps <- Spectra(sciex_mzr)
     tmp <- sps[dataStorage(sps) == sciex_file[2], ]
     expect_true(all(dataStorage(tmp) == sciex_file[2]))
-    expect_equal(dataStorageLevels(tmp), sciex_file[2])
+    expect_equal(unique(tmp$dataStorage), sciex_file[2])
     expect_equal(rtime(tmp), rtime(sps)[dataStorage(sps) == sciex_file[2]])
 })
 
@@ -780,7 +765,7 @@ test_that("filterAcquisitionNum,Spectra works", {
     expect_equal(length(res@processing), 1)
 
     sps <- Spectra(sciex_mzr)
-    res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = 2L)
+    res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = sciex_file[2])
     expect_equal(acquisitionNum(res),
                  c(1:sum(dataStorage(sps) == sciex_file[1]), 1:10))
 })
@@ -792,8 +777,9 @@ test_that("filterDataOrigin,Spectra works", {
     expect_true(length(res@processing) == 1)
 
     sps <- Spectra(sciex_mzr)
-    expect_error(filterDataOrigin(sps, dataOrigin = "2"), "not all names")
-    res <- filterDataOrigin(sps, 1L)
+    res <- filterDataOrigin(sps, dataOrigin = "2")
+    expect_true(length(res) == 0)
+    res <- filterDataOrigin(sps, sciex_file[1])
     expect_identical(rtime(res), rtime(sps)[1:931])
     expect_true(length(res@processing) > length(sps@processing))
 
@@ -812,9 +798,9 @@ test_that("filterDataStorage,Spectra works", {
     expect_true(length(res@processing) == 1)
 
     sps <- Spectra(sciex_mzr)
-    expect_error(filterDataStorage(sps, "2"), "not all names")
-    expect_error(filterDataStorage(sps, 3), "index out of bounds")
-    res <- filterDataStorage(sps, 2L)
+    res <- filterDataStorage(sps, "2")
+    expect_true(length(res) == 0)
+    res <- filterDataStorage(sps, sciex_file[2])
     expect_identical(rtime(res), rtime(sps)[dataStorage(sps) == sciex_file[2]])
     expect_true(length(res@processing) > length(sps@processing))
     expect_identical(peaks(res),

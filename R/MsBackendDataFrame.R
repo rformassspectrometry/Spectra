@@ -135,15 +135,6 @@ setReplaceMethod("dataOrigin", "MsBackendDataFrame", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-#'
-#' @importMethodsFrom S4Vectors unique
-setMethod("dataOriginLevels", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "dataOrigin"))
-        unique(object@spectraData$dataOrigin)
-    else rep(NA_character_, min(length(object), 1))
-})
-
-#' @rdname hidden_aliases
 setMethod("dataStorage", "MsBackendDataFrame", function(object) {
     .get_rle_column(object@spectraData, "dataStorage")
 })
@@ -155,13 +146,6 @@ setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
     object@spectraData$dataStorage <- .as_rle(as.character(value))
     validObject(object)
     object
-})
-
-#' @rdname hidden_aliases
-setMethod("dataStorageLevels", "MsBackendDataFrame", function(object) {
-    if (any(colnames(object@spectraData) == "dataStorage"))
-        unique(object@spectraData$dataStorage)
-    else rep(NA_character_, min(length(object), 1))
 })
 
 #' @rdname hidden_aliases
@@ -527,8 +511,8 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
 
 #' @rdname hidden_aliases
 setMethod("filterAcquisitionNum", "MsBackendDataFrame",
-          function(object, n = integer(), dataStorage = integer(),
-                   dataOrigin = integer()) {
+          function(object, n = integer(), dataStorage = character(),
+                   dataOrigin = character()) {
     if (!length(n) || !length(object)) return(object)
     if (!is.integer(n)) stop("'n' has to be an integer representing the ",
                              "acquisition number(s) for sub-setting")
@@ -539,28 +523,22 @@ setMethod("filterAcquisitionNum", "MsBackendDataFrame",
 
 #' @rdname hidden_aliases
 setMethod("filterDataOrigin", "MsBackendDataFrame",
-          function(object, dataOrigin = integer()) {
+          function(object, dataOrigin = character()) {
               if (length(dataOrigin)) {
-                  lvls <- dataOriginLevels(object)
-                  dataOrigin <- .i_to_index(dataOrigin, length(lvls), lvls)
-                  object <- object[dataOrigin(object) %in% lvls[dataOrigin]]
+                  object <- object[dataOrigin(object) %in% dataOrigin]
                   if (is.unsorted(dataOrigin))
-                      object[order(match(dataOrigin(object),
-                                         lvls[dataOrigin]))]
+                      object[order(match(dataOrigin(object), dataOrigin))]
                   else object
               } else object
           })
 
 #' @rdname hidden_aliases
 setMethod("filterDataStorage", "MsBackendDataFrame",
-          function(object, dataStorage = integer()) {
+          function(object, dataStorage = character()) {
               if (length(dataStorage)) {
-                  lvls <- dataStorageLevels(object)
-                  dataStorage <- .i_to_index(dataStorage, length(lvls), lvls)
-                  object <- object[dataStorage(object) %in% lvls[dataStorage]]
+                  object <- object[dataStorage(object) %in% dataStorage]
                   if (is.unsorted(dataStorage))
-                      object[order(match(dataStorage(object),
-                                         lvls[dataStorage]))]
+                      object[order(match(dataStorage(object), dataStorage))]
                   else object
               } else object
           })
