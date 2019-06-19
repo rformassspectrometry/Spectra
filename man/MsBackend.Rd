@@ -19,10 +19,8 @@
 \alias{collisionEnergy<-,MsBackend-method}
 \alias{dataOrigin,MsBackend-method}
 \alias{dataOrigin<-,MsBackend-method}
-\alias{dataOriginLevels,MsBackend-method}
 \alias{dataStorage,MsBackend-method}
 \alias{dataStorage<-,MsBackend-method}
-\alias{dataStorageLevels,MsBackend-method}
 \alias{filterAcquisitionNum,MsBackend-method}
 \alias{filterDataOrigin,MsBackend-method}
 \alias{filterDataStorage,MsBackend-method}
@@ -97,13 +95,9 @@
 
 \S4method{dataOrigin}{MsBackend}(object) <- value
 
-\S4method{dataOriginLevels}{MsBackend}(object)
-
 \S4method{dataStorage}{MsBackend}(object)
 
 \S4method{dataStorage}{MsBackend}(object) <- value
-
-\S4method{dataStorageLevels}{MsBackend}(object)
 
 \S4method{filterAcquisitionNum}{MsBackend}(object, n, file, ...)
 
@@ -227,25 +221,14 @@ to filter for.}
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
 should be subsetted.}
 
-\item{dataOrigin}{For \code{filterDataOrigin}: \code{integer}, \code{logical} or
-\code{character} to define which spectra to keep. If a \code{logical} is provided
-its length has to match the length of unique elements in \code{dataOrigin}
-(i.e. \code{unique(dataOrigin(object))}). If \code{dataOrigin} is of type \code{integer}
-it is expected to represent the index of the element in
-\code{unique(dataOrigin(object))}. If \code{dataOrigin} is of type \code{character} it
-has to match exactly the \code{dataOrigin} of the spectra that should be
-retained.
+\item{dataOrigin}{For \code{filterDataOrigin}: \code{character} to define which
+spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
-\item{dataStorage}{For \code{filterDataStorage}: \code{integer}, \code{logical} or
-\code{character} to define which spectra to keep. If a \code{logical} is provided
-its length has to match the length of \code{dataStorageLevels(object)}.
-If \code{dataStorage} is of type \code{integer} it is expected to represent the
-index of the element in \code{dataStorageLevels(object)}. If \code{dataStorage} is
-of type \code{character} it has to match exactly the \code{dataStorage} of the
-spectra that should be retained.
-For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
+\item{dataStorage}{For \code{filterDataStorage}: \code{character} to define which
+spectra to keep.
+For \code{filterAcquisitionNum}: optionally specify if filtering should occur
 only for spectra of selected \code{dataStorage}.}
 
 \item{mz}{For \code{filterIsolationWindow} and \code{filterPrecursorMz}: \code{numeric(1)}
@@ -354,13 +337,9 @@ instance. All objects to be merged have to be of the same type (e.g.
 \item \code{dataOrigin}: gets a \code{character} of length equal to the number of spectra
 in \code{object} with the \emph{data origin} of each spectrum. This could e.g. be
 the mzML file from which the data was read.
-\item \code{dataOriginLevels}: gets unique data origin elements from the backend (in
-order of appearance). Returns a \code{character}.
 \item \code{dataStorage}: gets a \code{character} of length equal to the number of spectra
 in \code{object} with the data storage of each spectrum. Note that a
 \code{dataStorage} of \code{NA_character_} is not supported.
-\item \code{dataStorageLevels}: gets unique data storage elements from the backend (in
-order of appearance). Returns a \code{character}.
 \item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -380,27 +359,21 @@ provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 an acquisition number equal to \code{n} \strong{in spectra with matching dataOrigin
 or dataStorage values} retaining all other spectra.
 \item \code{filterDataOrigin}: filters the object retaining spectra matching the
-provided \code{dataOrigin}. Parameter \code{dataOrigin} can be of type \code{integer}
-(specifying the \code{dataOrigin} in \code{dataOriginLevels(object)} to keep),
-\code{logical} (length equal to \code{length(dataOriginLevels(object))} specifying
-from which \code{dataOrigin} spectra should be kept) or \code{character} (defining
-the name of the \code{dataOrigin} from which spectra should be retained).
+provided \code{dataOrigin}. Parameter \code{dataOrigin} has to be of type
+\code{character} and needs to match exactly the data origin value of the
+spectra to subset.
 \code{filterDataOrigin} should return the data ordered by the provided
-\code{dataOrigin} parameter, i.e. if \code{dataOrigin = c(2, 1)} was provided, the
-spectra in the resulting object should be ordered accordingly (first
-spectra from the second data origin, then the first). See the
-implementation of \code{MsBackendDataFrame}.
-\item \code{filterDataStorage}: filters the object retaining spectra stored in the
-specified \code{dataStorage}. Parameter \code{dataStorage} can be of type \code{integer}
-(specifying the \code{dataStorage} in \code{dataStorageLevels(object)} to keep),
-\code{logical} (length equal to \code{dataStorageLevels(object)} specifying
-from which \code{dataStorage} spectra should be kept) or \code{character} (defining
-the name of the \code{dataStorage} from which spectra should be retained).
+\code{dataOrigin} parameter, i.e. if \code{dataOrigin = c("2", "1")} was provided,
+the spectra in the resulting object should be ordered accordingly (first
+spectra from data origin \code{"2"} and then from \code{"1"}).
+\item \code{filterDataStorage}: filters the object retaining spectra matching the
+provided \code{dataStorage}. Parameter \code{dataStorage} has to be of type
+\code{character} and needs to match exactly the data storage value of the
+spectra to subset.
 \code{filterDataStorage} should return the data ordered by the provided
-\code{dataStorage} parameter, i.e. if \code{dataStorage = c(2, 1)} was provided, the
-spectra in the resulting object should be ordered accordingly (first
-spectra from the second data storage, then the first). See the
-implementation of \code{MsBackendDataFrame}.
+\code{dataStorage} parameter, i.e. if \code{dataStorage = c("2", "1")} was provided,
+the spectra in the resulting object should be ordered accordingly (first
+spectra from data storage \code{"2"} and then from \code{"1"}).
 \item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
 \item \code{filterFile}: retains data of files matching the file index or file name
 provided with parameter \code{file}.
@@ -417,10 +390,6 @@ m/z identical to \code{mz} are retained.
 MS2) of acquisition number \code{acquisitionNum}.
 \item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times
 within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
-\item \code{fromFile}: returns an \code{integer} vector of length equal to the
-number of spectra in \code{object} indicating the file index from
-which spectra originate. If no files are available,
-\code{NA_character_} is returned for all spectra.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
 a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of

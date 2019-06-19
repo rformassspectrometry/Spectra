@@ -242,7 +242,7 @@ MsBackendDataFrame <- function() {
 #' @param object `MsBackend`
 #'
 #' @param dataStorage `character` or `integer` with either the names of the
-#'     `dataStorage` or their index (in `dataStorageLevels(object)`) in which
+#'     `dataStorage` or their index (in `unique(object$dataStorage)`) in which
 #'     the filtering should be performed.
 #'
 #' @param dataOrigin same as `dataStorage`, but for the `dataOrigin` spectra
@@ -253,7 +253,7 @@ MsBackendDataFrame <- function() {
 #' @noRd
 .sel_file <- function(object, dataStorage = integer(), dataOrigin = integer()) {
     if (length(dataStorage)) {
-        lvls <- dataStorageLevels(object)
+        lvls <- unique(object@spectraData$dataStorage)
         if (!(is.numeric(dataStorage) || is.character(dataStorage)))
             stop("'dataStorage' has to be either an integer with the index of",
                  " the data storage, or its name")
@@ -265,7 +265,7 @@ MsBackendDataFrame <- function() {
         }
         dataStorage(object) %in% dataStorage
     } else if (length(dataOrigin)) {
-        lvls <- dataOriginLevels(object)
+        lvls <- unique(object@spectraData$dataOrigin)
         if (!(is.numeric(dataOrigin) || is.character(dataOrigin)))
             stop("'dataOrigin' has to be either an integer with the index of",
                  " the data origin, or its name")

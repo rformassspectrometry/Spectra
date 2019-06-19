@@ -110,9 +110,6 @@ NULL
 #' - `dataStorage`: returns a `character` vector (same length than `object`)
 #'   with the data storage location of each spectrum.
 #'
-#' - `dataStorageLevels`: returns a `character` with the unique data storage
-#'   locations of the spectra.
-#'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the list is equal to the number of
@@ -226,20 +223,16 @@ NULL
 #'   Returns the filtered `Spectra`.
 #'
 #' - `filterDataOrigin`: filters the object retaining spectra matching the
-#'   provided `dataOrigin`. Parameter `dataOrigin` can be of type `integer`
-#'   (specifying the `dataOrigin` in `unique(dataOrigin(object))` to keep),
-#'   `logical` (length equal to `length(unique(dataOrigin(object)))` specifying
-#'   from which `dataOrigin` spectra should be kept) or `character` (defining
-#'   the name of the `dataOrigin` from which spectra should be retained).
+#'   provided `dataOrigin`. Parameter `dataOrigin` has to be of type
+#'   `character` and needs to match exactly the data origin value of the
+#'   spectra to subset.
 #'   Returns the filtered `Spectra` object (with spectra ordered according to
 #'   the provided `dataOrigin` parameter).
 #'
 #' - `filterDataStorage`: filters the object retaining spectra stored in the
-#'   specified `dataStorage`. Parameter `dataStorage` can be of type `integer`
-#'   (specifying the `dataStorage` in `dataStorageLevels(object)` to keep),
-#'   `logical` (length equal to `dataStorageLevels(object)` specifying
-#'   from which `dataStorage` spectra should be kept) or `character` (defining
-#'   the name of the `dataStorage` from which spectra should be retained).
+#'   specified `dataStorage`. Parameter `dataStorage` has to be of type
+#'   `character` and needs to match exactly the data storage value of the
+#'   spectra to subset.
 #'   Returns the filtered `Spectra` object (with spectra ordered according to
 #'   the provided `dataStorage` parameter).
 #'
@@ -342,24 +335,13 @@ NULL
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
-#' @param dataOrigin For `filterDataOrigin`: `integer`, `logical` or
-#'     `character` to define which spectra to keep. If a `logical` is provided
-#'     its length has to match the length of unique elements in `dataOrigin`
-#'     (i.e. `unique(dataOrigin(object))`). If `dataOrigin` is of type `integer`
-#'     it is expected to represent the index of the element in
-#'     `unique(dataOrigin(object))`. If `dataOrigin` is of type `character` it
-#'     has to match exactly the `dataOrigin` of the spectra that should be
-#'     retained.
+#' @param dataOrigin For `filterDataOrigin`: `character` to define which
+#'     spectra to keep.
 #'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
 #'     only for spectra of selected `dataOrigin`.
 #'
-#' @param dataStorage For `filterDataStorage`: `integer`, `logical` or
-#'     `character` to define which spectra to keep. If a `logical` is provided
-#'     its length has to match the length of `dataStorageLevels(object)`.
-#'     If `dataStorage` is of type `integer` it is expected to represent the
-#'     index of the element in `dataStorageLevels(object)`. If `dataStorage` is
-#'     of type `character` it has to match exactly the `dataStorage` of the
-#'     spectra that should be retained.
+#' @param dataStorage For `filterDataStorage`: `character` to define which
+#'     spectra to keep.
 #'     For `filterAcquisitionNum`: optionally specify if filtering should occur
 #'     only for spectra of selected `dataStorage`.
 #'
@@ -483,13 +465,6 @@ NULL
 #' ## original mzML file name:
 #' head(dataOrigin(sciex))
 #' head(dataOrigin(sciex_im))
-#'
-#' ## The unique elements of dataStorage and dataOrigin can be retrieved with
-#' ## `dataStorageLevels` and `dataOriginLevels`, respectively.
-#' dataStorageLevels(sciex)
-#' dataStorageLevels(sciex_im)
-#' dataOriginLevels(sciex)
-#' dataOriginLevels(sciex_im)
 #'
 #' ## ---- ACCESSING AND ADDING DATA ----
 #'
@@ -800,15 +775,7 @@ setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
-setMethod("dataOriginLevels", "Spectra",
-          function(object) dataOriginLevels(object@backend))
-
-#' @rdname Spectra
 setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
-
-#' @rdname Spectra
-setMethod("dataStorageLevels", "Spectra",
-          function(object) dataStorageLevels(object@backend))
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
@@ -1058,8 +1025,12 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
 
 #' @rdname Spectra
 setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
-                                                      dataStorage = integer(),
-                                                      dataOrigin = integer()) {
+                                                      dataStorage = character(),
+                                                      dataOrigin = character()) {
+    if (length(dataStorage) && !is.character(dataStorage))
+        stop("'dataStorage' is expected to be of type character")
+    if (length(dataOrigin) && !is.character(dataOrigin))
+        stop("'dataOrigin' is expected to be of type character")
     object@backend <- filterAcquisitionNum(object@backend, n,
                                            dataStorage, dataOrigin)
     object@processing <- .logging(object@processing,
@@ -1080,7 +1051,9 @@ setMethod("filterEmptySpectra", "Spectra", function(object) {
 
 #' @rdname Spectra
 setMethod("filterDataOrigin", "Spectra", function(object,
-                                                  dataOrigin = integer()) {
+                                                  dataOrigin = character()) {
+    if (length(dataOrigin) && !is.character(dataOrigin))
+        stop("'dataOrigin' is expected to be of type character")
     object@backend <- filterDataOrigin(object@backend, dataOrigin = dataOrigin)
     object@processing <- .logging(object@processing,
                                   "Filter: select data origin(s) ",
@@ -1090,7 +1063,9 @@ setMethod("filterDataOrigin", "Spectra", function(object,
 
 #' @rdname Spectra
 setMethod("filterDataStorage", "Spectra", function(object,
-                                                   dataStorage = integer()) {
+                                                   dataStorage = character()) {
+    if (length(dataStorage) && !is.character(dataStorage))
+        stop("'dataStorage' is expected to be of type character")
     object@backend <- filterDataStorage(object@backend, dataStorage)
     object@processing <- .logging(object@processing,
                                   "Filter: select data storage(s) ",
@@ -1201,25 +1176,3 @@ setMethod("clean", "Spectra",
                                             " cleaned ")
               object
           })
-
-applyProcessing <- function(object, f = dataStorage(object),
-                            BPPARAM = bpparam(),
-                            ...) {
-    if (!length(object@processingQueue))
-        return(object)
-}
-
-## applyProcessing:
-## bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
-##     if (isReadOnly(z))
-##         stop("Can not replace peaks data because ", class(z), " backends ",
-##         "are read-only")
-##     peaks(z) <- .apply_processing_queue(peaks(z), msLevel(z), centroided(z), queue)
-##     z@modCount <- 0
-##     z
-## }, ..., BPPARAM = BPPARAM)
-## bknds <- backendMerge(bknds)
-## if (is.unsorted(f))
-##     bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-##                                 use.names = FALSE))]
-## object@backend <- bknds
