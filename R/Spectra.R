@@ -20,7 +20,10 @@ NULL
 #' The `Spectra` class uses by default a lazy data manipulation strategy,
 #' i.e. data manipulations such as performed with `removePeaks` are not applied
 #' immediately to the data, but applied on-the-fly to the spectrum data once it
-#' is retrieved.
+#' is retrieved. For some backends that allow to write data back to the data
+#' storage (such as the [MsBackendDataFrame()] and [MsBackendHdf5Peaks()]) it
+#' is possible to apply to queue with the `applyProcessing` function. See the
+#' *Data manipulation and analysis methods* section below for more details.
 #'
 #' @section Creation of objects, conversion and changing the backend:
 #'
@@ -291,12 +294,14 @@ NULL
 #'
 #' Many data manipulation operations, such as those listed in this section, are
 #' not applied immediately to the spectra, but added to a
-#' *lazy processinq queue*. Operations stored in this queue are applied
-#' on-the-fly to spectra data each time it is accessed. This lazy
+#' *lazy processing/manipulation queue*. Operations stored in this queue are
+#' applied on-the-fly to spectra data each time it is accessed. This lazy
 #' execution guarantees the same functionality for `Spectra` objects with
 #' any backend, i.e. backends supporting to save changes to spectrum data
-#' ([MsBackendDataFrame()] as well as read-only backends (such
-#' as the [MsBackendMzR()]).
+#' ([MsBackendDataFrame()] or [MsBackendHdf5Peaks()]) as well as read-only
+#' backends (such as the [MsBackendMzR()]). Note that for the former it is
+#' possible to apply the processing queue and write the modified peak data back
+#' to the data storage with the `applyProcessing` function.
 #'
 #' - `addProcessing`: adds an arbitrary function that should be applied to the
 #'   peaks matrix of every spectrum in `object`. The function (can be passed
@@ -306,6 +311,14 @@ NULL
 #'   corresponding intensities. The function has to have `...` in its
 #'   definition. Additional arguments can be passed with `...`. Examples are
 #'   provided in the package vignette.
+#'
+#' - `applyProcessing`: for `Spectra` objects that use a **writeable** backend
+#'   only: apply all steps from the lazy processing queue to the peak data and
+#'   write it back to the data storage. Parameter `f` allows to specify how
+#'   `object` should be split for parallel processing. This should either be
+#'   equal to the `dataStorage`, or `f = rep(1, length(object))` to disable
+#'   parallel processing alltogether. Other partitionings might result in
+#'   errors (especially if a `MsBackendHdf5Peaks` backend is used.
 #'
 #' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
@@ -1201,19 +1214,3 @@ setMethod("clean", "Spectra",
                                             " cleaned ")
               object
           })
-
-
-## applyProcessing:
-## bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
-##     if (isReadOnly(z))
-##         stop("Can not replace peaks data because ", class(z), " backends ",
-##         "are read-only")
-##     peaks(z) <- .apply_processing_queue(peaks(z), msLevel(z), centroided(z), queue)
-##     z@modCount <- 0
-##     z
-## }, ..., BPPARAM = BPPARAM)
-## bknds <- backendMerge(bknds)
-## if (is.unsorted(f))
-##     bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-##                                 use.names = FALSE))]
-## object@backend <- bknds

@@ -181,8 +181,7 @@ addProcessing <- function(object, FUN, ...) {
 #'
 #' @rdname Spectra
 applyProcessing <- function(object, f = dataStorage(object),
-                            BPPARAM = bpparam(),
-                            ...) {
+                            BPPARAM = bpparam(), ...) {
     if (!length(object@processingQueue))
         return(object)
     if (isReadOnly(object@backend))
@@ -202,7 +201,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     if (is.unsorted(f))
         bknds <- bknds[order(unlist(split(seq_along(bknds), f),
                                     use.names = FALSE))]
-    object@backend <- bnkds
+    object@backend <- bknds
     object@processing <- .logging(object@processing,
                                   "Apply processing queue with ",
                                   length(object@processingQueue),
