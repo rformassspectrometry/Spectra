@@ -19,16 +19,10 @@ setGeneric("dataOrigin", function(object, ...) standardGeneric("dataOrigin"))
 setGeneric("dataOrigin<-", function(object, value)
     standardGeneric("dataOrigin<-"))
 #' @rdname hidden_aliases
-setGeneric("dataOriginLevels", function(object, ...)
-    standardGeneric("dataOriginLevels"))
-#' @rdname hidden_aliases
 setGeneric("dataStorage", function(object, ...) standardGeneric("dataStorage"))
 #' @rdname hidden_aliases
 setGeneric("dataStorage<-", function(object, value)
     standardGeneric("dataStorage<-"))
-#' @rdname hidden_aliases
-setGeneric("dataStorageLevels", function(object, ...)
-    standardGeneric("dataStorageLevels"))
 #' @rdname hidden_aliases
 setGeneric("filterAcquisitionNum", function(object, ...)
     standardGeneric("filterAcquisitionNum"))

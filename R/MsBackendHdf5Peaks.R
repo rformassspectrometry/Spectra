@@ -28,7 +28,7 @@ setClass("MsBackendHdf5Peaks",
 setValidity("MsBackendHdf5Peaks", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData,
                                                 c("dataStorage", "scanIndex"))
-    fls <- dataStorageLevels(object)
+    fls <- unique(object@spectraData$dataStorage)
     msg <- c(msg, .valid_ms_backend_mod_count(object@modCount, fls))
     msg <- c(msg, .valid_ms_backend_files_exist(fls))
     msg <- c(msg, .valid_h5files(fls))
@@ -108,7 +108,7 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
 #' @rdname hidden_aliases
 setMethod("show", "MsBackendHdf5Peaks", function(object) {
     callNextMethod()
-    fls <- dataStorageLevels(object)
+    fls <- unique(object@spectraData$dataStorage)
     if (length(fls)) {
         to <- min(3, length(fls))
         cat("\nfile(s):\n ", paste(basename(fls[1:to]), collapse = "\n "),
@@ -179,7 +179,7 @@ setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
 setMethod("peaks", "MsBackendHdf5Peaks", function(object) {
     if (!length(object))
         return(list())
-    fls <- dataStorageLevels(object)
+    fls <- unique(object@spectraData$dataStorage)
     if (length(fls) > 1) {
         f <- factor(dataStorage(object), levels = fls)
         unsplit(bpmapply(
@@ -200,7 +200,7 @@ setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
     if (!(is.list(value) || inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     object@modCount <- object@modCount + 1L
-    fls <- dataStorageLevels(object)
+    fls <- unique(object@spectraData$dataStorage)
     if (length(fls)) {
         f <- factor(dataStorage(object), levels = fls)
         res <- bpmapply(FUN = function(pks, sidx, h5file, modC) {
@@ -273,12 +273,12 @@ setReplaceMethod("$", "MsBackendHdf5Peaks", function(x, name, value) {
 
 #' @rdname hidden_aliases
 setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
-    fls <- dataStorageLevels(x)
+    fls <- unique(x@spectraData$dataStorage)
     if (!missing(j))
         stop("Subsetting by column ('j = ", j, "' is not supported")
     i <- .i_to_index(i, length(x), rownames(x@spectraData))
     x@spectraData <- x@spectraData[i, , drop = FALSE]
-    x@modCount <- x@modCount[match(dataStorageLevels(x), fls)]
+    x@modCount <- x@modCount[match(unique(x@spectraData$dataStorage), fls)]
     validObject(x)
     x
 })
@@ -286,7 +286,7 @@ setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
 #' @rdname hidden_aliases
 setMethod("backendMerge", "MsBackendHdf5Peaks", function(object, ...) {
     object <- unname(c(object, ...))
-    fls <- lapply(object, dataStorageLevels)
+    fls <- lapply(object, function(z) unique(z@spectraData$dataStorage))
     if (anyDuplicated(unlist(fls, use.names = FALSE)))
         stop("Combining backends with the same 'dataStorage' is not supported")
     res <- .combine_backend_data_frame(object)

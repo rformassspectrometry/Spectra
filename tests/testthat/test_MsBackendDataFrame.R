@@ -132,16 +132,6 @@ test_that("dataStorage,MsBackendDataFrame works", {
     expect_error(dataStorage(be) <- c("a", NA), "not allowed")
 })
 
-test_that("dataStorageLevels,MsBackendDataFrame works", {
-    be <- MsBackendDataFrame()
-    expect_identical(dataStorageLevels(be), character())
-
-    be <- backendInitialize(be, DataFrame(msLevel = c(1L, 2L)))
-    expect_identical(dataStorageLevels(be), "<memory>")
-    be$dataStorage <- c("b", "a")
-    expect_identical(dataStorageLevels(be), c("b", "a"))
-})
-
 test_that("intensity,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(intensity(be), NumericList(compress = FALSE))
@@ -537,12 +527,10 @@ test_that("[,MsBackendDataFrame works", {
     dataStorage(be) <- c("1", "1", "2", "2")
     res <- be[3]
     expect_equal(dataStorage(res), "2")
-    expect_equal(dataStorageLevels(res), "2")
     expect_equal(res@spectraData$file, "b")
 
     res <- be[c(3, 1)]
     expect_equal(dataStorage(res), c("2", "1"))
-    expect_equal(dataStorageLevels(res), c("2", "1"))
     expect_equal(res@spectraData$file, c("b", "a"))
 })
 
@@ -602,11 +590,8 @@ test_that("filterAcquisitionNum,MsBackendDataFrame works", {
     res <- filterAcquisitionNum(be, n = 2L, dataStorage = "2")
     expect_equal(dataStorage(res), c("1", "1", "1", "2", "3", "3", "3"))
     expect_equal(acquisitionNum(res), c(1L, 2L, 3L, 2L, 1L, 2L, 4L))
-    expect_identical(res, filterAcquisitionNum(be, n = 2L, dataStorage = 2L))
 
     expect_error(filterAcquisitionNum(be, n = "a"), "integer representing")
-    expect_error(filterAcquisitionNum(be, n = 4L, dataStorage = TRUE),
-                 "integer with")
     expect_equal(filterAcquisitionNum(be), be)
 })
 
@@ -618,8 +603,7 @@ test_that("filterDataOrigin,MsBackendDataFrame works", {
                     msLevel = 1L)
     be <- backendInitialize(MsBackendDataFrame(), df)
     dataStorage(be) <- c("1", "1", "1", "2", "2", "3", "3", "3")
-    expect_error(filterDataOrigin(be, c(3, 1)), "index out")
-    expect_equal(be, filterDataOrigin(be, 1))
+    expect_true(length(filterDataOrigin(be, c(3, 1))) == 0)
     expect_equal(be, filterDataOrigin(be, NA_character_))
 
     dataOrigin(be) <- c("1", "1", "1", "2", "2", "3", "3", "3")
@@ -627,7 +611,7 @@ test_that("filterDataOrigin,MsBackendDataFrame works", {
     expect_equal(length(res), 6)
     expect_equal(dataOrigin(res), c("3", "3", "3", "1", "1", "1"))
     expect_equal(rtime(res), c(6, 7, 8, 1, 2, 3))
-    expect_equal(dataStorageLevels(res), c("3", "1"))
+    expect_equal(unique(res$dataStorage), c("3", "1"))
 
     res <- filterDataOrigin(be, c("2", "1"))
     expect_equal(length(res), 5)
@@ -636,17 +620,14 @@ test_that("filterDataOrigin,MsBackendDataFrame works", {
 
     res <- filterDataOrigin(be, 2)
     expect_equal(rtime(res), c(4, 5))
-    expect_equal(dataStorageLevels(res), "2")
+    expect_equal(unique(res$dataStorage), "2")
 
     res <- filterDataOrigin(be, c(2, 3))
     expect_equal(rtime(res), c(4, 5, 6, 7, 8))
-    expect_equal(dataStorageLevels(res), c("2", "3"))
+    expect_equal(unique(res$dataStorage), c("2", "3"))
 
     res <- filterDataOrigin(be)
     expect_equal(res, be)
-
-    expect_error(filterDataOrigin(be, 5), "index out of")
-    expect_error(filterDataOrigin(be, "a"), "names present in")
 
     df$dataOrigin <- "1"
     be <- backendInitialize(MsBackendDataFrame(), df)
@@ -666,7 +647,7 @@ test_that("filterDataStorage,MsBackendDataFrame works", {
     expect_equal(length(res), 6)
     expect_equal(dataStorage(res), c("3", "3", "3", "1", "1", "1"))
     expect_equal(rtime(res), c(6, 7, 8, 1, 2, 3))
-    expect_equal(dataStorageLevels(res), c("3", "1"))
+    expect_equal(unique(res$dataStorage), c("3", "1"))
 
     res <- filterDataStorage(be, c("2", "1"))
     expect_equal(length(res), 5)
@@ -675,21 +656,13 @@ test_that("filterDataStorage,MsBackendDataFrame works", {
 
     res <- filterDataStorage(be, 2)
     expect_equal(rtime(res), c(4, 5))
-    expect_equal(dataStorageLevels(res), "2")
+    expect_equal(unique(res$dataStorage), "2")
 
     res <- filterDataStorage(be, c(2, 3))
     expect_equal(rtime(res), c(4, 5, 6, 7, 8))
-    expect_equal(dataStorageLevels(res), c("2", "3"))
+    expect_equal(unique(res$dataStorage), c("2", "3"))
 
     res <- filterDataStorage(be)
-    expect_equal(res, be)
-
-    expect_error(filterDataStorage(be, 5), "index out of")
-    expect_error(filterDataStorage(be, "a"), "names present in")
-
-    df$dataStorage <- "1"
-    be <- backendInitialize(MsBackendDataFrame(), df)
-    res <- filterDataStorage(be, 1L)
     expect_equal(res, be)
 })
 
