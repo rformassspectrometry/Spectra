@@ -8,7 +8,7 @@ vignette: >
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
     %\VignettePackage{Spectra}
-    %\VignetteDepends{Spectra,mzR,BiocStyle}
+    %\VignetteDepends{Spectra,mzR,BiocStyle,msdata,magrittr}
 ---
 
 ```{r style, echo = FALSE, results = 'asis', message=FALSE}
@@ -52,8 +52,13 @@ ordered):
   mode.
 - *collisionEnergy* `numeric(1)`: collision energy used to create an MSn
   spectrum.
-- *fromFile* `integer(1)`: the index of the file in `fileNames` the spectra
-  belongs to.
+- *dataOrigin* `character(1)`: the *origin* of the spectrum's data, e.g. the
+  mzML file from which it was read.
+- *dataStorage* `character(1)`: the (current) storage location of the spectrum
+  data. This value depends on the backend used to handle and provide the
+  data. For an *in-memory* backend like the `MsBackendDataFrame` this will be
+  `"<memory>"`, for an on-disk backend such as the `MsBackendHdf5Peaks` it will
+  be the name of the HDF5 file where the spectrum's peak data is stored.
 - *intensity* `numeric`: intensity values for the spectrum's peaks.
 - *isolationWindowLowerMz* `numeric(1)`: lower m/z for the isolation window in
   which the (MSn) spectrum was measured.
@@ -118,27 +123,23 @@ sps
 ```
 
 Alternatively, it is possible to import spectra data from mass spectrometry raw
-files in mzML/mzXML or CDF format. Below we first initialize a `MsBackendMzR`
-backend with the data from two mzML files and pass this to the `Spectra`
-constructor (note that this requires the `r Biocpkg("mzR")` package to be
-installed). This backend, specifically designed for raw MS data,
-keeps only a subset of spectra variables in memory while reading the m/z and
-intensity values from the original data files only on demand. See section
-[Backends](#backends) for more details on backends and their properties. The
-`backendInitialize` method will import spectra variables from the raw mzML files
-and we can pass this backend object subsequently to the `Spectra` function to
-create the object.
+files in mzML/mzXML or CDF format. Below we create a `Spectra` object from two
+mzML files and define to use a `MsBackendMzR` backend to *store* the data (note
+that this requires the `r Biocpkg("mzR")` package to be installed). This
+backend, specifically designed for raw MS data, keeps only a subset of spectra
+variables in memory while reading the m/z and intensity values from the original
+data files only on demand. See section [Backends](#backends) for more details
+on backends and their properties.
 
 ```{r spectra-msbackendmzr, message = FALSE}
 fls <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
-be <- backendInitialize(MsBackendMzR(), files = fls)
-sps_sciex <- Spectra(be)
+sps_sciex <- Spectra(fls, backend = MsBackendMzR())
 sps_sciex
 ```
 
 The `Spectra` object `sps_sciex` allows now to access spectra data from 1862 MS1
-spectra and uses `MsBackendMzR` as backend (the `Spectra` object `sps` created in
-the previous code block uses the default `MsBackendDataFrame`).
+spectra and uses `MsBackendMzR` as backend (the `Spectra` object `sps` created
+in the previous code block uses the default `MsBackendDataFrame`).
 
 
 ## Accessing spectrum data
@@ -155,8 +156,8 @@ spectraVariables(sps_sciex)
 The two `Spectra` contain a different set of variables: besides `"msLevel"`,
 `"polarity"`, `"id"` and `"name"`, that were specified for the `Spectra` object
 `sps`, it contains more variables such as `"rtime"`, `"acquisitionNum"` and
-`"scanIndex"`. These are part of the core variables defining a spectrum and for
-all of these accessor methods exist. Below we use `msLevel` and `rtime` to
+`"scanIndex"`. These are part of the *core variables* defining a spectrum and
+for all of these accessor methods exist. Below we use `msLevel` and `rtime` to
 access the MS levels and retention times for the spectra in `sps`.
 
 ```{r mslevel-sps}
@@ -164,33 +165,13 @@ msLevel(sps)
 rtime(sps)
 ```
 
-We did not specify retention times for the spectra in `sps` thus an `NA` is
+We did not specify retention times for the spectra in `sps` thus `NA` is
 returned for them. The `Spectra` object `sps_sciex` contains many more
 variables, all of which were extracted from the mzML files. Below we extract the
 retention times for the first spectra in the object.
 
 ```{r rtime-spssciex}
 head(rtime(sps_sciex))
-```
-
-`Spectra` are one-dimensional objects storing spectra, even from different files
-or samples, in a single list. Specific variables have thus to be used to define
-the file from which they were extracted or the sample in which they were
-measured. The `fileNames` function can be used to list all files containing the
-spectra data of a `Spectra` and the `fromFile` variable defines from which of
-these files one spectrum derives.
-
-```{r fromfile}
-basename(fileNames(sps_sciex))
-head(fromFile(sps_sciex))
-```
-
-Because the `Spectra` object `sps` was created from a `DataFrame` and not
-imported from a file, it does not have a file associated with it:
-
-```{r fromfile-sps}
-fileNames(sps)
-fromFile(sps)
 ```
 
 Note that in addition to the accessor functions it is also possible to use `$`
@@ -245,13 +226,41 @@ pks <- peaks(sps)
 pks[[1]]
 ```
 
-The `spectraData` function returns a `DataFrame` with the full data for each
-spectrum, or with selected spectra variables (which can be specified with the
-`columns` parameter). Below we extract the spectra data for variables
+The `spectraData` function returns a `DataFrame` with the full data
+for each spectrum, or with selected spectra variables (which can be specified
+with the `columns` parameter). Below we extract the spectra data for variables
 `"msLevel"`, `"id"` and `"name"`.
 
 ```{r spectradata}
 spectraData(sps, columns = c("msLevel", "id", "name"))
+```
+
+`Spectra` are one-dimensional objects storing spectra, even from different files
+or samples, in a single list. Specific variables have thus to be used to define
+the originating file from which they were extracted or the sample in which they
+were measured. The *data origin* of each spectrum can be extracted with the
+`dataOrigin` function. For `sps`, the `Spectra` created from a `DataFrame`, this
+will be `NA` because we did not specify the data origin:
+
+```{r dataOrigin-sps}
+dataOrigin(sps)
+```
+
+`dataOrigin` for `sps_sciex`, the `Spectra` which was initialized with data
+from mzML files, in contrast, returns the originating file names:
+
+```{r dataOrigin-sciex}
+head(basename(dataOrigin(sps_sciex)))
+```
+
+The current data storage location of a spectrum can be retrieved with the
+`dataStorage` variable, which will return an arbitrary string for `Spectra` that
+use an in-memory backend or the file where the data is stored for on-disk
+backends:
+
+```{r dataStorage}
+dataStorage(sps)
+head(basename(dataStorage(sps_sciex)))
 ```
 
 
@@ -262,7 +271,8 @@ A set of filter functions are defined that allow to subset `Spectra` objects
 
 - `filterAcquisitionNum`: retain spectra with certain acquisition numbers.
 - `filterEmptySpectra`: remove spectra without mass peaks.
-- `filterFile`: subset to spectra from specific files.
+- `filterDataOrigin`: subset to spectra from specific origins.
+- `filterDataStorage`: subset to spectra from certain data storage files.
 - `filterIsolationWindow`: keep spectra with the provided `mz` in their
   isolation window (m/z range).
 - `filterMsLevel`: filter by MS level.
@@ -278,7 +288,8 @@ subsequently filter them to retain spectra measured between 175 and 189 seconds
 in the measurement run.
 
 ```{r filterfile-filterrt}
-file_2 <- filterFile(sps_sciex, file = 2)
+fls <- unique(dataOrigin(sps_sciex))
+file_2 <- filterDataOrigin(sps_sciex, dataOrigin = fls[2])
 length(file_2)
 
 sps_sub <- filterRt(file_2, rt = c(175, 189))
@@ -289,7 +300,7 @@ In addition, `Spectra` support also subsetting with `[`. Below we perform the
 filtering above with `[` -based subsetting.
 
 ```{r subset-square-bracket}
-sps_sciex[sps_sciex$fromFile == 2 &
+sps_sciex[sps_sciex$dataOrigin == fls[2] &
           sps_sciex$rtime >= 175 &
           sps_sciex$rtime <= 189]
 ```
@@ -300,8 +311,8 @@ benefit that the filtering is recorded in the processing slot.
 ```{r subset-filter-pipes}
 library("magrittr")
 sps_sciex %>%
-    filterFile(2) %>%
-    filterRt(c(175, 189)) 
+    filterDataOrigin(fls[2]) %>%
+    filterRt(c(175, 189))
 ```
 
 Note that the use of the filter functions might be more efficient for
@@ -309,10 +320,11 @@ some backends, depending on their implementation, (e.g. database-based
 backends could *translate* the filter function into a SQL condition to
 perform the subsetting already within the database).
 
-`Spectra` objects can also be combined with the `merge` function. The resulting
-`Spectra` object will contain an union of the spectra variables of the
-individual objects. Below we combine the `Spectra` object `sps` with an
-additional object containing another MS2 spectrum for Caffeine.
+Multiple `Spectra` objects can also be combined into a single `Spectra` with the
+`c` function. The resulting `Spectra` object will contain an union of the
+spectra variables of the individual objects. Below we combine the `Spectra`
+object `sps` with an additional object containing another MS2 spectrum for
+Caffeine.
 
 ```{r caf}
 caf_df <- DataFrame(msLevel = 2L, name = "Caffeine",
@@ -326,10 +338,10 @@ caf_df$intensity <- list(c(3.837, 32.341, 0.84, 0.534, 100))
 caf <- Spectra(caf_df)
 ```
 
-Next we merge the two objects.
+Next we combine the two objects.
 
-```{r merge}
-sps <- merge(sps, caf)
+```{r combine}
+sps <- c(sps, caf)
 sps
 ```
 
@@ -446,12 +458,12 @@ Each spectrum in `sps_2` thus contains only a single peak.
 ## Changing backends
 
 In the previous sections we learned already that a `Spectra` object can use
-different backends to perform the actual data handling. It is also possible to
-change the backend of a `Spectra` to a different one. We could for example
-change the (`MsBackendMzR`) backend of the `sps_sciex` object to a
-`MsBackendDataFrame` backend to enable use of the data even without the need to
-keep the original mzML files. Below we change the backend of `sps_sciex` to the
-in-memory `MsBackendDataFrame` backend.
+different backends for the actual data handling. It is also possible to
+change the backend of a `Spectra` to a different one with the `setBackend`
+function. We could for example change the (`MsBackendMzR`) backend of the
+`sps_sciex` object to a `MsBackendDataFrame` backend to enable use of the data
+even without the need to keep the original mzML files. Below we change the
+backend of `sps_sciex` to the in-memory `MsBackendDataFrame` backend.
 
 ```{r setbackend}
 print(object.size(sps_sciex), units = "Mb")
@@ -465,6 +477,14 @@ larger than before.
 
 ```{r memory-after-import}
 print(object.size(sps_sciex), units = "Mb")
+```
+
+The `dataStorage` spectrum variable has now changed, while `dataOrigin` still
+keeps the information about the originating files:
+
+```{r new-datastorage}
+head(dataStorage(sps_sciex))
+head(basename(dataOrigin(sps_sciex)))
 ```
 
 ## Parallel processing notes
@@ -499,6 +519,20 @@ base `MsBackend` class could be used instead. The default backends are:
 All of the above mentioned backends support changing all of their their spectra
 variables, **except** the `MsBackendMzR` that does not support changing m/z or
 intensity values for the mass peaks.
+
+With the example below we load the data from a single mzML file and use a
+`MsBackendHdf5Peaks` backend for data storage. The `hdf5path` parameter allows
+us to specify the storage location of the HDF5 file.
+
+```{r hdf5}
+library(msdata)
+fl <- proteomics(full.names = TRUE)[5]
+
+sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
+head(basename(dataStorage(sps_tmt)))
+```
+
+
 
 # Session information
 
