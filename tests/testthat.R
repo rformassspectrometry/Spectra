@@ -10,7 +10,6 @@ fl <- dir(system.file("proteomics", package = "msdata"), full.names = TRUE)
 tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
 sciex_hd5 <- backendInitialize(MsBackendHdf5Peaks(),
-                               files = basename(fileNames(sciex_mzr)),
                                spectraData = spectraData(sciex_mzr),
                                hdf5path = tempdir())
 

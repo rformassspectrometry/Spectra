@@ -2,36 +2,39 @@
 test_that("initializeBackend,MsBackendMzR works", {
     fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
     expect_error(backendInitialize(MsBackendMzR()), "Parameter 'files'")
-    expect_error(backendInitialize(MsBackendMzR(), files = c(fl, fl)),
-                 "Duplicated")
+    expect_error(backendInitialize(MsBackendMzR(), files = 4),
+                 "expected to be a character")
     be <- backendInitialize(MsBackendMzR(), files = fl)
     expect_true(validObject(be))
     expect_true(is(be, "MsBackendMzR"))
-    expect_equal(be@files, fl)
-    expect_equal(be@modCount, c(0L, 0L))
+    expect_equal(unique(be$dataStorage), fl)
     expect_equal(nrow(be@spectraData), 1862)
     expect_equal(be@spectraData$scanIndex, c(1:931, 1:931))
-    expect_equal(be@spectraData$fromFile, Rle(rep(1:2, each = 931)))
+    expect_equal(be@spectraData$dataStorage, Rle(rep(fl, each = 931)))
     expect_true(isReadOnly(be))
 })
 
 test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
-    splt <- split(sciex_mzr, fromFile(sciex_mzr))
+    splt <- split(sciex_mzr, dataStorage(sciex_mzr))
+    expect_equal(peaks(splt[[1]]), sciex_pks[1:931])
+    expect_equal(peaks(splt[[2]]), sciex_pks[932:1862])
     res <- backendMerge(splt)
     expect_equal(res, sciex_mzr)
 
     res <- backendMerge(splt[2:1])
-    expect_equal(res@files, sciex_mzr@files[2:1])
-    expect_equal(rtime(res)[fromFile(res) == 2],
-                 rtime(sciex_mzr)[fromFile(sciex_mzr) == 1])
-    expect_equal(rtime(res)[fromFile(res) == 1],
-                 rtime(sciex_mzr)[fromFile(sciex_mzr) == 2])
+    dstor <- unique(dataStorage(res))
+    expect_equal(unique(res$dataStorage), unique(sciex_mzr$dataStorage)[2:1])
+    expect_equal(rtime(res)[dataStorage(res) == dstor[2]],
+                 rtime(sciex_mzr)[dataStorage(sciex_mzr) == dstor[2]])
+    expect_equal(rtime(res)[dataStorage(res) == dstor[1]],
+                 rtime(sciex_mzr)[dataStorage(sciex_mzr) == dstor[1]])
 
     splt[[2]]@spectraData$some_col <- "a"
     res <- backendMerge(c(splt, tmt_mzr))
-    expect_equal(fileNames(res), c(fileNames(sciex_mzr), fileNames(tmt_mzr)))
-    expect_true(all(res@spectraData$some_col[fromFile(res) == 2] == "a"))
-    expect_true(all(is.na(res@spectraData$some_col[fromFile(res) != 2])))
+    expect_equal(unique(res$dataStorage), c(unique(sciex_mzr$dataStorage),
+                                            unique(tmt_mzr$dataStorage)))
+    expect_true(all(res@spectraData$some_col[dataStorage(res) == dstor[1]] == "a"))
+    expect_true(all(is.na(res@spectraData$some_col[dataStorage(res) == dstor[2]])))
 })
 
 test_that("acquisitionNum,MsBackendMzR works", {
@@ -77,13 +80,13 @@ test_that("collisionEnergy, collisionEnergy<-,MsBackendMzR work", {
     expect_equal(collisionEnergy(sciex_mzr), rn)
 })
 
-test_that("fromFile,MsBackendMzR works", {
+test_that("dataStorage,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(fromFile(be), integer())
+    expect_equal(dataStorage(be), character())
 
-    expect_true(is(fromFile(sciex_mzr), "integer"))
-    expect_true(is(sciex_mzr@spectraData$fromFile, "Rle"))
-    expect_equal(fromFile(sciex_mzr), rep(1:2, each = 931))
+    expect_true(is(dataStorage(sciex_mzr), "character"))
+    expect_true(is(sciex_mzr@spectraData$dataStorage, "Rle"))
+    expect_equal(dataStorage(sciex_mzr), rep(sciex_file, each = 931))
 })
 
 test_that("intensity,MsBackendMzR works", {
@@ -230,9 +233,15 @@ test_that("peaks,MsBackendMzR works", {
     expect_true(is(res[[1]], "matrix"))
     expect_equal(colnames(res[[1]]), c("mz", "intensity"))
 
-    tmp_one <- backendInitialize(MsBackendMzR(), sciex_mzr@files[1])
+    tmp_one <- backendInitialize(MsBackendMzR(), sciex_file[1])
     res_one <- peaks(tmp_one)
     expect_equal(res[1:length(res_one)], res_one)
+
+    ## Arbitrary ordering.
+    idx <- sample(1:length(sciex_mzr))
+    be <- sciex_mzr[idx]
+    pks <- peaks(be)
+    expect_identical(pks, sciex_pks[idx])
 })
 
 test_that("peaksCount,MsBackendMzR works", {
@@ -431,9 +440,9 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(is.logical(res$smoothed))
     expect_true(all(is.na(res$smoothed)))
 
-    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "fromFile"))
+    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "dataStorage"))
     expect_error(spectraData(tmp) <- spd, "scanIndex")
-    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "fromFile",
+    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "dataStorage",
                                         "scanIndex"))
     spectraData(tmp) <- spd
     expect_true(all(is.na(centroided(tmp))))
@@ -468,11 +477,11 @@ test_that("[,MsBackendMzR works", {
 test_that("selectSpectraVariables,MsBackendMzR works", {
     be <- sciex_mzr
 
-    res <- selectSpectraVariables(be, c("fromFile", "msLevel", "rtime",
+    res <- selectSpectraVariables(be, c("dataStorage", "msLevel", "rtime",
                                         "scanIndex"))
-    expect_equal(colnames(res@spectraData), c("fromFile", "msLevel", "rtime",
+    expect_equal(colnames(res@spectraData), c("dataStorage", "msLevel", "rtime",
                                               "scanIndex"))
-    expect_error(selectSpectraVariables(be, c("fromFile", "msLevel")),
+    expect_error(selectSpectraVariables(be, c("dataStorage", "msLevel")),
                  "scanIndex is/are missing")
 })
 
