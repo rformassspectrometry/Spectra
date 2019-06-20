@@ -109,3 +109,32 @@ test_that(".peaksapply works", {
     res_4 <- .peaksapply(sps)
     expect_equal(res_3, res_4)
 })
+
+test_that(".peaks_bin works", {
+    s1 <- cbind(mz = 1:5, intensity = 1:5)
+    s2 <- cbind(mz = 1:5 + 0.1, intensity = 1:5)
+    r1 <- cbind(mz = 1:5 + 0.5, intensity = 1:5)
+    r2 <- cbind(mz = c(2, 4, 6), intensity = c(3, 7, 5))
+    r3 <- cbind(mz = c(2, 4, 6), intensity = c(1.5, 3.5, 5))
+    r31 <- cbind(mz = c(2, 4, 6), intensity = c(1.5, 3.5, 5))
+    r4 <- cbind(mz = c(1, 3, 5), intensity = c(1, 5, 9))
+    expect_equal(.peaks_bin(s1, 1, binSize = 1), r1)
+    expect_equal(.peaks_bin(s1, 1, binSize = 2), r2)
+    expect_equal(.peaks_bin(s1, 1, binSize = 2, fun = mean), r3)
+    expect_equal(.peaks_bin(s1, 1, breaks = seq(0, 7, by = 2)), r4)
+    expect_equal(.peaks_bin(s2, 1, binSize = 1), r1)
+    expect_equal(.peaks_bin(s2, 1, binSize = 2, fun = mean), r31)
+    expect_equal(.peaks_bin(s2, 1, breaks = seq(0, 7, by = 2)), r4)
+})
+
+test_that(".check_ms_level works", {
+    expect_true(.check_ms_level(sciex_mzr, 1))
+    expect_warning(.check_ms_level(sciex_mzr, 2))
+    expect_false(.check_ms_level(sciex_mzr, 2))
+    expect_error(.check_ms_level(sciex_mzr, "a"), "must be numeric")
+
+    expect_true(.check_ms_level(tmt_mzr, 1))
+    expect_true(.check_ms_level(tmt_mzr, 2))
+    expect_true(.check_ms_level(tmt_mzr, c(1, 2)))
+    expect_true(.check_ms_level(tmt_mzr, c(1, 4)))
+})

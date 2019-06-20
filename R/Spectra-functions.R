@@ -39,6 +39,9 @@ addProcessing <- function(object, FUN, ...) {
 #' @param msLevel optional `integer` defining the MS level(s) to which the
 #'     function should be applied.
 #'
+#' @param ... required. Support for passing additional parameters without
+#'     throwing an error.
+#'
 #' @return `matrix` with columns `"mz"` and `"intensity"`.
 #'
 #' @importMethodsFrom IRanges extractList replaceROWS
@@ -83,6 +86,27 @@ addProcessing <- function(object, FUN, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
     x[utils.clean(x[, "intensity"], all), , drop = FALSE]
+}
+
+#' @description
+#'
+#' Bin spectrum. Code taken from MSnbase:::bin_Spectrum
+#'
+#' @inheritParams .peaks_remove
+#'
+#' @return `matrix` with columns `"mz"` and `"intensity"`
+#'
+#' @noRd
+.peaks_bin <- function(x, spectrumMsLevel, binSize = 1L,
+                       breaks = seq(floor(min(x[, 1])),
+                                    ceiling(max(x[, 1])),
+                                    by = binSize), fun = sum,
+                       msLevel = spectrumMsLevel, ...) {
+    if (!(spectrumMsLevel %in% msLevel))
+        return(x)
+    bins <- .bin_values(x[, 2], x[, 1], binSize = binSize, breaks = breaks,
+                        fun = fun)
+    cbind(mz = bins$mids, intensity = bins$x)
 }
 
 #' @description
@@ -175,4 +199,23 @@ addProcessing <- function(object, FUN, ...) {
     }, queue = pqueue, BPPARAM = BPPARAM)
     unsplit(res, f = f, drop = TRUE)
     ## unlist(res, recursive = FALSE, use.names = FALSE)
+}
+
+#' @description
+#'
+#' Simple helper function to test parameter msLevel. Returns `TRUE` if parameter
+#' is OK, `FALSE` if a warning is thrown and throws an error if it is not
+#' a numeric.
+#'
+#' @noRd
+.check_ms_level <- function(object, msLevel) {
+    if (!length(object))
+        return(TRUE)
+    if (!is.numeric(msLevel))
+        stop("'msLevel' must be numeric")
+    if (!any(msLevel(object) %in% msLevel)) {
+        warning("Specified MS levels ", paste0(msLevel, collapse = ","),
+                " not available in 'object'")
+        FALSE
+    } else TRUE
 }

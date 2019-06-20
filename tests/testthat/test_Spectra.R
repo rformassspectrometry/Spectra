@@ -941,6 +941,29 @@ test_that("filterRt,Spectra works", {
 ##
 #### ---------------------------------------------------------------------------
 
+test_that("bin,Spectra works", {
+    sps <- Spectra(tmt_mzr)
+    pks <- peaks(sps)
+    res <- bin(sps, binSize = 2)
+    expect_true(length(res@processingQueue) == 1)
+    res1 <- bin(sps, msLevel = 1, binSize = 2)
+
+    expect_identical(peaks(res1)[res1$msLevel == 2],
+                     pks[sps$msLevel == 2])
+
+    mzr <- range(unlist(mz(sps)))
+    brks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = 2)
+    res1 <- bin(sps, msLevel = 1, binSize = 2, breaks = brks)
+    res1_pks <- peaks(res1)
+    res_pks <- peaks(res)
+    expect_identical(res1_pks[res1$msLevel == 1],
+                     res_pks[res$msLevel == 1])
+    expect_true(all(lengths(res_pks) != lengths(pks)))
+
+    expect_warning(res <- bin(sps, msLevel = 3))
+    expect_identical(res, sps)
+})
+
 test_that("clean,Spectra works", {
     sps <- Spectra()
     res <- clean(sps)

@@ -12,6 +12,8 @@ setGeneric("backendMerge", def = function(object, ...)
     standardGeneric("backendMerge"),
     valueClass = "MsBackend")
 #' @rdname hidden_aliases
+setGeneric("bin", function(object, ...) standardGeneric("bin"))
+#' @rdname hidden_aliases
 setGeneric("clean", function(object, ...) standardGeneric("clean"))
 #' @rdname hidden_aliases
 setGeneric("dataOrigin", function(object, ...) standardGeneric("dataOrigin"))
