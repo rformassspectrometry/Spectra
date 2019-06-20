@@ -1,13 +1,6 @@
 #' @include hidden_aliases.R
 NULL
 
-.valid_ms_backend_mod_count <- function(x, y) {
-    if (length(x) != length(y))
-        "Different number of source files and modification counters."
-    else
-        NULL
-}
-
 .valid_ms_backend_files_from_file <- function(x, y) {
     if (length(x) && !length(y))
         return("'fromFile' can not be empty if 'files' are defined.")
@@ -25,7 +18,7 @@ NULL
 #' @noRd
 #'
 #' @param x spectraData `DataFrame`
-.valid_spectra_data_required_columns <- function(x, columns = c("fromFile")) {
+.valid_spectra_data_required_columns <- function(x, columns = c("dataStorage")) {
     if (nrow(x)) {
         missing_cn <- setdiff(columns, colnames(x))
         if (length(missing_cn))
@@ -93,7 +86,8 @@ NULL
     scanIndex = "integer",
     mz = "NumericList",
     intensity = "NumericList",
-    fromFile = "integer",
+    dataStorage = "character",
+    dataOrigin = "character",
     centroided = "logical",
     smoothed = "logical",
     polarity = "integer",
@@ -117,7 +111,8 @@ NULL
     scanIndex = "scanIndex",
     mz = "mz",
     intensity = "intensity",
-    fromFile = "fromFile",
+    dataStorage = "dataStorage",
+    dataOrigin = "dataOrigin",
     centroided = "centroided",
     smoothed = "smoothed",
     polarity = "polarity",
@@ -153,7 +148,7 @@ MsBackendDataFrame <- function() {
     if (missing(column) || length(column) != 1)
         stop("'column' should be a 'character' of length 1.")
     if (any(colnames(x@spectraData) == column))
-        x@spectraData[, column]
+        x@spectraData[[column]]
     else {
         if (any(names(.SPECTRA_DATA_COLUMN_METHODS) == column))
             do.call(.SPECTRA_DATA_COLUMN_METHODS[column], args = list(x))
@@ -178,7 +173,7 @@ MsBackendDataFrame <- function() {
 #' @importFrom S4Vectors Rle
 #'
 #' @noRd
-.as_rle_spectra_data <- function(x, columns = c("fromFile")) {
+.as_rle_spectra_data <- function(x, columns = c("dataStorage", "dataOrigin")) {
     if (nrow(x) <= 1)
         return(x)
     for (col in colnames(x)) {
@@ -237,4 +232,76 @@ MsBackendDataFrame <- function() {
         else
             do.call(.SPECTRA_DATA_COLUMNS[column], args = list())
     } else stop("column '", column, "' not available")
+}
+
+#' @description
+#'
+#' Helper to be used in the filter functions to select the file/origin in
+#' which the filtering should be performed.
+#'
+#' @param object `MsBackend`
+#'
+#' @param dataStorage `character` or `integer` with either the names of the
+#'     `dataStorage` or their index (in `unique(object$dataStorage)`) in which
+#'     the filtering should be performed.
+#'
+#' @param dataOrigin same as `dataStorage`, but for the `dataOrigin` spectra
+#'     variable.
+#'
+#' @return `logical` of length equal to the number of spectra in `object`.
+#'
+#' @noRd
+.sel_file <- function(object, dataStorage = integer(), dataOrigin = integer()) {
+    if (length(dataStorage)) {
+        lvls <- unique(object@spectraData$dataStorage)
+        if (!(is.numeric(dataStorage) || is.character(dataStorage)))
+            stop("'dataStorage' has to be either an integer with the index of",
+                 " the data storage, or its name")
+        if (is.numeric(dataStorage)) {
+            if (dataStorage < 1 || dataStorage > length(lvls))
+                stop("'dataStorage' should be an integer between 1 and ",
+                     length(lvls))
+            dataStorage <- lvls[dataStorage]
+        }
+        dataStorage(object) %in% dataStorage
+    } else if (length(dataOrigin)) {
+        lvls <- unique(object@spectraData$dataOrigin)
+        if (!(is.numeric(dataOrigin) || is.character(dataOrigin)))
+            stop("'dataOrigin' has to be either an integer with the index of",
+                 " the data origin, or its name")
+        if (is.numeric(dataOrigin)) {
+            if (dataOrigin < 1 || dataOrigin > length(lvls))
+                stop("'dataOrigin' should be an integer between 1 and ",
+                     length(lvls))
+            dataOrigin <- lvls[dataOrigin]
+        }
+        dataOrigin(object) %in% dataOrigin
+    } else rep(TRUE, length(object))
+}
+
+#' Helper function to combine backends that base on [MsBackendDataFrame()].
+#'
+#' @param objects `list` of `MsBackend` objects.
+#'
+#' @return [MsBackend()] object with combined content.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.combine_backend_data_frame <- function(objects) {
+    if (length(objects) == 1)
+        return(objects[[1]])
+    if (!all(vapply(objects, class, character(1)) == class(objects[[1]])))
+        stop("Can only merge backends of the same type: ", class(objects[[1]]))
+    res <- new(class(objects[[1]]))
+    suppressWarnings(
+        res@spectraData <- .as_rle_spectra_data(do.call(
+            .rbind_fill, lapply(objects, function(z) z@spectraData)))
+    )
+    if (any(colnames(res@spectraData) == "mz"))
+        res@spectraData$mz[is.na(res@spectraData$mz)] <- list(numeric())
+    if (any(colnames(res@spectraData) == "intensity"))
+        res@spectraData$intensity[is.na(res@spectraData$intensity)] <-
+            list(numeric())
+    res
 }

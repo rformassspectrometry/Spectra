@@ -17,75 +17,96 @@ test_that("Spectra,missing works", {
     res <- Spectra()
     expect_true(length(res) == 0)
 
-    be <- backendInitialize(MsBackendDataFrame(), files = NA_character_,
-                            spectraData = DataFrame(msLevel = c(1L, 2L),
-                                                    fromFile = 1L))
+    be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
+                                                            fromFile = 1L))
     res <- Spectra(backend = be)
     expect_true(length(res) == 2)
     expect_identical(msLevel(res), c(1L, 2L))
 })
 
+test_that("Spectra,MsBackend works", {
+    res <- Spectra()
+    expect_true(length(res) == 0)
+
+    be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
+                                                            fromFile = 1L))
+    res <- Spectra(be)
+    expect_true(length(res) == 2)
+    expect_identical(msLevel(res), c(1L, 2L))
+})
+
+test_that("Spectra,character works", {
+    res <- Spectra(sciex_file, backend = MsBackendMzR())
+    expect_true(is(res@backend, "MsBackendMzR"))
+    expect_equal(unique(res@backend$dataStorage), sciex_file)
+    expect_identical(rtime(res), rtime(sciex_mzr))
+
+    res_2 <- Spectra(sciex_file)
+    expect_true(is(res@backend, "MsBackendDataFrame"))
+    expect_identical(rtime(res), rtime(res_2))
+})
+
 test_that("setBackend,Spectra works", {
-    df <- DataFrame(fromFile = 1L, rtime = as.numeric(1:9),
+    df <- DataFrame(rtime = as.numeric(1:9),
                     fact = c(2L, 1L, 2L, 1L, 3L, 2L, 3L, 3L, 1L))
-    be <- backendInitialize(MsBackendDataFrame(), NA_character_, df)
-    sps <- Spectra(be)
+    sps <- Spectra(df)
     res <- setBackend(sps, MsBackendDataFrame())
     expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
     expect_identical(sps@backend@spectraData$fact,
                      res@backend@spectraData$fact)
-    expect_identical(fromFile(res), fromFile(sps))
-    expect_identical(fileNames(res), fileNames(sps))
     expect_identical(rtime(res), rtime(sps))
+    expect_identical(dataStorage(res), dataStorage(sps))
+    expect_identical(dataOrigin(res), dataStorage(sps))
 
     ## Use a different factor.
     res <- setBackend(sps, MsBackendDataFrame(), f = df$fact)
     expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
     expect_identical(as.vector(sps@backend@spectraData$fact),
                      as.vector(res@backend@spectraData$fact))
-    expect_identical(fromFile(res), fromFile(sps))
-    expect_identical(fileNames(res), fileNames(sps))
+    expect_identical(dataStorage(res), dataStorage(sps))
     expect_identical(rtime(res), rtime(sps))
 
     ## switch from mzR to DataFrame
     sps <- Spectra(sciex_mzr)
     res <- setBackend(sps, MsBackendDataFrame())
-    expect_identical(fileNames(sps), fileNames(res))
     expect_identical(rtime(sps), rtime(res))
-    expect_identical(fromFile(sps), fromFile(res))
     expect_identical(mz(sps), mz(res))
     expect_true(is(res@backend@spectraData$msLevel, "Rle"))
     expect_true(is(sps@backend@spectraData$msLevel, "Rle"))
     expect_true(is.integer(res$msLevel))
+    expect_identical(dataOrigin(res), dataStorage(sps))
 
-    ## switch back to mzR
-    res2 <- setBackend(res, MsBackendMzR())
-    expect_equal(rtime(res2), rtime(sps))
-    expect_equal(msLevel(res2), msLevel(sps))
-    expect_equal(intensity(res2), intensity(res))
-    expect_true(is(res2@backend@spectraData$msLevel, "Rle"))
+    ## switch from DataFrame to hdf5
+    tdir <- paste0(tempdir(), "/a")
+    res <- setBackend(sps, MsBackendHdf5Peaks(), hdf5path = tdir)
+    expect_identical(rtime(sps), rtime(res))
+    expect_identical(peaks(sps), peaks(res))
+    expect_identical(dataOrigin(res), dataStorage(sps))
+
+    ## from DataFrame to hdf5 providing file names - need to disable
+    ## parallelization
+    res <- setBackend(sps, MsBackendHdf5Peaks(),
+                      files = c(tempfile(), tempfile()),
+                      f = rep(1, length(sps)))
+    expect_identical(rtime(sps), rtime(res))
+    expect_identical(peaks(sps), peaks(res))
 
     ## errors:
-    ## DataFrame without files to mzR
-    expect_error(setBackend(Spectra(be), MsBackendMzR()))
-
-    ## DataFrame with modCount > 0 to mzR
-    res@backend@modCount <- c(0L, 2L)
-    expect_error(setBackend(res, MsBackendMzR(), BPPARAM = SerialParam()))
+    expect_error(setBackend(sps, MsBackendMzR()), "is read-only")
 })
 
-test_that("merge,Spectra works", {
-    df1 <- DataFrame(msLevel = c(1L, 1L, 1L), fromFile = 1L)
+test_that("c,Spectra works", {
+    df1 <- DataFrame(msLevel = c(1L, 1L, 1L))
     df1$mz <- list(c(1.1, 1.2), c(1.5), c(1.4, 1.5, 1.6))
     df1$intensity <- list(c(4.5, 23), 452.1, c(4.1, 342, 123))
     sp1 <- Spectra(df1)
 
-    df2 <- DataFrame(msLevel = c(2L, 2L), fromFile = 1L, rtime = c(1.2, 1.5))
+    df2 <- DataFrame(msLevel = c(2L, 2L), rtime = c(1.2, 1.5))
     df2$mz <- list(1.5, 1.5)
     df2$intensity <- list(1234.1, 34.23)
     sp2 <- Spectra(df2)
 
-    df3 <- DataFrame(msLevel = c(3L, 3L), fromFile = 1L, other_col = "a")
+    df3 <- DataFrame(msLevel = c(3L, 3L), other_col = "a")
     df3$mz <- list(c(1.4, 1.5, 1.6), c(1.8, 1.9))
     df3$intensity <- list(c(123.4, 12, 5), c(43.1, 5))
     sp3 <- Spectra(df3)
@@ -95,7 +116,7 @@ test_that("merge,Spectra works", {
     df4$intensity <- NULL
     sp4 <- Spectra(df4)
 
-    res <- merge(sp1, sp2, sp3)
+    res <- c(sp1, sp2, sp3)
     expect_true(is(res, "Spectra"))
     expect_equal(length(res), sum(nrow(df1), nrow(df2), nrow(df3)))
     expect_identical(msLevel(res), c(1L, 1L, 1L, 2L, 2L, 3L, 3L))
@@ -104,7 +125,7 @@ test_that("merge,Spectra works", {
     expect_true(length(res@processing) == 1)
 
     ## One Spectra without m/z and intensity
-    res <- merge(sp3, sp4)
+    res <- c(sp3, sp4)
     expect_true(is(res, "Spectra"))
     expect_identical(mz(res), NumericList(c(1.4, 1.5, 1.6), c(1.8, 1.9),
                                           numeric(), numeric(),
@@ -113,7 +134,7 @@ test_that("merge,Spectra works", {
     expect_identical(intensity(res), NumericList(c(123.4, 12, 5), c(43.1, 5),
                                                  numeric(), numeric(),
                                                  compress = FALSE))
-    res <- merge(sp4, sp3)
+    res <- c(sp4, sp3)
     expect_true(is(res, "Spectra"))
     expect_identical(mz(res), NumericList(numeric(), numeric(),
                                           c(1.4, 1.5, 1.6), c(1.8, 1.9),
@@ -124,27 +145,30 @@ test_that("merge,Spectra works", {
                                                  compress = FALSE))
 
     ## Two Spectra without m/z and intensity
-    res <- merge(sp4, sp4)
+    res <- c(sp4, sp4)
     expect_true(is(res, "Spectra"))
     expect_identical(mz(res), NumericList(numeric(), numeric(), numeric(),
                                           numeric(), compress = FALSE))
 
     sp1@metadata <- list(version = "1.0.0", date = date())
-    res <- merge(sp1, sp2)
+    res <- c(sp1, sp2)
     expect_equal(res@metadata, sp1@metadata)
 
     sp1@processingQueue <- list(ProcessingStep(sum))
-    expect_error(merge(sp1, sp2), "with non-empty processing")
+    expect_error(c(sp1, sp2), "with non-empty processing")
 
     ## Different backends
     s1 <- Spectra(sciex_mzr)
     s2 <- Spectra(sciex_hd5)
-    expect_error(merge(s1, s2), "backends of the same type")
+    expect_error(c(s1, s2), "backends of the same type")
 
     ## BackendMzR
-    res <- merge(Spectra(tmt_mzr), Spectra(sciex_mzr))
+    res <- c(Spectra(tmt_mzr), Spectra(sciex_mzr))
     expect_identical(msLevel(res), c(msLevel(tmt_mzr), msLevel(sciex_mzr)))
-    expect_identical(msLevel(sciex_mzr), msLevel(filterFile(res, 2:3)))
+    expect_identical(msLevel(sciex_mzr), msLevel(res[dataStorage(res) %in%
+                                                     sciex_file]))
+    expect_identical(msLevel(tmt_mzr), msLevel(res[dataStorage(res) ==
+                                                   dataStorage(tmt_mzr)[1]]))
 })
 
 test_that("acquisitionNum,Spectra works", {
@@ -202,29 +226,39 @@ test_that("collisionEnergy,collisionEnergy<-,Spectra works", {
     expect_error(collisionEnergy(sps) <- c("a", "b", "c"), "'numeric'")
 })
 
-test_that("fileNames,Spectra works", {
+test_that("dataOrigin,Spectra works", {
     sps <- Spectra()
-    res <- fileNames(sps)
+    res <- dataOrigin(sps)
     expect_identical(res, character())
 
     df <- DataFrame(msLevel = c(1L, 2L))
     sps <- Spectra(df)
-    res <- fileNames(sps)
-    expect_identical(res, NA_character_)
+    res <- dataOrigin(sps)
+    expect_identical(res, rep(NA_character_, length(sps)))
 
-    be <- backendInitialize(MsBackendMzR(), file = sciex_file)
-    sps <- Spectra(backend = be)
-    res <- fileNames(sps)
-    expect_identical(res, sciex_file)
+    df <- DataFrame(msLevel = c(1L, 2L), dataOrigin = c("a", "b"))
+    sps <- Spectra(df)
+    res <- dataOrigin(sps)
+    expect_identical(res, c("a", "b"))
+
+    sps <- Spectra(backend = sciex_mzr)
+    res <- dataOrigin(sps)
+    expect_identical(res, dataStorage(sps))
 })
 
-test_that("fromFile,Spectra works", {
+test_that("dataStorage,Spectra works", {
     sps <- Spectra()
-    expect_identical(fromFile(sps), integer())
+    res <- dataStorage(sps)
+    expect_identical(res, character())
 
     df <- DataFrame(msLevel = c(1L, 2L))
     sps <- Spectra(df)
-    expect_identical(fromFile(sps), c(1L, 1L))
+    res <- dataStorage(sps)
+    expect_identical(res, rep("<memory>", 2))
+
+    sps <- Spectra(sciex_mzr)
+    res <- dataStorage(sps)
+    expect_identical(res, rep(sciex_file, each = 931))
 })
 
 test_that("length,Spectra works", {
@@ -291,7 +325,7 @@ test_that("isCentroided,Spectra works", {
     res <- isCentroided(sps)
     expect_identical(res, c(NA, NA))
 
-    sps <- Spectra(backendInitialize(MsBackendMzR(), file = sciex_file))
+    sps <- Spectra(sciex_mzr)
     res <- isCentroided(sps)
     expect_true(length(res) == length(sps))
     expect_true(all(!res))
@@ -323,12 +357,12 @@ test_that("isolationWindowLowerMz,Spectra works", {
     sps <- Spectra()
     expect_identical(isolationWindowLowerMz(sps), numeric())
 
-    sps <- sciex_mzr
+    sps <- Spectra(sciex_mzr)
     expect_true(all(is.na(isolationWindowLowerMz(sps))))
     isolationWindowLowerMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowLowerMz(sps), as.numeric(1:length(sps)))
 
-    sps <- tmt_mzr
+    sps <- Spectra(tmt_mzr)
     expect_true(all(is.na(isolationWindowLowerMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowLowerMz(sps)[msLevel(sps) == 2L])))
 })
@@ -337,12 +371,12 @@ test_that("isolationWindowTargetMz,Spectra works", {
     sps <- Spectra()
     expect_identical(isolationWindowTargetMz(sps), numeric())
 
-    sps <- sciex_mzr
+    sps <- Spectra(sciex_mzr)
     expect_true(all(is.na(isolationWindowTargetMz(sps))))
     isolationWindowTargetMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowTargetMz(sps), as.numeric(1:length(sps)))
 
-    sps <- tmt_mzr
+    sps <- Spectra(tmt_mzr)
     expect_true(all(is.na(isolationWindowTargetMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowTargetMz(sps)[msLevel(sps) == 2L])))
     expect_true(all(isolationWindowTargetMz(sps)[msLevel(sps) == 2L] >
@@ -353,12 +387,12 @@ test_that("isolationWindowUpperMz,Spectra works", {
     sps <- Spectra()
     expect_identical(isolationWindowUpperMz(sps), numeric())
 
-    sps <- sciex_mzr
+    sps <- Spectra(sciex_mzr)
     expect_true(all(is.na(isolationWindowUpperMz(sps))))
     isolationWindowUpperMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowUpperMz(sps), as.numeric(1:length(sps)))
 
-    sps <- tmt_mzr
+    sps <- Spectra(tmt_mzr)
     expect_true(all(is.na(isolationWindowUpperMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowUpperMz(sps)[msLevel(sps) == 2L])))
     expect_true(all(isolationWindowUpperMz(sps)[msLevel(sps) == 2L] >
@@ -597,7 +631,6 @@ test_that("spectraData<-,Spectra works", {
 
     df$mz <- list(11:20, 11:20)
     df$precursorMz <- c(0, 0)
-    df$fromFile <- 1L
 
     spectraData(sps) <- df
     expect_true(!any(spectraVariables(sps) == "add_col"))
@@ -609,10 +642,13 @@ test_that("spectraData<-,Spectra works", {
 
     tmp <- sciex_mzr
     sps <- Spectra(tmp)
-    spectraData(sps)$some_col <- "yes"
+    expect_warning(spectraData(sps)$some_col <- "yes")
     expect_true(any(spectraVariables(sps) == "some_col"))
     expect_true(all(spectraData(sps, "some_col")[, 1] == "yes"))
     expect_true(is(sps@backend@spectraData$some_col, "Rle"))
+    sps$other_col <- "other_value"
+    expect_true(any(spectraVariables(sps) == "other_col"))
+    expect_identical(sps$other_col, rep("other_value", length(sps)))
 
     spd <- spectraData(sps)
     spd$msLevel <- 2L
@@ -637,7 +673,7 @@ test_that("spectraVariables,Spectra works", {
     sps <- Spectra()
     res <- spectraVariables(sps)
     exp_col <- c("msLevel", "rtime", "acquisitionNum", "scanIndex", "mz",
-                 "intensity", "fromFile", "centroided", "smoothed",
+                 "intensity", "dataStorage", "centroided", "smoothed",
                  "polarity", "precScanNum", "precursorMz", "precursorIntensity",
                  "precursorCharge", "collisionEnergy")
     expect_true(all(exp_col %in% res))
@@ -716,10 +752,10 @@ test_that("[,Spectra works", {
     expect_true(length(res) == 0)
 
     sps <- Spectra(sciex_mzr)
-    tmp <- sps[fromFile(sps) == 2L, ]
-    expect_true(all(fromFile(tmp) == 1))
-    expect_equal(fileNames(tmp), fileNames(sps)[2])
-    expect_equal(rtime(tmp), rtime(sps)[fromFile(sps) == 2])
+    tmp <- sps[dataStorage(sps) == sciex_file[2], ]
+    expect_true(all(dataStorage(tmp) == sciex_file[2]))
+    expect_equal(unique(tmp$dataStorage), sciex_file[2])
+    expect_equal(rtime(tmp), rtime(sps)[dataStorage(sps) == sciex_file[2]])
 })
 
 test_that("filterAcquisitionNum,Spectra works", {
@@ -729,8 +765,46 @@ test_that("filterAcquisitionNum,Spectra works", {
     expect_equal(length(res@processing), 1)
 
     sps <- Spectra(sciex_mzr)
-    res <- filterAcquisitionNum(sps, n = 1:10, file = 2L)
-    expect_equal(acquisitionNum(res), c(1:sum(fromFile(sps) == 1), 1:10))
+    res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = sciex_file[2])
+    expect_equal(acquisitionNum(res),
+                 c(1:sum(dataStorage(sps) == sciex_file[1]), 1:10))
+})
+
+test_that("filterDataOrigin,Spectra works", {
+    sps <- Spectra()
+    res <- filterDataOrigin(sps)
+    expect_true(length(res) == 0)
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(sciex_mzr)
+    res <- filterDataOrigin(sps, dataOrigin = "2")
+    expect_true(length(res) == 0)
+    res <- filterDataOrigin(sps, sciex_file[1])
+    expect_identical(rtime(res), rtime(sps)[1:931])
+    expect_true(length(res@processing) > length(sps@processing))
+
+    dorig <- rep(letters[1:7], each = length(sps)/7)
+    dataOrigin(sps) <- dorig
+    res <- filterDataOrigin(sps, dataOrigin = c("d", "a"))
+    expect_equal(unique(dataOrigin(res)), c("d", "a"))
+    expect_equal(rtime(res)[1:266], rtime(sps)[sps$dataOrigin == "d"])
+    expect_equal(peaks(res)[1:266], SimpleList(sciex_pks[sps$dataOrigin == "d"]))
+})
+
+test_that("filterDataStorage,Spectra works", {
+    sps <- Spectra()
+    res <- filterDataStorage(sps)
+    expect_true(length(res) == 0)
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(sciex_mzr)
+    res <- filterDataStorage(sps, "2")
+    expect_true(length(res) == 0)
+    res <- filterDataStorage(sps, sciex_file[2])
+    expect_identical(rtime(res), rtime(sps)[dataStorage(sps) == sciex_file[2]])
+    expect_true(length(res@processing) > length(sps@processing))
+    expect_identical(peaks(res),
+                     SimpleList(sciex_pks[dataStorage(sps) == sciex_file[2]]))
 })
 
 test_that("filterEmptySpectra,Spectra works", {
@@ -763,19 +837,6 @@ test_that("filterEmptySpectra,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- filterEmptySpectra(sps)
     expect_equal(rtime(res), rtime(sps))
-})
-
-test_that("filterFile,Spectra works", {
-    sps <- Spectra()
-    res <- filterFile(sps)
-    expect_true(length(res) == 0)
-    expect_true(length(res@processing) == 1)
-
-    sps <- Spectra(sciex_mzr)
-    res <- filterFile(sps, 2)
-    expect_true(all(fromFile(res) == 1L))
-    expect_equal(fileNames(res), fileNames(sps)[2])
-    expect_equal(peaks(res), peaks(sps)[fromFile(sps) == 2])
 })
 
 test_that("filterIsolationWindow,Spectra works", {
@@ -895,6 +956,11 @@ test_that("clean,Spectra works", {
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.clean_peaks,
                                 list(all = TRUE, msLevel = 2L)))
+
+    res <- clean(Spectra(sciex_mzr), all = TRUE)
+    pks_res <- lapply(sciex_pks, .clean_peaks, all = TRUE,
+                      spectrumMsLevel = 1L)
+    expect_identical(peaks(res), SimpleList(pks_res))
 })
 
 test_that("removePeaks,Spectra works", {
@@ -904,4 +970,11 @@ test_that("removePeaks,Spectra works", {
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.remove_peaks,
                                 list(t = 10, msLevel = integer())))
+
+    sps <- Spectra(sciex_mzr)
+    centroided(sps) <- TRUE
+    res <- removePeaks(sps, t = 5000)
+    pks_res <- lapply(sciex_pks, Spectra:::.remove_peaks, t = 5000,
+                      spectrumMsLevel = 1L, centroided = TRUE)
+    expect_identical(peaks(res), SimpleList(pks_res))
 })

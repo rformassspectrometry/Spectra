@@ -1,6 +1,13 @@
 #' @include hidden_aliases.R
 NULL
 
+.valid_ms_backend_mod_count <- function(x, y) {
+    if (length(x) != length(y))
+        "Different number of source files and modification counters."
+    else
+        NULL
+}
+
 #' @rdname MsBackend
 #'
 #' @export MsBackendHdf5Peaks
@@ -25,13 +32,15 @@ MsBackendHdf5Peaks <- function() {
 #' @noRd
 .valid_h5files <- function(x) {
     msg <- NULL
-    if (length(x) != length(unique(x)))
-        msg <- c(msg, paste0("No duplicated HDF5 files allowed"))
-    if (!all(file.exists(x)))
-        msg <- c(msg, paste0("File(s) ", paste(x[!file.exists(x)],
-                                               collapse = ", "),
-                             " do not exist"))
-    msg <- c(msg, unlist(lapply(x, .valid_h5peaks_file), use.names = FALSE))
+    if (length(x)) {
+        if (length(x) != length(unique(x)))
+            msg <- c(msg, paste0("No duplicated HDF5 files allowed"))
+        if (!all(file.exists(x)))
+            msg <- c(msg, paste0("File(s) ", paste(x[!file.exists(x)],
+                                                   collapse = ", "),
+                                 " do not exist"))
+        msg <- c(msg, unlist(lapply(x, .valid_h5peaks_file), use.names = FALSE))
+    }
     msg
 }
 
@@ -172,6 +181,8 @@ MsBackendHdf5Peaks <- function() {
                               modCount = 0L, prune = TRUE) {
     if (length(x) != length(scanIndex))
         stop("lengths of 'x' and 'scanIndex' have to match")
+    if (any(duplicated(scanIndex)))
+        stop("no duplicated values in 'scanIndex' allowed")
     requireNamespace("rhdf5", quitely = TRUE)
     h5 <- rhdf5::H5Fopen(h5file)
     on.exit(invisible(rhdf5::H5Fclose(h5)))
