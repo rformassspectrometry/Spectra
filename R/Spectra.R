@@ -1180,7 +1180,7 @@ setMethod("clean", "Spectra",
                   stop("Argument 'all' must be a logical of length 1")
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .clean_peaks, all = all,
+              object <- addProcessing(object, .peaks_clean, all = all,
                                       msLevel = msLevel.)
               object@processing <- .logging(object@processing,
                                             "Spectra of MS level(s) ",
@@ -1216,7 +1216,7 @@ setMethod("removePeaks", "Spectra",
                   stop("Argument 't' has to be either numeric of 'min'.")
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .remove_peaks, t = t,
+              object <- addProcessing(object, .peaks_remove, t = t,
                                       msLevel = msLevel.)
               object@processing <- .logging(object@processing,
                                             "Signal <= ", t, " in MS level(s) ",

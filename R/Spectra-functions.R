@@ -49,7 +49,7 @@ addProcessing <- function(object, FUN, ...) {
 #' @importClassesFrom IRanges IRanges
 #'
 #' @noRd
-.remove_peaks <- function(x, spectrumMsLevel, centroided = NA, t = "min",
+.peaks_remove <- function(x, spectrumMsLevel, centroided = NA, t = "min",
                           msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
@@ -76,12 +76,12 @@ addProcessing <- function(object, FUN, ...) {
 #'
 #' Clean spectrum by removing 0-intensity peaks.
 #'
-#' @inheritParams .remove_peaks
+#' @inheritParams .peaks_remove
 #'
 #' @return `matrix` with columns `"mz"` and `"intensity"`.
 #'
 #' @noRd
-.clean_peaks <- function(x, spectrumMsLevel, all = FALSE,
+.peaks_clean <- function(x, spectrumMsLevel, all = FALSE,
                          msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
