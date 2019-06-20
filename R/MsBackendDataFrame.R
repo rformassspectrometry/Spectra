@@ -605,8 +605,6 @@ setMethod("filterRt", "MsBackendDataFrame",
           function(object, rt = numeric(), msLevel = integer()) {
               if (length(rt)) {
                   rt <- range(rt)
-                  if (!is.numeric(rt))
-                      stop("'rt' must be a numeric")
                   if (!length(msLevel))
                       msLevel <- unique(msLevel(object))
                   sel_ms <- msLevel(object) %in% msLevel
