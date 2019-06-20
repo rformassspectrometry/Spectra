@@ -932,6 +932,8 @@ test_that("filterRt,Spectra works", {
     expect_true(all(rtime(res) >= 100 & rtime(res) <= 120))
     expect_error(filterRt(sps, rt = c(100)))
     expect_error(filterRt(sps, rt = c(120, 100)))
+    expect_error(filterRt(sps, rt = c("100", "120")))
+    expect_error(filterRt(sps, rt = c(100, 120), msLevel. = "1"))
 
     res <- filterRt(sps, rt = c(100, 120), msLevel = 2L)
     expect_equal(rtime(res), rtime(sps))
