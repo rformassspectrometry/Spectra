@@ -203,7 +203,7 @@ applyProcessing <- function(object, f = dataStorage(object),
                                     use.names = FALSE))]
     object@backend <- bknds
     object@processing <- .logging(object@processing,
-                                  "Apply processing queue with ",
+                                  "Applied processing queue with ",
                                   length(object@processingQueue),
                                   " steps")
     object@processingQueue <- list()
