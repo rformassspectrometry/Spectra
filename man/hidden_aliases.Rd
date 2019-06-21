@@ -301,7 +301,7 @@ setBackend(object, backend, ...)
   acquisitionNum = integer())
 
 \S4method{filterRt}{MsBackendDataFrame}(object, rt = numeric(),
-  msLevel = unique(msLevel(object)))
+  msLevel. = unique(msLevel(object)))
 
 \S4method{backendInitialize}{MsBackendHdf5Peaks}(object,
   files = character(), spectraData = DataFrame(),
