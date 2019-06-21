@@ -604,11 +604,9 @@ setMethod("filterPrecursorScan", "MsBackendDataFrame",
 
 #' @rdname hidden_aliases
 setMethod("filterRt", "MsBackendDataFrame",
-          function(object, rt = numeric(), msLevel = integer()) {
+          function(object, rt = numeric(), msLevel = unique(msLevel(object))) {
               if (length(rt)) {
                   rt <- range(rt)
-                  if (!length(msLevel))
-                      msLevel <- unique(msLevel(object))
                   sel_ms <- msLevel(object) %in% msLevel
                   sel_rt <- rtime(object) >= rt[1] &
                       rtime(object) <= rt[2] & sel_ms
