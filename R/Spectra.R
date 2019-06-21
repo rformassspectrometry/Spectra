@@ -172,11 +172,11 @@ NULL
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `rtime`, `rtime<-`: gets or sets the retention times for each
-#'   spectrum.  `rtime` returns a `numeric` vector (length equal to
-#'   the number of spectra) with the retention time for each spectrum.
-#'   `rtime<-` expects a numeric vector with length equal to the
-#'   number of spectra.
+#' - `rtime`, `rtime<-`: gets or sets the retention times (in seconds)
+#'   for each spectrum.  `rtime` returns a `numeric` vector (length
+#'   equal to the number of spectra) with the retention time for each
+#'   spectrum.  `rtime<-` expects a numeric vector with length equal
+#'   to the number of spectra.
 #'
 #' - `scanIndex`: returns an `integer` vector with the *scan index*
 #'   for each spectrum. This represents the relative index of the
@@ -263,9 +263,10 @@ NULL
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'   `Spectra` (with spectra in their original order).
 #'
-#' - `filterRt`: retains spectra of MS level `msLevel` with retention times
-#'   within (`>=`) `rt[1]` and (`<=`) `rt[2]`. Returns the filtered `Spectra`
-#'   (with spectra in their original order).
+#' - `filterRt`: retains spectra of MS level `msLevel` with retention
+#'   times (in seconds) within (`>=`) `rt[1]` and (`<=`)
+#'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
+#'   original order).
 #'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
@@ -1126,6 +1127,10 @@ setMethod("filterPrecursorScan", "Spectra",
 #' @rdname Spectra
 setMethod("filterRt", "Spectra",
           function(object, rt = numeric(), msLevel. = unique(msLevel(object))) {
+              if (!is.numeric(msLevel.))
+                  stop("Please provide a numeric MS level.")
+              if (length(rt) != 2L || !is.numeric(rt) || rt[1] >= rt[2])
+                  stop("Please provide a lower and upper numeric retention time range.")
               suppressWarnings(rt <- range(rt))
               object@backend <- filterRt(object@backend, rt, msLevel.)
               object@processing <- .logging(

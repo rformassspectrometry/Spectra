@@ -457,11 +457,11 @@ and acquisition number (\code{interger}) of the precursor for MS level
 2 spectra from the object. Returns a vector of length equal to
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
-\item \code{rtime}, \code{rtime<-}: gets or sets the retention times for each
-spectrum.  \code{rtime} returns a \code{numeric} vector (length equal to
-the number of spectra) with the retention time for each spectrum.
-\code{rtime<-} expects a numeric vector with length equal to the
-number of spectra.
+\item \code{rtime}, \code{rtime<-}: gets or sets the retention times (in seconds)
+for each spectrum.  \code{rtime} returns a \code{numeric} vector (length
+equal to the number of spectra) with the retention time for each
+spectrum.  \code{rtime<-} expects a numeric vector with length equal
+to the number of spectra.
 \item \code{scanIndex}: returns an \code{integer} vector with the \emph{scan index}
 for each spectrum. This represents the relative index of the
 spectrum within each file. Note that this can be different to the
@@ -535,9 +535,10 @@ spectra in their original order).
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
-\item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times
-within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}. Returns the filtered \code{Spectra}
-(with spectra in their original order).
+\item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention
+times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
+\code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
+original order).
 \item \code{selectSpectraVariables}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
