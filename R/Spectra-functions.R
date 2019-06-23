@@ -201,21 +201,35 @@ addProcessing <- function(object, FUN, ...) {
     ## unlist(res, recursive = FALSE, use.names = FALSE)
 }
 
-#' @description
+#' @export applyProcessing
 #'
-#' Simple helper function to test parameter msLevel. Returns `TRUE` if parameter
-#' is OK, `FALSE` if a warning is thrown and throws an error if it is not
-#' a numeric.
-#'
-#' @noRd
-.check_ms_level <- function(object, msLevel) {
-    if (!length(object))
-        return(TRUE)
-    if (!is.numeric(msLevel))
-        stop("'msLevel' must be numeric")
-    if (!any(msLevel(object) %in% msLevel)) {
-        warning("Specified MS levels ", paste0(msLevel, collapse = ","),
-                " not available in 'object'")
-        FALSE
-    } else TRUE
+#' @rdname Spectra
+applyProcessing <- function(object, f = dataStorage(object),
+                            BPPARAM = bpparam(), ...) {
+    if (!length(object@processingQueue))
+        return(object)
+    if (isReadOnly(object@backend))
+        stop(class(object@backend), " is read-only. 'applyProcessing' works ",
+             "only with backends that support writing data.")
+    if (!is.factor(f))
+        f <- factor(f, levels = unique(f))
+    if (length(f) != length(object))
+        stop("length 'f' has to be equal to the length of 'object' (",
+             length(object), ")")
+    bknds <- bplapply(split(object@backend, f = f), function(z, queue) {
+        peaks(z) <- .apply_processing_queue(peaks(z), msLevel(z),
+                                            centroided(z), queue)
+        z
+    }, queue = object@processingQueue, BPPARAM = BPPARAM)
+    bknds <- backendMerge(bknds)
+    if (is.unsorted(f))
+        bknds <- bknds[order(unlist(split(seq_along(bknds), f),
+                                    use.names = FALSE))]
+    object@backend <- bknds
+    object@processing <- .logging(object@processing,
+                                  "Applied processing queue with ",
+                                  length(object@processingQueue),
+                                  " steps")
+    object@processingQueue <- list()
+    object
 }

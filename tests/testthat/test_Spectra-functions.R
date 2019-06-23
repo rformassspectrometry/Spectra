@@ -110,31 +110,71 @@ test_that(".peaksapply works", {
     expect_equal(res_3, res_4)
 })
 
-test_that(".peaks_bin works", {
-    s1 <- cbind(mz = 1:5, intensity = 1:5)
-    s2 <- cbind(mz = 1:5 + 0.1, intensity = 1:5)
-    r1 <- cbind(mz = 1:5 + 0.5, intensity = 1:5)
-    r2 <- cbind(mz = c(2, 4, 6), intensity = c(3, 7, 5))
-    r3 <- cbind(mz = c(2, 4, 6), intensity = c(1.5, 3.5, 5))
-    r31 <- cbind(mz = c(2, 4, 6), intensity = c(1.5, 3.5, 5))
-    r4 <- cbind(mz = c(1, 3, 5), intensity = c(1, 5, 9))
-    expect_equal(.peaks_bin(s1, 1, binSize = 1), r1)
-    expect_equal(.peaks_bin(s1, 1, binSize = 2), r2)
-    expect_equal(.peaks_bin(s1, 1, binSize = 2, fun = mean), r3)
-    expect_equal(.peaks_bin(s1, 1, breaks = seq(0, 7, by = 2)), r4)
-    expect_equal(.peaks_bin(s2, 1, binSize = 1), r1)
-    expect_equal(.peaks_bin(s2, 1, binSize = 2, fun = mean), r31)
-    expect_equal(.peaks_bin(s2, 1, breaks = seq(0, 7, by = 2)), r4)
-})
+test_that("applyProcessing works", {
+    ## Initialize required objects.
+    sps_mzr <- filterRt(Spectra(sciex_mzr), rt = c(10, 20))
+    ## Add processings.
+    centroided(sps_mzr) <- TRUE
+    sps_mzr <- removePeaks(sps_mzr, t = 5000)
+    sps_mzr <- clean(sps_mzr, all = TRUE)
+    expect_true(length(sps_mzr@processingQueue) == 2)
+    expect_error(applyProcessing(sps_mzr), "is read-only")
 
-test_that(".check_ms_level works", {
-    expect_true(.check_ms_level(sciex_mzr, 1))
-    expect_warning(.check_ms_level(sciex_mzr, 2))
-    expect_false(.check_ms_level(sciex_mzr, 2))
-    expect_error(.check_ms_level(sciex_mzr, "a"), "must be numeric")
+    ## Create writeable backends.
+    sps_mem <- setBackend(sps_mzr, backend = MsBackendDataFrame())
+    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
+                         files = c(tempfile(), tempfile()),
+                         f = rep(1, length(sps_mzr)))
+    expect_true(length(sps_mem@processingQueue) == 2)
+    expect_true(length(sps_h5@processingQueue) == 2)
+    expect_identical(peaks(sps_mzr), peaks(sps_mem))
+    expect_identical(peaks(sps_h5), peaks(sps_mem))
 
-    expect_true(.check_ms_level(tmt_mzr, 1))
-    expect_true(.check_ms_level(tmt_mzr, 2))
-    expect_true(.check_ms_level(tmt_mzr, c(1, 2)))
-    expect_true(.check_ms_level(tmt_mzr, c(1, 4)))
+    ## MsBackendDataFrame
+    res <- applyProcessing(sps_mem)
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) > length(sps_mem@processing))
+    expect_identical(rtime(res), rtime(sps_mem))
+    expect_identical(peaks(res), peaks(sps_mem))
+
+    ## MsBackendHdf5Peaks
+    res <- applyProcessing(sps_h5)
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) > length(sps_h5@processing))
+    expect_identical(rtime(res), rtime(sps_mem))
+    expect_identical(peaks(res), peaks(sps_mem))
+    expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
+
+    ## Applying the processing queue invalidated the original object!
+    expect_error(peaks(sps_h5))
+    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
+                         files = c(tempfile(), tempfile()),
+                         f = rep(1, length(sps_mzr)))
+
+    ## Use an arbitrary splitting factor ensuring that the results are still OK.
+    f <- rep(letters[1:9], 8)
+    f <- sample(f)
+
+    ## MsBackendHdf5Peaks
+    res <- applyProcessing(sps_mem, f = f)
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) > length(sps_mem@processing))
+    expect_identical(rtime(res), rtime(sps_mem))
+    expect_identical(peaks(res), peaks(sps_mem))
+
+    ## MsBackendHdf5Peaks: throws an error, because the factor f does not
+    ## match the dataStorage.
+    expect_error(applyProcessing(sps_h5, f = f))
+
+    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
+                         files = c(tempfile(), tempfile()),
+                         f = rep(1, length(sps_mzr)))
+    res <- applyProcessing(sps_h5, f = rep(1, length(sps_h5)))
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) > length(sps_h5@processing))
+    expect_identical(rtime(res), rtime(sps_mem))
+    expect_identical(peaks(res), peaks(sps_mem))
+    expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
+
+    expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")
 })

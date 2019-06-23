@@ -454,6 +454,23 @@ intensity(sps_2)
 
 Each spectrum in `sps_2` thus contains only a single peak.
 
+Finally, for `Spectra` that use a *writeable* backend, such as the
+`MsBackendDataFrame` or `MsBackendHdf5Peaks`, it is possible to apply the
+processing queue to the peak data and write that back to the data storage with
+the `applyProcessing` function. Below we use this to make all data manipulations
+on peak data of the `sps` object persistent.
+
+```{r applyProcessing}
+length(sps@processingQueue)
+
+sps <- applyProcessing(sps)
+length(sps@processingQueue)
+sps
+```
+
+Before `applyProcessing` the lazy evaluation queue contained 2 processing steps,
+which were then applied to the peak data and *written* to the data storage.
+
 
 ## Changing backends
 

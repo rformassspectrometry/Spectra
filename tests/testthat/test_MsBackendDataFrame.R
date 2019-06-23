@@ -792,7 +792,7 @@ test_that("filterPrecursorScan,MsBackendDataFrame works", {
 test_that("filterRt,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(filterRt(be), be)
-    expect_true(length(filterRt(be, rt = 2)) == 0)
+    expect_true(length(filterRt(be, rt = 1:2)) == 0)
 
     df <- DataFrame(rtime = c(1, 2, 3, 4, 1, 2, 6, 7, 9),
                     index = 1:9)

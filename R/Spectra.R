@@ -20,7 +20,10 @@ NULL
 #' The `Spectra` class uses by default a lazy data manipulation strategy,
 #' i.e. data manipulations such as performed with `removePeaks` are not applied
 #' immediately to the data, but applied on-the-fly to the spectrum data once it
-#' is retrieved.
+#' is retrieved. For some backends that allow to write data back to the data
+#' storage (such as the [MsBackendDataFrame()] and [MsBackendHdf5Peaks()]) it
+#' is possible to apply to queue with the `applyProcessing` function. See the
+#' *Data manipulation and analysis methods* section below for more details.
 #'
 #' @section Creation of objects, conversion and changing the backend:
 #'
@@ -172,11 +175,11 @@ NULL
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `rtime`, `rtime<-`: gets or sets the retention times for each
-#'   spectrum.  `rtime` returns a `numeric` vector (length equal to
-#'   the number of spectra) with the retention time for each spectrum.
-#'   `rtime<-` expects a numeric vector with length equal to the
-#'   number of spectra.
+#' - `rtime`, `rtime<-`: gets or sets the retention times (in seconds)
+#'   for each spectrum.  `rtime` returns a `numeric` vector (length
+#'   equal to the number of spectra) with the retention time for each
+#'   spectrum.  `rtime<-` expects a numeric vector with length equal
+#'   to the number of spectra.
 #'
 #' - `scanIndex`: returns an `integer` vector with the *scan index*
 #'   for each spectrum. This represents the relative index of the
@@ -263,9 +266,10 @@ NULL
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'   `Spectra` (with spectra in their original order).
 #'
-#' - `filterRt`: retains spectra of MS level `msLevel` with retention times
-#'   within (`>=`) `rt[1]` and (`<=`) `rt[2]`. Returns the filtered `Spectra`
-#'   (with spectra in their original order).
+#' - `filterRt`: retains spectra of MS level `msLevel` with retention
+#'   times (in seconds) within (`>=`) `rt[1]` and (`<=`)
+#'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
+#'   original order).
 #'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
@@ -284,12 +288,14 @@ NULL
 #'
 #' Many data manipulation operations, such as those listed in this section, are
 #' not applied immediately to the spectra, but added to a
-#' *lazy processinq queue*. Operations stored in this queue are applied
-#' on-the-fly to spectra data each time it is accessed. This lazy
+#' *lazy processing/manipulation queue*. Operations stored in this queue are
+#' applied on-the-fly to spectra data each time it is accessed. This lazy
 #' execution guarantees the same functionality for `Spectra` objects with
 #' any backend, i.e. backends supporting to save changes to spectrum data
-#' ([MsBackendDataFrame()] as well as read-only backends (such
-#' as the [MsBackendMzR()]).
+#' ([MsBackendDataFrame()] or [MsBackendHdf5Peaks()]) as well as read-only
+#' backends (such as the [MsBackendMzR()]). Note that for the former it is
+#' possible to apply the processing queue and write the modified peak data back
+#' to the data storage with the `applyProcessing` function.
 #'
 #' - `addProcessing`: adds an arbitrary function that should be applied to the
 #'   peaks matrix of every spectrum in `object`. The function (can be passed
@@ -300,8 +306,13 @@ NULL
 #'   definition. Additional arguments can be passed with `...`. Examples are
 #'   provided in the package vignette.
 #'
-#' - `bin`: aggregates individual spectra into discrete (m/z) bins. All
-#'   intensity values for peaks falling into the same bin are summed.
+#' - `applyProcessing`: for `Spectra` objects that use a **writeable** backend
+#'   only: apply all steps from the lazy processing queue to the peak data and
+#'   write it back to the data storage. Parameter `f` allows to specify how
+#'   `object` should be split for parallel processing. This should either be
+#'   equal to the `dataStorage`, or `f = rep(1, length(object))` to disable
+#'   parallel processing alltogether. Other partitionings might result in
+#'   errors (especially if a `MsBackendHdf5Peaks` backend is used).
 #'
 #' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
@@ -1134,6 +1145,10 @@ setMethod("filterPrecursorScan", "Spectra",
 #' @rdname Spectra
 setMethod("filterRt", "Spectra",
           function(object, rt = numeric(), msLevel. = unique(msLevel(object))) {
+              if (!is.numeric(msLevel.))
+                  stop("Please provide a numeric MS level.")
+              if (length(rt) != 2L || !is.numeric(rt) || rt[1] >= rt[2])
+                  stop("Please provide a lower and upper numeric retention time range.")
               suppressWarnings(rt <- range(rt))
               object@backend <- filterRt(object@backend, rt, msLevel.)
               object@processing <- .logging(
