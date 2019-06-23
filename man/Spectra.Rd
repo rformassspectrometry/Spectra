@@ -3,6 +3,7 @@
 \docType{methods}
 \name{addProcessing}
 \alias{addProcessing}
+\alias{applyProcessing}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -70,6 +71,9 @@
 \title{The Spectra class to manage and access MS data}
 \usage{
 addProcessing(object, FUN, ...)
+
+applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
+  ...)
 
 \S4method{Spectra}{DataFrame}(object, processingQueue = list(),
   metadata = list(), ..., backend = MsBackendDataFrame(),
@@ -221,6 +225,14 @@ for more details.}
 
 \item{...}{Additional arguments.}
 
+\item{f}{For \code{setBackend}: factor defining how to split the data for
+parallelized copying of the spectra data to the new backend. For some
+backends changing this parameter can lead to errors.}
+
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
+information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
+of the \linkS4class{MsBackend}.}
+
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
 
@@ -231,17 +243,9 @@ section on creation of \code{Spectra} objects for details. For \code{setBackend}
 instance of \linkS4class{MsBackend}. See section on creation of \code{Spectra}
 objects for details.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
-information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
-of the \linkS4class{MsBackend}.}
-
 \item{source}{For \code{Spectra}: instance of \linkS4class{MsBackend} that can be used
 to import spectrum data from the provided files. See section \emph{Creation
 of objects, conversion and changing the backend} for more details.}
-
-\item{f}{For \code{setBackend}: factor defining how to split the data for
-parallelized copying of the spectra data to the new backend. For some
-backends changing this parameter can lead to errors.}
 
 \item{x}{A \code{Spectra} object.}
 
@@ -326,7 +330,10 @@ on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}) or HDF5 (\code{\li
 The \code{Spectra} class uses by default a lazy data manipulation strategy,
 i.e. data manipulations such as performed with \code{removePeaks} are not applied
 immediately to the data, but applied on-the-fly to the spectrum data once it
-is retrieved.
+is retrieved. For some backends that allow to write data back to the data
+storage (such as the \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} and \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it
+is possible to apply to queue with the \code{applyProcessing} function. See the
+\emph{Data manipulation and analysis methods} section below for more details.
 }
 \section{Creation of objects, conversion and changing the backend}{
 
@@ -559,12 +566,14 @@ objects.
 
 Many data manipulation operations, such as those listed in this section, are
 not applied immediately to the spectra, but added to a
-\emph{lazy processinq queue}. Operations stored in this queue are applied
-on-the-fly to spectra data each time it is accessed. This lazy
+\emph{lazy processing/manipulation queue}. Operations stored in this queue are
+applied on-the-fly to spectra data each time it is accessed. This lazy
 execution guarantees the same functionality for \code{Spectra} objects with
 any backend, i.e. backends supporting to save changes to spectrum data
-(\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} as well as read-only backends (such
-as the \code{\link[=MsBackendMzR]{MsBackendMzR()}}).
+(\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} or \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) as well as read-only
+backends (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}}). Note that for the former it is
+possible to apply the processing queue and write the modified peak data back
+to the data storage with the \code{applyProcessing} function.
 \itemize{
 \item \code{addProcessing}: adds an arbitrary function that should be applied to the
 peaks matrix of every spectrum in \code{object}. The function (can be passed
@@ -574,6 +583,13 @@ the first containing the m/z values of the peaks and the second the
 corresponding intensities. The function has to have \code{...} in its
 definition. Additional arguments can be passed with \code{...}. Examples are
 provided in the package vignette.
+\item \code{applyProcessing}: for \code{Spectra} objects that use a \strong{writeable} backend
+only: apply all steps from the lazy processing queue to the peak data and
+write it back to the data storage. Parameter \code{f} allows to specify how
+\code{object} should be split for parallel processing. This should either be
+equal to the \code{dataStorage}, or \code{f = rep(1, length(object))} to disable
+parallel processing alltogether. Other partitionings might result in
+errors (especially if a \code{MsBackendHdf5Peaks} backend is used.
 \item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
 0-intensity peaks next to non-zero intensity peaks are retained while with
 \code{all = TRUE} all 0-intensity peaks are removed.
