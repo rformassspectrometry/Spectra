@@ -233,3 +233,22 @@ applyProcessing <- function(object, f = dataStorage(object),
     object@processingQueue <- list()
     object
 }
+
+#' @description
+#'
+#' Simple helper function to test parameter msLevel. Returns `TRUE` if parameter
+#' is OK, `FALSE` if a warning is thrown and throws an error if it is not
+#' a numeric.
+#'
+#' @noRd
+.check_ms_level <- function(object, msLevel) {
+    if (!length(object))
+        return(TRUE)
+    if (!is.numeric(msLevel))
+        stop("'msLevel' must be numeric")
+    if (!any(msLevel(object) %in% msLevel)) {
+        warning("Specified MS levels ", paste0(msLevel, collapse = ","),
+                " not available in 'object'")
+        FALSE
+    } else TRUE
+}

@@ -178,3 +178,15 @@ test_that("applyProcessing works", {
 
     expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")
 })
+
+test_that(".check_ms_level works", {
+    expect_true(.check_ms_level(sciex_mzr, 1))
+    expect_warning(.check_ms_level(sciex_mzr, 2))
+    expect_false(.check_ms_level(sciex_mzr, 2))
+    expect_error(.check_ms_level(sciex_mzr, "a"), "must be numeric")
+
+    expect_true(.check_ms_level(tmt_mzr, 1))
+    expect_true(.check_ms_level(tmt_mzr, 2))
+    expect_true(.check_ms_level(tmt_mzr, c(1, 2)))
+    expect_true(.check_ms_level(tmt_mzr, c(1, 4)))
+})

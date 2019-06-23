@@ -598,7 +598,9 @@ write it back to the data storage. Parameter \code{f} allows to specify how
 \code{object} should be split for parallel processing. This should either be
 equal to the \code{dataStorage}, or \code{f = rep(1, length(object))} to disable
 parallel processing alltogether. Other partitionings might result in
-errors (especially if a \code{MsBackendHdf5Peaks} backend is used.
+errors (especially if a \code{MsBackendHdf5Peaks} backend is used).
+\item \code{bin}: aggregates individual spectra into discrete (m/z) bins. All
+intensity values for peaks falling into the same bin are summed.
 \item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
 0-intensity peaks next to non-zero intensity peaks are retained while with
 \code{all = TRUE} all 0-intensity peaks are removed.

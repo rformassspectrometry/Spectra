@@ -314,6 +314,9 @@ NULL
 #'   parallel processing alltogether. Other partitionings might result in
 #'   errors (especially if a `MsBackendHdf5Peaks` backend is used).
 #'
+#' - `bin`: aggregates individual spectra into discrete (m/z) bins. All
+#'   intensity values for peaks falling into the same bin are summed.
+#'
 #' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
