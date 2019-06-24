@@ -1176,7 +1176,7 @@ setMethod("bin", "Spectra", function(object, binSize = 1L, breaks = NULL,
         return(object)
     if (!length(breaks)) {
         mzr <- range(.peaksapply(filterMsLevel(object, msLevel.),
-                                 function(z, ...) range(z[, 1])
+                                 function(z, ...) z[c(1L, nrow(z))]
                                  ), na.rm = TRUE)
         breaks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = binSize)
     }
