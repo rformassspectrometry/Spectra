@@ -1,6 +1,7 @@
 
 test_that("initializeBackend,MsBackendMzR works", {
-    fl <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+    fl <- normalizePath(
+        dir(system.file("sciex", package = "msdata"), full.names = TRUE))
     expect_error(backendInitialize(MsBackendMzR()), "Parameter 'files'")
     expect_error(backendInitialize(MsBackendMzR(), files = 4),
                  "expected to be a character")
