@@ -20,13 +20,6 @@ test_that(".i_to_index works", {
     expect_equal(.i_to_index(c(FALSE, TRUE, TRUE), 3), 2:3)
 })
 
-## test_that(".is_class works", {
-##     expect_true(.is_class(5L, "integer"))
-##     expect_true(.is_class("a", "character"))
-##     expect_true(.is_class(Rle("a", 5), "character"))
-##     expect_true(.is_class(Rle(3.4, 2), "numeric"))
-## })
-
 test_that(".class_rle works", {
     expect_equal(.class_rle(1L), "integer")
     expect_equal(.class_rle(Rle(1L, 5)), "integer")
@@ -84,21 +77,21 @@ test_that("utils.clean works", {
               c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
                 TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE))
     for (i in seq(along=x)) {
-      expect_identical(MSnbase:::utils.clean(x[[i]], all=TRUE), a[[i]],
+      expect_identical(utils.clean(x[[i]], all=TRUE), a[[i]],
                        label=paste0("all=TRUE, i=", i))
-      expect_identical(MSnbase:::utils.clean(x[[i]], all=FALSE), b[[i]],
+      expect_identical(utils.clean(x[[i]], all=FALSE), b[[i]],
                        label=paste0("all=FALSE, i=", i))
-      expect_identical(MSnbase:::utils.clean(x[[i]], na.rm=TRUE), d[[i]],
+      expect_identical(utils.clean(x[[i]], na.rm=TRUE), d[[i]],
                        label=paste0("na.rm=TRUE, i=", i))
     }
 })
 
 test_that("utils.enableNeighbours works", {
-    expect_error(MSnbase:::utils.enableNeighbours(1:10))
-    expect_error(MSnbase:::utils.enableNeighbours(LETTERS[1:10]))
-    expect_equal(MSnbase:::utils.enableNeighbours(c(FALSE, TRUE, FALSE)),
+    expect_error(utils.enableNeighbours(1:10))
+    expect_error(utils.enableNeighbours(LETTERS[1:10]))
+    expect_equal(utils.enableNeighbours(c(FALSE, TRUE, FALSE)),
                  rep(TRUE, 3))
-    expect_equal(MSnbase:::utils.enableNeighbours(c(FALSE, TRUE, FALSE, FALSE)),
+    expect_equal(utils.enableNeighbours(c(FALSE, TRUE, FALSE, FALSE)),
                  c(rep(TRUE, 3), FALSE))
 })
 
