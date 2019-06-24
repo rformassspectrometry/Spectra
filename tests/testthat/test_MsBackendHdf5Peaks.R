@@ -19,7 +19,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
     df$dataStorage <- "myfile"
 
-    dr <- tempdir()
+    dr <- normalizePath(tempdir())
     res <- backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
                              hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
@@ -194,7 +194,7 @@ test_that("peaks,MsBackendHdf5Peaks works", {
 
     matl <- mapply(function(mz, intensity) cbind(mz, intensity),
                    df$mz, df$intensity)
-    fl <- tempfile()
+    fl <- normalizePath(tempfile())
     be <- backendInitialize(MsBackendHdf5Peaks(), file = fl, spectraData = df)
     expect_identical(peaks(be), matl)
 
@@ -308,7 +308,7 @@ test_that("$<-,MsBackendHdf5Peaks works", {
 })
 
 test_that("[,MsBackendHdf5Peaks works", {
-    fls <- c(tempfile(), tempfile())
+    fls <- normalizePath(c(tempfile(), tempfile()))
     be <- backendInitialize(MsBackendHdf5Peaks(), files = fls,
                             spectraData = spectraData(sciex_mzr))
     idx <- sample(seq_along(be), 30)

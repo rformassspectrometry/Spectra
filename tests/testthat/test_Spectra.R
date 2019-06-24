@@ -77,7 +77,7 @@ test_that("setBackend,Spectra works", {
     expect_identical(dataOrigin(res), dataStorage(sps))
 
     ## switch from DataFrame to hdf5
-    tdir <- paste0(tempdir(), "/a")
+    tdir <- normalizePath(paste0(tempdir(), "/a"))
     res <- setBackend(sps, MsBackendHdf5Peaks(), hdf5path = tdir)
     expect_identical(rtime(sps), rtime(res))
     expect_identical(peaks(sps), peaks(res))
