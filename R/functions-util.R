@@ -295,7 +295,7 @@ setAs("logical", "factor", function(from, to) factor(from))
     idx <- findInterval(toBin, breaks)
     ## Ensure that indices are within breaks.
     idx[idx < 1L] <- 1L
-    idx[which(idx >= nbrks)] <- nbrks - 1L
+    idx[idx >= nbrks] <- nbrks - 1L
 
     ints <- double(nbrks - 1L)
     ints[unique(idx)] <- unlist(lapply(base::split(x, idx), fun),
