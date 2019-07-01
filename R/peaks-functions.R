@@ -8,7 +8,12 @@
 #' provide data manipulation methods to peak data, taking a (numeric) peak
 #' matrix as input and returning a (numeric) peak matrix.
 #'
-#' The name of a peak data function should start with `.peaks_`.
+#' @section Implementation notes:
+#'
+#' - The name of a peak data function should start with `.peaks_`.
+#' - The function needs to have the `...` parameters to allow passing additional
+#'   arguments and don't throw an error if e.g. `msLevel`, which will be passed
+#'   to any `.peaks_` function, is not used by the function.
 #'
 #' For an example implementation see `.peaks_remove` below.
 #'
@@ -102,4 +107,21 @@ NULL
     bins <- .bin_values(x[, 2], x[, 1], binSize = binSize, breaks = breaks,
                         fun = fun)
     cbind(mz = bins$mids, intensity = bins$x)
+}
+
+#' @importFrom stats quantile
+#'
+#' @description
+#'
+#' Simple function to estimate whether the spectrum is centroided. Was formerly
+#' called `isCentroided`.
+#'
+#' @return `logical(1)`
+#'
+#' @noRd
+.peaks_is_centroided <- function(x, spectrumMsLevel, centroided = NA,
+                                 k = 0.025, qtl = 0.9) {
+    .qtl <- quantile(x[, 2], qtl)
+    x <- x[x[, 2] > .qtl, 1]
+    quantile(diff(x), 0.25) > k
 }

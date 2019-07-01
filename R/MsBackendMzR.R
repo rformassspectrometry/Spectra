@@ -93,7 +93,7 @@ setMethod("ionCount", "MsBackendMzR", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("isCentroided", "MsBackendMzR", function(object, ...) {
-    vapply(peaks(object), .isCentroided, logical(1))
+    vapply(peaks(object), .peaks_is_centroided, logical(1))
 })
 
 #' @rdname hidden_aliases

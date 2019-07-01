@@ -22,16 +22,6 @@ addProcessing <- function(object, FUN, ...) {
 
 #' @description
 #'
-#' Wrapper to allow use of the `isCentroided` function with the `.peaksapply`
-#' function.
-#'
-#' @noRd
-.is_centroided_peaks <- function(x, spectrumMsLevel, centroided = NA, ...) {
-    .isCentroided(x, ...)
-}
-
-#' @description
-#'
 #' Apply the lazy evaluation processing queue to the peaks (i.e. m/z, intensity
 #' matrix) and return the result.
 #'

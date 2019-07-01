@@ -16,15 +16,6 @@
     }
 }
 
-#' @importFrom stats quantile
-#'
-#' @noRd
-.isCentroided <- function(pk, k = 0.025, qtl = 0.9) {
-    .qtl <- quantile(pk[, 2], qtl)
-    x <- pk[pk[, 2] > .qtl, 1]
-    quantile(diff(x), 0.25) > k
-}
-
 #' Helper to convert i to integer index for subsetting.
 #'
 #' @param i `character` `logical` or `integer` used in `[i]` for subsetting

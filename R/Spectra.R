@@ -816,7 +816,7 @@ setMethod("ionCount", "Spectra", function(object) {
 #' @rdname Spectra
 setMethod("isCentroided", "Spectra", function(object, ...) {
     if (length(object))
-        unlist(.peaksapply(object, FUN = .is_centroided_peaks),
+        unlist(.peaksapply(object, FUN = .peaks_is_centroided),
                use.names = FALSE)
     else logical()
 })
