@@ -66,8 +66,9 @@
 \alias{filterPrecursorMz,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
-\alias{removePeaks,Spectra-method}
+\alias{bin,Spectra-method}
 \alias{clean,Spectra-method}
+\alias{removePeaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 addProcessing(object, FUN, ...)
@@ -208,10 +209,13 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 \S4method{filterRt}{Spectra}(object, rt = numeric(),
   msLevel. = unique(msLevel(object)))
 
-\S4method{removePeaks}{Spectra}(object, t = "min",
+\S4method{bin}{Spectra}(object, binSize = 1L, breaks = NULL,
   msLevel. = unique(msLevel(object)))
 
 \S4method{clean}{Spectra}(object, all = FALSE,
+  msLevel. = unique(msLevel(object)))
+
+\S4method{removePeaks}{Spectra}(object, t = "min",
   msLevel. = unique(msLevel(object)))
 }
 \arguments{
@@ -307,11 +311,16 @@ subsetted.}
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
 
-\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
+\item{binSize}{For \code{bin}: \code{numeric(1)} defining the size for the m/z bins.
+Defaults to \code{binSize = 1}.}
+
+\item{breaks}{For \code{bin}: \code{numeric} defining the m/z breakpoints between bins.}
 
 \item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
 removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
 non-zero intensity peak should be kept (\code{FALSE}).}
+
+\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
 \item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
 subsetted.}
@@ -589,7 +598,9 @@ write it back to the data storage. Parameter \code{f} allows to specify how
 \code{object} should be split for parallel processing. This should either be
 equal to the \code{dataStorage}, or \code{f = rep(1, length(object))} to disable
 parallel processing alltogether. Other partitionings might result in
-errors (especially if a \code{MsBackendHdf5Peaks} backend is used.
+errors (especially if a \code{MsBackendHdf5Peaks} backend is used).
+\item \code{bin}: aggregates individual spectra into discrete (m/z) bins. All
+intensity values for peaks falling into the same bin are summed.
 \item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
 0-intensity peaks next to non-zero intensity peaks are retained while with
 \code{all = TRUE} all 0-intensity peaks are removed.

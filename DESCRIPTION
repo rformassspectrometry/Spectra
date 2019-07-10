@@ -1,6 +1,6 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 0.1.0
+Version: 0.2.0
 Description: The Spectra packages defines a efficient infrastructure
    for storing and handling for raw mass spectrometry spectra.
 Authors@R: c(person(given = "Laurent", family = "Gatto",
@@ -57,4 +57,5 @@ Collate:
     'Spectra-functions.R'
     'Spectra.R'
     'functions-util.R'
+    'peaks-functions.R'
     'zzz.R'

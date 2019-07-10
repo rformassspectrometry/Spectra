@@ -945,22 +945,45 @@ test_that("filterRt,Spectra works", {
 ##
 #### ---------------------------------------------------------------------------
 
+test_that("bin,Spectra works", {
+    sps <- Spectra(tmt_mzr)
+    pks <- peaks(sps)
+    res <- bin(sps, binSize = 2)
+    expect_true(length(res@processingQueue) == 1)
+    res1 <- bin(sps, msLevel = 1, binSize = 2)
+
+    expect_identical(peaks(res1)[res1$msLevel == 2],
+                     pks[sps$msLevel == 2])
+
+    mzr <- range(unlist(mz(sps)))
+    brks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = 2)
+    res1 <- bin(sps, msLevel = 1, binSize = 2, breaks = brks)
+    res1_pks <- peaks(res1)
+    res_pks <- peaks(res)
+    expect_identical(res1_pks[res1$msLevel == 1],
+                     res_pks[res$msLevel == 1])
+    expect_true(all(lengths(res_pks) != lengths(pks)))
+
+    expect_warning(res <- bin(sps, msLevel = 3))
+    expect_identical(res, sps)
+})
+
 test_that("clean,Spectra works", {
     sps <- Spectra()
     res <- clean(sps)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.clean_peaks,
+                 ProcessingStep(.peaks_clean,
                                 list(all = FALSE, msLevel = integer())))
 
     res <- clean(sps, all = TRUE, msLevel = 2L)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.clean_peaks,
+                 ProcessingStep(.peaks_clean,
                                 list(all = TRUE, msLevel = 2L)))
 
     res <- clean(Spectra(sciex_mzr), all = TRUE)
-    pks_res <- lapply(sciex_pks, .clean_peaks, all = TRUE,
+    pks_res <- lapply(sciex_pks, .peaks_clean, all = TRUE,
                       spectrumMsLevel = 1L)
     expect_identical(peaks(res), SimpleList(pks_res))
 })
@@ -970,13 +993,13 @@ test_that("removePeaks,Spectra works", {
     res <- removePeaks(sps, t = 10)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.remove_peaks,
+                 ProcessingStep(.peaks_remove,
                                 list(t = 10, msLevel = integer())))
 
     sps <- Spectra(sciex_mzr)
     centroided(sps) <- TRUE
     res <- removePeaks(sps, t = 5000)
-    pks_res <- lapply(sciex_pks, Spectra:::.remove_peaks, t = 5000,
+    pks_res <- lapply(sciex_pks, .peaks_remove, t = 5000,
                       spectrumMsLevel = 1L, centroided = TRUE)
     expect_identical(peaks(res), SimpleList(pks_res))
 })

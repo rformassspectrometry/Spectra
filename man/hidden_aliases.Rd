@@ -8,6 +8,7 @@
 \alias{[,MsBackendDataFrame-method}
 \alias{backendInitialize}
 \alias{backendMerge}
+\alias{bin}
 \alias{clean}
 \alias{dataOrigin}
 \alias{dataOrigin<-}
@@ -130,6 +131,8 @@
 backendInitialize(object, ...)
 
 backendMerge(object, ...)
+
+bin(object, ...)
 
 clean(object, ...)
 

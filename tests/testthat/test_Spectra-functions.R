@@ -13,43 +13,6 @@ test_that("addProcessing works", {
     expect_true(length(tst@processingQueue) == 2)
 })
 
-test_that(".remove_peaks works", {
-    int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
-             0, 1, 5, 10, 5, 1)
-    x <- cbind(mz = 1:length(int), intensity = int)
-    res <- .remove_peaks(x, 1L, centroided = FALSE)
-    expect_equal(res, x)
-    res <- .remove_peaks(x, 1L, centroided = FALSE, t = 3)
-    int_exp <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 0, 0, 0, 0,
-                 1, 5, 10, 5, 1)
-    expect_equal(res[, "intensity"], int_exp)
-
-    res <- .remove_peaks(x, 1L, centroided = TRUE)
-    int_exp <- c(0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 3, 10, 6, 2, 0, 0, 0, 2, 0, 0,
-                 0, 5, 10, 5, 0)
-    expect_equal(res[, "intensity"], int_exp)
-
-    res <- .remove_peaks(x, 1L, centroided = TRUE, msLevel = 2L)
-    expect_equal(res[, "intensity"], int)
-})
-
-test_that(".clean_peaks works", {
-    int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
-             0, 1, 5, 10, 5, 1)
-    x <- cbind(mz = 1:length(int), intensity = int)
-
-    res <- .clean_peaks(x, 1L, all = FALSE)
-    expect_true(is.matrix(res))
-    expect_equal(res[, "intensity"], c(0, 1, 2, 3, 1, 0, 0, 1, 3, 10, 6, 2,
-                                       1, 0, 1, 2, 0, 0, 1, 5, 10, 5, 1))
-    res <- .clean_peaks(x, 1L, all = TRUE)
-    expect_equal(res[, "intensity"], c(1, 2, 3, 1, 1, 3, 10, 6, 2, 1, 1, 2,
-                                       1, 5, 10, 5, 1))
-
-    expect_equal(.clean_peaks(x, 2L, msLevel = 1L), x)
-    expect_equal(.clean_peaks(x, 1L, msLevel = 2L), x)
-})
-
 test_that(".apply_processing_queue works", {
     inp <- list(1:5, 1:3, 5)
     expect_equal(.apply_processing_queue(inp), inp)
@@ -66,7 +29,7 @@ test_that(".apply_processing_queue works", {
 
     be <- sciex_mzr
     pks <- peaks(be)
-    pq <- list(ProcessingStep(.remove_peaks, list(t = 50000)))
+    pq <- list(ProcessingStep(.peaks_remove, list(t = 50000)))
     res <- .apply_processing_queue(pks, msLevel(be),
                                    rep(TRUE, length(be)), pq)
     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
@@ -74,7 +37,7 @@ test_that(".apply_processing_queue works", {
     expect_equal(vapply(res, nrow, integer(1)), vapply(pks, nrow, integer(1)))
 
     ## Length 2
-    pq <- c(pq, list(ProcessingStep(.clean_peaks, list(all = TRUE))))
+    pq <- c(pq, list(ProcessingStep(.peaks_clean, list(all = TRUE))))
     res <- .apply_processing_queue(pks, msLevel(be),
                                    rep(TRUE, length(be)), pq)
     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
@@ -85,27 +48,27 @@ test_that(".apply_processing_queue works", {
 
 test_that(".peaksapply works", {
     sps <- Spectra(backend = sciex_mzr)
-    res <- .peaksapply(sps, FUN = .remove_peaks, t = 50000)
+    res <- .peaksapply(sps, FUN = .peaks_remove, t = 50000)
     expect_true(is.list(res))
     expect_equal(length(res), length(sps))
     expect_true(all(vapply(res, is.matrix, logical(1))))
 
     ## Ensure that this works with arbitrary ordering of the factor f
-    res2 <- .peaksapply(sps, FUN = .remove_peaks, t = 50000,
+    res2 <- .peaksapply(sps, FUN = .peaks_remove, t = 50000,
                         f = rep(1:2, length(sps)/2))
     expect_identical(res, res2)
 
-    sps@processingQueue <- list(ProcessingStep(.remove_peaks, list(t = 50000)))
+    sps@processingQueue <- list(ProcessingStep(.peaks_remove, list(t = 50000)))
     res_2 <- .peaksapply(sps)
     expect_equal(res, res_2)
 
-    res_3 <- .peaksapply(sps, FUN = .clean_peaks, all = TRUE)
+    res_3 <- .peaksapply(sps, FUN = .peaks_clean, all = TRUE)
     expect_true(all(vapply(res_3, nrow, integer(1)) <
                     vapply(res_2, nrow, integer(1))))
     expect_true(!any(vapply(res_3, function(z) any(z[, 2] == 0), logical(1))))
 
     sps@processingQueue <- c(sps@processingQueue,
-                             list(ProcessingStep(.clean_peaks, list(all = TRUE))))
+                             list(ProcessingStep(.peaks_clean, list(all = TRUE))))
     res_4 <- .peaksapply(sps)
     expect_equal(res_3, res_4)
 })
@@ -177,4 +140,16 @@ test_that("applyProcessing works", {
     expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
 
     expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")
+})
+
+test_that(".check_ms_level works", {
+    expect_true(.check_ms_level(sciex_mzr, 1))
+    expect_warning(.check_ms_level(sciex_mzr, 2))
+    expect_false(.check_ms_level(sciex_mzr, 2))
+    expect_error(.check_ms_level(sciex_mzr, "a"), "must be numeric")
+
+    expect_true(.check_ms_level(tmt_mzr, 1))
+    expect_true(.check_ms_level(tmt_mzr, 2))
+    expect_true(.check_ms_level(tmt_mzr, c(1, 2)))
+    expect_true(.check_ms_level(tmt_mzr, c(1, 4)))
 })

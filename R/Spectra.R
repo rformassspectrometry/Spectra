@@ -314,6 +314,9 @@ NULL
 #'   parallel processing alltogether. Other partitionings might result in
 #'   errors (especially if a `MsBackendHdf5Peaks` backend is used).
 #'
+#' - `bin`: aggregates individual spectra into discrete (m/z) bins. All
+#'   intensity values for peaks falling into the same bin are summed.
+#'
 #' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
@@ -341,9 +344,14 @@ NULL
 #'     instance of [MsBackend-class]. See section on creation of `Spectra`
 #'     objects for details.
 #'
+#' @param binSize For `bin`: `numeric(1)` defining the size for the m/z bins.
+#'     Defaults to `binSize = 1`.
+#'
 #' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
 #'     information. This is passed directly to the [backendInitialize()] method
 #'     of the [MsBackend-class].
+#'
+#' @param breaks For `bin`: `numeric` defining the m/z breakpoints between bins.
 #'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
@@ -808,7 +816,7 @@ setMethod("ionCount", "Spectra", function(object) {
 #' @rdname Spectra
 setMethod("isCentroided", "Spectra", function(object, ...) {
     if (length(object))
-        unlist(.peaksapply(object, FUN = .is_centroided_peaks),
+        unlist(.peaksapply(object, FUN = .peaks_is_centroided),
                use.names = FALSE)
     else logical()
 })
@@ -1161,21 +1169,25 @@ setMethod("filterRt", "Spectra",
 
 #' @rdname Spectra
 #'
-#' @exportMethod removePeaks
-setMethod("removePeaks", "Spectra",
-          function(object, t = "min", msLevel. = unique(msLevel(object))) {
-              if (!is.numeric(t) & t != "min")
-                  stop("Argument 't' has to be either numeric of 'min'.")
-              if (!is.numeric(msLevel.))
-                  stop("'msLevel.' must be numeric.")
-              object <- addProcessing(object, .remove_peaks, t = t,
-                                      msLevel = msLevel.)
-              object@processing <- .logging(object@processing,
-                                            "Signal <= ", t, " in MS level(s) ",
-                                            paste0(msLevel., collapse = ", "),
-                                            " set to 0")
-              object
-          })
+#' @exportMethod bin
+setMethod("bin", "Spectra", function(object, binSize = 1L, breaks = NULL,
+                                     msLevel. = unique(msLevel(object))) {
+    if (!.check_ms_level(object, msLevel.))
+        return(object)
+    if (!length(breaks)) {
+        mzr <- range(.peaksapply(filterMsLevel(object, msLevel.),
+                                 function(z, ...) z[c(1L, nrow(z))]
+                                 ), na.rm = TRUE)
+        breaks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = binSize)
+    }
+    object <- addProcessing(object, .peaks_bin, breaks = breaks,
+                            msLevel = msLevel.)
+    object@processing <- .logging(object@processing,
+                                  "Spectra of MS level(s) ",
+                                  paste0(msLevel., collapse = ", "),
+                                  " binned.")
+    object
+})
 
 #' @rdname Spectra
 #'
@@ -1184,13 +1196,52 @@ setMethod("clean", "Spectra",
           function(object, all = FALSE, msLevel. = unique(msLevel(object))) {
               if (!is.logical(all) || length(all) != 1)
                   stop("Argument 'all' must be a logical of length 1")
-              if (!is.numeric(msLevel.))
-                  stop("'msLevel' must be numeric.")
-              object <- addProcessing(object, .clean_peaks, all = all,
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              object <- addProcessing(object, .peaks_clean, all = all,
                                       msLevel = msLevel.)
               object@processing <- .logging(object@processing,
                                             "Spectra of MS level(s) ",
                                             paste0(msLevel., collapse = ", "),
-                                            " cleaned ")
+                                            " cleaned.")
               object
           })
+
+## compareSpectra
+
+## combineSpectra
+
+## estimateMzResolution
+
+## estimateNoise
+
+## normalize
+
+## peaksapply
+
+## pickPeaks
+
+## quantify
+
+## removeReporters
+
+#' @rdname Spectra
+#'
+#' @exportMethod removePeaks
+setMethod("removePeaks", "Spectra",
+          function(object, t = "min", msLevel. = unique(msLevel(object))) {
+              if (!is.numeric(t) & t != "min")
+                  stop("Argument 't' has to be either numeric of 'min'.")
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              object <- addProcessing(object, .peaks_remove, t = t,
+                                      msLevel = msLevel.)
+              object@processing <- .logging(object@processing,
+                                            "Signal <= ", t, " in MS level(s) ",
+                                            paste0(msLevel., collapse = ", "),
+                                            " set to 0")
+              object
+          })
+
+
+## smooth
