@@ -236,3 +236,81 @@ test_that(".bin_values works", {
     expect_error(.bin_values(1:3, 1:5))
     expect_error(.bin_values(1:3, 1:5), fun = other)
 })
+
+test_that("matchApprox works", {
+    x <- c(1.11, 45.02, 556.45, 123.45)
+    y <- c(3.01, 34.12, 45.021, 46.1, 556.449, x[4] + (x[4] * 5 / 1e6))
+
+    .match_approx <- function(x, y, tolerance = 0.0) {
+        tolerance <- tolerance + sqrt(.Machine$double.eps)
+        mapply(x, tolerance, FUN = function(z, tol) {
+            which(abs(z - y) <= (tol))[1]
+        })
+    }
+
+    res <- matchApprox(x, y)
+    expect_true(all(is.na(res)))
+
+    res <- matchApprox(x, y, tolerance = 0.01)
+    res_2 <- .match_approx(x, y, tolerance = 0.01)
+    expect_identical(res, c(NA, 3L, 5L, 6L))
+    expect_identical(res, res_2)
+
+    ## ppm of 5
+    tol <- (x * 5 / 1e6)
+    res <- matchApprox(x, y, tolerance = tol)
+    res_2 <- .match_approx(x, y, tolerance = tol)
+    expect_identical(res, c(NA, NA, 5L, 6L))
+    expect_identical(res, res_2)
+
+    expect_error(matchApprox(), "missing, with no default")
+    expect_identical(matchApprox(1:3), rep(NA_integer_, 3))
+    expect_error(matchApprox(x, y, TRUE), "must be an integer")
+    expect_error(matchApprox(x, y, tolerance = -1), "positive number")
+    expect_error(matchApprox(x, y, tolerance = TRUE), "positive number")
+})
+
+test_that(".group_mz_values works", {
+    set.seed(123)
+    mzs <- seq(1, 20, 0.1)
+    all_mz <- sort(c(mzs + rnorm(length(mzs), sd = 0.001),
+                     mzs + rnorm(length(mzs), sd = 0.005),
+                     mzs + rnorm(length(mzs), sd = 0.002)))
+    res <- .group_mz_values(all_mz, mzd = 0.05)
+    expect_true(length(res) == length(all_mz))
+    ## Expect groups of 3 each.
+    expect_true(all(table(res) == 3))
+
+    ## Remove one from the 2nd group.
+    res <- .group_mz_values(all_mz[-5], mzd = 0.05)
+    expect_true(sum(res == 2) == 2)
+
+    res <- .group_mz_values(all_mz, ppm = 20, mzd = 0.05)
+    expect_true(all(table(res) == 3))
+})
+
+test_that(".collocate_ordered_vectors works", {
+    x <- c(1.11, 45.02, 556.45)
+    y <- c(3.01, 34.12, 45.021, 46.1, 556.449)
+
+    res <- .collocate_ordered_vectors(x, y)
+    expect_true(length(res$x) == length(res$y))
+    expect_true(length(res$x) == length(c(x, y)))
+
+    res <- .collocate_ordered_vectors(x, y, tolerance = 0.01)
+    expect_true(length(res$x) == length(res$y))
+    expect_identical(res$x[c(4, 6)], x[2:3])
+    expect_identical(res$y[c(4, 6)], y[c(3, 5)])
+
+    res <- .collocate_ordered_vectors(x, y, ppm = 20)
+    expect_true(length(res$x) == length(res$y))
+    expect_identical(res$x[c(4, 7)], x[2:3])
+    expect_identical(res$y[c(5, 7)], y[c(3, 5)])
+
+    res <- .collocate_ordered_vectors(x, y, ppm = 20, index = TRUE)
+    expect_true(length(res$x) == length(res$y))
+    expect_true(is.integer(res$x))
+    expect_true(is.integer(res$y))
+    expect_equal(res$x[7], 3L)
+    expect_equal(res$y[7], 5L)
+})

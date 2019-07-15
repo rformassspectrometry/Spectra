@@ -1209,6 +1209,25 @@ setMethod("clean", "Spectra",
 
 ## compareSpectra
 
+
+## .match_approx2(x, x, tolerance = 0)
+## a <- sort(rnorm(1000))
+
+## all.equal(.match_approx2(a, a), 1:1000)
+
+## library(microbenchmark)
+## microbenchmark(.match_approx(x, y, ppm = 50),
+##                .anneal_ordered_vectors(x, y, ppm = 50),
+##                .match_approx2(x, y, ppm = 50))
+
+## microbenchmark(.match_approx(a, a, ppm = 50),
+##                .anneal_ordered_vectors(a, a, ppm = 50),
+##                .match_approx2(a, a, ppm = 50))
+
+## microbenchmark(.match_approx(a, a[-1], ppm = 50),
+##                .anneal_ordered_vectors(a, a[-1], ppm = 50),
+##                .match_approx2(a, a[-1], ppm = 50))
+
 ## combineSpectra
 
 ## estimateMzResolution

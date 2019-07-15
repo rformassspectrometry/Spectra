@@ -24,7 +24,8 @@ Depends:
     ProtGenerics (>= 1.17.2)
 Imports:
     methods,
-    IRanges
+    IRanges,
+    Rcpp
 Suggests:
     testthat,
     knitr (>= 1.1.0),
@@ -37,6 +38,7 @@ Suggests:
     magrittr
 License: Artistic-2.0
 LazyData: yes
+LinkingTo: Rcpp
 VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/Spectra/issues
 URL: https://github.com/RforMassSpectrometry/Spectra
@@ -54,6 +56,7 @@ Collate:
     'MsBackendMzR-functions.R'
     'MsBackendMzR.R'
     'ProcessingStep.R'
+    'RcppExports.R'
     'Spectra-functions.R'
     'Spectra.R'
     'functions-util.R'
