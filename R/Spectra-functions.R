@@ -153,3 +153,12 @@ applyProcessing <- function(object, f = dataStorage(object),
         FALSE
     } else TRUE
 }
+
+.compare_spectra <- function(x, y, ...) {
+    x <- peaks(x)
+    y <- peaks(y)
+    for (i in seq_len(length(x))) {
+        for (j in seq_len(length(y))) {
+        }
+    }
+}

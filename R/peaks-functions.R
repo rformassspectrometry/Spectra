@@ -125,3 +125,62 @@ NULL
     x <- x[x[, 2] > .qtl, 1]
     quantile(diff(x), 0.25) > k
 }
+
+#' @description Compare peaks between 2 spectra
+#'
+#' @description
+#'
+#' Compare peaks from one to peaks from another spectrum with the provided
+#' function (`method`). `.peaks_compare` ensures that peaks are first matched
+#' between the two spectra with the [matchApprox] function.
+#'
+#' @param x peaks `matrix` with columns `"mz"` and `"intensity"`.
+#'
+#' @param y peaks `matrix` with columns `"mz"` and `"intensity"`.
+#'
+#' @param method `function` to be applied to the intensity values of matched
+#'     peaks betwen peak lists `x` and `y`. The function should take two
+#'     `numeric` vectors as their first argument and should return a single
+#'     `numeric`. Parameter `...` will be passed to the function.
+#'
+#' @param tolerance `numeric(1)` with the acceptable tolerance in matching
+#'     peaks. See [matchApprox()] for details.
+#'
+#' @param ppm `numeric(1)` allowing to specify a peak-specific tolerance for
+#'     the peak matching. See [matchApprox()] for details.
+#'
+#'
+#' @param ... additional parameters passed to the `method` function.
+#'
+#' @return The result from `method`, which should be a `numeric(1)`.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+#'
+#' @examples
+#'
+#' x <- cbind(c(31.34, 34.43, 54.65, 300.12, 514.5, 856.12),
+#'      c(13, 15, 56, 7, 45, 321))
+#'
+#' y <- cbind(c(34.431, 35.34, 50.24, 300.121, 514.51, 856.122),
+#'      c(123, 34, 323, 432, 12, 433))
+#'
+#' .peaks_compare_intensities(x, y)
+#' .peaks_compare_intensities(x, y, ppm = 40)
+#' .peaks_compare_intensities(x, y, ppm = 0)
+#'
+#' ## To get the number of common peaks
+#' .peaks_compare_intensities(x, y, method = function(x, y) length(x))
+#' .peaks_compare_intensities(x, y, method = function(x, y) length(x), ppm = 40)
+#' ## NA if there are none common
+#' .peaks_compare_intensities(x, y, method = function(x, y) length(x), ppm = 0)
+.peaks_compare_intensities <- function(x, y, method = cor, tolerance = 0,
+                                       ppm = 20, ...) {
+    tolerance <- tolerance + sqrt(.Machine$double.eps) + x[, 1] * ppm / 1e6
+    matches <- match_approx_cpp(x[, 1], y[, 1], NA_integer_, tolerance)
+    not_na <- !is.na(matches)
+    if (any(not_na)) {
+        method(x[not_na, 2], y[matches[not_na], 2], ...)
+    } else NA_real_
+}
