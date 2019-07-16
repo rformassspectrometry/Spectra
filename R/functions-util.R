@@ -367,6 +367,33 @@ setAs("logical", "factor", function(from, to) factor(from))
 #'
 #' ## Same using 50ppm
 #' matchApprox(x, y, tolerance = x * 50 / 1e6)
+#'
+#' ## Compare to MSnbase::relaxedMatch and MSnbase::matchPeaks
+#' MSnbase:::relaxedMatch(x, y, tolerance = x * 20 / 1e6, relative = FALSE)
+#' ## relaxedMatch adds the ppm to the table, not x - which seems unintuitive
+#' ## to me.
+#'
+#' ## Speed:
+#' library(microbenchmark)
+#' microbenchmark(
+#' matchApprox(x, y, tolerance = x * 50 / 1e6),
+#' MSnbase:::relaxedMatch(x, y, tolerance = y * 20 / 1e6, relative = FALSE),
+#' MALDIquant::match.closest(x, y, tolerance = y * 20 / 1e6)
+#' )
+#'
+#' ## Real data:
+#' library(msdata)
+#' fl <- system.file("TripleTOF-SWATH/PestMix1_SWATH.mzML", package ="msdata")
+#' sps <- Spectra(fl, source = MsBackendMzR())
+#'
+#' x <- sps$mz[[198]]
+#' y <- sps$mz[[199]]
+#' microbenchmark(
+#' matchApprox(x, y, tolerance = x * 40 / 1e6),
+#' MSnbase:::relaxedMatch(x, y, tolerance = y * 40 / 1e6, relative = FALSE),
+#' MALDIquant::match.closest(x, y, tolerance = y * 40 / 1e6)
+#' )
+#' ## Compare to MALDIquant match.closest
 matchApprox <- function(x, table = numeric(), nomatch = NA_integer_,
                         tolerance = 0.0) {
     if (!is.integer(nomatch))
@@ -379,6 +406,7 @@ matchApprox <- function(x, table = numeric(), nomatch = NA_integer_,
         tolerance <- rep(tolerance[1], x_len)
     match_approx_cpp(x, table, nomatch, tolerance)
 }
+
 
 #' Group a sorted `numeric` of m/z values from consecutive scans by ion assuming
 #' that the variation between m/z values for the same ion in consecutive scan

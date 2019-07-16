@@ -238,8 +238,8 @@ test_that(".bin_values works", {
 })
 
 test_that("matchApprox works", {
-    x <- c(1.11, 45.02, 556.45, 123.45)
-    y <- c(3.01, 34.12, 45.021, 46.1, 556.449, x[4] + (x[4] * 5 / 1e6))
+    x <- c(1.11, 45.02, 123.45, 556.45)
+    y <- c(3.01, 34.12, 45.021, 46.1, x[3] - (x[3] * 5 / 1e6), 556.449)
 
     .match_approx <- function(x, y, tolerance = 0.0) {
         tolerance <- tolerance + sqrt(.Machine$double.eps)
@@ -252,14 +252,14 @@ test_that("matchApprox works", {
     expect_true(all(is.na(res)))
 
     res <- matchApprox(x, y, tolerance = 0.01)
-    res_2 <- .match_approx(x, y, tolerance = 0.01)
+    res_2 <- MALDIquant::match.closest(x, y, tolerance = 0.01)
     expect_identical(res, c(NA, 3L, 5L, 6L))
     expect_identical(res, res_2)
 
     ## ppm of 5
     tol <- (x * 5 / 1e6)
-    res <- matchApprox(x, y, tolerance = tol)
-    res_2 <- .match_approx(x, y, tolerance = tol)
+    matchApprox(x, y, tolerance = x * 5 / 1e6)
+    MALDIquant::match.closest(x, y, tolerance = y * 5 / 1e6)
     expect_identical(res, c(NA, NA, 5L, 6L))
     expect_identical(res, res_2)
 
