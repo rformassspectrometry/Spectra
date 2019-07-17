@@ -1,7 +1,7 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
 Version: 0.2.0
-Description: The Spectra packages defines a efficient infrastructure
+Description: The Spectra package defines a efficient infrastructure
    for storing and handling for raw mass spectrometry spectra.
 Authors@R: c(person(given = "Laurent", family = "Gatto",
 		    comment = c(ORCID = "0000-0002-1520-2268"),
@@ -24,8 +24,7 @@ Depends:
     ProtGenerics (>= 1.17.2)
 Imports:
     methods,
-    IRanges,
-    Rcpp
+    IRanges
 Suggests:
     testthat,
     knitr (>= 1.1.0),
@@ -38,7 +37,6 @@ Suggests:
     magrittr
 License: Artistic-2.0
 LazyData: yes
-LinkingTo: Rcpp
 VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/Spectra/issues
 URL: https://github.com/RforMassSpectrometry/Spectra

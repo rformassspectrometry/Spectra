@@ -1208,7 +1208,6 @@ setMethod("clean", "Spectra",
           })
 
 ## compareSpectra
-## Spectra, Spectra.
 
 ## combineSpectra
 
