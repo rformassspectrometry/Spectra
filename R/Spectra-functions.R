@@ -154,11 +154,98 @@ applyProcessing <- function(object, f = dataStorage(object),
     } else TRUE
 }
 
-.compare_spectra <- function(x, y, ...) {
-    x <- peaks(x)
-    y <- peaks(y)
-    for (i in seq_len(length(x))) {
-        for (j in seq_len(length(y))) {
+#' @title Spectrum comparison
+#'
+#' @description
+#'
+#' Compare each spectrum in `x` with each spectrum in `y` with function `FUN`.
+#'
+#' @note
+#'
+#' Results might be slightly different if `x` and `y` are switched, because of
+#' the matching of the peaks by their m/z between spectra. Matching is performed
+#' by applying a `tolerance` and `ppm` to the second spectrum (i.e. from `y`)
+#' and, especially for `ppm`, the maximal accepted difference depend thus on
+#' the m/z values from the second spectrum.
+#'
+#' @param x [Spectra()]
+#'
+#' @param y [Spectra()]
+#'
+#' @param FUN `function` to compare the (m/z matched) intensities from each
+#'     spectrum in `x` with those in `y`.
+#'
+#' @param tolerance `numeric(1)` allowing to define a constant maximal accepted
+#'     difference between m/z values for peaks to be matched.
+#'
+#' @param ppm `numeric(1)` allowing to define a relative, m/z-dependent,
+#'     maximal accepted difference between m/z values for peaks to be matched.
+#'
+#' @param ... additional parameters passed to `FUN`.
+#'
+#' @importFrom utils combn
+#'
+#' @examples
+#'
+#' library(Spectra)
+#' fl <- system.file("TripleTOF-SWATH/PestMix1_SWATH.mzML", package = "msdata")
+#' sps <- Spectra(fl, source = MsBackendMzR())
+#'
+#' sps <- sps[1:10]
+#' res <- .compare_spectra(sps, sps, ppm = 20)
+#' res <- .compare_spectra(sps, sps, method = "spearman", ppm = 40)
+#'
+#' res <- .compare_spectra(sps[1], sps)
+#' res <- .compare_spectra(sps, sps[1])
+#' @noRd
+.compare_spectra <- function(x, y = NULL, FUN = cor, tolerance = 0,
+                             ppm = 20, ...) {
+    x_idx <- seq_along(x)
+    y_idx <- seq_along(y)
+    mat <- matrix(NA_real_, nrow = length(x_idx), ncol = length(y_idx),
+                  dimnames = list(names(x), names(y)))
+        ## Might need some tuning - bplapply?
+    for (i in x_idx) {
+        for (j in y_idx) {
+            mat[i, j] <- .peaks_compare_intensities(
+                    peaks(x[i])[[1]], peaks(y[j])[[1]], FUN = FUN,
+                tolerance = tolerance, ppm = ppm, ...)
         }
     }
+    mat
+}
+
+#' @description
+#'
+#' Compare each spectrum in `x` with each other spectrum in `x`. Makes use of
+#' `combn` to avoid calculating combinations twice.
+#'
+#' @inheritParams .compare_spectra
+#'
+#' @examples
+#'
+#' res <- .compare_spectra(sps, sps)
+#' res_2 <- .compare_spectra_self(sps)
+#' all.equal(res, res_2)    # comparison x[1], x[2] != x[2], x[1]
+#' all.equal(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
+#'
+#' @noRd
+.compare_spectra_self <- function(x, FUN = cor, tolerance = 0, ppm = 20, ...) {
+    x_idx <- seq_along(x)
+    cb <- combn(x_idx, 2, function(idx) {
+        .peaks_compare_intensities(peaks(x[idx[1]])[[1]],
+                                   peaks(x[idx[2]])[[1]],
+                                   FUN = FUN, tolerance = tolerance,
+                                   ppm = ppm, ...)
+    })
+    mat <- matrix(NA_real_, length(x_idx), length(x_idx),
+                  dimnames = list(names(x), names(x)))
+    mat[lower.tri(mat)] <- cb
+    for (i in seq_len(nrow(mat))) {
+        mat[i, i] <- .peaks_compare_intensities(
+            peaks(x[i])[[1]], peaks(x[i])[[1]], FUN = FUN,
+            tolerance = tolerance, ppm = ppm, ...)
+        mat[i, ] <- mat[, i]
+    }
+    mat
 }

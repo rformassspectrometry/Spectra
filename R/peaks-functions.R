@@ -138,7 +138,7 @@ NULL
 #'
 #' @param y peaks `matrix` with columns `"mz"` and `"intensity"`.
 #'
-#' @param method `function` to be applied to the intensity values of matched
+#' @param FUN `function` to be applied to the intensity values of matched
 #'     peaks betwen peak lists `x` and `y`. The function should take two
 #'     `numeric` vectors as their first argument and should return a single
 #'     `numeric`. Parameter `...` will be passed to the function.
@@ -175,12 +175,30 @@ NULL
 #' .peaks_compare_intensities(x, y, method = function(x, y) length(x), ppm = 40)
 #' ## NA if there are none common
 #' .peaks_compare_intensities(x, y, method = function(x, y) length(x), ppm = 0)
-.peaks_compare_intensities <- function(x, y, method = cor, tolerance = 0,
+#'
+#' ## What is MSnbase doing...
+#' ## compareSpectra,MSnExp,missing -> compare_MSnExp.
+#' ## compareSpectra,Spectrum,Spectrum -> compare_Spectra
+#' library(MSnbase)
+#'
+#' ## Base cor: if data.frame: matrix returned, each against each.
+#'
+#' ## Rows are x, columns y, if x or y are length 1 -> as.vector.
+#' ## compareSpectra,Spectra: return mxm matrix of comparison each with each.
+#' ## See compare_MSnExp for an example.
+.peaks_compare_intensities <- function(x, y, FUN = cor, tolerance = 0,
                                        ppm = 20, ...) {
     tolerance <- tolerance + sqrt(.Machine$double.eps) + x[, 1] * ppm / 1e6
     matches <- match_approx_cpp(x[, 1], y[, 1], NA_integer_, tolerance)
     not_na <- !is.na(matches)
     if (any(not_na)) {
-        method(x[not_na, 2], y[matches[not_na], 2], ...)
+        FUN(x[not_na, 2], y[matches[not_na], 2], ...)
     } else NA_real_
 }
+
+setMethod("compareSpectra", signature = c("Spectra", "missing") {
+    ## Use combn and the approach as in MSnbase::compare_MSnExp
+})
+setMethod("compareSpectra", signature = c("Spectra", "Spectra") {
+    ## Use .compare_spectra
+})
