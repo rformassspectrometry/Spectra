@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.10/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2019-07-16 08:05:10<br><strong>Compiled</strong>: Tue Jul 16 08:10:45 2019</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.10/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2019-07-17 06:51:18<br><strong>Compiled</strong>: Wed Jul 17 06:56:41 2019</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -385,8 +385,8 @@ document.addEventListener("DOMContentLoaded", function() {
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Tue Jul 16 08:10:48 2019]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Tue Jul 16 08:10:48 2019]</code></pre>
+##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Jul 17 06:56:45 2019]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Jul 17 06:56:45 2019]</code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">caf_df &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">msLevel =</span> 2L, <span class="dt">name =</span> <span class="st">"Caffeine"</span>,</a>
@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Tue Jul 16 08:10:48 2019]</code></pre>
+##  Merge 2 Spectra into one [Wed Jul 17 06:56:45 2019]</code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="kw">spectraVariables</span>(sps)</a></code></pre></div>
 <pre><code>##  [1] "msLevel"                 "rtime"                  
@@ -465,9 +465,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 2 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Tue Jul 16 08:10:48 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jul 16 08:10:49 2019]
-##  Spectra of MS level(s) 2 cleaned. [Tue Jul 16 08:10:49 2019]</code></pre>
+##  Merge 2 Spectra into one [Wed Jul 17 06:56:45 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Jul 17 06:56:45 2019]
+##  Spectra of MS level(s) 2 cleaned. [Wed Jul 17 06:56:45 2019]</code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">## Define a function that takes a matrix as input, divides the second</a>
 <a class="sourceLine" id="cb61-2" data-line-number="2">## column by parameter y and returns it. Note that ... is required in</a>
@@ -490,9 +490,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 3 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Tue Jul 16 08:10:48 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jul 16 08:10:49 2019]
-##  Spectra of MS level(s) 2 cleaned. [Tue Jul 16 08:10:49 2019]</code></pre>
+##  Merge 2 Spectra into one [Wed Jul 17 06:56:45 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Jul 17 06:56:45 2019]
+##  Spectra of MS level(s) 2 cleaned. [Wed Jul 17 06:56:45 2019]</code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="kw">intensity</span>(sps_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## NumericList of length 4
@@ -537,10 +537,10 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Tue Jul 16 08:10:48 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jul 16 08:10:49 2019]
-##  Spectra of MS level(s) 2 cleaned. [Tue Jul 16 08:10:49 2019]
-##  Applied processing queue with 2 steps [Tue Jul 16 08:10:49 2019]</code></pre>
+##  Merge 2 Spectra into one [Wed Jul 17 06:56:45 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Jul 17 06:56:45 2019]
+##  Spectra of MS level(s) 2 cleaned. [Wed Jul 17 06:56:45 2019]
+##  Applied processing queue with 2 steps [Wed Jul 17 06:56:45 2019]</code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage.</p>
 </div>
 <div id="changing-backends" class="section level2">
@@ -567,7 +567,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 1862         1       259.752       931
 ##  ... 31 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Tue Jul 16 08:11:13 2019]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Jul 17 06:57:10 2019]</code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/object.size">object.size</a></span>(sps_sciex), <span class="dt">units =</span> <span class="st">"Mb"</span>)</a></code></pre></div>
 <pre><code>## 52.1 Mb</code></pre>
@@ -633,7 +633,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [8] methods   base     
 ## 
 ## other attached packages:
-## [1] msdata_0.25.1       magrittr_1.5        Spectra_0.2.0      
+## [1] msdata_0.25.2       magrittr_1.5        Spectra_0.2.0      
 ## [4] ProtGenerics_1.17.2 BiocParallel_1.19.0 S4Vectors_0.23.17  
 ## [7] BiocGenerics_0.31.5 BiocStyle_2.13.2   
 ## 
