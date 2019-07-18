@@ -34,3 +34,20 @@ test_that(".peaks_clean works", {
     expect_equal(.peaks_clean(x, 2L, msLevel = 1L), x)
     expect_equal(.peaks_clean(x, 1L, msLevel = 2L), x)
 })
+
+test_that(".peaks_bin works", {
+    int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
+             0, 1, 5, 10, 5, 1)
+    x <- cbind(mz = 1:length(int), intensity = int)
+
+    res <- .peaks_bin(x, spectrumMsLevel = 1L)
+    expect_identical(res[, 2], x[, 2])
+    expect_identical(res[, 1], x[, 1] + 0.5)
+
+    res <- .peaks_bin(x, spectrumMsLevel = 1L, binSize = 2L)
+    expect_equal(res[, 2], c(1, 5, 1, 0, 1, 13, 8, 1, 3, 0, 6, 15, 1))
+    res <- .peaks_bin(x, spectrumMsLevel = 1L, binSize = 2L, FUN = max)
+    expect_equal(res[, 2], c(1, 3, 1, 0, 1, 10, 6, 1, 2, 0, 5, 10, 1))
+    res <- .peaks_bin(x, spectrumMsLevel = 1L, msLevel = 2L, binSize = 2L)
+    expect_identical(res, x)
+})

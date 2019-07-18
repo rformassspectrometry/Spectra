@@ -159,6 +159,10 @@ NULL
 #'
 #' @noRd
 #'
+#' @importFrom stats cor
+#'
+#' @importFrom MsCoreUtils closest
+#'
 #' @examples
 #'
 #' x <- cbind(c(31.34, 34.43, 54.65, 300.12, 514.5, 856.12),
@@ -167,30 +171,19 @@ NULL
 #' y <- cbind(c(34.431, 35.34, 50.24, 300.121, 514.51, 856.122),
 #'      c(123, 34, 323, 432, 12, 433))
 #'
-#' .peaks_compare_intensities(x, y)
-#' .peaks_compare_intensities(x, y, ppm = 40)
-#' .peaks_compare_intensities(x, y, ppm = 0)
+#' Spectra:::.peaks_compare_intensities(x, y)
+#' Spectra:::.peaks_compare_intensities(x, y, ppm = 40)
+#' Spectra:::.peaks_compare_intensities(x, y, ppm = 0)
 #'
 #' ## To get the number of common peaks
-#' .peaks_compare_intensities(x, y, method = function(x, y) length(x))
-#' .peaks_compare_intensities(x, y, method = function(x, y) length(x), ppm = 40)
+#' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x))
+#' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x), ppm = 40)
 #' ## NA if there are none common
-#' .peaks_compare_intensities(x, y, method = function(x, y) length(x), ppm = 0)
-#'
-#' ## What is MSnbase doing...
-#' ## compareSpectra,MSnExp,missing -> compare_MSnExp.
-#' ## compareSpectra,Spectrum,Spectrum -> compare_Spectra
-#' library(MSnbase)
-#'
-#' ## Base cor: if data.frame: matrix returned, each against each.
-#'
-#' ## Rows are x, columns y, if x or y are length 1 -> as.vector.
-#' ## compareSpectra,Spectra: return mxm matrix of comparison each with each.
-#' ## See compare_MSnExp for an example.
+#' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x), ppm = 0)
 .peaks_compare_intensities <- function(x, y, FUN = cor, tolerance = 0,
                                        ppm = 20, ...) {
     tolerance <- tolerance + sqrt(.Machine$double.eps) + x[, 1] * ppm / 1e6
-    matches <- match_approx_cpp(x[, 1], y[, 1], NA_integer_, tolerance)
+    matches <- closest(x[, 1], y[, 1], tolerance = tolerance + ppm(y[, 1], ppm))
     not_na <- !is.na(matches)
     if (any(not_na)) {
         FUN(x[not_na, 2], y[matches[not_na], 2], ...)
