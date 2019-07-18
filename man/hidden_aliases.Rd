@@ -9,6 +9,7 @@
 \alias{backendInitialize}
 \alias{backendMerge}
 \alias{bin}
+\alias{bin,numeric-method}
 \alias{clean}
 \alias{dataOrigin}
 \alias{dataOrigin<-}
@@ -132,7 +133,10 @@ backendInitialize(object, ...)
 
 backendMerge(object, ...)
 
-bin(object, ...)
+bin(x, ...)
+
+\S4method{bin}{numeric}(x, y, size = 1, breaks = seq(floor(min(y)),
+  ceiling(max(y)), by = size), FUN = max)
 
 clean(object, ...)
 

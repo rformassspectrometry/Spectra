@@ -12,7 +12,9 @@ setGeneric("backendMerge", def = function(object, ...)
     standardGeneric("backendMerge"),
     valueClass = "MsBackend")
 #' @rdname hidden_aliases
-setGeneric("bin", function(object, ...) standardGeneric("bin"))
+setGeneric("bin", function(x, ...) standardGeneric("bin"))
+#' @rdname hidden_aliases
+setMethod("bin", "numeric", MsCoreUtils::bin)
 #' @rdname hidden_aliases
 setGeneric("clean", function(object, ...) standardGeneric("clean"))
 #' @rdname hidden_aliases

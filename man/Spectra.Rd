@@ -209,8 +209,8 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 \S4method{filterRt}{Spectra}(object, rt = numeric(),
   msLevel. = unique(msLevel(object)))
 
-\S4method{bin}{Spectra}(object, binSize = 1L, breaks = NULL,
-  msLevel. = unique(msLevel(object)))
+\S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL,
+  msLevel. = unique(msLevel(x)))
 
 \S4method{clean}{Spectra}(object, all = FALSE,
   msLevel. = unique(msLevel(object)))

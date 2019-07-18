@@ -90,9 +90,11 @@ NULL
 
 #' @description
 #'
-#' Bin spectrum. Code taken from MSnbase:::bin_Spectrum
+#' Bin peaks of a spectrum.
 #'
 #' @inheritParams .peaks_remove
+#'
+#' @importFrom MsCoreUtils bin
 #'
 #' @return `matrix` with columns `"mz"` and `"intensity"`
 #'
@@ -100,12 +102,12 @@ NULL
 .peaks_bin <- function(x, spectrumMsLevel, binSize = 1L,
                        breaks = seq(floor(min(x[, 1])),
                                     ceiling(max(x[, 1])),
-                                    by = binSize), fun = sum,
+                                    by = binSize), FUN = sum,
                        msLevel = spectrumMsLevel, ...) {
     if (!(spectrumMsLevel %in% msLevel))
         return(x)
-    bins <- .bin_values(x[, 2], x[, 1], binSize = binSize, breaks = breaks,
-                        fun = fun)
+    bins <- bin(x[, 2], x[, 1], size = binSize, breaks = breaks,
+                FUN = FUN)
     cbind(mz = bins$mids, intensity = bins$x)
 }
 
@@ -139,20 +141,19 @@ NULL
 #' @param y peaks `matrix` with columns `"mz"` and `"intensity"`.
 #'
 #' @param FUN `function` to be applied to the intensity values of matched
-#'     peaks betwen peak lists `x` and `y`. The function should take two
+#'     peaks between peak lists `x` and `y`. The function should take two
 #'     `numeric` vectors as their first argument and should return a single
 #'     `numeric`. Parameter `...` will be passed to the function.
 #'
-#' @param tolerance `numeric(1)` with the acceptable tolerance in matching
-#'     peaks. See [matchApprox()] for details.
+#' @param tolerance `numeric(1)` with the acceptable (constant) tolerance in
+#'     matching peaks.
 #'
-#' @param ppm `numeric(1)` allowing to specify a peak-specific tolerance for
-#'     the peak matching. See [matchApprox()] for details.
+#' @param ppm `numeric(1)` allowing to specify a peak-specific, relative,
+#'     tolerance for the peak matching.
 #'
+#' @param ... additional parameters passed to the `FUN` function.
 #'
-#' @param ... additional parameters passed to the `method` function.
-#'
-#' @return The result from `method`, which should be a `numeric(1)`.
+#' @return The result from `FUN`, which should be a `numeric(1)`.
 #'
 #' @author Johannes Rainer
 #'
@@ -195,10 +196,3 @@ NULL
         FUN(x[not_na, 2], y[matches[not_na], 2], ...)
     } else NA_real_
 }
-
-setMethod("compareSpectra", signature = c("Spectra", "missing") {
-    ## Use combn and the approach as in MSnbase::compare_MSnExp
-})
-setMethod("compareSpectra", signature = c("Spectra", "Spectra") {
-    ## Use .compare_spectra
-})

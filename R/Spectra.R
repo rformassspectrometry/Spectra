@@ -1170,23 +1170,23 @@ setMethod("filterRt", "Spectra",
 #' @rdname Spectra
 #'
 #' @exportMethod bin
-setMethod("bin", "Spectra", function(object, binSize = 1L, breaks = NULL,
-                                     msLevel. = unique(msLevel(object))) {
-    if (!.check_ms_level(object, msLevel.))
-        return(object)
+setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
+                                     msLevel. = unique(msLevel(x))) {
+    if (!.check_ms_level(x, msLevel.))
+        return(x)
     if (!length(breaks)) {
-        mzr <- range(.peaksapply(filterMsLevel(object, msLevel.),
+        mzr <- range(.peaksapply(filterMsLevel(x, msLevel.),
                                  function(z, ...) z[c(1L, nrow(z))]
                                  ), na.rm = TRUE)
         breaks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = binSize)
     }
-    object <- addProcessing(object, .peaks_bin, breaks = breaks,
+    x <- addProcessing(x, .peaks_bin, breaks = breaks,
                             msLevel = msLevel.)
-    object@processing <- .logging(object@processing,
+    x@processing <- .logging(x@processing,
                                   "Spectra of MS level(s) ",
                                   paste0(msLevel., collapse = ", "),
                                   " binned.")
-    object
+    x
 })
 
 #' @rdname Spectra
