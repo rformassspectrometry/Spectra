@@ -175,11 +175,13 @@ setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
 })
 
 #' @rdname hidden_aliases
+#' @importFrom MsCoreUtils vapply1d
 setMethod("ionCount", "MsBackendDataFrame", function(object) {
     vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
 
 #' @rdname hidden_aliases
+#' @importFrom MsCoreUtils vapply1l
 setMethod("isCentroided", "MsBackendDataFrame", function(object, ...) {
     vapply(peaks(object), .peaks_is_centroided, logical(1))
 })

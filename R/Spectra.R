@@ -731,6 +731,8 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
 
 #' @rdname Spectra
 #'
+#' @importFrom MsCoreUtils vapply1c
+#'
 #' @exportMethod c
 setMethod("c", "Spectra", function(x, ...) {
     objs <- unname(c(list(x), list(...)))
