@@ -161,7 +161,7 @@ NULL
 #'
 #' @importFrom stats cor
 #'
-#' @importFrom MsCoreUtils closest
+#' @importFrom MsCoreUtils closest ppm
 #'
 #' @examples
 #'
@@ -182,7 +182,6 @@ NULL
 #' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x), ppm = 0)
 .peaks_compare_intensities <- function(x, y, FUN = cor, tolerance = 0,
                                        ppm = 20, ...) {
-    tolerance <- tolerance + sqrt(.Machine$double.eps) + x[, 1] * ppm / 1e6
     matches <- closest(x[, 1], y[, 1], tolerance = tolerance + ppm(y[, 1], ppm))
     not_na <- !is.na(matches)
     if (any(not_na)) {
