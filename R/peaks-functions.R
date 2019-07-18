@@ -132,9 +132,9 @@ NULL
 #'
 #' @description
 #'
-#' Compare peaks from one to peaks from another spectrum with the provided
-#' function (`method`). `.peaks_compare` ensures that peaks are first matched
-#' between the two spectra with the [matchApprox] function.
+#' Compare peaks from one spectrum to peaks from another spectrum with the
+#' provided function (`FUN`). `.peaks_compare_intensities` ensures that peaks
+#' are first matched between the two spectra with the [closest()] function.
 #'
 #' @param x peaks `matrix` with columns `"mz"` and `"intensity"`.
 #'
@@ -145,11 +145,13 @@ NULL
 #'     `numeric` vectors as their first argument and should return a single
 #'     `numeric`. Parameter `...` will be passed to the function.
 #'
-#' @param tolerance `numeric(1)` with the acceptable (constant) tolerance in
-#'     matching peaks.
+#' @param tolerance `numeric(1)` with the acceptable (constant) difference in
+#'     m/z values for matching peaks.
 #'
-#' @param ppm `numeric(1)` allowing to specify a peak-specific, relative,
-#'     tolerance for the peak matching.
+#' @param ppm `numeric(1)` specifying a peak-specific, relative,
+#'     tolerance for the peak matching. Peaks between the two spectra with a
+#'     difference in their m/z smaller than *ppm* of the m/z of the peak (of
+#'     the second spectrum) are matched. See also [ppm()].
 #'
 #' @param ... additional parameters passed to the `FUN` function.
 #'

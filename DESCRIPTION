@@ -21,11 +21,11 @@ Depends:
     R (>= 3.5.0),
     S4Vectors,
     BiocParallel,
-    ProtGenerics (>= 1.17.2),
-    MsCoreUtils (>= 0.0.1)
+    ProtGenerics (>= 1.17.2)
 Imports:
     methods,
-    IRanges
+    IRanges,
+    MsCoreUtils (>= 0.0.1)
 Suggests:
     testthat,
     knitr (>= 1.1.0),

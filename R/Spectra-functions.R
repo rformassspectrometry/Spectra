@@ -183,7 +183,10 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' @param ... additional parameters passed to `FUN`.
 #'
-#' @importFrom utils combn
+#' @return
+#'
+#' `matrix` with number of rows equal to length of `x` and number of columns
+#' equal `length(y)`.
 #'
 #' @examples
 #'
@@ -204,7 +207,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     y_idx <- seq_along(y)
     mat <- matrix(NA_real_, nrow = length(x_idx), ncol = length(y_idx),
                   dimnames = list(names(x), names(y)))
-        ## Might need some tuning - bplapply?
+    ## Might need some tuning - bplapply?
     for (i in x_idx) {
         for (j in y_idx) {
             mat[i, j] <- .peaks_compare_intensities(
@@ -221,6 +224,8 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' `combn` to avoid calculating combinations twice.
 #'
 #' @inheritParams .compare_spectra
+#'
+#' @importFrom utils combn
 #'
 #' @examples
 #'
