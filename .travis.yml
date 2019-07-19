@@ -28,6 +28,8 @@ jobs:
         - testthat
         - knitr
         - roxygen2
+      r_github_packages:
+        - rformassspectrometry/MsCoreUtils
       before_install:
         - mkdir -p ~/.R
         - echo -e 'MAKEFLAGS = -j2' > ~/.R/Makevars

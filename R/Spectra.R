@@ -731,10 +731,12 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
 
 #' @rdname Spectra
 #'
+#' @importFrom MsCoreUtils vapply1c
+#'
 #' @exportMethod c
 setMethod("c", "Spectra", function(x, ...) {
     objs <- unname(c(list(x), list(...)))
-    cls <- vapply(objs, class, character(1))
+    cls <- vapply1c(objs, class)
     if (any(cls != "Spectra"))
         stop("Can only concatenate 'Spectra' objects")
     pqs <- lapply(objs, function(z) z@processingQueue)

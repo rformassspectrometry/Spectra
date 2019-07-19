@@ -141,12 +141,12 @@ setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("ionCount", "MsBackendHdf5Peaks", function(object) {
-    vapply(peaks(object), function(z) sum(z[, 2], na.rm = TRUE), numeric(1))
+    vapply1d(peaks(object), function(z) sum(z[, 2], na.rm = TRUE))
 })
 
 #' @rdname hidden_aliases
 setMethod("isCentroided", "MsBackendHdf5Peaks", function(object, ...) {
-    vapply(peaks(object), .peaks_is_centroided, logical(1))
+    vapply1l(peaks(object), .peaks_is_centroided)
 })
 
 #' @rdname hidden_aliases

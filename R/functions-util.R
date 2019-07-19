@@ -215,7 +215,7 @@ utils.enableNeighbours <- function(x) {
     if (length(l) == 1L)
         l <- l[[1L]]
 
-    cl <- vapply(l, class, character(1L))
+    cl <- vapply1c(l, class)
 
     stopifnot(all(cl %in% c("matrix", "data.frame", "DataFrame")))
 
@@ -224,7 +224,7 @@ utils.enableNeighbours <- function(x) {
     isMatrix <- cl == "matrix"
     l[isMatrix] <- lapply(l[isMatrix], as.data.frame)
 
-    allcl <- unlist(lapply(l, vapply, class, character(1L)))
+    allcl <- unlist(lapply(l, vapply1c, class, USE.NAMES = TRUE))
     allnms <- unique(names(allcl))
     allcl <- allcl[allnms]
 

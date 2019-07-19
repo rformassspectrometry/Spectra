@@ -53,9 +53,9 @@ NULL
 
 .valid_mz_column <- function(x) {
     if (length(x$mz)) {
-        if (!all(vapply(x$mz, is.numeric, logical(1))))
+        if (!all(vapply1l(x$mz, is.numeric)))
             return("mz column should contain a list of numeric")
-        if (any(vapply(x$mz, is.unsorted, logical(1))))
+        if (any(vapply1l(x$mz, is.unsorted)))
             return("mz values have to be sorted increasingly")
     }
     NULL
@@ -63,7 +63,7 @@ NULL
 
 .valid_intensity_column <- function(x) {
     if (length(x$intensity))
-        if (!all(vapply(x$intensity, is.numeric, logical(1))))
+        if (!all(vapply1l(x$intensity, is.numeric)))
             return("intensity column should contain a list of numeric")
     NULL
 }
@@ -199,7 +199,7 @@ MsBackendDataFrame <- function() {
 #'
 #' @noRd
 .as_vector_spectra_data <- function(x) {
-    cols <- colnames(x)[vapply(x, is, logical(1), "Rle")]
+    cols <- colnames(x)[vapply1l(x, is, "Rle")]
     for (col in cols) {
         x[[col]] <- as.vector(x[[col]])
     }
@@ -291,7 +291,7 @@ MsBackendDataFrame <- function() {
 .combine_backend_data_frame <- function(objects) {
     if (length(objects) == 1)
         return(objects[[1]])
-    if (!all(vapply(objects, class, character(1)) == class(objects[[1]])))
+    if (!all(vapply1c(objects, class) == class(objects[[1]])))
         stop("Can only merge backends of the same type: ", class(objects[[1]]))
     res <- new(class(objects[[1]]))
     suppressWarnings(
