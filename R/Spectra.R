@@ -1260,7 +1260,7 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
                    SIMPLIFY = TRUE) {
               mat <- .compare_spectra(x, y, FUN = FUN, tolerance = tolerance,
                                       ppm = ppm, ...)
-              if (SIMPLIFY && (length(x) == 1 | length(y) == 1))
+              if (SIMPLIFY && (length(x) == 1 || length(y) == 1))
                   mat <- as.vector(mat)
               mat
           })
