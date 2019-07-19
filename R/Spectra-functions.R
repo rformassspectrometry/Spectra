@@ -3,7 +3,7 @@ NULL
 
 .valid_processing_queue <- function(x) {
     if (length(x))
-        if (!all(vapply(x, inherits, logical(1), "ProcessingStep")))
+        if (!all(vapply1l(x, inherits, "ProcessingStep")))
             return("'processingQueue' should only contain ProcessingStep objects.")
     NULL
 }
