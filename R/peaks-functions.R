@@ -125,3 +125,33 @@ NULL
     x <- x[x[, 2] > .qtl, 1]
     quantile(diff(x), 0.25) > k
 }
+
+#' @importFrom MsCoreUtils localMaxima noise
+#'
+#' @description
+#'
+#' Simple peak detection based on local maxima above SNR * noise.
+#'
+#' @inheritParams .peaks_remove
+#'
+#' @return `matrix` with columns `"mz"` and `"intensity"`.
+#'
+#' @noRd
+.peaks_pick <- function(x, spectrumMsLevel, centroided = NA,
+                        halfWindowSize = 2L, method = c("MAD", "SuperSmoother"),
+                        SNR = 0L,
+                        refineMz = c("none", "kNeighbours", "descendPeak"),
+                        msLevel = spectrumMsLevel, ...) {
+    if (!(spectrumMsLevel %in% msLevel) || isTRUE(centroided))
+        return(x)
+    if (!nrow(x)) {
+        warning("Spectrum is empty. Nothing to pick.")
+        return(x)
+    }
+
+    n <- noise(x[, 1L], x[, 2L], method = method, ...)
+
+    l <- localMaxima(x[, 2L], hws = halfWindowSize)
+
+    x[l & x[, 2L] > (SNR * n), , drop = FALSE]
+}
