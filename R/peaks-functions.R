@@ -182,6 +182,17 @@ NULL
 #' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x), ppm = 40)
 #' ## NA if there are none common
 #' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x), ppm = 0)
+#'
+#' ## Second example
+#' x <- cbind(1:10, 1:10)
+#' y <- cbind(9:20, 9:20)
+#'
+#' Spectra:::.peaks_compare_intensities(x, y)
+#'
+#' xb <- bin(x[, 2], x[, 1], size = 1L, breaks = 1:20)
+#' yb <- bin(y[, 2], y[, 1], size = 1L, breaks = 1:20)
+#' xb <- cbind(xb$mids, xb$x)
+#' yb <- cbind(yb$mids, yb$x)
 .peaks_compare_intensities <- function(x, y, FUN = cor, tolerance = 0,
                                        ppm = 20, ...) {
     matches <- closest(x[, 1], y[, 1], tolerance = tolerance + ppm(y[, 1], ppm),

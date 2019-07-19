@@ -42,7 +42,6 @@ VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/Spectra/issues
 URL: https://github.com/RforMassSpectrometry/Spectra
 biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics
-Remotes: RforMassSpectrometry/MsCoreUtils
 RoxygenNote: 6.1.1
 Collate:
     'hidden_aliases.R'
