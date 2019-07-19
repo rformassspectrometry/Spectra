@@ -6,11 +6,14 @@
 \name{hidden_aliases}
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
+\alias{ppm}
+\alias{closest}
 \alias{backendInitialize}
 \alias{backendMerge}
 \alias{bin}
 \alias{bin,numeric-method}
 \alias{clean}
+\alias{compareSpectra}
 \alias{dataOrigin}
 \alias{dataOrigin<-}
 \alias{dataStorage}
@@ -139,6 +142,8 @@ bin(x, ...)
   ceiling(max(y)), by = size), FUN = max)
 
 clean(object, ...)
+
+compareSpectra(x, y, ...)
 
 dataOrigin(object, ...)
 

@@ -206,7 +206,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     x_idx <- seq_along(x)
     y_idx <- seq_along(y)
     mat <- matrix(NA_real_, nrow = length(x_idx), ncol = length(y_idx),
-                  dimnames = list(names(x), names(y)))
+                  dimnames = list(spectraNames(x), spectraNames(y)))
     ## Might need some tuning - bplapply?
     for (i in x_idx) {
         for (j in y_idx) {
@@ -244,7 +244,7 @@ applyProcessing <- function(object, f = dataStorage(object),
                                    ppm = ppm, ...)
     })
     mat <- matrix(NA_real_, length(x_idx), length(x_idx),
-                  dimnames = list(names(x), names(x)))
+                  dimnames = list(spectraNames(x), spectraNames(x)))
     mat[lower.tri(mat)] <- cb
     for (i in seq_len(nrow(mat))) {
         mat[i, i] <- .peaks_compare_intensities(

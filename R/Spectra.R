@@ -321,6 +321,27 @@ NULL
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
+#' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
+#'   using the function provided with `FUN` (defaults to [cor()]). If `y` is
+#'   missing, each spectrum in `x` is compared with each other spectrum in `x`.
+#'   `FUN` is supposed to be a function to compare intensities of (matched)
+#'   peaks of the two spectra that are compared. The function needs to take two
+#'   numeric vectors as input and is supposed to return a single numeric as
+#'   result. Additional parameters to the function can be passed with `...`.
+#'   Prior to the comparison of the intensities, `compareSpectra` matches peaks
+#'   based on the similarity of their m/z with arguments `tolerance` and `ppm`
+#'   allowing to define the maximal allowed difference of m/z values for peaks
+#'   to be matched: `tolerance` allows to define a constant maximal accepted
+#'   difference and `ppm` a relative, m/z dependent, difference (i.e.
+#'   differences smaller than `ppm` parts-per-million of the actual peak's m/z
+#'   are allowed; see [closest()] for more information).
+#'   The function matches peaks for a spectrum in `x` with peaks
+#'   The function returns a `matrix` with the results of `FUN` for each
+#'   comparison, number of rows equal to `length(x)` and number of columns
+#'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
+#'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
+#'   is *simplified* to a `numeric` if length of `x` or `y` is one.
+#'
 #' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
 #'   value `t` by setting their intensity to `0`. With the default `t = "min"`
 #'   all peaks with an intensity smaller or equal to the minimal non-zero
@@ -374,8 +395,9 @@ NULL
 #'     backends changing this parameter can lead to errors.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
-#'     of each spectrum in `object`. See section *Data manipulations* below
-#'     for more details.
+#'     of each spectrum in `object`. For `compareSpectra`: function to compare
+#'     intensities of peaks between two spectra with each other. See section
+#'     *Data manipulations* below for more details.
 #'
 #' @param i For `[`: `integer`, `logical` or `character` to subset the object.
 #'
@@ -413,10 +435,16 @@ NULL
 #'
 #' @param ppm For `filterPrecursorMz`: `numeric(1)` defining the accepted
 #'     difference between the provided m/z and the spectrum's m/z in parts per
-#'     million.
+#'     million. For `compareSpectra`: `numeric(1)` defining a relative,
+#'     m/z-dependent, maximal accepted difference between m/z values for peaks
+#'     to be matched.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
+#'
+#' @param SIMPLIFY For `compareSpectra` whether the result matrix should be
+#'     *simplified* to a `numeric` if possible (i.e. if either `x` or `y` is
+#'     of length 1).
 #'
 #' @param source For `Spectra`: instance of [MsBackend-class] that can be used
 #'     to import spectrum data from the provided files. See section *Creation
@@ -425,15 +453,21 @@ NULL
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
 #'
+#' @param tolerance For `compareSpectra`: `numeric(1)` allowing to define a
+#'     constant maximal accepted difference between m/z values for peaks to be
+#'     matched.
+#'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
 #' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
-#' @param x A `Spectra` object.
-#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param x A `Spectra` object.
+#'
+#' @param y A `Spectra` object.
 #'
 #' @param ... Additional arguments.
 #'
@@ -587,6 +621,13 @@ NULL
 #'
 #' ## Second spectrum is now empty:
 #' isEmpty(res)
+#'
+#' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20
+#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
+#' ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
+#' ## the second row comparisons of spectrum 3 with spectra 10 to 20
+#' res
+#'
 NULL
 
 #' The Spectra class
@@ -1207,7 +1248,33 @@ setMethod("clean", "Spectra",
               object
           })
 
-## compareSpectra
+#' @rdname Spectra
+#'
+#' @exportMethod compareSpectra
+#'
+#' @export ppm closest
+setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
+          function(x, y, FUN = cor, tolerance = 0, ppm = 20, ...,
+                   SIMPLIFY = TRUE) {
+              mat <- .compare_spectra(x, y, FUN = FUN, tolerance = tolerance,
+                                      ppm = ppm, ...)
+              if (SIMPLIFY && (length(x) == 1 | length(y) == 1))
+                  mat <- as.vector(mat)
+              mat
+          })
+#' @rdname Spectra
+setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
+          function(x, y = NULL, FUN = cor, tolerance = 0, ppm = 20, ...,
+                   SIMPLIFY = TRUE) {
+              if (length(x) == 1)
+                  return(compareSpectra(x, x, FUN = FUN, tolerance = tolerance,
+                                        ppm = ppm, ...))
+              mat <- .compare_spectra_self(x, FUN = FUN, tolerance = tolerance,
+                                           ppm = ppm, ...)
+              if (SIMPLIFY && length(x) == 1)
+                  mat <- as.vector(mat)
+              mat
+          })
 
 ## combineSpectra
 

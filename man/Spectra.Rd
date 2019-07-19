@@ -68,6 +68,8 @@
 \alias{filterRt,Spectra-method}
 \alias{bin,Spectra-method}
 \alias{clean,Spectra-method}
+\alias{compareSpectra,Spectra,Spectra-method}
+\alias{compareSpectra,Spectra,missing-method}
 \alias{removePeaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
@@ -215,6 +217,12 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 \S4method{clean}{Spectra}(object, all = FALSE,
   msLevel. = unique(msLevel(object)))
 
+\S4method{compareSpectra}{Spectra,Spectra}(x, y, FUN = cor,
+  tolerance = 0, ppm = 20, ..., SIMPLIFY = TRUE)
+
+\S4method{compareSpectra}{Spectra,missing}(x, y = NULL, FUN = cor,
+  tolerance = 0, ppm = 20, ..., SIMPLIFY = TRUE)
+
 \S4method{removePeaks}{Spectra}(object, t = "min",
   msLevel. = unique(msLevel(object)))
 }
@@ -224,8 +232,9 @@ on creation of \code{Spectra} objects for details. For all other methods a
 \code{Spectra} object.}
 
 \item{FUN}{For \code{addProcessing}: function to be applied to the peak matrix
-of each spectrum in \code{object}. See section \emph{Data manipulations} below
-for more details.}
+of each spectrum in \code{object}. For \code{compareSpectra}: function to compare
+intensities of peaks between two spectra with each other. See section
+\emph{Data manipulations} below for more details.}
 
 \item{...}{Additional arguments.}
 
@@ -302,7 +311,9 @@ to subset \code{object}.}
 
 \item{ppm}{For \code{filterPrecursorMz}: \code{numeric(1)} defining the accepted
 difference between the provided m/z and the spectrum's m/z in parts per
-million.}
+million. For \code{compareSpectra}: \code{numeric(1)} defining a relative,
+m/z-dependent, maximal accepted difference between m/z values for peaks
+to be matched.}
 
 \item{acquisitionNum}{for \code{filterPrecursorScan}: \code{integer} with the
 acquisition number of the spectra to which the object should be
@@ -319,6 +330,16 @@ Defaults to \code{binSize = 1}.}
 \item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
 removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
 non-zero intensity peak should be kept (\code{FALSE}).}
+
+\item{y}{A \code{Spectra} object.}
+
+\item{tolerance}{For \code{compareSpectra}: \code{numeric(1)} allowing to define a
+constant maximal accepted difference between m/z values for peaks to be
+matched.}
+
+\item{SIMPLIFY}{For \code{compareSpectra} whether the result matrix should be
+\emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
+of length 1).}
 
 \item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
@@ -604,6 +625,26 @@ intensity values for peaks falling into the same bin are summed.
 \item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
 0-intensity peaks next to non-zero intensity peaks are retained while with
 \code{all = TRUE} all 0-intensity peaks are removed.
+\item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
+using the function provided with \code{FUN} (defaults to \code{\link[=cor]{cor()}}). If \code{y} is
+missing, each spectrum in \code{x} is compared with each other spectrum in \code{x}.
+\code{FUN} is supposed to be a function to compare intensities of (matched)
+peaks of the two spectra that are compared. The function needs to take two
+numeric vectors as input and is supposed to return a single numeric as
+result. Additional parameters to the function can be passed with \code{...}.
+Prior to the comparison of the intensities, \code{compareSpectra} matches peaks
+based on the similarity of their m/z with arguments \code{tolerance} and \code{ppm}
+allowing to define the maximal allowed difference of m/z values for peaks
+to be matched: \code{tolerance} allows to define a constant maximal accepted
+difference and \code{ppm} a relative, m/z dependent, difference (i.e.
+differences smaller than \code{ppm} parts-per-million of the actual peak's m/z
+are allowed; see \code{\link[=closest]{closest()}} for more information).
+The function matches peaks for a spectrum in \code{x} with peaks
+The function returns a \code{matrix} with the results of \code{FUN} for each
+comparison, number of rows equal to \code{length(x)} and number of columns
+equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
+the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
+is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
 \item \code{removePeaks}: \emph{removes} peaks lower or equal to a threshold intensity
 value \code{t} by setting their intensity to \code{0}. With the default \code{t = "min"}
 all peaks with an intensity smaller or equal to the minimal non-zero
@@ -756,6 +797,13 @@ intensity(res)[[2]]
 
 ## Second spectrum is now empty:
 isEmpty(res)
+
+## Compare spectra: comparing spectra 2 and 3 against spectra 10:20
+res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
+## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
+## the second row comparisons of spectrum 3 with spectra 10 to 20
+res
+
 }
 \author{
 Sebastian Gibb, Johannes Rainer

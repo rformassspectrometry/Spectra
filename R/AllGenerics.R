@@ -18,6 +18,9 @@ setMethod("bin", "numeric", MsCoreUtils::bin)
 #' @rdname hidden_aliases
 setGeneric("clean", function(object, ...) standardGeneric("clean"))
 #' @rdname hidden_aliases
+setGeneric("compareSpectra", function(x, y, ...)
+    standardGeneric("compareSpectra"))
+#' @rdname hidden_aliases
 setGeneric("dataOrigin", function(object, ...) standardGeneric("dataOrigin"))
 #' @rdname hidden_aliases
 setGeneric("dataOrigin<-", function(object, value)
