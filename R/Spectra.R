@@ -334,8 +334,8 @@ NULL
 #'   to be matched: `tolerance` allows to define a constant maximal accepted
 #'   difference and `ppm` a relative, m/z dependent, difference (i.e.
 #'   differences smaller than `ppm` parts-per-million of the actual peak's m/z
-#'   are allowed; see [closest()] for more information).
-#'   The function matches peaks for a spectrum in `x` with peaks
+#'   are allowed). The final tolerance per
+#'   peak is the sum of `tolerance` and `ppm` of the peak's m/z.
 #'   The function returns a `matrix` with the results of `FUN` for each
 #'   comparison, number of rows equal to `length(x)` and number of columns
 #'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
@@ -1254,7 +1254,7 @@ setMethod("clean", "Spectra",
 #'
 #' @exportMethod compareSpectra
 #'
-#' @export ppm closest
+#' @export ppm
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
           function(x, y, FUN = cor, tolerance = 0, ppm = 20, ...,
                    SIMPLIFY = TRUE) {

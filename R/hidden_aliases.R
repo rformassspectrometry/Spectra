@@ -1,6 +1,6 @@
 #' @title Internal page for hidden aliases
 #'
-#' @aliases [,MsBackendDataFrame-method ppm closest
+#' @aliases [,MsBackendDataFrame-method ppm
 #'
 #' @description
 #'

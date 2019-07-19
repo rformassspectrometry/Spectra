@@ -56,7 +56,6 @@ Collate:
     'MsBackendMzR-functions.R'
     'MsBackendMzR.R'
     'ProcessingStep.R'
-    'RcppExports.R'
     'Spectra-functions.R'
     'Spectra.R'
     'functions-util.R'

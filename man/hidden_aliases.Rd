@@ -7,7 +7,6 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
-\alias{closest}
 \alias{backendInitialize}
 \alias{backendMerge}
 \alias{bin}

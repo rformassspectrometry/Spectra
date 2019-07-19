@@ -184,7 +184,8 @@ NULL
 #' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x), ppm = 0)
 .peaks_compare_intensities <- function(x, y, FUN = cor, tolerance = 0,
                                        ppm = 20, ...) {
-    matches <- closest(x[, 1], y[, 1], tolerance = tolerance + ppm(y[, 1], ppm))
+    matches <- closest(x[, 1], y[, 1], tolerance = tolerance + ppm(y[, 1], ppm),
+                       duplicates = "closest")
     not_na <- !is.na(matches)
     if (any(not_na)) {
         FUN(x[not_na, 2], y[matches[not_na], 2], ...)

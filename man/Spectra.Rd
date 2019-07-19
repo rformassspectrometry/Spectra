@@ -638,8 +638,8 @@ allowing to define the maximal allowed difference of m/z values for peaks
 to be matched: \code{tolerance} allows to define a constant maximal accepted
 difference and \code{ppm} a relative, m/z dependent, difference (i.e.
 differences smaller than \code{ppm} parts-per-million of the actual peak's m/z
-are allowed; see \code{\link[=closest]{closest()}} for more information).
-The function matches peaks for a spectrum in \code{x} with peaks
+are allowed). The final tolerance per
+peak is the sum of \code{tolerance} and \code{ppm} of the peak's m/z.
 The function returns a \code{matrix} with the results of \code{FUN} for each
 comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
