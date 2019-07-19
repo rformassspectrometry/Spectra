@@ -177,13 +177,13 @@ setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
 #' @rdname hidden_aliases
 #' @importFrom MsCoreUtils vapply1d
 setMethod("ionCount", "MsBackendDataFrame", function(object) {
-    vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
+    vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
 #' @rdname hidden_aliases
 #' @importFrom MsCoreUtils vapply1l
 setMethod("isCentroided", "MsBackendDataFrame", function(object, ...) {
-    vapply(peaks(object), .peaks_is_centroided, logical(1))
+    vapply1l(peaks(object), .peaks_is_centroided)
 })
 
 #' @rdname hidden_aliases
@@ -472,7 +472,7 @@ setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
         if (any(colnames(object@spectraData) == "totIonCurrent"))
             .get_rle_column(object@spectraData, "totIonCurrent")
         else rep(NA_real_, times = length(object))
-    } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
+    } else vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
 #' @rdname hidden_aliases
