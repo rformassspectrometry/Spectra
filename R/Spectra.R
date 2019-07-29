@@ -445,6 +445,8 @@ NULL
 #'
 #' @exportMethod Spectra
 #'
+#' @import MsCoreUtils
+#'
 #' @examples
 #'
 #' ## Create a Spectra providing a `DataFrame` containing the spectrum data.
