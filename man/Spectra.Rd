@@ -68,6 +68,7 @@
 \alias{filterRt,Spectra-method}
 \alias{bin,Spectra-method}
 \alias{clean,Spectra-method}
+\alias{pickPeaks,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
@@ -215,6 +216,11 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 \S4method{clean}{Spectra}(object, all = FALSE,
   msLevel. = unique(msLevel(object)))
 
+\S4method{pickPeaks}{Spectra}(object, halfWindowSize = 2L,
+  method = c("MAD", "SuperSmoother"), SNR = 0, k = 0L,
+  descending = FALSE, threshold = 0,
+  msLevel. = unique(msLevel(object)))
+
 \S4method{removePeaks}{Spectra}(object, t = "min",
   msLevel. = unique(msLevel(object)))
 }
@@ -319,6 +325,29 @@ Defaults to \code{binSize = 1}.}
 \item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
 removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
 non-zero intensity peak should be kept (\code{FALSE}).}
+
+\item{halfWindowSize}{For \code{pickPeaks}: \code{integer(1)}, a local maximum has to
+be the maximum in the window from
+\code{(i - halfWindowSize):(i + halfWindowSize)}.}
+
+\item{method}{For \code{pickPeaks}: \code{character(1)}, the noise estimators that
+should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
+(\code{method = "MAD"}) and Friedman's Super Smoother
+(\code{method = "SuperSmoother"}) are supported.}
+
+\item{SNR}{For \code{pickPeaks}: \code{double(1)} defining the
+\emph{S}ignal-to-\emph{N}oise-\emph{R}atio. The intensity of a local maximum has to be
+higher than \code{SNR * noise} to be considered as peak.}
+
+\item{k}{For \code{pickPeaks}: \code{integer(1)}, number of values left and right of
+the peak that should be considered in the weighted mean calculation.}
+
+\item{descending}{For \code{pickPeaks}: \code{logical}, if \code{TRUE} just values between
+the nearest valleys around the peak centroids are used.}
+
+\item{threshold}{For \code{pickPeaks}: a \code{double(1)} defining the proportion of
+the maximal peak intensity. Just values above are used for the weighted
+mean calclulation.}
 
 \item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
 
@@ -604,6 +633,22 @@ intensity values for peaks falling into the same bin are summed.
 \item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
 0-intensity peaks next to non-zero intensity peaks are retained while with
 \code{all = TRUE} all 0-intensity peaks are removed.
+\item \code{pickPeaks}: picks peaks on individual spectra. For noisy spectra there
+are currently two different noise estimators available,
+the \emph{M}edian \emph{A}bsolute \emph{D}eviation (\code{method = "MAD"}) and
+Friedman's Super Smoother (\code{method = "SuperSmoother"}),
+as implemented in the \code{\link[MsCoreUtils:noise]{MsCoreUtils::noise()}}.
+The method supports also to optionally \emph{refine} the m/z value of
+the identified centroids by considering data points that belong (most
+likely) to the same mass peak. Therefore the m/z value is calculated as an
+intensity weighted average of the m/z values within the peak region.
+The peak region is defined as the m/z values (and their respective
+intensities) of the \code{2 * k} closest signals to the centroid or the closest
+valleys (\code{descending = TRUE}) in the \code{2 * k} region. For the latter the \code{k}
+has to be chosen general larger. See \code{\link[MsCoreUtils:refineCentroids]{MsCoreUtils::refineCentroids()}} for
+details.
+If the ratio of the signal to the highest intensity of the peak is below
+\code{threshold} it will be ignored for the weighted average.
 \item \code{removePeaks}: \emph{removes} peaks lower or equal to a threshold intensity
 value \code{t} by setting their intensity to \code{0}. With the default \code{t = "min"}
 all peaks with an intensity smaller or equal to the minimal non-zero

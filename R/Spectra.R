@@ -321,6 +321,23 @@ NULL
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
+#' - `pickPeaks`: picks peaks on individual spectra. For noisy spectra there
+#'   are currently two different noise estimators available,
+#'   the *M*edian *A*bsolute *D*eviation (`method = "MAD"`) and
+#'   Friedman's Super Smoother (`method = "SuperSmoother"`),
+#'   as implemented in the [`MsCoreUtils::noise()`].
+#'   The method supports also to optionally *refine* the m/z value of
+#'   the identified centroids by considering data points that belong (most
+#'   likely) to the same mass peak. Therefore the m/z value is calculated as an
+#'   intensity weighted average of the m/z values within the peak region.
+#'   The peak region is defined as the m/z values (and their respective
+#'   intensities) of the `2 * k` closest signals to the centroid or the closest
+#'   valleys (`descending = TRUE`) in the `2 * k` region. For the latter the `k`
+#'   has to be chosen general larger. See [`MsCoreUtils::refineCentroids()`] for
+#'   details.
+#'   If the ratio of the signal to the highest intensity of the peak is below
+#'   `threshold` it will be ignored for the weighted average.
+#'
 #' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
 #'   value `t` by setting their intensity to `0`. With the default `t = "min"`
 #'   all peaks with an intensity smaller or equal to the minimal non-zero
@@ -367,6 +384,9 @@ NULL
 #'     For `filterAcquisitionNum`: optionally specify if filtering should occur
 #'     only for spectra of selected `dataStorage`.
 #'
+#' @param descending For `pickPeaks`: `logical`, if `TRUE` just values between
+#'     the nearest valleys around the peak centroids are used.
+#
 #' @param drop For `[`: not considered.
 #'
 #' @param f For `setBackend`: factor defining how to split the data for
@@ -377,6 +397,10 @@ NULL
 #'     of each spectrum in `object`. See section *Data manipulations* below
 #'     for more details.
 #'
+#' @param halfWindowSize For `pickPeaks`: `integer(1)`, a local maximum has to
+#'     be the maximum in the window from
+#'     `(i - halfWindowSize):(i + halfWindowSize)`.
+#'
 #' @param i For `[`: `integer`, `logical` or `character` to subset the object.
 #'
 #' @param j For `[`: not supported.
@@ -386,11 +410,19 @@ NULL
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`, same as `ionCount`).
 #'
+#' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
+#'  the peak that should be considered in the weighted mean calculation.
+#'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
 #'
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
+#'
+#' @param method For `pickPeaks`: `character(1)`, the noise estimators that
+#'     should be used, currently the the *M*edian *A*bsolute *D*eviation
+#'     (`method = "MAD"`) and Friedman's Super Smoother
+#'     (`method = "SuperSmoother"`) are supported.
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
@@ -418,6 +450,10 @@ NULL
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
 #'
+#' @param SNR For `pickPeaks`: `double(1)` defining the
+#'     *S*ignal-to-*N*oise-*R*atio. The intensity of a local maximum has to be
+#'     higher than `SNR * noise` to be considered as peak.
+#'
 #' @param source For `Spectra`: instance of [MsBackend-class] that can be used
 #'     to import spectrum data from the provided files. See section *Creation
 #'     of objects, conversion and changing the backend* for more details.
@@ -429,6 +465,10 @@ NULL
 #'     be used to subset/filter `object`.
 #'
 #' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
+#'
+#' @param threshold For `pickPeaks`: a `double(1)` defining the proportion of
+#'     the maximal peak intensity. Just values above are used for the weighted
+#'     mean calclulation.
 #'
 #' @param x A `Spectra` object.
 #'
@@ -1221,7 +1261,45 @@ setMethod("clean", "Spectra",
 
 ## peaksapply
 
-## pickPeaks
+#' @rdname Spectra
+#'
+#' @exportMethod pickPeaks
+setMethod("pickPeaks", "Spectra",
+          function(object, halfWindowSize = 2L,
+                    method = c("MAD", "SuperSmoother"), SNR = 0, k = 0L,
+                   descending = FALSE, threshold = 0,
+                   msLevel. = unique(msLevel(object))) {
+    if (!.check_ms_level(object, msLevel.))
+        return(object)
+    if (!is.integer(halfWindowSize) || length(halfWindowSize) != 1L ||
+        halfWindowSize <= 0L)
+        stop("Argument 'halfWindowSize' has to be an integer of length 1 ",
+             "and > 0.")
+    if (!is.numeric(SNR) || length(SNR) != 1L || SNR < 0L)
+        stop("Argument 'SNR' has to be a numeric of length 1 that is >= 0.")
+    if (!is.integer(k) || length(k) != 1L || k < 0L)
+        stop("Argument 'k' has to be an integer of length 1 that is >= 0.")
+    if (!is.logical(descending) || length(descending) != 1L ||
+        is.na(descending))
+        stop("Argument 'descending' has to be just TRUE or FALSE")
+    if (!is.numeric(threshold) || length(threshold) != 1L ||
+        threshold < 0L || threshold > 1L)
+        stop("Argument 'threshold' has to be a numeric of length 1 ",
+             "that is >= 0 and <= 1.")
+
+    method <- match.arg(method)
+
+    object <- addProcessing(object, .peaks_pick,
+                            halfWindowSize = halfWindowSize, method = method,
+                            SNR = SNR, k = k, descending = descending,
+                            threshold = threshold, msLevel = msLevel.)
+    object@processing <- .logging(object@processing,
+                                  "Peak picking with ", method,
+                                  " noise estimation, hws = ", halfWindowSize,
+                                  ", SNR = ", SNR,
+                                  if (k > 0) " and centroid refinement")
+    object
+})
 
 ## quantify
 

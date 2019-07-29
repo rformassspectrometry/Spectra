@@ -988,6 +988,46 @@ test_that("clean,Spectra works", {
     expect_identical(peaks(res), SimpleList(pks_res))
 })
 
+test_that("pickPeaks,Spectra works", {
+    sps <- Spectra()
+    expect_error(pickPeaks(sps, halfWindowSize = 1), "integer")
+    expect_error(pickPeaks(sps, halfWindowSize = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, halfWindowSize = -1L), "> 0")
+    expect_error(pickPeaks(sps, method = "foo"), "MAD")
+    expect_error(pickPeaks(sps, SNR = "foo"), "numeric")
+    expect_error(pickPeaks(sps, SNR = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, SNR = -1L), ">= 0")
+    expect_error(pickPeaks(sps, k = 1), "integer")
+    expect_error(pickPeaks(sps, k = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, k = -1L), ">= 0")
+    expect_error(pickPeaks(sps, descending = NA), "TRUE or FALSE")
+    expect_error(pickPeaks(sps, descending = c(TRUE, TRUE)), "TRUE or FALSE")
+    expect_error(pickPeaks(sps, threshold = "foo"), "numeric")
+    expect_error(pickPeaks(sps, threshold = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, threshold = -1L), ">= 0")
+    expect_error(pickPeaks(sps, threshold = 2L), "<= 1")
+
+    res <- pickPeaks(sps)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.peaks_pick,
+                                list(halfWindowSize = 2L, method = "MAD",
+                                     SNR = 0, k = 0L, descending = FALSE,
+                                     threshold = 0L, msLevel = integer())))
+    expect_match(res@processing,
+                 "Peak picking with MAD noise estimation, hws = 2, SNR = 0 \\[")
+    res <- pickPeaks(sps, k = 2L)
+    expect_match(res@processing,
+                 paste0("Peak picking with MAD noise estimation, hws = 2, ",
+                        "SNR = 0 and centroid refinement \\["))
+
+    sps <- Spectra(sciex_mzr)
+    res <- pickPeaks(sps)
+    pks_res <- lapply(sciex_pks, .peaks_pick, spectrumMsLevel = 1L,
+                      centroided = FALSE)
+    expect_identical(peaks(res), SimpleList(pks_res))
+})
+
 test_that("removePeaks,Spectra works", {
     sps <- Spectra()
     res <- removePeaks(sps, t = 10)

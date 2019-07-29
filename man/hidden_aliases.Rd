@@ -26,6 +26,7 @@
 \alias{filterRt}
 \alias{isReadOnly}
 \alias{peaksCount}
+\alias{pickPeaks}
 \alias{removePeaks}
 \alias{selectSpectraVariables}
 \alias{setBackend}
@@ -167,6 +168,8 @@ filterRt(object, ...)
 isReadOnly(object, ...)
 
 peaksCount(object, ...)
+
+pickPeaks(object, ...)
 
 removePeaks(object, t = "min", ...)
 
