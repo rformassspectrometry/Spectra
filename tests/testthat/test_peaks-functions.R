@@ -61,4 +61,12 @@ test_that(".peaks_pick works", {
     expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 2,
                              method = "SuperSmoother", SNR = 2),
                  cbind(mz = c(4, 12, 23), intensity = c(3, 10, 10)))
+
+    ## use refineCentroids
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 2,
+                             method = "MAD", SNR = 2, k = 1L, ),
+                 cbind(mz = mapply(weighted.mean,
+                                   x = list(3:5, 11:13, 22:24),
+                                   w = list(int[3:5], int[11:13], int[22:24])),
+                       intensity = c(3, 10, 10)))
 })

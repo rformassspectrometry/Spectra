@@ -126,21 +126,29 @@ NULL
     quantile(diff(x), 0.25) > k
 }
 
-#' @importFrom MsCoreUtils localMaxima noise
+#' @importFrom MsCoreUtils localMaxima noise refineCentroids
 #'
 #' @description
 #'
 #' Simple peak detection based on local maxima above SNR * noise.
 #'
 #' @inheritParams .peaks_remove
+#' @param `integer(1)`, half window size, the resulting window reaches from
+#' `(i - halfWindowSize):(i + halfWindowSize)`.
+#' @param k `integer(1)`, similar to `halfWindowSize`, number of values left
+#'  and right of the peak that should be considered in the weighted mean
+#'  calculation. If zero no refinement is done.
+#' @param threshold `double(1)`, proportion of the maximal peak intensity.
+#'  Just values above are used for the weighted mean calclulation.
+#' @param descending `logical`, if `TRUE` just values between the nearest
+#'  valleys around the peak centroids are used.
 #'
 #' @return `matrix` with columns `"mz"` and `"intensity"`.
 #'
 #' @noRd
 .peaks_pick <- function(x, spectrumMsLevel, centroided = NA,
                         halfWindowSize = 2L, method = c("MAD", "SuperSmoother"),
-                        SNR = 0L,
-                        refineMz = c("none", "kNeighbours", "descendPeak"),
+                        SNR = 0L, k = 0L, descending = FALSE, threshold = 0,
                         msLevel = spectrumMsLevel, ...) {
     if (!(spectrumMsLevel %in% msLevel) || isTRUE(centroided))
         return(x)
@@ -153,5 +161,14 @@ NULL
 
     l <- localMaxima(x[, 2L], hws = halfWindowSize)
 
-    x[l & x[, 2L] > (SNR * n), , drop = FALSE]
+    p <- which(l & x[, 2L] > (SNR * n))
+
+    if (k > 0L) {
+        cbind(mz = refineCentroids(x = x[, 1L], y = x[, 2L], p = p,
+                                   k = k, threshold = threshold,
+                                   descending = descending),
+              intensity = x[p, 2L])
+    } else {
+        x[p, , drop = FALSE]
+    }
 }
