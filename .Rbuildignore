@@ -4,6 +4,7 @@
 .travis.yml
 docs
 ^docs$
+^pkgdown$
 Makefile
 local_data
 NEWS.md
