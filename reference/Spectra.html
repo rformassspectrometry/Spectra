@@ -8,6 +8,13 @@
 
 <title>The Spectra class to manage and access MS data — addProcessing • Spectra</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
@@ -839,7 +846,7 @@ is not changed unless <code>clean</code> is called after <code>removePeaks</code
 #&gt; 1862         1       259.752       931
 #&gt;  ... 31 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Jul 29 13:50:11 2019] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Tue Jul 30 18:40:12 2019] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1019,7 +1026,7 @@ is not changed unless <code>clean</code> is called after <code>removePeaks</code
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Mon Jul 29 13:50:13 2019] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Tue Jul 30 18:40:14 2019] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='no'>data_comb</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='no'>data</span>, <span class='no'>sciex_im</span>)
 
@@ -1045,7 +1052,7 @@ is not changed unless <code>clean</code> is called after <code>removePeaks</code
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Jul 29 13:50:35 2019] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Jul 30 18:40:39 2019] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='no'>res</span>)<span class='kw'>[[</span><span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400   0   0</div><div class='input'><span class='fu'>intensity</span>(<span class='no'>res</span>)<span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt; [1] 0 0 0</div><div class='input'>
 <span class='co'>## Clean all spectra removing all 0-intensity peaks.</span>
