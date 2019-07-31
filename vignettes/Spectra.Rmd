@@ -377,7 +377,7 @@ operation with the `removePeaks` function to remove peaks in each spectrum in
 *remove* the peaks, but sets their intensity to `0`.
 
 ```{r removepeaks}
-sps <- removePeaks(sps, t = 10)
+sps <- removePeaks(sps, threshold = 10)
 ```
 
 As a result intensities below 10 were set to 0 for all peaks.

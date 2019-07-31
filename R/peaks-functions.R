@@ -49,24 +49,24 @@ NULL
 #' @importClassesFrom IRanges IRanges
 #'
 #' @noRd
-.peaks_remove <- function(x, spectrumMsLevel, centroided = NA, t = "min",
-                          msLevel = spectrumMsLevel, ...) {
+.peaks_remove <- function(x, spectrumMsLevel, centroided = NA,
+                          threshold = "min", msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
     if (is.na(centroided)) {
         warning("Centroided undefined (NA): keeping spectrum as is.")
         return(x)
     }
-    if (t == "min")
-        t <- min(x[x[, "intensity"] > 0, "intensity"])
-    if (!is.numeric(t))
-        stop("'t' must either be 'min' or numeric.")
+    if (threshold == "min")
+        threshold <- min(x[x[, "intensity"] > 0, "intensity"])
+    if (!is.numeric(threshold))
+        stop("'threshold' must either be 'min' or numeric.")
     if (centroided) {
-        x[x[, "intensity"] <= t, "intensity"] <- 0
+        x[x[, "intensity"] <= threshold, "intensity"] <- 0
     } else {
         ints <- x[, "intensity"]
         peakRanges <- as(ints > 0L, "IRanges")
-        toLow <- max(extractList(ints, peakRanges)) <= t
+        toLow <- max(extractList(ints, peakRanges)) <= threshold
         x[, "intensity"] <- replaceROWS(ints, peakRanges[toLow], 0)
     }
     x

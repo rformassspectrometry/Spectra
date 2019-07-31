@@ -4,7 +4,7 @@ test_that(".peaks_remove works", {
     x <- cbind(mz = 1:length(int), intensity = int)
     res <- .peaks_remove(x, 1L, centroided = FALSE)
     expect_equal(res, x)
-    res <- .peaks_remove(x, 1L, centroided = FALSE, t = 3)
+    res <- .peaks_remove(x, 1L, centroided = FALSE, threshold = 3)
     int_exp <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 0, 0, 0, 0,
                  1, 5, 10, 5, 1)
     expect_equal(res[, "intensity"], int_exp)

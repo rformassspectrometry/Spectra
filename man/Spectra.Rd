@@ -221,7 +221,7 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
   descending = FALSE, threshold = 0,
   msLevel. = unique(msLevel(object)))
 
-\S4method{removePeaks}{Spectra}(object, t = "min",
+\S4method{removePeaks}{Spectra}(object, threshold = "min",
   msLevel. = unique(msLevel(object)))
 }
 \arguments{
@@ -345,11 +345,11 @@ the peak that should be considered in the weighted mean calculation.}
 \item{descending}{For \code{pickPeaks}: \code{logical}, if \code{TRUE} just values between
 the nearest valleys around the peak centroids are used.}
 
-\item{threshold}{For \code{pickPeaks}: a \code{double(1)} defining the proportion of
-the maximal peak intensity. Just values above are used for the weighted
-mean calclulation.}
-
-\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
+\item{threshold}{\itemize{
+\item For \code{pickPeaks}: a \code{double(1)} defining the proportion of the maximal peak
+intensity. Just values above are used for the weighted mean calclulation.
+\item For \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.
+}}
 
 \item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
 subsetted.}
@@ -650,12 +650,13 @@ details.
 If the ratio of the signal to the highest intensity of the peak is below
 \code{threshold} it will be ignored for the weighted average.
 \item \code{removePeaks}: \emph{removes} peaks lower or equal to a threshold intensity
-value \code{t} by setting their intensity to \code{0}. With the default \code{t = "min"}
-all peaks with an intensity smaller or equal to the minimal non-zero
-intensity is set to \code{0}. If the spectrum is in profile mode, ranges of
-successive non-0 peaks <= \code{t} are set to 0. If the spectrum is centroided,
-then individual peaks <= \code{t} are set to 0. Note that the number of peaks
-is not changed unless \code{clean} is called after \code{removePeaks}.
+value \code{threshold} by setting their intensity to \code{0}. With the default
+\code{threshold = "min"} all peaks with an intensity smaller or equal to the
+minimal non-zero intensity is set to \code{0}. If the spectrum is in
+profile mode, ranges of successive non-0 peaks <= \code{threshold} are set to 0.
+If the spectrum is centroided, then individual peaks <= \code{threshold} are set
+to 0. Note that the number of peaks is not changed unless \code{clean} is
+called after \code{removePeaks}.
 }
 }
 

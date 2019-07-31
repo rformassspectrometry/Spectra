@@ -1032,16 +1032,16 @@ test_that("pickPeaks,Spectra works", {
 
 test_that("removePeaks,Spectra works", {
     sps <- Spectra()
-    res <- removePeaks(sps, t = 10)
+    res <- removePeaks(sps, threshold = 10)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.peaks_remove,
-                                list(t = 10, msLevel = integer())))
+                                list(threshold = 10, msLevel = integer())))
 
     sps <- Spectra(sciex_mzr)
     centroided(sps) <- TRUE
-    res <- removePeaks(sps, t = 5000)
-    pks_res <- lapply(sciex_pks, .peaks_remove, t = 5000,
+    res <- removePeaks(sps, threshold = 5000)
+    pks_res <- lapply(sciex_pks, .peaks_remove, threshold = 5000,
                       spectrumMsLevel = 1L, centroided = TRUE)
     expect_identical(peaks(res), SimpleList(pks_res))
 })

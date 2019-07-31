@@ -339,12 +339,13 @@ NULL
 #'   `threshold` it will be ignored for the weighted average.
 #'
 #' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
-#'   value `t` by setting their intensity to `0`. With the default `t = "min"`
-#'   all peaks with an intensity smaller or equal to the minimal non-zero
-#'   intensity is set to `0`. If the spectrum is in profile mode, ranges of
-#'   successive non-0 peaks <= `t` are set to 0. If the spectrum is centroided,
-#'   then individual peaks <= `t` are set to 0. Note that the number of peaks
-#'   is not changed unless `clean` is called after `removePeaks`.
+#'   value `threshold` by setting their intensity to `0`. With the default
+#'   `threshold = "min"` all peaks with an intensity smaller or equal to the
+#'   minimal non-zero intensity is set to `0`. If the spectrum is in
+#'   profile mode, ranges of successive non-0 peaks <= `threshold` are set to 0.
+#'   If the spectrum is centroided, then individual peaks <= `threshold` are set
+#'   to 0. Note that the number of peaks is not changed unless `clean` is
+#'   called after `removePeaks`.
 #'
 #' @return See individual method description for the return value.
 #'
@@ -464,11 +465,10 @@ NULL
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
-#' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
-#'
-#' @param threshold For `pickPeaks`: a `double(1)` defining the proportion of
-#'     the maximal peak intensity. Just values above are used for the weighted
-#'     mean calclulation.
+#' @param threshold
+#' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
+#'      intensity. Just values above are used for the weighted mean calclulation.
+#' - For `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
 #' @param x A `Spectra` object.
 #'
@@ -1309,15 +1309,18 @@ setMethod("pickPeaks", "Spectra",
 #'
 #' @exportMethod removePeaks
 setMethod("removePeaks", "Spectra",
-          function(object, t = "min", msLevel. = unique(msLevel(object))) {
-              if (!is.numeric(t) & t != "min")
-                  stop("Argument 't' has to be either numeric of 'min'.")
+          function(object, threshold = "min",
+                   msLevel. = unique(msLevel(object))) {
+              if (!is.numeric(threshold) & threshold != "min")
+                  stop("Argument 'threshold' has to be either numeric or ",
+                       "'min'.")
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .peaks_remove, t = t,
-                                      msLevel = msLevel.)
+              object <- addProcessing(object, .peaks_remove,
+                                      threshold = threshold, msLevel = msLevel.)
               object@processing <- .logging(object@processing,
-                                            "Signal <= ", t, " in MS level(s) ",
+                                            "Signal <= ", threshold,
+                                            " in MS level(s) ",
                                             paste0(msLevel., collapse = ", "),
                                             " set to 0")
               object
