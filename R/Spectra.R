@@ -397,9 +397,9 @@ NULL
 #'     of each spectrum in `object`. See section *Data manipulations* below
 #'     for more details.
 #'
-#' @param halfWindowSize For `pickPeaks`: `integer(1)`, a local maximum has to
-#'     be the maximum in the window from
-#'     `(i - halfWindowSize):(i + halfWindowSize)`.
+#' @param halfWindowSize For `pickPeaks`: `integer(1)`, used in the
+#'     identification of the mass peaks: a local maximum has to be the maximum
+#'     in the window from `(i - halfWindowSize):(i + halfWindowSize)`.
 #'
 #' @param i For `[`: `integer`, `logical` or `character` to subset the object.
 #'

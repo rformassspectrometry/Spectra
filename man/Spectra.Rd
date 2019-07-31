@@ -326,9 +326,9 @@ Defaults to \code{binSize = 1}.}
 removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
 non-zero intensity peak should be kept (\code{FALSE}).}
 
-\item{halfWindowSize}{For \code{pickPeaks}: \code{integer(1)}, a local maximum has to
-be the maximum in the window from
-\code{(i - halfWindowSize):(i + halfWindowSize)}.}
+\item{halfWindowSize}{For \code{pickPeaks}: \code{integer(1)}, used in the
+identification of the mass peaks: a local maximum has to be the maximum
+in the window from \code{(i - halfWindowSize):(i + halfWindowSize)}.}
 
 \item{method}{For \code{pickPeaks}: \code{character(1)}, the noise estimators that
 should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
