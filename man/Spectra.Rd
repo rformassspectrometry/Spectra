@@ -334,6 +334,10 @@ non-zero intensity peak should be kept (\code{FALSE}).}
 
 \item{y}{A \code{Spectra} object.}
 
+\item{MAPFUN}{For \code{compareSpectra}: function to map/match peaks between the
+two compared spectra. See \code{\link[=joinPeaks]{joinPeaks()}} for more information and possible
+functions.}
+
 \item{tolerance}{For \code{compareSpectra}: \code{numeric(1)} allowing to define a
 constant maximal accepted difference between m/z values for peaks to be
 matched.}
@@ -629,18 +633,13 @@ intensity values for peaks falling into the same bin are summed.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
 using the function provided with \code{FUN} (defaults to \code{\link[=cor]{cor()}}). If \code{y} is
 missing, each spectrum in \code{x} is compared with each other spectrum in \code{x}.
+The matching/mapping of peaks between the compared spectra is done with the
+\code{MAPFUN} function (see \code{\link[=joinPeaks]{joinPeaks()}} for more information and examples).
 \code{FUN} is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
 numeric vectors as input and is supposed to return a single numeric as
-result. Additional parameters to the function can be passed with \code{...}.
-Prior to the comparison of the intensities, \code{compareSpectra} matches peaks
-based on the similarity of their m/z with arguments \code{tolerance} and \code{ppm}
-allowing to define the maximal allowed difference of m/z values for peaks
-to be matched: \code{tolerance} allows to define a constant maximal accepted
-difference and \code{ppm} a relative, m/z dependent, difference (i.e.
-differences smaller than \code{ppm} parts-per-million of the actual peak's m/z
-are allowed). The final tolerance per
-peak is the sum of \code{tolerance} and \code{ppm} of the peak's m/z.
+result. Additional parameters to functions \code{FUN} and \code{MAPFUN} can be
+passed with \code{...}.
 The function returns a \code{matrix} with the results of \code{FUN} for each
 comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
@@ -800,7 +799,8 @@ intensity(res)[[2]]
 isEmpty(res)
 
 ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20
-res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
+res <- compareSpectra(sciex_im[2:3], sciex_im[10:20],
+    use = "pairwise.complete.obs")
 ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 ## the second row comparisons of spectrum 3 with spectra 10 to 20
 res

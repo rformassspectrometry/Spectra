@@ -193,6 +193,8 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' `matrix` with number of rows equal to length of `x` and number of columns
 #' equal `length(y)`.
 #'
+#' @importFrom stats cor
+#'
 #' @examples
 #'
 #' library(Spectra)
@@ -252,7 +254,7 @@ applyProcessing <- function(object, f = dataStorage(object),
                   dimnames = list(spectraNames(x), spectraNames(x)))
     mat[lower.tri(mat)] <- cb
     for (i in seq_len(nrow(mat))) {
-        mat[i, i] <- FUN(peaks(x[i])[[1]], peaks(x[i])[[1]], ...)
+        mat[i, i] <- FUN(peaks(x[i])[[1]][, 2], peaks(x[i])[[1]][, 2], ...)
         mat[i, ] <- mat[, i]
     }
     mat

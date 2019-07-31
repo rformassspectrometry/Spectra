@@ -992,10 +992,12 @@ test_that("compareSpectra works", {
     sps <- Spectra(sciex_hd5[1:20])
     sps <- setBackend(sps, MsBackendDataFrame())
 
-    res <- compareSpectra(sps[c(1, 20)], sps[15:20])
+    res <- compareSpectra(sps[c(1, 20)], sps[15:20],
+                          use = "pairwise.complete.obs")
     expect_true(nrow(res) == 2)
     expect_true(ncol(res) == 6)
     expect_equal(res[2, 6], 1)
+    expect_true(all(res > 0.9))
 
     spectraNames(sps) <- seq_along(sps)
     res <- compareSpectra(sps[c(1, 20)], sps[15:20])

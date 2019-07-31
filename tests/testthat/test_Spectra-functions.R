@@ -155,7 +155,7 @@ test_that(".check_ms_level works", {
 })
 
 test_that(".compare_spectra, .compare_spectra_self work", {
-    sps <- Spectra(sciex_hd5)[120:130]
+    sps <- Spectra(sciex_hd5)[120:126]
     sps <- setBackend(sps, MsBackendDataFrame())
 
     res <- .compare_spectra(sps, sps, use = "pairwise.complete.obs")

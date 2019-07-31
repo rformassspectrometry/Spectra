@@ -324,18 +324,13 @@ NULL
 #' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
 #'   using the function provided with `FUN` (defaults to [cor()]). If `y` is
 #'   missing, each spectrum in `x` is compared with each other spectrum in `x`.
+#'   The matching/mapping of peaks between the compared spectra is done with the
+#'   `MAPFUN` function (see [joinPeaks()] for more information and examples).
 #'   `FUN` is supposed to be a function to compare intensities of (matched)
 #'   peaks of the two spectra that are compared. The function needs to take two
 #'   numeric vectors as input and is supposed to return a single numeric as
-#'   result. Additional parameters to the function can be passed with `...`.
-#'   Prior to the comparison of the intensities, `compareSpectra` matches peaks
-#'   based on the similarity of their m/z with arguments `tolerance` and `ppm`
-#'   allowing to define the maximal allowed difference of m/z values for peaks
-#'   to be matched: `tolerance` allows to define a constant maximal accepted
-#'   difference and `ppm` a relative, m/z dependent, difference (i.e.
-#'   differences smaller than `ppm` parts-per-million of the actual peak's m/z
-#'   are allowed). The final tolerance per
-#'   peak is the sum of `tolerance` and `ppm` of the peak's m/z.
+#'   result. Additional parameters to functions `FUN` and `MAPFUN` can be
+#'   passed with `...`.
 #'   The function returns a `matrix` with the results of `FUN` for each
 #'   comparison, number of rows equal to `length(x)` and number of columns
 #'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
@@ -413,6 +408,10 @@ NULL
 #'
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
+#'
+#' @param MAPFUN For `compareSpectra`: function to map/match peaks between the
+#'     two compared spectra. See [joinPeaks()] for more information and possible
+#'     functions.
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
@@ -623,7 +622,8 @@ NULL
 #' isEmpty(res)
 #'
 #' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20
-#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
+#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20],
+#'     use = "pairwise.complete.obs")
 #' ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 #' ## the second row comparisons of spectrum 3 with spectra 10 to 20
 #' res
@@ -1272,7 +1272,8 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
               if (length(x) == 1)
                   return(compareSpectra(x, x, MAPFUN = MAPFUN,
                                         tolerance = tolerance,
-                                        ppm = ppm, FUN = FUN, ...))
+                                        ppm = ppm, FUN = FUN, ...,
+                                        SIMPLIFY = SIMPLIFY))
               mat <- .compare_spectra_self(x, FUN = FUN, tolerance = tolerance,
                                            ppm = ppm, ...)
               if (SIMPLIFY && length(x) == 1)
