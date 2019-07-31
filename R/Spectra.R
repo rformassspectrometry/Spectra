@@ -321,7 +321,8 @@ NULL
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
-#' - `pickPeaks`: picks peaks on individual spectra. For noisy spectra there
+#' - `pickPeaks`: picks peaks on individual spectra using a moving window-based
+#'   approach (window size = `2 * halfWindowSize`). For noisy spectra there
 #'   are currently two different noise estimators available,
 #'   the *M*edian *A*bsolute *D*eviation (`method = "MAD"`) and
 #'   Friedman's Super Smoother (`method = "SuperSmoother"`),

@@ -633,7 +633,8 @@ intensity values for peaks falling into the same bin are summed.
 \item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
 0-intensity peaks next to non-zero intensity peaks are retained while with
 \code{all = TRUE} all 0-intensity peaks are removed.
-\item \code{pickPeaks}: picks peaks on individual spectra. For noisy spectra there
+\item \code{pickPeaks}: picks peaks on individual spectra using a moving window-based
+approach (window size = \code{2 * halfWindowSize}). For noisy spectra there
 are currently two different noise estimators available,
 the \emph{M}edian \emph{A}bsolute \emph{D}eviation (\code{method = "MAD"}) and
 Friedman's Super Smoother (\code{method = "SuperSmoother"}),
