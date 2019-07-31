@@ -130,7 +130,7 @@ NULL
 #'
 #' @description
 #'
-#' Simple peak detection based on local maxima above SNR * noise.
+#' Simple peak detection based on local maxima above snr * noise.
 #'
 #' @inheritParams .peaks_remove
 #' @param `integer(1)`, half window size, the resulting window reaches from
@@ -148,7 +148,7 @@ NULL
 #' @noRd
 .peaks_pick <- function(x, spectrumMsLevel, centroided = NA,
                         halfWindowSize = 2L, method = c("MAD", "SuperSmoother"),
-                        SNR = 0L, k = 0L, descending = FALSE, threshold = 0,
+                        snr = 0L, k = 0L, descending = FALSE, threshold = 0,
                         msLevel = spectrumMsLevel, ...) {
     if (!(spectrumMsLevel %in% msLevel) || isTRUE(centroided))
         return(x)
@@ -161,7 +161,7 @@ NULL
 
     l <- localMaxima(x[, 2L], hws = halfWindowSize)
 
-    p <- which(l & x[, 2L] > (SNR * n))
+    p <- which(l & x[, 2L] > (snr * n))
 
     if (k > 0L) {
         cbind(mz = refineCentroids(x = x[, 1L], y = x[, 2L], p = p,

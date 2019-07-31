@@ -994,9 +994,9 @@ test_that("pickPeaks,Spectra works", {
     expect_error(pickPeaks(sps, halfWindowSize = 1L:2L), "length 1")
     expect_error(pickPeaks(sps, halfWindowSize = -1L), "> 0")
     expect_error(pickPeaks(sps, method = "foo"), "MAD")
-    expect_error(pickPeaks(sps, SNR = "foo"), "numeric")
-    expect_error(pickPeaks(sps, SNR = 1L:2L), "length 1")
-    expect_error(pickPeaks(sps, SNR = -1L), ">= 0")
+    expect_error(pickPeaks(sps, snr = "foo"), "numeric")
+    expect_error(pickPeaks(sps, snr = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, snr = -1L), ">= 0")
     expect_error(pickPeaks(sps, k = 1), "integer")
     expect_error(pickPeaks(sps, k = 1L:2L), "length 1")
     expect_error(pickPeaks(sps, k = -1L), ">= 0")
@@ -1012,16 +1012,18 @@ test_that("pickPeaks,Spectra works", {
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.peaks_pick,
                                 list(halfWindowSize = 2L, method = "MAD",
-                                     SNR = 0, k = 0L, descending = FALSE,
+                                     snr = 0, k = 0L, descending = FALSE,
                                      threshold = 0L, msLevel = integer())))
     expect_match(res@processing,
-                 "Peak picking with MAD noise estimation, hws = 2, SNR = 0 \\[")
+                 "Peak picking with MAD noise estimation, hws = 2, snr = 0 \\[")
     res <- pickPeaks(sps, k = 2L)
     expect_match(res@processing,
                  paste0("Peak picking with MAD noise estimation, hws = 2, ",
-                        "SNR = 0 and centroid refinement \\["))
+                        "snr = 0 and centroid refinement \\["))
 
     sps <- Spectra(sciex_mzr)
+    expect_equal(pickPeaks(sps, msLevel. = 3), sps)
+
     res <- pickPeaks(sps)
     pks_res <- lapply(sciex_pks, .peaks_pick, spectrumMsLevel = 1L,
                       centroided = FALSE)

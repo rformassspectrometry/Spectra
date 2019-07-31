@@ -217,7 +217,7 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
   msLevel. = unique(msLevel(object)))
 
 \S4method{pickPeaks}{Spectra}(object, halfWindowSize = 2L,
-  method = c("MAD", "SuperSmoother"), SNR = 0, k = 0L,
+  method = c("MAD", "SuperSmoother"), snr = 0, k = 0L,
   descending = FALSE, threshold = 0,
   msLevel. = unique(msLevel(object)))
 
@@ -335,9 +335,9 @@ should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
 (\code{method = "MAD"}) and Friedman's Super Smoother
 (\code{method = "SuperSmoother"}) are supported.}
 
-\item{SNR}{For \code{pickPeaks}: \code{double(1)} defining the
+\item{snr}{For \code{pickPeaks}: \code{double(1)} defining the
 \emph{S}ignal-to-\emph{N}oise-\emph{R}atio. The intensity of a local maximum has to be
-higher than \code{SNR * noise} to be considered as peak.}
+higher than \code{snr * noise} to be considered as peak.}
 
 \item{k}{For \code{pickPeaks}: \code{integer(1)}, number of values left and right of
 the peak that should be considered in the weighted mean calculation.}

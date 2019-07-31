@@ -450,9 +450,9 @@ NULL
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
 #'
-#' @param SNR For `pickPeaks`: `double(1)` defining the
+#' @param snr For `pickPeaks`: `double(1)` defining the
 #'     *S*ignal-to-*N*oise-*R*atio. The intensity of a local maximum has to be
-#'     higher than `SNR * noise` to be considered as peak.
+#'     higher than `snr * noise` to be considered as peak.
 #'
 #' @param source For `Spectra`: instance of [MsBackend-class] that can be used
 #'     to import spectrum data from the provided files. See section *Creation
@@ -1266,7 +1266,7 @@ setMethod("clean", "Spectra",
 #' @exportMethod pickPeaks
 setMethod("pickPeaks", "Spectra",
           function(object, halfWindowSize = 2L,
-                    method = c("MAD", "SuperSmoother"), SNR = 0, k = 0L,
+                    method = c("MAD", "SuperSmoother"), snr = 0, k = 0L,
                    descending = FALSE, threshold = 0,
                    msLevel. = unique(msLevel(object))) {
     if (!.check_ms_level(object, msLevel.))
@@ -1275,8 +1275,8 @@ setMethod("pickPeaks", "Spectra",
         halfWindowSize <= 0L)
         stop("Argument 'halfWindowSize' has to be an integer of length 1 ",
              "and > 0.")
-    if (!is.numeric(SNR) || length(SNR) != 1L || SNR < 0L)
-        stop("Argument 'SNR' has to be a numeric of length 1 that is >= 0.")
+    if (!is.numeric(snr) || length(snr) != 1L || snr < 0L)
+        stop("Argument 'snr' has to be a numeric of length 1 that is >= 0.")
     if (!is.integer(k) || length(k) != 1L || k < 0L)
         stop("Argument 'k' has to be an integer of length 1 that is >= 0.")
     if (!is.logical(descending) || length(descending) != 1L ||
@@ -1291,12 +1291,12 @@ setMethod("pickPeaks", "Spectra",
 
     object <- addProcessing(object, .peaks_pick,
                             halfWindowSize = halfWindowSize, method = method,
-                            SNR = SNR, k = k, descending = descending,
+                            snr = snr, k = k, descending = descending,
                             threshold = threshold, msLevel = msLevel.)
     object@processing <- .logging(object@processing,
                                   "Peak picking with ", method,
                                   " noise estimation, hws = ", halfWindowSize,
-                                  ", SNR = ", SNR,
+                                  ", snr = ", snr,
                                   if (k > 0) " and centroid refinement")
     object
 })
