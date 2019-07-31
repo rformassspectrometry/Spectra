@@ -5,6 +5,10 @@
 [![codecov.io](http://codecov.io/github/rformassspectrometry/Spectra/coverage.svg?branch=master)](http://codecov.io/github/rformassspectrometry/Spectra?branch=master)
 [![license](https://img.shields.io/badge/license-Artistic--2.0-brightgreen.svg)](https://opensource.org/licenses/Artistic-2.0)
 
+<img
+src="https://raw.githubusercontent.com/rformassspectrometry/stickers/master/Spectra/Spectra.png"
+height="150">
+
 Externalising the new MS spectra backend-supporting infrastructure
 from `MSnbase`. Could either survive as its own package or be
 phagocyted back into by `MSnbase`.
