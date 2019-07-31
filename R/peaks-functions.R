@@ -202,3 +202,43 @@ NULL
         FUN(x[not_na, 2], y[matches[not_na], 2], ...)
     } else NA_real_
 }
+
+#' @title Join (map) peaks of two spectra
+#'
+#' @description
+#'
+#' These functions map peaks from two spectra with each other if the difference
+#' between their m/z values is smaller than defined with parameters `tolerance`
+#' and `ppm`. All functions take two matrices
+#'
+#' - `joinPeaks`: maps peaks from two spectra allowing to specify the type of
+#'   *join* that should be performed: `join = "outer"` each peak in `x` will be
+#'   matched with each peak in `y`, for peaks that do not match any peak in the
+#'   other spectra an `NA` intensity is returned. With `join = "left"` all peaks
+#'   from the left spectrum (`x`) will be matched with peaks in `y`. Peaks in
+#'   `y` that do not match any peak in `x` are omitted. `join = "right"` is the
+#'   same as `join = "left"` only for `y`. Only peaks that can be matched
+#'   between `x` and `y` are returned by `join = "inner"`, i.e. only
+#'   peaks present in both spectra are reported.
+#'
+#' @param x `matrix` with two columns `"mz"` and `"intensity"` containing the
+#'     m/z and intensity values of the mass peaks of a spectrum.
+#'
+#' @param y `matrix` with two columns `"mz"` and `"intensity"` containing the
+#'     m/z and intensity values of the mass peaks of a spectrum.
+#'
+#' @return
+#'
+#' All functions return a `list` of elements `"x"` and `"y"` each being a two
+#' column matrix with m/z (first column) and intensity values (second column).
+#' The two matrices contain the matched peaks between input matrices `x` and `y`
+#' and hence have the same number of rows. Peaks present in `x` but not in the
+#' `y` input matrix have m/z and intensity values of `NA` in the result matrix
+#' for `y` (and *vice versa*).
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+joinPeaks <- function(x, y, join = "outer", tolerance = 0, ppm = 20) {
+
+}
