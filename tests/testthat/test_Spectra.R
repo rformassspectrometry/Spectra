@@ -307,7 +307,7 @@ test_that("ionCount,Spectra works", {
     res <- ionCount(sps)
     expect_identical(res, c(17, 19))
 
-    sps <- removePeaks(sps, t = 4)
+    sps <- removePeaks(sps, threshold = 4)
     res <- ionCount(sps)
     expect_identical(res, c(14, 17))
 })
@@ -344,7 +344,7 @@ test_that("isEmpty,Spectra works", {
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
-    sps <- removePeaks(sps, t = 100)
+    sps <- removePeaks(sps, threshold = 100)
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
@@ -459,7 +459,7 @@ test_that("peaksCount,Spectra works", {
     res <- peaksCount(sps)
     expect_identical(res, c(3L, 2L))
 
-    sps <- removePeaks(sps, t = 100)
+    sps <- removePeaks(sps, threshold = 100)
     res <- peaksCount(sps)
     expect_identical(res, c(3L, 2L))
 
@@ -824,13 +824,13 @@ test_that("filterEmptySpectra,Spectra works", {
     expect_equal(length(res@processing), 1)
     expect_equal(rtime(res), c(1, 1))
 
-    sps <- clean(removePeaks(sps, t = 20), all = TRUE)
+    sps <- clean(removePeaks(sps, threshold = 20), all = TRUE)
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 1)
     expect_equal(rtime(res), 1)
     expect_equal(length(res@processing), 3)
 
-    sps <- clean(removePeaks(sps, t = 50), all = TRUE)
+    sps <- clean(removePeaks(sps, threshold = 50), all = TRUE)
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 0)
 
