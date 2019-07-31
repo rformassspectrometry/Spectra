@@ -159,6 +159,8 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @description
 #'
 #' Compare each spectrum in `x` with each spectrum in `y` with function `FUN`.
+#' Mapping between the peaks in both spectra can be defined with the `MAPFUN`
+#' function.
 #'
 #' @note
 #'
@@ -175,13 +177,16 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @param FUN `function` to compare the (m/z matched) intensities from each
 #'     spectrum in `x` with those in `y`.
 #'
+#' @param MAPFUN `function` to map peaks between the two compared spectra. See
+#'     [joinPeaks()].
+#'
 #' @param tolerance `numeric(1)` allowing to define a constant maximal accepted
 #'     difference between m/z values for peaks to be matched.
 #'
 #' @param ppm `numeric(1)` allowing to define a relative, m/z-dependent,
 #'     maximal accepted difference between m/z values for peaks to be matched.
 #'
-#' @param ... additional parameters passed to `FUN`.
+#' @param ... additional parameters passed to `FUN` and `MAPFUN`.
 #'
 #' @return
 #'
@@ -201,8 +206,8 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' res <- .compare_spectra(sps[1], sps)
 #' res <- .compare_spectra(sps, sps[1])
 #' @noRd
-.compare_spectra <- function(x, y = NULL, FUN = cor, tolerance = 0,
-                             ppm = 20, ...) {
+.compare_spectra <- function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0,
+                             ppm = 20, FUN = cor, ...) {
     x_idx <- seq_along(x)
     y_idx <- seq_along(y)
     mat <- matrix(NA_real_, nrow = length(x_idx), ncol = length(y_idx),
@@ -210,9 +215,9 @@ applyProcessing <- function(object, f = dataStorage(object),
     ## Might need some tuning - bplapply?
     for (i in x_idx) {
         for (j in y_idx) {
-            mat[i, j] <- .peaks_compare_intensities(
-                    peaks(x[i])[[1]], peaks(y[j])[[1]], FUN = FUN,
-                tolerance = tolerance, ppm = ppm, ...)
+            peak_map <- MAPFUN(peaks(x[i])[[1]], peaks(y[j])[[1]],
+                               tolerance = tolerance, ppm = ppm, ...)
+            mat[i, j] <- FUN(peak_map$x[, 2], peak_map$y[, 2], ...)
         }
     }
     mat
@@ -235,21 +240,19 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' all.equal(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
 #'
 #' @noRd
-.compare_spectra_self <- function(x, FUN = cor, tolerance = 0, ppm = 20, ...) {
+.compare_spectra_self <- function(x, MAPFUN = joinPeaks, tolerance = 0,
+                                  ppm = 20, FUN = cor, ...) {
     x_idx <- seq_along(x)
     cb <- combn(x_idx, 2, function(idx) {
-        .peaks_compare_intensities(peaks(x[idx[1]])[[1]],
-                                   peaks(x[idx[2]])[[1]],
-                                   FUN = FUN, tolerance = tolerance,
-                                   ppm = ppm, ...)
+        peak_map <- MAPFUN(peaks(x[idx[1]])[[1]], peaks(x[idx[2]])[[1]],
+                           tolerance = tolerance, ppm = ppm)
+        FUN(peak_map$x[, 2], peak_map$y[, 2], ...)
     })
     mat <- matrix(NA_real_, length(x_idx), length(x_idx),
                   dimnames = list(spectraNames(x), spectraNames(x)))
     mat[lower.tri(mat)] <- cb
     for (i in seq_len(nrow(mat))) {
-        mat[i, i] <- .peaks_compare_intensities(
-            peaks(x[i])[[1]], peaks(x[i])[[1]], FUN = FUN,
-            tolerance = tolerance, ppm = ppm, ...)
+        mat[i, i] <- FUN(peaks(x[i])[[1]], peaks(x[i])[[1]], ...)
         mat[i, ] <- mat[, i]
     }
     mat

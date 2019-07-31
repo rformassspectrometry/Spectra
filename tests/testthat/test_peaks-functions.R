@@ -52,29 +52,45 @@ test_that(".peaks_bin works", {
     expect_identical(res, x)
 })
 
-test_that(".peaks_compare_intensities works", {
+test_that("joinPeaks works", {
     x <- cbind(c(31.34, 50.14, 60.3, 120.9, 230, 514.13, 874.1),
                1:7)
-
-    y <- cbind(c(12, 31.35, 70.3, x[4, 1] + x[4, 1] * 5 / 1e6,
-                 230 + 230 * 10 / 1e6, 315, 514.14, 901, 1202),
+    y <- cbind(c(12, 31.35, 70.3, 120.9 + ppm(120.9, 5),
+                 230 + ppm(230, 10), 315, 514.14, 901, 1202),
                1:9)
 
-    expect_true(is.na(.peaks_compare_intensities(x, y, ppm = 0)))
+    res <- joinPeaks(x, y, ppm = 0)
+    expect_true(nrow(res$x) == nrow(res$y))
+    expect_true(nrow(res$x) == nrow(x) + nrow(y))
+    res <- joinPeaks(x, y, ppm = 0, type = "inner")
+    expect_true(nrow(res$x) == nrow(res$y))
+    expect_true(nrow(res$x) == 0)
 
-    res <- .peaks_compare_intensities(x, y, tolerance = 0.01)
-    expect_equal(res, cor(c(1, 4, 5, 6), c(2, 4, 5, 7)))
-    res <- .peaks_compare_intensities(x, y, tolerance = 0.01,
-                                      method = "spearman")
-    expect_equal(res, cor(c(1, 4, 5, 6), c(2, 4, 5, 7), method = "spearman"))
+    ## ppm 5
+    res <- joinPeaks(x, y, ppm = 5)
+    expect_true(nrow(res$x) == nrow(res$y))
+    expect_true(nrow(res$x) == nrow(x) + nrow(y) - 1)
+    expect_true(!is.na(res$x[7, 1]))
+    expect_true(!is.na(res$y[7, 1]))
+    res <- joinPeaks(x, y, ppm = 5, type = "inner")
+    expect_true(nrow(res$x) == nrow(res$y))
 
-    ## ppm of 5, a single matching peak
-    res <- .peaks_compare_intensities(x, y, ppm = 5,
-                                      FUN = function(x, y) length(x))
-    expect_identical(res, 1L)
+    ## ppm 10
+    res <- joinPeaks(x, y, ppm = 10)
+    expect_true(nrow(res$x) == nrow(res$y))
+    expect_true(nrow(res$x) == nrow(x) + nrow(y) - 2)
+    res <- joinPeaks(x, y, ppm = 10, type = "inner")
+    expect_true(nrow(res$x) == nrow(res$y))
+    expect_true(nrow(res$x) == 2)
 
-    ## ppm of 10, two matching peaks
-    res <- .peaks_compare_intensities(x, y, ppm = 10,
-                                      FUN = function(x, y) length(x))
-    expect_identical(res, 2L)
+    ## tolerance 0.01
+    res <- joinPeaks(x, y, tolerance = 0.01)
+    expect_true(nrow(res$x) == nrow(res$y))
+    expect_true(nrow(res$x) == nrow(x) + nrow(y) - 4)
+    res <- joinPeaks(x, y, tolerance = 0.01, type = "left")
+    expect_true(nrow(res$x) == nrow(res$y))
+    expect_equal(res$x, x)
+    res <- joinPeaks(x, y, tolerance = 0.01, type = "right")
+    expect_true(nrow(res$x) == nrow(res$y))
+    expect_equal(res$y, y)
 })

@@ -128,82 +128,9 @@ NULL
     quantile(diff(x), 0.25) > k
 }
 
-#' @description Compare peaks between 2 spectra
-#'
-#' @description
-#'
-#' Compare peaks from one spectrum to peaks from another spectrum with the
-#' provided function (`FUN`). `.peaks_compare_intensities` ensures that peaks
-#' are first matched between the two spectra with the [closest()] function.
-#'
-#' @param x peaks `matrix` with columns `"mz"` and `"intensity"`.
-#'
-#' @param y peaks `matrix` with columns `"mz"` and `"intensity"`.
-#'
-#' @param FUN `function` to be applied to the intensity values of matched
-#'     peaks between peak lists `x` and `y`. The function should take two
-#'     `numeric` vectors as their first argument and should return a single
-#'     `numeric`. Parameter `...` will be passed to the function.
-#'
-#' @param tolerance `numeric(1)` with the acceptable (constant) difference in
-#'     m/z values for matching peaks.
-#'
-#' @param ppm `numeric(1)` specifying a peak-specific, relative,
-#'     tolerance for the peak matching. Peaks between the two spectra with a
-#'     difference in their m/z smaller than *ppm* of the m/z of the peak (of
-#'     the second spectrum) are matched. See also [ppm()].
-#'
-#' @param ... additional parameters passed to the `FUN` function.
-#'
-#' @return The result from `FUN`, which should be a `numeric(1)`.
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-#'
-#' @importFrom stats cor
-#'
-#' @importFrom MsCoreUtils closest ppm
-#'
-#' @examples
-#'
-#' x <- cbind(c(31.34, 34.43, 54.65, 300.12, 514.5, 856.12),
-#'      c(13, 15, 56, 7, 45, 321))
-#'
-#' y <- cbind(c(34.431, 35.34, 50.24, 300.121, 514.51, 856.122),
-#'      c(123, 34, 323, 432, 12, 433))
-#'
-#' Spectra:::.peaks_compare_intensities(x, y)
-#' Spectra:::.peaks_compare_intensities(x, y, ppm = 40)
-#' Spectra:::.peaks_compare_intensities(x, y, ppm = 0)
-#'
-#' ## To get the number of common peaks
-#' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x))
-#' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x), ppm = 40)
-#' ## NA if there are none common
-#' Spectra:::.peaks_compare_intensities(x, y, FUN = function(x, y) length(x), ppm = 0)
-#'
-#' ## Second example
-#' x <- cbind(1:10, 1:10)
-#' y <- cbind(9:20, 9:20)
-#'
-#' Spectra:::.peaks_compare_intensities(x, y)
-#'
-#' xb <- bin(x[, 2], x[, 1], size = 1L, breaks = 1:20)
-#' yb <- bin(y[, 2], y[, 1], size = 1L, breaks = 1:20)
-#' xb <- cbind(xb$mids, xb$x)
-#' yb <- cbind(yb$mids, yb$x)
-.peaks_compare_intensities <- function(x, y, FUN = cor, tolerance = 0,
-                                       ppm = 20, ...) {
-    matches <- closest(x[, 1], y[, 1], tolerance = tolerance + ppm(y[, 1], ppm),
-                       duplicates = "closest")
-    not_na <- !is.na(matches)
-    if (any(not_na)) {
-        FUN(x[not_na, 2], y[matches[not_na], 2], ...)
-    } else NA_real_
-}
-
 #' @title Join (map) peaks of two spectra
+#'
+#' @name joinPeaks
 #'
 #' @description
 #'
@@ -212,14 +139,31 @@ NULL
 #' and `ppm`. All functions take two matrices
 #'
 #' - `joinPeaks`: maps peaks from two spectra allowing to specify the type of
-#'   *join* that should be performed: `join = "outer"` each peak in `x` will be
+#'   *join* that should be performed: `type = "outer"` each peak in `x` will be
 #'   matched with each peak in `y`, for peaks that do not match any peak in the
-#'   other spectra an `NA` intensity is returned. With `join = "left"` all peaks
+#'   other spectra an `NA` intensity is returned. With `type = "left"` all peaks
 #'   from the left spectrum (`x`) will be matched with peaks in `y`. Peaks in
-#'   `y` that do not match any peak in `x` are omitted. `join = "right"` is the
-#'   same as `join = "left"` only for `y`. Only peaks that can be matched
-#'   between `x` and `y` are returned by `join = "inner"`, i.e. only
+#'   `y` that do not match any peak in `x` are omitted. `type = "right"` is the
+#'   same as `type = "left"` only for `y`. Only peaks that can be matched
+#'   between `x` and `y` are returned by `type = "inner"`, i.e. only
 #'   peaks present in both spectra are reported.
+#'
+#' @section Implementation notes:
+#'
+#' A mapping function must take two numeric matrices `x` and `y` as input and
+#' must return `list` with two elements named `"x"` and `"y"` that represent
+#' the aligned input matrices. The function should also have `...` in its
+#' definition. Parameters `ppm` and `tolerance` are suggested but not required.
+#'
+#' @param ppm `numeric(1)` defining a relative, m/z-dependent, maximal accepted
+#'     difference between m/z values of peaks from the two spectra to be
+#'     matched/mapped.
+#'
+#' @param tolerance `numeric(1)` defining a constant maximal accepted difference
+#'     between m/z values of peaks from the two spectra to be matched/mapped.
+#'
+#' @param type For `joinPeaks`: `character(1)` specifying the type of join that
+#'     should be performed. See function description for details.
 #'
 #' @param x `matrix` with two columns `"mz"` and `"intensity"` containing the
 #'     m/z and intensity values of the mass peaks of a spectrum.
@@ -227,6 +171,7 @@ NULL
 #' @param y `matrix` with two columns `"mz"` and `"intensity"` containing the
 #'     m/z and intensity values of the mass peaks of a spectrum.
 #'
+#' @param ... option parameters.
 #' @return
 #'
 #' All functions return a `list` of elements `"x"` and `"y"` each being a two
@@ -238,7 +183,34 @@ NULL
 #'
 #' @author Johannes Rainer
 #'
-#' @noRd
-joinPeaks <- function(x, y, join = "outer", tolerance = 0, ppm = 20) {
-
+#' @importFrom MsCoreUtils join ppm
+#'
+#' @export
+#'
+#' @examples
+#'
+#' x <- cbind(c(31.34, 50.14, 60.3, 120.9, 230, 514.13, 874.1),
+#'     1:7)
+#' y <- cbind(c(12, 31.35, 70.3, 120.9 + ppm(120.9, 5),
+#'     230 + ppm(230, 10), 315, 514.14, 901, 1202),
+#'     1:9)
+#'
+#' ## No peaks with identical m/z
+#' joinPeaks(x, y, ppm = 0, type = "inner")
+#'
+#' ## With ppm 10 two peaks are overlapping
+#' joinPeaks(x, y, ppm = 10, type = "inner")
+#'
+#' ## Outer join: contain all peaks from x and y
+#' joinPeaks(x, y, ppm = 10, type = "outer")
+#'
+#' ## Left join: keep all peaks from x and those from y that match
+#' joinPeaks(x, y, ppm = 10, type = "left")
+#'
+#' ## Right join: keep all peaks from y and those from x that match. Using
+#' ## a constant tolerance of 0.01
+#' joinPeaks(x, y, tolerance = 0.01, type = "right")
+joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
+    map <- join(x[, 1], y[, 1], type = type, tolerance = tolerance, ppm = ppm)
+    list(x = x[map$x, , drop = FALSE], y = y[map$y, , drop = FALSE])
 }

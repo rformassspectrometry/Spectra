@@ -217,11 +217,12 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 \S4method{clean}{Spectra}(object, all = FALSE,
   msLevel. = unique(msLevel(object)))
 
-\S4method{compareSpectra}{Spectra,Spectra}(x, y, FUN = cor,
-  tolerance = 0, ppm = 20, ..., SIMPLIFY = TRUE)
+\S4method{compareSpectra}{Spectra,Spectra}(x, y, MAPFUN = joinPeaks,
+  tolerance = 0, ppm = 20, FUN = cor, ..., SIMPLIFY = TRUE)
 
-\S4method{compareSpectra}{Spectra,missing}(x, y = NULL, FUN = cor,
-  tolerance = 0, ppm = 20, ..., SIMPLIFY = TRUE)
+\S4method{compareSpectra}{Spectra,missing}(x, y = NULL,
+  MAPFUN = joinPeaks, tolerance = 0, ppm = 20, FUN = cor, ...,
+  SIMPLIFY = TRUE)
 
 \S4method{removePeaks}{Spectra}(object, t = "min",
   msLevel. = unique(msLevel(object)))

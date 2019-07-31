@@ -1256,21 +1256,23 @@ setMethod("clean", "Spectra",
 #'
 #' @export ppm
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
-          function(x, y, FUN = cor, tolerance = 0, ppm = 20, ...,
-                   SIMPLIFY = TRUE) {
-              mat <- .compare_spectra(x, y, FUN = FUN, tolerance = tolerance,
-                                      ppm = ppm, ...)
+          function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
+                   FUN = cor, ..., SIMPLIFY = TRUE) {
+              mat <- .compare_spectra(x, y, MAPFUN = MAPFUN,
+                                      tolerance = tolerance,
+                                      ppm = ppm, FUN = FUN, ...)
               if (SIMPLIFY && (length(x) == 1 || length(y) == 1))
                   mat <- as.vector(mat)
               mat
           })
 #' @rdname Spectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
-          function(x, y = NULL, FUN = cor, tolerance = 0, ppm = 20, ...,
-                   SIMPLIFY = TRUE) {
+          function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
+                   FUN = cor, ..., SIMPLIFY = TRUE) {
               if (length(x) == 1)
-                  return(compareSpectra(x, x, FUN = FUN, tolerance = tolerance,
-                                        ppm = ppm, ...))
+                  return(compareSpectra(x, x, MAPFUN = MAPFUN,
+                                        tolerance = tolerance,
+                                        ppm = ppm, FUN = FUN, ...))
               mat <- .compare_spectra_self(x, FUN = FUN, tolerance = tolerance,
                                            ppm = ppm, ...)
               if (SIMPLIFY && length(x) == 1)
