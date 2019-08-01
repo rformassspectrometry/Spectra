@@ -49,24 +49,24 @@ NULL
 #' @importClassesFrom IRanges IRanges
 #'
 #' @noRd
-.peaks_remove <- function(x, spectrumMsLevel, centroided = NA, t = "min",
-                          msLevel = spectrumMsLevel, ...) {
+.peaks_remove <- function(x, spectrumMsLevel, centroided = NA,
+                          threshold = "min", msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
     if (is.na(centroided)) {
         warning("Centroided undefined (NA): keeping spectrum as is.")
         return(x)
     }
-    if (t == "min")
-        t <- min(x[x[, "intensity"] > 0, "intensity"])
-    if (!is.numeric(t))
-        stop("'t' must either be 'min' or numeric.")
+    if (threshold == "min")
+        threshold <- min(x[x[, "intensity"] > 0, "intensity"])
+    if (!is.numeric(threshold))
+        stop("'threshold' must either be 'min' or numeric.")
     if (centroided) {
-        x[x[, "intensity"] <= t, "intensity"] <- 0
+        x[x[, "intensity"] <= threshold, "intensity"] <- 0
     } else {
         ints <- x[, "intensity"]
         peakRanges <- as(ints > 0L, "IRanges")
-        toLow <- max(extractList(ints, peakRanges)) <= t
+        toLow <- max(extractList(ints, peakRanges)) <= threshold
         x[, "intensity"] <- replaceROWS(ints, peakRanges[toLow], 0)
     }
     x
@@ -124,4 +124,51 @@ NULL
     .qtl <- quantile(x[, 2], qtl)
     x <- x[x[, 2] > .qtl, 1]
     quantile(diff(x), 0.25) > k
+}
+
+#' @importFrom MsCoreUtils localMaxima noise refineCentroids
+#'
+#' @description
+#'
+#' Simple peak detection based on local maxima above snr * noise.
+#'
+#' @inheritParams .peaks_remove
+#' @param `integer(1)`, half window size, the resulting window reaches from
+#' `(i - halfWindowSize):(i + halfWindowSize)`.
+#' @param k `integer(1)`, similar to `halfWindowSize`, number of values left
+#'  and right of the peak that should be considered in the weighted mean
+#'  calculation. If zero no refinement is done.
+#' @param threshold `double(1)`, proportion of the maximal peak intensity.
+#'  Just values above are used for the weighted mean calclulation.
+#' @param descending `logical`, if `TRUE` just values between the nearest
+#'  valleys around the peak centroids are used.
+#'
+#' @return `matrix` with columns `"mz"` and `"intensity"`.
+#'
+#' @noRd
+.peaks_pick <- function(x, spectrumMsLevel, centroided = NA,
+                        halfWindowSize = 2L, method = c("MAD", "SuperSmoother"),
+                        snr = 0L, k = 0L, descending = FALSE, threshold = 0,
+                        msLevel = spectrumMsLevel, ...) {
+    if (!(spectrumMsLevel %in% msLevel) || isTRUE(centroided))
+        return(x)
+    if (!nrow(x)) {
+        warning("Spectrum is empty. Nothing to pick.")
+        return(x)
+    }
+
+    n <- noise(x[, 1L], x[, 2L], method = method, ...)
+
+    l <- localMaxima(x[, 2L], hws = halfWindowSize)
+
+    p <- which(l & x[, 2L] > (snr * n))
+
+    if (k > 0L) {
+        cbind(mz = refineCentroids(x = x[, 1L], y = x[, 2L], p = p,
+                                   k = k, threshold = threshold,
+                                   descending = descending),
+              intensity = x[p, 2L])
+    } else {
+        x[p, , drop = FALSE]
+    }
 }
