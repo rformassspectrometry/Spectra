@@ -4,7 +4,7 @@ test_that(".peaks_remove works", {
     x <- cbind(mz = 1:length(int), intensity = int)
     res <- .peaks_remove(x, 1L, centroided = FALSE)
     expect_equal(res, x)
-    res <- .peaks_remove(x, 1L, centroided = FALSE, t = 3)
+    res <- .peaks_remove(x, 1L, centroided = FALSE, threshold = 3)
     int_exp <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 0, 0, 0, 0,
                  1, 5, 10, 5, 1)
     expect_equal(res[, "intensity"], int_exp)
@@ -93,4 +93,40 @@ test_that("joinPeaks works", {
     res <- joinPeaks(x, y, tolerance = 0.01, type = "right")
     expect_true(nrow(res$x) == nrow(res$y))
     expect_equal(res$y, y)
+})
+
+test_that(".peaks_pick works", {
+    e <- matrix(NA_real_, nrow = 0, ncol = 2,
+                dimnames = list(c(), c("mz", "intensity")))
+    expect_warning(.peaks_pick(e, spectrumMsLevel = 1), "empty")
+    expect_equal(suppressWarnings(.peaks_pick(e, spectrumMsLevel = 1)), e)
+
+    int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
+             0, 1, 5, 10, 5, 1)
+    x <- cbind(mz = 1:length(int), intensity = int)
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 2, msLevel = 1), x)
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, centroided = TRUE,
+                             msLevel = 1), x)
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 2,
+                             snr = 1),
+                 cbind(mz = c(4, 12, 18, 23), intensity = c(3, 10, 2, 10)))
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 2,
+                             snr = 5),
+                 cbind(mz = c(12, 23), intensity = c(10, 10)))
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 2,
+                             snr = 10), e)
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 10,
+                             snr = 1),
+                 cbind(mz = c(12, 23), intensity = c(10, 10)))
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 2,
+                             method = "SuperSmoother", snr = 2),
+                 cbind(mz = c(4, 12, 23), intensity = c(3, 10, 10)))
+
+    ## use refineCentroids
+    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 2,
+                             method = "MAD", snr = 2, k = 1L, ),
+                 cbind(mz = mapply(weighted.mean,
+                                   x = list(3:5, 11:13, 22:24),
+                                   w = list(int[3:5], int[11:13], int[22:24])),
+                       intensity = c(3, 10, 10)))
 })

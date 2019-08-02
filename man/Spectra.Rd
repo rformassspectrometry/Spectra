@@ -70,6 +70,7 @@
 \alias{clean,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
+\alias{pickPeaks,Spectra-method}
 \alias{removePeaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
@@ -224,7 +225,12 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
   MAPFUN = joinPeaks, tolerance = 0, ppm = 20, FUN = cor, ...,
   SIMPLIFY = TRUE)
 
-\S4method{removePeaks}{Spectra}(object, t = "min",
+\S4method{pickPeaks}{Spectra}(object, halfWindowSize = 2L,
+  method = c("MAD", "SuperSmoother"), snr = 0, k = 0L,
+  descending = FALSE, threshold = 0,
+  msLevel. = unique(msLevel(object)))
+
+\S4method{removePeaks}{Spectra}(object, threshold = "min",
   msLevel. = unique(msLevel(object)))
 }
 \arguments{
@@ -346,7 +352,30 @@ matched.}
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
 of length 1).}
 
-\item{t}{for \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.}
+\item{halfWindowSize}{For \code{pickPeaks}: \code{integer(1)}, used in the
+identification of the mass peaks: a local maximum has to be the maximum
+in the window from \code{(i - halfWindowSize):(i + halfWindowSize)}.}
+
+\item{method}{For \code{pickPeaks}: \code{character(1)}, the noise estimators that
+should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
+(\code{method = "MAD"}) and Friedman's Super Smoother
+(\code{method = "SuperSmoother"}) are supported.}
+
+\item{snr}{For \code{pickPeaks}: \code{double(1)} defining the
+\emph{S}ignal-to-\emph{N}oise-\emph{R}atio. The intensity of a local maximum has to be
+higher than \code{snr * noise} to be considered as peak.}
+
+\item{k}{For \code{pickPeaks}: \code{integer(1)}, number of values left and right of
+the peak that should be considered in the weighted mean calculation.}
+
+\item{descending}{For \code{pickPeaks}: \code{logical}, if \code{TRUE} just values between
+the nearest valleys around the peak centroids are used.}
+
+\item{threshold}{\itemize{
+\item For \code{pickPeaks}: a \code{double(1)} defining the proportion of the maximal peak
+intensity. Just values above are used for the weighted mean calclulation.
+\item For \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.
+}}
 
 \item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
 subsetted.}
@@ -636,14 +665,44 @@ missing, each spectrum in \code{x} is compared with each other spectrum in \code
 The matching/mapping of peaks between the compared spectra is done with the
 \code{MAPFUN} function. The default \code{\link[=joinPeaks]{joinPeaks()}} matches peaks of both spectra
 and allows to keep all peaks from the first spectrum (\code{type = "left"}),
-from the second (\code{type = "right"), from both (}type = "outer"\code{) and to keep only matching peaks (}type = "inner"\code{); see [joinPeaks()] for more information and examples). }FUN\code{is supposed to be a function to compare intensities of (matched) peaks of the two spectra that are compared. The function needs to take two numeric vectors as input and is supposed to return a single numeric as result. Additional parameters to functions}FUN\code{and}MAPFUN\code{can be passed with}...\code{. The function returns a }matrix\code{with the results of}FUN\code{for each comparison, number of rows equal to}length(x)\code{and number of columns equal}length(y)\code{(i.e. element in row 2 and column 3 is the result from the comparison of}x\link{2}\code{with}y\link{3}\code{). If }SIMPLIFY = TRUE\code{the}matrix\code{is *simplified* to a}numeric\code{if length of}x\code{or}y` is one.
+from the second (\code{type = "right"}), from both (\code{type = "outer"}) and to
+keep only matching peaks (\code{type = "inner"}); see \code{\link[=joinPeaks]{joinPeaks()}} for more
+information and examples).
+\code{FUN} is supposed to be a function to compare intensities of (matched)
+peaks of the two spectra that are compared. The function needs to take two
+numeric vectors as input and is supposed to return a single numeric as
+result. Additional parameters to functions \code{FUN} and \code{MAPFUN} can be
+passed with \code{...}.
+The function returns a \code{matrix} with the results of \code{FUN} for each
+comparison, number of rows equal to \code{length(x)} and number of columns
+equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
+the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
+is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+\item \code{pickPeaks}: picks peaks on individual spectra using a moving window-based
+approach (window size = \code{2 * halfWindowSize}). For noisy spectra there
+are currently two different noise estimators available,
+the \emph{M}edian \emph{A}bsolute \emph{D}eviation (\code{method = "MAD"}) and
+Friedman's Super Smoother (\code{method = "SuperSmoother"}),
+as implemented in the \code{\link[MsCoreUtils:noise]{MsCoreUtils::noise()}}.
+The method supports also to optionally \emph{refine} the m/z value of
+the identified centroids by considering data points that belong (most
+likely) to the same mass peak. Therefore the m/z value is calculated as an
+intensity weighted average of the m/z values within the peak region.
+The peak region is defined as the m/z values (and their respective
+intensities) of the \code{2 * k} closest signals to the centroid or the closest
+valleys (\code{descending = TRUE}) in the \code{2 * k} region. For the latter the \code{k}
+has to be chosen general larger. See \code{\link[MsCoreUtils:refineCentroids]{MsCoreUtils::refineCentroids()}} for
+details.
+If the ratio of the signal to the highest intensity of the peak is below
+\code{threshold} it will be ignored for the weighted average.
 \item \code{removePeaks}: \emph{removes} peaks lower or equal to a threshold intensity
-value \code{t} by setting their intensity to \code{0}. With the default \code{t = "min"}
-all peaks with an intensity smaller or equal to the minimal non-zero
-intensity is set to \code{0}. If the spectrum is in profile mode, ranges of
-successive non-0 peaks <= \code{t} are set to 0. If the spectrum is centroided,
-then individual peaks <= \code{t} are set to 0. Note that the number of peaks
-is not changed unless \code{clean} is called after \code{removePeaks}.
+value \code{threshold} by setting their intensity to \code{0}. With the default
+\code{threshold = "min"} all peaks with an intensity smaller or equal to the
+minimal non-zero intensity is set to \code{0}. If the spectrum is in
+profile mode, ranges of successive non-0 peaks <= \code{threshold} are set to 0.
+If the spectrum is centroided, then individual peaks <= \code{threshold} are set
+to 0. Note that the number of peaks is not changed unless \code{clean} is
+called after \code{removePeaks}.
 }
 }
 

@@ -66,6 +66,9 @@ setGeneric("isReadOnly", function(object, ...)
 setGeneric("peaksCount", function(object, ...)
     standardGeneric("peaksCount"))
 #' @rdname hidden_aliases
+setGeneric("pickPeaks", function(object, ...)
+    standardGeneric("pickPeaks"))
+#' @rdname hidden_aliases
 setGeneric("removePeaks", function(object, t="min", ...)
     standardGeneric("removePeaks"))
 #' @rdname hidden_aliases

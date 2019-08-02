@@ -307,7 +307,7 @@ test_that("ionCount,Spectra works", {
     res <- ionCount(sps)
     expect_identical(res, c(17, 19))
 
-    sps <- removePeaks(sps, t = 4)
+    sps <- removePeaks(sps, threshold = 4)
     res <- ionCount(sps)
     expect_identical(res, c(14, 17))
 })
@@ -344,7 +344,7 @@ test_that("isEmpty,Spectra works", {
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
-    sps <- removePeaks(sps, t = 100)
+    sps <- removePeaks(sps, threshold = 100)
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
@@ -459,7 +459,7 @@ test_that("peaksCount,Spectra works", {
     res <- peaksCount(sps)
     expect_identical(res, c(3L, 2L))
 
-    sps <- removePeaks(sps, t = 100)
+    sps <- removePeaks(sps, threshold = 100)
     res <- peaksCount(sps)
     expect_identical(res, c(3L, 2L))
 
@@ -824,13 +824,13 @@ test_that("filterEmptySpectra,Spectra works", {
     expect_equal(length(res@processing), 1)
     expect_equal(rtime(res), c(1, 1))
 
-    sps <- clean(removePeaks(sps, t = 20), all = TRUE)
+    sps <- clean(removePeaks(sps, threshold = 20), all = TRUE)
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 1)
     expect_equal(rtime(res), 1)
     expect_equal(length(res@processing), 3)
 
-    sps <- clean(removePeaks(sps, t = 50), all = TRUE)
+    sps <- clean(removePeaks(sps, threshold = 50), all = TRUE)
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 0)
 
@@ -1029,18 +1029,60 @@ test_that("compareSpectra works", {
     expect_equal(res, 1)
 })
 
+test_that("pickPeaks,Spectra works", {
+    sps <- Spectra()
+    expect_error(pickPeaks(sps, halfWindowSize = 1), "integer")
+    expect_error(pickPeaks(sps, halfWindowSize = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, halfWindowSize = -1L), "> 0")
+    expect_error(pickPeaks(sps, method = "foo"), "MAD")
+    expect_error(pickPeaks(sps, snr = "foo"), "numeric")
+    expect_error(pickPeaks(sps, snr = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, snr = -1L), ">= 0")
+    expect_error(pickPeaks(sps, k = 1), "integer")
+    expect_error(pickPeaks(sps, k = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, k = -1L), ">= 0")
+    expect_error(pickPeaks(sps, descending = NA), "TRUE or FALSE")
+    expect_error(pickPeaks(sps, descending = c(TRUE, TRUE)), "TRUE or FALSE")
+    expect_error(pickPeaks(sps, threshold = "foo"), "numeric")
+    expect_error(pickPeaks(sps, threshold = 1L:2L), "length 1")
+    expect_error(pickPeaks(sps, threshold = -1L), ">= 0")
+    expect_error(pickPeaks(sps, threshold = 2L), "<= 1")
+
+    res <- pickPeaks(sps)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.peaks_pick,
+                                list(halfWindowSize = 2L, method = "MAD",
+                                     snr = 0, k = 0L, descending = FALSE,
+                                     threshold = 0L, msLevel = integer())))
+    expect_match(res@processing,
+                 "Peak picking with MAD noise estimation, hws = 2, snr = 0 \\[")
+    res <- pickPeaks(sps, k = 2L)
+    expect_match(res@processing,
+                 paste0("Peak picking with MAD noise estimation, hws = 2, ",
+                        "snr = 0 and centroid refinement \\["))
+
+    sps <- Spectra(sciex_mzr)
+    expect_equal(pickPeaks(sps, msLevel. = 3), sps)
+
+    res <- pickPeaks(sps)
+    pks_res <- lapply(sciex_pks, .peaks_pick, spectrumMsLevel = 1L,
+                      centroided = FALSE)
+    expect_identical(peaks(res), SimpleList(pks_res))
+})
+
 test_that("removePeaks,Spectra works", {
     sps <- Spectra()
-    res <- removePeaks(sps, t = 10)
+    res <- removePeaks(sps, threshold = 10)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
                  ProcessingStep(.peaks_remove,
-                                list(t = 10, msLevel = integer())))
+                                list(threshold = 10, msLevel = integer())))
 
     sps <- Spectra(sciex_mzr)
     centroided(sps) <- TRUE
-    res <- removePeaks(sps, t = 5000)
-    pks_res <- lapply(sciex_pks, .peaks_remove, t = 5000,
+    res <- removePeaks(sps, threshold = 5000)
+    pks_res <- lapply(sciex_pks, .peaks_remove, threshold = 5000,
                       spectrumMsLevel = 1L, centroided = TRUE)
     expect_identical(peaks(res), SimpleList(pks_res))
 })

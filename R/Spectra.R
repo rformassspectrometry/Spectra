@@ -327,8 +327,8 @@ NULL
 #'   The matching/mapping of peaks between the compared spectra is done with the
 #'   `MAPFUN` function. The default [joinPeaks()] matches peaks of both spectra
 #'   and allows to keep all peaks from the first spectrum (`type = "left"`),
-#'   from the second (`type = "right"), from both (`type = "outer"`) and to keep
-#'   only matching peaks (`type = "inner"`); see [joinPeaks()] for more
+#'   from the second (`type = "right"`), from both (`type = "outer"`) and to
+#'   keep only matching peaks (`type = "inner"`); see [joinPeaks()] for more
 #'   information and examples).
 #'   `FUN` is supposed to be a function to compare intensities of (matched)
 #'   peaks of the two spectra that are compared. The function needs to take two
@@ -341,13 +341,32 @@ NULL
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
+#' - `pickPeaks`: picks peaks on individual spectra using a moving window-based
+#'   approach (window size = `2 * halfWindowSize`). For noisy spectra there
+#'   are currently two different noise estimators available,
+#'   the *M*edian *A*bsolute *D*eviation (`method = "MAD"`) and
+#'   Friedman's Super Smoother (`method = "SuperSmoother"`),
+#'   as implemented in the [`MsCoreUtils::noise()`].
+#'   The method supports also to optionally *refine* the m/z value of
+#'   the identified centroids by considering data points that belong (most
+#'   likely) to the same mass peak. Therefore the m/z value is calculated as an
+#'   intensity weighted average of the m/z values within the peak region.
+#'   The peak region is defined as the m/z values (and their respective
+#'   intensities) of the `2 * k` closest signals to the centroid or the closest
+#'   valleys (`descending = TRUE`) in the `2 * k` region. For the latter the `k`
+#'   has to be chosen general larger. See [`MsCoreUtils::refineCentroids()`] for
+#'   details.
+#'   If the ratio of the signal to the highest intensity of the peak is below
+#'   `threshold` it will be ignored for the weighted average.
+#'
 #' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
-#'   value `t` by setting their intensity to `0`. With the default `t = "min"`
-#'   all peaks with an intensity smaller or equal to the minimal non-zero
-#'   intensity is set to `0`. If the spectrum is in profile mode, ranges of
-#'   successive non-0 peaks <= `t` are set to 0. If the spectrum is centroided,
-#'   then individual peaks <= `t` are set to 0. Note that the number of peaks
-#'   is not changed unless `clean` is called after `removePeaks`.
+#'   value `threshold` by setting their intensity to `0`. With the default
+#'   `threshold = "min"` all peaks with an intensity smaller or equal to the
+#'   minimal non-zero intensity is set to `0`. If the spectrum is in
+#'   profile mode, ranges of successive non-0 peaks <= `threshold` are set to 0.
+#'   If the spectrum is centroided, then individual peaks <= `threshold` are set
+#'   to 0. Note that the number of peaks is not changed unless `clean` is
+#'   called after `removePeaks`.
 #'
 #' @return See individual method description for the return value.
 #'
@@ -387,6 +406,9 @@ NULL
 #'     For `filterAcquisitionNum`: optionally specify if filtering should occur
 #'     only for spectra of selected `dataStorage`.
 #'
+#' @param descending For `pickPeaks`: `logical`, if `TRUE` just values between
+#'     the nearest valleys around the peak centroids are used.
+#
 #' @param drop For `[`: not considered.
 #'
 #' @param f For `setBackend`: factor defining how to split the data for
@@ -398,6 +420,10 @@ NULL
 #'     intensities of peaks between two spectra with each other. See section
 #'     *Data manipulations* below for more details.
 #'
+#' @param halfWindowSize For `pickPeaks`: `integer(1)`, used in the
+#'     identification of the mass peaks: a local maximum has to be the maximum
+#'     in the window from `(i - halfWindowSize):(i + halfWindowSize)`.
+#'
 #' @param i For `[`: `integer`, `logical` or `character` to subset the object.
 #'
 #' @param j For `[`: not supported.
@@ -406,6 +432,9 @@ NULL
 #'     reported total ion current should be reported, or whether the
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`, same as `ionCount`).
+#'
+#' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
+#'  the peak that should be considered in the weighted mean calculation.
 #'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
@@ -416,6 +445,11 @@ NULL
 #' @param MAPFUN For `compareSpectra`: function to map/match peaks between the
 #'     two compared spectra. See [joinPeaks()] for more information and possible
 #'     functions.
+#'
+#' @param method For `pickPeaks`: `character(1)`, the noise estimators that
+#'     should be used, currently the the *M*edian *A*bsolute *D*eviation
+#'     (`method = "MAD"`) and Friedman's Super Smoother
+#'     (`method = "SuperSmoother"`) are supported.
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
@@ -449,6 +483,10 @@ NULL
 #'     *simplified* to a `numeric` if possible (i.e. if either `x` or `y` is
 #'     of length 1).
 #'
+#' @param snr For `pickPeaks`: `double(1)` defining the
+#'     *S*ignal-to-*N*oise-*R*atio. The intensity of a local maximum has to be
+#'     higher than `snr * noise` to be considered as peak.
+#'
 #' @param source For `Spectra`: instance of [MsBackend-class] that can be used
 #'     to import spectrum data from the provided files. See section *Creation
 #'     of objects, conversion and changing the backend* for more details.
@@ -463,7 +501,10 @@ NULL
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
-#' @param t for `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
+#' @param threshold
+#' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
+#'      intensity. Just values above are used for the weighted mean calclulation.
+#' - For `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
@@ -1303,7 +1344,45 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
 
 ## peaksapply
 
-## pickPeaks
+#' @rdname Spectra
+#'
+#' @exportMethod pickPeaks
+setMethod("pickPeaks", "Spectra",
+          function(object, halfWindowSize = 2L,
+                    method = c("MAD", "SuperSmoother"), snr = 0, k = 0L,
+                   descending = FALSE, threshold = 0,
+                   msLevel. = unique(msLevel(object))) {
+    if (!.check_ms_level(object, msLevel.))
+        return(object)
+    if (!is.integer(halfWindowSize) || length(halfWindowSize) != 1L ||
+        halfWindowSize <= 0L)
+        stop("Argument 'halfWindowSize' has to be an integer of length 1 ",
+             "and > 0.")
+    if (!is.numeric(snr) || length(snr) != 1L || snr < 0L)
+        stop("Argument 'snr' has to be a numeric of length 1 that is >= 0.")
+    if (!is.integer(k) || length(k) != 1L || k < 0L)
+        stop("Argument 'k' has to be an integer of length 1 that is >= 0.")
+    if (!is.logical(descending) || length(descending) != 1L ||
+        is.na(descending))
+        stop("Argument 'descending' has to be just TRUE or FALSE")
+    if (!is.numeric(threshold) || length(threshold) != 1L ||
+        threshold < 0L || threshold > 1L)
+        stop("Argument 'threshold' has to be a numeric of length 1 ",
+             "that is >= 0 and <= 1.")
+
+    method <- match.arg(method)
+
+    object <- addProcessing(object, .peaks_pick,
+                            halfWindowSize = halfWindowSize, method = method,
+                            snr = snr, k = k, descending = descending,
+                            threshold = threshold, msLevel = msLevel.)
+    object@processing <- .logging(object@processing,
+                                  "Peak picking with ", method,
+                                  " noise estimation, hws = ", halfWindowSize,
+                                  ", snr = ", snr,
+                                  if (k > 0) " and centroid refinement")
+    object
+})
 
 ## quantify
 
@@ -1313,15 +1392,18 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
 #'
 #' @exportMethod removePeaks
 setMethod("removePeaks", "Spectra",
-          function(object, t = "min", msLevel. = unique(msLevel(object))) {
-              if (!is.numeric(t) & t != "min")
-                  stop("Argument 't' has to be either numeric of 'min'.")
+          function(object, threshold = "min",
+                   msLevel. = unique(msLevel(object))) {
+              if (!is.numeric(threshold) & threshold != "min")
+                  stop("Argument 'threshold' has to be either numeric or ",
+                       "'min'.")
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .peaks_remove, t = t,
-                                      msLevel = msLevel.)
+              object <- addProcessing(object, .peaks_remove,
+                                      threshold = threshold, msLevel = msLevel.)
               object@processing <- .logging(object@processing,
-                                            "Signal <= ", t, " in MS level(s) ",
+                                            "Signal <= ", threshold,
+                                            " in MS level(s) ",
                                             paste0(msLevel., collapse = ", "),
                                             " set to 0")
               object
