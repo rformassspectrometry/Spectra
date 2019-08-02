@@ -325,7 +325,11 @@ NULL
 #'   using the function provided with `FUN` (defaults to [cor()]). If `y` is
 #'   missing, each spectrum in `x` is compared with each other spectrum in `x`.
 #'   The matching/mapping of peaks between the compared spectra is done with the
-#'   `MAPFUN` function (see [joinPeaks()] for more information and examples).
+#'   `MAPFUN` function. The default [joinPeaks()] matches peaks of both spectra
+#'   and allows to keep all peaks from the first spectrum (`type = "left"`),
+#'   from the second (`type = "right"), from both (`type = "outer"`) and to keep
+#'   only matching peaks (`type = "inner"`); see [joinPeaks()] for more
+#'   information and examples).
 #'   `FUN` is supposed to be a function to compare intensities of (matched)
 #'   peaks of the two spectra that are compared. The function needs to take two
 #'   numeric vectors as input and is supposed to return a single numeric as
@@ -621,13 +625,21 @@ NULL
 #' ## Second spectrum is now empty:
 #' isEmpty(res)
 #'
-#' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20
-#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20],
+#' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
+#' ## Pearson correlation and using all pairwise non-missing intensities
+#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20], FUN = cor,
 #'     use = "pairwise.complete.obs")
 #' ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 #' ## the second row comparisons of spectrum 3 with spectra 10 to 20
 #' res
 #'
+#' ## Use compareSpectra to determine the number of common (matching) peaks
+#' ## with a ppm of 10:
+#' ## type = "inner" uses a *inner join* to match peaks, i.e. keeps only
+#' ## peaks that can be mapped betwen both spectra. The provided FUN returns
+#' ## simply the number of matching peaks.
+#' compareSpectra(sciex_im[2:3], sciex_im[1:20], ppm = 10, type = "inner",
+#'     FUN = function(x, y, ...) length(x))
 NULL
 
 #' The Spectra class
@@ -1224,11 +1236,11 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
         breaks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = binSize)
     }
     x <- addProcessing(x, .peaks_bin, breaks = breaks,
-                            msLevel = msLevel.)
+                       msLevel = msLevel.)
     x@processing <- .logging(x@processing,
-                                  "Spectra of MS level(s) ",
-                                  paste0(msLevel., collapse = ", "),
-                                  " binned.")
+                             "Spectra of MS level(s) ",
+                             paste0(msLevel., collapse = ", "),
+                             " binned.")
     x
 })
 

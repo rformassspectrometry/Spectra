@@ -634,17 +634,9 @@ intensity values for peaks falling into the same bin are summed.
 using the function provided with \code{FUN} (defaults to \code{\link[=cor]{cor()}}). If \code{y} is
 missing, each spectrum in \code{x} is compared with each other spectrum in \code{x}.
 The matching/mapping of peaks between the compared spectra is done with the
-\code{MAPFUN} function (see \code{\link[=joinPeaks]{joinPeaks()}} for more information and examples).
-\code{FUN} is supposed to be a function to compare intensities of (matched)
-peaks of the two spectra that are compared. The function needs to take two
-numeric vectors as input and is supposed to return a single numeric as
-result. Additional parameters to functions \code{FUN} and \code{MAPFUN} can be
-passed with \code{...}.
-The function returns a \code{matrix} with the results of \code{FUN} for each
-comparison, number of rows equal to \code{length(x)} and number of columns
-equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
-the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
-is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+\code{MAPFUN} function. The default \code{\link[=joinPeaks]{joinPeaks()}} matches peaks of both spectra
+and allows to keep all peaks from the first spectrum (\code{type = "left"}),
+from the second (\code{type = "right"), from both (}type = "outer"\code{) and to keep only matching peaks (}type = "inner"\code{); see [joinPeaks()] for more information and examples). }FUN\code{is supposed to be a function to compare intensities of (matched) peaks of the two spectra that are compared. The function needs to take two numeric vectors as input and is supposed to return a single numeric as result. Additional parameters to functions}FUN\code{and}MAPFUN\code{can be passed with}...\code{. The function returns a }matrix\code{with the results of}FUN\code{for each comparison, number of rows equal to}length(x)\code{and number of columns equal}length(y)\code{(i.e. element in row 2 and column 3 is the result from the comparison of}x\link{2}\code{with}y\link{3}\code{). If }SIMPLIFY = TRUE\code{the}matrix\code{is *simplified* to a}numeric\code{if length of}x\code{or}y` is one.
 \item \code{removePeaks}: \emph{removes} peaks lower or equal to a threshold intensity
 value \code{t} by setting their intensity to \code{0}. With the default \code{t = "min"}
 all peaks with an intensity smaller or equal to the minimal non-zero
@@ -798,13 +790,21 @@ intensity(res)[[2]]
 ## Second spectrum is now empty:
 isEmpty(res)
 
-## Compare spectra: comparing spectra 2 and 3 against spectra 10:20
-res <- compareSpectra(sciex_im[2:3], sciex_im[10:20],
+## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
+## Pearson correlation and using all pairwise non-missing intensities
+res <- compareSpectra(sciex_im[2:3], sciex_im[10:20], FUN = cor,
     use = "pairwise.complete.obs")
 ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 ## the second row comparisons of spectrum 3 with spectra 10 to 20
 res
 
+## Use compareSpectra to determine the number of common (matching) peaks
+## with a ppm of 10:
+## type = "inner" uses a *inner join* to match peaks, i.e. keeps only
+## peaks that can be mapped betwen both spectra. The provided FUN returns
+## simply the number of matching peaks.
+compareSpectra(sciex_im[2:3], sciex_im[1:20], ppm = 10, type = "inner",
+    FUN = function(x, y, ...) length(x))
 }
 \author{
 Sebastian Gibb, Johannes Rainer

@@ -202,11 +202,15 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' sps <- Spectra(fl, source = MsBackendMzR())
 #'
 #' sps <- sps[1:10]
-#' res <- .compare_spectra(sps, sps, ppm = 20)
-#' res <- .compare_spectra(sps, sps, method = "spearman", ppm = 40)
+#' res <- .compare_spectra(sps, sps, ppm = 20, FUN = cor,
+#'     use = "pairwise.complete.obs")
+#' res <- .compare_spectra(sps, sps, FUN = cor,
+#'     use = "pairwise.complete.obs", method = "spearman", ppm = 40)
 #'
-#' res <- .compare_spectra(sps[1], sps)
-#' res <- .compare_spectra(sps, sps[1])
+#' res <- .compare_spectra(sps[1], sps, FUN = cor,
+#'     use = "pairwise.complete.obs")
+#' res <- .compare_spectra(sps, sps[1], FUN = cor,
+#'     use = "pairwise.complete.obs")
 #' @noRd
 .compare_spectra <- function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0,
                              ppm = 20, FUN = cor, ...) {
@@ -219,7 +223,7 @@ applyProcessing <- function(object, f = dataStorage(object),
         for (j in y_idx) {
             peak_map <- MAPFUN(peaks(x[i])[[1]], peaks(y[j])[[1]],
                                tolerance = tolerance, ppm = ppm, ...)
-            mat[i, j] <- FUN(peak_map$x[, 2], peak_map$y[, 2], ...)
+            mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L], ...)
         }
     }
     mat
@@ -234,6 +238,7 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' @importFrom utils combn
 #'
+#' @importFrom MsCoreUtils vapply1d
 #' @examples
 #'
 #' res <- .compare_spectra(sps, sps)
@@ -253,9 +258,8 @@ applyProcessing <- function(object, f = dataStorage(object),
     mat <- matrix(NA_real_, length(x_idx), length(x_idx),
                   dimnames = list(spectraNames(x), spectraNames(x)))
     mat[lower.tri(mat)] <- cb
-    for (i in seq_len(nrow(mat))) {
+    mat[upper.tri(mat)] <- t(mat)[upper.tri(mat)]
+    for (i in seq_len(nrow(mat)))
         mat[i, i] <- FUN(peaks(x[i])[[1]][, 2], peaks(x[i])[[1]][, 2], ...)
-        mat[i, ] <- mat[, i]
-    }
     mat
 }
