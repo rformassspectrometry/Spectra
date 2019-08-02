@@ -247,7 +247,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     x_idx <- seq_along(x)
     cb <- combn(x_idx, 2, function(idx) {
         peak_map <- MAPFUN(peaks(x[idx[1]])[[1]], peaks(x[idx[2]])[[1]],
-                           tolerance = tolerance, ppm = ppm)
+                           tolerance = tolerance, ppm = ppm, ...)
         FUN(peak_map$x[, 2], peak_map$y[, 2], ...)
     })
     mat <- matrix(NA_real_, length(x_idx), length(x_idx),
