@@ -124,9 +124,15 @@
 
 backendMerge(object, ...)
 
-bin(object, ...)
+bin(x, ...)
+
+# S4 method for numeric
+bin(x, y, size = 1, breaks = seq(floor(min(y)),
+  ceiling(max(y)), by = size), FUN = max)
 
 clean(object, ...)
+
+compareSpectra(x, y, ...)
 
 dataOrigin(object, ...)
 
