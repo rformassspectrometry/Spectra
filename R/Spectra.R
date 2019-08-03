@@ -321,6 +321,26 @@ NULL
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
+#' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
+#'   using the function provided with `FUN` (defaults to [cor()]). If `y` is
+#'   missing, each spectrum in `x` is compared with each other spectrum in `x`.
+#'   The matching/mapping of peaks between the compared spectra is done with the
+#'   `MAPFUN` function. The default [joinPeaks()] matches peaks of both spectra
+#'   and allows to keep all peaks from the first spectrum (`type = "left"`),
+#'   from the second (`type = "right"`), from both (`type = "outer"`) and to
+#'   keep only matching peaks (`type = "inner"`); see [joinPeaks()] for more
+#'   information and examples).
+#'   `FUN` is supposed to be a function to compare intensities of (matched)
+#'   peaks of the two spectra that are compared. The function needs to take two
+#'   numeric vectors as input and is supposed to return a single numeric as
+#'   result. Additional parameters to functions `FUN` and `MAPFUN` can be
+#'   passed with `...`.
+#'   The function returns a `matrix` with the results of `FUN` for each
+#'   comparison, number of rows equal to `length(x)` and number of columns
+#'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
+#'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
+#'   is *simplified* to a `numeric` if length of `x` or `y` is one.
+#'
 #' - `pickPeaks`: picks peaks on individual spectra using a moving window-based
 #'   approach (window size = `2 * halfWindowSize`). For noisy spectra there
 #'   are currently two different noise estimators available,
@@ -396,8 +416,9 @@ NULL
 #'     backends changing this parameter can lead to errors.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
-#'     of each spectrum in `object`. See section *Data manipulations* below
-#'     for more details.
+#'     of each spectrum in `object`. For `compareSpectra`: function to compare
+#'     intensities of peaks between two spectra with each other. See section
+#'     *Data manipulations* below for more details.
 #'
 #' @param halfWindowSize For `pickPeaks`: `integer(1)`, used in the
 #'     identification of the mass peaks: a local maximum has to be the maximum
@@ -420,6 +441,10 @@ NULL
 #'
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
+#'
+#' @param MAPFUN For `compareSpectra`: function to map/match peaks between the
+#'     two compared spectra. See [joinPeaks()] for more information and possible
+#'     functions.
 #'
 #' @param method For `pickPeaks`: `character(1)`, the noise estimators that
 #'     should be used, currently the the *M*edian *A*bsolute *D*eviation
@@ -447,10 +472,16 @@ NULL
 #'
 #' @param ppm For `filterPrecursorMz`: `numeric(1)` defining the accepted
 #'     difference between the provided m/z and the spectrum's m/z in parts per
-#'     million.
+#'     million. For `compareSpectra`: `numeric(1)` defining a relative,
+#'     m/z-dependent, maximal accepted difference between m/z values for peaks
+#'     to be matched.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
+#'
+#' @param SIMPLIFY For `compareSpectra` whether the result matrix should be
+#'     *simplified* to a `numeric` if possible (i.e. if either `x` or `y` is
+#'     of length 1).
 #'
 #' @param snr For `pickPeaks`: `double(1)` defining the
 #'     *S*ignal-to-*N*oise-*R*atio. The intensity of a local maximum has to be
@@ -463,6 +494,10 @@ NULL
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
 #'
+#' @param tolerance For `compareSpectra`: `numeric(1)` allowing to define a
+#'     constant maximal accepted difference between m/z values for peaks to be
+#'     matched.
+#'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
@@ -471,10 +506,12 @@ NULL
 #'      intensity. Just values above are used for the weighted mean calclulation.
 #' - For `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
-#' @param x A `Spectra` object.
-#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param x A `Spectra` object.
+#'
+#' @param y A `Spectra` object.
 #'
 #' @param ... Additional arguments.
 #'
@@ -485,8 +522,6 @@ NULL
 #' @exportClass Spectra
 #'
 #' @exportMethod Spectra
-#'
-#' @import MsCoreUtils
 #'
 #' @examples
 #'
@@ -630,6 +665,22 @@ NULL
 #'
 #' ## Second spectrum is now empty:
 #' isEmpty(res)
+#'
+#' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
+#' ## Pearson correlation and using all pairwise non-missing intensities
+#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20], FUN = cor,
+#'     use = "pairwise.complete.obs")
+#' ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
+#' ## the second row comparisons of spectrum 3 with spectra 10 to 20
+#' res
+#'
+#' ## Use compareSpectra to determine the number of common (matching) peaks
+#' ## with a ppm of 10:
+#' ## type = "inner" uses a *inner join* to match peaks, i.e. keeps only
+#' ## peaks that can be mapped betwen both spectra. The provided FUN returns
+#' ## simply the number of matching peaks.
+#' compareSpectra(sciex_im[2:3], sciex_im[1:20], ppm = 10, type = "inner",
+#'     FUN = function(x, y, ...) length(x))
 NULL
 
 #' The Spectra class
@@ -1215,23 +1266,23 @@ setMethod("filterRt", "Spectra",
 #' @rdname Spectra
 #'
 #' @exportMethod bin
-setMethod("bin", "Spectra", function(object, binSize = 1L, breaks = NULL,
-                                     msLevel. = unique(msLevel(object))) {
-    if (!.check_ms_level(object, msLevel.))
-        return(object)
+setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
+                                     msLevel. = unique(msLevel(x))) {
+    if (!.check_ms_level(x, msLevel.))
+        return(x)
     if (!length(breaks)) {
-        mzr <- range(.peaksapply(filterMsLevel(object, msLevel.),
+        mzr <- range(.peaksapply(filterMsLevel(x, msLevel.),
                                  function(z, ...) z[c(1L, nrow(z))]
                                  ), na.rm = TRUE)
         breaks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = binSize)
     }
-    object <- addProcessing(object, .peaks_bin, breaks = breaks,
-                            msLevel = msLevel.)
-    object@processing <- .logging(object@processing,
-                                  "Spectra of MS level(s) ",
-                                  paste0(msLevel., collapse = ", "),
-                                  " binned.")
-    object
+    x <- addProcessing(x, .peaks_bin, breaks = breaks,
+                       msLevel = msLevel.)
+    x@processing <- .logging(x@processing,
+                             "Spectra of MS level(s) ",
+                             paste0(msLevel., collapse = ", "),
+                             " binned.")
+    x
 })
 
 #' @rdname Spectra
@@ -1252,7 +1303,36 @@ setMethod("clean", "Spectra",
               object
           })
 
-## compareSpectra
+#' @rdname Spectra
+#'
+#' @exportMethod compareSpectra
+#'
+#' @export ppm
+setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
+          function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
+                   FUN = cor, ..., SIMPLIFY = TRUE) {
+              mat <- .compare_spectra(x, y, MAPFUN = MAPFUN,
+                                      tolerance = tolerance,
+                                      ppm = ppm, FUN = FUN, ...)
+              if (SIMPLIFY && (length(x) == 1 || length(y) == 1))
+                  mat <- as.vector(mat)
+              mat
+          })
+#' @rdname Spectra
+setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
+          function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
+                   FUN = cor, ..., SIMPLIFY = TRUE) {
+              if (length(x) == 1)
+                  return(compareSpectra(x, x, MAPFUN = MAPFUN,
+                                        tolerance = tolerance,
+                                        ppm = ppm, FUN = FUN, ...,
+                                        SIMPLIFY = SIMPLIFY))
+              mat <- .compare_spectra_self(x, FUN = FUN, tolerance = tolerance,
+                                           ppm = ppm, ...)
+              if (SIMPLIFY && length(x) == 1)
+                  mat <- as.vector(mat)
+              mat
+          })
 
 ## combineSpectra
 

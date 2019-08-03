@@ -988,6 +988,47 @@ test_that("clean,Spectra works", {
     expect_identical(peaks(res), SimpleList(pks_res))
 })
 
+test_that("compareSpectra works", {
+    sps <- Spectra(sciex_hd5[1:20])
+    sps <- setBackend(sps, MsBackendDataFrame())
+
+    res <- compareSpectra(sps[c(1, 20)], sps[15:20],
+                          use = "pairwise.complete.obs")
+    expect_true(nrow(res) == 2)
+    expect_true(ncol(res) == 6)
+    expect_equal(res[2, 6], 1)
+    expect_true(all(res > 0.9))
+
+    spectraNames(sps) <- seq_along(sps)
+    res <- compareSpectra(sps[c(1, 20)], sps[15:20])
+    expect_equal(rownames(res), c("1", "20"))
+    expect_equal(colnames(res), as.character(15:20))
+
+    res <- compareSpectra(sps[1], sps[15:20])
+    expect_false(is.matrix(res))
+    res <- compareSpectra(sps[1], sps[15:20], SIMPLIFY = FALSE)
+    expect_true(is.matrix(res))
+
+    res <- compareSpectra(sps[15:20], sps[4])
+    expect_false(is.matrix(res))
+
+    res <- compareSpectra(Spectra(), sps)
+    expect_true(is.matrix(res))
+    expect_equal(nrow(res), 0)
+
+    res <- compareSpectra(sps, Spectra())
+    expect_true(is.matrix(res))
+    expect_equal(ncol(res), 0)
+
+    ## y missing
+    res <- compareSpectra(sps[2:5])
+    expect_equal(nrow(res), ncol(res))
+    expect_equal(unname(diag(res)), rep(1, 4))
+
+    res <- compareSpectra(sps[1])
+    expect_equal(res, 1)
+})
+
 test_that("pickPeaks,Spectra works", {
     sps <- Spectra()
     expect_error(pickPeaks(sps, halfWindowSize = 1), "integer")

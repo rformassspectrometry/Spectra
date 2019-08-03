@@ -153,3 +153,113 @@ applyProcessing <- function(object, f = dataStorage(object),
         FALSE
     } else TRUE
 }
+
+#' @title Spectrum comparison
+#'
+#' @description
+#'
+#' Compare each spectrum in `x` with each spectrum in `y` with function `FUN`.
+#' Mapping between the peaks in both spectra can be defined with the `MAPFUN`
+#' function.
+#'
+#' @note
+#'
+#' Results might be slightly different if `x` and `y` are switched, because of
+#' the matching of the peaks by their m/z between spectra. Matching is performed
+#' by applying a `tolerance` and `ppm` to the second spectrum (i.e. from `y`)
+#' and, especially for `ppm`, the maximal accepted difference depend thus on
+#' the m/z values from the second spectrum.
+#'
+#' @param x [Spectra()]
+#'
+#' @param y [Spectra()]
+#'
+#' @param FUN `function` to compare the (m/z matched) intensities from each
+#'     spectrum in `x` with those in `y`.
+#'
+#' @param MAPFUN `function` to map peaks between the two compared spectra. See
+#'     [joinPeaks()].
+#'
+#' @param tolerance `numeric(1)` allowing to define a constant maximal accepted
+#'     difference between m/z values for peaks to be matched.
+#'
+#' @param ppm `numeric(1)` allowing to define a relative, m/z-dependent,
+#'     maximal accepted difference between m/z values for peaks to be matched.
+#'
+#' @param ... additional parameters passed to `FUN` and `MAPFUN`.
+#'
+#' @return
+#'
+#' `matrix` with number of rows equal to length of `x` and number of columns
+#' equal `length(y)`.
+#'
+#' @importFrom stats cor
+#'
+#' @examples
+#'
+#' library(Spectra)
+#' fl <- system.file("TripleTOF-SWATH/PestMix1_SWATH.mzML", package = "msdata")
+#' sps <- Spectra(fl, source = MsBackendMzR())
+#'
+#' sps <- sps[1:10]
+#' res <- .compare_spectra(sps, sps, ppm = 20, FUN = cor,
+#'     use = "pairwise.complete.obs")
+#' res <- .compare_spectra(sps, sps, FUN = cor,
+#'     use = "pairwise.complete.obs", method = "spearman", ppm = 40)
+#'
+#' res <- .compare_spectra(sps[1], sps, FUN = cor,
+#'     use = "pairwise.complete.obs")
+#' res <- .compare_spectra(sps, sps[1], FUN = cor,
+#'     use = "pairwise.complete.obs")
+#' @noRd
+.compare_spectra <- function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0,
+                             ppm = 20, FUN = cor, ...) {
+    x_idx <- seq_along(x)
+    y_idx <- seq_along(y)
+    mat <- matrix(NA_real_, nrow = length(x_idx), ncol = length(y_idx),
+                  dimnames = list(spectraNames(x), spectraNames(y)))
+    ## Might need some tuning - bplapply?
+    for (i in x_idx) {
+        for (j in y_idx) {
+            peak_map <- MAPFUN(peaks(x[i])[[1]], peaks(y[j])[[1]],
+                               tolerance = tolerance, ppm = ppm, ...)
+            mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L], ...)
+        }
+    }
+    mat
+}
+
+#' @description
+#'
+#' Compare each spectrum in `x` with each other spectrum in `x`. Makes use of
+#' `combn` to avoid calculating combinations twice.
+#'
+#' @inheritParams .compare_spectra
+#'
+#' @importFrom utils combn
+#'
+#' @importFrom MsCoreUtils vapply1d
+#' @examples
+#'
+#' res <- .compare_spectra(sps, sps)
+#' res_2 <- .compare_spectra_self(sps)
+#' all.equal(res, res_2)    # comparison x[1], x[2] != x[2], x[1]
+#' all.equal(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
+#'
+#' @noRd
+.compare_spectra_self <- function(x, MAPFUN = joinPeaks, tolerance = 0,
+                                  ppm = 20, FUN = cor, ...) {
+    x_idx <- seq_along(x)
+    cb <- combn(x_idx, 2, function(idx) {
+        peak_map <- MAPFUN(peaks(x[idx[1]])[[1]], peaks(x[idx[2]])[[1]],
+                           tolerance = tolerance, ppm = ppm, ...)
+        FUN(peak_map$x[, 2], peak_map$y[, 2], ...)
+    })
+    mat <- matrix(NA_real_, length(x_idx), length(x_idx),
+                  dimnames = list(spectraNames(x), spectraNames(x)))
+    mat[lower.tri(mat)] <- cb
+    mat[upper.tri(mat)] <- t(mat)[upper.tri(mat)]
+    for (i in seq_len(nrow(mat)))
+        mat[i, i] <- FUN(peaks(x[i])[[1]][, 2], peaks(x[i])[[1]][, 2], ...)
+    mat
+}

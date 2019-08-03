@@ -153,3 +153,28 @@ test_that(".check_ms_level works", {
     expect_true(.check_ms_level(tmt_mzr, c(1, 2)))
     expect_true(.check_ms_level(tmt_mzr, c(1, 4)))
 })
+
+test_that(".compare_spectra, .compare_spectra_self work", {
+    sps <- Spectra(sciex_hd5)[120:126]
+    sps <- setBackend(sps, MsBackendDataFrame())
+
+    res <- .compare_spectra(sps, sps, use = "pairwise.complete.obs")
+    expect_true(ncol(res) == length(sps))
+    expect_true(nrow(res) == length(sps))
+    expect_equal(diag(res), rep(1, length(sps)))
+
+    res_2 <- .compare_spectra(sps, sps[3], use = "pairwise.complete.obs")
+    expect_true(ncol(res_2) == 1)
+    expect_true(nrow(res_2) == length(sps))
+    expect_identical(res_2[, 1], res[, 3])
+
+    res_2 <- .compare_spectra(sps[5], sps, use = "pairwise.complete.obs")
+    expect_true(ncol(res_2) == length(sps))
+    expect_true(nrow(res_2) == 1)
+    expect_identical(res_2[1, ], res[5, ])
+
+    res_2 <- .compare_spectra_self(sps, use = "pairwise.complete.obs")
+    expect_equal(dim(res), dim(res_2))
+    expect_identical(diag(res), diag(res_2))
+    expect_identical(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
+})
