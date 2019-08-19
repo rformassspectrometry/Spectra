@@ -216,14 +216,34 @@ applyProcessing <- function(object, f = dataStorage(object),
                              ppm = 20, FUN = cor, ...) {
     x_idx <- seq_along(x)
     y_idx <- seq_along(y)
-    mat <- matrix(NA_real_, nrow = length(x_idx), ncol = length(y_idx),
+
+    nx <- length(x_idx)
+    ny <- length(y_idx)
+
+    mat <- matrix(NA_real_, nrow = nx, ncol = ny,
                   dimnames = list(spectraNames(x), spectraNames(y)))
+
     ## Might need some tuning - bplapply?
-    for (i in x_idx) {
+    ## This code duplication may be overengineering.
+    if (nx >= ny) {
+        for (i in x_idx) {
+            px <- peaks(x[i])[[1L]]
+            for (j in y_idx) {
+                peak_map <- MAPFUN(px, peaks(y[j])[[1L]],
+                                   tolerance = tolerance, ppm = ppm, ...)
+                mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L],
+                                 ...)
+            }
+        }
+    } else {
         for (j in y_idx) {
-            peak_map <- MAPFUN(peaks(x[i])[[1]], peaks(y[j])[[1]],
-                               tolerance = tolerance, ppm = ppm, ...)
-            mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L], ...)
+            py <- peaks(y[j])[[1L]]
+            for (i in x_idx) {
+                peak_map <- MAPFUN(peaks(x[i])[[1]], py,
+                                   tolerance = tolerance, ppm = ppm, ...)
+                mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L],
+                                 ...)
+            }
         }
     }
     mat
@@ -249,17 +269,20 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @noRd
 .compare_spectra_self <- function(x, MAPFUN = joinPeaks, tolerance = 0,
                                   ppm = 20, FUN = cor, ...) {
-    x_idx <- seq_along(x)
-    cb <- combn(x_idx, 2, function(idx) {
-        peak_map <- MAPFUN(peaks(x[idx[1]])[[1]], peaks(x[idx[2]])[[1]],
-                           tolerance = tolerance, ppm = ppm, ...)
-        FUN(peak_map$x[, 2], peak_map$y[, 2], ...)
-    })
-    mat <- matrix(NA_real_, length(x_idx), length(x_idx),
+    nx <- length(x)
+    m <- matrix(NA_real_, nrow = nx, ncol = nx,
                   dimnames = list(spectraNames(x), spectraNames(x)))
-    mat[lower.tri(mat)] <- cb
-    mat[upper.tri(mat)] <- t(mat)[upper.tri(mat)]
-    for (i in seq_len(nrow(mat)))
-        mat[i, i] <- FUN(peaks(x[i])[[1]][, 2], peaks(x[i])[[1]][, 2], ...)
-    mat
+
+    cb <- which(lower.tri(m, diag = TRUE), arr.ind = TRUE)
+    for (i in seq_len(nrow(cb))) {
+        cur <- cb[i, 2L]
+        if (i == 1L || cb[i - 1L, 2L] != cur)
+            py <- px <- peaks(x[cur])[[1L]]
+        else
+            py <- peaks(x[cb[i, 1L]])[[1L]]
+        map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm, ...)
+        m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
+            FUN(map[[1L]][, 2L], map[[2L]][, 2L], ...)
+    }
+    m
 }
