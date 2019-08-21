@@ -21,45 +21,6 @@ setGeneric("clean", function(object, ...) standardGeneric("clean"))
 setGeneric("compareSpectra", function(x, y, ...)
     standardGeneric("compareSpectra"))
 #' @rdname hidden_aliases
-setGeneric("dataOrigin", function(object, ...) standardGeneric("dataOrigin"))
-#' @rdname hidden_aliases
-setGeneric("dataOrigin<-", function(object, value)
-    standardGeneric("dataOrigin<-"))
-#' @rdname hidden_aliases
-setGeneric("dataStorage", function(object, ...) standardGeneric("dataStorage"))
-#' @rdname hidden_aliases
-setGeneric("dataStorage<-", function(object, value)
-    standardGeneric("dataStorage<-"))
-#' @rdname hidden_aliases
-setGeneric("filterAcquisitionNum", function(object, ...)
-    standardGeneric("filterAcquisitionNum"))
-#' @rdname hidden_aliases
-setGeneric("filterDataOrigin", function(object, ...)
-    standardGeneric("filterDataOrigin"))
-#' @rdname hidden_aliases
-setGeneric("filterDataStorage", function(object, ...)
-    standardGeneric("filterDataStorage"))
-#' @rdname hidden_aliases
-setGeneric("filterEmptySpectra", function(object, ...)
-    standardGeneric("filterEmptySpectra"))
-#' @rdname hidden_aliases
-setGeneric("filterIsolationWindow", function(object, ...)
-    standardGeneric("filterIsolationWindow"))
-#' @rdname hidden_aliases
-setGeneric("filterMsLevel", function(object, ...)
-    standardGeneric("filterMsLevel"))
-#' @rdname hidden_aliases
-setGeneric("filterPolarity", function(object, ...)
-    standardGeneric("filterPolarity"))
-#' @rdname hidden_aliases
-setGeneric("filterPrecursorMz", function(object, ...)
-    standardGeneric("filterPrecursorMz"))
-#' @rdname hidden_aliases
-setGeneric("filterPrecursorScan", function(object, ...)
-    standardGeneric("filterPrecursorScan"))
-#' @rdname hidden_aliases
-setGeneric("filterRt", function(object, ...) standardGeneric("filterRt"))
-#' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
 #' @rdname hidden_aliases

@@ -13,20 +13,6 @@
 \alias{bin,numeric-method}
 \alias{clean}
 \alias{compareSpectra}
-\alias{dataOrigin}
-\alias{dataOrigin<-}
-\alias{dataStorage}
-\alias{dataStorage<-}
-\alias{filterAcquisitionNum}
-\alias{filterDataOrigin}
-\alias{filterDataStorage}
-\alias{filterEmptySpectra}
-\alias{filterIsolationWindow}
-\alias{filterMsLevel}
-\alias{filterPolarity}
-\alias{filterPrecursorMz}
-\alias{filterPrecursorScan}
-\alias{filterRt}
 \alias{isReadOnly}
 \alias{peaksCount}
 \alias{pickPeaks}
@@ -144,34 +130,6 @@ bin(x, ...)
 clean(object, ...)
 
 compareSpectra(x, y, ...)
-
-dataOrigin(object, ...)
-
-dataOrigin(object) <- value
-
-dataStorage(object, ...)
-
-dataStorage(object) <- value
-
-filterAcquisitionNum(object, ...)
-
-filterDataOrigin(object, ...)
-
-filterDataStorage(object, ...)
-
-filterEmptySpectra(object, ...)
-
-filterIsolationWindow(object, ...)
-
-filterMsLevel(object, ...)
-
-filterPolarity(object, ...)
-
-filterPrecursorMz(object, ...)
-
-filterPrecursorScan(object, ...)
-
-filterRt(object, ...)
 
 isReadOnly(object, ...)
 

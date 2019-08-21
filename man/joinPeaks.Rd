@@ -7,54 +7,55 @@
 joinPeaks(x, y, type = "outer", tolerance = 0, ppm = 10, ...)
 }
 \arguments{
-\item{x}{`matrix` with two columns `"mz"` and `"intensity"` containing the
+\item{x}{\code{matrix} with two columns \code{"mz"} and \code{"intensity"} containing the
 m/z and intensity values of the mass peaks of a spectrum.}
 
-\item{y}{`matrix` with two columns `"mz"` and `"intensity"` containing the
+\item{y}{\code{matrix} with two columns \code{"mz"} and \code{"intensity"} containing the
 m/z and intensity values of the mass peaks of a spectrum.}
 
-\item{type}{For `joinPeaks`: `character(1)` specifying the type of join that
+\item{type}{For \code{joinPeaks}: \code{character(1)} specifying the type of join that
 should be performed. See function description for details.}
 
-\item{tolerance}{`numeric(1)` defining a constant maximal accepted difference
+\item{tolerance}{\code{numeric(1)} defining a constant maximal accepted difference
 between m/z values of peaks from the two spectra to be matched/mapped.}
 
-\item{ppm}{`numeric(1)` defining a relative, m/z-dependent, maximal accepted
+\item{ppm}{\code{numeric(1)} defining a relative, m/z-dependent, maximal accepted
 difference between m/z values of peaks from the two spectra to be
 matched/mapped.}
 
 \item{...}{option parameters.}
 }
 \value{
-All functions return a `list` of elements `"x"` and `"y"` each being a two
+All functions return a \code{list} of elements \code{"x"} and \code{"y"} each being a two
 column matrix with m/z (first column) and intensity values (second column).
-The two matrices contain the matched peaks between input matrices `x` and `y`
-and hence have the same number of rows. Peaks present in `x` but not in the
-`y` input matrix have m/z and intensity values of `NA` in the result matrix
-for `y` (and *vice versa*).
+The two matrices contain the matched peaks between input matrices \code{x} and \code{y}
+and hence have the same number of rows. Peaks present in \code{x} but not in the
+\code{y} input matrix have m/z and intensity values of \code{NA} in the result matrix
+for \code{y} (and \emph{vice versa}).
 }
 \description{
 These functions map peaks from two spectra with each other if the difference
-between their m/z values is smaller than defined with parameters `tolerance`
-and `ppm`. All functions take two matrices
-
-- `joinPeaks`: maps peaks from two spectra allowing to specify the type of
-  *join* that should be performed: `type = "outer"` each peak in `x` will be
-  matched with each peak in `y`, for peaks that do not match any peak in the
-  other spectra an `NA` intensity is returned. With `type = "left"` all peaks
-  from the left spectrum (`x`) will be matched with peaks in `y`. Peaks in
-  `y` that do not match any peak in `x` are omitted. `type = "right"` is the
-  same as `type = "left"` only for `y`. Only peaks that can be matched
-  between `x` and `y` are returned by `type = "inner"`, i.e. only
-  peaks present in both spectra are reported.
+between their m/z values is smaller than defined with parameters \code{tolerance}
+and \code{ppm}. All functions take two matrices
+\itemize{
+\item \code{joinPeaks}: maps peaks from two spectra allowing to specify the type of
+\emph{join} that should be performed: \code{type = "outer"} each peak in \code{x} will be
+matched with each peak in \code{y}, for peaks that do not match any peak in the
+other spectra an \code{NA} intensity is returned. With \code{type = "left"} all peaks
+from the left spectrum (\code{x}) will be matched with peaks in \code{y}. Peaks in
+\code{y} that do not match any peak in \code{x} are omitted. \code{type = "right"} is the
+same as \code{type = "left"} only for \code{y}. Only peaks that can be matched
+between \code{x} and \code{y} are returned by \code{type = "inner"}, i.e. only
+peaks present in both spectra are reported.
+}
 }
 \section{Implementation notes}{
 
 
-A mapping function must take two numeric matrices `x` and `y` as input and
-must return `list` with two elements named `"x"` and `"y"` that represent
-the aligned input matrices. The function should also have `...` in its
-definition. Parameters `ppm` and `tolerance` are suggested but not required.
+A mapping function must take two numeric matrices \code{x} and \code{y} as input and
+must return \code{list} with two elements named \code{"x"} and \code{"y"} that represent
+the aligned input matrices. The function should also have \code{...} in its
+definition. Parameters \code{ppm} and \code{tolerance} are suggested but not required.
 }
 
 \examples{
