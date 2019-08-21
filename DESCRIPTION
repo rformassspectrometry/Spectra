@@ -21,7 +21,7 @@ Depends:
     R (>= 3.5.0),
     S4Vectors,
     BiocParallel,
-    ProtGenerics (>= 1.17.2)
+    ProtGenerics (>= 1.17.4)
 Imports:
     methods,
     IRanges,
@@ -36,7 +36,7 @@ Suggests:
     rhdf5,
     rmarkdown,
     magrittr
-Remotes: 
+Remotes:
    RforMassSpectrometry/MsCoreUtils
 License: Artistic-2.0
 LazyData: yes
@@ -45,6 +45,7 @@ BugReports: https://github.com/RforMassSpectrometry/Spectra/issues
 URL: https://github.com/RforMassSpectrometry/Spectra
 biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics
 RoxygenNote: 6.1.1
+Roxygen: list(markdown=TRUE)
 Collate:
     'hidden_aliases.R'
     'AllGenerics.R'

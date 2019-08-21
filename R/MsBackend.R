@@ -536,12 +536,16 @@ setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
 
 #' @exportMethod dataOrigin
 #'
+#' @importMethodsFrom ProtGenerics dataOrigin
+#'
 #' @rdname MsBackend
 setMethod("dataOrigin", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod dataOrigin<-
+#'
+#' @importMethodsFrom ProtGenerics dataOrigin<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
@@ -550,12 +554,16 @@ setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
 
 #' @exportMethod dataStorage
 #'
+#' @importMethodsFrom ProtGenerics dataStorage
+#'
 #' @rdname MsBackend
 setMethod("dataStorage", "MsBackend", function(object) {
     stop("Method 'dataStorage' is not implemented for ", class(object), ".")
 })
 
 #' @exportMethod dataStorage<-
+#'
+#' @importMethodsFrom ProtGenerics dataStorage<-
 #'
 #' @rdname MsBackend
 setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
@@ -564,12 +572,16 @@ setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
 
 #' @exportMethod filterAcquisitionNum
 #'
+#' @importMethodsFrom ProtGenerics filterAcquisitionNum
+#'
 #' @rdname MsBackend
 setMethod("filterAcquisitionNum", "MsBackend", function(object, n, file, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod filterDataOrigin
+#'
+#' @importMethodsFrom ProtGenerics filterDataOrigin
 #'
 #' @rdname MsBackend
 setMethod("filterDataOrigin", "MsBackend", function(object, dataOrigin, ...) {
@@ -578,12 +590,16 @@ setMethod("filterDataOrigin", "MsBackend", function(object, dataOrigin, ...) {
 
 #' @exportMethod filterDataStorage
 #'
+#' @importMethodsFrom ProtGenerics filterDataStorage
+#'
 #' @rdname MsBackend
 setMethod("filterDataStorage", "MsBackend", function(object, dataStorage, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod filterEmptySpectra
+#'
+#' @importMethodsFrom ProtGenerics filterEmptySpectra
 #'
 #' @rdname MsBackend
 setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
@@ -592,12 +608,16 @@ setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
 
 #' @exportMethod filterIsolationWindow
 #'
+#' @importMethodsFrom ProtGenerics filterIsolationWindow
+#'
 #' @rdname MsBackend
 setMethod("filterIsolationWindow", "MsBackend", function(object, mz, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod filterMsLevel
+#'
+#' @importMethodsFrom ProtGenerics filterMsLevel
 #'
 #' @rdname MsBackend
 setMethod("filterMsLevel", "MsBackend", function(object, msLevel) {
@@ -606,12 +626,16 @@ setMethod("filterMsLevel", "MsBackend", function(object, msLevel) {
 
 #' @exportMethod filterPolarity
 #'
+#' @importMethodsFrom ProtGenerics filterPolarity
+#'
 #' @rdname MsBackend
 setMethod("filterPolarity", "MsBackend", function(object, polarity) {
     stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod filterPrecursorMz
+#'
+#' @importMethodsFrom ProtGenerics filterPrecursorMz
 #'
 #' @rdname MsBackend
 setMethod("filterPrecursorMz", "MsBackend", function(object, mz, ppm) {
@@ -620,6 +644,8 @@ setMethod("filterPrecursorMz", "MsBackend", function(object, mz, ppm) {
 
 #' @exportMethod filterPrecursorScan
 #'
+#' @importMethodsFrom ProtGenerics filterPrecursorScan
+#'
 #' @rdname MsBackend
 setMethod("filterPrecursorScan", "MsBackend", function(object,
                                                        acquisitionNum, ...) {
@@ -627,6 +653,8 @@ setMethod("filterPrecursorScan", "MsBackend", function(object,
 })
 
 #' @exportMethod filterRt
+#'
+#' @importMethodsFrom ProtGenerics filterRt
 #'
 #' @rdname MsBackend
 setMethod("filterRt", "MsBackend", function(object, rt, msLevel, ...) {
