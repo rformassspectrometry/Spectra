@@ -76,8 +76,9 @@ NULL
 #'     function should be applied. For `filterMsLevel`: the MS level to which
 #'     `object` should be subsetted.
 #'
-#' @param mz For `filterIsolationWindow` and `filterPrecursorMz`: `numeric(1)`
-#'     with the m/z value to filter the object.
+#' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
+#'     filter the object. For `filterPrecursorMz`: `numeric(2)` with the lower
+#'     and upper m/z boundary.
 #'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
@@ -89,10 +90,6 @@ NULL
 #'
 #' @param polarity For `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
-#'
-#' @param ppm For `filterPrecursorMz`: `numeric(1)` defining the accepted
-#'     difference between the provided m/z and the spectrum's m/z in parts per
-#'     million.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
@@ -197,10 +194,8 @@ NULL
 #'
 #' - `filterPolarity`: retains spectra of polarity `polarity`.
 #'
-#' - `filterPrecursorMz`: retains spectra with an m/z matching the provided `mz`
-#'   accepting also a small difference in m/z which can be defined by parameter
-#'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
-#'   m/z identical to `mz` are retained.
+#' - `filterPrecursorMz`: retains spectra with a precursor m/z within the
+#'   provided m/z range.
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'    MS2) of acquisition number `acquisitionNum`.
@@ -379,10 +374,6 @@ NULL
 #'   intensity values for each spectrum.
 #'
 #' Additional columns are allowed too.
-#'
-#' The `backendInitialize` method for this backend takes arguments `files`
-#' (should be set to `NA_character`) and `spectraData` (`DataFrame` with the
-#' spectrum data).
 #'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
@@ -638,7 +629,7 @@ setMethod("filterPolarity", "MsBackend", function(object, polarity) {
 #' @importMethodsFrom ProtGenerics filterPrecursorMz
 #'
 #' @rdname MsBackend
-setMethod("filterPrecursorMz", "MsBackend", function(object, mz, ppm) {
+setMethod("filterPrecursorMz", "MsBackend", function(object, mz) {
     stop("Not implemented for ", class(object), ".")
 })
 

@@ -113,7 +113,7 @@
 
 \S4method{filterPolarity}{MsBackend}(object, polarity)
 
-\S4method{filterPrecursorMz}{MsBackend}(object, mz, ppm)
+\S4method{filterPrecursorMz}{MsBackend}(object, mz)
 
 \S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum, ...)
 
@@ -231,8 +231,9 @@ spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occur
 only for spectra of selected \code{dataStorage}.}
 
-\item{mz}{For \code{filterIsolationWindow} and \code{filterPrecursorMz}: \code{numeric(1)}
-with the m/z value to filter the object.}
+\item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
+filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} with the lower
+and upper m/z boundary.}
 
 \item{msLevel}{\code{integer} defining the MS level of the spectra to which the
 function should be applied. For \code{filterMsLevel}: the MS level to which
@@ -240,10 +241,6 @@ function should be applied. For \code{filterMsLevel}: the MS level to which
 
 \item{polarity}{For \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
-
-\item{ppm}{For \code{filterPrecursorMz}: \code{numeric(1)} defining the accepted
-difference between the provided m/z and the spectrum's m/z in parts per
-million.}
 
 \item{acquisitionNum}{for \code{filterPrecursorScan}: \code{integer} with the
 acquisition number of the spectra to which the object should be
@@ -382,10 +379,8 @@ isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} <= \code{
 and \code{isolationWindowUpperMz} >= \code{mz}.
 \item \code{filterMsLevel}: retains spectra of MS level \code{msLevel}.
 \item \code{filterPolarity}: retains spectra of polarity \code{polarity}.
-\item \code{filterPrecursorMz}: retains spectra with an m/z matching the provided \code{mz}
-accepting also a small difference in m/z which can be defined by parameter
-\code{ppm} (parts per million). With the default (\code{ppm = 0}) only spectra with
-m/z identical to \code{mz} are retained.
+\item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
+provided m/z range.
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}.
 \item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times
@@ -544,10 +539,6 @@ intensity values for each spectrum.
 }
 
 Additional columns are allowed too.
-
-The \code{backendInitialize} method for this backend takes arguments \code{files}
-(should be set to \code{NA_character}) and \code{spectraData} (\code{DataFrame} with the
-spectrum data).
 }
 
 \section{\code{MsBackendMzR}, on-disk MS data backend}{

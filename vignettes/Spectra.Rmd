@@ -277,8 +277,8 @@ A set of filter functions are defined that allow to subset `Spectra` objects
   isolation window (m/z range).
 - `filterMsLevel`: filter by MS level.
 - `filterPolarity`: filter by polarity.
-- `filterPrecursorMz`: retain (MSn) spectra with a precursor m/z equal to the
-  provided one.
+- `filterPrecursorMz`: retain (MSn) spectra with a precursor m/z within the
+  provided m/z range.
 - `filterPrecursorScan`: retain (parent and children) scans of an acquisition
   number.
 - `filterRt`: filter based on retention time ranges.

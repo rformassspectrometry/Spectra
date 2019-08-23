@@ -903,7 +903,7 @@ test_that("filterPrecursorMz,Spectra works", {
     sps <- Spectra(tmt_mzr)
     res <- filterPrecursorMz(sps, mz = 544.75)
     expect_true(length(res) == 0)
-    res <- filterPrecursorMz(sps, mz = 544.75, ppm = 40)
+    res <- filterPrecursorMz(sps, mz = 544.75 + ppm(c(-544.75, 544.75), 40))
     expect_true(length(res) == 2)
 })
 

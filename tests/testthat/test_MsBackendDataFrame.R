@@ -756,7 +756,7 @@ test_that("filterPrecursorMz,MsBackendDataFrame works", {
     res <- filterPrecursorMz(be, 4.4311)
     expect_true(length(res) == 0)
 
-    res <- filterPrecursorMz(be, 4.4311, ppm = 50)
+    res <- filterPrecursorMz(be, mz = 4.4311 + ppm(c(-4.4311, 4.4311), 40))
     expect_equal(rtime(res), 3)
 })
 

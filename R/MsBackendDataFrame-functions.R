@@ -287,6 +287,8 @@ MsBackendDataFrame <- function() {
 #'
 #' @author Johannes Rainer
 #'
+#' @importFrom MsCoreUtils vapply1c
+#'
 #' @noRd
 .combine_backend_data_frame <- function(objects) {
     if (length(objects) == 1)
