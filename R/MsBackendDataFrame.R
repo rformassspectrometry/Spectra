@@ -3,8 +3,6 @@ NULL
 
 #' @title In-memory MS data backend
 #'
-#' @description
-#'
 #' @name MsBackendDataFrame
 #'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
@@ -582,14 +580,11 @@ setMethod("filterPolarity", "MsBackendDataFrame",
 
 #' @rdname hidden_aliases
 setMethod("filterPrecursorMz", "MsBackendDataFrame",
-          function(object, mz = numeric(), ppm = 0) {
+          function(object, mz = numeric()) {
               if (length(mz)) {
-                  if (length(mz) > 1)
-                      stop("'mz' is expected to be a single m/z value",
-                           call. = FALSE)
-                  mz_ppm <- ppm * mz / 1e6
-                  keep <- which(precursorMz(object) >= (mz - mz_ppm) &
-                                precursorMz(object) <= (mz + mz_ppm))
+                  mz <- range(mz)
+                  keep <- which(precursorMz(object) >= mz[1] &
+                                precursorMz(object) <= mz[2])
                   object[keep]
               } else object
           })

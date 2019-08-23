@@ -266,8 +266,7 @@ setBackend(object, backend, ...)
 \S4method{filterPolarity}{MsBackendDataFrame}(object,
   polarity = integer())
 
-\S4method{filterPrecursorMz}{MsBackendDataFrame}(object, mz = numeric(),
-  ppm = 0)
+\S4method{filterPrecursorMz}{MsBackendDataFrame}(object, mz = numeric())
 
 \S4method{filterPrecursorScan}{MsBackendDataFrame}(object,
   acquisitionNum = integer())

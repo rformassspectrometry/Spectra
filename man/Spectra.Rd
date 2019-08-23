@@ -204,7 +204,7 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
 
-\S4method{filterPrecursorMz}{Spectra}(object, mz = numeric(), ppm = 0)
+\S4method{filterPrecursorMz}{Spectra}(object, mz = numeric())
 
 \S4method{filterPrecursorScan}{Spectra}(object,
   acquisitionNum = integer())
@@ -306,8 +306,9 @@ spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
-\item{mz}{For \code{filterIsolationWindow} and \code{filterPrecursorMz}: \code{numeric(1)}
-with the m/z value to filter the object.}
+\item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
+filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
+lower and upper m/z boundary.}
 
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied. For \code{filterMsLevel}: the MS level to
@@ -315,12 +316,6 @@ which \code{object} should be subsetted.}
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
-
-\item{ppm}{For \code{filterPrecursorMz}: \code{numeric(1)} defining the accepted
-difference between the provided m/z and the spectrum's m/z in parts per
-million. For \code{compareSpectra}: \code{numeric(1)} defining a relative,
-m/z-dependent, maximal accepted difference between m/z values for peaks
-to be matched.}
 
 \item{acquisitionNum}{for \code{filterPrecursorScan}: \code{integer} with the
 acquisition number of the spectra to which the object should be
@@ -347,6 +342,10 @@ functions.}
 \item{tolerance}{For \code{compareSpectra}: \code{numeric(1)} allowing to define a
 constant maximal accepted difference between m/z values for peaks to be
 matched.}
+
+\item{ppm}{For \code{compareSpectra}: \code{numeric(1)} defining a relative,
+m/z-dependent, maximal accepted difference between m/z values for peaks
+to be matched.}
 
 \item{SIMPLIFY}{For \code{compareSpectra} whether the result matrix should be
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
@@ -598,11 +597,9 @@ the MS level specified with argument \code{msLevel}. Returns the filtered
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
-\item \code{filterPrecursorMz}: retains spectra with an m/z matching the provided \code{mz}
-accepting also a small difference in m/z which can be defined by parameter
-\code{ppm} (parts per million). With the default (\code{ppm = 0}) only spectra with
-m/z identical to \code{mz} are retained. Returns the filtered \code{Spectra} (with
-spectra in their original order).
+\item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
+provided m/z range. See examples for details on selecting spectra with
+a precursor m/z for a target m/z accepting a small difference in \emph{ppm}.
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
@@ -825,6 +822,11 @@ head(data_comb$spectrum_id)
 head(data_comb$rtime)
 head(data_comb$dataStorage)
 head(data_comb$dataOrigin)
+
+## Filter a Spectra for a target precursor m/z with a tolerance of 10ppm
+spd$precursorMz <- c(323.4, 543.2302)
+data_filt <- Spectra(spd)
+filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 
 ## ---- DATA MANIPULATIONS ----
 

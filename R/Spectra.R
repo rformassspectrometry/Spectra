@@ -256,11 +256,9 @@ NULL
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
-#' - `filterPrecursorMz`: retains spectra with an m/z matching the provided `mz`
-#'   accepting also a small difference in m/z which can be defined by parameter
-#'   `ppm` (parts per million). With the default (`ppm = 0`) only spectra with
-#'   m/z identical to `mz` are retained. Returns the filtered `Spectra` (with
-#'   spectra in their original order).
+#' - `filterPrecursorMz`: retains spectra with a precursor m/z within the
+#'   provided m/z range. See examples for details on selecting spectra with
+#'   a precursor m/z for a target m/z accepting a small difference in *ppm*.
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
@@ -460,8 +458,9 @@ NULL
 #'     the function should be applied. For `filterMsLevel`: the MS level to
 #'     which `object` should be subsetted.
 #'
-#' @param mz For `filterIsolationWindow` and `filterPrecursorMz`: `numeric(1)`
-#'     with the m/z value to filter the object.
+#' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
+#'     filter the object. For `filterPrecursorMz`: `numeric(2)` defining the
+#'     lower and upper m/z boundary.
 #'
 #' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
 #'     on creation of `Spectra` objects for details. For all other methods a
@@ -470,9 +469,7 @@ NULL
 #' @param polarity for `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
-#' @param ppm For `filterPrecursorMz`: `numeric(1)` defining the accepted
-#'     difference between the provided m/z and the spectrum's m/z in parts per
-#'     million. For `compareSpectra`: `numeric(1)` defining a relative,
+#' @param ppm For `compareSpectra`: `numeric(1)` defining a relative,
 #'     m/z-dependent, maximal accepted difference between m/z values for peaks
 #'     to be matched.
 #'
@@ -642,6 +639,11 @@ NULL
 #' head(data_comb$rtime)
 #' head(data_comb$dataStorage)
 #' head(data_comb$dataOrigin)
+#'
+#' ## Filter a Spectra for a target precursor m/z with a tolerance of 10ppm
+#' spd$precursorMz <- c(323.4, 543.2302)
+#' data_filt <- Spectra(spd)
+#' filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 #'
 #' ## ---- DATA MANIPULATIONS ----
 #'
@@ -1220,12 +1222,12 @@ setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
 
 #' @rdname Spectra
 setMethod("filterPrecursorMz", "Spectra",
-          function(object, mz = numeric(), ppm = 0) {
-              object@backend <- filterPrecursorMz(object@backend, mz, ppm)
+          function(object, mz = numeric()) {
+              object@backend <- filterPrecursorMz(object@backend, mz)
               object@processing <- .logging(
                   object@processing,
-                  "Filter: select spectra with a precursor m/z of ",
-                  mz, " accepting ", ppm, " ppm difference")
+                  "Filter: select spectra with a precursor m/z within [",
+                  paste0(mz, collapse = ", "), "]")
               object
           })
 
