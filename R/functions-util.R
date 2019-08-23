@@ -217,7 +217,7 @@ utils.enableNeighbours <- function(x) {
 
     cl <- vapply1c(l, class)
 
-    stopifnot(all(cl %in% c("matrix", "data.frame", "DataFrame")))
+    stopifnot(all(cl %in% c("matrix", "data.frame", "DataFrame", "DFrame")))
 
     ## convert matrix to data.frame for easier and equal subsetting and class
     ## determination
