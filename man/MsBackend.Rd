@@ -544,10 +544,6 @@ intensity values for each spectrum.
 }
 
 Additional columns are allowed too.
-
-The \code{backendInitialize} method for this backend takes arguments \code{files}
-(should be set to \code{NA_character}) and \code{spectraData} (\code{DataFrame} with the
-spectrum data).
 }
 
 \section{\code{MsBackendMzR}, on-disk MS data backend}{

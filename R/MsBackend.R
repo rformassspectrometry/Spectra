@@ -380,10 +380,6 @@ NULL
 #'
 #' Additional columns are allowed too.
 #'
-#' The `backendInitialize` method for this backend takes arguments `files`
-#' (should be set to `NA_character`) and `spectraData` (`DataFrame` with the
-#' spectrum data).
-#'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
 #' The `MsBackendMzR` keeps only a limited amount of data in memory,

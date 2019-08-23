@@ -37,6 +37,11 @@ test_that(".as_rle works", {
     expect_equal(.as_rle(list(a = 1:3, b = 2:3)), list(a = 1:3, b = 2:3))
 })
 
+test_that(".is_class works", {
+    expect_true(.is_class(3L, "integer"))
+    expect_true(.is_class(Rle(1:4), "integer"))
+})
+
 test_that("utils.clean works", {
     x <- list(c(0, 0, 0, 1, 0, 1, 0, 0, 0),
               c(0, 0, 0, 1, 0, 0, 1, 0, 0, 0),
