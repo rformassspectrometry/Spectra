@@ -101,31 +101,6 @@ NULL
     isolationWindowUpperMz = "numeric"
 )
 
-#' accessor methods for spectraData columns.
-#'
-#' @noRd
-.SPECTRA_DATA_COLUMN_METHODS <- c(
-    msLevel = "msLevel",
-    rtime = "rtime",
-    acquisitionNum = "acquisitionNum",
-    scanIndex = "scanIndex",
-    mz = "mz",
-    intensity = "intensity",
-    dataStorage = "dataStorage",
-    dataOrigin = "dataOrigin",
-    centroided = "centroided",
-    smoothed = "smoothed",
-    polarity = "polarity",
-    precScanNum = "precScanNum",
-    precursorMz = "precursorMz",
-    precursorIntensity = "precursorIntensity",
-    precursorCharge = "precursorCharge",
-    collisionEnergy = "collisionEnergy",
-    isolationWindowLowerMz = "isolationWindowLowerMz",
-    isolationWindowTargetMz = "isolationWindowTargetMz",
-    isolationWindowUpperMz = "isolationWindowUpperMz"
-)
-
 #' @rdname MsBackend
 #'
 #' @export MsBackendDataFrame
@@ -133,87 +108,21 @@ MsBackendDataFrame <- function() {
     new("MsBackendDataFrame")
 }
 
-#' Helper function to extract a certain column from the spectraData data frame.
-#' If the data frame has no such column it will use the accessor method to
-#' retrieve the corresponding data.
-#'
-#' @param x object with a `@spectraData` slot containing a `DataFrame`.
-#'
-#' @param column `character(1)` with the column name.
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-.get_spectra_data_column <- function(x, column) {
-    if (missing(column) || length(column) != 1)
-        stop("'column' should be a 'character' of length 1.")
-    if (any(colnames(x@spectraData) == column))
-        x@spectraData[[column]]
-    else {
-        if (any(names(.SPECTRA_DATA_COLUMN_METHODS) == column))
-            do.call(.SPECTRA_DATA_COLUMN_METHODS[column], args = list(x))
-        else stop("No column '", column, "' available")
-    }
-}
-
-#' Utility function to convert columns in the `x` `DataFrame` that have only
-#' a single element to `Rle`. Also columns specified with parameter `columns`
-#' will be converted (if present).
-#'
-#' @param x `DataFrame`
-#'
-#' @param columns `character` of column names that should be converted to `Rle`
-#'
-#' @return `DataFrame`
-#'
-#' @author Johannes Rainer
-#'
-#' @importClassesFrom S4Vectors Rle
-#'
-#' @importFrom S4Vectors Rle
-#'
-#' @noRd
-.as_rle_spectra_data <- function(x, columns = c("dataStorage", "dataOrigin")) {
-    if (nrow(x) <= 1)
-        return(x)
-    for (col in colnames(x)) {
-        x[[col]] <- .as_rle(x[[col]])
-    }
-    columns <- intersect(columns, colnames(x))
-    for (col in columns) {
-        if (!is(x[[col]], "Rle"))
-            x[[col]] <- Rle(x[[col]])
-    }
-    x
-}
-
-
-#' *Uncompress* a `DataFrame` by converting all of its columns that contain
-#' an `Rle` with `as.vector`.
-#'
-#' @param x `DataFrame`
-#'
-#' @return `DataFrame` with all `Rle` columns converted to vectors.
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-.as_vector_spectra_data <- function(x) {
-    cols <- colnames(x)[vapply1l(x, is, "Rle")]
-    for (col in cols) {
-        x[[col]] <- as.vector(x[[col]])
-    }
-    x
-}
-
 #' Helper function to return a column from the (spectra data) `DataFrame`. If
 #' the column `column` is an `Rle` `as.vector` is called on it. If column is
 #' the name of a mandatory variable but it is not available it is created on
 #' the fly.
 #'
+#' @note This function is equivalent to the `get_rle_column` function in
+#'     the `Chromatograms` package (in *ChromBackendDataFrame-functions.R*).
+#'
 #' @param x `DataFrame`
 #'
 #' @param column `character(1)` with the name of the column to return.
+#'
+#' @importClassesFrom S4Vectors Rle
+#'
+#' @importFrom S4Vectors Rle
 #'
 #' @importMethodsFrom S4Vectors [[
 #'
@@ -287,7 +196,7 @@ MsBackendDataFrame <- function() {
 #'
 #' @author Johannes Rainer
 #'
-#' @importFrom MsCoreUtils vapply1c
+#' @importFrom MsCoreUtils vapply1c asRleDataFrame rbindFill
 #'
 #' @noRd
 .combine_backend_data_frame <- function(objects) {
@@ -297,8 +206,9 @@ MsBackendDataFrame <- function() {
         stop("Can only merge backends of the same type: ", class(objects[[1]]))
     res <- new(class(objects[[1]]))
     suppressWarnings(
-        res@spectraData <- .as_rle_spectra_data(do.call(
-            .rbind_fill, lapply(objects, function(z) z@spectraData)))
+        res@spectraData <- asRleDataFrame(do.call(
+            rbindFill, lapply(objects, function(z) z@spectraData)),
+            columns = c("dataStorage", "dataOrigin"))
     )
     if (any(colnames(res@spectraData) == "mz"))
         res@spectraData$mz[is.na(res@spectraData$mz)] <- list(numeric())

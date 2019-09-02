@@ -72,27 +72,6 @@
     else class(x)
 }
 
-#' Function to convert a `numeric`, `logical` or `character` vector into an
-#' `Rle` if it will use less memory than the bare vector.
-#'
-#' @param x vector to convert to Rle.
-#'
-#' @return `x` or an `Rle` version of `x`
-#'
-#' @author Johannes Rainer, Sebastian Gibb
-#'
-#' @importFrom S4Vectors nrun
-#'
-#' @noRd
-.as_rle <- function(x) {
-    if (length(x) > 2L && (is.numeric(x) || is.character(x) || is.logical(x))) {
-        r <- Rle(x)
-        if (nrun(r) < length(x) / 2L)
-            return(r)
-    }
-    x
-}
-
 #' Removes zeros from input except the ones that in the direct neighbourhood of
 #' non-zero values.
 #'
@@ -187,59 +166,6 @@ utils.enableNeighbours <- function(x) {
         nChildren <- sum(children)
     }
     parents | children
-}
-
-#' @title Combine two two-dimensional arrays
-#'
-#' @importMethodsFrom S4Vectors cbind nrow rownames colnames
-#'
-#' @description
-#'
-#' Combine instances of `matrix`, `data.frame` or `DataFrame` objects into a
-#' single instance adding eventually missing columns filling them with `NA`s.
-#'
-#' @note
-#'
-#' This function might not work if one of the columns contains S4classes.
-#'
-#' @param ... 2 or more: `matrix`, `data.frame` or `DataFrame`.
-#'
-#' @return The merged object.
-#'
-#' @author Johannes Rainer, Sebastian Gibb
-#'
-#' @noRd
-.rbind_fill <- function(...) {
-    l <- list(...)
-
-    if (length(l) == 1L)
-        l <- l[[1L]]
-
-    cl <- vapply1c(l, class)
-
-    stopifnot(all(cl %in% c("matrix", "data.frame", "DataFrame", "DFrame")))
-
-    ## convert matrix to data.frame for easier and equal subsetting and class
-    ## determination
-    isMatrix <- cl == "matrix"
-    l[isMatrix] <- lapply(l[isMatrix], as.data.frame)
-
-    allcl <- unlist(lapply(l, vapply1c, class, USE.NAMES = TRUE))
-    allnms <- unique(names(allcl))
-    allcl <- allcl[allnms]
-
-    for (i in seq(along=l)) {
-        diffcn <- setdiff(allnms, names(l[[i]]))
-        if (length(diffcn))
-            l[[i]][, diffcn] <- lapply(allcl[diffcn], as, object = NA)
-    }
-    r <- do.call(rbind, l)
-
-    ## if we had just matrices as input we need to convert our temporary
-    ## data.frame back to a matrix
-    if (all(isMatrix))
-        r <- as.matrix(r)
-    r
 }
 
 .logging <- function(x, ...) {

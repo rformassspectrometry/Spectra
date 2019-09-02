@@ -30,6 +30,7 @@ jobs:
         - roxygen2
       r_github_packages:
         - rformassspectrometry/MsCoreUtils
+        - lgatto/ProtGenerics
       before_install:
         - mkdir -p ~/.R
         - echo -e 'MAKEFLAGS = -j2' > ~/.R/Makevars

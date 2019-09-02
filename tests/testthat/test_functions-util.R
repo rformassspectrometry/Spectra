@@ -25,18 +25,6 @@ test_that(".class_rle works", {
     expect_equal(.class_rle(Rle(1L, 5)), "integer")
 })
 
-test_that(".as_rle works", {
-    expect_equal(.as_rle("a"), "a")
-    expect_equal(.as_rle(c("a", "a")), rep("a", 2))
-    expect_equal(.as_rle(c("a", "a", "a")), Rle("a", 3))
-    expect_equal(.as_rle(1:4), 1:4)
-    expect_equal(.as_rle(rep(1, 10)), Rle(1, 10))
-    expect_equal(.as_rle(TRUE), TRUE)
-    expect_equal(.as_rle(c(TRUE, TRUE)), rep(TRUE, 2))
-    expect_equal(.as_rle(c(TRUE, TRUE, TRUE)), Rle(TRUE, 3))
-    expect_equal(.as_rle(list(a = 1:3, b = 2:3)), list(a = 1:3, b = 2:3))
-})
-
 test_that(".is_class works", {
     expect_true(.is_class(3L, "integer"))
     expect_true(.is_class(Rle(1:4), "integer"))
@@ -121,72 +109,4 @@ test_that(".filterSpectraHierarchy works", {
         acquisitionNum, precursorScanNum, 10)), 10)
     expect_equal(which(.filterSpectraHierarchy(
         acquisitionNum, precursorScanNum, 11)), integer())
-})
-
-test_that(".rbind_fill works", {
-    ## matrix
-    a <- matrix(1:9, nrow = 3, ncol = 3)
-    colnames(a) <- c("a", "b", "c")
-    b <- matrix(1:12, nrow = 3, ncol = 4)
-    colnames(b) <- c("b", "a", "d", "e")
-    res <- Spectra:::.rbind_fill(a, b)
-    expect_equal(colnames(res), c("a", "b", "c", "d", "e"))
-    expect_equal(class(res), class(a))
-    expect_equal(res[, "a"], c(a[, "a"], b[, "a"]))
-    expect_equal(res[, "b"], c(a[, "b"], b[, "b"]))
-    expect_equal(res[, "d"], c(NA, NA, NA, b[, "d"]))
-
-    res <- Spectra:::.rbind_fill(a, b[, c("b", "a")])
-    expect_equal(colnames(res), c("a", "b", "c"))
-    expect_equal(res[, "a"], c(a[, "a"], b[, "a"]))
-
-    ## DataFrame
-    a <- DataFrame(a = 1:4, b = FALSE, c = letters[1:4])
-    b <- DataFrame(d = 1:4, b = TRUE)
-    res <- Spectra:::.rbind_fill(a, b)
-    expect_equal(colnames(res), c("a", "b", "c", "d"))
-    expect_equal(res$a, c(1:4, NA, NA, NA, NA))
-    expect_equal(res$b, rep(c(FALSE, TRUE), each = 4))
-
-    b$e <- Rle(1, 4)
-    res <- Spectra:::.rbind_fill(a, b)
-    expect_identical(res$e, Rle(c(NA_integer_, 1), c(4, 4)))
-
-    a$e <- Rle(2, 4)
-    res <- Spectra:::.rbind_fill(a, b)
-    expect_identical(res$e, Rle(c(2, 1), c(4, 4)))
-
-    res <- Spectra:::.rbind_fill(a, b, DataFrame(z = factor(1:5)))
-    expect_identical(res$z, factor(c(rep(NA, nrow(a) + nrow(b)), 1:5)))
-    expect_identical(res$a, c(1:4, rep(NA, nrow(b) + 5)))
-    expect_identical(res$b, c(rep(FALSE, nrow(a)), rep(TRUE, nrow(b)), rep(NA, 5)))
-
-    ## DataFrame containing SimpleList.
-    a$mz <- NumericList(1:3, 1:4, 1:2, 1:3)
-    res <- Spectra:::.rbind_fill(a, b)
-    expect_true(is(res$mz, "NumericList"))
-    expect_true(all(unlist(is.na(res$mz[5:8]))))
-    expect_true(is.na(res$mz[[5]]))
-
-    ## If the first DataFrame doesn't contain a SimpleList but the second one
-    res <- DataFrame(d = c(1L:4L, rep(NA_real_, 4L)),
-                     b = rep(c(TRUE, FALSE), each = 4L),
-                     e = Rle(1:2, 4),
-                     a = c(rep(NA_real_, 4L), 1L:4L),
-                     c = c(rep(NA_character_, 4L), letters[1L:4L]),
-                     mz = NumericList(NA_real_, NA_real_, NA_real_, NA_real_,
-                                      1:3, 1:4, 1:2, 1:3))
-    expect_equal(.rbind_fill(b, a), res)
-
-    ## Ensure data types are correct after merging.
-    a <- DataFrame(int = c(1L, 1L), int_rle = Rle(c(1L, 1L)),
-                   log = c(TRUE, FALSE), log_rle = Rle(c(FALSE, FALSE)))
-    b <- DataFrame(real = c(1.2, 1.5), real_rle = Rle(c(1.2, 1.5)))
-    res <- Spectra:::.rbind_fill(a, b)
-    expect_true(is.integer(res$int))
-    expect_true(is.integer(res$int_rle@values))
-    expect_true(is.logical(res$log))
-    expect_true(is.logical(res$log_rle@values))
-    expect_true(is.double(res$real))
-    expect_true(is.double(res$real_rle@values))
 })
