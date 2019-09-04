@@ -311,8 +311,8 @@ filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
 lower and upper m/z boundary.}
 
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
-the function should be applied. For \code{filterMsLevel}: the MS level to
-which \code{object} should be subsetted.}
+the function should be applied (defaults to all MS levels of \code{object}.
+For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
@@ -375,9 +375,6 @@ the nearest valleys around the peak centroids are used.}
 intensity. Just values above are used for the weighted mean calclulation.
 \item For \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.
 }}
-
-\item{msLevel}{For \code{filterMsLevel}: the MS level to which \code{object} should be
-subsetted.}
 }
 \value{
 See individual method description for the return value.
