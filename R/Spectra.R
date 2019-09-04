@@ -451,12 +451,9 @@ NULL
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
-#' @param msLevel For `filterMsLevel`: the MS level to which `object` should be
-#'     subsetted.
-#'
 #' @param msLevel. `integer` defining the MS level(s) of the spectra to which
-#'     the function should be applied. For `filterMsLevel`: the MS level to
-#'     which `object` should be subsetted.
+#'     the function should be applied (defaults to all MS levels of `object`.
+#'     For `filterMsLevel`: the MS level to which `object` should be subsetted.
 #'
 #' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
 #'     filter the object. For `filterPrecursorMz`: `numeric(2)` defining the
@@ -1351,7 +1348,7 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
 #' @exportMethod pickPeaks
 setMethod("pickPeaks", "Spectra",
           function(object, halfWindowSize = 2L,
-                    method = c("MAD", "SuperSmoother"), snr = 0, k = 0L,
+                   method = c("MAD", "SuperSmoother"), snr = 0, k = 0L,
                    descending = FALSE, threshold = 0,
                    msLevel. = unique(msLevel(object))) {
     if (!.check_ms_level(object, msLevel.))
