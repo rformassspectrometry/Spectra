@@ -505,11 +505,13 @@ setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
 
 #' @importMethodsFrom S4Vectors [
 #'
+#' @importFrom MsCoreUtils i2index
+#'
 #' @rdname hidden_aliases
 setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     if (!missing(j))
         stop("Subsetting by column ('j = ", j, "' is not supported")
-    i <- .i_to_index(i, length(x), rownames(x@spectraData))
+    i <- i2index(i, length(x), rownames(x@spectraData))
     x@spectraData <- x@spectraData[i, , drop = FALSE]
     validObject(x)
     x
