@@ -29,7 +29,7 @@ jobs:
         - knitr
         - roxygen2
       r_github_packages:
-        - rformassspectrometry/MsCoreUtils#19
+        - rformassspectrometry/MsCoreUtils#18
         - lgatto/ProtGenerics
       before_install:
         - mkdir -p ~/.R
