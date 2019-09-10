@@ -277,10 +277,9 @@ setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
     fls <- unique(x@spectraData$dataStorage)
     if (!missing(j))
         stop("Subsetting by column ('j = ", j, "' is not supported")
-    i <- .i_to_index(i, length(x), rownames(x@spectraData))
+    i <- i2index(i, length(x), rownames(x@spectraData))
     x@spectraData <- x@spectraData[i, , drop = FALSE]
     x@modCount <- x@modCount[match(unique(x@spectraData$dataStorage), fls)]
-    validObject(x)
     x
 })
 

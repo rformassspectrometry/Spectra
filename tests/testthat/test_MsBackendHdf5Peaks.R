@@ -313,12 +313,14 @@ test_that("[,MsBackendHdf5Peaks works", {
                             spectraData = spectraData(sciex_mzr))
     idx <- sample(seq_along(be), 30)
     res <- be[idx]
+    expect_true(validObject(res))
     expect_identical(peaks(res), sciex_pks[idx])
     expect_identical(rtime(res), rtime(sciex_mzr)[idx])
     expect_identical(msLevel(res), msLevel(sciex_mzr)[idx])
 
     idx <- dataStorage(be) == fls[2]
     res <- be[idx, ]
+    expect_true(validObject(res))
     expect_true(all(dataStorage(res) == fls[2]))
     expect_identical(peaks(res), sciex_pks[idx])
 })

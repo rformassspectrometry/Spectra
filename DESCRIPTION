@@ -36,8 +36,6 @@ Suggests:
     rhdf5,
     rmarkdown,
     magrittr
-Remotes:
-   RforMassSpectrometry/MsCoreUtils
 License: Artistic-2.0
 LazyData: yes
 VignetteBuilder: knitr
