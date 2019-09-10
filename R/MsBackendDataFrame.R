@@ -37,7 +37,7 @@ setMethod("show", "MsBackendDataFrame", function(object) {
     spd <- spectraData(object, c("msLevel", "rtime", "scanIndex"))
     cat(class(object), "with", nrow(spd), "spectra\n")
     if (nrow(spd)) {
-        txt <- capture.output(show(spd))
+        txt <- capture.output(print(spd))
         cat(txt[-1], sep = "\n")
         sp_cols <- spectraVariables(object)
         cat(" ...", length(sp_cols) - 3, "more variables/columns.\n")
@@ -513,7 +513,6 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
         stop("Subsetting by column ('j = ", j, "' is not supported")
     i <- i2index(i, length(x), rownames(x@spectraData))
     x@spectraData <- x@spectraData[i, , drop = FALSE]
-    validObject(x)
     x
 })
 

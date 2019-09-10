@@ -280,7 +280,6 @@ setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
     i <- i2index(i, length(x), rownames(x@spectraData))
     x@spectraData <- x@spectraData[i, , drop = FALSE]
     x@modCount <- x@modCount[match(unique(x@spectraData$dataStorage), fls)]
-    validObject(x)
     x
 })
 

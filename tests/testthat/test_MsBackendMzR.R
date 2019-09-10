@@ -470,6 +470,7 @@ test_that("[,MsBackendMzR works", {
     expect_equal(ints, spd$intensity)
 
     tmp <- sciex_mzr[1000]
+    expect_true(validObject(tmp))
     expect_equal(length(tmp), 1)
     spd <- spectraData(tmp)
     expect_equal(spd$mz, mz(tmp))
