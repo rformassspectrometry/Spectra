@@ -217,3 +217,28 @@ MsBackendDataFrame <- function() {
             list(numeric())
     res
 }
+
+#' @description
+#'
+#' Subset the `DataFrame` of a `MsBackendDataFrame` *by rows*.
+#'
+#' @param x `MsBackendDataFrame
+#'
+#' @param i `integer`, `character` or `logical`.
+#'
+#' @return Subsetted `x`
+#'
+#' @author Johannes Rainer
+#'
+#' @importMethodsFrom S4Vectors extractROWS
+#'
+#' @importFrom methods slot<-
+#'
+#' @noRd
+.subset_backend_data_frame <- function(x, i) {
+    if (missing(i))
+        return(x)
+    i <- i2index(i, length(x), rownames(x@spectraData))
+    slot(x, "spectraData", check = FALSE) <- extractROWS(x@spectraData, i)
+    x
+}

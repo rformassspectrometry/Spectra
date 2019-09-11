@@ -511,9 +511,7 @@ setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
 setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     if (!missing(j))
         stop("Subsetting by column ('j = ", j, "' is not supported")
-    i <- i2index(i, length(x), rownames(x@spectraData))
-    x@spectraData <- x@spectraData[i, , drop = FALSE]
-    x
+    .subset_backend_data_frame(x, i)
 })
 
 #' @rdname hidden_aliases
