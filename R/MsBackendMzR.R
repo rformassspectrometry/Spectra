@@ -175,11 +175,13 @@ setMethod("spectraVariables", "MsBackendMzR", function(object) {
 setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
     if (name == "mz" || name == "intensity")
         stop("'MsBackendMzR' does not support replacing mz or intensity values")
-    if (length(value) == 1)
-        value <- rep(value, length(x))
-    if (length(value) != length(x))
+    value_len <- length(value)
+    if (value_len == 1)
+        x@spectraData[[name]] <- Rle(value, length(x))
+    else if (value_len == length(x))
+        x@spectraData[[name]] <- asRle(value)
+    else
         stop("Length of 'value' has to be either 1 or ", length(x))
-    x@spectraData[[name]] <- asRle(value)
     validObject(x)
     x
 })
