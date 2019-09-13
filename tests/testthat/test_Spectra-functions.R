@@ -178,3 +178,17 @@ test_that(".compare_spectra, .compare_spectra_self work", {
     expect_identical(diag(res), diag(res_2))
     expect_identical(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
 })
+
+test_that(".lapply works", {
+    sps <- Spectra(sciex_hd5)[120:126]
+    expect_identical(.lapply(sps), unname(split(sps, 1:length(sps))))
+    res <- .lapply(sps, FUN = rtime)
+    expect_identical(unlist(res), rtime(sps))
+
+    ## arbitrary function
+    my_fun <- function(x, add) {
+        x$rtime + add
+    }
+    res <- .lapply(sps, FUN = my_fun, add = 3)
+    expect_identical(rtime(sps) + 3, unlist(res))
+})

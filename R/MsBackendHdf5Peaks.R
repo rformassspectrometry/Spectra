@@ -274,8 +274,6 @@ setReplaceMethod("$", "MsBackendHdf5Peaks", function(x, name, value) {
 
 #' @rdname hidden_aliases
 setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
-    if (!missing(j))
-        stop("Subsetting by column ('j = ", j, "' is not supported")
     fls <- unique(x@spectraData$dataStorage)
     x <- .subset_backend_data_frame(x, i)
     slot(x, "modCount", check = FALSE) <-

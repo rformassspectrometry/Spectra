@@ -509,8 +509,6 @@ setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
 #'
 #' @rdname hidden_aliases
 setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
-    if (!missing(j))
-        stop("Subsetting by column ('j = ", j, "' is not supported")
     .subset_backend_data_frame(x, i)
 })
 

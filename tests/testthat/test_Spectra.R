@@ -1086,3 +1086,24 @@ test_that("removePeaks,Spectra works", {
                       spectrumMsLevel = 1L, centroided = TRUE)
     expect_identical(peaks(res), SimpleList(pks_res))
 })
+
+test_that("lapply,Spectra works", {
+    sps <- Spectra(sciex_mzr)[c(1:3, 1400:1410)]
+    rts <- lapply(sps, rtime)
+    expect_equal(unlist(rts), rtime(sps))
+
+    expect_equal(unname(split(sps, 1:length(sps))), lapply(sps))
+
+    ## test on a mzR backend using intensities.
+    myFun <- function(x, add) {
+        mean(intensity(x)[[1]]) + add
+    }
+    res <- lapply(sps, FUN = myFun, add = 3)
+    ints <- intensity(sps)
+    expect_equal(unlist(res), vapply(ints, mean, numeric(1)) + 3)
+
+    ## Same after removePeaks and clean.
+    sps <- clean(removePeaks(sps, t = 4000), all = TRUE)
+    res <- lapply(sps, FUN = function(x) mean(x$intensity[[1]]))
+    expect_equal(unlist(res), vapply(intensity(sps), mean, numeric(1)))
+})
