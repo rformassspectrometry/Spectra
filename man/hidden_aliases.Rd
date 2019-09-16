@@ -69,6 +69,7 @@
 \alias{tic,MsBackendDataFrame-method}
 \alias{$,MsBackendDataFrame-method}
 \alias{$<-,MsBackendDataFrame-method}
+\alias{split,MsBackendDataFrame,ANY-method}
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
 \alias{filterDataOrigin,MsBackendDataFrame-method}
 \alias{filterDataStorage,MsBackendDataFrame-method}
@@ -246,6 +247,8 @@ setBackend(object, backend, ...)
 \S4method{$}{MsBackendDataFrame}(x, name) <- value
 
 \S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
+
+\S4method{split}{MsBackendDataFrame,ANY}(x, f, drop = FALSE, ...)
 
 \S4method{filterAcquisitionNum}{MsBackendDataFrame}(object,
   n = integer(), dataStorage = character(), dataOrigin = character())

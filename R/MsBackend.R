@@ -60,6 +60,8 @@ NULL
 #'
 #' @param drop For `[`: not considered.
 #'
+#' @param f `factor` defining the grouping to split `x`. See [split()].
+#'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
 #'     should be subsetted.
 #'
@@ -316,6 +318,11 @@ NULL
 #' - `spectraVariables`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)
 #'   available in `object`.
+#'
+#' - `split`: split the backend into a `list` of backends (depending on
+#'   parameter `f`). The default method for `MsBackend` uses [split.default()],
+#'   thus backends extending `MsBackend` don't necessarily need to implement
+#'   this method.
 #'
 #' - `tic`: gets the total ion current/count (sum of signal of a
 #'   spectrum) for all spectra in `object`. By default, the value
@@ -971,6 +978,15 @@ setReplaceMethod("spectraNames", "MsBackend", function(object, value) {
 #' @rdname MsBackend
 setMethod("spectraVariables", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod split
+#'
+#' @importMethodsFrom S4Vectors split
+#'
+#' @rdname MsBackend
+setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
+    split.default(x, f, drop = drop, ...)
 })
 
 #' @exportMethod tic

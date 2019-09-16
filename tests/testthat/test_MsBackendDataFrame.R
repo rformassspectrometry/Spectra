@@ -828,3 +828,17 @@ test_that("filterRt,MsBackendDataFrame works", {
     res <- filterRt(be, c(2, 6))
     expect_true(length(res) == 0)
 })
+
+test_that("split,MsBackendDataFrame works", {
+    msb <- sciex_mzr
+    msbl <- split(msb, f = msb$dataStorage)
+    expect_true(is(msbl[[1]], "MsBackendDataFrame"))
+    expect_identical(msLevel(msb)[msb$dataStorage == msb$dataStorage[1]],
+                     msLevel(msbl[[1]]))
+    expect_identical(intensity(msb)[msb$dataStorage == msb$dataStorage[1]],
+                     intensity(msbl[[1]]))
+    expect_true(is(msbl[[1]]@spectraData$msLevel, "Rle"))
+
+    msb2 <- backendMerge(msbl)
+    expect_identical(msb2, msb)
+})

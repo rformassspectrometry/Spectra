@@ -67,6 +67,7 @@
 \alias{spectraNames,MsBackend-method}
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
+\alias{split,MsBackend,ANY-method}
 \alias{tic,MsBackend-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
@@ -193,6 +194,8 @@
 
 \S4method{spectraVariables}{MsBackend}(object)
 
+\S4method{split}{MsBackend,ANY}(x, f, drop = FALSE, ...)
+
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
 \S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
@@ -258,6 +261,10 @@ names of the spectra variables to which the backend should be subsetted.}
 names (spectra variables) that should be included in the
 returned \code{DataFrame}. By default, all columns are returned.}
 
+\item{f}{\code{factor} defining the grouping to split \code{x}. See \code{\link[=split]{split()}}.}
+
+\item{drop}{For \code{[}: not considered.}
+
 \item{initial}{For \code{tic}: \code{logical(1)} whether the initially
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
@@ -266,8 +273,6 @@ total ion current should be (re)calculated on the actual data
 \item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
 
 \item{j}{For \code{[}: not supported.}
-
-\item{drop}{For \code{[}: not considered.}
 
 \item{name}{For \code{$} and \code{$<-}: the name of the spectra variable to return
 or set.}
@@ -475,6 +480,10 @@ the spectra in \code{object}.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
 available in \code{object}.
+\item \code{split}: split the backend into a \code{list} of backends (depending on
+parameter \code{f}). The default method for \code{MsBackend} uses \code{\link[=split.default]{split.default()}},
+thus backends extending \code{MsBackend} don't necessarily need to implement
+this method.
 \item \code{tic}: gets the total ion current/count (sum of signal of a
 spectrum) for all spectra in \code{object}. By default, the value
 reported in the original raw data file is returned. For an empty
