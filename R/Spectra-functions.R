@@ -102,6 +102,48 @@ addProcessing <- function(object, FUN, ...) {
     ## unlist(res, recursive = FALSE, use.names = FALSE)
 }
 
+#' @title Apply a function to a Spectra of length 1
+#'
+#' @description
+#'
+#' Utility function to apply any given function to a `Spectra` of length 1. If
+#' `length(x) > 1` the function splits `x` and calls itself with in a `lapply`
+#' call. The function `FUN` can expect to get a `Spectra` object of length 1
+#' and can access all of it's variables through the accessor methods or the `$`
+#' operator.
+#'
+#' @note
+#'
+#' This function supports parallel processing which is however only suggested
+#' if the function applied to the `Spectra` of length 1 is computationally
+#' intense.
+#'
+#' For faster processing, especially if only peak data is involved, consider
+#' using `.peaksapply` instead, as it takes care of proper splitting the data
+#' for parallel processing.
+#'
+#' @param x `Spectra` object.
+#'
+#' @param FUN `function` to be applied to each spectrum.
+#'
+#' @param ... Additional parameters for `FUN`.
+#'
+#' @param BPPARAM Optional settings for `BiocParallel`-based parallel
+#'     processing. See [bpparam()] for more informations and options.
+#'
+#' @return A `list` with the result of `FUN`.
+#'
+#' @author Johannes Rainer
+#'
+#' @importFrom BiocParallel SerialParam
+#'
+#' @noRd
+.lapply <- function(x, FUN = identity, ..., BPPARAM = SerialParam()) {
+    res <- bplapply(split(x, seq_along(x)), FUN = FUN, ..., BPPARAM = BPPARAM)
+    names(res) <- spectraNames(x)
+    res
+}
+
 #' @export applyProcessing
 #'
 #' @rdname Spectra
@@ -223,7 +265,6 @@ applyProcessing <- function(object, f = dataStorage(object),
     mat <- matrix(NA_real_, nrow = nx, ncol = ny,
                   dimnames = list(spectraNames(x), spectraNames(y)))
 
-    ## Might need some tuning - bplapply?
     ## This code duplication may be overengineering.
     if (nx >= ny) {
         for (i in x_idx) {

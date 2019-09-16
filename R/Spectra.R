@@ -339,6 +339,14 @@ NULL
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
+#' - `lapply`: apply a given function to each spectrum in a `Spectra` object.
+#'   The `Spectra` is splitted into individual spectra and on each of them
+#'   (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
+#'   parameters to `FUN` can be passed with the `...` argument. Parameter
+#'   `BPPARAM` allows to enable parallel processing, which however makes only
+#'   sense if `FUN` is computational intense. `lapply` returns a `list` (same
+#'   length than `X`) with the result from `FUN`. See examples for more details.
+#'
 #' - `pickPeaks`: picks peaks on individual spectra using a moving window-based
 #'   approach (window size = `2 * halfWindowSize`). For noisy spectra there
 #'   are currently two different noise estimators available,
@@ -505,6 +513,8 @@ NULL
 #'
 #' @param x A `Spectra` object.
 #'
+#' @param X A `Spectra` object.
+#'
 #' @param y A `Spectra` object.
 #'
 #' @param ... Additional arguments.
@@ -642,7 +652,7 @@ NULL
 #' data_filt <- Spectra(spd)
 #' filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 #'
-#' ## ---- DATA MANIPULATIONS ----
+#' ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 #'
 #' ## Set the data to be centroided
 #' centroided(data) <- TRUE
@@ -680,6 +690,19 @@ NULL
 #' ## simply the number of matching peaks.
 #' compareSpectra(sciex_im[2:3], sciex_im[1:20], ppm = 10, type = "inner",
 #'     FUN = function(x, y, ...) length(x))
+#'
+#' ## Apply an arbitrary function to each spectrum in a Spectra.
+#' ## In the example below we calculate the mean intensity for each spectrum
+#' ## in a subset of the sciex_im data. Note that we can access all variables
+#' ## of each individual spectrum either with the `$` operator or the
+#' ## corresponding method.
+#' res <- lapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
+#' head(res)
+#'
+#' ## It is however important to note that dedicated methods to access the
+#' ## data (such as `intensity`) are much more efficient than using `lapply`:
+#' res <- lapply(intensity(sciex_im[1:20]), mean)
+#' head(res)
 NULL
 
 #' The Spectra class
@@ -959,6 +982,16 @@ setReplaceMethod("isolationWindowUpperMz", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 #'
+#' @exportMethod lapply
+setMethod("lapply", "Spectra", function(X, FUN, ..., BPPARAM = SerialParam()) {
+    if (missing(FUN)) {
+        FUN <- identity
+    }
+    .lapply(x = X, FUN = FUN, ..., BPPARAM = BPPARAM)
+})
+
+#' @rdname Spectra
+#'
 #' @exportMethod length
 setMethod("length", "Spectra", function(x) length(x@backend))
 
@@ -1135,8 +1168,8 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
     if (!missing(j))
         stop("Subsetting 'Spectra' by columns is not (yet) supported")
     if (missing(i))
-        i <- seq_len(length(x))
-    x@backend <- x@backend[i = i, ..., drop = drop]
+        return(x)
+    slot(x, "backend", check = FALSE) <- x@backend[i = i]
     x
 })
 

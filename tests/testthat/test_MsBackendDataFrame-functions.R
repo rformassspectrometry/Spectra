@@ -155,3 +155,14 @@ test_that(".combine_backend_data_frame works", {
                      Rle(c("a", "a", "a", "<memory>", "<memory>", "z", "b")))
     expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
 })
+
+test_that(".subset_backend_data_frame works", {
+    be <- MsBackendDataFrame()
+    expect_identical(.subset_backend_data_frame(be), be)
+
+    be <- as(sciex_hd5, "MsBackendDataFrame")
+    expect_identical(.subset_backend_data_frame(be), be)
+    res <- .subset_backend_data_frame(be, 13)
+    expect_true(is(res, "MsBackendDataFrame"))
+    expect_equal(res$rtime, be$rtime[13])
+})

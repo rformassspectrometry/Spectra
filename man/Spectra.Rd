@@ -31,6 +31,7 @@
 \alias{isolationWindowTargetMz<-,Spectra-method}
 \alias{isolationWindowUpperMz,Spectra-method}
 \alias{isolationWindowUpperMz<-,Spectra-method}
+\alias{lapply,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{mz,Spectra-method}
@@ -134,6 +135,8 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 \S4method{isolationWindowUpperMz}{Spectra}(object)
 
 \S4method{isolationWindowUpperMz}{Spectra}(object) <- value
+
+\S4method{lapply}{Spectra}(X, FUN, ..., BPPARAM = SerialParam())
 
 \S4method{length}{Spectra}(x)
 
@@ -271,6 +274,8 @@ of objects, conversion and changing the backend} for more details.}
 
 \item{value}{replacement value for \code{<-} methods. See individual
 method description or expected data type.}
+
+\item{X}{A \code{Spectra} object.}
 
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
@@ -672,6 +677,13 @@ comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+\item \code{lapply}: apply a given function to each spectrum in a \code{Spectra} object.
+The \code{Spectra} is splitted into individual spectra and on each of them
+(i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
+parameters to \code{FUN} can be passed with the \code{...} argument. Parameter
+\code{BPPARAM} allows to enable parallel processing, which however makes only
+sense if \code{FUN} is computational intense. \code{lapply} returns a \code{list} (same
+length than \code{X}) with the result from \code{FUN}. See examples for more details.
 \item \code{pickPeaks}: picks peaks on individual spectra using a moving window-based
 approach (window size = \code{2 * halfWindowSize}). For noisy spectra there
 are currently two different noise estimators available,
@@ -825,7 +837,7 @@ spd$precursorMz <- c(323.4, 543.2302)
 data_filt <- Spectra(spd)
 filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 
-## ---- DATA MANIPULATIONS ----
+## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 
 ## Set the data to be centroided
 centroided(data) <- TRUE
@@ -863,6 +875,19 @@ res
 ## simply the number of matching peaks.
 compareSpectra(sciex_im[2:3], sciex_im[1:20], ppm = 10, type = "inner",
     FUN = function(x, y, ...) length(x))
+
+## Apply an arbitrary function to each spectrum in a Spectra.
+## In the example below we calculate the mean intensity for each spectrum
+## in a subset of the sciex_im data. Note that we can access all variables
+## of each individual spectrum either with the `$` operator or the
+## corresponding method.
+res <- lapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
+head(res)
+
+## It is however important to note that dedicated methods to access the
+## data (such as `intensity`) are much more efficient than using `lapply`:
+res <- lapply(intensity(sciex_im[1:20]), mean)
+head(res)
 }
 \author{
 Sebastian Gibb, Johannes Rainer

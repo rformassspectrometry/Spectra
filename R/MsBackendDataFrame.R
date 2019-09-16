@@ -98,11 +98,14 @@ setMethod("centroided", "MsBackendDataFrame", function(object) {
 #'
 #' @importFrom MsCoreUtils asRle
 setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.logical(value) | length(value) != length(object))
+    value_len <- length(value)
+    value_type <- is.logical(value)
+    if (value_len == 1 && value_type)
+        object@spectraData$centroided <- Rle(value, length(object))
+    else if (value_len == length(object) && value_type)
+        object@spectraData$centroided <- asRle(value)
+    else
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$centroided <- asRle(value)
     validObject(object)
     object
 })
@@ -315,11 +318,14 @@ setMethod("polarity", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("polarity", "MsBackendDataFrame", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.numeric(value) | length(value) != length(object))
+    value_len <- length(value)
+    value_type <- is.numeric(value)
+    if (value_len == 1 && value_type)
+        object@spectraData$polarity <- Rle(as.integer(value), length(object))
+    else if (value_len == length(object) && value_type)
+        object@spectraData$polarity <- asRle(as.integer(value))
+    else
         stop("'value' has to be an 'integer' of length 1 or ", length(object))
-    object@spectraData$polarity <- asRle(as.integer(value))
     validObject(object)
     object
 })
@@ -390,11 +396,14 @@ setMethod("smoothed", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
-    if (length(value) == 1)
-        value <- rep(value, length(object))
-    if (!is.logical(value) || length(value) != length(object))
+    value_len <- length(value)
+    value_type <- is.logical(value)
+    if (value_len == 1 && value_type)
+        object@spectraData$smoothed <- Rle(value, length(object))
+    else if (value_len == length(object) && value_type)
+        object@spectraData$smoothed <- asRle(value)
+    else
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-    object@spectraData$smoothed <- asRle(value)
     validObject(object)
     object
 })
@@ -509,11 +518,7 @@ setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
 #'
 #' @rdname hidden_aliases
 setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
-    if (!missing(j))
-        stop("Subsetting by column ('j = ", j, "' is not supported")
-    i <- i2index(i, length(x), rownames(x@spectraData))
-    x@spectraData <- x@spectraData[i, , drop = FALSE]
-    x
+    .subset_backend_data_frame(x, i)
 })
 
 #' @rdname hidden_aliases

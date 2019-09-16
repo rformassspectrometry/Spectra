@@ -1,6 +1,8 @@
 library("testthat")
 library("Spectra")
 
+register(SerialParam())
+
 sciex_file <- normalizePath(
     dir(system.file("sciex", package = "msdata"), full.names = TRUE))
 cdf_file <- normalizePath(
