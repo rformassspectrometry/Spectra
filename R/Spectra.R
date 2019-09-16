@@ -275,6 +275,9 @@ NULL
 #'   the values will be dropped, while additional (user defined) spectra
 #'   variables will be completely removed. Returns the filtered `Spectra`.
 #'
+#' - `split`: splits the `Spectra` object based on parameter `f` into a `list`
+#'   of `Spectra` objects.
+#'
 #' Several `Spectra` objects can be concatenated into a single object with the
 #' `c` function. Concatenation will fail if the processing queue of any of the
 #' `Spectra` objects is not empty or if different backends are used in the
@@ -415,9 +418,10 @@ NULL
 #' @param descending For `pickPeaks`: `logical`, if `TRUE` just values between
 #'     the nearest valleys around the peak centroids are used.
 #
-#' @param drop For `[`: not considered.
+#' @param drop For `[`, `split`: not considered.
 #'
-#' @param f For `setBackend`: factor defining how to split the data for
+#' @param f For `split`: factor defining how to split `x`. See [base::split()]
+#'     for details. For `setBackend`: factor defining how to split the data for
 #'     parallelized copying of the spectra data to the new backend. For some
 #'     backends changing this parameter can lead to errors.
 #'
@@ -688,7 +692,7 @@ NULL
 #' ## type = "inner" uses a *inner join* to match peaks, i.e. keeps only
 #' ## peaks that can be mapped betwen both spectra. The provided FUN returns
 #' ## simply the number of matching peaks.
-#' compareSpectra(sciex_im[2:3], sciex_im[1:20], ppm = 10, type = "inner",
+#' compareSpectra(sciex_im[2:3], sciex_im[10:20], ppm = 10, type = "inner",
 #'     FUN = function(x, y, ...) length(x))
 #'
 #' ## Apply an arbitrary function to each spectrum in a Spectra.
@@ -871,6 +875,15 @@ setMethod("c", "Spectra", function(x, ...) {
     )
     validObject(object)
     object
+})
+
+#' @rdname Spectra
+setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
+    bcknds <- split(x@backend, f, ...)
+    lapply(bcknds, function(b) {
+        slot(x, "backend", check = FALSE) <- b
+        x
+    })
 })
 
 #### ---------------------------------------------------------------------------
