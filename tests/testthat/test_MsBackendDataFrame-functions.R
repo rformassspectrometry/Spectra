@@ -32,24 +32,24 @@ test_that(".valid_column_datatype works", {
 
 test_that(".valid_mz_column works", {
     df <- DataFrame(msLevel = c(1L, 1L))
-    df$mz <- list(1:3, 1:12)
+    df$mz <- IRanges::NumericList(1:3, 1:12)
     expect_null(.valid_mz_column(df))
     expect_null(.valid_mz_column(DataFrame(msLevel = 4L)))
     df$mz <- list(1:3, letters[1:4])
     expect_match(.valid_mz_column(df),
-                 "mz column should contain a list of numeric")
-    df$mz <- list(1:4, c(3, 2, 5))
+                 "mz column should be of type NumericList")
+    df$mz <- IRanges::NumericList(1:4, c(3, 2, 5))
     expect_match(.valid_mz_column(df),
                  "sorted increasingly")
 })
 
 test_that(".valid_intensity_column works", {
     df <- DataFrame(msLevel = c(1L, 1L))
-    df$intensity <- list(4, 2:5)
+    df$intensity <- IRanges::NumericList(4, 2:5)
     expect_null(.valid_intensity_column(df))
     df$intensity <- list("g", TRUE)
     expect_match(.valid_intensity_column(df),
-                 "contain a list of numeric")
+                 "should be of type NumericList")
 })
 
 test_that(".valid_intensity_mz_columns works", {
@@ -141,7 +141,7 @@ test_that(".combine_backend_data_frame works", {
     df2$mz <- list(c(1.1, 1.2), c(1.1, 1.2))
     df2$intensity <- list(c(12.4, 3), c(123.4, 1))
     be2 <- backendInitialize(MsBackendDataFrame(), df2)
-    res <- .combine_backend_data_frame(list(be, be2, be3))
+    res <- Spectra:::.combine_backend_data_frame(list(be, be2, be3))
     expect_equal(lengths(mz(res)), c(0, 0, 0, 2, 2, 0, 0))
 
     ## With different dataStorage
