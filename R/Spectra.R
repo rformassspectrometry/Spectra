@@ -676,8 +676,9 @@ NULL
 #' intensity(res)[[1]]
 #' intensity(res)[[2]]
 #'
-#' ## Second spectrum is now empty:
-#' isEmpty(res)
+#' ## Lengths of spectra is now different
+#' lengths(mz(res))
+#' lengths(mz(data))
 #'
 #' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
 #' ## Pearson correlation and using all pairwise non-missing intensities
@@ -932,8 +933,10 @@ setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend)
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
-    NumericList(lapply(.peaksapply(object, ...), function(z) z[, 2]),
-                compress = FALSE)
+    if (length(object@processingQueue))
+        NumericList(.peaksapply(object, FUN = function(z, ...) z[, 2], ...),
+                    compress = FALSE)
+    else intensity(object@backend) # Disables also parallel proc. (issue #44)
 })
 
 #' @rdname Spectra
@@ -1013,8 +1016,10 @@ setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
 #' @rdname Spectra
 setMethod("mz", "Spectra", function(object, ...) {
-    NumericList(lapply(.peaksapply(object, ...), function(z) z[, 1]),
-                compress = FALSE)
+    if (length(object@processingQueue))
+        NumericList(.peaksapply(object, FUN = function(z, ...) z[, 1], ...),
+                    compress = FALSE)
+    else mz(object@backend) # Disables also parallel processing (issue #44)
 })
 
 #' @rdname Spectra

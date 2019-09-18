@@ -863,8 +863,9 @@ res <- clean(res, all = TRUE)
 intensity(res)[[1]]
 intensity(res)[[2]]
 
-## Second spectrum is now empty:
-isEmpty(res)
+## Lengths of spectra is now different
+lengths(mz(res))
+lengths(mz(data))
 
 ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
 ## Pearson correlation and using all pairwise non-missing intensities
