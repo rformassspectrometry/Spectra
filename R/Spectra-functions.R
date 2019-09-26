@@ -95,22 +95,20 @@ addProcessing <- function(object, FUN, ...) {
     ## Question whether we would use a slim version of the backend, i.e.
     ## reduce it to certain columns/spectra variables.
     res <- bplapply(split(object@backend, f), function(z, queue) {
-        .apply_processing_queue(peaks(z), msLevel(z), centroided(z),
-                                queue = queue)
+        .apply_processing_queue(peaks(z), msLevel(z),
+                                centroided(z), queue = queue)
     }, queue = pqueue, BPPARAM = BPPARAM)
     unsplit(res, f = f, drop = TRUE)
-    ## unlist(res, recursive = FALSE, use.names = FALSE)
 }
 
 #' @title Apply a function to a Spectra of length 1
 #'
 #' @description
 #'
-#' Utility function to apply any given function to a `Spectra` of length 1. If
-#' `length(x) > 1` the function splits `x` and calls itself with in a `lapply`
-#' call. The function `FUN` can expect to get a `Spectra` object of length 1
-#' and can access all of it's variables through the accessor methods or the `$`
-#' operator.
+#' Utility function to apply any given function to a `Spectra` of length 1 (or
+#' to chunks of the data defined by parameter `f`). The function `FUN` can
+#' expect to get a `Spectra` object of length 1 (or larger) and can access all
+#' of it's variables through the accessor methods or the `$` operator.
 #'
 #' @note
 #'
@@ -126,6 +124,9 @@ addProcessing <- function(object, FUN, ...) {
 #'
 #' @param FUN `function` to be applied to each spectrum.
 #'
+#' @param f factor to split `x` into chunks for parallel processing. Defaults
+#'     to splitting `x` by individual spectrum.
+#'
 #' @param ... Additional parameters for `FUN`.
 #'
 #' @param BPPARAM Optional settings for `BiocParallel`-based parallel
@@ -138,8 +139,9 @@ addProcessing <- function(object, FUN, ...) {
 #' @importFrom BiocParallel SerialParam
 #'
 #' @noRd
-.lapply <- function(x, FUN = identity, ..., BPPARAM = SerialParam()) {
-    res <- bplapply(split(x, seq_along(x)), FUN = FUN, ..., BPPARAM = BPPARAM)
+.lapply <- function(x, FUN = identity, f = seq_along(x), ...,
+                    BPPARAM = SerialParam()) {
+    res <- bplapply(split(x, f), FUN = FUN, ..., BPPARAM = BPPARAM)
     names(res) <- spectraNames(x)
     res
 }
