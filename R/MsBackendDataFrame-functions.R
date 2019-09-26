@@ -53,8 +53,8 @@ NULL
 
 .valid_mz_column <- function(x) {
     if (length(x$mz)) {
-        if (!all(vapply1l(x$mz, is.numeric)))
-            return("mz column should contain a list of numeric")
+        if (!inherits(x$mz, "NumericList"))
+            return("mz column should be of type NumericList")
         if (any(vapply1l(x$mz, is.unsorted)))
             return("mz values have to be sorted increasingly")
     }
@@ -63,8 +63,8 @@ NULL
 
 .valid_intensity_column <- function(x) {
     if (length(x$intensity))
-        if (!all(vapply1l(x$intensity, is.numeric)))
-            return("intensity column should contain a list of numeric")
+        if (!inherits(x$intensity, "NumericList"))
+            return("intensity column should be of type NumericList")
     NULL
 }
 
@@ -210,11 +210,6 @@ MsBackendDataFrame <- function() {
             rbindFill, lapply(objects, function(z) z@spectraData)),
             columns = c("dataStorage", "dataOrigin"))
     )
-    if (any(colnames(res@spectraData) == "mz"))
-        res@spectraData$mz[is.na(res@spectraData$mz)] <- list(numeric())
-    if (any(colnames(res@spectraData) == "intensity"))
-        res@spectraData$intensity[is.na(res@spectraData$intensity)] <-
-            list(numeric())
     res
 }
 

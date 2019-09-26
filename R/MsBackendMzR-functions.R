@@ -37,6 +37,7 @@ MsBackendMzR <- function() {
         hdr$isolationWindowUpperOffset
     hdr$isolationWindowUpperOffset <- NULL
     hdr$isolationWindowLowerOffset <- NULL
+    ## Remove core spectra variables that contain only `NA`
     S4Vectors::DataFrame(hdr)
 }
 

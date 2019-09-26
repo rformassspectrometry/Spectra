@@ -13,6 +13,7 @@
 \alias{Spectra,character-method}
 \alias{setBackend,Spectra,MsBackend-method}
 \alias{c,Spectra-method}
+\alias{split,Spectra,ANY-method}
 \alias{acquisitionNum,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
@@ -99,6 +100,8 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
   f = dataStorage(object), ..., BPPARAM = bpparam())
 
 \S4method{c}{Spectra}(x, ...)
+
+\S4method{split}{Spectra,ANY}(x, f, drop = FALSE, ...)
 
 \S4method{acquisitionNum}{Spectra}(object)
 
@@ -248,7 +251,8 @@ intensities of peaks between two spectra with each other. See section
 
 \item{...}{Additional arguments.}
 
-\item{f}{For \code{setBackend}: factor defining how to split the data for
+\item{f}{For \code{split}: factor defining how to split \code{x}. See \code{\link[base:split]{base::split()}}
+for details. For \code{setBackend}: factor defining how to split the data for
 parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.}
 
@@ -271,6 +275,8 @@ to import spectrum data from the provided files. See section \emph{Creation
 of objects, conversion and changing the backend} for more details.}
 
 \item{x}{A \code{Spectra} object.}
+
+\item{drop}{For \code{[}, \code{split}: not considered.}
 
 \item{value}{replacement value for \code{<-} methods. See individual
 method description or expected data type.}
@@ -295,8 +301,6 @@ or set.}
 \item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
 
 \item{j}{For \code{[}: not supported.}
-
-\item{drop}{For \code{[}: not considered.}
 
 \item{n}{for \code{filterAcquisitionNum}: \code{integer} with the acquisition numbers
 to filter for.}
@@ -614,6 +618,8 @@ the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
 the values will be dropped, while additional (user defined) spectra
 variables will be completely removed. Returns the filtered \code{Spectra}.
+\item \code{split}: splits the \code{Spectra} object based on parameter \code{f} into a \code{list}
+of \code{Spectra} objects.
 }
 
 Several \code{Spectra} objects can be concatenated into a single object with the
@@ -873,7 +879,7 @@ res
 ## type = "inner" uses a *inner join* to match peaks, i.e. keeps only
 ## peaks that can be mapped betwen both spectra. The provided FUN returns
 ## simply the number of matching peaks.
-compareSpectra(sciex_im[2:3], sciex_im[1:20], ppm = 10, type = "inner",
+compareSpectra(sciex_im[2:3], sciex_im[10:20], ppm = 10, type = "inner",
     FUN = function(x, y, ...) length(x))
 
 ## Apply an arbitrary function to each spectrum in a Spectra.

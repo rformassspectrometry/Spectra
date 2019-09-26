@@ -266,8 +266,9 @@ head(basename(dataStorage(sps_sciex)))
 
 ## Filtering, subsetting and merging
 
-A set of filter functions are defined that allow to subset `Spectra` objects
-(for detailed help please see the `?Spectra` help):
+Apart from *classical* subsetting operations such as `[` and `split`, a set of
+filter functions are defined for `Spectra` objects (for detailed help please see
+the `?Spectra` help):
 
 - `filterAcquisitionNum`: retain spectra with certain acquisition numbers.
 - `filterEmptySpectra`: remove spectra without mass peaks.

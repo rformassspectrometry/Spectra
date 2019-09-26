@@ -522,6 +522,16 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
 })
 
 #' @rdname hidden_aliases
+setMethod("split", "MsBackendDataFrame", function(x, f, drop = FALSE, ...) {
+    if (!is.factor(f))
+        f <- as.factor(f)
+    if (length(levels(f)) > (nrow(x@spectraData) / 10))
+        slot(x, "spectraData", check = FALSE) <-
+            asVectorDataFrame(x@spectraData)
+    lapply(split(seq_along(x), f, ...), function(i) x[i, ])
+})
+
+#' @rdname hidden_aliases
 setMethod("filterAcquisitionNum", "MsBackendDataFrame",
           function(object, n = integer(), dataStorage = character(),
                    dataOrigin = character()) {

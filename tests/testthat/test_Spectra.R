@@ -1107,3 +1107,9 @@ test_that("lapply,Spectra works", {
     res <- lapply(sps, FUN = function(x) mean(x$intensity[[1]]))
     expect_equal(unlist(res), vapply(intensity(sps), mean, numeric(1)))
 })
+
+test_that("split,Spectra works", {
+    sps <- Spectra(sciex_mzr)
+    res <- split(sps, f = sps$dataStorage)
+    expect_identical(res, split.default(sps, f = sps$dataStorage))
+})
