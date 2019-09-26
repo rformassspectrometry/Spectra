@@ -480,7 +480,7 @@ the spectra in \code{object}.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
 available in \code{object}.
-\item \code{split}: split the backend into a \code{list} of backends (depending on
+\item \code{split}: splits the backend into a \code{list} of backends (depending on
 parameter \code{f}). The default method for \code{MsBackend} uses \code{\link[=split.default]{split.default()}},
 thus backends extending \code{MsBackend} don't necessarily need to implement
 this method.
