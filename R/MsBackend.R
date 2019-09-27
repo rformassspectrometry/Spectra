@@ -125,6 +125,12 @@ NULL
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
+#' - `as.list` returns a `list` with the spectras' peak data. The length of
+#'   the list is equal to the number of spectra in `object`. Each element of
+#'   the list is a `matrix` with columns `mz` and `intensity`. For an empty
+#'   spectrum, a `matrix` with 0 rows and two columns (named `mz` and
+#'   `intensity`) is returned.
+#'
 #' - `backendInitialize`: initialises the backend. This method is
 #'   supposed to be called rights after creating an instance of the
 #'   backend class and should prepare the backend (e.g. set the data
@@ -259,16 +265,6 @@ NULL
 #'   identical to the number of peaks in each spectrum (i.e. the
 #'   `peaksCount(x)`). Note that just writeable backends support this method.
 #'
-#' - `peaks` returns a `list` of length equal to the number of spectra
-#'   in `object`. Each element of the list is a `matrix` with columns
-#'   `mz` and `intensity`. For an empty spectrum, a `matrix` with 0
-#'   rows and two columns (named `mz` and `intensity`) is returned.
-#'
-#' - `peaks<-` replaces the peak data (m/z and intensity values) of the backend.
-#'   This method expects a `list` of `matrix` objects with columns `"mz"` and
-#'   `"intensity"` that has the same length than the number of spectra in the
-#'   backend. Note that just writeable backends support this method.
-#'
 #' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum.  Returns an `integer` vector (length equal to the
 #'   number of spectra). For empty spectra, `NA_integer_` is returned.
@@ -286,6 +282,12 @@ NULL
 #'   > 2 spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
+#'
+#' - `replaceList<-` replaces the peak data (m/z and intensity values) of the
+#'   backend. This method expects a `list` of `matrix` objects with columns
+#'   `"mz"` and `"intensity"` that has the same length than the number of
+#'   spectra in the backend. Note that just writeable backends support this
+#'   method.
 #'
 #' - `rtime`, `rtime<-`: gets or sets the retention times for each
 #'   spectrum (in seconds). `rtime` returns a `numeric` vector (length equal to
@@ -494,6 +496,15 @@ setMethod("backendMerge", "MsBackend", function(object, ...) {
 #' @rdname MsBackend
 setMethod("acquisitionNum", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod as.list
+#'
+#' @importMethodsFrom BiocGenerics as.list
+#'
+#' @rdname MsBackend
+setMethod("as.list", "MsBackend", function(x) {
+    stop("Not implemented for ", class(x), ".")
 })
 
 #' @exportMethod centroided
@@ -802,24 +813,6 @@ setReplaceMethod("mz", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod peaks
-#'
-#' @importMethodsFrom ProtGenerics peaks
-#'
-#' @rdname MsBackend
-setMethod("peaks", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
-})
-
-#' @exportMethod peaks<-
-#'
-#' @importMethodsFrom ProtGenerics peaks<-
-#'
-#' @rdname MsBackend
-setReplaceMethod("peaks", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
-})
-
 #' @exportMethod peaksCount
 #'
 #' @rdname MsBackend
@@ -878,6 +871,13 @@ setMethod("precursorIntensity", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("precursorMz", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod replaceList
+#'
+#' @rdname MsBackend
+setMethod("replaceList", "MsBackend", function(object, value, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 

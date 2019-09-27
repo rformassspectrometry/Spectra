@@ -33,6 +33,9 @@ setGeneric("pickPeaks", function(object, ...)
 setGeneric("removePeaks", function(object, t="min", ...)
     standardGeneric("removePeaks"))
 #' @rdname hidden_aliases
+setGeneric("replaceList", function(object, value, ...)
+    standardGeneric("replaceList"))
+#' @rdname hidden_aliases
 setGeneric("selectSpectraVariables", function(object, ...)
     standardGeneric("selectSpectraVariables"))
 #' @rdname hidden_aliases

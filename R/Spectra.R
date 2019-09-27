@@ -89,6 +89,11 @@ NULL
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
+#' - `as.list`: gets the *peaks* matrices for all spectra in `object`. The
+#'   function returns a [SimpleList()] of matrices, each `matrix` with columns
+#'   `mz` and `intensity` with the m/z and intensity values for all peaks of
+#'   a spectrum.
+#'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
@@ -152,10 +157,6 @@ NULL
 #'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
-#'
-#' - `peaks`: gets the *peaks* matrices for all spectra in `object`. The function
-#'   returns a [SimpleList()] of matrices, each `matrix` with columns `mz` and
-#'   `intensity` with the m/z and intensity values for all peaks of a spectrum.
 #'
 #' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum. Returns an `integer` vector (length equal to the
@@ -596,7 +597,7 @@ NULL
 #' mz(data)[[1]]
 #'
 #' ## Get the peak data (m/z and intensity values).
-#' pks <- peaks(data)
+#' pks <- as.list(data)
 #' pks
 #' pks[[1]]
 #' pks[[2]]
@@ -898,6 +899,11 @@ setMethod("acquisitionNum", "Spectra", function(object)
     acquisitionNum(object@backend))
 
 #' @rdname Spectra
+setMethod("as.list", "Spectra", function(x, ...) {
+    SimpleList(.peaksapply(x, ...))
+})
+
+#' @rdname Spectra
 setMethod("centroided", "Spectra", function(object) {
     centroided(object@backend)
 })
@@ -1020,13 +1026,6 @@ setMethod("mz", "Spectra", function(object, ...) {
         NumericList(.peaksapply(object, FUN = function(z, ...) z[, 1], ...),
                     compress = FALSE)
     else mz(object@backend) # Disables also parallel processing (issue #44)
-})
-
-#' @rdname Spectra
-#'
-#' @exportMethod peaks
-setMethod("peaks", "Spectra", function(object, ...) {
-    SimpleList(.peaksapply(object, ...))
 })
 
 #' @rdname Spectra

@@ -100,7 +100,7 @@ MsBackendMzR <- function() {
     any_mz <- any(columns == "mz")
     any_int <- any(columns == "intensity")
     if (any_mz || any_int) {
-        pks <- peaks(x)
+        pks <- as.list(x)
         if (any_mz)
             res$mz <- NumericList(lapply(pks, "[", , 1), compress = FALSE)
         if (any_int)
