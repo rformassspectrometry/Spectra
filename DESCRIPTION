@@ -33,7 +33,7 @@ Suggests:
     msdata (>= 0.19.3),
     roxygen2,
     BiocStyle (>= 2.5.19),
-    mzR (>= 2.15.1),
+    mzR (>= 2.19.6),
     rhdf5,
     rmarkdown,
     magrittr

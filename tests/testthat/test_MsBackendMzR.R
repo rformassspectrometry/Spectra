@@ -70,8 +70,8 @@ test_that("collisionEnergy, collisionEnergy<-,MsBackendMzR work", {
     expect_equal(collisionEnergy(be), numeric())
 
     expect_true(is(collisionEnergy(sciex_mzr), "numeric"))
-    expect_true(is(sciex_mzr@spectraData$collisionEnergy, "Rle"))
-    expect_true(all(collisionEnergy(sciex_mzr) == 0))
+    expect_true(!any(colnames(sciex_mzr@spectraData) == "collisionEnergy"))
+    expect_true(all(is.na(collisionEnergy(sciex_mzr))))
 
     expect_error(collisionEnergy(sciex_mzr) <- "a", "to be a 'numeric'")
     expect_error(collisionEnergy(sciex_mzr) <- c(2.3), "has to be a")
@@ -277,8 +277,8 @@ test_that("precScanNum,MsBackendMzR works", {
     expect_equal(precScanNum(be), integer())
 
     expect_true(is(precScanNum(sciex_mzr), "integer"))
-    expect_true(is(sciex_mzr@spectraData$precScanNum, "Rle"))
-    expect_true(all(precScanNum(sciex_mzr) == 0L))
+    expect_false(any(colnames(sciex_mzr@spectraData) == "precScanNum"))
+    expect_true(all(is.na(precScanNum(sciex_mzr))))
 
     expect_true(is(tmt_mzr@spectraData$precScanNum, "Rle"))
     expect_true(length(unique(precScanNum(tmt_mzr))) > 1)
@@ -289,8 +289,8 @@ test_that("precursorCharge,MsBackendMzR works", {
     expect_equal(precursorCharge(be), integer())
 
     expect_true(is(precursorCharge(sciex_mzr), "integer"))
-    expect_true(is(sciex_mzr@spectraData$precursorCharge, "Rle"))
-    expect_true(all(precursorCharge(sciex_mzr) == 0L))
+    expect_false(any(colnames(sciex_mzr@spectraData) == "precursorCharge"))
+    expect_true(all(is.na(precursorCharge(sciex_mzr))))
 
     expect_true(is(precursorCharge(tmt_mzr), "integer"))
     expect_true(is(tmt_mzr@spectraData$precursorCharge, "integer"))
@@ -302,8 +302,8 @@ test_that("precursorIntensity,MsBackendMzR works", {
     expect_equal(precursorIntensity(be), numeric())
 
     expect_true(is(precursorIntensity(sciex_mzr), "numeric"))
-    expect_true(is(sciex_mzr@spectraData$precursorIntensity, "Rle"))
-    expect_true(all(precursorIntensity(sciex_mzr) == 0L))
+    expect_false(any(colnames(sciex_mzr@spectraData) == "precursorIntensity"))
+    expect_true(all(is.na(precursorIntensity(sciex_mzr))))
 
     expect_true(is(precursorIntensity(tmt_mzr), "numeric"))
     expect_true(is(tmt_mzr@spectraData$precursorIntensity, "numeric"))
@@ -315,8 +315,8 @@ test_that("precursorMz,MsBackendMzR works", {
     expect_equal(precursorMz(be), numeric())
 
     expect_true(is(precursorMz(sciex_mzr), "numeric"))
-    expect_true(is(sciex_mzr@spectraData$precursorMz, "Rle"))
-    expect_true(all(precursorMz(sciex_mzr) == 0L))
+    expect_false(any(colnames(sciex_mzr@spectraData) == "precursorMz"))
+    expect_true(all(is.na(precursorMz(sciex_mzr))))
 
     expect_true(is(precursorMz(tmt_mzr), "numeric"))
     expect_true(is(tmt_mzr@spectraData$precursorMz, "numeric"))
