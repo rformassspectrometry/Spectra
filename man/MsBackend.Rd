@@ -55,7 +55,7 @@
 \alias{precursorCharge,MsBackend-method}
 \alias{precursorIntensity,MsBackend-method}
 \alias{precursorMz,MsBackend-method}
-\alias{replaceList,MsBackend-method}
+\alias{replaceList<-,MsBackend-method}
 \alias{rtime,MsBackend-method}
 \alias{rtime<-,MsBackend-method}
 \alias{scanIndex,MsBackend-method}
@@ -168,7 +168,7 @@
 
 \S4method{precursorMz}{MsBackend}(object)
 
-\S4method{replaceList}{MsBackend}(object, value, ...)
+\S4method{replaceList}{MsBackend}(object) <- value
 
 \S4method{rtime}{MsBackend}(object)
 

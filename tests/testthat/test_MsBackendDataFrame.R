@@ -288,16 +288,16 @@ test_that("as.list,MsBackendDataFrame works", {
                                    cbind(mz = 2.1, intensity = 4)))
 })
 
-test_that("replaceList,MsBackendDataFrame works", {
+test_that("replaceList<-,MsBackendDataFrame works", {
     be <- backendInitialize(MsBackendDataFrame(), spectraData = test_df)
 
     pks <- lapply(as.list(be), function(z) z / 2)
-    be <- replaceList(be, pks)
+    replaceList(be) <- pks
     expect_identical(as.list(be), pks)
 
-    expect_error(replaceList(be, 3), "has to be a list")
-    expect_error(replaceList(be, list(3, 2)), "match length")
-    expect_error(replaceList(be, list(3, 2, 4)), "dimensions")
+    expect_error(replaceList(be) <- 3, "has to be a list")
+    expect_error(replaceList(be) <- list(3, 2), "match length")
+    expect_error(replaceList(be) <- list(3, 2, 4), "dimensions")
 })
 
 test_that("lengths,MsBackendDataFrame works", {

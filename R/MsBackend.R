@@ -874,10 +874,10 @@ setMethod("precursorMz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod replaceList
+#' @exportMethod replaceList<-
 #'
 #' @rdname MsBackend
-setMethod("replaceList", "MsBackend", function(object, value, ...) {
+setReplaceMethod("replaceList", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 

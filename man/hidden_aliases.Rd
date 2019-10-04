@@ -16,7 +16,7 @@
 \alias{isReadOnly}
 \alias{pickPeaks}
 \alias{removePeaks}
-\alias{replaceList}
+\alias{replaceList<-}
 \alias{selectSpectraVariables}
 \alias{setBackend}
 \alias{show,MsBackendDataFrame-method}
@@ -54,7 +54,7 @@
 \alias{precursorCharge,MsBackendDataFrame-method}
 \alias{precursorIntensity,MsBackendDataFrame-method}
 \alias{precursorMz,MsBackendDataFrame-method}
-\alias{replaceList,MsBackendDataFrame-method}
+\alias{replaceList<-,MsBackendDataFrame-method}
 \alias{rtime,MsBackendDataFrame-method}
 \alias{rtime<-,MsBackendDataFrame-method}
 \alias{scanIndex,MsBackendDataFrame-method}
@@ -91,7 +91,7 @@
 \alias{lengths,MsBackendHdf5Peaks-method}
 \alias{mz,MsBackendHdf5Peaks-method}
 \alias{mz<-,MsBackendHdf5Peaks-method}
-\alias{replaceList,MsBackendHdf5Peaks-method}
+\alias{replaceList<-,MsBackendHdf5Peaks-method}
 \alias{spectraData,MsBackendHdf5Peaks-method}
 \alias{spectraData<-,MsBackendHdf5Peaks-method}
 \alias{$<-,MsBackendHdf5Peaks-method}
@@ -138,7 +138,7 @@ pickPeaks(object, ...)
 
 removePeaks(object, t = "min", ...)
 
-replaceList(object, value, ...)
+replaceList(object) <- value
 
 selectSpectraVariables(object, ...)
 
@@ -214,7 +214,7 @@ setBackend(object, backend, ...)
 
 \S4method{precursorMz}{MsBackendDataFrame}(object)
 
-\S4method{replaceList}{MsBackendDataFrame}(object, value, ...)
+\S4method{replaceList}{MsBackendDataFrame}(object) <- value
 
 \S4method{rtime}{MsBackendDataFrame}(object)
 
@@ -301,7 +301,7 @@ setBackend(object, backend, ...)
 
 \S4method{mz}{MsBackendHdf5Peaks}(object) <- value
 
-\S4method{replaceList}{MsBackendHdf5Peaks}(object, value)
+\S4method{replaceList}{MsBackendHdf5Peaks}(object) <- value
 
 \S4method{spectraData}{MsBackendHdf5Peaks}(object,
   columns = spectraVariables(object))

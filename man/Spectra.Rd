@@ -283,6 +283,8 @@ method description or expected data type.}
 
 \item{X}{A \code{Spectra} object.}
 
+\item{use.names}{For \code{lengths}: ignored.}
+
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
 

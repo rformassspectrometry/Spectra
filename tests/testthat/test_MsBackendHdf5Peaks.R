@@ -206,19 +206,19 @@ test_that("as.list,MsBackendHdf5Peaks works", {
     expect_identical(as.list(sciex_mzr), as.list(sciex_hd5))
 })
 
-test_that("replaceList,MsBackendHdf5Peaks works", {
+test_that("replaceList<-,MsBackendHdf5Peaks works", {
     be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(),
                             spectraData = test_df)
     pks <- as.list(be)
     pks_2 <- list(pks[[1]][2, , drop = FALSE],
                   pks[[2]],
                   pks[[3]][1:3, ])
-    be <- replaceList(be, pks_2)
+    replaceList(be) <- pks_2
     expect_identical(be@modCount, 1L)
     expect_identical(as.list(be), pks_2)
     pks_2[[2]] <- pks_2[[2]][0, ]
 
-    be <- replaceList(be, pks_2)
+    replaceList(be) <- pks_2
     expect_identical(be@modCount, 2L)
     expect_identical(as.list(be), pks_2)
     expect_identical(lengths(be), c(1L, 0L, 3L))

@@ -513,6 +513,8 @@ NULL
 #'      intensity. Just values above are used for the weighted mean calclulation.
 #' - For `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
+#' @param use.names For `lengths`: ignored.
+#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'

@@ -333,7 +333,7 @@ setMethod("precursorMz", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("replaceList", "MsBackendDataFrame", function(object, value, ...) {
+setReplaceMethod("replaceList", "MsBackendDataFrame", function(object, value) {
     if (!(is.list(value) || inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     if (length(value) != length(object))

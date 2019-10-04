@@ -162,8 +162,9 @@ applyProcessing <- function(object, f = dataStorage(object),
         stop("length 'f' has to be equal to the length of 'object' (",
              length(object), ")")
     bknds <- bplapply(split(object@backend, f = f), function(z, queue) {
-        replaceList(z, .apply_processing_queue(as.list(z), msLevel(z),
-                                               centroided(z), queue))
+        replaceList(z) <- .apply_processing_queue(as.list(z), msLevel(z),
+                                                  centroided(z), queue)
+        z
     }, queue = object@processingQueue, BPPARAM = BPPARAM)
     bknds <- backendMerge(bknds)
     if (is.unsorted(f))

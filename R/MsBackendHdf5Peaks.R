@@ -154,7 +154,7 @@ setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
              "(i.e. lengths(object))")
     pks <- mapply(cbind, mz=mzs, intensity=value,
                   SIMPLIFY = FALSE, USE.NAMES = FALSE)
-    object <- replaceList(object, pks)
+    replaceList(object) <- pks
     object
 })
 
@@ -195,11 +195,12 @@ setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
              "(i.e. lengths(object))")
     pks <- mapply(cbind, mz=value, intensity=ints,
                   SIMPLIFY = FALSE, USE.NAMES = FALSE)
-    replaceList(object, pks)
+    replaceList(object) <- pks
+    object
 })
 
 #' @rdname hidden_aliases
-setMethod("replaceList", "MsBackendHdf5Peaks", function(object, value) {
+setReplaceMethod("replaceList", "MsBackendHdf5Peaks", function(object, value) {
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
     if (!(is.list(value) || inherits(value, "SimpleList")))
@@ -257,7 +258,7 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
     }
     object <- callNextMethod(object, value = value)
     if (length(pks))
-        object <- replaceList(object, pks)
+        replaceList(object) <- pks
     object
 })
 
