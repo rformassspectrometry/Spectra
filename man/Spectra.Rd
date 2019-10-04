@@ -515,7 +515,7 @@ m/z boundary of the isolation window.
 \item \code{length}: gets the number of spectra in the object.
 \item \code{lengths}: gets the number of peaks (m/z-intensity values) per
 spectrum. Returns an \code{integer} vector (length equal to the
-number of spectra). For empty spectra, \code{NA_integer_} is returned.
+number of spectra). For empty spectra, \code{0} is returned.
 \item \code{msLevel}: gets the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.

@@ -429,7 +429,7 @@ only} or does allow also to write/update data.
 \item \code{length}: returns the number of spectra in the object.
 \item \code{lengths}: gets the number of peaks (m/z-intensity values) per
 spectrum.  Returns an \code{integer} vector (length equal to the
-number of spectra). For empty spectra, \code{NA_integer_} is returned.
+number of spectra). For empty spectra, \code{0} is returned.
 \item \code{msLevel}: gets the spectra's MS level. Returns an \code{integer}
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).

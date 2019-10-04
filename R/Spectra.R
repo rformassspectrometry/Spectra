@@ -151,7 +151,7 @@ NULL
 #'
 #' - `lengths`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum. Returns an `integer` vector (length equal to the
-#'   number of spectra). For empty spectra, `NA_integer_` is returned.
+#'   number of spectra). For empty spectra, `0` is returned.
 #'
 #' - `msLevel`: gets the spectra's MS level. Returns an integer vector (names
 #'   being spectrum names, length equal to the number of spectra) with the MS
