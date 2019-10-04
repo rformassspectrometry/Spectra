@@ -287,7 +287,7 @@ NULL
 #'
 #' - `replaceList<-` replaces the peak data (m/z and intensity values) of the
 #'   backend. This method expects a `list` of `matrix` objects with columns
-#'   `"mz"` and `"intensity"` that has the same length than the number of
+#'   `"mz"` and `"intensity"` that has the same length as the number of
 #'   spectra in the backend. Note that just writeable backends support this
 #'   method.
 #'
