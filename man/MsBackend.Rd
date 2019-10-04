@@ -456,7 +456,7 @@ the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
 \item \code{replaceList<-} replaces the peak data (m/z and intensity values) of the
 backend. This method expects a \code{list} of \code{matrix} objects with columns
-\code{"mz"} and \code{"intensity"} that has the same length than the number of
+\code{"mz"} and \code{"intensity"} that has the same length as the number of
 spectra in the backend. Note that just writeable backends support this
 method.
 \item \code{rtime}, \code{rtime<-}: gets or sets the retention times for each
