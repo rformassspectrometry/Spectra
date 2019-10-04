@@ -174,9 +174,9 @@ setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
-    if (!all(lengths(value) == peaksCount(object)))
+    if (!all(lengths(value) == lengths(object)))
         stop("lengths of 'value' has to match the number of peaks ",
-             "(i.e. peaksCount(object))")
+             "(i.e. lengths(object))")
     if (!is(value, "NumericList"))
         value <- NumericList(value, compress = FALSE)
     object@spectraData$intensity <- value
@@ -258,6 +258,11 @@ setMethod("length", "MsBackendDataFrame", function(x) {
 })
 
 #' @rdname hidden_aliases
+setMethod("lengths", "MsBackendDataFrame", function(x, use.names = FALSE) {
+    lengths(mz(x))
+})
+
+#' @rdname hidden_aliases
 setMethod("msLevel", "MsBackendDataFrame", function(object, ...) {
     .get_rle_column(object@spectraData, "msLevel")
 })
@@ -278,19 +283,14 @@ setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
-    if (!all(lengths(value) == peaksCount(object)))
+    if (!all(lengths(value) == lengths(object)))
         stop("lengths of 'value' has to match the number of peaks ",
-             "(i.e. peaksCount(object))")
+             "(i.e. lengths(object))")
     if (!is(value, "NumericList"))
         value <- NumericList(value, compress = FALSE)
     object@spectraData$mz <- value
     validObject(object)
     object
-})
-
-#' @rdname hidden_aliases
-setMethod("peaksCount", "MsBackendDataFrame", function(object) {
-    lengths(mz(object))
 })
 
 #' @rdname hidden_aliases
@@ -568,7 +568,7 @@ setMethod("filterDataStorage", "MsBackendDataFrame",
 #' @rdname hidden_aliases
 setMethod("filterEmptySpectra", "MsBackendDataFrame", function(object) {
     if (!length(object)) return(object)
-    object[as.logical(peaksCount(object))]
+    object[as.logical(lengths(object))]
 })
 
 #' @rdname hidden_aliases

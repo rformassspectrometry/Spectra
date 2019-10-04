@@ -112,7 +112,12 @@ setMethod("isCentroided", "MsBackendMzR", function(object, ...) {
 
 #' @rdname hidden_aliases
 setMethod("isEmpty", "MsBackendMzR", function(x) {
-    peaksCount(x) == 0
+    lengths(x) == 0
+})
+
+#' @rdname hidden_aliases
+setMethod("lengths", "MsBackendMzR", function(x, use.names = FALSE) {
+    as.integer(lengths(as.list(x)) / 2L)
 })
 
 #' @rdname hidden_aliases
@@ -123,11 +128,6 @@ setMethod("mz", "MsBackendMzR", function(object) {
 #' @rdname hidden_aliases
 setReplaceMethod("mz", "MsBackendMzR", function(object, value) {
     stop(class(object), " does not support replacing m/z values")
-})
-
-#' @rdname hidden_aliases
-setMethod("peaksCount", "MsBackendMzR", function(object) {
-    as.integer(lengths(as.list(object)) / 2L)
 })
 
 #' @rdname hidden_aliases

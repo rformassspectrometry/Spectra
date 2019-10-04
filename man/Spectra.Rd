@@ -37,7 +37,7 @@
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{mz,Spectra-method}
-\alias{peaksCount,Spectra-method}
+\alias{lengths,Spectra-method}
 \alias{polarity,Spectra-method}
 \alias{polarity<-,Spectra-method}
 \alias{precScanNum,Spectra-method}
@@ -149,7 +149,7 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 
 \S4method{mz}{Spectra}(object, ...)
 
-\S4method{peaksCount}{Spectra}(object)
+\S4method{lengths}{Spectra}(x, use.names = FALSE)
 
 \S4method{polarity}{Spectra}(object)
 
@@ -466,7 +466,7 @@ spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
 \item \code{as.list}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
 function returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns
-\code{mz} and \code{intensity} with the m/z and intensity values for all peaks of
+\code{"mz"} and \code{"intensity"} with the m/z and intensity values for all peaks of
 a spectrum.
 \item \code{centroided}, \code{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
@@ -511,6 +511,9 @@ target m/z of the isolation window.
 \item \code{isolationWindowUpperMz}, \code{isolationWindowUpperMz<-}: gets or sets the upper
 m/z boundary of the isolation window.
 \item \code{length}: gets the number of spectra in the object.
+\item \code{lengths}: gets the number of peaks (m/z-intensity values) per
+spectrum. Returns an \code{integer} vector (length equal to the
+number of spectra). For empty spectra, \code{NA_integer_} is returned.
 \item \code{msLevel}: gets the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.
@@ -518,9 +521,6 @@ level for each spectrum.
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
-\item \code{peaksCount}: gets the number of peaks (m/z-intensity values) per
-spectrum. Returns an \code{integer} vector (length equal to the
-number of spectra). For empty spectra, \code{NA_integer_} is returned.
 \item \code{polarity}, \code{polarity<-}: gets or sets the polarity for each
 spectrum.  \code{polarity} returns an \code{integer} vector (length equal
 to the number of spectra), with \code{0} and \code{1} representing negative
@@ -729,6 +729,12 @@ spd$intensity <- list(c(200, 400, 34.2, 17), c(12.3, 15.2, 6.8))
 
 data <- Spectra(spd)
 data
+
+## Get the number of spectra
+length(data)
+
+## Get the number of peaks per spectrum
+lengths(data)
 
 ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
 ## backend.

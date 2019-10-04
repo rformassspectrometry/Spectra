@@ -151,7 +151,7 @@ setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
     mzs <- mz(object)
     if (!all(lengths(value) == lengths(mzs)))
         stop("lengths of 'value' has to match the number of peaks ",
-             "(i.e. peaksCount(object))")
+             "(i.e. lengths(object))")
     pks <- mapply(cbind, mz=mzs, intensity=value,
                   SIMPLIFY = FALSE, USE.NAMES = FALSE)
     object <- replaceList(object, pks)
@@ -170,7 +170,12 @@ setMethod("isCentroided", "MsBackendHdf5Peaks", function(object, ...) {
 
 #' @rdname hidden_aliases
 setMethod("isEmpty", "MsBackendHdf5Peaks", function(x) {
-    peaksCount(x) == 0
+    lengths(x) == 0
+})
+
+#' @rdname hidden_aliases
+setMethod("lengths", "MsBackendHdf5Peaks", function(x, use.names = FALSE) {
+    as.integer(lengths(as.list(x)) / 2L)
 })
 
 #' @rdname hidden_aliases
@@ -187,15 +192,10 @@ setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
     ints <- intensity(object)
     if (!all(lengths(value) == lengths(ints)))
         stop("lengths of 'value' has to match the number of peaks ",
-             "(i.e. peaksCount(object))")
+             "(i.e. lengths(object))")
     pks <- mapply(cbind, mz=value, intensity=ints,
                   SIMPLIFY = FALSE, USE.NAMES = FALSE)
     replaceList(object, pks)
-})
-
-#' @rdname hidden_aliases
-setMethod("peaksCount", "MsBackendHdf5Peaks", function(object) {
-    as.integer(lengths(as.list(object)) / 2L)
 })
 
 #' @rdname hidden_aliases

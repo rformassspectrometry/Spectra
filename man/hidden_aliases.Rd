@@ -14,7 +14,6 @@
 \alias{clean}
 \alias{compareSpectra}
 \alias{isReadOnly}
-\alias{peaksCount}
 \alias{pickPeaks}
 \alias{removePeaks}
 \alias{replaceList}
@@ -45,10 +44,10 @@
 \alias{isolationWindowUpperMz,MsBackendDataFrame-method}
 \alias{isolationWindowUpperMz<-,MsBackendDataFrame-method}
 \alias{length,MsBackendDataFrame-method}
+\alias{lengths,MsBackendDataFrame-method}
 \alias{msLevel,MsBackendDataFrame-method}
 \alias{mz,MsBackendDataFrame-method}
 \alias{mz<-,MsBackendDataFrame-method}
-\alias{peaksCount,MsBackendDataFrame-method}
 \alias{polarity,MsBackendDataFrame-method}
 \alias{polarity<-,MsBackendDataFrame-method}
 \alias{precScanNum,MsBackendDataFrame-method}
@@ -89,9 +88,9 @@
 \alias{ionCount,MsBackendHdf5Peaks-method}
 \alias{isCentroided,MsBackendHdf5Peaks-method}
 \alias{isEmpty,MsBackendHdf5Peaks-method}
+\alias{lengths,MsBackendHdf5Peaks-method}
 \alias{mz,MsBackendHdf5Peaks-method}
 \alias{mz<-,MsBackendHdf5Peaks-method}
-\alias{peaksCount,MsBackendHdf5Peaks-method}
 \alias{replaceList,MsBackendHdf5Peaks-method}
 \alias{spectraData,MsBackendHdf5Peaks-method}
 \alias{spectraData<-,MsBackendHdf5Peaks-method}
@@ -106,9 +105,9 @@
 \alias{ionCount,MsBackendMzR-method}
 \alias{isCentroided,MsBackendMzR-method}
 \alias{isEmpty,MsBackendMzR-method}
+\alias{lengths,MsBackendMzR-method}
 \alias{mz,MsBackendMzR-method}
 \alias{mz<-,MsBackendMzR-method}
-\alias{peaksCount,MsBackendMzR-method}
 \alias{spectraData,MsBackendMzR-method}
 \alias{spectraData<-,MsBackendMzR-method}
 \alias{spectraNames,MsBackendMzR-method}
@@ -134,8 +133,6 @@ clean(object, ...)
 compareSpectra(x, y, ...)
 
 isReadOnly(object, ...)
-
-peaksCount(object, ...)
 
 pickPeaks(object, ...)
 
@@ -197,13 +194,13 @@ setBackend(object, backend, ...)
 
 \S4method{length}{MsBackendDataFrame}(x)
 
+\S4method{lengths}{MsBackendDataFrame}(x, use.names = FALSE)
+
 \S4method{msLevel}{MsBackendDataFrame}(object, ...)
 
 \S4method{mz}{MsBackendDataFrame}(object)
 
 \S4method{mz}{MsBackendDataFrame}(object) <- value
-
-\S4method{peaksCount}{MsBackendDataFrame}(object)
 
 \S4method{polarity}{MsBackendDataFrame}(object)
 
@@ -298,11 +295,11 @@ setBackend(object, backend, ...)
 
 \S4method{isEmpty}{MsBackendHdf5Peaks}(x)
 
+\S4method{lengths}{MsBackendHdf5Peaks}(x, use.names = FALSE)
+
 \S4method{mz}{MsBackendHdf5Peaks}(object)
 
 \S4method{mz}{MsBackendHdf5Peaks}(object) <- value
-
-\S4method{peaksCount}{MsBackendHdf5Peaks}(object)
 
 \S4method{replaceList}{MsBackendHdf5Peaks}(object, value)
 
@@ -334,11 +331,11 @@ setBackend(object, backend, ...)
 
 \S4method{isEmpty}{MsBackendMzR}(x)
 
+\S4method{lengths}{MsBackendMzR}(x, use.names = FALSE)
+
 \S4method{mz}{MsBackendMzR}(object)
 
 \S4method{mz}{MsBackendMzR}(object) <- value
-
-\S4method{peaksCount}{MsBackendMzR}(object)
 
 \S4method{spectraData}{MsBackendMzR}(object,
   columns = spectraVariables(object))

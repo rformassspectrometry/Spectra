@@ -300,16 +300,16 @@ test_that("replaceList,MsBackendDataFrame works", {
     expect_error(replaceList(be, list(3, 2, 4)), "dimensions")
 })
 
-test_that("peaksCount,MsBackendDataFrame works", {
+test_that("lengths,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_equal(peaksCount(be), integer())
+    expect_equal(lengths(be), integer())
     df <- DataFrame(msLevel = c(1L, 1L))
     be <- backendInitialize(be, spectraData = df)
-    expect_equal(peaksCount(be), c(0L, 0L))
+    expect_equal(lengths(be), c(0L, 0L))
     df$mz <- list(1:3, c(2.1))
     df$intensity <- list(1:3, 4)
     be <- backendInitialize(be, spectraData = df)
-    expect_equal(peaksCount(be), c(3L, 1L))
+    expect_equal(lengths(be), c(3L, 1L))
 })
 
 test_that("polarity, polarity<- MsBackendDataFrame works", {

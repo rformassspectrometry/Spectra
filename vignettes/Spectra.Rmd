@@ -449,7 +449,7 @@ max_peak <- function(x, ...) {
 }
 
 sps_2 <- addProcessing(sps, max_peak)
-peaksCount(sps_2)
+lengths(sps_2)
 intensity(sps_2)
 ```
 

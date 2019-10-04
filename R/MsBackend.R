@@ -103,6 +103,8 @@ NULL
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
 #'
+#' @param use.names For `lengths`: whether spectrum names should be used.
+#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
@@ -127,7 +129,7 @@ NULL
 #'
 #' - `as.list` returns a `list` with the spectras' peak data. The length of
 #'   the list is equal to the number of spectra in `object`. Each element of
-#'   the list is a `matrix` with columns `mz` and `intensity`. For an empty
+#'   the list is a `matrix` with columns `"mz"` and `"intensity"`. For an empty
 #'   spectrum, a `matrix` with 0 rows and two columns (named `mz` and
 #'   `intensity`) is returned.
 #'
@@ -219,7 +221,7 @@ NULL
 #' - `intensity<-`: replaces the intensity values. `value` has to be a `list`
 #'   (or [NumericList()]) of length equal to the number of spectra and the
 #'   number of values within each list element identical to the number of
-#'   peaks in each spectrum (i.e. the `peaksCount(x)`). Note that just
+#'   peaks in each spectrum (i.e. the `lengths(x)`). Note that just
 #'   writeable backends support this method.
 #'
 #' - `ionCount`: returns a `numeric` with the sum of intensities for
@@ -251,6 +253,10 @@ NULL
 #'
 #' - `length`: returns the number of spectra in the object.
 #'
+#' - `lengths`: gets the number of peaks (m/z-intensity values) per
+#'   spectrum.  Returns an `integer` vector (length equal to the
+#'   number of spectra). For empty spectra, `NA_integer_` is returned.
+#'
 #' - `msLevel`: gets the spectra's MS level. Returns an `integer`
 #'   vector (of length equal to the number of spectra) with the MS
 #'   level for each spectrum (or `NA_integer_` if not available).
@@ -263,11 +269,7 @@ NULL
 #' - `mz<-`: replaces the m/z values. `value` has to be a `list` of length equal
 #'   to the number of spectra and the number of values within each list element
 #'   identical to the number of peaks in each spectrum (i.e. the
-#'   `peaksCount(x)`). Note that just writeable backends support this method.
-#'
-#' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
-#'   spectrum.  Returns an `integer` vector (length equal to the
-#'   number of spectra). For empty spectra, `NA_integer_` is returned.
+#'   `lengths(x)`). Note that just writeable backends support this method.
 #'
 #' - `polarity`, `polarity<-`: gets or sets the polarity for each
 #'   spectrum.  `polarity` returns an `integer` vector (length equal
@@ -813,11 +815,9 @@ setReplaceMethod("mz", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod peaksCount
-#'
 #' @rdname MsBackend
-setMethod("peaksCount", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+setMethod("lengths", "MsBackend", function(x, use.names = FALSE) {
+    stop("Not implemented for ", class(x), ".")
 })
 
 #' @exportMethod polarity

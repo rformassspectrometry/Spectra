@@ -221,14 +221,14 @@ test_that("replaceList,MsBackendHdf5Peaks works", {
     be <- replaceList(be, pks_2)
     expect_identical(be@modCount, 2L)
     expect_identical(as.list(be), pks_2)
-    expect_identical(peaksCount(be), c(1L, 0L, 3L))
+    expect_identical(lengths(be), c(1L, 0L, 3L))
 })
 
-test_that("peaksCount,MsBackendHdf5Peaks works", {
+test_that("lenghts,MsBackendHdf5Peaks works", {
     be <- MsBackendHdf5Peaks()
-    expect_equal(peaksCount(be), integer())
+    expect_equal(lengths(be), integer())
 
-    res <- peaksCount(test_be)
+    res <- lengths(test_be)
     expect_true(is.integer(res))
     expect_true(length(res) == length(test_be))
     expect_identical(res, lengths(test_be$mz))
@@ -278,7 +278,7 @@ test_that("spectraData<-,MsBackendHdf5Peaks works", {
     spectraData(be) <- df
     expect_identical(intensity(be), NumericList(df$intensity, compress = FALSE))
     expect_identical(mz(be), NumericList(df$mz, compress = FALSE))
-    expect_identical(peaksCount(be), c(2L, 0L, 2L))
+    expect_identical(lengths(be), c(2L, 0L, 2L))
     expect_identical(be@modCount, 2L)
 
     ## Error:

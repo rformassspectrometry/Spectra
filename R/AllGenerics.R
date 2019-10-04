@@ -24,9 +24,6 @@ setGeneric("compareSpectra", function(x, y, ...)
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
 #' @rdname hidden_aliases
-setGeneric("peaksCount", function(object, ...)
-    standardGeneric("peaksCount"))
-#' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
 #' @rdname hidden_aliases

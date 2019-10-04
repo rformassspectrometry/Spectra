@@ -446,9 +446,9 @@ test_that("as.list,Spectra works", {
     expect_true(length(res) == 0)
 })
 
-test_that("peaksCount,Spectra works", {
+test_that("lengths,Spectra works", {
     sps <- Spectra()
-    res <- peaksCount(sps)
+    res <- lengths(sps)
     expect_identical(res, integer())
 
     df <- DataFrame(msLevel = c(2L, 2L), centroided = TRUE)
@@ -456,15 +456,15 @@ test_that("peaksCount,Spectra works", {
     df$mz <- list(1:3, 1:2)
 
     sps <- Spectra(df)
-    res <- peaksCount(sps)
+    res <- lengths(sps)
     expect_identical(res, c(3L, 2L))
 
     sps <- removePeaks(sps, threshold = 100)
-    res <- peaksCount(sps)
+    res <- lengths(sps)
     expect_identical(res, c(3L, 2L))
 
     sps <- clean(sps, all = TRUE)
-    res <- peaksCount(sps)
+    res <- lengths(sps)
     expect_identical(res, c(0L, 0L))
 })
 

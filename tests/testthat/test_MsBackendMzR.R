@@ -245,11 +245,11 @@ test_that("as.list,MsBackendMzR works", {
     expect_identical(pks, sciex_pks[idx])
 })
 
-test_that("peaksCount,MsBackendMzR works", {
+test_that("lengths,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(peaksCount(be), integer())
+    expect_equal(lengths(be), integer())
 
-    res <- peaksCount(sciex_mzr)
+    res <- lengths(sciex_mzr)
     expect_true(is.integer(res))
     expect_true(length(res) == length(sciex_mzr))
 })
