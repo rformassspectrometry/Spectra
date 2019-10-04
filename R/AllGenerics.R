@@ -24,14 +24,14 @@ setGeneric("compareSpectra", function(x, y, ...)
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
 #' @rdname hidden_aliases
-setGeneric("peaksCount", function(object, ...)
-    standardGeneric("peaksCount"))
-#' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
 #' @rdname hidden_aliases
 setGeneric("removePeaks", function(object, t="min", ...)
     standardGeneric("removePeaks"))
+#' @rdname hidden_aliases
+setGeneric("replaceList<-", function(object, value)
+    standardGeneric("replaceList<-"))
 #' @rdname hidden_aliases
 setGeneric("selectSpectraVariables", function(object, ...)
     standardGeneric("selectSpectraVariables"))

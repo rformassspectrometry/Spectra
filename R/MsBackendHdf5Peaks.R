@@ -120,8 +120,26 @@ setMethod("show", "MsBackendHdf5Peaks", function(object) {
 })
 
 #' @rdname hidden_aliases
+setMethod("as.list", "MsBackendHdf5Peaks", function(x) {
+    if (!length(x))
+        return(list())
+    fls <- unique(x@spectraData$dataStorage)
+    if (length(fls) > 1) {
+        f <- factor(dataStorage(x), levels = fls)
+        unsplit(bpmapply(
+            FUN = .h5_read_peaks,
+            fls,
+            split(scanIndex(x), f),
+            x@modCount,
+            SIMPLIFY = FALSE, USE.NAMES = FALSE, BPPARAM = bpparam()),
+            f)
+    } else
+        .h5_read_peaks(fls, scanIndex(x), x@modCount)
+})
+
+#' @rdname hidden_aliases
 setMethod("intensity", "MsBackendHdf5Peaks", function(object) {
-    NumericList(lapply(peaks(object), "[", , 2), compress = FALSE)
+    NumericList(lapply(as.list(object), "[", , 2), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -133,31 +151,36 @@ setReplaceMethod("intensity", "MsBackendHdf5Peaks", function(object, value) {
     mzs <- mz(object)
     if (!all(lengths(value) == lengths(mzs)))
         stop("lengths of 'value' has to match the number of peaks ",
-             "(i.e. peaksCount(object))")
+             "(i.e. lengths(object))")
     pks <- mapply(cbind, mz=mzs, intensity=value,
                   SIMPLIFY = FALSE, USE.NAMES = FALSE)
-    peaks(object) <- pks
+    replaceList(object) <- pks
     object
 })
 
 #' @rdname hidden_aliases
 setMethod("ionCount", "MsBackendHdf5Peaks", function(object) {
-    vapply1d(peaks(object), function(z) sum(z[, 2], na.rm = TRUE))
+    vapply1d(as.list(object), function(z) sum(z[, 2], na.rm = TRUE))
 })
 
 #' @rdname hidden_aliases
 setMethod("isCentroided", "MsBackendHdf5Peaks", function(object, ...) {
-    vapply1l(peaks(object), .peaks_is_centroided)
+    vapply1l(as.list(object), .peaks_is_centroided)
 })
 
 #' @rdname hidden_aliases
 setMethod("isEmpty", "MsBackendHdf5Peaks", function(x) {
-    peaksCount(x) == 0
+    lengths(x) == 0
+})
+
+#' @rdname hidden_aliases
+setMethod("lengths", "MsBackendHdf5Peaks", function(x, use.names = FALSE) {
+    as.integer(lengths(as.list(x)) / 2L)
 })
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendHdf5Peaks", function(object) {
-    NumericList(lapply(peaks(object), "[", , 1), compress = FALSE)
+    NumericList(lapply(as.list(object), "[", , 1), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -169,33 +192,15 @@ setReplaceMethod("mz", "MsBackendHdf5Peaks", function(object, value) {
     ints <- intensity(object)
     if (!all(lengths(value) == lengths(ints)))
         stop("lengths of 'value' has to match the number of peaks ",
-             "(i.e. peaksCount(object))")
+             "(i.e. lengths(object))")
     pks <- mapply(cbind, mz=value, intensity=ints,
                   SIMPLIFY = FALSE, USE.NAMES = FALSE)
-    peaks(object) <- pks
+    replaceList(object) <- pks
     object
 })
 
 #' @rdname hidden_aliases
-setMethod("peaks", "MsBackendHdf5Peaks", function(object) {
-    if (!length(object))
-        return(list())
-    fls <- unique(object@spectraData$dataStorage)
-    if (length(fls) > 1) {
-        f <- factor(dataStorage(object), levels = fls)
-        unsplit(bpmapply(
-            FUN = .h5_read_peaks,
-            fls,
-            split(scanIndex(object), f),
-            object@modCount,
-            SIMPLIFY = FALSE, USE.NAMES = FALSE, BPPARAM = bpparam()),
-            f)
-    } else
-        .h5_read_peaks(fls, scanIndex(object), object@modCount)
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
+setReplaceMethod("replaceList", "MsBackendHdf5Peaks", function(object, value) {
     if (length(value) != length(object))
         stop("Length of 'value' has to match length of 'object'")
     if (!(is.list(value) || inherits(value, "SimpleList")))
@@ -218,11 +223,6 @@ setReplaceMethod("peaks", "MsBackendHdf5Peaks", function(object, value) {
                         modCount = object@modCount)
     validObject(object)
     object
-})
-
-#' @rdname hidden_aliases
-setMethod("peaksCount", "MsBackendHdf5Peaks", function(object) {
-    as.integer(lengths(peaks(object)) / 2L)
 })
 
 #' @rdname hidden_aliases
@@ -258,7 +258,7 @@ setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
     }
     object <- callNextMethod(object, value = value)
     if (length(pks))
-        peaks(object) <- pks
+        replaceList(object) <- pks
     object
 })
 

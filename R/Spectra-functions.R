@@ -95,7 +95,7 @@ addProcessing <- function(object, FUN, ...) {
     ## Question whether we would use a slim version of the backend, i.e.
     ## reduce it to certain columns/spectra variables.
     res <- bplapply(split(object@backend, f), function(z, queue) {
-        .apply_processing_queue(peaks(z), msLevel(z),
+        .apply_processing_queue(as.list(z), msLevel(z),
                                 centroided(z), queue = queue)
     }, queue = pqueue, BPPARAM = BPPARAM)
     unsplit(res, f = f, drop = TRUE)
@@ -162,8 +162,8 @@ applyProcessing <- function(object, f = dataStorage(object),
         stop("length 'f' has to be equal to the length of 'object' (",
              length(object), ")")
     bknds <- bplapply(split(object@backend, f = f), function(z, queue) {
-        peaks(z) <- .apply_processing_queue(peaks(z), msLevel(z),
-                                            centroided(z), queue)
+        replaceList(z) <- .apply_processing_queue(as.list(z), msLevel(z),
+                                                  centroided(z), queue)
         z
     }, queue = object@processingQueue, BPPARAM = BPPARAM)
     bknds <- backendMerge(bknds)
@@ -270,9 +270,9 @@ applyProcessing <- function(object, f = dataStorage(object),
     ## This code duplication may be overengineering.
     if (nx >= ny) {
         for (i in x_idx) {
-            px <- peaks(x[i])[[1L]]
+            px <- as.list(x[i])[[1L]]
             for (j in y_idx) {
-                peak_map <- MAPFUN(px, peaks(y[j])[[1L]],
+                peak_map <- MAPFUN(px, as.list(y[j])[[1L]],
                                    tolerance = tolerance, ppm = ppm, ...)
                 mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L],
                                  ...)
@@ -280,9 +280,9 @@ applyProcessing <- function(object, f = dataStorage(object),
         }
     } else {
         for (j in y_idx) {
-            py <- peaks(y[j])[[1L]]
+            py <- as.list(y[j])[[1L]]
             for (i in x_idx) {
-                peak_map <- MAPFUN(peaks(x[i])[[1]], py,
+                peak_map <- MAPFUN(as.list(x[i])[[1]], py,
                                    tolerance = tolerance, ppm = ppm, ...)
                 mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L],
                                  ...)
@@ -320,9 +320,9 @@ applyProcessing <- function(object, f = dataStorage(object),
     for (i in seq_len(nrow(cb))) {
         cur <- cb[i, 2L]
         if (i == 1L || cb[i - 1L, 2L] != cur)
-            py <- px <- peaks(x[cur])[[1L]]
+            py <- px <- as.list(x[cur])[[1L]]
         else
-            py <- peaks(x[cb[i, 1L]])[[1L]]
+            py <- as.list(x[cb[i, 1L]])[[1L]]
         map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm, ...)
         m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
             FUN(map[[1L]][, 2L], map[[2L]][, 2L], ...)

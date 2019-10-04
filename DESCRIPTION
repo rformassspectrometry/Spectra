@@ -25,14 +25,15 @@ Depends:
 Imports:
     methods,
     IRanges,
-    MsCoreUtils (>= 0.0.2)
+    MsCoreUtils (>= 0.0.2),
+    BiocGenerics
 Suggests:
     testthat,
     knitr (>= 1.1.0),
     msdata (>= 0.19.3),
     roxygen2,
     BiocStyle (>= 2.5.19),
-    mzR (>= 2.15.1),
+    mzR (>= 2.19.6),
     rhdf5,
     rmarkdown,
     magrittr

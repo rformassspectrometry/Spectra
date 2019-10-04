@@ -17,8 +17,8 @@ test_that("initializeBackend,MsBackendMzR works", {
 
 test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
     splt <- split(sciex_mzr, dataStorage(sciex_mzr))
-    expect_equal(peaks(splt[[1]]), sciex_pks[1:931])
-    expect_equal(peaks(splt[[2]]), sciex_pks[932:1862])
+    expect_equal(as.list(splt[[1]]), sciex_pks[1:931])
+    expect_equal(as.list(splt[[2]]), sciex_pks[932:1862])
     res <- backendMerge(splt)
     expect_equal(res, sciex_mzr)
 
@@ -70,8 +70,8 @@ test_that("collisionEnergy, collisionEnergy<-,MsBackendMzR work", {
     expect_equal(collisionEnergy(be), numeric())
 
     expect_true(is(collisionEnergy(sciex_mzr), "numeric"))
-    expect_true(is(sciex_mzr@spectraData$collisionEnergy, "Rle"))
-    expect_true(all(collisionEnergy(sciex_mzr) == 0))
+    expect_true(!any(colnames(sciex_mzr@spectraData) == "collisionEnergy"))
+    expect_true(all(is.na(collisionEnergy(sciex_mzr))))
 
     expect_error(collisionEnergy(sciex_mzr) <- "a", "to be a 'numeric'")
     expect_error(collisionEnergy(sciex_mzr) <- c(2.3), "has to be a")
@@ -224,32 +224,32 @@ test_that("mz<-,MsBackendMzR works", {
     expect_error(mz(be) <- list(), "does not support replacing")
 })
 
-test_that("peaks,MsBackendMzR works", {
+test_that("as.list,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(peaks(be), list())
+    expect_equal(as.list(be), list())
 
-    res <- peaks(sciex_mzr)
+    res <- as.list(sciex_mzr)
     expect_true(is(res, "list"))
     expect_equal(length(res), length(sciex_mzr))
     expect_true(is(res[[1]], "matrix"))
     expect_equal(colnames(res[[1]]), c("mz", "intensity"))
 
     tmp_one <- backendInitialize(MsBackendMzR(), sciex_file[1])
-    res_one <- peaks(tmp_one)
+    res_one <- as.list(tmp_one)
     expect_equal(res[1:length(res_one)], res_one)
 
     ## Arbitrary ordering.
     idx <- sample(1:length(sciex_mzr))
     be <- sciex_mzr[idx]
-    pks <- peaks(be)
+    pks <- as.list(be)
     expect_identical(pks, sciex_pks[idx])
 })
 
-test_that("peaksCount,MsBackendMzR works", {
+test_that("lengths,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(peaksCount(be), integer())
+    expect_equal(lengths(be), integer())
 
-    res <- peaksCount(sciex_mzr)
+    res <- lengths(sciex_mzr)
     expect_true(is.integer(res))
     expect_true(length(res) == length(sciex_mzr))
 })
@@ -277,8 +277,8 @@ test_that("precScanNum,MsBackendMzR works", {
     expect_equal(precScanNum(be), integer())
 
     expect_true(is(precScanNum(sciex_mzr), "integer"))
-    expect_true(is(sciex_mzr@spectraData$precScanNum, "Rle"))
-    expect_true(all(precScanNum(sciex_mzr) == 0L))
+    expect_false(any(colnames(sciex_mzr@spectraData) == "precScanNum"))
+    expect_true(all(is.na(precScanNum(sciex_mzr))))
 
     expect_true(is(tmt_mzr@spectraData$precScanNum, "Rle"))
     expect_true(length(unique(precScanNum(tmt_mzr))) > 1)
@@ -289,8 +289,8 @@ test_that("precursorCharge,MsBackendMzR works", {
     expect_equal(precursorCharge(be), integer())
 
     expect_true(is(precursorCharge(sciex_mzr), "integer"))
-    expect_true(is(sciex_mzr@spectraData$precursorCharge, "Rle"))
-    expect_true(all(precursorCharge(sciex_mzr) == 0L))
+    expect_false(any(colnames(sciex_mzr@spectraData) == "precursorCharge"))
+    expect_true(all(is.na(precursorCharge(sciex_mzr))))
 
     expect_true(is(precursorCharge(tmt_mzr), "integer"))
     expect_true(is(tmt_mzr@spectraData$precursorCharge, "integer"))
@@ -302,8 +302,8 @@ test_that("precursorIntensity,MsBackendMzR works", {
     expect_equal(precursorIntensity(be), numeric())
 
     expect_true(is(precursorIntensity(sciex_mzr), "numeric"))
-    expect_true(is(sciex_mzr@spectraData$precursorIntensity, "Rle"))
-    expect_true(all(precursorIntensity(sciex_mzr) == 0L))
+    expect_false(any(colnames(sciex_mzr@spectraData) == "precursorIntensity"))
+    expect_true(all(is.na(precursorIntensity(sciex_mzr))))
 
     expect_true(is(precursorIntensity(tmt_mzr), "numeric"))
     expect_true(is(tmt_mzr@spectraData$precursorIntensity, "numeric"))
@@ -315,8 +315,8 @@ test_that("precursorMz,MsBackendMzR works", {
     expect_equal(precursorMz(be), numeric())
 
     expect_true(is(precursorMz(sciex_mzr), "numeric"))
-    expect_true(is(sciex_mzr@spectraData$precursorMz, "Rle"))
-    expect_true(all(precursorMz(sciex_mzr) == 0L))
+    expect_false(any(colnames(sciex_mzr@spectraData) == "precursorMz"))
+    expect_true(all(is.na(precursorMz(sciex_mzr))))
 
     expect_true(is(precursorMz(tmt_mzr), "numeric"))
     expect_true(is(tmt_mzr@spectraData$precursorMz, "numeric"))

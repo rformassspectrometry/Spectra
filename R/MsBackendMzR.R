@@ -7,7 +7,7 @@ NULL
 #'
 #' The `MsBackendMzR` inherits all slots and methods from the base
 #' `MsBackendDataFrame` (in-memory) backend. It overrides the base `mz` and
-#' `intensity` methods as well as `peaks` to read the respective data from
+#' `intensity` methods as well as `as.list` to read the respective data from
 #' the original raw data files.
 #'
 #' The validator function has to ensure that the files exist and that required
@@ -78,8 +78,21 @@ setMethod("show", "MsBackendMzR", function(object) {
 })
 
 #' @rdname hidden_aliases
+setMethod("as.list", "MsBackendMzR", function(x) {
+    if (!length(x))
+        return(list())
+    fls <- unique(x@spectraData$dataStorage)
+    if (length(fls) > 1) {
+        f <- factor(dataStorage(x), levels = fls)
+        unsplit(mapply(FUN = .mzR_peaks, fls, split(scanIndex(x), f),
+                       SIMPLIFY = FALSE, USE.NAMES = FALSE), f)
+    } else
+        .mzR_peaks(fls, scanIndex(x))
+})
+
+#' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMzR", function(object) {
-    NumericList(lapply(peaks(object), "[", , 2), compress = FALSE)
+    NumericList(lapply(as.list(object), "[", , 2), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
@@ -89,45 +102,32 @@ setReplaceMethod("intensity", "MsBackendMzR", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("ionCount", "MsBackendMzR", function(object) {
-    vapply1d(peaks(object), function(z) sum(z[, 2], na.rm = TRUE))
+    vapply1d(as.list(object), function(z) sum(z[, 2], na.rm = TRUE))
 })
 
 #' @rdname hidden_aliases
 setMethod("isCentroided", "MsBackendMzR", function(object, ...) {
-    vapply1l(peaks(object), .peaks_is_centroided)
+    vapply1l(as.list(object), .peaks_is_centroided)
 })
 
 #' @rdname hidden_aliases
 setMethod("isEmpty", "MsBackendMzR", function(x) {
-    peaksCount(x) == 0
+    lengths(x) == 0
+})
+
+#' @rdname hidden_aliases
+setMethod("lengths", "MsBackendMzR", function(x, use.names = FALSE) {
+    as.integer(lengths(as.list(x)) / 2L)
 })
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendMzR", function(object) {
-    NumericList(lapply(peaks(object), "[", , 1), compress = FALSE)
+    NumericList(lapply(as.list(object), "[", , 1), compress = FALSE)
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("mz", "MsBackendMzR", function(object, value) {
     stop(class(object), " does not support replacing m/z values")
-})
-
-#' @rdname hidden_aliases
-setMethod("peaks", "MsBackendMzR", function(object) {
-    if (!length(object))
-        return(list())
-    fls <- unique(object@spectraData$dataStorage)
-    if (length(fls) > 1) {
-        f <- factor(dataStorage(object), levels = fls)
-        unsplit(mapply(FUN = .mzR_peaks, fls, split(scanIndex(object), f),
-                       SIMPLIFY = FALSE, USE.NAMES = FALSE), f)
-    } else
-        .mzR_peaks(fls, scanIndex(object))
-})
-
-#' @rdname hidden_aliases
-setMethod("peaksCount", "MsBackendMzR", function(object) {
-    as.integer(lengths(peaks(object)) / 2L)
 })
 
 #' @rdname hidden_aliases

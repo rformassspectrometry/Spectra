@@ -13,6 +13,7 @@
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
+\alias{as.list,MsBackend-method}
 \alias{centroided,MsBackend-method}
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
@@ -47,15 +48,14 @@
 \alias{msLevel,MsBackend-method}
 \alias{mz,MsBackend-method}
 \alias{mz<-,MsBackend-method}
-\alias{peaks,MsBackend-method}
-\alias{peaks<-,MsBackend-method}
-\alias{peaksCount,MsBackend-method}
+\alias{lengths,MsBackend-method}
 \alias{polarity,MsBackend-method}
 \alias{polarity<-,MsBackend-method}
 \alias{precScanNum,MsBackend-method}
 \alias{precursorCharge,MsBackend-method}
 \alias{precursorIntensity,MsBackend-method}
 \alias{precursorMz,MsBackend-method}
+\alias{replaceList<-,MsBackend-method}
 \alias{rtime,MsBackend-method}
 \alias{rtime<-,MsBackend-method}
 \alias{scanIndex,MsBackend-method}
@@ -83,6 +83,8 @@
 \S4method{backendMerge}{MsBackend}(object, ...)
 
 \S4method{acquisitionNum}{MsBackend}(object)
+
+\S4method{as.list}{MsBackend}(x)
 
 \S4method{centroided}{MsBackend}(object)
 
@@ -152,11 +154,7 @@
 
 \S4method{mz}{MsBackend}(object) <- value
 
-\S4method{peaks}{MsBackend}(object)
-
-\S4method{peaks}{MsBackend}(object) <- value
-
-\S4method{peaksCount}{MsBackend}(object)
+\S4method{lengths}{MsBackend}(x, use.names = FALSE)
 
 \S4method{polarity}{MsBackend}(object)
 
@@ -169,6 +167,8 @@
 \S4method{precursorIntensity}{MsBackend}(object)
 
 \S4method{precursorMz}{MsBackend}(object)
+
+\S4method{replaceList}{MsBackend}(object) <- value
 
 \S4method{rtime}{MsBackend}(object)
 
@@ -215,6 +215,8 @@ MsBackendMzR()
 
 \item{...}{Additional arguments.}
 
+\item{x}{Object extending \code{MsBackend}.}
+
 \item{value}{replacement value for \code{<-} methods. See individual
 method description or expected data type.}
 
@@ -252,7 +254,7 @@ subsetted.}
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
 
-\item{x}{Object extending \code{MsBackend}.}
+\item{use.names}{For \code{lengths}: whether spectrum names should be used.}
 
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
@@ -327,6 +329,11 @@ backend.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
+\item \code{as.list} returns a \code{list} with the spectras' peak data. The length of
+the list is equal to the number of spectra in \code{object}. Each element of
+the list is a \code{matrix} with columns \code{"mz"} and \code{"intensity"}. For an empty
+spectrum, a \code{matrix} with 0 rows and two columns (named \code{mz} and
+\code{intensity}) is returned.
 \item \code{backendInitialize}: initialises the backend. This method is
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
@@ -397,7 +404,7 @@ spectrum). The length of the \code{list} is equal to the number of
 \item \code{intensity<-}: replaces the intensity values. \code{value} has to be a \code{list}
 (or \code{\link[=NumericList]{NumericList()}}) of length equal to the number of spectra and the
 number of values within each list element identical to the number of
-peaks in each spectrum (i.e. the \code{peaksCount(x)}). Note that just
+peaks in each spectrum (i.e. the \code{lengths(x)}). Note that just
 writeable backends support this method.
 \item \code{ionCount}: returns a \code{numeric} with the sum of intensities for
 each spectrum. If the spectrum is empty (see \code{isEmpty}),
@@ -420,6 +427,9 @@ upper m/z boundary of the isolation window.
 \item \code{isReadOnly}: returns a \code{logical(1)} whether the backend is \emph{read
 only} or does allow also to write/update data.
 \item \code{length}: returns the number of spectra in the object.
+\item \code{lengths}: gets the number of peaks (m/z-intensity values) per
+spectrum.  Returns an \code{integer} vector (length equal to the
+number of spectra). For empty spectra, \code{0} is returned.
 \item \code{msLevel}: gets the spectra's MS level. Returns an \code{integer}
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
@@ -430,18 +440,7 @@ one spectrum.
 \item \code{mz<-}: replaces the m/z values. \code{value} has to be a \code{list} of length equal
 to the number of spectra and the number of values within each list element
 identical to the number of peaks in each spectrum (i.e. the
-\code{peaksCount(x)}). Note that just writeable backends support this method.
-\item \code{peaks} returns a \code{list} of length equal to the number of spectra
-in \code{object}. Each element of the list is a \code{matrix} with columns
-\code{mz} and \code{intensity}. For an empty spectrum, a \code{matrix} with 0
-rows and two columns (named \code{mz} and \code{intensity}) is returned.
-\item \code{peaks<-} replaces the peak data (m/z and intensity values) of the backend.
-This method expects a \code{list} of \code{matrix} objects with columns \code{"mz"} and
-\code{"intensity"} that has the same length than the number of spectra in the
-backend. Note that just writeable backends support this method.
-\item \code{peaksCount}: gets the number of peaks (m/z-intensity values) per
-spectrum.  Returns an \code{integer} vector (length equal to the
-number of spectra). For empty spectra, \code{NA_integer_} is returned.
+\code{lengths(x)}). Note that just writeable backends support this method.
 \item \code{polarity}, \code{polarity<-}: gets or sets the polarity for each
 spectrum.  \code{polarity} returns an \code{integer} vector (length equal
 to the number of spectra), with \code{0} and \code{1} representing negative
@@ -455,6 +454,11 @@ and acquisition number (\code{interger}) of the precursor for MS level
 2 spectra from the object. Returns a vector of length equal to
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
+\item \code{replaceList<-} replaces the peak data (m/z and intensity values) of the
+backend. This method expects a \code{list} of \code{matrix} objects with columns
+\code{"mz"} and \code{"intensity"} that has the same length as the number of
+spectra in the backend. Note that just writeable backends support this
+method.
 \item \code{rtime}, \code{rtime<-}: gets or sets the retention times for each
 spectrum (in seconds). \code{rtime} returns a \code{numeric} vector (length equal to
 the number of spectra) with the retention time for each spectrum.

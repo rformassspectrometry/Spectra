@@ -90,6 +90,12 @@ setMethod("acquisitionNum", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
+setMethod("as.list", "MsBackendDataFrame", function(x) {
+    mapply(cbind, mz = mz(x), intensity = intensity(x),
+           SIMPLIFY = FALSE, USE.NAMES = FALSE)
+})
+
+#' @rdname hidden_aliases
 setMethod("centroided", "MsBackendDataFrame", function(object) {
     .get_rle_column(object@spectraData, "centroided")
 })
@@ -168,9 +174,9 @@ setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
-    if (!all(lengths(value) == peaksCount(object)))
+    if (!all(lengths(value) == lengths(object)))
         stop("lengths of 'value' has to match the number of peaks ",
-             "(i.e. peaksCount(object))")
+             "(i.e. lengths(object))")
     if (!is(value, "NumericList"))
         value <- NumericList(value, compress = FALSE)
     object@spectraData$intensity <- value
@@ -187,7 +193,7 @@ setMethod("ionCount", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 #' @importFrom MsCoreUtils vapply1l
 setMethod("isCentroided", "MsBackendDataFrame", function(object, ...) {
-    vapply1l(peaks(object), .peaks_is_centroided)
+    vapply1l(as.list(object), .peaks_is_centroided)
 })
 
 #' @rdname hidden_aliases
@@ -252,6 +258,11 @@ setMethod("length", "MsBackendDataFrame", function(x) {
 })
 
 #' @rdname hidden_aliases
+setMethod("lengths", "MsBackendDataFrame", function(x, use.names = FALSE) {
+    lengths(mz(x))
+})
+
+#' @rdname hidden_aliases
 setMethod("msLevel", "MsBackendDataFrame", function(object, ...) {
     .get_rle_column(object@spectraData, "msLevel")
 })
@@ -272,43 +283,14 @@ setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
         stop("'value' has to be a list or NumericList")
     if (length(value) != length(object))
         stop("length of 'value' has to match the length of 'object'")
-    if (!all(lengths(value) == peaksCount(object)))
+    if (!all(lengths(value) == lengths(object)))
         stop("lengths of 'value' has to match the number of peaks ",
-             "(i.e. peaksCount(object))")
+             "(i.e. lengths(object))")
     if (!is(value, "NumericList"))
         value <- NumericList(value, compress = FALSE)
     object@spectraData$mz <- value
     validObject(object)
     object
-})
-
-#' @rdname hidden_aliases
-setMethod("peaks", "MsBackendDataFrame", function(object) {
-    mapply(cbind, mz = mz(object), intensity = intensity(object),
-           SIMPLIFY = FALSE, USE.NAMES = FALSE)
-})
-
-#' @rdname hidden_aliases
-setReplaceMethod("peaks", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) || inherits(value, "SimpleList")))
-        stop("'value' has to be a list-like object")
-    if (length(value) != length(object))
-        stop("Length of 'value' has to match length of 'object'")
-    vals <- lapply(value, "[", , 1L)
-    if (!is(vals, "NumericList"))
-        vals <- NumericList(vals, compress = FALSE)
-    object@spectraData$mz <- vals
-    vals <- lapply(value, "[", , 2L)
-    if (!is(vals, "NumericList"))
-        vals <- NumericList(vals, compress = FALSE)
-    object@spectraData$intensity <- vals
-    validObject(object)
-    object
-})
-
-#' @rdname hidden_aliases
-setMethod("peaksCount", "MsBackendDataFrame", function(object) {
-    lengths(mz(object))
 })
 
 #' @rdname hidden_aliases
@@ -348,6 +330,24 @@ setMethod("precursorIntensity", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 setMethod("precursorMz", "MsBackendDataFrame", function(object) {
     .get_rle_column(object@spectraData, "precursorMz")
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("replaceList", "MsBackendDataFrame", function(object, value) {
+    if (!(is.list(value) || inherits(value, "SimpleList")))
+        stop("'value' has to be a list-like object")
+    if (length(value) != length(object))
+        stop("Length of 'value' has to match length of 'object'")
+    vals <- lapply(value, "[", , 1L)
+    if (!is(vals, "NumericList"))
+        vals <- NumericList(vals, compress = FALSE)
+    object@spectraData$mz <- vals
+    vals <- lapply(value, "[", , 2L)
+    if (!is(vals, "NumericList"))
+        vals <- NumericList(vals, compress = FALSE)
+    object@spectraData$intensity <- vals
+    validObject(object)
+    object
 })
 
 #' @rdname hidden_aliases
@@ -568,7 +568,7 @@ setMethod("filterDataStorage", "MsBackendDataFrame",
 #' @rdname hidden_aliases
 setMethod("filterEmptySpectra", "MsBackendDataFrame", function(object) {
     if (!length(object)) return(object)
-    object[as.logical(peaksCount(object))]
+    object[as.logical(lengths(object))]
 })
 
 #' @rdname hidden_aliases

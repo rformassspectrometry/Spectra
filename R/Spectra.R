@@ -89,6 +89,11 @@ NULL
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
+#' - `as.list`: gets the *peaks* matrices for all spectra in `object`. The
+#'   function returns a [SimpleList()] of matrices, each `matrix` with columns
+#'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
+#'   a spectrum.
+#'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
@@ -144,6 +149,10 @@ NULL
 #'
 #' - `length`: gets the number of spectra in the object.
 #'
+#' - `lengths`: gets the number of peaks (m/z-intensity values) per
+#'   spectrum. Returns an `integer` vector (length equal to the
+#'   number of spectra). For empty spectra, `0` is returned.
+#'
 #' - `msLevel`: gets the spectra's MS level. Returns an integer vector (names
 #'   being spectrum names, length equal to the number of spectra) with the MS
 #'   level for each spectrum.
@@ -152,14 +161,6 @@ NULL
 #'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
-#'
-#' - `peaks`: gets the *peaks* matrices for all spectra in `object`. The function
-#'   returns a [SimpleList()] of matrices, each `matrix` with columns `mz` and
-#'   `intensity` with the m/z and intensity values for all peaks of a spectrum.
-#'
-#' - `peaksCount`: gets the number of peaks (m/z-intensity values) per
-#'   spectrum. Returns an `integer` vector (length equal to the
-#'   number of spectra). For empty spectra, `NA_integer_` is returned.
 #'
 #' - `polarity`, `polarity<-`: gets or sets the polarity for each
 #'   spectrum.  `polarity` returns an `integer` vector (length equal
@@ -512,6 +513,8 @@ NULL
 #'      intensity. Just values above are used for the weighted mean calclulation.
 #' - For `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
 #'
+#' @param use.names For `lengths`: ignored.
+#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
@@ -541,6 +544,12 @@ NULL
 #'
 #' data <- Spectra(spd)
 #' data
+#'
+#' ## Get the number of spectra
+#' length(data)
+#'
+#' ## Get the number of peaks per spectrum
+#' lengths(data)
 #'
 #' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
 #' ## backend.
@@ -596,7 +605,7 @@ NULL
 #' mz(data)[[1]]
 #'
 #' ## Get the peak data (m/z and intensity values).
-#' pks <- peaks(data)
+#' pks <- as.list(data)
 #' pks
 #' pks[[1]]
 #' pks[[2]]
@@ -898,6 +907,11 @@ setMethod("acquisitionNum", "Spectra", function(object)
     acquisitionNum(object@backend))
 
 #' @rdname Spectra
+setMethod("as.list", "Spectra", function(x, ...) {
+    SimpleList(.peaksapply(x, ...))
+})
+
+#' @rdname Spectra
 setMethod("centroided", "Spectra", function(object) {
     centroided(object@backend)
 })
@@ -1024,16 +1038,11 @@ setMethod("mz", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 #'
-#' @exportMethod peaks
-setMethod("peaks", "Spectra", function(object, ...) {
-    SimpleList(.peaksapply(object, ...))
-})
-
-#' @rdname Spectra
-setMethod("peaksCount", "Spectra", function(object) {
-    if (length(object))
-        unlist(.peaksapply(object, FUN = function(pks, ...) nrow(pks)),
-               use.names = FALSE)
+#' @exportMethod lengths
+setMethod("lengths", "Spectra", function(x, use.names = FALSE) {
+    if (length(x))
+        unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks)),
+               use.names = use.names)
     else integer()
 })
 
@@ -1211,7 +1220,7 @@ setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
 
 #' @rdname Spectra
 setMethod("filterEmptySpectra", "Spectra", function(object) {
-    object@backend <- object@backend[as.logical(peaksCount(object))]
+    object@backend <- object@backend[as.logical(lengths(object))]
     object@processing <- .logging(object@processing,
                                   "Filter: removed empty spectra.")
     object

@@ -28,7 +28,7 @@ test_that(".apply_processing_queue works", {
     expect_equal(res, list((1:5 + 2), (1:3 + 2), 7))
 
     be <- sciex_mzr
-    pks <- peaks(be)
+    pks <- as.list(be)
     pq <- list(ProcessingStep(.peaks_remove, list(t = 50000)))
     res <- .apply_processing_queue(pks, msLevel(be),
                                    rep(TRUE, length(be)), pq)
@@ -90,26 +90,26 @@ test_that("applyProcessing works", {
                          f = rep(1, length(sps_mzr)))
     expect_true(length(sps_mem@processingQueue) == 2)
     expect_true(length(sps_h5@processingQueue) == 2)
-    expect_identical(peaks(sps_mzr), peaks(sps_mem))
-    expect_identical(peaks(sps_h5), peaks(sps_mem))
+    expect_identical(as.list(sps_mzr), as.list(sps_mem))
+    expect_identical(as.list(sps_h5), as.list(sps_mem))
 
     ## MsBackendDataFrame
     res <- applyProcessing(sps_mem)
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) > length(sps_mem@processing))
     expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaks(res), peaks(sps_mem))
+    expect_identical(as.list(res), as.list(sps_mem))
 
     ## MsBackendHdf5Peaks
     res <- applyProcessing(sps_h5)
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) > length(sps_h5@processing))
     expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaks(res), peaks(sps_mem))
+    expect_identical(as.list(res), as.list(sps_mem))
     expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
 
     ## Applying the processing queue invalidated the original object!
-    expect_error(peaks(sps_h5))
+    expect_error(as.list(sps_h5))
     sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
                          files = c(tempfile(), tempfile()),
                          f = rep(1, length(sps_mzr)))
@@ -123,7 +123,7 @@ test_that("applyProcessing works", {
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) > length(sps_mem@processing))
     expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaks(res), peaks(sps_mem))
+    expect_identical(as.list(res), as.list(sps_mem))
 
     ## MsBackendHdf5Peaks: throws an error, because the factor f does not
     ## match the dataStorage.
@@ -136,7 +136,7 @@ test_that("applyProcessing works", {
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) > length(sps_h5@processing))
     expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaks(res), peaks(sps_mem))
+    expect_identical(as.list(res), as.list(sps_mem))
     expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
 
     expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")

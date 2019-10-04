@@ -217,12 +217,12 @@ mz(sps)
 intensity(sps)
 ```
 
-Peak data can also be extracted with the `peaks` function that returns a list of
-matrices, each with columns `"mz"` and `"intensity"` containing the m/z and
+Peak data can also be extracted with the `as.list` function that returns a list
+of matrices, each with columns `"mz"` and `"intensity"` containing the m/z and
 intensity values for one spectrum.
 
 ```{r peaks}
-pks <- peaks(sps)
+pks <- as.list(sps)
 pks[[1]]
 ```
 
@@ -399,7 +399,7 @@ intensity(sps)
 
 Note that any data manipulations on `Spectra` objects are not immediately
 applied to the peak data. They are added to a so called *processing queue* which
-is applied each time peak data is accessed (with the `peaks`, `mz` or
+is applied each time peak data is accessed (with the `as.list`, `mz` or
 `intensity` functions). Thanks to this processing queue data manipulation
 operations are also possible for *read-only* backends (e.g. mzML-file based
 backends or database-based backends). The information about the number of such
@@ -449,7 +449,7 @@ max_peak <- function(x, ...) {
 }
 
 sps_2 <- addProcessing(sps, max_peak)
-peaksCount(sps_2)
+lengths(sps_2)
 intensity(sps_2)
 ```
 
