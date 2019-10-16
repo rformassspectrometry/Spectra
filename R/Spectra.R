@@ -324,8 +324,9 @@ NULL
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
 #' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
-#'   using the function provided with `FUN` (defaults to [cor()]). If `y` is
-#'   missing, each spectrum in `x` is compared with each other spectrum in `x`.
+#'   using the function provided with `FUN` (defaults to [dotproduct()]). If
+#'   `y` is missing, each spectrum in `x` is compared with each other spectrum
+#'   in `x`.
 #'   The matching/mapping of peaks between the compared spectra is done with the
 #'   `MAPFUN` function. The default [joinPeaks()] matches peaks of both spectra
 #'   and allows to keep all peaks from the first spectrum (`type = "left"`),
@@ -334,9 +335,9 @@ NULL
 #'   information and examples).
 #'   `FUN` is supposed to be a function to compare intensities of (matched)
 #'   peaks of the two spectra that are compared. The function needs to take two
-#'   numeric vectors as input and is supposed to return a single numeric as
-#'   result. Additional parameters to functions `FUN` and `MAPFUN` can be
-#'   passed with `...`.
+#'   matrices with columns `"mz"` and `"intensity"`  as input and is supposed
+#'   to return a single numeric as result. Additional parameters to functions
+#'   `FUN` and `MAPFUN` can be passed with `...`.
 #'   The function returns a `matrix` with the results of `FUN` for each
 #'   comparison, number of rows equal to `length(x)` and number of columns
 #'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
@@ -429,7 +430,7 @@ NULL
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
 #'     intensities of peaks between two spectra with each other. See section
-#'     *Data manipulations* below for more details.
+#'     *Data manipulations* and examples below for more details.
 #'
 #' @param halfWindowSize For `pickPeaks`: `integer(1)`, used in the
 #'     identification of the mass peaks: a local maximum has to be the maximum
@@ -690,11 +691,20 @@ NULL
 #' lengths(mz(data))
 #'
 #' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
-#' ## Pearson correlation and using all pairwise non-missing intensities
-#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20], FUN = cor,
-#'     use = "pairwise.complete.obs")
+#' ## dotproduct method.
+#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
 #' ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 #' ## the second row comparisons of spectrum 3 with spectra 10 to 20
+#' res
+#'
+#' ## To use a simple Pearson correlation instead we can define a function
+#' ## that takes the two peak matrices and calculates the correlation for
+#' ## their second columns (containing the intensity values).
+#' correlateSpectra <- function(x, y, use = "pairwise.complete.obs", ...) {
+#'     cor(x[, 2], y[, 2], use = use, ...)
+#' }
+#' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20],
+#'     FUN = correlateSpectra)
 #' res
 #'
 #' ## Use compareSpectra to determine the number of common (matching) peaks
@@ -703,7 +713,7 @@ NULL
 #' ## peaks that can be mapped betwen both spectra. The provided FUN returns
 #' ## simply the number of matching peaks.
 #' compareSpectra(sciex_im[2:3], sciex_im[10:20], ppm = 10, type = "inner",
-#'     FUN = function(x, y, ...) length(x))
+#'     FUN = function(x, y, ...) nrow(x))
 #'
 #' ## Apply an arbitrary function to each spectrum in a Spectra.
 #' ## In the example below we calculate the mean intensity for each spectrum
@@ -1366,10 +1376,12 @@ setMethod("clean", "Spectra",
 #'
 #' @exportMethod compareSpectra
 #'
+#' @importFrom MsCoreUtils dotproduct
+#'
 #' @export ppm
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
           function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = cor, ..., SIMPLIFY = TRUE) {
+                   FUN = dotproduct, ..., SIMPLIFY = TRUE) {
               mat <- .compare_spectra(x, y, MAPFUN = MAPFUN,
                                       tolerance = tolerance,
                                       ppm = ppm, FUN = FUN, ...)
@@ -1380,7 +1392,7 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
 #' @rdname Spectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
           function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = cor, ..., SIMPLIFY = TRUE) {
+                   FUN = dotproduct, ..., SIMPLIFY = TRUE) {
               if (length(x) == 1)
                   return(compareSpectra(x, x, MAPFUN = MAPFUN,
                                         tolerance = tolerance,
