@@ -993,12 +993,11 @@ test_that("compareSpectra works", {
     sps <- Spectra(sciex_hd5[1:20])
     sps <- setBackend(sps, MsBackendDataFrame())
 
-    res <- compareSpectra(sps[c(1, 20)], sps[15:20],
-                          use = "pairwise.complete.obs")
+    res <- compareSpectra(sps[c(1, 20)], sps[15:20])
     expect_true(nrow(res) == 2)
     expect_true(ncol(res) == 6)
     expect_equal(res[2, 6], 1)
-    expect_true(all(res > 0.9))
+    expect_true(all(res > 0.8))
 
     spectraNames(sps) <- seq_along(sps)
     res <- compareSpectra(sps[c(1, 20)], sps[15:20])
@@ -1028,6 +1027,14 @@ test_that("compareSpectra works", {
 
     res <- compareSpectra(sps[1])
     expect_equal(res, 1)
+
+    ## FUN
+    cor_fun <- function(x, y) {
+        cor(x[, 2], y[, 2], use = "pairwise.complete.obs")
+    }
+    res <- compareSpectra(sps[1], sps[2])
+    res_2 <- compareSpectra(sps[1], sps[2], FUN = cor_fun)
+    expect_true(res < res_2)
 })
 
 test_that("pickPeaks,Spectra works", {

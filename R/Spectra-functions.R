@@ -245,19 +245,21 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' fl <- system.file("TripleTOF-SWATH/PestMix1_SWATH.mzML", package = "msdata")
 #' sps <- Spectra(fl, source = MsBackendMzR())
 #'
-#' sps <- sps[1:10]
-#' res <- .compare_spectra(sps, sps, ppm = 20, FUN = cor,
-#'     use = "pairwise.complete.obs")
-#' res <- .compare_spectra(sps, sps, FUN = cor,
-#'     use = "pairwise.complete.obs", method = "spearman", ppm = 40)
+#' correlateSpectra <- function(x, y, use = "pairwise.complete.obs", ...) {
+#'     cor(x[, 2], y[, 2], use = use, ...)
+#' }
 #'
-#' res <- .compare_spectra(sps[1], sps, FUN = cor,
-#'     use = "pairwise.complete.obs")
-#' res <- .compare_spectra(sps, sps[1], FUN = cor,
-#'     use = "pairwise.complete.obs")
+#' sps <- sps[1:10]
+#' res <- .compare_spectra(sps, sps, ppm = 20, FUN = correlateSpectra)
+#' res <- .compare_spectra(sps, sps, FUN = correlateSpectra,
+#'     method = "spearman", ppm = 40)
+#'
+#' res <- .compare_spectra(sps[1], sps, FUN = correlateSpectra)
+#' res <- .compare_spectra(sps, sps[1], FUN = correlateSpectra)
+#'
 #' @noRd
 .compare_spectra <- function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0,
-                             ppm = 20, FUN = cor, ...) {
+                             ppm = 20, FUN = dotproduct, ...) {
     x_idx <- seq_along(x)
     y_idx <- seq_along(y)
 
@@ -274,7 +276,7 @@ applyProcessing <- function(object, f = dataStorage(object),
             for (j in y_idx) {
                 peak_map <- MAPFUN(px, as.list(y[j])[[1L]],
                                    tolerance = tolerance, ppm = ppm, ...)
-                mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L],
+                mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
                                  ...)
             }
         }
@@ -284,7 +286,7 @@ applyProcessing <- function(object, f = dataStorage(object),
             for (i in x_idx) {
                 peak_map <- MAPFUN(as.list(x[i])[[1]], py,
                                    tolerance = tolerance, ppm = ppm, ...)
-                mat[i, j] <- FUN(peak_map[[1L]][, 2L], peak_map[[2L]][, 2L],
+                mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
                                  ...)
             }
         }
@@ -311,7 +313,7 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' @noRd
 .compare_spectra_self <- function(x, MAPFUN = joinPeaks, tolerance = 0,
-                                  ppm = 20, FUN = cor, ...) {
+                                  ppm = 20, FUN = dotproduct, ...) {
     nx <- length(x)
     m <- matrix(NA_real_, nrow = nx, ncol = nx,
                   dimnames = list(spectraNames(x), spectraNames(x)))
@@ -325,7 +327,7 @@ applyProcessing <- function(object, f = dataStorage(object),
             py <- as.list(x[cb[i, 1L]])[[1L]]
         map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm, ...)
         m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
-            FUN(map[[1L]][, 2L], map[[2L]][, 2L], ...)
+            FUN(map[[1L]], map[[2L]], ...)
     }
     m
 }
