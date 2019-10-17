@@ -13,8 +13,9 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Description and usage of Spectra objects">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -44,7 +45,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -58,7 +59,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/RforMassSpectrometry/Spectra">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -71,6 +72,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -95,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.10/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2019-08-19 12:44:13<br><strong>Compiled</strong>: Mon Aug 19 12:50:05 2019</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.10/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2019-10-17 12:28:50<br><strong>Compiled</strong>: Thu Oct 17 12:34:30 2019</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -107,67 +109,67 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>Mass spectrometry data in <code>Spectra</code> objects can be thought of as a list of individual spectra, with each spectrum having a set of variables associated with it. Besides <em>core</em> spectra variables (such as MS level or retention time) an arbitrary number of optional variables can be assigned to a spectrum. The core spectra variables all have their own accessor method and it is guaranteed that a value is returned by it (or <code>NA</code> if the information is not available). The core variables and their data type are (alphabetically ordered):</p>
 <ul>
 <li>
-<em>acquisitionNum</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/integer">integer(1)</a></code>: the index of acquisition of a spectrum during a MS run.</li>
+<em>acquisitionNum</em> <code><a href="https://rdrr.io/r/base/integer.html">integer(1)</a></code>: the index of acquisition of a spectrum during a MS run.</li>
 <li>
-<em>centroided</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/logical">logical(1)</a></code>: whether the spectrum is in profile or centroid mode.</li>
+<em>centroided</em> <code><a href="https://rdrr.io/r/base/logical.html">logical(1)</a></code>: whether the spectrum is in profile or centroid mode.</li>
 <li>
-<em>collisionEnergy</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric(1)</a></code>: collision energy used to create an MSn spectrum.</li>
+<em>collisionEnergy</em> <code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code>: collision energy used to create an MSn spectrum.</li>
 <li>
-<em>dataOrigin</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/character">character(1)</a></code>: the <em>origin</em> of the spectrum’s data, e.g. the mzML file from which it was read.</li>
+<em>dataOrigin</em> <code><a href="https://rdrr.io/r/base/character.html">character(1)</a></code>: the <em>origin</em> of the spectrum’s data, e.g. the mzML file from which it was read.</li>
 <li>
-<em>dataStorage</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/character">character(1)</a></code>: the (current) storage location of the spectrum data. This value depends on the backend used to handle and provide the data. For an <em>in-memory</em> backend like the <code>MsBackendDataFrame</code> this will be <code>"&lt;memory&gt;"</code>, for an on-disk backend such as the <code>MsBackendHdf5Peaks</code> it will be the name of the HDF5 file where the spectrum’s peak data is stored.</li>
+<em>dataStorage</em> <code><a href="https://rdrr.io/r/base/character.html">character(1)</a></code>: the (current) storage location of the spectrum data. This value depends on the backend used to handle and provide the data. For an <em>in-memory</em> backend like the <code>MsBackendDataFrame</code> this will be <code>"&lt;memory&gt;"</code>, for an on-disk backend such as the <code>MsBackendHdf5Peaks</code> it will be the name of the HDF5 file where the spectrum’s peak data is stored.</li>
 <li>
 <em>intensity</em> <code>numeric</code>: intensity values for the spectrum’s peaks.</li>
 <li>
-<em>isolationWindowLowerMz</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric(1)</a></code>: lower m/z for the isolation window in which the (MSn) spectrum was measured.</li>
+<em>isolationWindowLowerMz</em> <code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code>: lower m/z for the isolation window in which the (MSn) spectrum was measured.</li>
 <li>
-<em>isolationWindowTargetMz</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric(1)</a></code>: the target m/z for the isolation window in which the (MSn) spectrum was measured.</li>
+<em>isolationWindowTargetMz</em> <code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code>: the target m/z for the isolation window in which the (MSn) spectrum was measured.</li>
 <li>
-<em>isolationWindowUpperMz</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric(1)</a></code>: upper m/z for the isolation window in which the (MSn) spectrum was measured.</li>
+<em>isolationWindowUpperMz</em> <code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code>: upper m/z for the isolation window in which the (MSn) spectrum was measured.</li>
 <li>
-<em>msLevel</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/integer">integer(1)</a></code>: the MS level of the spectrum.</li>
+<em>msLevel</em> <code><a href="https://rdrr.io/r/base/integer.html">integer(1)</a></code>: the MS level of the spectrum.</li>
 <li>
 <em>mz</em> <code>numeric</code>: the m/z values for the spectrum’s peaks.</li>
 <li>
-<em>polarity</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/integer">integer(1)</a></code>: the polarity of the spectrum (<code>0</code> and <code>1</code> representing negative and positive polarity, respectively).</li>
+<em>polarity</em> <code><a href="https://rdrr.io/r/base/integer.html">integer(1)</a></code>: the polarity of the spectrum (<code>0</code> and <code>1</code> representing negative and positive polarity, respectively).</li>
 <li>
-<em>precScanNum</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/integer">integer(1)</a></code>: the scan (acquisition) number of the precursor for an MSn spectrum.</li>
+<em>precScanNum</em> <code><a href="https://rdrr.io/r/base/integer.html">integer(1)</a></code>: the scan (acquisition) number of the precursor for an MSn spectrum.</li>
 <li>
-<em>precursorCharge</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/integer">integer(1)</a></code>: the charge of the precursor of an MSn spectrum.</li>
+<em>precursorCharge</em> <code><a href="https://rdrr.io/r/base/integer.html">integer(1)</a></code>: the charge of the precursor of an MSn spectrum.</li>
 <li>
-<em>precursorIntensity</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric(1)</a></code>: the intensity of the precursor of an MSn spectrum.</li>
+<em>precursorIntensity</em> <code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code>: the intensity of the precursor of an MSn spectrum.</li>
 <li>
-<em>precursorMz</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric(1)</a></code>: the m/z of the precursor of an MSn spectrum.</li>
+<em>precursorMz</em> <code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code>: the m/z of the precursor of an MSn spectrum.</li>
 <li>
-<em>rtime</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/numeric">numeric(1)</a></code>: the retention time of a spectrum.</li>
+<em>rtime</em> <code><a href="https://rdrr.io/r/base/numeric.html">numeric(1)</a></code>: the retention time of a spectrum.</li>
 <li>
-<em>scanIndex</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/integer">integer(1)</a></code>: the index of a spectrum within a (raw) file.</li>
+<em>scanIndex</em> <code><a href="https://rdrr.io/r/base/integer.html">integer(1)</a></code>: the index of a spectrum within a (raw) file.</li>
 <li>
-<em>smoothed</em> <code><a href="https://www.rdocumentation.org/packages/base/topics/logical">logical(1)</a></code>: whether the spectrum was smoothed.</li>
+<em>smoothed</em> <code><a href="https://rdrr.io/r/base/logical.html">logical(1)</a></code>: whether the spectrum was smoothed.</li>
 </ul>
 <p>For details on the individual variables and their getter/setter function see the help for <code>Spectra</code> (<code><a href="../reference/Spectra.html">?Spectra</a></code>). Also note that these variables are suggested, but not required to characterize a spectrum. Also, some only make sense for MSn, but not for MS1 spectra.</p>
 <div id="creating-spectra-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#creating-spectra-objects" class="anchor"></a>Creating <code>Spectra</code> objects</h2>
 <p>The simplest way to create a <code>Spectra</code> object is by defining a <code>DataFrame</code> with the corresponding spectra data (using the corresponding spectra variable names as column names) and passing that to the <code>Spectra</code> constructor function. Below we create such an object for a set of 3 spectra providing their MS level, polarity but also additional annotations such as their ID in <a href="http://hmdb.ca">HMDB</a> (human metabolome database) and their name. The m/z and intensity values for each spectrum have to be provided as a <code>list</code> of <code>numeric</code> values.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(Spectra)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(Spectra)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">spd &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="dt">msLevel =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(2L, 2L, 2L),</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">    <span class="dt">polarity =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(1L, 1L, 1L),</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">    <span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"HMDB0000001"</span>, <span class="st">"HMDB0000001"</span>, <span class="st">"HMDB0001847"</span>),</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">    <span class="dt">name =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"1-Methylhistidine"</span>, <span class="st">"1-Methylhistidine"</span>, <span class="st">"Caffeine"</span>))</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="dt">msLevel =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(2L, 2L, 2L),</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">    <span class="dt">polarity =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(1L, 1L, 1L),</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">    <span class="dt">id =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"HMDB0000001"</span>, <span class="st">"HMDB0000001"</span>, <span class="st">"HMDB0001847"</span>),</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">    <span class="dt">name =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"1-Methylhistidine"</span>, <span class="st">"1-Methylhistidine"</span>, <span class="st">"Caffeine"</span>))</a>
 <a class="sourceLine" id="cb1-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">## Assign m/z and intensity values.</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">spd<span class="op">$</span>mz &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">109.2</span>, <span class="fl">124.2</span>, <span class="fl">124.5</span>, <span class="fl">170.16</span>, <span class="fl">170.52</span>),</a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">83.1</span>, <span class="fl">96.12</span>, <span class="fl">97.14</span>, <span class="fl">109.14</span>, <span class="fl">124.08</span>, <span class="fl">125.1</span>, <span class="fl">170.16</span>),</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">56.0494</span>, <span class="fl">69.0447</span>, <span class="fl">83.0603</span>, <span class="fl">109.0395</span>, <span class="fl">110.0712</span>,</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">spd<span class="op">$</span>mz &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">109.2</span>, <span class="fl">124.2</span>, <span class="fl">124.5</span>, <span class="fl">170.16</span>, <span class="fl">170.52</span>),</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">83.1</span>, <span class="fl">96.12</span>, <span class="fl">97.14</span>, <span class="fl">109.14</span>, <span class="fl">124.08</span>, <span class="fl">125.1</span>, <span class="fl">170.16</span>),</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">56.0494</span>, <span class="fl">69.0447</span>, <span class="fl">83.0603</span>, <span class="fl">109.0395</span>, <span class="fl">110.0712</span>,</a>
 <a class="sourceLine" id="cb1-14" data-line-number="14">      <span class="fl">111.0551</span>, <span class="fl">123.0429</span>, <span class="fl">138.0662</span>, <span class="fl">195.0876</span>))</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">spd<span class="op">$</span>intensity &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">3.407</span>, <span class="fl">47.494</span>, <span class="fl">3.094</span>, <span class="fl">100.0</span>, <span class="fl">13.240</span>),</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">6.685</span>, <span class="fl">4.381</span>, <span class="fl">3.022</span>, <span class="fl">16.708</span>, <span class="fl">100.0</span>, <span class="fl">4.565</span>, <span class="fl">40.643</span>),</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.459</span>, <span class="fl">2.585</span>, <span class="fl">2.446</span>, <span class="fl">0.508</span>, <span class="fl">8.968</span>, <span class="fl">0.524</span>, <span class="fl">0.974</span>, <span class="fl">100.0</span>, <span class="fl">40.994</span>))</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">spd<span class="op">$</span>intensity &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3.407</span>, <span class="fl">47.494</span>, <span class="fl">3.094</span>, <span class="fl">100.0</span>, <span class="fl">13.240</span>),</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">6.685</span>, <span class="fl">4.381</span>, <span class="fl">3.022</span>, <span class="fl">16.708</span>, <span class="fl">100.0</span>, <span class="fl">4.565</span>, <span class="fl">40.643</span>),</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.459</span>, <span class="fl">2.585</span>, <span class="fl">2.446</span>, <span class="fl">0.508</span>, <span class="fl">8.968</span>, <span class="fl">0.524</span>, <span class="fl">0.974</span>, <span class="fl">100.0</span>, <span class="fl">40.994</span>))</a>
 <a class="sourceLine" id="cb1-19" data-line-number="19"></a>
 <a class="sourceLine" id="cb1-20" data-line-number="20">sps &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">Spectra</a></span>(spd)</a>
 <a class="sourceLine" id="cb1-21" data-line-number="21">sps</a></code></pre></div>
@@ -181,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## Processing:
 ## </code></pre>
 <p>Alternatively, it is possible to import spectra data from mass spectrometry raw files in mzML/mzXML or CDF format. Below we create a <code>Spectra</code> object from two mzML files and define to use a <code>MsBackendMzR</code> backend to <em>store</em> the data (note that this requires the <em><a href="https://bioconductor.org/packages/3.10/mzR">mzR</a></em> package to be installed). This backend, specifically designed for raw MS data, keeps only a subset of spectra variables in memory while reading the m/z and intensity values from the original data files only on demand. See section <a href="#backends">Backends</a> for more details on backends and their properties.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">fls &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list.files">dir</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"sciex"</span>, <span class="dt">package =</span> <span class="st">"msdata"</span>), <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">fls &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.files.html">dir</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"sciex"</span>, <span class="dt">package =</span> <span class="st">"msdata"</span>), <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">sps_sciex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">Spectra</a></span>(fls, <span class="dt">backend =</span> <span class="kw"><a href="../reference/MsBackend.html">MsBackendMzR</a></span>())</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">sps_sciex</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
@@ -198,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 1860         1       259.194       929
 ## 1861         1       259.473       930
 ## 1862         1       259.752       931
-##  ... 31 more variables/columns.
+##  ... 33 more variables/columns.
 ## 
 ## file(s):
 ## 20171016_POOL_POS_1_105-134.mzML
@@ -240,27 +242,28 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [27] "mergedScan"               "mergedResultScanNum"     
 ## [29] "mergedResultStartScanNum" "mergedResultEndScanNum"  
 ## [31] "injectionTime"            "filterString"            
-## [33] "spectrumId"               "ionMobilityDriftTime"</code></pre>
+## [33] "spectrumId"               "ionMobilityDriftTime"    
+## [35] "scanWindowLowerLimit"     "scanWindowUpperLimit"</code></pre>
 <p>The two <code>Spectra</code> contain a different set of variables: besides <code>"msLevel"</code>, <code>"polarity"</code>, <code>"id"</code> and <code>"name"</code>, that were specified for the <code>Spectra</code> object <code>sps</code>, it contains more variables such as <code>"rtime"</code>, <code>"acquisitionNum"</code> and <code>"scanIndex"</code>. These are part of the <em>core variables</em> defining a spectrum and for all of these accessor methods exist. Below we use <code>msLevel</code> and <code>rtime</code> to access the MS levels and retention times for the spectra in <code>sps</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">msLevel</span>(sps)</a></code></pre></div>
 <pre><code>## [1] 2 2 2</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">rtime</span>(sps)</a></code></pre></div>
 <pre><code>## [1] NA NA NA</code></pre>
 <p>We did not specify retention times for the spectra in <code>sps</code> thus <code>NA</code> is returned for them. The <code>Spectra</code> object <code>sps_sciex</code> contains many more variables, all of which were extracted from the mzML files. Below we extract the retention times for the first spectra in the object.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw">rtime</span>(sps_sciex))</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">rtime</span>(sps_sciex))</a></code></pre></div>
 <pre><code>## [1] 0.280 0.559 0.838 1.117 1.396 1.675</code></pre>
-<p>Note that in addition to the accessor functions it is also possible to use <code>$</code> to extract a specific spectra variable. To extract the name of the compounds in <code>sps</code> we can use <code>sps$name</code>, or, to extract the MS levels <code>sps$msLevel</code>.</p>
+<p>Note that in addition to the accessor functions it is also possible to use <code><a href="https://rdrr.io/r/base/Extract.html">$</a></code> to extract a specific spectra variable. To extract the name of the compounds in <code>sps</code> we can use <code>sps$name</code>, or, to extract the MS levels <code>sps$msLevel</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">sps<span class="op">$</span>name</a></code></pre></div>
 <pre><code>## [1] "1-Methylhistidine" "1-Methylhistidine" "Caffeine"</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">sps<span class="op">$</span>msLevel</a></code></pre></div>
 <pre><code>## [1] 2 2 2</code></pre>
-<p>We could also replace specific spectra variables using either the dedicated method or <code>$</code>. Below we specify that all spectra in <code>sps</code> represent centroided data.</p>
+<p>We could also replace specific spectra variables using either the dedicated method or <code><a href="https://rdrr.io/r/base/Extract.html">$</a></code>. Below we specify that all spectra in <code>sps</code> represent centroided data.</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">sps<span class="op">$</span>centroided &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
 <a class="sourceLine" id="cb19-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb19-3" data-line-number="3"><span class="kw">centroided</span>(sps)</a></code></pre></div>
 <pre><code>## [1] TRUE TRUE TRUE</code></pre>
-<p>The <code>$</code> operator can also be used to add arbitrary new spectra variables to a <code>Spectra</code> object. Below we add the SPLASH key to each of the spectra.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">sps<span class="op">$</span>splash &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(</a>
+<p>The <code><a href="https://rdrr.io/r/base/Extract.html">$</a></code> operator can also be used to add arbitrary new spectra variables to a <code>Spectra</code> object. Below we add the SPLASH key to each of the spectra.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">sps<span class="op">$</span>splash &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(</a>
 <a class="sourceLine" id="cb21-2" data-line-number="2">    <span class="st">"splash10-00di-0900000000-037d24a7d65676b7e356"</span>,</a>
 <a class="sourceLine" id="cb21-3" data-line-number="3">    <span class="st">"splash10-00di-0900000000-03e99316bd6c098f5d11"</span>,</a>
 <a class="sourceLine" id="cb21-4" data-line-number="4">    <span class="st">"splash10-000i-0900000000-9af60e39c843cb715435"</span>)</a></code></pre></div>
@@ -276,8 +279,8 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [[1]] 3.407 47.494 3.094 100 13.24
 ## [[2]] 6.685 4.381 3.022 16.708 100 4.565 40.643
 ## [[3]] 0.459 2.585 2.446 0.508 8.968 0.524 0.974 100 40.994</code></pre>
-<p>Peak data can also be extracted with the <code>peaks</code> function that returns a list of matrices, each with columns <code>"mz"</code> and <code>"intensity"</code> containing the m/z and intensity values for one spectrum.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">pks &lt;-<span class="st"> </span><span class="kw">peaks</span>(sps)</a>
+<p>Peak data can also be extracted with the <code>as.list</code> function that returns a list of matrices, each with columns <code>"mz"</code> and <code>"intensity"</code> containing the m/z and intensity values for one spectrum.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">pks &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(sps)</a>
 <a class="sourceLine" id="cb26-2" data-line-number="2">pks[[<span class="dv">1</span>]]</a></code></pre></div>
 <pre><code>##          mz intensity
 ## [1,] 109.20     3.407
@@ -286,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [4,] 170.16   100.000
 ## [5,] 170.52    13.240</code></pre>
 <p>The <code>spectraData</code> function returns a <code>DataFrame</code> with the full data for each spectrum, or with selected spectra variables (which can be specified with the <code>columns</code> parameter). Below we extract the spectra data for variables <code>"msLevel"</code>, <code>"id"</code> and <code>"name"</code>.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw">spectraData</span>(sps, <span class="dt">columns =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"msLevel"</span>, <span class="st">"id"</span>, <span class="st">"name"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw">spectraData</span>(sps, <span class="dt">columns =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"msLevel"</span>, <span class="st">"id"</span>, <span class="st">"name"</span>))</a></code></pre></div>
 <pre><code>## DataFrame with 3 rows and 3 columns
 ##     msLevel          id              name
 ##   &lt;integer&gt; &lt;character&gt;       &lt;character&gt;
@@ -294,17 +297,17 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 2         2 HMDB0000001 1-Methylhistidine
 ## 3         2 HMDB0001847          Caffeine</code></pre>
 <p><code>Spectra</code> are one-dimensional objects storing spectra, even from different files or samples, in a single list. Specific variables have thus to be used to define the originating file from which they were extracted or the sample in which they were measured. The <em>data origin</em> of each spectrum can be extracted with the <code>dataOrigin</code> function. For <code>sps</code>, the <code>Spectra</code> created from a <code>DataFrame</code>, this will be <code>NA</code> because we did not specify the data origin:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw"><a href="../reference/hidden_aliases.html">dataOrigin</a></span>(sps)</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">dataOrigin</span>(sps)</a></code></pre></div>
 <pre><code>## [1] NA NA NA</code></pre>
 <p><code>dataOrigin</code> for <code>sps_sciex</code>, the <code>Spectra</code> which was initialized with data from mzML files, in contrast, returns the originating file names:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/basename">basename</a></span>(<span class="kw"><a href="../reference/hidden_aliases.html">dataOrigin</a></span>(sps_sciex)))</a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(<span class="kw">dataOrigin</span>(sps_sciex)))</a></code></pre></div>
 <pre><code>## [1] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"
 ## [3] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"
 ## [5] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"</code></pre>
 <p>The current data storage location of a spectrum can be retrieved with the <code>dataStorage</code> variable, which will return an arbitrary string for <code>Spectra</code> that use an in-memory backend or the file where the data is stored for on-disk backends:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw"><a href="../reference/hidden_aliases.html">dataStorage</a></span>(sps)</a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw">dataStorage</span>(sps)</a></code></pre></div>
 <pre><code>## [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</code></pre>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/basename">basename</a></span>(<span class="kw"><a href="../reference/hidden_aliases.html">dataStorage</a></span>(sps_sciex)))</a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(<span class="kw">dataStorage</span>(sps_sciex)))</a></code></pre></div>
 <pre><code>## [1] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"
 ## [3] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"
 ## [5] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"</code></pre>
@@ -312,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="filtering-subsetting-and-merging" class="section level2">
 <h2 class="hasAnchor">
 <a href="#filtering-subsetting-and-merging" class="anchor"></a>Filtering, subsetting and merging</h2>
-<p>A set of filter functions are defined that allow to subset <code>Spectra</code> objects (for detailed help please see the <code><a href="../reference/Spectra.html">?Spectra</a></code> help):</p>
+<p>Apart from <em>classical</em> subsetting operations such as <code><a href="https://rdrr.io/r/base/Extract.html">[</a></code> and <code>split</code>, a set of filter functions are defined for <code>Spectra</code> objects (for detailed help please see the <code><a href="../reference/Spectra.html">?Spectra</a></code> help):</p>
 <ul>
 <li>
 <code>filterAcquisitionNum</code>: retain spectra with certain acquisition numbers.</li>
@@ -329,21 +332,21 @@ document.addEventListener("DOMContentLoaded", function() {
 <li>
 <code>filterPolarity</code>: filter by polarity.</li>
 <li>
-<code>filterPrecursorMz</code>: retain (MSn) spectra with a precursor m/z equal to the provided one.</li>
+<code>filterPrecursorMz</code>: retain (MSn) spectra with a precursor m/z within the provided m/z range.</li>
 <li>
 <code>filterPrecursorScan</code>: retain (parent and children) scans of an acquisition number.</li>
 <li>
 <code>filterRt</code>: filter based on retention time ranges.</li>
 </ul>
 <p>In the example below we select all spectra measured in the second mzML file and subsequently filter them to retain spectra measured between 175 and 189 seconds in the measurement run.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">fls &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(<span class="kw"><a href="../reference/hidden_aliases.html">dataOrigin</a></span>(sps_sciex))</a>
-<a class="sourceLine" id="cb38-2" data-line-number="2">file_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/hidden_aliases.html">filterDataOrigin</a></span>(sps_sciex, <span class="dt">dataOrigin =</span> fls[<span class="dv">2</span>])</a>
-<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(file_<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">fls &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw">dataOrigin</span>(sps_sciex))</a>
+<a class="sourceLine" id="cb38-2" data-line-number="2">file_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">filterDataOrigin</span>(sps_sciex, <span class="dt">dataOrigin =</span> fls[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(file_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## [1] 931</code></pre>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">sps_sub &lt;-<span class="st"> </span><span class="kw"><a href="../reference/hidden_aliases.html">filterRt</a></span>(file_<span class="dv">2</span>, <span class="dt">rt =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">175</span>, <span class="dv">189</span>))</a>
-<a class="sourceLine" id="cb40-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(sps_sub)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">sps_sub &lt;-<span class="st"> </span><span class="kw">filterRt</span>(file_<span class="dv">2</span>, <span class="dt">rt =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">175</span>, <span class="dv">189</span>))</a>
+<a class="sourceLine" id="cb40-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(sps_sub)</a></code></pre></div>
 <pre><code>## [1] 50</code></pre>
-<p>In addition, <code>Spectra</code> support also subsetting with <code>[</code>. Below we perform the filtering above with <code>[</code> -based subsetting.</p>
+<p>In addition, <code>Spectra</code> support also subsetting with <code><a href="https://rdrr.io/r/base/Extract.html">[</a></code>. Below we perform the filtering above with <code><a href="https://rdrr.io/r/base/Extract.html">[</a></code> -based subsetting.</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">sps_sciex[sps_sciex<span class="op">$</span>dataOrigin <span class="op">==</span><span class="st"> </span>fls[<span class="dv">2</span>] <span class="op">&amp;</span></a>
 <a class="sourceLine" id="cb42-2" data-line-number="2"><span class="st">          </span>sps_sciex<span class="op">$</span>rtime <span class="op">&gt;=</span><span class="st"> </span><span class="dv">175</span> <span class="op">&amp;</span></a>
 <a class="sourceLine" id="cb42-3" data-line-number="3"><span class="st">          </span>sps_sciex<span class="op">$</span>rtime <span class="op">&lt;=</span><span class="st"> </span><span class="dv">189</span>]</a></code></pre></div>
@@ -361,17 +364,17 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 48          1 188.32600000002       675
 ## 49          1 188.60500000002       676
 ## 50          1 188.88400000002       677
-##  ... 31 more variables/columns.
+##  ... 33 more variables/columns.
 ## 
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
 ## </code></pre>
 <p>The equivalent using filter function is shown below, with the added benefit that the filtering is recorded in the processing slot.</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"magrittr"</span>)</a>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"magrittr"</span>)</a>
 <a class="sourceLine" id="cb44-2" data-line-number="2">sps_sciex <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb44-3" data-line-number="3"><span class="st">    </span><span class="kw"><a href="../reference/hidden_aliases.html">filterDataOrigin</a></span>(fls[<span class="dv">2</span>]) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb44-4" data-line-number="4"><span class="st">    </span><span class="kw"><a href="../reference/hidden_aliases.html">filterRt</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">175</span>, <span class="dv">189</span>))</a></code></pre></div>
+<a class="sourceLine" id="cb44-3" data-line-number="3"><span class="st">    </span><span class="kw">filterDataOrigin</span>(fls[<span class="dv">2</span>]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb44-4" data-line-number="4"><span class="st">    </span><span class="kw">filterRt</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">175</span>, <span class="dv">189</span>))</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 50 spectra in a MsBackendMzR backend:
 ##       msLevel           rtime scanIndex
 ##     &lt;integer&gt;       &lt;numeric&gt; &lt;integer&gt;
@@ -386,13 +389,13 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 48          1 188.32600000002       675
 ## 49          1 188.60500000002       676
 ## 50          1 188.88400000002       677
-##  ... 31 more variables/columns.
+##  ... 33 more variables/columns.
 ## 
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Mon Aug 19 12:50:08 2019]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Mon Aug 19 12:50:09 2019]</code></pre>
+##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Thu Oct 17 12:34:33 2019]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Thu Oct 17 12:34:33 2019]</code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">caf_df &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">msLevel =</span> 2L, <span class="dt">name =</span> <span class="st">"Caffeine"</span>,</a>
@@ -400,12 +403,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <a class="sourceLine" id="cb46-3" data-line-number="3">                    <span class="dt">instrument =</span> <span class="st">"Agilent 1200 RRLC; Agilent 6520 QTOF"</span>,</a>
 <a class="sourceLine" id="cb46-4" data-line-number="4">                    <span class="dt">splash =</span> <span class="st">"splash10-0002-0900000000-413259091ba7edc46b87"</span>,</a>
 <a class="sourceLine" id="cb46-5" data-line-number="5">                    <span class="dt">centroided =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb46-6" data-line-number="6">caf_df<span class="op">$</span>mz &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">110.0710</span>, <span class="fl">138.0655</span>, <span class="fl">138.1057</span>, <span class="fl">138.1742</span>, <span class="fl">195.9864</span>))</a>
-<a class="sourceLine" id="cb46-7" data-line-number="7">caf_df<span class="op">$</span>intensity &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">3.837</span>, <span class="fl">32.341</span>, <span class="fl">0.84</span>, <span class="fl">0.534</span>, <span class="dv">100</span>))</a>
+<a class="sourceLine" id="cb46-6" data-line-number="6">caf_df<span class="op">$</span>mz &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">110.0710</span>, <span class="fl">138.0655</span>, <span class="fl">138.1057</span>, <span class="fl">138.1742</span>, <span class="fl">195.9864</span>))</a>
+<a class="sourceLine" id="cb46-7" data-line-number="7">caf_df<span class="op">$</span>intensity &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3.837</span>, <span class="fl">32.341</span>, <span class="fl">0.84</span>, <span class="fl">0.534</span>, <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb46-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb46-9" data-line-number="9">caf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">Spectra</a></span>(caf_df)</a></code></pre></div>
 <p>Next we combine the two objects.</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">sps &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(sps, caf)</a>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">sps &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(sps, caf)</a>
 <a class="sourceLine" id="cb47-2" data-line-number="2">sps</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 4 spectra in a MsBackendDataFrame backend:
 ##     msLevel     rtime scanIndex
@@ -416,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Mon Aug 19 12:50:09 2019]</code></pre>
+##  Merge 2 Spectra into one [Thu Oct 17 12:34:34 2019]</code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="kw">spectraVariables</span>(sps)</a></code></pre></div>
 <pre><code>##  [1] "msLevel"                 "rtime"                  
@@ -459,7 +462,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [[2]] 16.708 100 40.643
 ## [[3]] 100 40.994
 ## [[4]] 32.341 100</code></pre>
-<p>Note that any data manipulations on <code>Spectra</code> objects are not immediately applied to the peak data. They are added to a so called <em>processing queue</em> which is applied each time peak data is accessed (with the <code>peaks</code>, <code>mz</code> or <code>intensity</code> functions). Thanks to this processing queue data manipulation operations are also possible for <em>read-only</em> backends (e.g. mzML-file based backends or database-based backends). The information about the number of such processing steps can be seen below (next to <em>Lazy evaluation queue</em>).</p>
+<p>Note that any data manipulations on <code>Spectra</code> objects are not immediately applied to the peak data. They are added to a so called <em>processing queue</em> which is applied each time peak data is accessed (with the <code>as.list</code>, <code>mz</code> or <code>intensity</code> functions). Thanks to this processing queue data manipulation operations are also possible for <em>read-only</em> backends (e.g. mzML-file based backends or database-based backends). The information about the number of such processing steps can be seen below (next to <em>Lazy evaluation queue</em>).</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1">sps</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 4 spectra in a MsBackendDataFrame backend:
 ##     msLevel     rtime scanIndex
@@ -471,9 +474,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 2 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Mon Aug 19 12:50:09 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Aug 19 12:50:09 2019]
-##  Spectra of MS level(s) 2 cleaned. [Mon Aug 19 12:50:09 2019]</code></pre>
+##  Merge 2 Spectra into one [Thu Oct 17 12:34:34 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Oct 17 12:34:34 2019]
+##  Spectra of MS level(s) 2 cleaned. [Thu Oct 17 12:34:34 2019]</code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">## Define a function that takes a matrix as input, divides the second</a>
 <a class="sourceLine" id="cb61-2" data-line-number="2">## column by parameter y and returns it. Note that ... is required in</a>
@@ -496,9 +499,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 3 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Mon Aug 19 12:50:09 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Aug 19 12:50:09 2019]
-##  Spectra of MS level(s) 2 cleaned. [Mon Aug 19 12:50:09 2019]</code></pre>
+##  Merge 2 Spectra into one [Thu Oct 17 12:34:34 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Oct 17 12:34:34 2019]
+##  Spectra of MS level(s) 2 cleaned. [Thu Oct 17 12:34:34 2019]</code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="kw">intensity</span>(sps_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## NumericList of length 4
@@ -514,11 +517,11 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [[4]] 32.341 100</code></pre>
 <p>Alternatively we could define a function that returns the maximum peak from each spectrum:</p>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" data-line-number="1">max_peak &lt;-<span class="st"> </span><span class="cf">function</span>(x, ...) {</a>
-<a class="sourceLine" id="cb67-2" data-line-number="2">    x[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which.min">which.max</a></span>(x[, <span class="dv">2</span>]), , drop =<span class="st"> </span><span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb67-2" data-line-number="2">    x[<span class="kw"><a href="https://rdrr.io/r/base/which.min.html">which.max</a></span>(x[, <span class="dv">2</span>]), , drop =<span class="st"> </span><span class="ot">FALSE</span>]</a>
 <a class="sourceLine" id="cb67-3" data-line-number="3">}</a>
 <a class="sourceLine" id="cb67-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb67-5" data-line-number="5">sps_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">addProcessing</a></span>(sps, max_peak)</a>
-<a class="sourceLine" id="cb67-6" data-line-number="6"><span class="kw"><a href="../reference/hidden_aliases.html">peaksCount</a></span>(sps_<span class="dv">2</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb67-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/lengths.html">lengths</a></span>(sps_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## [1] 1 1 1 1</code></pre>
 <div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1"><span class="kw">intensity</span>(sps_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## NumericList of length 4
@@ -528,10 +531,10 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [[4]] intensity=100</code></pre>
 <p>Each spectrum in <code>sps_2</code> thus contains only a single peak.</p>
 <p>Finally, for <code>Spectra</code> that use a <em>writeable</em> backend, such as the <code>MsBackendDataFrame</code> or <code>MsBackendHdf5Peaks</code>, it is possible to apply the processing queue to the peak data and write that back to the data storage with the <code>applyProcessing</code> function. Below we use this to make all data manipulations on peak data of the <code>sps</code> object persistent.</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(sps<span class="op">@</span>processingQueue)</a></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(sps<span class="op">@</span>processingQueue)</a></code></pre></div>
 <pre><code>## [1] 2</code></pre>
 <div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1">sps &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">applyProcessing</a></span>(sps)</a>
-<a class="sourceLine" id="cb73-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(sps<span class="op">@</span>processingQueue)</a></code></pre></div>
+<a class="sourceLine" id="cb73-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(sps<span class="op">@</span>processingQueue)</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" data-line-number="1">sps</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 4 spectra in a MsBackendDataFrame backend:
@@ -543,17 +546,17 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Mon Aug 19 12:50:09 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Aug 19 12:50:09 2019]
-##  Spectra of MS level(s) 2 cleaned. [Mon Aug 19 12:50:09 2019]
-##  Applied processing queue with 2 steps [Mon Aug 19 12:50:09 2019]</code></pre>
+##  Merge 2 Spectra into one [Thu Oct 17 12:34:34 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Oct 17 12:34:34 2019]
+##  Spectra of MS level(s) 2 cleaned. [Thu Oct 17 12:34:34 2019]
+##  Applied processing queue with 2 steps [Thu Oct 17 12:34:34 2019]</code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage.</p>
 </div>
 <div id="changing-backends" class="section level2">
 <h2 class="hasAnchor">
 <a href="#changing-backends" class="anchor"></a>Changing backends</h2>
 <p>In the previous sections we learned already that a <code>Spectra</code> object can use different backends for the actual data handling. It is also possible to change the backend of a <code>Spectra</code> to a different one with the <code>setBackend</code> function. We could for example change the (<code>MsBackendMzR</code>) backend of the <code>sps_sciex</code> object to a <code>MsBackendDataFrame</code> backend to enable use of the data even without the need to keep the original mzML files. Below we change the backend of <code>sps_sciex</code> to the in-memory <code>MsBackendDataFrame</code> backend.</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/object.size">object.size</a></span>(sps_sciex), <span class="dt">units =</span> <span class="st">"Mb"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(sps_sciex), <span class="dt">units =</span> <span class="st">"Mb"</span>)</a></code></pre></div>
 <pre><code>## 0.2 Mb</code></pre>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1">sps_sciex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/hidden_aliases.html">setBackend</a></span>(sps_sciex, <span class="kw"><a href="../reference/MsBackend.html">MsBackendDataFrame</a></span>())</a>
 <a class="sourceLine" id="cb79-2" data-line-number="2">sps_sciex</a></code></pre></div>
@@ -571,16 +574,16 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 1860         1       259.194       929
 ## 1861         1       259.473       930
 ## 1862         1       259.752       931
-##  ... 31 more variables/columns.
+##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Aug 19 12:50:35 2019]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Thu Oct 17 12:34:38 2019]</code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/object.size">object.size</a></span>(sps_sciex), <span class="dt">units =</span> <span class="st">"Mb"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(sps_sciex), <span class="dt">units =</span> <span class="st">"Mb"</span>)</a></code></pre></div>
 <pre><code>## 52.1 Mb</code></pre>
 <p>The <code>dataStorage</code> spectrum variable has now changed, while <code>dataOrigin</code> still keeps the information about the originating files:</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/hidden_aliases.html">dataStorage</a></span>(sps_sciex))</a></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">dataStorage</span>(sps_sciex))</a></code></pre></div>
 <pre><code>## [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</code></pre>
-<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/basename">basename</a></span>(<span class="kw"><a href="../reference/hidden_aliases.html">dataOrigin</a></span>(sps_sciex)))</a></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(<span class="kw">dataOrigin</span>(sps_sciex)))</a></code></pre></div>
 <pre><code>## [1] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"
 ## [3] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"
 ## [5] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"</code></pre>
@@ -602,11 +605,11 @@ document.addEventListener("DOMContentLoaded", function() {
 </ul>
 <p>All of the above mentioned backends support changing all of their their spectra variables, <strong>except</strong> the <code>MsBackendMzR</code> that does not support changing m/z or intensity values for the mass peaks.</p>
 <p>With the example below we load the data from a single mzML file and use a <code>MsBackendHdf5Peaks</code> backend for data storage. The <code>hdf5path</code> parameter allows us to specify the storage location of the HDF5 file.</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(msdata)</a>
-<a class="sourceLine" id="cb87-2" data-line-number="2">fl &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/msdata/topics/proteomics">proteomics</a></span>(<span class="dt">full.names =</span> <span class="ot">TRUE</span>)[<span class="dv">5</span>]</a>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(msdata)</a>
+<a class="sourceLine" id="cb87-2" data-line-number="2">fl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/msdata/man/proteomics.html">proteomics</a></span>(<span class="dt">full.names =</span> <span class="ot">TRUE</span>)[<span class="dv">5</span>]</a>
 <a class="sourceLine" id="cb87-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb87-4" data-line-number="4">sps_tmt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">Spectra</a></span>(fl, <span class="dt">backend =</span> <span class="kw"><a href="../reference/MsBackend.html">MsBackendHdf5Peaks</a></span>(), <span class="dt">hdf5path =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempdir</a></span>())</a>
-<a class="sourceLine" id="cb87-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/basename">basename</a></span>(<span class="kw"><a href="../reference/hidden_aliases.html">dataStorage</a></span>(sps_tmt)))</a></code></pre></div>
+<a class="sourceLine" id="cb87-4" data-line-number="4">sps_tmt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">Spectra</a></span>(fl, <span class="dt">backend =</span> <span class="kw"><a href="../reference/MsBackend.html">MsBackendHdf5Peaks</a></span>(), <span class="dt">hdf5path =</span> <span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())</a>
+<a class="sourceLine" id="cb87-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(<span class="kw">dataStorage</span>(sps_tmt)))</a></code></pre></div>
 <pre><code>## [1] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.h5"
 ## [2] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.h5"
 ## [3] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.h5"
@@ -617,7 +620,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="session-information" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session information</h1>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/sessionInfo">sessionInfo</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a></code></pre></div>
 <pre><code>## R version 3.6.1 (2017-01-27)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 14.04.5 LTS
@@ -640,22 +643,21 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 
 ## other attached packages:
 ## [1] msdata_0.25.2       magrittr_1.5        Spectra_0.3.0      
-## [4] ProtGenerics_1.17.3 BiocParallel_1.19.2 S4Vectors_0.23.18  
-## [7] BiocGenerics_0.31.5 BiocStyle_2.13.2   
+## [4] ProtGenerics_1.17.4 BiocParallel_1.19.3 S4Vectors_0.23.25  
+## [7] BiocGenerics_0.31.6 BiocStyle_2.13.2   
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.2         compiler_3.6.1     BiocManager_1.30.4
-##  [4] tools_3.6.1        ncdf4_1.16.1       digest_0.6.20     
-##  [7] rhdf5_2.29.0       evaluate_0.14      memoise_1.1.0     
-## [10] rlang_0.4.0        commonmark_1.7     yaml_2.2.0        
-## [13] pkgdown_1.3.0      xfun_0.8           stringr_1.4.0     
-## [16] roxygen2_6.1.1     xml2_1.2.2         knitr_1.24        
-## [19] desc_1.2.0         fs_1.3.1           IRanges_2.19.10   
-## [22] MsCoreUtils_0.0.1  rprojroot_1.3-2    Biobase_2.45.0    
-## [25] R6_2.4.0           rmarkdown_1.14     bookdown_0.12     
-## [28] Rhdf5lib_1.7.4     mzR_2.19.3         backports_1.1.4   
-## [31] codetools_0.2-16   htmltools_0.3.6    MASS_7.3-51.4     
-## [34] assertthat_0.2.1   stringi_1.4.3      crayon_1.3.4</code></pre>
+##  [1] Rcpp_1.0.2         compiler_3.6.1     BiocManager_1.30.8
+##  [4] tools_3.6.1        ncdf4_1.16.1       digest_0.6.21     
+##  [7] evaluate_0.14      memoise_1.1.0      rhdf5_2.29.5      
+## [10] rlang_0.4.0        yaml_2.2.0         pkgdown_1.4.1     
+## [13] xfun_0.10          stringr_1.4.0      knitr_1.25        
+## [16] desc_1.2.0         fs_1.3.1           IRanges_2.19.17   
+## [19] MsCoreUtils_0.0.2  rprojroot_1.3-2    Biobase_2.45.1    
+## [22] R6_2.4.0           rmarkdown_1.16     bookdown_0.14     
+## [25] Rhdf5lib_1.7.6     mzR_2.19.7         backports_1.1.5   
+## [28] codetools_0.2-16   htmltools_0.4.0    MASS_7.3-51.4     
+## [31] assertthat_0.2.1   stringi_1.4.3      crayon_1.3.4</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1 class="hasAnchor">
@@ -664,6 +666,7 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -689,17 +692,20 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Laurent Gatto, Johannes Rainer, Sebastian Gibb.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

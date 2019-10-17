@@ -15,21 +15,25 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -37,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Mass spectrometry data backends — MsBackend" />
 
+<meta property="og:title" content="Mass spectrometry data backends — MsBackend" />
 <meta property="og:description" content="Note that the classes described here are not meant to be used
 directly by the end-users and the material in this man page is
 aimed at package developers.
@@ -62,10 +66,11 @@ backend requires the mzR package.
 MsBackendHdf5Peaks: stores the m/z and intensities on-disk in custom hdf5
 data files and the remaining spectra variables in memory (in a
 DataFrame). This backend requires the rhdf5 package.
-" />
 
-<meta property="og:description" content="See below for more details about individual backends." />
+
+See below for more details about individual backends." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -77,6 +82,7 @@ DataFrame). This backend requires the rhdf5 package.
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -103,7 +109,7 @@ DataFrame). This backend requires the rhdf5 package.
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,11 +120,10 @@ DataFrame). This backend requires the rhdf5 package.
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/RforMassSpectrometry/Spectra">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -129,6 +134,7 @@ DataFrame). This backend requires the rhdf5 package.
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -140,7 +146,6 @@ DataFrame). This backend requires the rhdf5 package.
     </div>
 
     <div class="ref-description">
-    
     <p>Note that the classes described here are not meant to be used
 directly by the end-users and the material in this man page is
 aimed at package developers.</p>
@@ -166,8 +171,7 @@ data files and the remaining spectra variables in memory (in a
 <code>DataFrame</code>). This backend requires the <code>rhdf5</code> package.</p></li>
 </ul>
 
-    <p>See below for more details about individual backends.</p>
-    
+<p>See below for more details about individual backends.</p>
     </div>
 
     <pre class="usage"># S4 method for MsBackend
@@ -181,6 +185,9 @@ backendMerge(object, ...)
 
 # S4 method for MsBackend
 acquisitionNum(object)
+
+# S4 method for MsBackend
+as.list(x)
 
 # S4 method for MsBackend
 centroided(object)
@@ -228,7 +235,7 @@ filterMsLevel(object, msLevel)
 filterPolarity(object, polarity)
 
 # S4 method for MsBackend
-filterPrecursorMz(object, mz, ppm)
+filterPrecursorMz(object, mz)
 
 # S4 method for MsBackend
 filterPrecursorScan(object, acquisitionNum, ...)
@@ -285,13 +292,7 @@ mz(object)
 mz(object) <- value
 
 # S4 method for MsBackend
-peaks(object)
-
-# S4 method for MsBackend
-peaks(object) <- value
-
-# S4 method for MsBackend
-peaksCount(object)
+lengths(x, use.names = FALSE)
 
 # S4 method for MsBackend
 polarity(object)
@@ -310,6 +311,9 @@ precursorIntensity(object)
 
 # S4 method for MsBackend
 precursorMz(object)
+
+# S4 method for MsBackend
+replaceList(object) <- value
 
 # S4 method for MsBackend
 rtime(object)
@@ -346,6 +350,9 @@ spectraNames(object) <- value
 # S4 method for MsBackend
 spectraVariables(object)
 
+# S4 method for MsBackend,ANY
+split(x, f, drop = FALSE, ...)
+
 # S4 method for MsBackend
 tic(object, initial = TRUE)
 
@@ -363,7 +370,7 @@ MsBackendDataFrame()
 MsBackendHdf5Peaks()
 
 MsBackendMzR()</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -374,6 +381,10 @@ MsBackendMzR()</pre>
     <tr>
       <th>...</th>
       <td><p>Additional arguments.</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>Object extending <code>MsBackend</code>.</p></td>
     </tr>
     <tr>
       <th>value</th>
@@ -406,8 +417,9 @@ only for spectra of selected <code>dataStorage</code>.</p></td>
     </tr>
     <tr>
       <th>mz</th>
-      <td><p>For <code>filterIsolationWindow</code> and <code>filterPrecursorMz</code>: <code><a href='https://www.rdocumentation.org/packages/base/topics/numeric'>numeric(1)</a></code>
-with the m/z value to filter the object.</p></td>
+      <td><p>For <code>filterIsolationWindow</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the m/z value to
+filter the object. For <code>filterPrecursorMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> with the lower
+and upper m/z boundary.</p></td>
     </tr>
     <tr>
       <th>msLevel</th>
@@ -421,12 +433,6 @@ function should be applied. For <code>filterMsLevel</code>: the MS level to whic
 to subset <code>object</code>.</p></td>
     </tr>
     <tr>
-      <th>ppm</th>
-      <td><p>For <code>filterPrecursorMz</code>: <code><a href='https://www.rdocumentation.org/packages/base/topics/numeric'>numeric(1)</a></code> defining the accepted
-difference between the provided m/z and the spectrum's m/z in parts per
-million.</p></td>
-    </tr>
-    <tr>
       <th>acquisitionNum</th>
       <td><p>for <code>filterPrecursorScan</code>: <code>integer</code> with the
 acquisition number of the spectra to which the object should be
@@ -434,12 +440,12 @@ subsetted.</p></td>
     </tr>
     <tr>
       <th>rt</th>
-      <td><p>for <code>filterRt</code>: <code><a href='https://www.rdocumentation.org/packages/base/topics/numeric'>numeric(2)</a></code> defining the retention time range to
+      <td><p>for <code>filterRt</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> defining the retention time range to
 be used to subset/filter <code>object</code>.</p></td>
     </tr>
     <tr>
-      <th>x</th>
-      <td><p>Object extending <code>MsBackend</code>.</p></td>
+      <th>use.names</th>
+      <td><p>For <code>lengths</code>: whether spectrum names should be used.</p></td>
     </tr>
     <tr>
       <th>spectraVariables</th>
@@ -453,8 +459,16 @@ names (spectra variables) that should be included in the
 returned <code>DataFrame</code>. By default, all columns are returned.</p></td>
     </tr>
     <tr>
+      <th>f</th>
+      <td><p><code>factor</code> defining the grouping to split <code>x</code>. See <code><a href='https://rdrr.io/r/base/split.html'>split()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>drop</th>
+      <td><p>For <code>[</code>: not considered.</p></td>
+    </tr>
+    <tr>
       <th>initial</th>
-      <td><p>For <code>tic</code>: <code><a href='https://www.rdocumentation.org/packages/base/topics/logical'>logical(1)</a></code> whether the initially
+      <td><p>For <code>tic</code>: <code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether the initially
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (<code>initial = FALSE</code>).</p></td>
@@ -468,10 +482,6 @@ total ion current should be (re)calculated on the actual data
       <td><p>For <code>[</code>: not supported.</p></td>
     </tr>
     <tr>
-      <th>drop</th>
-      <td><p>For <code>[</code>: not considered.</p></td>
-    </tr>
-    <tr>
       <th>name</th>
       <td><p>For <code>$</code> and <code>$&lt;-</code>: the name of the spectra variable to return
 or set.</p></td>
@@ -483,11 +493,13 @@ metadata/data. This parameter can be empty for <code>MsBackendMzR</code> backend
 but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="backend-functions"><a class="anchor" href="#backend-functions"></a>Backend functions</h2>
 
     
-    <p>New backend classes <strong>must</strong> extend the base <code>MsBackend</code> class and
+
+
+<p>New backend classes <strong>must</strong> extend the base <code>MsBackend</code> class and
 <strong>have</strong> to implement the following methods:</p><ul>
 <li><p><code>[</code>: subset the backend. Only subsetting by element (<em>row</em>/<code>i</code>) is
 allowed</p></li>
@@ -496,6 +508,11 @@ backend.</p></li>
 <li><p><code>acquisitionNum</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
 spectra (with <code>NA_integer_</code> if not available).</p></li>
+<li><p><code>as.list</code> returns a <code>list</code> with the spectras' peak data. The length of
+the list is equal to the number of spectra in <code>object</code>. Each element of
+the list is a <code>matrix</code> with columns <code>"mz"</code> and <code>"intensity"</code>. For an empty
+spectrum, a <code>matrix</code> with 0 rows and two columns (named <code>mz</code> and
+<code>intensity</code>) is returned.</p></li>
 <li><p><code>backendInitialize</code>: initialises the backend. This method is
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
@@ -553,10 +570,8 @@ isolation window m/z range (i.e. with an <code>isolationWindowLowerMz</code> &lt
 and <code>isolationWindowUpperMz</code> &gt;= <code>mz</code>.</p></li>
 <li><p><code>filterMsLevel</code>: retains spectra of MS level <code>msLevel</code>.</p></li>
 <li><p><code>filterPolarity</code>: retains spectra of polarity <code>polarity</code>.</p></li>
-<li><p><code>filterPrecursorMz</code>: retains spectra with an m/z matching the provided <code>mz</code>
-accepting also a small difference in m/z which can be defined by parameter
-<code>ppm</code> (parts per million). With the default (<code>ppm = 0</code>) only spectra with
-m/z identical to <code>mz</code> are retained.</p></li>
+<li><p><code>filterPrecursorMz</code>: retains spectra with a precursor m/z within the
+provided m/z range.</p></li>
 <li><p><code>filterPrecursorScan</code>: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number <code>acquisitionNum</code>.</p></li>
 <li><p><code>filterRt</code>: retains spectra of MS level <code>msLevel</code> with retention times
@@ -568,7 +583,7 @@ spectrum). The length of the <code>list</code> is equal to the number of
 <li><p><code>intensity&lt;-</code>: replaces the intensity values. <code>value</code> has to be a <code>list</code>
 (or <code>NumericList()</code>) of length equal to the number of spectra and the
 number of values within each list element identical to the number of
-peaks in each spectrum (i.e. the <code><a href='hidden_aliases.html'>peaksCount(x)</a></code>). Note that just
+peaks in each spectrum (i.e. the <code><a href='https://rdrr.io/r/base/lengths.html'>lengths(x)</a></code>). Note that just
 writeable backends support this method.</p></li>
 <li><p><code>ionCount</code>: returns a <code>numeric</code> with the sum of intensities for
 each spectrum. If the spectrum is empty (see <code>isEmpty</code>),
@@ -588,9 +603,12 @@ lower m/z boundary of the isolation window.</p></li>
 target m/z of the isolation window.</p></li>
 <li><p><code>isolationWindowUpperMz</code>, <code>isolationWindowUpperMz&lt;-</code>: gets or sets the
 upper m/z boundary of the isolation window.</p></li>
-<li><p><code>isReadOnly</code>: returns a <code><a href='https://www.rdocumentation.org/packages/base/topics/logical'>logical(1)</a></code> whether the backend is <em>read
+<li><p><code>isReadOnly</code>: returns a <code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether the backend is <em>read
 only</em> or does allow also to write/update data.</p></li>
 <li><p><code>length</code>: returns the number of spectra in the object.</p></li>
+<li><p><code>lengths</code>: gets the number of peaks (m/z-intensity values) per
+spectrum.  Returns an <code>integer</code> vector (length equal to the
+number of spectra). For empty spectra, <code>0</code> is returned.</p></li>
 <li><p><code>msLevel</code>: gets the spectra's MS level. Returns an <code>integer</code>
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or <code>NA_integer_</code> if not available).</p></li>
@@ -601,18 +619,7 @@ one spectrum.</p></li>
 <li><p><code>mz&lt;-</code>: replaces the m/z values. <code>value</code> has to be a <code>list</code> of length equal
 to the number of spectra and the number of values within each list element
 identical to the number of peaks in each spectrum (i.e. the
-<code><a href='hidden_aliases.html'>peaksCount(x)</a></code>). Note that just writeable backends support this method.</p></li>
-<li><p><code>peaks</code> returns a <code>list</code> of length equal to the number of spectra
-in <code>object</code>. Each element of the list is a <code>matrix</code> with columns
-<code>mz</code> and <code>intensity</code>. For an empty spectrum, a <code>matrix</code> with 0
-rows and two columns (named <code>mz</code> and <code>intensity</code>) is returned.</p></li>
-<li><p><code>peaks&lt;-</code> replaces the peak data (m/z and intensity values) of the backend.
-This method expects a <code>list</code> of <code>matrix</code> objects with columns <code>"mz"</code> and
-<code>"intensity"</code> that has the same length than the number of spectra in the
-backend. Note that just writeable backends support this method.</p></li>
-<li><p><code>peaksCount</code>: gets the number of peaks (m/z-intensity values) per
-spectrum.  Returns an <code>integer</code> vector (length equal to the
-number of spectra). For empty spectra, <code>NA_integer_</code> is returned.</p></li>
+<code><a href='https://rdrr.io/r/base/lengths.html'>lengths(x)</a></code>). Note that just writeable backends support this method.</p></li>
 <li><p><code>polarity</code>, <code>polarity&lt;-</code>: gets or sets the polarity for each
 spectrum.  <code>polarity</code> returns an <code>integer</code> vector (length equal
 to the number of spectra), with <code>0</code> and <code>1</code> representing negative
@@ -625,6 +632,11 @@ and acquisition number (<code>interger</code>) of the precursor for MS level</p>
 <p>2 spectra from the object. Returns a vector of length equal to
 the number of spectra in <code>object</code>. <code>NA</code> are reported for MS1
 spectra of if no precursor information is available.</p></li>
+<li><p><code>replaceList&lt;-</code> replaces the peak data (m/z and intensity values) of the
+backend. This method expects a <code>list</code> of <code>matrix</code> objects with columns
+<code>"mz"</code> and <code>"intensity"</code> that has the same length as the number of
+spectra in the backend. Note that just writeable backends support this
+method.</p></li>
 <li><p><code>rtime</code>, <code>rtime&lt;-</code>: gets or sets the retention times for each
 spectrum (in seconds). <code>rtime</code> returns a <code>numeric</code> vector (length equal to
 the number of spectra) with the retention time for each spectrum.
@@ -650,16 +662,22 @@ the spectra in <code>object</code>.</p></li>
 <li><p><code>spectraVariables</code>: returns a <code>character</code> vector with the
 available spectra variables (columns, fields or attributes)
 available in <code>object</code>.</p></li>
+<li><p><code>split</code>: splits the backend into a <code>list</code> of backends (depending on
+parameter <code>f</code>). The default method for <code>MsBackend</code> uses <code><a href='https://rdrr.io/r/base/split.html'>split.default()</a></code>,
+thus backends extending <code>MsBackend</code> don't necessarily need to implement
+this method.</p></li>
 <li><p><code>tic</code>: gets the total ion current/count (sum of signal of a
 spectrum) for all spectra in <code>object</code>. By default, the value
 reported in the original raw data file is returned. For an empty
 spectrum, <code>NA_real_</code> is returned.</p></li>
 </ul>
-    
+
     <h2 class="hasAnchor" id="subsetting-and-merging-backend-classes"><a class="anchor" href="#subsetting-and-merging-backend-classes"></a>Subsetting and merging backend classes</h2>
 
     
-    <p>Backend classes must support (implement) the <code>[</code> method to subset the object.
+
+
+<p>Backend classes must support (implement) the <code>[</code> method to subset the object.
 This method should only support subsetting by spectra (rows, <code>i</code>) and has
 to return a <code>MsBackend</code> class.</p>
 <p>Backends extending <code>MsBackend</code> should also implement the <code>backendMerge</code>
@@ -670,11 +688,13 @@ resulting merged object should contain the union of the individual objects'
 spectra variables (columns/fields), with eventually missing variables in
 one object being filled with <code>NA</code>.</p></li>
 </ul>
-    
+
     <h2 class="hasAnchor" id="msbackenddataframe-in-memory-ms-data-backend"><a class="anchor" href="#msbackenddataframe-in-memory-ms-data-backend"></a><code>MsBackendDataFrame</code>, in-memory MS data backend</h2>
 
     
-    <p>The <code>MsBackendDataFrame</code> objects keep all MS data in memory.
+
+
+<p>The <code>MsBackendDataFrame</code> objects keep all MS data in memory.
 To reduce memory requirement, all spectra variables with a single
 value (e.g. if all spectra are from MS level 1) are internally represented
 as an <code>Rle()</code> object that are converted into the original class (e.g.
@@ -706,15 +726,14 @@ for each spectrum.</p></li>
 <li><p><code>"intensity"</code>: <code>NumericList()</code> of <code>numeric</code> vectors representing the
 intensity values for each spectrum.</p></li>
 </ul>
-    <p>Additional columns are allowed too.</p>
-<p>The <code>backendInitialize</code> method for this backend takes arguments <code>files</code>
-(should be set to <code>NA_character</code>) and <code>spectraData</code> (<code>DataFrame</code> with the
-spectrum data).</p>
-    
+
+<p>Additional columns are allowed too.</p>
     <h2 class="hasAnchor" id="msbackendmzr-on-disk-ms-data-backend"><a class="anchor" href="#msbackendmzr-on-disk-ms-data-backend"></a><code>MsBackendMzR</code>, on-disk MS data backend</h2>
 
     
-    <p>The <code>MsBackendMzR</code> keeps only a limited amount of data in memory,
+
+
+<p>The <code>MsBackendMzR</code> keeps only a limited amount of data in memory,
 while the spectra data (m/z and intensity values) are fetched from
 the raw files on-demand. This backend uses the <code>mzR</code> package for
 data import and retrieval and hence requires that package to be
@@ -726,11 +745,12 @@ memory.</p>
 <p>New objects can be created with the <code>MsBackendMzR()</code> function which
 can be subsequently filled with data by calling <code>backendInitialize</code>
 passing the file names of the input data files with argument <code>files</code>.</p>
-    
     <h2 class="hasAnchor" id="msbackendhdf-peaks-on-disk-ms-data-backend"><a class="anchor" href="#msbackendhdf-peaks-on-disk-ms-data-backend"></a><code>MsBackendHdf5Peaks</code>, on-disk MS data backend</h2>
 
     
-    <p>The <code>MsBackendHdf5Peaks</code> keeps, similar to the <code>MsBackendMzR</code>, peak data
+
+
+<p>The <code>MsBackendHdf5Peaks</code> keeps, similar to the <code>MsBackendMzR</code>, peak data
 (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 disk while the remaining spectra variables are kept in memory. This backend
 supports updating and writing of manipulated peak data to the data files.</p>
@@ -752,42 +772,38 @@ used as file name (replacing any file ending with <code>".h5"</code>. To specify
 file names, <code>files</code>' length has to match the number of unique elements in
 <code>"dataStorage"</code>.</p>
 <p>For details see examples on the <code><a href='Spectra.html'>Spectra()</a></code> help page.</p>
-    
     <h2 class="hasAnchor" id="implementation-notes"><a class="anchor" href="#implementation-notes"></a>Implementation notes</h2>
 
     
-    <p>Backends extending <code>MsBackend</code> <strong>must</strong> implement all of its methods (listed
+
+
+<p>Backends extending <code>MsBackend</code> <strong>must</strong> implement all of its methods (listed
 above). Developers of new <code>MsBackend</code>s should follow the
 <code>MsBackendDataFrame</code> implementation.</p>
 <p>The <code>MsBackend</code> defines the following slots:</p><ul>
-<li><p><code>@readonly</code>: <code><a href='https://www.rdocumentation.org/packages/base/topics/logical'>logical(1)</a></code> whether the backend supports writing/replacing
+<li><p><code>@readonly</code>: <code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether the backend supports writing/replacing
 of m/z or intensity values.</p></li>
 </ul>
-    
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#backend-functions">Backend functions</a></li>
-
       <li><a href="#subsetting-and-merging-backend-classes">Subsetting and merging backend classes</a></li>
-
       <li><a href="#msbackenddataframe-in-memory-ms-data-backend"><code>MsBackendDataFrame</code>, in-memory MS data backend</a></li>
-
       <li><a href="#msbackendmzr-on-disk-ms-data-backend"><code>MsBackendMzR</code>, on-disk MS data backend</a></li>
-
       <li><a href="#msbackendhdf-peaks-on-disk-ms-data-backend"><code>MsBackendHdf5Peaks</code>, on-disk MS data backend</a></li>
-
       <li><a href="#implementation-notes">Implementation notes</a></li>
-          </ul>
+    </ul>
 
     <h2>Author</h2>
     <p>Johannes Rainer, Sebastian Gibb, Laurent Gatto</p>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -795,13 +811,16 @@ of m/z or intensity values.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
