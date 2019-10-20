@@ -60,5 +60,6 @@ Collate:
     'Spectra-functions.R'
     'Spectra.R'
     'functions-util.R'
+    'peak-list-functions.R'
     'peaks-functions.R'
     'zzz.R'

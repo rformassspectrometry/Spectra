@@ -331,3 +331,64 @@ applyProcessing <- function(object, f = dataStorage(object),
     }
     m
 }
+
+#' @description
+#'
+#' Combine a `Spectra` of length `n` to a `Spectra` of length `1`.
+#' Takes all *spectra variables* from the first spectrum and combines the
+#' peaks into a single peaks matrix.
+#'
+#' @note
+#'
+#' Result `Spectra` will have an in-mem backend! Or any writeable backend?
+#'
+#' Split the functionality to combine the peaks from `.combine_spectra`,
+#' here we simply prepare the spectra variable data and ensure to return
+#' a correct `Spectra` object.
+#'
+#' @param x `Spectra`, ideally from a single `$dataStorage`. Has to have a
+#'     `MsBackend` that allows to write the data. This has to be checked
+#'     upstream.
+#'
+#' @param f `factor` to group spectra in `x`. It is supposed that input checks
+#'     have been performed beforehand.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+#'
+#' @examples
+#'
+#' spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+#' spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+#' spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+#'
+#' sps <- Spectra(spd)
+#'
+#' res <- .combine_spectra(sps)
+#' res$mz
+#' res$intensity
+#'
+#' res <- .combine_spectra(sps, FUN = combinePeaks, tolerance = 0.1)
+#' res$mz
+#' res$intensity
+.combine_spectra <- function(x, f = x$dataStorage, FUN = combinePeaks, ...) {
+    if (!is.factor(f))
+        f <- factor(f)
+    x_new <- x[match(levels(f), f)]
+    replaceList(x_new@backend) <- lapply(
+        split(.peaksapply(x), f = f), FUN = FUN, ...)
+    validObject(x_new)
+    x_new
+}
+
+combineSpectra <- function() {
+    ## - This is supposed to be the user interface function.
+    ## - Check if backend is read-only, if so, throw error.
+    ## - have a parameter `p` in the `combineSpectra` function/method that
+    ##   allows to split the job into parallel processing tasks, defaulting
+    ##   to `$dataStorage`. Need to split `x` and `f` by `p`. In the parallel
+    ##   tasks we call then .combine_spectra. Will avoid the (costly) splitting
+    ##   and unsplitting if `p` has a single level.
+
+}
