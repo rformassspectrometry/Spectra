@@ -95,7 +95,7 @@ NULL
 #'
 #' @importFrom stats weighted.mean
 #'
-#' @noRd
+#' @export
 #'
 #' @examples
 #'

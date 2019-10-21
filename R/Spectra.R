@@ -323,6 +323,17 @@ NULL
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
+#' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
+#'   For each spectrum group (set), spectra variables from the first spectrum
+#'   are used and the peak matrices are combined using the function specified
+#'   with `FUN`, which defaults to [combinePeaks()]. The sets of spectra can be
+#'   specified with parameter `f`. In addition it is possible to define, with
+#'   parameter `p` if and how to split the input data for parallel processing.
+#'   This defaults to `p = x$dataStorage` and hence a per-file parallel
+#'   processing is applied for `Spectra` with file-based backends (such as the
+#'   [MsBackendMzR()]). The function returns a `Spectra` of length equal to the
+#'   unique levels of `f`.
+#'
 #' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
 #'   using the function provided with `FUN` (defaults to [dotproduct()]). If
 #'   `y` is missing, each spectrum in `x` is compared with each other spectrum
@@ -426,11 +437,15 @@ NULL
 #'     for details. For `setBackend`: factor defining how to split the data for
 #'     parallelized copying of the spectra data to the new backend. For some
 #'     backends changing this parameter can lead to errors.
+#'     For `combineSpectra`: `factor` defining the grouping of the spectra that
+#'     should be combined.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
-#'     intensities of peaks between two spectra with each other. See section
-#'     *Data manipulations* and examples below for more details.
+#'     intensities of peaks between two spectra with each other.
+#'     For `combineSpectra`: function to combine the (peak matrices) of the
+#'     spectra. See section *Data manipulations* and examples below for more
+#'     details.
 #'
 #' @param halfWindowSize For `pickPeaks`: `integer(1)`, used in the
 #'     identification of the mass peaks: a local maximum has to be the maximum
@@ -447,12 +462,6 @@ NULL
 #'
 #' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
-#'
-#' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
-#'     to filter for.
-#'
-#' @param name For `$` and `$<-`: the name of the spectra variable to return
-#'     or set.
 #'
 #' @param MAPFUN For `compareSpectra`: function to map/match peaks between the
 #'     two compared spectra. See [joinPeaks()] for more information and possible
@@ -473,9 +482,20 @@ NULL
 #'     filter the object. For `filterPrecursorMz`: `numeric(2)` defining the
 #'     lower and upper m/z boundary.
 #'
+#' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
+#'     to filter for.
+#'
+#' @param name For `$` and `$<-`: the name of the spectra variable to return
+#'     or set.
+#'
 #' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
 #'     on creation of `Spectra` objects for details. For all other methods a
 #'     `Spectra` object.
+#'
+#' @param p For `combineSpectra`: `factor` defining how to split the input
+#'     `Spectra` for parallel processing. Defaults to `x$dataStorage`, i.e.,
+#'     depending on the used backend, per-file parallel processing will be
+#'     performed.
 #'
 #' @param polarity for `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
@@ -875,26 +895,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
 #'
 #' @exportMethod c
 setMethod("c", "Spectra", function(x, ...) {
-    objs <- unname(c(list(x), list(...)))
-    cls <- vapply1c(objs, class)
-    if (any(cls != "Spectra"))
-        stop("Can only concatenate 'Spectra' objects")
-    pqs <- lapply(objs, function(z) z@processingQueue)
-    ## For now we stop if there is any of the processingQueues not empty. Later
-    ## we could even test if they are similar, and if so, merge.
-    if (any(lengths(pqs)))
-        stop("Can not concatenate 'Spectra' objects with non-empty ",
-             "processing queue")
-    metad <- do.call(c, lapply(objs, function(z) z@metadata))
-    procs <- unique(unlist(lapply(objs, function(z) z@processing)))
-    object <- new(
-        "Spectra", metadata = metad,
-        backend = backendMerge(lapply(objs, function(z) z@backend)),
-        processing = c(procs, paste0("Merge ", length(objs),
-                                     " Spectra into one [", date(), "]"))
-    )
-    validObject(object)
-    object
+    .concatenate_spectra(unname(c(list(x), list(...))))
 })
 
 #' @rdname Spectra

@@ -340,18 +340,18 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' @note
 #'
-#' Result `Spectra` will have an in-mem backend! Or any writeable backend?
+#' If the backend of the input `Spectra` is *read-only* we're first converting
+#' that to a `MsBackendDataFrame` to support replacing peak data.
 #'
-#' Split the functionality to combine the peaks from `.combine_spectra`,
-#' here we simply prepare the spectra variable data and ensure to return
-#' a correct `Spectra` object.
-#'
-#' @param x `Spectra`, ideally from a single `$dataStorage`. Has to have a
-#'     `MsBackend` that allows to write the data. This has to be checked
-#'     upstream.
+#' @param x `Spectra`, ideally from a single `$dataStorage`.
 #'
 #' @param f `factor` to group spectra in `x`. It is supposed that input checks
 #'     have been performed beforehand.
+#'
+#' @param FUN `function` to be applied to the list of peak matrices.
+#'
+#' @return `Spectra` of length 1. If the input `Spectra` uses a read-only
+#'     backend that is changed to a `MsBackendDataFrame`.
 #'
 #' @author Johannes Rainer
 #'
@@ -375,20 +375,55 @@ applyProcessing <- function(object, f = dataStorage(object),
 .combine_spectra <- function(x, f = x$dataStorage, FUN = combinePeaks, ...) {
     if (!is.factor(f))
         f <- factor(f)
+    else f <- droplevels(f)
     x_new <- x[match(levels(f), f)]
+    if (isReadOnly(x_new@backend))
+        x_new <- setBackend(x_new, MsBackendDataFrame())
     replaceList(x_new@backend) <- lapply(
         split(.peaksapply(x), f = f), FUN = FUN, ...)
     validObject(x_new)
     x_new
 }
 
-combineSpectra <- function() {
-    ## - This is supposed to be the user interface function.
-    ## - Check if backend is read-only, if so, throw error.
-    ## - have a parameter `p` in the `combineSpectra` function/method that
-    ##   allows to split the job into parallel processing tasks, defaulting
-    ##   to `$dataStorage`. Need to split `x` and `f` by `p`. In the parallel
-    ##   tasks we call then .combine_spectra. Will avoid the (costly) splitting
-    ##   and unsplitting if `p` has a single level.
+.concatenate_spectra <- function(x) {
+    cls <- vapply1c(x, class)
+    if (any(cls != "Spectra"))
+        stop("Can only concatenate 'Spectra' objects")
+    pqs <- lapply(x, function(z) z@processingQueue)
+    ## For now we stop if there is any of the processingQueues not empty. Later
+    ## we could even test if they are similar, and if so, merge.
+    if (any(lengths(pqs)))
+        stop("Can not concatenate 'Spectra' objects with non-empty ",
+             "processing queue")
+    metad <- do.call(c, lapply(x, function(z) z@metadata))
+    procs <- unique(unlist(lapply(x, function(z) z@processing)))
+    object <- new(
+        "Spectra", metadata = metad,
+        backend = backendMerge(lapply(x, function(z) z@backend)),
+        processing = c(procs, paste0("Merge ", length(x),
+                                     " Spectra into one [", date(), "]"))
+    )
+    validObject(object)
+    object
+}
 
+#' @export combineSpectra
+#'
+#' @rdname Spectra
+combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
+                           FUN = combinePeaks, ..., BPPARAM = bpparam()) {
+    if (!is.factor(f))
+        f <- factor(f, levels = unique(f))
+    if (!is.factor(p))
+        p <- factor(p, levels = unique(p))
+    if (length(f) != length(x) || length(p) != length(x))
+        stop("length of 'f' and 'p' have to match length of 'x'")
+    if (isReadOnly(x@backend))
+        message("Backend of the input object is read-only, will change that",
+                " to an 'MsBackendDataFrame'")
+    ## We split the workload by storage file. This ensures memory efficiency
+    ## for file-based backends.
+    res <- bpmapply(FUN = .combine_spectra, split(x, p), split(f, p),
+                    MoreArgs = list(FUN = FUN, ...), BPPARAM = BPPARAM)
+    .concatenate_spectra(res)
 }

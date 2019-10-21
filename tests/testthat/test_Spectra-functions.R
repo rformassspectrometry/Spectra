@@ -202,6 +202,82 @@ test_that(".lapply works", {
     expect_identical(rtime(sps) + 3, unlist(res))
 })
 
+test_that(".comcatenate_spectra works", {
+    df1 <- DataFrame(msLevel = c(1L, 1L, 1L))
+    df1$mz <- list(c(1.1, 1.2), c(1.5), c(1.4, 1.5, 1.6))
+    df1$intensity <- list(c(4.5, 23), 452.1, c(4.1, 342, 123))
+    sp1 <- Spectra(df1)
+
+    df2 <- DataFrame(msLevel = c(2L, 2L), rtime = c(1.2, 1.5))
+    df2$mz <- list(1.5, 1.5)
+    df2$intensity <- list(1234.1, 34.23)
+    sp2 <- Spectra(df2)
+
+    df3 <- DataFrame(msLevel = c(3L, 3L), other_col = "a")
+    df3$mz <- list(c(1.4, 1.5, 1.6), c(1.8, 1.9))
+    df3$intensity <- list(c(123.4, 12, 5), c(43.1, 5))
+    sp3 <- Spectra(df3)
+
+    df4 <- df3
+    df4$mz <- NULL
+    df4$intensity <- NULL
+    sp4 <- Spectra(df4)
+
+    res <- .concatenate_spectra(list(sp1, sp2, sp3))
+    expect_true(is(res, "Spectra"))
+    expect_equal(length(res), sum(nrow(df1), nrow(df2), nrow(df3)))
+    expect_identical(msLevel(res), c(1L, 1L, 1L, 2L, 2L, 3L, 3L))
+    expect_identical(res$other_col, c(NA, NA, NA, NA, NA, "a", "a"))
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) == 1)
+
+    ## One Spectra without m/z and intensity
+    res <- .concatenate_spectra(list(sp3, sp4))
+    expect_true(is(res, "Spectra"))
+    expect_identical(mz(res), NumericList(c(1.4, 1.5, 1.6), c(1.8, 1.9),
+                                          numeric(), numeric(),
+                                          compress = FALSE))
+    expect_identical(msLevel(res), rep(3L, 4))
+    expect_identical(intensity(res), NumericList(c(123.4, 12, 5), c(43.1, 5),
+                                                 numeric(), numeric(),
+                                                 compress = FALSE))
+    res <- .concatenate_spectra(list(sp4, sp3))
+    expect_true(is(res, "Spectra"))
+    expect_identical(mz(res), NumericList(numeric(), numeric(),
+                                          c(1.4, 1.5, 1.6), c(1.8, 1.9),
+                                          compress = FALSE))
+    expect_identical(msLevel(res), rep(3L, 4))
+    expect_identical(intensity(res), NumericList(numeric(), numeric(),
+                                                 c(123.4, 12, 5), c(43.1, 5),
+                                                 compress = FALSE))
+
+    ## Two Spectra without m/z and intensity
+    res <- .concatenate_spectra(list(sp4, sp4))
+    expect_true(is(res, "Spectra"))
+    expect_identical(mz(res), NumericList(numeric(), numeric(), numeric(),
+                                          numeric(), compress = FALSE))
+
+    sp1@metadata <- list(version = "1.0.0", date = date())
+    res <- c(sp1, sp2)
+    expect_equal(res@metadata, sp1@metadata)
+
+    sp1@processingQueue <- list(ProcessingStep(sum))
+    expect_error(c(sp1, sp2), "with non-empty processing")
+
+    ## Different backends
+    s1 <- Spectra(sciex_mzr)
+    s2 <- Spectra(sciex_hd5)
+    expect_error(c(s1, s2), "backends of the same type")
+
+    ## BackendMzR
+    res <- .concatenate_spectra(list(Spectra(tmt_mzr), Spectra(sciex_mzr)))
+    expect_identical(msLevel(res), c(msLevel(tmt_mzr), msLevel(sciex_mzr)))
+    expect_identical(msLevel(sciex_mzr), msLevel(res[dataStorage(res) %in%
+                                                     sciex_file]))
+    expect_identical(msLevel(tmt_mzr), msLevel(res[dataStorage(res) ==
+                                                   dataStorage(tmt_mzr)[1]]))
+})
+
 test_that(".combine_spectra works", {
     spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
     spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
@@ -224,4 +300,40 @@ test_that(".combine_spectra works", {
                                 max(c(34, 34.1)), 45, max(c(56, 56.1))))
     expect_equal(res$intensity[[1]], c(median(c(10, 12)), median(c(20, 11, 22)),
                                        median(c(21, 32)), 30, median(c(40, 31))))
+
+    ## See if it works with MsBackendMzR
+    sps <- Spectra(sciex_mzr)
+    res <- .combine_spectra(sps, tolerance = 0.1, FUN = combinePeaks)
+    expect_true(length(res) == 2)
+    expect_true(is(res, "Spectra"))
+    expect_true(class(res@backend) == "MsBackendDataFrame")
+    expect_true(length(unlist(res$mz)) < length(unlist(sps$mz)))
+})
+
+test_that("combineSpectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+    res <- combineSpectra(sps, tolerance = 0.1)
+    expect_true(is(res, "Spectra"))
+    expect_true(length(res) == 1)
+
+    sps <- rev(Spectra(sciex_mzr))
+    res <- combineSpectra(sps, tolerance = 0.1)
+
+    expect_true(is(res, "Spectra"))
+    expect_true(length(res) == 2)
+    expect_true(class(res@backend) == "MsBackendDataFrame")
+    expect_equal(res$dataOrigin, unique(sps$dataStorage))
+
+    ## Different f
+    sps$crude_rtime <- as.integer(rtime(sps))
+    res <- combineSpectra(sps, tolerance = 0.1, f = sps$crude_rtime)
+    expect_equal(unique(res$dataOrigin), unique(sps$dataStorage))
+    fls <- unique(res$dataOrigin)
+    expect_equal(res$crude_rtime[res$dataOrigin == fls[1]],
+                 unique(sps$crude_rtime[sps$dataOrigin == fls[1]]))
+    expect_equal(res$crude_rtime[res$dataOrigin == fls[2]],
+                 unique(sps$crude_rtime[sps$dataOrigin == fls[2]]))
 })
