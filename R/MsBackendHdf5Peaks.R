@@ -273,6 +273,8 @@ setReplaceMethod("$", "MsBackendHdf5Peaks", function(x, name, value) {
 })
 
 #' @rdname hidden_aliases
+#'
+#' @aliases [,MsBackendHdf5Peaks-method
 setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
     fls <- unique(x@spectraData$dataStorage)
     x <- .subset_backend_data_frame(x, i)

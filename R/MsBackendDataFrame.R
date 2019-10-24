@@ -102,6 +102,8 @@ setMethod("centroided", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 #'
+#' @aliases centroided<-,MsBackendDataFrame-method
+#'
 #' @importFrom MsCoreUtils asRle
 setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
@@ -395,6 +397,8 @@ setMethod("smoothed", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
+#'
+#' @aliases smoothed<-,MsBackendDataFrame-method
 setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)

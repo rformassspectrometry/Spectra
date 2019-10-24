@@ -15,7 +15,7 @@
 \alias{acquisitionNum,MsBackend-method}
 \alias{as.list,MsBackend-method}
 \alias{centroided,MsBackend-method}
-\alias{centroided<-,MsBackend,ANY-method}
+\alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
 \alias{collisionEnergy<-,MsBackend-method}
 \alias{dataOrigin,MsBackend-method}
@@ -61,7 +61,7 @@
 \alias{scanIndex,MsBackend-method}
 \alias{selectSpectraVariables,MsBackend-method}
 \alias{smoothed,MsBackend-method}
-\alias{smoothed<-,MsBackend,ANY-method}
+\alias{smoothed<-,MsBackend-method}
 \alias{spectraData,MsBackend-method}
 \alias{spectraData<-,MsBackend-method}
 \alias{spectraNames,MsBackend-method}
@@ -69,7 +69,6 @@
 \alias{spectraVariables,MsBackend-method}
 \alias{split,MsBackend,ANY-method}
 \alias{tic,MsBackend-method}
-\alias{[,MsBackend,ANY,ANY,ANY-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
 \alias{MsBackendDataFrame}
@@ -89,7 +88,7 @@
 
 \S4method{centroided}{MsBackend}(object)
 
-\S4method{centroided}{MsBackend,ANY}(object) <- value
+\S4method{centroided}{MsBackend}(object) <- value
 
 \S4method{collisionEnergy}{MsBackend}(object)
 
@@ -182,7 +181,7 @@
 
 \S4method{smoothed}{MsBackend}(object)
 
-\S4method{smoothed}{MsBackend,ANY}(object) <- value
+\S4method{smoothed}{MsBackend}(object) <- value
 
 \S4method{spectraData}{MsBackend}(object,
   columns = spectraVariables(object))
@@ -199,7 +198,7 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackend}(x, name)
 
