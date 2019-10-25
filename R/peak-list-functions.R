@@ -70,15 +70,24 @@ NULL
 #'     should be calculated by an intensity-weighted average of the individuak
 #'     m/z values. This overrides parameter `mzFun`.
 #'
-#' @param tolerance `numeric(1)`
+#' @param tolerance `numeric(1)` defining the (absolute) maximal accepted
+#'     difference between mass peaks to group them into the same final peak.
 #'
-#' @param ppm `numeric(1)`
+#' @param ppm `numeric(1)` defining the m/z-relative maximal accepted
+#'     difference between mass peaks (expressed in parts-per-million) to group
+#'     them into the same final peak.
 #'
-#' @param timeDomain `logical(1)`
+#' @param timeDomain `logical(1)` whether grouping of mass peaks is performed
+#'     on the m/z values (`timeDomain = FALSE`) or on `sqrt(mz)`
+#'     (`timeDomain = TRUE`).
 #'
-#' @param main `integer(1)`
+#' @param main `integer(1)` defining the *main* spectrum. Only used for
+#'     `unionPeaks = FALSE`.
 #'
-#' @param unionPeaks `logical(1)`
+#' @param unionPeaks `logical(1)` defining whether the union of all peaks from
+#'     all spectra are reported (`unionPeaks = TRUE`, the default) or only
+#'     peaks present in the *main* spectrum defined by `main`
+#'     (`unionPeaks = FALSE`).
 #'
 #' @param ... additional parameters to the `mzFun` and `intensityFun` functions.
 #'
@@ -117,7 +126,8 @@ NULL
 #'     intensity = ints3)
 #'
 #' ## Combine the spectra. With `tolerance = 0` and `ppm = 0` only peaks with
-#' ## **identical** m/z are combined
+#' ## **identical** m/z are combined. The result will be a single spectrum
+#' ## containing the *union* of mass peaks from the individual input spectra.
 #' p <- combinePeaks(list(p1, p2, p3))
 #'
 #' ## Plot the spectra before and after combining
@@ -186,4 +196,77 @@ combinePeaks <- function(x, intensityFun = base::mean,
     if (is.unsorted(res[, 1]))
         stop("m/z values of combined spectrum are not ordered")
     res
+}
+
+#' @title Reduce mass peaks from input spectra to consensus peaks
+#'
+#' @description
+#'
+#' `consensusPeaks` reduces the peaks from all input spectra to a set of
+#' *consensus* peaks, i.e. peaks present in a certain proportion of input
+#' spectra (which can be defined with parameter `minProp`).
+#'
+#' For details on the mass peak grouping across samples see [combinePeaks()].
+#'
+#' @param minProp `numeric(1)` with the minimal required proportion of input
+#'     spectra (peak matrices) a mass peak has to be present to be included
+#'     in the consensus peak matrix.
+#'
+#' @inheritParams combinePeaks
+#'
+#' @return
+#'
+#' Peaks `matrix` with m/z and intensity values representing the consensus peaks
+#' from the provided peak matrices.
+#'
+#' @author Johannes Rainer
+#'
+#' @family peak matrix combining functions
+#'
+#' @export
+#'
+#' @examples
+#'
+#' p1 <- cbind(mz = c(12, 45, 64, 70), intensity = c(10, 20, 30, 40))
+#' p2 <- cbind(mz = c(17, 45.1, 63.9, 70.2), intensity = c(11, 21, 31, 41))
+#' p3 <- cbind(mz = c(12.1, 44.9, 63), intensity = c(12, 22, 32))
+#'
+#' ## No mass peaks identical thus consensus peaks are empty
+#' consensusPeaks(list(p1, p2, p3))
+#'
+#' ## Reducing the minProp to 0.2. The consensus spectrum will contain all
+#' ## peaks
+#' consensusPeaks(list(p1, p2, p3), minProp = 0.2)
+#'
+#' ## With a tolerance of 0.1 mass peaks can be matched across spectra
+#' consensusPeaks(list(p1, p2, p3), tolerance = 0.1)
+#'
+#' ## Report the minimal m/z and intensity
+#' consensusPeaks(list(p1, p2, p3), tolerance = 0.1, intensityFun = min,
+#'     mzFun = min)
+consensusPeaks <- function(x, minProp = 0.5, intensityFun = base::mean,
+                           mzFun = base::mean, weighted = FALSE,
+                           tolerance = 0, ppm = 0, ...) {
+    if (length(x) == 1)
+        return(x[[1]])
+    mzs <- lapply(x, "[", , y = 1)
+    mzs_lens <- lengths(mzs)
+    mzs <- unlist(mzs, use.names = FALSE)
+    mz_order <- order(mzs)
+    mzs <- mzs[mz_order]
+    mz_groups <- group(mzs, tolerance = tolerance, ppm = ppm)
+    ints <- unlist(lapply(x, "[", , y = 2), use.names = FALSE)[mz_order]
+    mzs <- split(mzs, mz_groups)
+    ints <- split(ints, mz_groups)
+    keep <- lengths(mzs) >= (length(x) * minProp)
+    if (any(keep)) {
+        if (weighted) {
+            wm <- stats::weighted.mean
+            mzs <- mapply(mzs[keep], ints[keep], FUN = function(mz, w)
+                wm(mz, w + 1, na.rm = TRUE), USE.NAMES = FALSE)
+        } else mzs <- vapply1d(mzs[keep], FUN = mzFun)
+        cbind(mz = mzs,
+              intensity = vapply1d(ints[keep], FUN = intensityFun))
+    } else
+        cbind(mz = numeric(), intensity = numeric())
 }

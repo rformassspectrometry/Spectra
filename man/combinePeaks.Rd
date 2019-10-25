@@ -21,15 +21,24 @@ By default the mean m/z value is returned.}
 should be calculated by an intensity-weighted average of the individuak
 m/z values. This overrides parameter \code{mzFun}.}
 
-\item{tolerance}{\code{numeric(1)}}
+\item{tolerance}{\code{numeric(1)} defining the (absolute) maximal accepted
+difference between mass peaks to group them into the same final peak.}
 
-\item{ppm}{\code{numeric(1)}}
+\item{ppm}{\code{numeric(1)} defining the m/z-relative maximal accepted
+difference between mass peaks (expressed in parts-per-million) to group
+them into the same final peak.}
 
-\item{timeDomain}{\code{logical(1)}}
+\item{timeDomain}{\code{logical(1)} whether grouping of mass peaks is performed
+on the m/z values (\code{timeDomain = FALSE}) or on \code{sqrt(mz)}
+(\code{timeDomain = TRUE}).}
 
-\item{main}{\code{integer(1)}}
+\item{main}{\code{integer(1)} defining the \emph{main} spectrum. Only used for
+\code{unionPeaks = FALSE}.}
 
-\item{unionPeaks}{\code{logical(1)}}
+\item{unionPeaks}{\code{logical(1)} defining whether the union of all peaks from
+all spectra are reported (\code{unionPeaks = TRUE}, the default) or only
+peaks present in the \emph{main} spectrum defined by \code{main}
+(\code{unionPeaks = FALSE}).}
 
 \item{...}{additional parameters to the \code{mzFun} and \code{intensityFun} functions.}
 }
@@ -101,7 +110,8 @@ p3 <- cbind(mz = mzs + rnorm(length(mzs), sd = 0.009),
     intensity = ints3)
 
 ## Combine the spectra. With `tolerance = 0` and `ppm = 0` only peaks with
-## **identical** m/z are combined
+## **identical** m/z are combined. The result will be a single spectrum
+## containing the *union* of mass peaks from the individual input spectra.
 p <- combinePeaks(list(p1, p2, p3))
 
 ## Plot the spectra before and after combining
@@ -128,6 +138,9 @@ plot(p[, 1], p[, 2], xlim = range(mzs[5:25]), type = "h",
 ## With `intensityFun = max` the maximal intensity per peak is reported.
 p <- combinePeaks(list(p1, p2, p3), tolerance = 0.05,
     intensityFun = max)
+}
+\seealso{
+Other peak matrix combining functions: \code{\link{consensusPeaks}}
 }
 \author{
 Johannes Rainer

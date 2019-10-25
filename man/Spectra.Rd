@@ -683,9 +683,11 @@ intensity values for peaks falling into the same bin are summed.
 \item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum
 are used and the peak matrices are combined using the function specified
-with \code{FUN}, which defaults to \code{\link[=combinePeaks]{combinePeaks()}}. The sets of spectra can be
-specified with parameter \code{f}. In addition it is possible to define, with
-parameter \code{p} if and how to split the input data for parallel processing.
+with \code{FUN}, which defaults to \code{\link[=combinePeaks]{combinePeaks()}}; alternatively
+\code{\link[=consensusPeaks]{consensusPeaks()}} or other functions linked on that help page can be
+used. The sets of spectra can be specified with parameter \code{f}.
+In addition it is possible to define, with parameter \code{p} if and how to
+split the input data for parallel processing.
 This defaults to \code{p = x$dataStorage} and hence a per-file parallel
 processing is applied for \code{Spectra} with file-based backends (such as the
 \code{\link[=MsBackendMzR]{MsBackendMzR()}}). The function returns a \code{Spectra} of length equal to the

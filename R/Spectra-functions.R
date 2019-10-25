@@ -385,6 +385,16 @@ applyProcessing <- function(object, f = dataStorage(object),
     x_new
 }
 
+#' Utility to concatenate a `list` of `Spectra` objects into a single `Spectra`.
+#' This function is called in `c`.
+#'
+#' @param x `list` of `Spectra` objects.
+#'
+#' @return `Spectra`.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
 .concatenate_spectra <- function(x) {
     cls <- vapply1c(x, class)
     if (any(cls != "Spectra"))
