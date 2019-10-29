@@ -262,8 +262,6 @@ joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
     }
 }
 
-#' @importFrom MsCoreUtils smooth
-#'
 #' @description
 #'
 #' Intensity smoothing.
@@ -283,6 +281,6 @@ joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
         warning("Spectrum is empty. Nothing to smooth.")
         return(x)
     }
-    x[, 2L] <- smooth(x[, 2L], cf = coef)
+    x[, 2L] <- MsCoreUtils::smooth(x[, 2L], cf = coef)
     x
 }

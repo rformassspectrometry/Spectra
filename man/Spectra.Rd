@@ -74,6 +74,7 @@
 \alias{compareSpectra,Spectra,missing-method}
 \alias{pickPeaks,Spectra-method}
 \alias{removePeaks,Spectra-method}
+\alias{smooth,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 addProcessing(object, FUN, ...)
@@ -238,6 +239,10 @@ applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
 
 \S4method{removePeaks}{Spectra}(object, threshold = "min",
   msLevel. = unique(msLevel(object)))
+
+\S4method{smooth}{Spectra}(x, halfWindowSize = 2L,
+  method = c("MovingAverage", "WeightedMovingAverage", "SavitzkyGolay"),
+  ..., msLevel. = unique(msLevel(x)))
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -362,14 +367,24 @@ to be matched.}
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
 of length 1).}
 
-\item{halfWindowSize}{For \code{pickPeaks}: \code{integer(1)}, used in the
+\item{halfWindowSize}{\itemize{
+\item For \code{pickPeaks}: \code{integer(1)}, used in the
 identification of the mass peaks: a local maximum has to be the maximum
-in the window from \code{(i - halfWindowSize):(i + halfWindowSize)}.}
+in the window from \code{(i - halfWindowSize):(i + halfWindowSize)}.
+\item For \code{smooth}: \code{integer(1)}, used in the smoothing algorithm, the window
+reaches from \code{(i - halfWindowSize):(i + halfWindowSize)}.
+}}
 
-\item{method}{For \code{pickPeaks}: \code{character(1)}, the noise estimators that
+\item{method}{\itemize{
+\item For \code{pickPeaks}: \code{character(1)}, the noise estimators that
 should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
 (\code{method = "MAD"}) and Friedman's Super Smoother
-(\code{method = "SuperSmoother"}) are supported.}
+(\code{method = "SuperSmoother"}) are supported.
+\item For \code{smooth}: \code{character(1)}, the smoothing function that should be used,
+currently, the Moving-Average- (\code{method = "MovingAverage"}),
+Weighted-Moving-Average- (\code{method = "WeightedMovingAverage")},
+Savitzky-Golay-Smoothing (\code{method = "SavitzkyGolay"}) are supported.
+}}
 
 \item{snr}{For \code{pickPeaks}: \code{double(1)} defining the
 \emph{S}ignal-to-\emph{N}oise-\emph{R}atio. The intensity of a local maximum has to be
@@ -694,6 +709,15 @@ parameters to \code{FUN} can be passed with the \code{...} argument. Parameter
 \code{BPPARAM} allows to enable parallel processing, which however makes only
 sense if \code{FUN} is computational intense. \code{lapply} returns a \code{list} (same
 length than \code{X}) with the result from \code{FUN}. See examples for more details.
+\item \code{smooth}: smooth individual spectra using a moving window-based approach
+(window size = \code{2 * halfWindowSize}). Currently, the
+Moving-Average- (\code{method = "MovingAverage"}),
+Weighted-Moving-Average- (\code{method = "WeightedMovingAverage")},
+weights depending on the distance of the center and calculated
+\code{1/2^(-halfWindowSize:halfWindowSize)}) and
+Savitzky-Golay-Smoothing (\code{method = "SavitzkyGolay"}) are supported.
+For details how to choose the correct \code{halfWindowSize} please see
+\code{\link[MsCoreUtils:smooth]{MsCoreUtils::smooth()}}.
 \item \code{pickPeaks}: picks peaks on individual spectra using a moving window-based
 approach (window size = \code{2 * halfWindowSize}). For noisy spectra there
 are currently two different noise estimators available,
