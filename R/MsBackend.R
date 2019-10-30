@@ -511,6 +511,8 @@ setMethod("as.list", "MsBackend", function(x) {
 
 #' @exportMethod centroided
 #'
+#' @aliases centroided<-,MsBackend-method
+#'
 #' @importMethodsFrom ProtGenerics centroided
 #'
 #' @rdname MsBackend
@@ -926,6 +928,8 @@ setMethod("smoothed", "MsBackend", function(object) {
 })
 
 #' @exportMethod smoothed<-
+#'
+#' @aliases smoothed<-,MsBackend-method
 #'
 #' @importMethodsFrom ProtGenerics smoothed<-
 #'

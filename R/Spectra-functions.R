@@ -331,3 +331,99 @@ applyProcessing <- function(object, f = dataStorage(object),
     }
     m
 }
+
+#' @description
+#'
+#' Combine a `Spectra` of length `n` to a `Spectra` of length `1`.
+#' Takes all *spectra variables* from the first spectrum and combines the
+#' peaks into a single peaks matrix.
+#'
+#' @note
+#'
+#' If the backend of the input `Spectra` is *read-only* we're first converting
+#' that to a `MsBackendDataFrame` to support replacing peak data.
+#'
+#' @param x `Spectra`, ideally from a single `$dataStorage`.
+#'
+#' @param f `factor` to group spectra in `x`. It is supposed that input checks
+#'     have been performed beforehand.
+#'
+#' @param FUN `function` to be applied to the list of peak matrices.
+#'
+#' @return `Spectra` of length 1. If the input `Spectra` uses a read-only
+#'     backend that is changed to a `MsBackendDataFrame`.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+#'
+#' @examples
+#'
+#' spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+#' spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+#' spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+#'
+#' sps <- Spectra(spd)
+#'
+#' res <- .combine_spectra(sps)
+#' res$mz
+#' res$intensity
+#'
+#' res <- .combine_spectra(sps, FUN = combinePeaks, tolerance = 0.1)
+#' res$mz
+#' res$intensity
+.combine_spectra <- function(x, f = x$dataStorage, FUN = combinePeaks, ...) {
+    if (!is.factor(f))
+        f <- factor(f)
+    else f <- droplevels(f)
+    x_new <- x[match(levels(f), f)]
+    if (isReadOnly(x_new@backend))
+        x_new <- setBackend(x_new, MsBackendDataFrame())
+    replaceList(x_new@backend) <- lapply(
+        split(.peaksapply(x), f = f), FUN = FUN, ...)
+    validObject(x_new)
+    x_new
+}
+
+.concatenate_spectra <- function(x) {
+    cls <- vapply1c(x, class)
+    if (any(cls != "Spectra"))
+        stop("Can only concatenate 'Spectra' objects")
+    pqs <- lapply(x, function(z) z@processingQueue)
+    ## For now we stop if there is any of the processingQueues not empty. Later
+    ## we could even test if they are similar, and if so, merge.
+    if (any(lengths(pqs)))
+        stop("Can not concatenate 'Spectra' objects with non-empty ",
+             "processing queue")
+    metad <- do.call(c, lapply(x, function(z) z@metadata))
+    procs <- unique(unlist(lapply(x, function(z) z@processing)))
+    object <- new(
+        "Spectra", metadata = metad,
+        backend = backendMerge(lapply(x, function(z) z@backend)),
+        processing = c(procs, paste0("Merge ", length(x),
+                                     " Spectra into one [", date(), "]"))
+    )
+    validObject(object)
+    object
+}
+
+#' @export combineSpectra
+#'
+#' @rdname Spectra
+combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
+                           FUN = combinePeaks, ..., BPPARAM = bpparam()) {
+    if (!is.factor(f))
+        f <- factor(f, levels = unique(f))
+    if (!is.factor(p))
+        p <- factor(p, levels = unique(p))
+    if (length(f) != length(x) || length(p) != length(x))
+        stop("length of 'f' and 'p' have to match length of 'x'")
+    if (isReadOnly(x@backend))
+        message("Backend of the input object is read-only, will change that",
+                " to an 'MsBackendDataFrame'")
+    ## We split the workload by storage file. This ensures memory efficiency
+    ## for file-based backends.
+    res <- bpmapply(FUN = .combine_spectra, split(x, p), split(f, p),
+                    MoreArgs = list(FUN = FUN, ...), BPPARAM = BPPARAM)
+    .concatenate_spectra(res)
+}

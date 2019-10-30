@@ -123,52 +123,6 @@ test_that("c,Spectra works", {
     expect_identical(res$other_col, c(NA, NA, NA, NA, NA, "a", "a"))
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) == 1)
-
-    ## One Spectra without m/z and intensity
-    res <- c(sp3, sp4)
-    expect_true(is(res, "Spectra"))
-    expect_identical(mz(res), NumericList(c(1.4, 1.5, 1.6), c(1.8, 1.9),
-                                          numeric(), numeric(),
-                                          compress = FALSE))
-    expect_identical(msLevel(res), rep(3L, 4))
-    expect_identical(intensity(res), NumericList(c(123.4, 12, 5), c(43.1, 5),
-                                                 numeric(), numeric(),
-                                                 compress = FALSE))
-    res <- c(sp4, sp3)
-    expect_true(is(res, "Spectra"))
-    expect_identical(mz(res), NumericList(numeric(), numeric(),
-                                          c(1.4, 1.5, 1.6), c(1.8, 1.9),
-                                          compress = FALSE))
-    expect_identical(msLevel(res), rep(3L, 4))
-    expect_identical(intensity(res), NumericList(numeric(), numeric(),
-                                                 c(123.4, 12, 5), c(43.1, 5),
-                                                 compress = FALSE))
-
-    ## Two Spectra without m/z and intensity
-    res <- c(sp4, sp4)
-    expect_true(is(res, "Spectra"))
-    expect_identical(mz(res), NumericList(numeric(), numeric(), numeric(),
-                                          numeric(), compress = FALSE))
-
-    sp1@metadata <- list(version = "1.0.0", date = date())
-    res <- c(sp1, sp2)
-    expect_equal(res@metadata, sp1@metadata)
-
-    sp1@processingQueue <- list(ProcessingStep(sum))
-    expect_error(c(sp1, sp2), "with non-empty processing")
-
-    ## Different backends
-    s1 <- Spectra(sciex_mzr)
-    s2 <- Spectra(sciex_hd5)
-    expect_error(c(s1, s2), "backends of the same type")
-
-    ## BackendMzR
-    res <- c(Spectra(tmt_mzr), Spectra(sciex_mzr))
-    expect_identical(msLevel(res), c(msLevel(tmt_mzr), msLevel(sciex_mzr)))
-    expect_identical(msLevel(sciex_mzr), msLevel(res[dataStorage(res) %in%
-                                                     sciex_file]))
-    expect_identical(msLevel(tmt_mzr), msLevel(res[dataStorage(res) ==
-                                                   dataStorage(tmt_mzr)[1]]))
 })
 
 test_that("acquisitionNum,Spectra works", {

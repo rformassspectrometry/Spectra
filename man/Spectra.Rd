@@ -4,6 +4,7 @@
 \name{addProcessing}
 \alias{addProcessing}
 \alias{applyProcessing}
+\alias{combineSpectra}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -80,6 +81,9 @@ addProcessing(object, FUN, ...)
 
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(),
   ...)
+
+combineSpectra(x, f = x$dataStorage, p = x$dataStorage,
+  FUN = combinePeaks, ..., BPPARAM = bpparam())
 
 \S4method{Spectra}{DataFrame}(object, processingQueue = list(),
   metadata = list(), ..., backend = MsBackendDataFrame(),
@@ -246,19 +250,30 @@ on creation of \code{Spectra} objects for details. For all other methods a
 
 \item{FUN}{For \code{addProcessing}: function to be applied to the peak matrix
 of each spectrum in \code{object}. For \code{compareSpectra}: function to compare
-intensities of peaks between two spectra with each other. See section
-\emph{Data manipulations} and examples below for more details.}
+intensities of peaks between two spectra with each other.
+For \code{combineSpectra}: function to combine the (peak matrices) of the
+spectra. See section \emph{Data manipulations} and examples below for more
+details.}
 
 \item{...}{Additional arguments.}
 
 \item{f}{For \code{split}: factor defining how to split \code{x}. See \code{\link[base:split]{base::split()}}
 for details. For \code{setBackend}: factor defining how to split the data for
 parallelized copying of the spectra data to the new backend. For some
-backends changing this parameter can lead to errors.}
+backends changing this parameter can lead to errors.
+For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
+should be combined.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
 of the \linkS4class{MsBackend}.}
+
+\item{x}{A \code{Spectra} object.}
+
+\item{p}{For \code{combineSpectra}: \code{factor} defining how to split the input
+\code{Spectra} for parallel processing. Defaults to \code{x$dataStorage}, i.e.,
+depending on the used backend, per-file parallel processing will be
+performed.}
 
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
@@ -273,8 +288,6 @@ objects for details.}
 \item{source}{For \code{Spectra}: instance of \linkS4class{MsBackend} that can be used
 to import spectrum data from the provided files. See section \emph{Creation
 of objects, conversion and changing the backend} for more details.}
-
-\item{x}{A \code{Spectra} object.}
 
 \item{drop}{For \code{[}, \code{split}: not considered.}
 
@@ -667,6 +680,16 @@ intensity values for peaks falling into the same bin are summed.
 \item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
 0-intensity peaks next to non-zero intensity peaks are retained while with
 \code{all = TRUE} all 0-intensity peaks are removed.
+\item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
+For each spectrum group (set), spectra variables from the first spectrum
+are used and the peak matrices are combined using the function specified
+with \code{FUN}, which defaults to \code{\link[=combinePeaks]{combinePeaks()}}. The sets of spectra can be
+specified with parameter \code{f}. In addition it is possible to define, with
+parameter \code{p} if and how to split the input data for parallel processing.
+This defaults to \code{p = x$dataStorage} and hence a per-file parallel
+processing is applied for \code{Spectra} with file-based backends (such as the
+\code{\link[=MsBackendMzR]{MsBackendMzR()}}). The function returns a \code{Spectra} of length equal to the
+unique levels of \code{f}.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
 using the function provided with \code{FUN} (defaults to \code{\link[=dotproduct]{dotproduct()}}). If
 \code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
