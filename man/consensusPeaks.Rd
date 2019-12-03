@@ -4,9 +4,16 @@
 \alias{consensusPeaks}
 \title{Reduce mass peaks from input spectra to consensus peaks}
 \usage{
-consensusPeaks(x, minProp = 0.5, intensityFun = base::mean,
-  mzFun = base::mean, weighted = FALSE, tolerance = 0, ppm = 0,
-  ...)
+consensusPeaks(
+  x,
+  minProp = 0.5,
+  intensityFun = base::mean,
+  mzFun = base::mean,
+  weighted = FALSE,
+  tolerance = 0,
+  ppm = 0,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{list} of peak matrices.}
@@ -66,7 +73,8 @@ consensusPeaks(list(p1, p2, p3), tolerance = 0.1, intensityFun = min,
     mzFun = min)
 }
 \seealso{
-Other peak matrix combining functions: \code{\link{combinePeaks}}
+Other peak matrix combining functions: 
+\code{\link{combinePeaks}()}
 }
 \author{
 Johannes Rainer

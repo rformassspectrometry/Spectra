@@ -239,7 +239,7 @@ joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
                         halfWindowSize = 2L, method = c("MAD", "SuperSmoother"),
                         snr = 0L, k = 0L, descending = FALSE, threshold = 0,
                         msLevel = spectrumMsLevel, ...) {
-    if (!(spectrumMsLevel %in% msLevel) || isTRUE(centroided))
+    if (!(spectrumMsLevel %in% msLevel))
         return(x)
     if (!nrow(x)) {
         warning("Spectrum is empty. Nothing to pick.")

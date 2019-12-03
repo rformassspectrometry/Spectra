@@ -4,9 +4,18 @@
 \alias{combinePeaks}
 \title{Combine peaks with similar m/z across spectra}
 \usage{
-combinePeaks(x, intensityFun = base::mean, mzFun = base::mean,
-  weighted = FALSE, tolerance = 0, ppm = 0, timeDomain = FALSE,
-  main = 1L, unionPeaks = TRUE, ...)
+combinePeaks(
+  x,
+  intensityFun = base::mean,
+  mzFun = base::mean,
+  weighted = FALSE,
+  tolerance = 0,
+  ppm = 0,
+  timeDomain = FALSE,
+  main = 1L,
+  unionPeaks = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{list} of peak matrices.}
@@ -140,7 +149,8 @@ p <- combinePeaks(list(p1, p2, p3), tolerance = 0.05,
     intensityFun = max)
 }
 \seealso{
-Other peak matrix combining functions: \code{\link{consensusPeaks}}
+Other peak matrix combining functions: 
+\code{\link{consensusPeaks}()}
 }
 \author{
 Johannes Rainer

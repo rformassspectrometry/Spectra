@@ -694,7 +694,7 @@ NULL
 #' centroided(data) <- TRUE
 #'
 #' ## Remove peaks with an intensity below 40.
-#' res <- removePeaks(data, t = 40)
+#' res <- removePeaks(data, threshold = 40)
 #' res
 #'
 #' ## Get the intensities of the first and second spectrum.
@@ -1450,6 +1450,7 @@ setMethod("pickPeaks", "Spectra",
                             halfWindowSize = halfWindowSize, method = method,
                             snr = snr, k = k, descending = descending,
                             threshold = threshold, msLevel = msLevel.)
+    object$centroided[msLevel(object) %in% msLevel.] <- TRUE
     object@processing <- .logging(object@processing,
                                   "Peak picking with ", method,
                                   " noise estimation, hws = ", halfWindowSize,
