@@ -103,7 +103,7 @@ test_that(".peaks_pick works", {
 
     int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
              0, 1, 5, 10, 5, 1)
-    x <- cbind(mz = 1:length(int), intensity = int)
+    x <- cbind(mz = seq_along(int), intensity = int)
     expect_equal(.peaks_pick(x, spectrumMsLevel = 2, msLevel = 1), x)
     expect_equal(.peaks_pick(x, spectrumMsLevel = 1, centroided = TRUE,
                              msLevel = 1), x)
@@ -130,3 +130,17 @@ test_that(".peaks_pick works", {
                                    w = list(int[3:5], int[11:13], int[22:24])),
                        intensity = c(3, 10, 10)))
 })
+
+test_that(".peaks_smooth works", {
+    e <- matrix(NA_real_, nrow = 0, ncol = 2,
+                dimnames = list(c(), c("mz", "intensity")))
+    expect_warning(.peaks_smooth(e, spectrumMsLevel = 1), "empty")
+    expect_equal(suppressWarnings(.peaks_smooth(e, spectrumMsLevel = 1)), e)
+
+    cf <- matrix(0.2, nrow = 5, ncol = 5)
+    int <- 1:10
+    x <- cbind(mz = seq_along(int), intensity = int)
+    expect_equal(.peaks_smooth(x, spectrumMsLevel = 1, coef = cf),
+                 cbind(mz = x[, 1L], intensity = rep(3:8, c(3, 1, 1, 1, 1, 3))))
+})
+
