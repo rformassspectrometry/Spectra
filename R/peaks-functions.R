@@ -272,6 +272,8 @@ joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
 #'
 #' @return `matrix` with columns `"mz"` and `"intensity"`.
 #'
+#' @author Sebastian Gibb
+#'
 #' @noRd
 .peaks_smooth <- function(x, spectrumMsLevel, msLevel = spectrumMsLevel,
                           coef, ...) {
