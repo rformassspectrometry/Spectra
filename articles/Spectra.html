@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.10/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2019-10-30 18:15:16<br><strong>Compiled</strong>: Wed Oct 30 18:21:39 2019</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.11/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2019-12-05 09:09:46<br><strong>Compiled</strong>: Thu Dec 5 09:15:25 2019</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 18 more variables/columns.
 ## Processing:
 ## </code></pre>
-<p>Alternatively, it is possible to import spectra data from mass spectrometry raw files in mzML/mzXML or CDF format. Below we create a <code>Spectra</code> object from two mzML files and define to use a <code>MsBackendMzR</code> backend to <em>store</em> the data (note that this requires the <em><a href="https://bioconductor.org/packages/3.10/mzR">mzR</a></em> package to be installed). This backend, specifically designed for raw MS data, keeps only a subset of spectra variables in memory while reading the m/z and intensity values from the original data files only on demand. See section <a href="#backends">Backends</a> for more details on backends and their properties.</p>
+<p>Alternatively, it is possible to import spectra data from mass spectrometry raw files in mzML/mzXML or CDF format. Below we create a <code>Spectra</code> object from two mzML files and define to use a <code>MsBackendMzR</code> backend to <em>store</em> the data (note that this requires the <em><a href="https://bioconductor.org/packages/3.11/mzR">mzR</a></em> package to be installed). This backend, specifically designed for raw MS data, keeps only a subset of spectra variables in memory while reading the m/z and intensity values from the original data files only on demand. See section <a href="#backends">Backends</a> for more details on backends and their properties.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">fls &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.files.html">dir</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"sciex"</span>, <span class="dt">package =</span> <span class="st">"msdata"</span>), <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">sps_sciex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">Spectra</a></span>(fls, <span class="dt">backend =</span> <span class="kw"><a href="../reference/MsBackend.html">MsBackendMzR</a></span>())</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">sps_sciex</a></code></pre></div>
@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <pre><code>## NumericList of length 3
 ## [[1]] 109.2 124.2 124.5 170.16 170.52
 ## [[2]] 83.1 96.12 97.14 109.14 124.08 125.1 170.16
-## [[3]] 56.0494 69.0447 83.0603 109.0395 ... 123.0429 138.0662 195.0876</code></pre>
+## [[3]] 56.0494 69.0447 83.0603 109.0395 110.0712 111.0551 123.0429 138.0662 195.0876</code></pre>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">intensity</span>(sps)</a></code></pre></div>
 <pre><code>## NumericList of length 3
 ## [[1]] 3.407 47.494 3.094 100 13.24
@@ -394,8 +394,8 @@ document.addEventListener("DOMContentLoaded", function() {
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Oct 30 18:21:43 2019]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Oct 30 18:21:43 2019]</code></pre>
+##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Thu Dec  5 09:15:28 2019]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Thu Dec  5 09:15:28 2019]</code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">caf_df &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">msLevel =</span> 2L, <span class="dt">name =</span> <span class="st">"Caffeine"</span>,</a>
@@ -419,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Wed Oct 30 18:21:43 2019]</code></pre>
+##  Merge 2 Spectra into one [Thu Dec  5 09:15:29 2019]</code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="kw">spectraVariables</span>(sps)</a></code></pre></div>
 <pre><code>##  [1] "msLevel"                 "rtime"                  
@@ -474,9 +474,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 2 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Wed Oct 30 18:21:43 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Oct 30 18:21:43 2019]
-##  Spectra of MS level(s) 2 cleaned. [Wed Oct 30 18:21:43 2019]</code></pre>
+##  Merge 2 Spectra into one [Thu Dec  5 09:15:29 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Dec  5 09:15:29 2019]
+##  Spectra of MS level(s) 2 cleaned. [Thu Dec  5 09:15:29 2019]</code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">## Define a function that takes a matrix as input, divides the second</a>
 <a class="sourceLine" id="cb61-2" data-line-number="2">## column by parameter y and returns it. Note that ... is required in</a>
@@ -499,9 +499,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 3 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Wed Oct 30 18:21:43 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Oct 30 18:21:43 2019]
-##  Spectra of MS level(s) 2 cleaned. [Wed Oct 30 18:21:43 2019]</code></pre>
+##  Merge 2 Spectra into one [Thu Dec  5 09:15:29 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Dec  5 09:15:29 2019]
+##  Spectra of MS level(s) 2 cleaned. [Thu Dec  5 09:15:29 2019]</code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="kw">intensity</span>(sps_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## NumericList of length 4
@@ -546,10 +546,10 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Wed Oct 30 18:21:43 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Oct 30 18:21:43 2019]
-##  Spectra of MS level(s) 2 cleaned. [Wed Oct 30 18:21:43 2019]
-##  Applied processing queue with 2 steps [Wed Oct 30 18:21:44 2019]</code></pre>
+##  Merge 2 Spectra into one [Thu Dec  5 09:15:29 2019]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Dec  5 09:15:29 2019]
+##  Spectra of MS level(s) 2 cleaned. [Thu Dec  5 09:15:29 2019]
+##  Applied processing queue with 2 steps [Thu Dec  5 09:15:29 2019]</code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage.</p>
 </div>
 <div id="changing-backends" class="section level2">
@@ -576,7 +576,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 1862         1       259.752       931
 ##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Oct 30 18:21:48 2019]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Thu Dec  5 09:15:32 2019]</code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(sps_sciex), <span class="dt">units =</span> <span class="st">"Mb"</span>)</a></code></pre></div>
 <pre><code>## 52.1 Mb</code></pre>
@@ -591,7 +591,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="parallel-processing-notes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#parallel-processing-notes" class="anchor"></a>Parallel processing notes</h2>
-<p>Most functions on <code>Spectra</code> support (and use) parallel processing out of the box. Peak data access and manipulation methods perform by default parallel processing on a per-file basis. <code>Spectra</code> uses <em><a href="https://bioconductor.org/packages/3.10/BiocParallel">BiocParallel</a></em> for parallel processing and all functions use the default registered parallel processing setup of that package.</p>
+<p>Most functions on <code>Spectra</code> support (and use) parallel processing out of the box. Peak data access and manipulation methods perform by default parallel processing on a per-file basis. <code>Spectra</code> uses <em><a href="https://bioconductor.org/packages/3.11/BiocParallel">BiocParallel</a></em> for parallel processing and all functions use the default registered parallel processing setup of that package.</p>
 </div>
 </div>
 <div id="backends" class="section level1">
@@ -600,7 +600,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>Backends allow to use different <em>backends</em> to store mass spectrometry data while providing <em>via</em> the <code>Spectra</code> class a unified interface to use that data. The <code>Spectra</code> package defines a set of example backends but any object extending the base <code>MsBackend</code> class could be used instead. The default backends are:</p>
 <ul>
 <li><p><code>MsBackendDataFrame</code>: the mass spectrometry data is stored (in-memory) in a <code>DataFrame</code>. Keeping the data in memory guarantees high performance but has also, depending on the number of mass peaks in each spectrum, a much higher memory footprint.</p></li>
-<li><p><code>MsBackendMzR</code>: this backend keeps only general spectra variables in memory and relies on the <em><a href="https://bioconductor.org/packages/3.10/mzR">mzR</a></em> package to read mass peaks (m/z and intensity values) from the original MS files on-demand.</p></li>
+<li><p><code>MsBackendMzR</code>: this backend keeps only general spectra variables in memory and relies on the <em><a href="https://bioconductor.org/packages/3.11/mzR">mzR</a></em> package to read mass peaks (m/z and intensity values) from the original MS files on-demand.</p></li>
 <li><p><code>MsBackendHdf5Peaks</code>: similar to <code>MsBackendMzR</code> this backend reads peak data only on-demand from disk while all other spectra variables are kept in memory. The peak data are stored in Hdf5 files which guarantees scalability.</p></li>
 </ul>
 <p>All of the above mentioned backends support changing all of their their spectra variables, <strong>except</strong> the <code>MsBackendMzR</code> that does not support changing m/z or intensity values for the mass peaks.</p>
@@ -621,7 +621,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h1 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session information</h1>
 <div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a></code></pre></div>
-<pre><code>## R version 3.6.1 (2017-01-27)
+<pre><code>## R Under development (unstable) (2019-12-04 r77518)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 14.04.5 LTS
 ## 
@@ -642,22 +642,22 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [8] methods   base     
 ## 
 ## other attached packages:
-## [1] msdata_0.25.2       magrittr_1.5        Spectra_0.3.0      
-## [4] ProtGenerics_1.17.4 BiocParallel_1.19.6 S4Vectors_0.23.25  
-## [7] BiocGenerics_0.31.6 BiocStyle_2.13.2   
+## [1] msdata_0.27.0       magrittr_1.5        Spectra_0.3.0      
+## [4] ProtGenerics_1.17.4 BiocParallel_1.21.0 S4Vectors_0.25.4   
+## [7] BiocGenerics_0.33.0 BiocStyle_2.15.0   
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.2         compiler_3.6.1     BiocManager_1.30.9
-##  [4] tools_3.6.1        ncdf4_1.17         digest_0.6.22     
-##  [7] evaluate_0.14      memoise_1.1.0      rhdf5_2.29.7      
-## [10] rlang_0.4.1        yaml_2.2.0         pkgdown_1.4.1     
-## [13] xfun_0.10          stringr_1.4.0      knitr_1.25        
-## [16] desc_1.2.0         fs_1.3.1           IRanges_2.19.18   
-## [19] MsCoreUtils_0.0.2  rprojroot_1.3-2    Biobase_2.45.1    
-## [22] R6_2.4.0           rmarkdown_1.16     bookdown_0.14     
-## [25] Rhdf5lib_1.7.6     mzR_2.19.7         backports_1.1.5   
-## [28] codetools_0.2-16   htmltools_0.4.0    MASS_7.3-51.4     
-## [31] assertthat_0.2.1   stringi_1.4.3      crayon_1.3.4</code></pre>
+##  [1] Rcpp_1.0.3          compiler_4.0.0      BiocManager_1.30.10
+##  [4] tools_4.0.0         ncdf4_1.17          digest_0.6.23      
+##  [7] evaluate_0.14       memoise_1.1.0       rhdf5_2.31.1       
+## [10] rlang_0.4.2         yaml_2.2.0          pkgdown_1.4.1      
+## [13] xfun_0.11           stringr_1.4.0       knitr_1.26         
+## [16] desc_1.2.0          fs_1.3.1            IRanges_2.21.2     
+## [19] MsCoreUtils_0.0.2   rprojroot_1.3-2     Biobase_2.47.1     
+## [22] R6_2.4.1            rmarkdown_1.18      bookdown_0.16      
+## [25] Rhdf5lib_1.9.0      mzR_2.21.0          backports_1.1.5    
+## [28] codetools_0.2-16    htmltools_0.4.0     MASS_7.3-51.4      
+## [31] assertthat_0.2.1    stringi_1.4.3       crayon_1.3.4</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1 class="hasAnchor">
