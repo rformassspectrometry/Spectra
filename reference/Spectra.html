@@ -362,7 +362,12 @@ pickPeaks(object, halfWindowSize = 2L,
 
 # S4 method for Spectra
 removePeaks(object, threshold = "min",
-  msLevel. = unique(msLevel(object)))</pre>
+  msLevel. = unique(msLevel(object)))
+
+# S4 method for Spectra
+smooth(x, halfWindowSize = 2L,
+  method = c("MovingAverage", "WeightedMovingAverage", "SavitzkyGolay"),
+  ..., msLevel. = unique(msLevel(x)))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -574,16 +579,26 @@ of length 1).</p></td>
     </tr>
     <tr>
       <th>halfWindowSize</th>
-      <td><p>For <code>pickPeaks</code>: <code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>, used in the
+      <td><ul>
+<li><p>For <code>pickPeaks</code>: <code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>, used in the
 identification of the mass peaks: a local maximum has to be the maximum
-in the window from <code>(i - halfWindowSize):(i + halfWindowSize)</code>.</p></td>
+in the window from <code>(i - halfWindowSize):(i + halfWindowSize)</code>.</p></li>
+<li><p>For <code>smooth</code>: <code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>, used in the smoothing algorithm, the window
+reaches from <code>(i - halfWindowSize):(i + halfWindowSize)</code>.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>For <code>pickPeaks</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>, the noise estimators that
+      <td><ul>
+<li><p>For <code>pickPeaks</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>, the noise estimators that
 should be used, currently the the <em>M</em>edian <em>A</em>bsolute <em>D</em>eviation
 (<code>method = "MAD"</code>) and Friedman's Super Smoother
-(<code>method = "SuperSmoother"</code>) are supported.</p></td>
+(<code>method = "SuperSmoother"</code>) are supported.</p></li>
+<li><p>For <code>smooth</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>, the smoothing function that should be used,
+currently, the Moving-Average- (<code>method = "MovingAverage"</code>),
+Weighted-Moving-Average- (<code>method = "WeightedMovingAverage")</code>,
+Savitzky-Golay-Smoothing (<code>method = "SavitzkyGolay"</code>) are supported.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>snr</th>
@@ -918,6 +933,15 @@ parameters to <code>FUN</code> can be passed with the <code>...</code> argument.
 <code>BPPARAM</code> allows to enable parallel processing, which however makes only
 sense if <code>FUN</code> is computational intense. <code>lapply</code> returns a <code>list</code> (same
 length than <code>X</code>) with the result from <code>FUN</code>. See examples for more details.</p></li>
+<li><p><code>smooth</code>: smooth individual spectra using a moving window-based approach
+(window size = <code>2 * halfWindowSize</code>). Currently, the
+Moving-Average- (<code>method = "MovingAverage"</code>),
+Weighted-Moving-Average- (<code>method = "WeightedMovingAverage")</code>,
+weights depending on the distance of the center and calculated
+<code>1/2^(-halfWindowSize:halfWindowSize)</code>) and
+Savitzky-Golay-Smoothing (<code>method = "SavitzkyGolay"</code>) are supported.
+For details how to choose the correct <code>halfWindowSize</code> please see
+<code><a href='https://rdrr.io/pkg/MsCoreUtils/man/smooth.html'>MsCoreUtils::smooth()</a></code>.</p></li>
 <li><p><code>pickPeaks</code>: picks peaks on individual spectra using a moving window-based
 approach (window size = <code>2 * halfWindowSize</code>). For noisy spectra there
 are currently two different noise estimators available,
@@ -1012,7 +1036,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1862         1       259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Thu Dec  5 09:14:53 2019] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Thu Dec  5 10:13:42 2019] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1192,7 +1216,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Thu Dec  5 09:14:54 2019] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Thu Dec  5 10:13:44 2019] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='no'>data_comb</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>data</span>, <span class='no'>sciex_im</span>)
 
@@ -1212,7 +1236,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Thu Dec  5 09:14:55 2019] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Thu Dec  5 10:13:45 2019] </div><div class='input'>
 <span class='co'>## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----</span>
 
 <span class='co'>## Set the data to be centroided</span>
@@ -1228,7 +1252,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= min in MS level(s) 1, 2 set to 0 [Thu Dec  5 09:14:55 2019] </div><div class='input'>
+#&gt;  Signal &lt;= min in MS level(s) 1, 2 set to 0 [Thu Dec  5 10:13:45 2019] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='no'>res</span>)<span class='kw'>[[</span><span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200.0 400.0  34.2   0.0</div><div class='input'><span class='fu'>intensity</span>(<span class='no'>res</span>)<span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt; [1] 12.3 15.2  0.0</div><div class='input'>
 <span class='co'>## Clean all spectra removing all 0-intensity peaks.</span>
