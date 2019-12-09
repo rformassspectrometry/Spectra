@@ -12,8 +12,10 @@ combinePeaks(
   tolerance = 0,
   ppm = 0,
   timeDomain = FALSE,
+  peaks = c("union", "intersect"),
   main = 1L,
-  unionPeaks = TRUE,
+  keepMain = FALSE,
+  minProp = 0.5,
   ...
 )
 }
@@ -41,13 +43,21 @@ them into the same final peak.}
 on the m/z values (\code{timeDomain = FALSE}) or on \code{sqrt(mz)}
 (\code{timeDomain = TRUE}).}
 
-\item{main}{\code{integer(1)} defining the \emph{main} spectrum. Only used for
-\code{unionPeaks = FALSE}.}
+\item{peaks}{\code{character(1)} specifying how peaks should be combined. Can be
+either \verb{"peaks = "union"} (default) or \code{peaks = "intersect"}. See
+function description for details.}
 
-\item{unionPeaks}{\code{logical(1)} defining whether the union of all peaks from
-all spectra are reported (\code{unionPeaks = TRUE}, the default) or only
+\item{main}{\code{integer(1)} defining the \emph{main} spectrum. Only used for
+\code{keepMain = TRUE}.}
+
+\item{keepMain}{\code{logical(1)} defining whether the union of all peaks from
+all spectra are reported (\code{keepMain = FALSE}, the default) or only
 peaks present in the \emph{main} spectrum defined by \code{main}
-(\code{unionPeaks = FALSE}).}
+(\code{keepMain = TRUE}).}
+
+\item{minProp}{\code{numeric(1)} for `peaks = "intersect": the minimal required
+proportion of input spectra (peak matrices) a mass peak has to be
+present to be included in the consensus peak matrix.}
 
 \item{...}{additional parameters to the \code{mzFun} and \code{intensityFun} functions.}
 }
@@ -58,21 +68,33 @@ values across the provided peak matrices.
 \description{
 \code{combinePeaks} aggregates provided peak matrices into a single peak matrix.
 Peaks are grouped by their m/z values with the \code{group()} function from the
-\code{MsCoreUtils} package. All peaks in all provided spectra are first ordered
-by their m/z and consecutively grouped into one group if the (pairwise)
-difference between them is smaller than specified with parameter \code{tolerance}
-and \code{ppm} (see \code{\link[=group]{group()}} for grouping details and examples).
+\code{MsCoreUtils} package. In brief, all peaks in all provided spectra are first
+ordered by their m/z and consecutively grouped into one group if the
+(pairwise) difference between them is smaller than specified with parameter
+\code{tolerance} and \code{ppm} (see \code{\link[=group]{group()}} for grouping details and examples).
 
 The m/z and intensity values for the resulting peak matrix are calculated
 using the \code{mzFun} and \code{intensityFun} on the grouped m/z and intensity values.
 
-Parameters \code{main} and \code{unionPeaks} deal with special cases if e.g. only
-peaks should be reported that are present in one of the provided peak
-matrices. If for example \code{main = 2L} and \code{unionPeaks = FALSE}, only peaks
-are returned wich are present in the second peak matrix.
+The function supports also different strategies for peak combinations which
+can be specified with the \code{peaks} parameter:
+\itemize{
+\item \code{peaks = "union"} (default): report all peaks from all input spectra.
+\item \code{peaks = "intersect"}: keep only peaks in the resulting peak matrix that
+are present in \verb{>= minProp} proportion of input spectra. This would
+generate a \emph{consensus} or \emph{representative} spectra from a set of e.g.
+fragment spectra measured from the same precursor ion.
+}
+
+A special case for \code{peaks = "union"} is when only peaks of one of the
+input spectra should be kept. For such cases, \code{main} allows to specify which
+of the input spectra is the \emph{main} spectrum and \code{keepMain = TRUE} tells the
+function to only keep (grouped) peaks that have a peak in the \code{main}
+specrtrum.
 
 Setting \code{timeDomain} to \code{TRUE} causes grouping to be performed on the square
-root of the m/z values.
+root of the m/z values (assuming a TOF instrument was used to create the
+data).
 }
 \details{
 For general merging of spectra, the \code{tolerance} and/or \code{ppm} should be
@@ -131,6 +153,7 @@ points(p3[, 1], p3[, 2], type = "h", col = "blue")
 
 plot(p[, 1], p[, 2], xlim = range(mzs[5:25]), type = "h",
     col = "black")
+## The peaks were not merged, because their m/z differs too much.
 
 ## Combine spectra with `tolerance = 0.05`. This will merge all triplets.
 p <- combinePeaks(list(p1, p2, p3), tolerance = 0.05)
@@ -147,10 +170,26 @@ plot(p[, 1], p[, 2], xlim = range(mzs[5:25]), type = "h",
 ## With `intensityFun = max` the maximal intensity per peak is reported.
 p <- combinePeaks(list(p1, p2, p3), tolerance = 0.05,
     intensityFun = max)
-}
-\seealso{
-Other peak matrix combining functions: 
-\code{\link{consensusPeaks}()}
+
+## Create *consensus*/representative spectrum from a set of spectra
+
+p1 <- cbind(mz = c(12, 45, 64, 70), intensity = c(10, 20, 30, 40))
+p2 <- cbind(mz = c(17, 45.1, 63.9, 70.2), intensity = c(11, 21, 31, 41))
+p3 <- cbind(mz = c(12.1, 44.9, 63), intensity = c(12, 22, 32))
+
+## No mass peaks identical thus consensus peaks are empty
+combinePeaks(list(p1, p2, p3), peaks = "intersect")
+
+## Reducing the minProp to 0.2. The consensus spectrum will contain all
+## peaks
+combinePeaks(list(p1, p2, p3), peaks = "intersect", minProp = 0.2)
+
+## With a tolerance of 0.1 mass peaks can be matched across spectra
+combinePeaks(list(p1, p2, p3), peaks = "intersect", tolerance = 0.1)
+
+## Report the minimal m/z and intensity
+combinePeaks(list(p1, p2, p3), peaks = "intersect", tolerance = 0.1,
+    intensityFun = min, mzFun = min)
 }
 \author{
 Johannes Rainer

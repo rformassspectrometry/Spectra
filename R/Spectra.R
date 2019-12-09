@@ -326,9 +326,8 @@ NULL
 #' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
-#'   with `FUN`, which defaults to [combinePeaks()]; alternatively
-#'   [consensusPeaks()] or other functions linked on that help page can be
-#'   used. The sets of spectra can be specified with parameter `f`.
+#'   with `FUN`, which defaults to [combinePeaks()]. The sets of spectra can be
+#'   specified with parameter `f`.
 #'   In addition it is possible to define, with parameter `p` if and how to
 #'   split the input data for parallel processing.
 #'   This defaults to `p = x$dataStorage` and hence a per-file parallel

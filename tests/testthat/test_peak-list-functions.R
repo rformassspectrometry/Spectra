@@ -70,31 +70,37 @@ test_that("combinePeaks works", {
     expect_true(res[4, 1] == max(c(p1[2, 1], p3[2, 1])))
     expect_true(res[5, 1] == max(p1[3, 1]))
     expect_true(res[6, 1] == max(c(p1[4, 1], p2[4, 1])))
-})
 
-test_that("consensusPeaks works", {
+    ## peaks = "intersect"
     p1 <- cbind(mz = c(12, 45, 64, 70), intensity = c(10, 20, 30, 40))
     p2 <- cbind(mz = c(17, 45.1, 63.9, 70.2), intensity = c(11, 21, 31, 41))
     p3 <- cbind(mz = c(12.1, 44.9, 63), intensity = c(12, 22, 32))
 
-    expect_identical(consensusPeaks(list(p1)), p1)
+    expect_identical(combinePeaks(list(p1), peaks = "intersect"), p1)
 
-    res <- consensusPeaks(list(p1, p2, p3), minProp = 0.2)
+    res <- combinePeaks(list(p1, p2, p3), peaks = "intersect", minProp = 0.2)
     expect_equal(res[, 1], sort(c(p1[, 1], p2[, 1], p3[, 1])))
     idx <- order(c(p1[, 1], p2[, 1], p3[, 1]))
     expect_equal(res[, 2], c(p1[, 2], p2[, 2], p3[, 2])[idx])
+    ## doesn't matter if we specify main or keepMain
+    expect_identical(res, combinePeaks(list(p1, p2, p3), peaks = "intersect",
+                                       minProp = 0.2, keepMain = TRUE))
+    expect_identical(res, combinePeaks(list(p1, p2, p3), peaks = "intersect",
+                                       minProp = 0.2, main = 3))
+    expect_identical(res, combinePeaks(list(p1, p2, p3), peaks = "intersect",
+                                       minProp = 0.2, main = 3, keepMain = TRUE))
 
-    res <- consensusPeaks(list(p1, p2, p3))
+    res <- combinePeaks(list(p1, p2, p3), peaks = "intersect")
     expect_true(nrow(res) == 0)
 
-    res <- consensusPeaks(list(p1, p2, p3), tolerance = 0.1)
+    res <- combinePeaks(list(p1, p2, p3), tolerance = 0.1, peaks = "intersect")
     expect_equal(res[, 1], c(mean(c(12, 12.1)), mean(c(45, 45.1, 44.9)),
                              mean(c(64, 63.9))))
     expect_equal(res[, 2], c(mean(c(10, 12)), mean(c(20, 21, 22)),
                              mean(c(30, 31))))
 
-    res <- consensusPeaks(list(p1, p2, p3), tolerance = 0.1, mzFun = min,
-                          intensityFun = max)
+    res <- combinePeaks(list(p1, p2, p3), tolerance = 0.1, mzFun = min,
+                        intensityFun = max, peaks = "intersect")
     expect_equal(res[, 1], c(min(c(12, 12.1)), min(c(45, 45.1, 44.9)),
                              min(c(64, 63.9))))
     expect_equal(res[, 2], c(max(c(10, 12)), max(c(20, 21, 22)),
