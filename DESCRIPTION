@@ -5,15 +5,15 @@ Description: The Spectra package defines a efficient infrastructure
    for storing and handling for raw mass spectrometry spectra.
 Authors@R: c(person(given = "Laurent", family = "Gatto",
 		    comment = c(ORCID = "0000-0002-1520-2268"),
-                    email = "laurent.gatto@uclouvain.be",
-                    role = c("aut","cre")),
-             person(given = "Johannes", family = "Rainer",
-                    email = "Johannes.Rainer@eurac.edu",
-                    role = c("aut", "cre"),
+		    email = "laurent.gatto@uclouvain.be",
+		    role = c("aut","cre")),
+	     person(given = "Johannes", family = "Rainer",
+		    email = "Johannes.Rainer@eurac.edu",
+		    role = c("aut", "cre"),
 		    comment = c(ORCID = "0000-0002-6977-7147")),
-             person(given = "Sebastian", family = "Gibb",
-                    email = "mail@sebastiangibb.de",
-                    role = c("aut", "cre"),
+	     person(given = "Sebastian", family = "Gibb",
+		    email = "mail@sebastiangibb.de",
+		    role = c("aut", "cre"),
 		    comment = c(ORCID = "0000-0001-7406-4443")))
 Author: Laurent Gatto, Johannes Rainer and Sebastian Gibb.
 Maintainer: Laurent Gatto <laurent.gatto@uclouvain.be> and Johannes Rainer <Johannes.Rainer@eurac.edu>
@@ -37,6 +37,8 @@ Suggests:
     rhdf5,
     rmarkdown,
     magrittr
+Remotes:
+    RforMassSpectrometry/MsCoreUtils
 License: Artistic-2.0
 LazyData: yes
 VignetteBuilder: knitr

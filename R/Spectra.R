@@ -364,6 +364,16 @@ NULL
 #'   sense if `FUN` is computational intense. `lapply` returns a `list` (same
 #'   length than `X`) with the result from `FUN`. See examples for more details.
 #'
+#' - `smooth`: smooth individual spectra using a moving window-based approach
+#'    (window size = `2 * halfWindowSize`). Currently, the
+#'    Moving-Average- (`method = "MovingAverage"`),
+#'    Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
+#'    weights depending on the distance of the center and calculated
+#'    `1/2^(-halfWindowSize:halfWindowSize)`) and
+#'    Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
+#'    For details how to choose the correct `halfWindowSize` please see
+#'    [`MsCoreUtils::smooth()`].
+#'
 #' - `pickPeaks`: picks peaks on individual spectra using a moving window-based
 #'   approach (window size = `2 * halfWindowSize`). For noisy spectra there
 #'   are currently two different noise estimators available,
@@ -448,9 +458,12 @@ NULL
 #'     spectra. See section *Data manipulations* and examples below for more
 #'     details.
 #'
-#' @param halfWindowSize For `pickPeaks`: `integer(1)`, used in the
-#'     identification of the mass peaks: a local maximum has to be the maximum
-#'     in the window from `(i - halfWindowSize):(i + halfWindowSize)`.
+#' @param halfWindowSize
+#' - For `pickPeaks`: `integer(1)`, used in the
+#'   identification of the mass peaks: a local maximum has to be the maximum
+#'   in the window from `(i - halfWindowSize):(i + halfWindowSize)`.
+#' - For `smooth`: `integer(1)`, used in the smoothing algorithm, the window
+#'   reaches from `(i - halfWindowSize):(i + halfWindowSize)`.
 #'
 #' @param i For `[`: `integer`, `logical` or `character` to subset the object.
 #'
@@ -468,10 +481,15 @@ NULL
 #'     two compared spectra. See [joinPeaks()] for more information and possible
 #'     functions.
 #'
-#' @param method For `pickPeaks`: `character(1)`, the noise estimators that
-#'     should be used, currently the the *M*edian *A*bsolute *D*eviation
-#'     (`method = "MAD"`) and Friedman's Super Smoother
-#'     (`method = "SuperSmoother"`) are supported.
+#' @param method
+#' - For `pickPeaks`: `character(1)`, the noise estimators that
+#'   should be used, currently the the *M*edian *A*bsolute *D*eviation
+#'   (`method = "MAD"`) and Friedman's Super Smoother
+#'   (`method = "SuperSmoother"`) are supported.
+#' - For `smooth`: `character(1)`, the smoothing function that should be used,
+#'   currently, the Moving-Average- (`method = "MovingAverage"`),
+#'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
+#'   Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
@@ -1482,4 +1500,32 @@ setMethod("removePeaks", "Spectra",
           })
 
 
-## smooth
+#' @rdname Spectra
+#'
+#' @importFrom ProtGenerics smooth
+#' @importFrom MsCoreUtils coefMA coefWMA coefSG
+#' @exportMethod smooth
+setMethod("smooth", "Spectra",
+          function(x, halfWindowSize = 2L,
+                   method = c("MovingAverage", "WeightedMovingAverage",
+                              "SavitzkyGolay"), ...,
+                   msLevel. = unique(msLevel(x))) {
+    if (!.check_ms_level(x, msLevel.))
+        return(x)
+    if (!is.integer(halfWindowSize) || length(halfWindowSize) != 1L ||
+        halfWindowSize <= 0L)
+        stop("Argument 'halfWindowSize' has to be an integer of length 1 ",
+             "and > 0.")
+
+    method <- match.arg(method)
+    coef <- switch(method,
+                   MovingAverage = coefMA(halfWindowSize),
+                   WeightedMovingAverage = coefWMA(halfWindowSize),
+                   SavitzkyGolay = coefSG(halfWindowSize, ...))
+
+    x <- addProcessing(x, .peaks_smooth, halfWindowSize = halfWindowSize,
+                       coef = coef, msLevel = msLevel.)
+    x@processing <- .logging(x@processing, "Spectra smoothing with ", method,
+                                           ", hws = ", halfWindowSize)
+    x
+})

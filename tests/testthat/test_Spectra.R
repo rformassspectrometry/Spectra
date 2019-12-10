@@ -1034,6 +1034,32 @@ test_that("pickPeaks,Spectra works", {
     expect_true(all(centroided(res)))
 })
 
+test_that("smooth,Spectra works", {
+    sps <- Spectra()
+    expect_error(smooth(sps, halfWindowSize = 1), "integer")
+    expect_error(smooth(sps, halfWindowSize = 1L:2L), "length 1")
+    expect_error(smooth(sps, halfWindowSize = -1L), "> 0")
+    expect_error(smooth(sps, method = "foo"), "MovingAverage")
+
+    res <- smooth(sps)
+    expect_true(length(res@processingQueue) == 1)
+    expect_equal(res@processingQueue[[1]],
+                 ProcessingStep(.peaks_smooth,
+                                list(halfWindowSize = 2L,
+                                     coef = matrix(0.2, nrow = 5, ncol = 5),
+                                     msLevel = integer())))
+    expect_match(res@processing,
+                 "Spectra smoothing with MovingAverage, hws = 2 \\[")
+
+    sps <- Spectra(sciex_mzr)
+    expect_equal(smooth(sps, msLevel. = 3), sps)
+
+    res <- smooth(sps)
+    pks_res <- lapply(sciex_pks, .peaks_smooth,
+                      spectrumMsLevel = 1L, coef = coefMA(2L))
+    expect_identical(as.list(res), SimpleList(pks_res))
+})
+
 test_that("removePeaks,Spectra works", {
     sps <- Spectra()
     res <- removePeaks(sps, threshold = 10)
