@@ -13,8 +13,7 @@ combinePeaks(
   ppm = 0,
   timeDomain = FALSE,
   peaks = c("union", "intersect"),
-  main = 1L,
-  keepMain = FALSE,
+  main = integer(),
   minProp = 0.5,
   ...
 )
@@ -47,13 +46,9 @@ on the m/z values (\code{timeDomain = FALSE}) or on \code{sqrt(mz)}
 either \verb{"peaks = "union"} (default) or \code{peaks = "intersect"}. See
 function description for details.}
 
-\item{main}{\code{integer(1)} defining the \emph{main} spectrum. Only used for
-\code{keepMain = TRUE}.}
-
-\item{keepMain}{\code{logical(1)} defining whether the union of all peaks from
-all spectra are reported (\code{keepMain = FALSE}, the default) or only
-peaks present in the \emph{main} spectrum defined by \code{main}
-(\code{keepMain = TRUE}).}
+\item{main}{optional \code{integer(1)} to force the resulting peak list to
+contain only peaks that are present in the specified input spectrum. See
+description for details.}
 
 \item{minProp}{\code{numeric(1)} for `peaks = "intersect": the minimal required
 proportion of input spectra (peak matrices) a mass peak has to be
@@ -86,11 +81,11 @@ generate a \emph{consensus} or \emph{representative} spectra from a set of e.g.
 fragment spectra measured from the same precursor ion.
 }
 
-A special case for \code{peaks = "union"} is when only peaks of one of the
-input spectra should be kept. For such cases, \code{main} allows to specify which
-of the input spectra is the \emph{main} spectrum and \code{keepMain = TRUE} tells the
-function to only keep (grouped) peaks that have a peak in the \code{main}
-specrtrum.
+As a special case it is possible to report only peaks in the resulting
+matrix from peak groups that contain a peak from one of the input spectra,
+which can be specified with parameter \code{main}. Thus, if e.g. \code{main = 2} is
+specified, only (grouped) peaks that have a peak in the second input matrix
+are returned.
 
 Setting \code{timeDomain} to \code{TRUE} causes grouping to be performed on the square
 root of the m/z values (assuming a TOF instrument was used to create the

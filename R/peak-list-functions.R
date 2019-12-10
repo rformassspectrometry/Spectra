@@ -33,11 +33,11 @@ NULL
 #'   generate a *consensus* or *representative* spectra from a set of e.g.
 #'   fragment spectra measured from the same precursor ion.
 #'
-#' A special case for `peaks = "union"` is when only peaks of one of the
-#' input spectra should be kept. For such cases, `main` allows to specify which
-#' of the input spectra is the *main* spectrum and `keepMain = TRUE` tells the
-#' function to only keep (grouped) peaks that have a peak in the `main`
-#' specrtrum.
+#' As a special case it is possible to report only peaks in the resulting
+#' matrix from peak groups that contain a peak from one of the input spectra,
+#' which can be specified with parameter `main`. Thus, if e.g. `main = 2` is
+#' specified, only (grouped) peaks that have a peak in the second input matrix
+#' are returned.
 #'
 #' Setting `timeDomain` to `TRUE` causes grouping to be performed on the square
 #' root of the m/z values (assuming a TOF instrument was used to create the
@@ -100,13 +100,9 @@ NULL
 #'     on the m/z values (`timeDomain = FALSE`) or on `sqrt(mz)`
 #'     (`timeDomain = TRUE`).
 #'
-#' @param main `integer(1)` defining the *main* spectrum. Only used for
-#'     `keepMain = TRUE`.
-#'
-#' @param keepMain `logical(1)` defining whether the union of all peaks from
-#'     all spectra are reported (`keepMain = FALSE`, the default) or only
-#'     peaks present in the *main* spectrum defined by `main`
-#'     (`keepMain = TRUE`).
+#' @param main optional `integer(1)` to force the resulting peak list to
+#'     contain only peaks that are present in the specified input spectrum. See
+#'     description for details.
 #'
 #' @param ... additional parameters to the `mzFun` and `intensityFun` functions.
 #'
@@ -197,10 +193,11 @@ NULL
 combinePeaks <- function(x, intensityFun = base::mean,
                          mzFun = base::mean, weighted = FALSE,
                          tolerance = 0, ppm = 0, timeDomain = FALSE,
-                         peaks = c("union", "intersect"), main = 1L,
-                         keepMain = FALSE, minProp = 0.5, ...) {
+                         peaks = c("union", "intersect"), main = integer(),
+                         minProp = 0.5, ...) {
     peaks <- match.arg(peaks)
-    if (length(x) == 1)
+    lenx <- length(x)
+    if (lenx == 1)
         return(x[[1]])
     mzs <- lapply(x, "[", , y = 1)
     mzs_lens <- lengths(mzs)
@@ -212,7 +209,9 @@ combinePeaks <- function(x, intensityFun = base::mean,
     else
         mz_groups <- group(mzs, tolerance = tolerance, ppm = ppm)
     ints <- unlist(lapply(x, "[", , y = 2), use.names = FALSE)[mz_order]
-    if (peaks == "union" && keepMain) {
+    if (length(main)) {
+        if (main < 1 || main > lenx)
+            stop("'main' has to be larger than 1 and smaller than ", lenx)
         ## Keep only mz groups present in the *main* spectrum
         is_in_main <- rep.int(seq_along(mzs_lens), mzs_lens)[mz_order] == main
         keep <- mz_groups %in% mz_groups[is_in_main]
@@ -224,7 +223,7 @@ combinePeaks <- function(x, intensityFun = base::mean,
     mzs <- split(mzs, mz_groups)
     ints <- split(ints, mz_groups)
     if (peaks == "intersect") {
-        keep <- lengths(mzs) >= (length(x) * minProp)
+        keep <- lengths(mzs) >= (lenx * minProp)
         if (any(keep)) {
             mzs <- mzs[keep]
             ints <- ints[keep]

@@ -82,13 +82,16 @@ test_that("combinePeaks works", {
     expect_equal(res[, 1], sort(c(p1[, 1], p2[, 1], p3[, 1])))
     idx <- order(c(p1[, 1], p2[, 1], p3[, 1]))
     expect_equal(res[, 2], c(p1[, 2], p2[, 2], p3[, 2])[idx])
-    ## doesn't matter if we specify main or keepMain
-    expect_identical(res, combinePeaks(list(p1, p2, p3), peaks = "intersect",
-                                       minProp = 0.2, keepMain = TRUE))
-    expect_identical(res, combinePeaks(list(p1, p2, p3), peaks = "intersect",
-                                       minProp = 0.2, main = 3))
-    expect_identical(res, combinePeaks(list(p1, p2, p3), peaks = "intersect",
-                                       minProp = 0.2, main = 3, keepMain = TRUE))
+
+    res_2 <- combinePeaks(list(p1, p2, p3), peaks = "union", main = 3,
+                          tolerance = 1)
+    expect_true(nrow(res_2) == 3)
+    expect_equal(unname(res_2[1, 1]), mean(c(12, 12.1)))
+    expect_equal(unname(res_2[2, 1]), mean(c(45, 45.1, 44.9)))
+    expect_equal(unname(res_2[3, 1]), mean(c(64, 63.9, 63)))
+    expect_equal(unname(res_2[1, 2]), mean(c(10, 12)))
+    expect_equal(unname(res_2[2, 2]), mean(c(20, 21, 22)))
+    expect_equal(unname(res_2[3, 2]), mean(c(30, 31, 32)))
 
     res <- combinePeaks(list(p1, p2, p3), peaks = "intersect")
     expect_true(nrow(res) == 0)
@@ -105,4 +108,6 @@ test_that("combinePeaks works", {
                              min(c(64, 63.9))))
     expect_equal(res[, 2], c(max(c(10, 12)), max(c(20, 21, 22)),
                              max(c(30, 31))))
+
+    expect_error(combinePeaks(list(p1, p2, p3), main = 5), "has to be")
 })

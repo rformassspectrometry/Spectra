@@ -1407,8 +1407,6 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
               mat
           })
 
-## combineSpectra
-
 ## estimateMzResolution
 
 ## estimateNoise
