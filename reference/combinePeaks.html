@@ -45,18 +45,29 @@
 <meta property="og:title" content="Combine peaks with similar m/z across spectra — combinePeaks" />
 <meta property="og:description" content="combinePeaks aggregates provided peak matrices into a single peak matrix.
 Peaks are grouped by their m/z values with the group() function from the
-MsCoreUtils package. All peaks in all provided spectra are first ordered
-by their m/z and consecutively grouped into one group if the (pairwise)
-difference between them is smaller than specified with parameter tolerance
-and ppm (see group() for grouping details and examples).
+MsCoreUtils package. In brief, all peaks in all provided spectra are first
+ordered by their m/z and consecutively grouped into one group if the
+(pairwise) difference between them is smaller than specified with parameter
+tolerance and ppm (see group() for grouping details and examples).
 The m/z and intensity values for the resulting peak matrix are calculated
 using the mzFun and intensityFun on the grouped m/z and intensity values.
-Parameters main and unionPeaks deal with special cases if e.g. only
-peaks should be reported that are present in one of the provided peak
-matrices. If for example main = 2L and unionPeaks = FALSE, only peaks
-are returned wich are present in the second peak matrix.
+The function supports also different strategies for peak combinations which
+can be specified with the peaks parameter:
+peaks = &quot;union&quot; (default): report all peaks from all input spectra.
+peaks = &quot;intersect&quot;: keep only peaks in the resulting peak matrix that
+are present in &amp;gt;= minProp proportion of input spectra. This would
+generate a consensus or representative spectra from a set of e.g.
+fragment spectra measured from the same precursor ion.
+
+
+As a special case it is possible to report only peaks in the resulting
+matrix from peak groups that contain a peak from one of the input spectra,
+which can be specified with parameter main. Thus, if e.g. main = 2 is
+specified, only (grouped) peaks that have a peak in the second input matrix
+are returned.
 Setting timeDomain to TRUE causes grouping to be performed on the square
-root of the m/z values." />
+root of the m/z values (assuming a TOF instrument was used to create the
+data)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,23 +147,44 @@ root of the m/z values." />
     <div class="ref-description">
     <p><code>combinePeaks</code> aggregates provided peak matrices into a single peak matrix.
 Peaks are grouped by their m/z values with the <code><a href='https://rdrr.io/r/grDevices/plotmath.html'>group()</a></code> function from the
-<code>MsCoreUtils</code> package. All peaks in all provided spectra are first ordered
-by their m/z and consecutively grouped into one group if the (pairwise)
-difference between them is smaller than specified with parameter <code>tolerance</code>
-and <code>ppm</code> (see <code><a href='https://rdrr.io/r/grDevices/plotmath.html'>group()</a></code> for grouping details and examples).</p>
+<code>MsCoreUtils</code> package. In brief, all peaks in all provided spectra are first
+ordered by their m/z and consecutively grouped into one group if the
+(pairwise) difference between them is smaller than specified with parameter
+<code>tolerance</code> and <code>ppm</code> (see <code><a href='https://rdrr.io/r/grDevices/plotmath.html'>group()</a></code> for grouping details and examples).</p>
 <p>The m/z and intensity values for the resulting peak matrix are calculated
 using the <code>mzFun</code> and <code>intensityFun</code> on the grouped m/z and intensity values.</p>
-<p>Parameters <code>main</code> and <code>unionPeaks</code> deal with special cases if e.g. only
-peaks should be reported that are present in one of the provided peak
-matrices. If for example <code>main = 2L</code> and <code>unionPeaks = FALSE</code>, only peaks
-are returned wich are present in the second peak matrix.</p>
+<p>The function supports also different strategies for peak combinations which
+can be specified with the <code>peaks</code> parameter:</p><ul>
+<li><p><code>peaks = "union"</code> (default): report all peaks from all input spectra.</p></li>
+<li><p><code>peaks = "intersect"</code>: keep only peaks in the resulting peak matrix that
+are present in <code>&gt;= minProp</code> proportion of input spectra. This would
+generate a <em>consensus</em> or <em>representative</em> spectra from a set of e.g.
+fragment spectra measured from the same precursor ion.</p></li>
+</ul>
+
+<p>As a special case it is possible to report only peaks in the resulting
+matrix from peak groups that contain a peak from one of the input spectra,
+which can be specified with parameter <code>main</code>. Thus, if e.g. <code>main = 2</code> is
+specified, only (grouped) peaks that have a peak in the second input matrix
+are returned.</p>
 <p>Setting <code>timeDomain</code> to <code>TRUE</code> causes grouping to be performed on the square
-root of the m/z values.</p>
+root of the m/z values (assuming a TOF instrument was used to create the
+data).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>combinePeaks</span>(<span class='no'>x</span>, <span class='kw'>intensityFun</span> <span class='kw'>=</span> <span class='kw pkg'>base</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>, <span class='kw'>mzFun</span> <span class='kw'>=</span> <span class='kw pkg'>base</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>,
-  <span class='kw'>weighted</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>ppm</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>timeDomain</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>main</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='kw'>unionPeaks</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>combinePeaks</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>intensityFun</span> <span class='kw'>=</span> <span class='kw pkg'>base</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>,
+  <span class='kw'>mzFun</span> <span class='kw'>=</span> <span class='kw pkg'>base</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>,
+  <span class='kw'>weighted</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>ppm</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>timeDomain</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>peaks</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
+  <span class='kw'>main</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span>(),
+  <span class='kw'>minProp</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,23 +211,38 @@ m/z values. This overrides parameter <code>mzFun</code>.</p></td>
     </tr>
     <tr>
       <th>tolerance</th>
-      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code></p></td>
+      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining the (absolute) maximal accepted
+difference between mass peaks to group them into the same final peak.</p></td>
     </tr>
     <tr>
       <th>ppm</th>
-      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code></p></td>
+      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining the m/z-relative maximal accepted
+difference between mass peaks (expressed in parts-per-million) to group
+them into the same final peak.</p></td>
     </tr>
     <tr>
       <th>timeDomain</th>
-      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code></p></td>
+      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether grouping of mass peaks is performed
+on the m/z values (<code>timeDomain = FALSE</code>) or on <code><a href='https://rdrr.io/r/base/MathFun.html'>sqrt(mz)</a></code>
+(<code>timeDomain = TRUE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>peaks</th>
+      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> specifying how peaks should be combined. Can be
+either <code>"peaks = "union"</code> (default) or <code>peaks = "intersect"</code>. See
+function description for details.</p></td>
     </tr>
     <tr>
       <th>main</th>
-      <td><p><code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code></p></td>
+      <td><p>optional <code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code> to force the resulting peak list to
+contain only peaks that are present in the specified input spectrum. See
+description for details.</p></td>
     </tr>
     <tr>
-      <th>unionPeaks</th>
-      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code></p></td>
+      <th>minProp</th>
+      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> for `peaks = "intersect": the minimal required
+proportion of input spectra (peak matrices) a mass peak has to be
+present to be included in the consensus peak matrix.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -251,7 +298,8 @@ values. With <code>timeDomain = FALSE</code>, the actual m/z values will be used
     <span class='kw'>intensity</span> <span class='kw'>=</span> <span class='no'>ints3</span>)
 
 <span class='co'>## Combine the spectra. With `tolerance = 0` and `ppm = 0` only peaks with</span>
-<span class='co'>## **identical** m/z are combined</span>
+<span class='co'>## **identical** m/z are combined. The result will be a single spectrum</span>
+<span class='co'>## containing the *union* of mass peaks from the individual input spectra.</span>
 <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='no'>p3</span>))
 
 <span class='co'>## Plot the spectra before and after combining</span>
@@ -261,7 +309,8 @@ values. With <code>timeDomain = FALSE</code>, the actual m/z values will be used
 <span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span>(<span class='no'>p3</span>[, <span class='fl'>1</span>], <span class='no'>p3</span>[, <span class='fl'>2</span>], <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"h"</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>p</span>[, <span class='fl'>1</span>], <span class='no'>p</span>[, <span class='fl'>2</span>], <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span>(<span class='no'>mzs</span>[<span class='fl'>5</span>:<span class='fl'>25</span>]), <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"h"</span>,
-    <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"black"</span>)</div><div class='img'><img src='combinePeaks-1.png' alt='' width='700' height='433' /></div><div class='input'>
+    <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"black"</span>)</div><div class='img'><img src='combinePeaks-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'>## The peaks were not merged, because their m/z differs too much.</span>
+
 <span class='co'>## Combine spectra with `tolerance = 0.05`. This will merge all triplets.</span>
 <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='no'>p3</span>), <span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>0.05</span>)
 
@@ -275,7 +324,41 @@ values. With <code>timeDomain = FALSE</code>, the actual m/z values will be used
     <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"black"</span>)</div><div class='img'><img src='combinePeaks-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## With `intensityFun = max` the maximal intensity per peak is reported.</span>
 <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='no'>p3</span>), <span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
-    <span class='kw'>intensityFun</span> <span class='kw'>=</span> <span class='no'>max</span>)</div></pre>
+    <span class='kw'>intensityFun</span> <span class='kw'>=</span> <span class='no'>max</span>)
+
+<span class='co'>## Create *consensus*/representative spectrum from a set of spectra</span>
+
+<span class='no'>p1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='kw'>mz</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12</span>, <span class='fl'>45</span>, <span class='fl'>64</span>, <span class='fl'>70</span>), <span class='kw'>intensity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>20</span>, <span class='fl'>30</span>, <span class='fl'>40</span>))
+<span class='no'>p2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='kw'>mz</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>17</span>, <span class='fl'>45.1</span>, <span class='fl'>63.9</span>, <span class='fl'>70.2</span>), <span class='kw'>intensity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>11</span>, <span class='fl'>21</span>, <span class='fl'>31</span>, <span class='fl'>41</span>))
+<span class='no'>p3</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='kw'>mz</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12.1</span>, <span class='fl'>44.9</span>, <span class='fl'>63</span>), <span class='kw'>intensity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12</span>, <span class='fl'>22</span>, <span class='fl'>32</span>))
+
+<span class='co'>## No mass peaks identical thus consensus peaks are empty</span>
+<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='no'>p3</span>), <span class='kw'>peaks</span> <span class='kw'>=</span> <span class='st'>"intersect"</span>)</div><div class='output co'>#&gt;      mz intensity</div><div class='input'>
+<span class='co'>## Reducing the minProp to 0.2. The consensus spectrum will contain all</span>
+<span class='co'>## peaks</span>
+<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='no'>p3</span>), <span class='kw'>peaks</span> <span class='kw'>=</span> <span class='st'>"intersect"</span>, <span class='kw'>minProp</span> <span class='kw'>=</span> <span class='fl'>0.2</span>)</div><div class='output co'>#&gt;         mz intensity
+#&gt;  [1,] 12.0        10
+#&gt;  [2,] 12.1        12
+#&gt;  [3,] 17.0        11
+#&gt;  [4,] 44.9        22
+#&gt;  [5,] 45.0        20
+#&gt;  [6,] 45.1        21
+#&gt;  [7,] 63.0        32
+#&gt;  [8,] 63.9        31
+#&gt;  [9,] 64.0        30
+#&gt; [10,] 70.0        40
+#&gt; [11,] 70.2        41</div><div class='input'>
+<span class='co'>## With a tolerance of 0.1 mass peaks can be matched across spectra</span>
+<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='no'>p3</span>), <span class='kw'>peaks</span> <span class='kw'>=</span> <span class='st'>"intersect"</span>, <span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</div><div class='output co'>#&gt;         mz intensity
+#&gt; [1,] 12.05      11.0
+#&gt; [2,] 45.00      21.0
+#&gt; [3,] 63.95      30.5</div><div class='input'>
+<span class='co'>## Report the minimal m/z and intensity</span>
+<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='no'>p3</span>), <span class='kw'>peaks</span> <span class='kw'>=</span> <span class='st'>"intersect"</span>, <span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+    <span class='kw'>intensityFun</span> <span class='kw'>=</span> <span class='no'>min</span>, <span class='kw'>mzFun</span> <span class='kw'>=</span> <span class='no'>min</span>)</div><div class='output co'>#&gt;        mz intensity
+#&gt; [1,] 12.0        10
+#&gt; [2,] 44.9        20
+#&gt; [3,] 63.9        30</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

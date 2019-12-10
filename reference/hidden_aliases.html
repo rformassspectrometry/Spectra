@@ -131,8 +131,13 @@ backendMerge(object, ...)
 bin(x, ...)
 
 # S4 method for numeric
-bin(x, y, size = 1, breaks = seq(floor(min(y)),
-  ceiling(max(y)), by = size), FUN = max)
+bin(
+  x,
+  y,
+  size = 1,
+  breaks = seq(floor(min(y)), ceiling(max(y)), by = size),
+  FUN = max
+)
 
 clean(object, ...)
 
@@ -268,8 +273,7 @@ rtime(object) <- value
 scanIndex(object)
 
 # S4 method for MsBackendDataFrame
-selectSpectraVariables(object,
-  spectraVariables = spectraVariables(object))
+selectSpectraVariables(object, spectraVariables = spectraVariables(object))
 
 # S4 method for MsBackendDataFrame
 smoothed(object)
@@ -278,8 +282,7 @@ smoothed(object)
 smoothed(object) <- value
 
 # S4 method for MsBackendDataFrame
-spectraData(object,
-  columns = spectraVariables(object))
+spectraData(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendDataFrame
 spectraData(object) <- value
@@ -309,46 +312,49 @@ $(x, name) <- value
 split(x, f, drop = FALSE, ...)
 
 # S4 method for MsBackendDataFrame
-filterAcquisitionNum(object,
-  n = integer(), dataStorage = character(), dataOrigin = character())
+filterAcquisitionNum(
+  object,
+  n = integer(),
+  dataStorage = character(),
+  dataOrigin = character()
+)
 
 # S4 method for MsBackendDataFrame
-filterDataOrigin(object,
-  dataOrigin = character())
+filterDataOrigin(object, dataOrigin = character())
 
 # S4 method for MsBackendDataFrame
-filterDataStorage(object,
-  dataStorage = character())
+filterDataStorage(object, dataStorage = character())
 
 # S4 method for MsBackendDataFrame
 filterEmptySpectra(object)
 
 # S4 method for MsBackendDataFrame
-filterIsolationWindow(object,
-  mz = numeric(), ...)
+filterIsolationWindow(object, mz = numeric(), ...)
 
 # S4 method for MsBackendDataFrame
 filterMsLevel(object, msLevel = integer())
 
 # S4 method for MsBackendDataFrame
-filterPolarity(object,
-  polarity = integer())
+filterPolarity(object, polarity = integer())
 
 # S4 method for MsBackendDataFrame
 filterPrecursorMz(object, mz = numeric())
 
 # S4 method for MsBackendDataFrame
-filterPrecursorScan(object,
-  acquisitionNum = integer())
+filterPrecursorScan(object, acquisitionNum = integer())
 
 # S4 method for MsBackendDataFrame
-filterRt(object, rt = numeric(),
-  msLevel. = unique(msLevel(object)))
+filterRt(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
 # S4 method for MsBackendHdf5Peaks
-backendInitialize(object,
-  files = character(), spectraData = DataFrame(),
-  hdf5path = character(), ..., BPPARAM = bpparam())
+backendInitialize(
+  object,
+  files = character(),
+  spectraData = DataFrame(),
+  hdf5path = character(),
+  ...,
+  BPPARAM = bpparam()
+)
 
 # S4 method for MsBackendHdf5Peaks
 show(object)
@@ -384,8 +390,7 @@ mz(object) <- value
 replaceList(object) <- value
 
 # S4 method for MsBackendHdf5Peaks
-spectraData(object,
-  columns = spectraVariables(object))
+spectraData(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendHdf5Peaks
 spectraData(object) <- value
@@ -400,8 +405,7 @@ $(x, name) <- value
 backendMerge(object, ...)
 
 # S4 method for MsBackendMzR
-backendInitialize(object, files, ...,
-  BPPARAM = bpparam())
+backendInitialize(object, files, ..., BPPARAM = bpparam())
 
 # S4 method for MsBackendMzR
 show(object)
@@ -434,8 +438,7 @@ mz(object)
 mz(object) <- value
 
 # S4 method for MsBackendMzR
-spectraData(object,
-  columns = spectraVariables(object))
+spectraData(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendMzR
 spectraData(object) <- value
