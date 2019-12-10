@@ -285,6 +285,14 @@ combineSpectra(
 )
 
 \S4method{removePeaks}{Spectra}(object, threshold = "min", msLevel. = unique(msLevel(object)))
+
+\S4method{smooth}{Spectra}(
+  x,
+  halfWindowSize = 2L,
+  method = c("MovingAverage", "WeightedMovingAverage", "SavitzkyGolay"),
+  ...,
+  msLevel. = unique(msLevel(x))
+)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -433,7 +441,7 @@ should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
 (\code{method = "SuperSmoother"}) are supported.
 \item For \code{smooth}: \code{character(1)}, the smoothing function that should be used,
 currently, the Moving-Average- (\code{method = "MovingAverage"}),
-Weighted-Moving-Average- (\code{method = "WeightedMovingAverage")},
+Weighted-Moving-Average- (\verb{method = "WeightedMovingAverage")},
 Savitzky-Golay-Smoothing (\code{method = "SavitzkyGolay"}) are supported.
 }}
 
@@ -770,7 +778,7 @@ length than \code{X}) with the result from \code{FUN}. See examples for more det
 \item \code{smooth}: smooth individual spectra using a moving window-based approach
 (window size = \code{2 * halfWindowSize}). Currently, the
 Moving-Average- (\code{method = "MovingAverage"}),
-Weighted-Moving-Average- (\code{method = "WeightedMovingAverage")},
+Weighted-Moving-Average- (\verb{method = "WeightedMovingAverage")},
 weights depending on the distance of the center and calculated
 \code{1/2^(-halfWindowSize:halfWindowSize)}) and
 Savitzky-Golay-Smoothing (\code{method = "SavitzkyGolay"}) are supported.
