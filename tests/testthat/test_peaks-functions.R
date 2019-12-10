@@ -105,8 +105,6 @@ test_that(".peaks_pick works", {
              0, 1, 5, 10, 5, 1)
     x <- cbind(mz = seq_along(int), intensity = int)
     expect_equal(.peaks_pick(x, spectrumMsLevel = 2, msLevel = 1), x)
-    expect_equal(.peaks_pick(x, spectrumMsLevel = 1, centroided = TRUE,
-                             msLevel = 1), x)
     expect_equal(.peaks_pick(x, spectrumMsLevel = 1, halfWindowSize = 2,
                              snr = 1),
                  cbind(mz = c(4, 12, 18, 23), intensity = c(3, 10, 2, 10)))

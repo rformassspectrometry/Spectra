@@ -272,9 +272,9 @@ applyProcessing <- function(object, f = dataStorage(object),
     ## This code duplication may be overengineering.
     if (nx >= ny) {
         for (i in x_idx) {
-            px <- as.list(x[i])[[1L]]
+            px <- .peaksapply(x[i])[[1L]]
             for (j in y_idx) {
-                peak_map <- MAPFUN(px, as.list(y[j])[[1L]],
+                peak_map <- MAPFUN(px, .peaksapply(y[j])[[1L]],
                                    tolerance = tolerance, ppm = ppm, ...)
                 mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
                                  ...)
@@ -282,9 +282,9 @@ applyProcessing <- function(object, f = dataStorage(object),
         }
     } else {
         for (j in y_idx) {
-            py <- as.list(y[j])[[1L]]
+            py <- .peaksapply(y[j])[[1L]]
             for (i in x_idx) {
-                peak_map <- MAPFUN(as.list(x[i])[[1]], py,
+                peak_map <- MAPFUN(.peaksapply(x[i])[[1]], py,
                                    tolerance = tolerance, ppm = ppm, ...)
                 mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
                                  ...)
@@ -385,6 +385,16 @@ applyProcessing <- function(object, f = dataStorage(object),
     x_new
 }
 
+#' Utility to concatenate a `list` of `Spectra` objects into a single `Spectra`.
+#' This function is called in `c`.
+#'
+#' @param x `list` of `Spectra` objects.
+#'
+#' @return `Spectra`.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
 .concatenate_spectra <- function(x) {
     cls <- vapply1c(x, class)
     if (any(cls != "Spectra"))

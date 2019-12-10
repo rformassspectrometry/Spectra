@@ -327,8 +327,9 @@ NULL
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
 #'   with `FUN`, which defaults to [combinePeaks()]. The sets of spectra can be
-#'   specified with parameter `f`. In addition it is possible to define, with
-#'   parameter `p` if and how to split the input data for parallel processing.
+#'   specified with parameter `f`.
+#'   In addition it is possible to define, with parameter `p` if and how to
+#'   split the input data for parallel processing.
 #'   This defaults to `p = x$dataStorage` and hence a per-file parallel
 #'   processing is applied for `Spectra` with file-based backends (such as the
 #'   [MsBackendMzR()]). The function returns a `Spectra` of length equal to the
@@ -710,7 +711,7 @@ NULL
 #' centroided(data) <- TRUE
 #'
 #' ## Remove peaks with an intensity below 40.
-#' res <- removePeaks(data, t = 40)
+#' res <- removePeaks(data, threshold = 40)
 #' res
 #'
 #' ## Get the intensities of the first and second spectrum.
@@ -1424,8 +1425,6 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
               mat
           })
 
-## combineSpectra
-
 ## estimateMzResolution
 
 ## estimateNoise
@@ -1466,6 +1465,7 @@ setMethod("pickPeaks", "Spectra",
                             halfWindowSize = halfWindowSize, method = method,
                             snr = snr, k = k, descending = descending,
                             threshold = threshold, msLevel = msLevel.)
+    object$centroided[msLevel(object) %in% msLevel.] <- TRUE
     object@processing <- .logging(object@processing,
                                   "Peak picking with ", method,
                                   " noise estimation, hws = ", halfWindowSize,

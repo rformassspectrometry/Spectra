@@ -125,8 +125,13 @@ backendMerge(object, ...)
 
 bin(x, ...)
 
-\S4method{bin}{numeric}(x, y, size = 1, breaks = seq(floor(min(y)),
-  ceiling(max(y)), by = size), FUN = max)
+\S4method{bin}{numeric}(
+  x,
+  y,
+  size = 1,
+  breaks = seq(floor(min(y)), ceiling(max(y)), by = size),
+  FUN = max
+)
 
 clean(object, ...)
 
@@ -222,15 +227,13 @@ setBackend(object, backend, ...)
 
 \S4method{scanIndex}{MsBackendDataFrame}(object)
 
-\S4method{selectSpectraVariables}{MsBackendDataFrame}(object,
-  spectraVariables = spectraVariables(object))
+\S4method{selectSpectraVariables}{MsBackendDataFrame}(object, spectraVariables = spectraVariables(object))
 
 \S4method{smoothed}{MsBackendDataFrame}(object)
 
 \S4method{smoothed}{MsBackendDataFrame}(object) <- value
 
-\S4method{spectraData}{MsBackendDataFrame}(object,
-  columns = spectraVariables(object))
+\S4method{spectraData}{MsBackendDataFrame}(object, columns = spectraVariables(object))
 
 \S4method{spectraData}{MsBackendDataFrame}(object) <- value
 
@@ -250,36 +253,39 @@ setBackend(object, backend, ...)
 
 \S4method{split}{MsBackendDataFrame,ANY}(x, f, drop = FALSE, ...)
 
-\S4method{filterAcquisitionNum}{MsBackendDataFrame}(object,
-  n = integer(), dataStorage = character(), dataOrigin = character())
+\S4method{filterAcquisitionNum}{MsBackendDataFrame}(
+  object,
+  n = integer(),
+  dataStorage = character(),
+  dataOrigin = character()
+)
 
-\S4method{filterDataOrigin}{MsBackendDataFrame}(object,
-  dataOrigin = character())
+\S4method{filterDataOrigin}{MsBackendDataFrame}(object, dataOrigin = character())
 
-\S4method{filterDataStorage}{MsBackendDataFrame}(object,
-  dataStorage = character())
+\S4method{filterDataStorage}{MsBackendDataFrame}(object, dataStorage = character())
 
 \S4method{filterEmptySpectra}{MsBackendDataFrame}(object)
 
-\S4method{filterIsolationWindow}{MsBackendDataFrame}(object,
-  mz = numeric(), ...)
+\S4method{filterIsolationWindow}{MsBackendDataFrame}(object, mz = numeric(), ...)
 
 \S4method{filterMsLevel}{MsBackendDataFrame}(object, msLevel = integer())
 
-\S4method{filterPolarity}{MsBackendDataFrame}(object,
-  polarity = integer())
+\S4method{filterPolarity}{MsBackendDataFrame}(object, polarity = integer())
 
 \S4method{filterPrecursorMz}{MsBackendDataFrame}(object, mz = numeric())
 
-\S4method{filterPrecursorScan}{MsBackendDataFrame}(object,
-  acquisitionNum = integer())
+\S4method{filterPrecursorScan}{MsBackendDataFrame}(object, acquisitionNum = integer())
 
-\S4method{filterRt}{MsBackendDataFrame}(object, rt = numeric(),
-  msLevel. = unique(msLevel(object)))
+\S4method{filterRt}{MsBackendDataFrame}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
-\S4method{backendInitialize}{MsBackendHdf5Peaks}(object,
-  files = character(), spectraData = DataFrame(),
-  hdf5path = character(), ..., BPPARAM = bpparam())
+\S4method{backendInitialize}{MsBackendHdf5Peaks}(
+  object,
+  files = character(),
+  spectraData = DataFrame(),
+  hdf5path = character(),
+  ...,
+  BPPARAM = bpparam()
+)
 
 \S4method{show}{MsBackendHdf5Peaks}(object)
 
@@ -303,8 +309,7 @@ setBackend(object, backend, ...)
 
 \S4method{replaceList}{MsBackendHdf5Peaks}(object) <- value
 
-\S4method{spectraData}{MsBackendHdf5Peaks}(object,
-  columns = spectraVariables(object))
+\S4method{spectraData}{MsBackendHdf5Peaks}(object, columns = spectraVariables(object))
 
 \S4method{spectraData}{MsBackendHdf5Peaks}(object) <- value
 
@@ -314,8 +319,7 @@ setBackend(object, backend, ...)
 
 \S4method{backendMerge}{MsBackendHdf5Peaks}(object, ...)
 
-\S4method{backendInitialize}{MsBackendMzR}(object, files, ...,
-  BPPARAM = bpparam())
+\S4method{backendInitialize}{MsBackendMzR}(object, files, ..., BPPARAM = bpparam())
 
 \S4method{show}{MsBackendMzR}(object)
 
@@ -337,8 +341,7 @@ setBackend(object, backend, ...)
 
 \S4method{mz}{MsBackendMzR}(object) <- value
 
-\S4method{spectraData}{MsBackendMzR}(object,
-  columns = spectraVariables(object))
+\S4method{spectraData}{MsBackendMzR}(object, columns = spectraVariables(object))
 
 \S4method{spectraData}{MsBackendMzR}(object) <- value
 

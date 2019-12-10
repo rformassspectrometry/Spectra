@@ -1031,6 +1031,7 @@ test_that("pickPeaks,Spectra works", {
     pks_res <- lapply(sciex_pks, .peaks_pick, spectrumMsLevel = 1L,
                       centroided = FALSE)
     expect_identical(as.list(res), SimpleList(pks_res))
+    expect_true(all(centroided(res)))
 })
 
 test_that("smooth,Spectra works", {

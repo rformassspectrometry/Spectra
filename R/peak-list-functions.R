@@ -15,21 +15,33 @@ NULL
 #'
 #' `combinePeaks` aggregates provided peak matrices into a single peak matrix.
 #' Peaks are grouped by their m/z values with the `group()` function from the
-#' `MsCoreUtils` package. All peaks in all provided spectra are first ordered
-#' by their m/z and consecutively grouped into one group if the (pairwise)
-#' difference between them is smaller than specified with parameter `tolerance`
-#' and `ppm` (see [group()] for grouping details and examples).
+#' `MsCoreUtils` package. In brief, all peaks in all provided spectra are first
+#' ordered by their m/z and consecutively grouped into one group if the
+#' (pairwise) difference between them is smaller than specified with parameter
+#' `tolerance` and `ppm` (see [group()] for grouping details and examples).
 #'
 #' The m/z and intensity values for the resulting peak matrix are calculated
 #' using the `mzFun` and `intensityFun` on the grouped m/z and intensity values.
 #'
-#' Parameters `main` and `unionPeaks` deal with special cases if e.g. only
-#' peaks should be reported that are present in one of the provided peak
-#' matrices. If for example `main = 2L` and `unionPeaks = FALSE`, only peaks
-#' are returned wich are present in the second peak matrix.
+#' The function supports also different strategies for peak combinations which
+#' can be specified with the `peaks` parameter:
+#'
+#' - `peaks = "union"` (default): report all peaks from all input spectra.
+#'
+#' - `peaks = "intersect"`: keep only peaks in the resulting peak matrix that
+#'   are present in `>= minProp` proportion of input spectra. This would
+#'   generate a *consensus* or *representative* spectra from a set of e.g.
+#'   fragment spectra measured from the same precursor ion.
+#'
+#' As a special case it is possible to report only peaks in the resulting
+#' matrix from peak groups that contain a peak from one of the input spectra,
+#' which can be specified with parameter `main`. Thus, if e.g. `main = 2` is
+#' specified, only (grouped) peaks that have a peak in the second input matrix
+#' are returned.
 #'
 #' Setting `timeDomain` to `TRUE` causes grouping to be performed on the square
-#' root of the m/z values.
+#' root of the m/z values (assuming a TOF instrument was used to create the
+#' data).
 #'
 #' @details
 #'
@@ -37,7 +49,6 @@ NULL
 #' manually specified based on the precision of the MS instrument. Peaks
 #' from spectra with a difference in their m/z being smaller than `tolerance`
 #' or smaller than `ppm` of their m/z are grouped into the same final peak.
-#'
 #'
 #' Some details for the combination of consecutive spectra of an LC-MS run:
 #'
@@ -63,6 +74,14 @@ NULL
 #' @param intensityFun `function` to be used to combine intensity values for
 #'     matching peaks. By default the mean intensity value is returned.
 #'
+#' @param peaks `character(1)` specifying how peaks should be combined. Can be
+#'     either `"peaks = "union"` (default) or `peaks = "intersect"`. See
+#'     function description for details.
+#'
+#' @param minProp `numeric(1)` for `peaks = "intersect": the minimal required
+#'     proportion of input spectra (peak matrices) a mass peak has to be
+#'     present to be included in the consensus peak matrix.
+#'
 #' @param mzFun `function` to be used to combine m/z values for matching peaks.
 #'     By default the mean m/z value is returned.
 #'
@@ -70,15 +89,20 @@ NULL
 #'     should be calculated by an intensity-weighted average of the individuak
 #'     m/z values. This overrides parameter `mzFun`.
 #'
-#' @param tolerance `numeric(1)`
+#' @param tolerance `numeric(1)` defining the (absolute) maximal accepted
+#'     difference between mass peaks to group them into the same final peak.
 #'
-#' @param ppm `numeric(1)`
+#' @param ppm `numeric(1)` defining the m/z-relative maximal accepted
+#'     difference between mass peaks (expressed in parts-per-million) to group
+#'     them into the same final peak.
 #'
-#' @param timeDomain `logical(1)`
+#' @param timeDomain `logical(1)` whether grouping of mass peaks is performed
+#'     on the m/z values (`timeDomain = FALSE`) or on `sqrt(mz)`
+#'     (`timeDomain = TRUE`).
 #'
-#' @param main `integer(1)`
-#'
-#' @param unionPeaks `logical(1)`
+#' @param main optional `integer(1)` to force the resulting peak list to
+#'     contain only peaks that are present in the specified input spectrum. See
+#'     description for details.
 #'
 #' @param ... additional parameters to the `mzFun` and `intensityFun` functions.
 #'
@@ -117,7 +141,8 @@ NULL
 #'     intensity = ints3)
 #'
 #' ## Combine the spectra. With `tolerance = 0` and `ppm = 0` only peaks with
-#' ## **identical** m/z are combined
+#' ## **identical** m/z are combined. The result will be a single spectrum
+#' ## containing the *union* of mass peaks from the individual input spectra.
 #' p <- combinePeaks(list(p1, p2, p3))
 #'
 #' ## Plot the spectra before and after combining
@@ -128,6 +153,7 @@ NULL
 #'
 #' plot(p[, 1], p[, 2], xlim = range(mzs[5:25]), type = "h",
 #'     col = "black")
+#' ## The peaks were not merged, because their m/z differs too much.
 #'
 #' ## Combine spectra with `tolerance = 0.05`. This will merge all triplets.
 #' p <- combinePeaks(list(p1, p2, p3), tolerance = 0.05)
@@ -144,11 +170,34 @@ NULL
 #' ## With `intensityFun = max` the maximal intensity per peak is reported.
 #' p <- combinePeaks(list(p1, p2, p3), tolerance = 0.05,
 #'     intensityFun = max)
+#'
+#' ## Create *consensus*/representative spectrum from a set of spectra
+#'
+#' p1 <- cbind(mz = c(12, 45, 64, 70), intensity = c(10, 20, 30, 40))
+#' p2 <- cbind(mz = c(17, 45.1, 63.9, 70.2), intensity = c(11, 21, 31, 41))
+#' p3 <- cbind(mz = c(12.1, 44.9, 63), intensity = c(12, 22, 32))
+#'
+#' ## No mass peaks identical thus consensus peaks are empty
+#' combinePeaks(list(p1, p2, p3), peaks = "intersect")
+#'
+#' ## Reducing the minProp to 0.2. The consensus spectrum will contain all
+#' ## peaks
+#' combinePeaks(list(p1, p2, p3), peaks = "intersect", minProp = 0.2)
+#'
+#' ## With a tolerance of 0.1 mass peaks can be matched across spectra
+#' combinePeaks(list(p1, p2, p3), peaks = "intersect", tolerance = 0.1)
+#'
+#' ## Report the minimal m/z and intensity
+#' combinePeaks(list(p1, p2, p3), peaks = "intersect", tolerance = 0.1,
+#'     intensityFun = min, mzFun = min)
 combinePeaks <- function(x, intensityFun = base::mean,
                          mzFun = base::mean, weighted = FALSE,
                          tolerance = 0, ppm = 0, timeDomain = FALSE,
-                         main = 1L, unionPeaks = TRUE, ...) {
-    if (length(x) == 1)
+                         peaks = c("union", "intersect"), main = integer(),
+                         minProp = 0.5, ...) {
+    peaks <- match.arg(peaks)
+    lenx <- length(x)
+    if (lenx == 1)
         return(x[[1]])
     mzs <- lapply(x, "[", , y = 1)
     mzs_lens <- lengths(mzs)
@@ -160,9 +209,10 @@ combinePeaks <- function(x, intensityFun = base::mean,
     else
         mz_groups <- group(mzs, tolerance = tolerance, ppm = ppm)
     ints <- unlist(lapply(x, "[", , y = 2), use.names = FALSE)[mz_order]
-    if (!unionPeaks) {
-        ## Want to keep only those groups with a m/z from the main spectrum.
-        ## vectorized version from @sgibb
+    if (length(main)) {
+        if (main < 1 || main > lenx)
+            stop("'main' has to be larger than 1 and smaller than ", lenx)
+        ## Keep only mz groups present in the *main* spectrum
         is_in_main <- rep.int(seq_along(mzs_lens), mzs_lens)[mz_order] == main
         keep <- mz_groups %in% mz_groups[is_in_main]
         ## Keep only values for which a m/z in main is present.
@@ -170,20 +220,23 @@ combinePeaks <- function(x, intensityFun = base::mean,
         mzs <- mzs[keep]
         ints <- ints[keep]
     }
-    if (weighted) {
-        intsp <- split(ints, mz_groups)
-        res <- cbind(mz = mapply(split(mzs, mz_groups), intsp,
-                                 FUN = function(mz_vals, w)
-                                     weighted.mean(mz_vals, w + 1,
-                                                   na.rm = TRUE),
-                                 USE.NAMES = FALSE, SIMPLIFY = TRUE),
-                     intensity = vapply1d(intsp, FUN = intensityFun, ...))
-    } else {
-        res <- cbind(mz = vapply1d(split(mzs, mz_groups), FUN = mzFun, ...),
-                     intensity = vapply1d(split(ints, mz_groups),
-                                          FUN = intensityFun, ...))
+    mzs <- split(mzs, mz_groups)
+    ints <- split(ints, mz_groups)
+    if (peaks == "intersect") {
+        keep <- lengths(mzs) >= (lenx * minProp)
+        if (any(keep)) {
+            mzs <- mzs[keep]
+            ints <- ints[keep]
+        } else
+            return(cbind(mz = numeric(), intensity = numeric()))
     }
-    if (is.unsorted(res[, 1]))
-        stop("m/z values of combined spectrum are not ordered")
-    res
+    if (weighted) {
+        wm <- stats::weighted.mean
+        mzs <- mapply(mzs, ints, FUN = function(mz, w)
+                      wm(mz, w + 1, na.rm = TRUE, USE.NAMES = FALSE))
+    } else
+        mzs <- vapply1d(mzs, FUN  = mzFun)
+    if (is.unsorted(mzs))
+        stop("m/z values of combined spectrum are not ordered increasingly")
+    cbind(mz = mzs, intensity = vapply1d(ints, FUN = intensityFun))
 }
