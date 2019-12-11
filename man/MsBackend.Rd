@@ -510,10 +510,6 @@ one object being filled with \code{NA}.
 
 
 The \code{MsBackendDataFrame} objects keep all MS data in memory.
-To reduce memory requirement, all spectra variables with a single
-value (e.g. if all spectra are from MS level 1) are internally represented
-as an \code{\link[=Rle]{Rle()}} object that are converted into the original class (e.g.
-\code{integer}) when the column is accessed.
 
 New objects can be created with the \code{MsBackendDataFrame()}
 function. The backend can be subsequently initialized with the

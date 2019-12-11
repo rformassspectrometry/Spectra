@@ -352,10 +352,6 @@ NULL
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
 #' The `MsBackendDataFrame` objects keep all MS data in memory.
-#' To reduce memory requirement, all spectra variables with a single
-#' value (e.g. if all spectra are from MS level 1) are internally represented
-#' as an [Rle()] object that are converted into the original class (e.g.
-#' `integer`) when the column is accessed.
 #'
 #' New objects can be created with the `MsBackendDataFrame()`
 #' function. The backend can be subsequently initialized with the
