@@ -71,8 +71,8 @@ test_that("setBackend,Spectra works", {
     res <- setBackend(sps, MsBackendDataFrame())
     expect_identical(rtime(sps), rtime(res))
     expect_identical(mz(sps), mz(res))
-    expect_true(is(res@backend@spectraData$msLevel, "Rle"))
-    expect_true(is(sps@backend@spectraData$msLevel, "Rle"))
+    expect_true(is(res@backend@spectraData$msLevel, "integer"))
+    expect_true(is(sps@backend@spectraData$msLevel, "integer"))
     expect_true(is.integer(res$msLevel))
     expect_identical(dataOrigin(res), dataStorage(sps))
 
@@ -599,7 +599,7 @@ test_that("spectraData<-,Spectra works", {
     expect_warning(spectraData(sps)$some_col <- "yes")
     expect_true(any(spectraVariables(sps) == "some_col"))
     expect_true(all(spectraData(sps, "some_col")[, 1] == "yes"))
-    expect_true(is(sps@backend@spectraData$some_col, "Rle"))
+    expect_true(is(sps@backend@spectraData$some_col, "character"))
     sps$other_col <- "other_value"
     expect_true(any(spectraVariables(sps) == "other_col"))
     expect_identical(sps$other_col, rep("other_value", length(sps)))

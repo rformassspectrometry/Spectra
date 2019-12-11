@@ -67,7 +67,7 @@ test_that(".valid_intensity_mz_columns works", {
 
 test_that(".get_column works", {
     df <- DataFrame(msLevel = c(NA_integer_, NA_integer_),
-                    fromFile = c(1L, 2), other_col = c("a", 2))
+                    fromFile = rep(1L, 2), other_col = rep("a", 2))
     res <- .get_column(df, column = "fromFile")
     expect_equal(res, c(1L, 1L))
     res <- .get_column(df, column = "other_col")

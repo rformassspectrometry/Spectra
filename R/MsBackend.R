@@ -112,6 +112,7 @@ NULL
 #'
 #' @param ... Additional arguments.
 #'
+#'
 #' @section Backend functions:
 #'
 #' New backend classes **must** extend the base `MsBackend` class and
@@ -230,7 +231,7 @@ NULL
 #'
 #' - `isCentroided`: a heuristic approach assessing if the spectra in
 #'   `object` are in profile or centroided mode. The function takes
-#'   the `qtl`th quantile top peaks, then calculates the difference
+#'   the `qtl` th quantile top peaks, then calculates the difference
 #'   between adjacent m/z value and returns `TRUE` if the first
 #'   quartile is greater than `k`. (See `Spectra:::.isCentroided` for
 #'   the code.)
