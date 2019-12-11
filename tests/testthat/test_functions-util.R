@@ -1,13 +1,3 @@
-test_that(".class_rle works", {
-    expect_equal(.class_rle(1L), "integer")
-    expect_equal(.class_rle(Rle(1L, 5)), "integer")
-})
-
-test_that(".is_class works", {
-    expect_true(.is_class(3L, "integer"))
-    expect_true(.is_class(Rle(1:4), "integer"))
-})
-
 test_that("utils.clean works", {
     x <- list(c(0, 0, 0, 1, 0, 1, 0, 0, 0),
               c(0, 0, 0, 1, 0, 0, 1, 0, 0, 0),
