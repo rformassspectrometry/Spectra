@@ -415,8 +415,6 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
 #'
 #' @importFrom S4Vectors SimpleList
 #'
-#' @importFrom MsCoreUtils asVectorDataFrame
-#'
 #' @importMethodsFrom S4Vectors lapply
 setMethod("spectraData", "MsBackendDataFrame",
           function(object, columns = spectraVariables(object)) {

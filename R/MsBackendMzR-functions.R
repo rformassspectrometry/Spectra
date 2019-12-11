@@ -96,7 +96,7 @@ MsBackendMzR <- function() {
         stop("Column(s) ", paste(not_found, collapse = ", "),
              " not available")
     sp_cols <- columns[columns %in% cn]
-    res <- asVectorDataFrame(x@spectraData[, sp_cols, drop = FALSE])
+    res <- x@spectraData[, sp_cols, drop = FALSE]
     any_mz <- any(columns == "mz")
     any_int <- any(columns == "intensity")
     if (any_mz || any_int) {
