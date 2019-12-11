@@ -109,7 +109,7 @@ MsBackendMzR <- function() {
     }
     other_cols <- setdiff(columns, c(sp_cols, "mz", "intensity"))
     if (length(other_cols)) {
-        other_res <- lapply(other_cols, .get_rle_column, x = x@spectraData)
+        other_res <- lapply(other_cols, .get_column, x = x@spectraData)
         names(other_res) <- other_cols
         res <- cbind(res, as(other_res, "DataFrame"))
     }
