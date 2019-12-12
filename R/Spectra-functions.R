@@ -437,3 +437,14 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
                     MoreArgs = list(FUN = FUN, ...), BPPARAM = BPPARAM)
     .concatenate_spectra(res)
 }
+
+#' @export
+#'
+#' @rdname Spectra
+dropNaSpectraVariables <- function(x) {
+    svs <- spectraVariables(x)
+    spd <- spectraData(x, columns = svs[!(svs %in% c("mz", "intensity"))])
+    keep <- !vapply1l(spd, function(z) all(is.na(z)))
+    spectraData(x) <- spd[, keep, drop = FALSE]
+    x
+}

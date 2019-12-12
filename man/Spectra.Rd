@@ -4,6 +4,7 @@
 \alias{addProcessing}
 \alias{applyProcessing}
 \alias{combineSpectra}
+\alias{dropNaSpectraVariables}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -89,6 +90,8 @@ combineSpectra(
   ...,
   BPPARAM = bpparam()
 )
+
+dropNaSpectraVariables(x)
 
 \S4method{Spectra}{DataFrame}(
   object,
@@ -645,6 +648,11 @@ listed methods.
 \itemize{
 \item \code{[}: subsets the spectra keeping only selected elements (\code{i}). The method
 \strong{always} returns a \code{Spectra} object.
+\item \code{dropNaSpectraVariables}: remove spectra variables (i.e. columns in the
+object's \code{spectraData} that contain only missing values (\code{NA}). Note that
+while columns with only \code{NA}s are removed, a \code{spectraData} call after
+\code{dropNaSpectraVariables} might still show columns containing \code{NA} values
+for \emph{core} spectra variables.
 \item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
@@ -942,6 +950,14 @@ head(data_comb$dataOrigin)
 spd$precursorMz <- c(323.4, 543.2302)
 data_filt <- Spectra(spd)
 filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
+
+## Remove empty spectra variables
+sciex_noNA <- dropNaSpectraVariables(sciex)
+
+## Available spectra variables before and after dropNaSpectraVariables
+spectraVariables(sciex)
+spectraVariables(sciex_noNA)
+
 
 ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 
