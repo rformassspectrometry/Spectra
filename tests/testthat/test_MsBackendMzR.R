@@ -487,7 +487,7 @@ test_that("selectSpectraVariables,MsBackendMzR works", {
                  "scanIndex is/are missing")
 })
 
-test_that("$,$<-,MsBackendDataFrame works", {
+test_that("$,$<-,MsBackendMzR works", {
     tmp <- sciex_mzr
     tmp$new_col <- 5
     expect_true(any(spectraVariables(tmp) == "new_col"))
