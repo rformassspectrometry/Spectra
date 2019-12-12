@@ -105,9 +105,7 @@ setMethod("centroided", "MsBackendDataFrame", function(object) {
 setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)
-    if (value_len == 1 && value_type)
-        object@spectraData$centroided <- rep_len(value, length(object))
-    else if (value_len == length(object) && value_type)
+    if (value_type && (value_len == 1L || value_len == length(object)))
         object@spectraData$centroided <- value
     else
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
@@ -122,7 +120,7 @@ setMethod("collisionEnergy", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("collisionEnergy", "MsBackendDataFrame", function(object, value) {
-    if (!is.numeric(value) | length(value) != length(object))
+    if (!is.numeric(value) || length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
     object@spectraData$collisionEnergy <- as.numeric(value)
     validObject(object)
@@ -208,7 +206,7 @@ setMethod("isolationWindowLowerMz", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 setReplaceMethod("isolationWindowLowerMz", "MsBackendDataFrame",
                  function(object, value) {
-                     if (!is.numeric(value) | length(value) != length(object))
+                     if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowLowerMz <-
@@ -301,9 +299,7 @@ setMethod("polarity", "MsBackendDataFrame", function(object) {
 setReplaceMethod("polarity", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.numeric(value)
-    if (value_len == 1 && value_type)
-        object@spectraData$polarity <- rep_len(as.integer(value), length(object))
-    else if (value_len == length(object) && value_type)
+    if (value_type && (value_len == 1L || value_len == length(object)))
         object@spectraData$polarity <- as.integer(value)
     else
         stop("'value' has to be an 'integer' of length 1 or ", length(object))
@@ -356,7 +352,7 @@ setMethod("rtime", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("rtime", "MsBackendDataFrame", function(object, value) {
-    if (!is.numeric(value) | length(value) != length(object))
+    if (!is.numeric(value) || length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
     object@spectraData$rtime <- as.numeric(value)
     validObject(object)
@@ -399,9 +395,7 @@ setMethod("smoothed", "MsBackendDataFrame", function(object) {
 setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)
-    if (value_len == 1 && value_type)
-        object@spectraData$smoothed <- rep_len(value, length(object))
-    else if (value_len == length(object) && value_type)
+    if (value_type && (value_len == 1L || value_len == length(object)))
         object@spectraData$smoothed <- value
     else
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
