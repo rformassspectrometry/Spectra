@@ -408,7 +408,7 @@ each spectrum. If the spectrum is empty (see \code{isEmpty}),
 \code{NA_real_} is returned.
 \item \code{isCentroided}: a heuristic approach assessing if the spectra in
 \code{object} are in profile or centroided mode. The function takes
-the \code{qtl}th quantile top peaks, then calculates the difference
+the \code{qtl} th quantile top peaks, then calculates the difference
 between adjacent m/z value and returns \code{TRUE} if the first
 quartile is greater than \code{k}. (See \code{Spectra:::.isCentroided} for
 the code.)
@@ -510,10 +510,6 @@ one object being filled with \code{NA}.
 
 
 The \code{MsBackendDataFrame} objects keep all MS data in memory.
-To reduce memory requirement, all spectra variables with a single
-value (e.g. if all spectra are from MS level 1) are internally represented
-as an \code{\link[=Rle]{Rle()}} object that are converted into the original class (e.g.
-\code{integer}) when the column is accessed.
 
 New objects can be created with the \code{MsBackendDataFrame()}
 function. The backend can be subsequently initialized with the

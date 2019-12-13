@@ -112,6 +112,7 @@ NULL
 #'
 #' @param ... Additional arguments.
 #'
+#'
 #' @section Backend functions:
 #'
 #' New backend classes **must** extend the base `MsBackend` class and
@@ -230,7 +231,7 @@ NULL
 #'
 #' - `isCentroided`: a heuristic approach assessing if the spectra in
 #'   `object` are in profile or centroided mode. The function takes
-#'   the `qtl`th quantile top peaks, then calculates the difference
+#'   the `qtl` th quantile top peaks, then calculates the difference
 #'   between adjacent m/z value and returns `TRUE` if the first
 #'   quartile is greater than `k`. (See `Spectra:::.isCentroided` for
 #'   the code.)
@@ -351,10 +352,6 @@ NULL
 #' @section `MsBackendDataFrame`, in-memory MS data backend:
 #'
 #' The `MsBackendDataFrame` objects keep all MS data in memory.
-#' To reduce memory requirement, all spectra variables with a single
-#' value (e.g. if all spectra are from MS level 1) are internally represented
-#' as an [Rle()] object that are converted into the original class (e.g.
-#' `integer`) when the column is accessed.
 #'
 #' New objects can be created with the `MsBackendDataFrame()`
 #' function. The backend can be subsequently initialized with the

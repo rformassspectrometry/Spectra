@@ -58,8 +58,7 @@ setMethod("backendInitialize", "MsBackendMzR",
                                             dataStorage = fl)
                                   }, BPPARAM = BPPARAM))
               spectraData$dataOrigin <- spectraData$dataStorage
-              object@spectraData <- asRleDataFrame(
-                  spectraData, columns = c("dataStorage", "dataOrigin"))
+              object@spectraData <- spectraData
               validObject(object)
               object
           })
@@ -148,8 +147,7 @@ setReplaceMethod("spectraData", "MsBackendMzR", function(object, value) {
         value <- value[, !(colnames(value) %in% c("mz", "intensity")),
                        drop = FALSE]
     }
-    object@spectraData <- asRleDataFrame(
-        value, columns = c("dataStorage", "dataOrigin"))
+    object@spectraData <- value
     validObject(object)
     object
 })
@@ -176,10 +174,8 @@ setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
     if (name == "mz" || name == "intensity")
         stop("'MsBackendMzR' does not support replacing mz or intensity values")
     value_len <- length(value)
-    if (value_len == 1)
-        x@spectraData[[name]] <- Rle(value, length(x))
-    else if (value_len == length(x))
-        x@spectraData[[name]] <- asRle(value)
+    if (value_len == 1L || value_len == length(x))
+        x@spectraData[[name]] <- value
     else
         stop("Length of 'value' has to be either 1 or ", length(x))
     validObject(x)

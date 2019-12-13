@@ -23,7 +23,7 @@ test_that("backendInitialize,MsBackendDataFrame works", {
     expect_true(validObject(be))
     expect_true(is(be@spectraData$mz, "NumericList"))
     expect_true(is(be@spectraData$intensity, "NumericList"))
-    expect_identical(be@spectraData$dataStorage, Rle(rep("<memory>", 3)))
+    expect_identical(be@spectraData$dataStorage, rep("<memory>", 3))
     expect_identical(be$dataStorage, rep("<memory>", 3))
 
     df$mz <- NumericList(df$mz)
@@ -50,14 +50,13 @@ test_that("backendMerge,MsBackendDataFrame works", {
 
     res <- backendMerge(be, be2, be3)
     expect_true(is(res, "MsBackendDataFrame"))
-    expect_identical(res@spectraData$dataStorage, Rle(rep("<memory>", 7)))
+    expect_identical(res@spectraData$dataStorage, rep("<memory>", 7))
     expect_identical(dataStorage(res), rep("<memory>", 7))
     expect_identical(msLevel(res), c(1L, 2L, 2L, 2L, 1L, 1L, 2L))
     expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
     expect_identical(res@spectraData$other_col,
-                     Rle(c(rep(NA_character_, 5), "z", "z")))
+                     c(rep(NA_character_, 5), "z", "z"))
     expect_true(is(be3@spectraData$precScanNum, "integer"))
-    expect_true(is(res@spectraData$precScanNum, "Rle"))
 
     ## One backend with and one without m/z
     df2$mz <- list(c(1.1, 1.2), c(1.1, 1.2))
@@ -74,7 +73,7 @@ test_that("backendMerge,MsBackendDataFrame works", {
     expect_identical(res$dataStorage,
                      c("a", "a", "a", "<memory>", "<memory>", "z", "b"))
     expect_identical(res@spectraData$dataStorage,
-                     Rle(c("a", "a", "a", "<memory>", "<memory>", "z", "b")))
+                     c("a", "a", "a", "<memory>", "<memory>", "z", "b"))
     expect_identical(rtime(res), c(1:3, 4.1, 5.2, NA, NA))
 })
 
@@ -837,7 +836,6 @@ test_that("split,MsBackendDataFrame works", {
                      msLevel(msbl[[1]]))
     expect_identical(intensity(msb)[msb$dataStorage == msb$dataStorage[1]],
                      intensity(msbl[[1]]))
-    expect_true(is(msbl[[1]]@spectraData$msLevel, "Rle"))
 
     msb2 <- backendMerge(msbl)
     expect_identical(msb2, msb)

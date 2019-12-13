@@ -41,7 +41,7 @@ NULL
 #' @noRd
 .valid_column_datatype <- function(x, datatypes = .SPECTRA_DATA_COLUMNS) {
     datatypes <- datatypes[names(datatypes) %in% colnames(x)]
-    res <- mapply(FUN = .is_class, x[, names(datatypes), drop = FALSE],
+    res <- mapply(FUN = is, x[, names(datatypes), drop = FALSE],
                   datatypes)
     if (!all(res))
         paste0("The following columns have a wrong data type: ",
@@ -108,32 +108,25 @@ MsBackendDataFrame <- function() {
     new("MsBackendDataFrame")
 }
 
-#' Helper function to return a column from the (spectra data) `DataFrame`. If
-#' the column `column` is an `Rle` `as.vector` is called on it. If column is
-#' the name of a mandatory variable but it is not available it is created on
-#' the fly.
+#' Helper function to return a column from the (spectra data) `DataFrame`.
+#' If column is the name of a mandatory variable but it is not available
+#' it is created on the fly.
 #'
-#' @note This function is equivalent to the `get_rle_column` function in
+#' @note This function is equivalent to the `get_column` function in
 #'     the `Chromatograms` package (in *ChromBackendDataFrame-functions.R*).
 #'
 #' @param x `DataFrame`
 #'
 #' @param column `character(1)` with the name of the column to return.
 #'
-#' @importClassesFrom S4Vectors Rle
-#'
-#' @importFrom S4Vectors Rle
-#'
 #' @importMethodsFrom S4Vectors [[
 #'
 #' @author Johannes Rainer
 #'
 #' @noRd
-.get_rle_column <- function(x, column) {
+.get_column <- function(x, column) {
     if (any(colnames(x) == column)) {
-        if (is(x[[column]], "Rle"))
-            as.vector(x[[column]])
-        else x[[column]]
+        x[[column]]
     } else if (any(names(.SPECTRA_DATA_COLUMNS) == column)) {
         nr_x <- nrow(x)
         if (nr_x)
@@ -196,7 +189,7 @@ MsBackendDataFrame <- function() {
 #'
 #' @author Johannes Rainer
 #'
-#' @importFrom MsCoreUtils vapply1c asRleDataFrame rbindFill
+#' @importFrom MsCoreUtils vapply1c rbindFill
 #'
 #' @noRd
 .combine_backend_data_frame <- function(objects) {
@@ -206,9 +199,8 @@ MsBackendDataFrame <- function() {
         stop("Can only merge backends of the same type: ", class(objects[[1]]))
     res <- new(class(objects[[1]]))
     suppressWarnings(
-        res@spectraData <- asRleDataFrame(do.call(
-            rbindFill, lapply(objects, function(z) z@spectraData)),
-            columns = c("dataStorage", "dataOrigin"))
+        res@spectraData <- do.call(
+            rbindFill, lapply(objects, function(z) z@spectraData))
     )
     res
 }

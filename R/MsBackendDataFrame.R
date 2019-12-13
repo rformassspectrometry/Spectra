@@ -61,8 +61,6 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
               if (!nrow(spectraData))
                   return(object)
               spectraData$dataStorage <- "<memory>"
-              spectraData <- asRleDataFrame(
-                  spectraData, columns = c("dataStorage", "dataOrigin"))
               if (nrow(spectraData) && !is(spectraData$mz, "NumericList"))
                   spectraData$mz <- NumericList(spectraData$mz, compress = FALSE)
               if (nrow(spectraData) && !is(spectraData$intensity, "NumericList"))
@@ -86,7 +84,7 @@ setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
 
 #' @rdname hidden_aliases
 setMethod("acquisitionNum", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "acquisitionNum")
+    .get_column(object@spectraData, "acquisitionNum")
 })
 
 #' @rdname hidden_aliases
@@ -97,21 +95,18 @@ setMethod("as.list", "MsBackendDataFrame", function(x) {
 
 #' @rdname hidden_aliases
 setMethod("centroided", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "centroided")
+    .get_column(object@spectraData, "centroided")
 })
 
 #' @rdname hidden_aliases
 #'
 #' @aliases centroided<-,MsBackendDataFrame-method
 #'
-#' @importFrom MsCoreUtils asRle
 setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)
-    if (value_len == 1 && value_type)
-        object@spectraData$centroided <- Rle(value, length(object))
-    else if (value_len == length(object) && value_type)
-        object@spectraData$centroided <- asRle(value)
+    if (value_type && (value_len == 1L || value_len == length(object)))
+        object@spectraData$centroided <- value
     else
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
     validObject(object)
@@ -120,42 +115,42 @@ setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("collisionEnergy", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "collisionEnergy")
+    .get_column(object@spectraData, "collisionEnergy")
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("collisionEnergy", "MsBackendDataFrame", function(object, value) {
-    if (!is.numeric(value) | length(value) != length(object))
+    if (!is.numeric(value) || length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$collisionEnergy <- asRle(as.numeric(value))
+    object@spectraData$collisionEnergy <- as.numeric(value)
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
 setMethod("dataOrigin", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "dataOrigin")
+    .get_column(object@spectraData, "dataOrigin")
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("dataOrigin", "MsBackendDataFrame", function(object, value) {
     if (!is.character(value) || length(value) != length(object))
         stop("'value' has to be a 'character' of length ", length(object))
-    object@spectraData$dataOrigin <- asRle(as.character(value))
+    object@spectraData$dataOrigin <- as.character(value)
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
 setMethod("dataStorage", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "dataStorage")
+    .get_column(object@spectraData, "dataStorage")
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
     if (!is.character(value) || length(value) != length(object))
         stop("'value' has to be a 'character' of length ", length(object))
-    object@spectraData$dataStorage <- asRle(as.character(value))
+    object@spectraData$dataStorage <- as.character(value)
     validObject(object)
     object
 })
@@ -205,24 +200,24 @@ setMethod("isEmpty", "MsBackendDataFrame", function(x) {
 
 #' @rdname hidden_aliases
 setMethod("isolationWindowLowerMz", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "isolationWindowLowerMz")
+    .get_column(object@spectraData, "isolationWindowLowerMz")
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("isolationWindowLowerMz", "MsBackendDataFrame",
                  function(object, value) {
-                     if (!is.numeric(value) | length(value) != length(object))
+                     if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowLowerMz <-
-                         asRle(as.numeric(value))
+                         as.numeric(value)
                      validObject(object)
                      object
                  })
 
 #' @rdname hidden_aliases
 setMethod("isolationWindowTargetMz", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "isolationWindowTargetMz")
+    .get_column(object@spectraData, "isolationWindowTargetMz")
 })
 
 #' @rdname hidden_aliases
@@ -232,14 +227,14 @@ setReplaceMethod("isolationWindowTargetMz", "MsBackendDataFrame",
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowTargetMz <-
-                         asRle(as.numeric(value))
+                         as.numeric(value)
                      validObject(object)
                      object
                  })
 
 #' @rdname hidden_aliases
 setMethod("isolationWindowUpperMz", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "isolationWindowUpperMz")
+    .get_column(object@spectraData, "isolationWindowUpperMz")
 })
 
 #' @rdname hidden_aliases
@@ -249,7 +244,7 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackendDataFrame",
                          stop("'value' has to be a 'numeric' of length ",
                               length(object))
                      object@spectraData$isolationWindowUpperMz <-
-                         asRle(as.numeric(value))
+                         as.numeric(value)
                      validObject(object)
                      object
                  })
@@ -266,7 +261,7 @@ setMethod("lengths", "MsBackendDataFrame", function(x, use.names = FALSE) {
 
 #' @rdname hidden_aliases
 setMethod("msLevel", "MsBackendDataFrame", function(object, ...) {
-    .get_rle_column(object@spectraData, "msLevel")
+    .get_column(object@spectraData, "msLevel")
 })
 
 #' @rdname hidden_aliases
@@ -297,17 +292,15 @@ setReplaceMethod("mz", "MsBackendDataFrame", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("polarity", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "polarity")
+    .get_column(object@spectraData, "polarity")
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("polarity", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.numeric(value)
-    if (value_len == 1 && value_type)
-        object@spectraData$polarity <- Rle(as.integer(value), length(object))
-    else if (value_len == length(object) && value_type)
-        object@spectraData$polarity <- asRle(as.integer(value))
+    if (value_type && (value_len == 1L || value_len == length(object)))
+        object@spectraData$polarity <- as.integer(value)
     else
         stop("'value' has to be an 'integer' of length 1 or ", length(object))
     validObject(object)
@@ -316,22 +309,22 @@ setReplaceMethod("polarity", "MsBackendDataFrame", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("precScanNum", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "precScanNum")
+    .get_column(object@spectraData, "precScanNum")
 })
 
 #' @rdname hidden_aliases
 setMethod("precursorCharge", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "precursorCharge")
+    .get_column(object@spectraData, "precursorCharge")
 })
 
 #' @rdname hidden_aliases
 setMethod("precursorIntensity", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "precursorIntensity")
+    .get_column(object@spectraData, "precursorIntensity")
 })
 
 #' @rdname hidden_aliases
 setMethod("precursorMz", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "precursorMz")
+    .get_column(object@spectraData, "precursorMz")
 })
 
 #' @rdname hidden_aliases
@@ -354,21 +347,21 @@ setReplaceMethod("replaceList", "MsBackendDataFrame", function(object, value) {
 
 #' @rdname hidden_aliases
 setMethod("rtime", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "rtime")
+    .get_column(object@spectraData, "rtime")
 })
 
 #' @rdname hidden_aliases
 setReplaceMethod("rtime", "MsBackendDataFrame", function(object, value) {
-    if (!is.numeric(value) | length(value) != length(object))
+    if (!is.numeric(value) || length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$rtime <- asRle(as.numeric(value))
+    object@spectraData$rtime <- as.numeric(value)
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
 setMethod("scanIndex", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "scanIndex")
+    .get_column(object@spectraData, "scanIndex")
 })
 
 #' @rdname hidden_aliases
@@ -393,7 +386,7 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
 
 #' @rdname hidden_aliases
 setMethod("smoothed", "MsBackendDataFrame", function(object) {
-    .get_rle_column(object@spectraData, "smoothed")
+    .get_column(object@spectraData, "smoothed")
 })
 
 #' @rdname hidden_aliases
@@ -402,10 +395,8 @@ setMethod("smoothed", "MsBackendDataFrame", function(object) {
 setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)
-    if (value_len == 1 && value_type)
-        object@spectraData$smoothed <- Rle(value, length(object))
-    else if (value_len == length(object) && value_type)
-        object@spectraData$smoothed <- asRle(value)
+    if (value_type && (value_len == 1L || value_len == length(object)))
+        object@spectraData$smoothed <- value
     else
         stop("'value' has to be a 'logical' of length 1 or ", length(object))
     validObject(object)
@@ -418,8 +409,6 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
 #'
 #' @importFrom S4Vectors SimpleList
 #'
-#' @importFrom MsCoreUtils asVectorDataFrame
-#'
 #' @importMethodsFrom S4Vectors lapply
 setMethod("spectraData", "MsBackendDataFrame",
           function(object, columns = spectraVariables(object)) {
@@ -427,7 +416,7 @@ setMethod("spectraData", "MsBackendDataFrame",
               res <- object@spectraData[, df_columns, drop = FALSE]
               other_columns <- setdiff(columns,colnames(object@spectraData))
               if (length(other_columns)) {
-                  other_res <- lapply(other_columns, .get_rle_column,
+                  other_res <- lapply(other_columns, .get_column,
                                       x = object@spectraData)
                   names(other_res) <- other_columns
                   is_mz_int <- names(other_res) %in% c("mz", "intensity")
@@ -440,7 +429,7 @@ setMethod("spectraData", "MsBackendDataFrame",
                       res$intensity <- if (length(other_res$intensity)) other_res$intensity
                                        else NumericList(compress = FALSE)
               }
-              asVectorDataFrame(res[, columns, drop = FALSE])
+              res[, columns, drop = FALSE]
           })
 
 #' @rdname hidden_aliases
@@ -460,8 +449,7 @@ setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
         if (length(value) != length(object))
             stop("length of 'value' has to be ", length(object))
     }
-    object@spectraData <- asRleDataFrame(
-        value, columns = c("dataStorage", "dataOrigin"))
+    object@spectraData <- value
     validObject(object)
     object
 })
@@ -487,7 +475,7 @@ setMethod("spectraVariables", "MsBackendDataFrame", function(object) {
 setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
     if (initial) {
         if (any(colnames(object@spectraData) == "totIonCurrent"))
-            .get_rle_column(object@spectraData, "totIonCurrent")
+            .get_column(object@spectraData, "totIonCurrent")
         else rep(NA_real_, times = length(object))
     } else vapply1d(intensity(object), sum, na.rm = TRUE)
 })
@@ -503,9 +491,7 @@ setMethod("$", "MsBackendDataFrame", function(x, name) {
 setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
     if (is.list(value) && any(c("mz", "intensity") == name))
         value <- NumericList(value, compress = FALSE)
-    if (name == "dataStorage")
-        value <- Rle(value)
-    x@spectraData[[name]] <- asRle(value)
+    x@spectraData[[name]] <- value
     validObject(x)
     x
 })
@@ -529,9 +515,6 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
 setMethod("split", "MsBackendDataFrame", function(x, f, drop = FALSE, ...) {
     if (!is.factor(f))
         f <- as.factor(f)
-    if (length(levels(f)) > (nrow(x@spectraData) / 10))
-        slot(x, "spectraData", check = FALSE) <-
-            asVectorDataFrame(x@spectraData)
     lapply(split(seq_along(x), f, ...), function(i) x[i, ])
 })
 

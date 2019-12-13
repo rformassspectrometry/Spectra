@@ -100,8 +100,7 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
               files,
               BPPARAM = BPPARAM)
               object@modCount <- rep(0L, length(files))
-              object@spectraData <- asRleDataFrame(
-                  spectraData, columns = c("dataStorage", "dataOrigin"))
+              object@spectraData <- spectraData
               validObject(object)
               object
           })
