@@ -219,7 +219,7 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
-#' - `dropNaSpectraVariables`: remove spectra variables (i.e. columns in the
+#' - `dropNaSpectraVariables`: removes spectra variables (i.e. columns in the
 #'   object's `spectraData` that contain only missing values (`NA`). Note that
 #'   while columns with only `NA`s are removed, a `spectraData` call after
 #'   `dropNaSpectraVariables` might still show columns containing `NA` values
