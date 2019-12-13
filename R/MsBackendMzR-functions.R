@@ -96,7 +96,7 @@ MsBackendMzR <- function() {
         stop("Column(s) ", paste(not_found, collapse = ", "),
              " not available")
     sp_cols <- columns[columns %in% cn]
-    res <- asVectorDataFrame(x@spectraData[, sp_cols, drop = FALSE])
+    res <- x@spectraData[, sp_cols, drop = FALSE]
     any_mz <- any(columns == "mz")
     any_int <- any(columns == "intensity")
     if (any_mz || any_int) {
@@ -109,7 +109,7 @@ MsBackendMzR <- function() {
     }
     other_cols <- setdiff(columns, c(sp_cols, "mz", "intensity"))
     if (length(other_cols)) {
-        other_res <- lapply(other_cols, .get_rle_column, x = x@spectraData)
+        other_res <- lapply(other_cols, .get_column, x = x@spectraData)
         names(other_res) <- other_cols
         res <- cbind(res, as(other_res, "DataFrame"))
     }

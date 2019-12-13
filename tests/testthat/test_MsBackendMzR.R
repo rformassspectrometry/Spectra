@@ -11,7 +11,7 @@ test_that("initializeBackend,MsBackendMzR works", {
     expect_equal(unique(be$dataStorage), fl)
     expect_equal(nrow(be@spectraData), 1862)
     expect_equal(be@spectraData$scanIndex, c(1:931, 1:931))
-    expect_equal(be@spectraData$dataStorage, Rle(rep(fl, each = 931)))
+    expect_equal(be@spectraData$dataStorage, rep(fl, each = 931))
     expect_true(isReadOnly(be))
 })
 
@@ -49,19 +49,19 @@ test_that("centroided, centroided<-, MsBackendMzR work", {
     be <- MsBackendMzR()
     expect_equal(centroided(be), logical())
     expect_true(is(centroided(sciex_mzr), "logical"))
-    expect_true(is(sciex_mzr@spectraData$centroided, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$centroided, "logical"))
     expect_true(!all(centroided(sciex_mzr)))
 
     expect_error(centroided(sciex_mzr) <- "a", "to be a 'logical'")
     expect_error(centroided(sciex_mzr) <- c(FALSE, TRUE, TRUE), "has to be a")
     centroided(sciex_mzr) <- TRUE
     expect_true(is(centroided(sciex_mzr), "logical"))
-    expect_true(is(sciex_mzr@spectraData$centroided, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$centroided, "logical"))
     expect_true(all(centroided(sciex_mzr)))
 
     centroided(sciex_mzr) <- rep(FALSE, length(sciex_mzr))
     expect_true(is(centroided(sciex_mzr), "logical"))
-    expect_true(is(sciex_mzr@spectraData$centroided, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$centroided, "logical"))
     expect_true(!all(centroided(sciex_mzr)))
 })
 
@@ -86,7 +86,7 @@ test_that("dataStorage,MsBackendMzR works", {
     expect_equal(dataStorage(be), character())
 
     expect_true(is(dataStorage(sciex_mzr), "character"))
-    expect_true(is(sciex_mzr@spectraData$dataStorage, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$dataStorage, "character"))
     expect_equal(dataStorage(sciex_mzr), rep(sciex_file, each = 931))
 })
 
@@ -146,7 +146,7 @@ test_that("isolationWindowLowerMz,MsBackendMzR works", {
     expect_true(all(!is.na(isolationWindowLowerMz(be)[msLevel(be) == 2])))
 
     isolationWindowLowerMz(be) <- rep(2, length(be))
-    expect_true(is(be@spectraData$isolationWindowLowerMz, "Rle"))
+    expect_true(is(be@spectraData$isolationWindowLowerMz, "numeric"))
     expect_true(all(isolationWindowLowerMz(be) == 2))
 
     expect_error(isolationWindowLowerMz(be) <- 2, "of length 509")
@@ -167,7 +167,7 @@ test_that("isolationWindowTargetMz,MsBackendMzR works", {
                     isolationWindowLowerMz(be)[msLevel(be) == 2]))
 
     isolationWindowTargetMz(be) <- rep(2, length(be))
-    expect_true(is(be@spectraData$isolationWindowTargetMz, "Rle"))
+    expect_true(is(be@spectraData$isolationWindowTargetMz, "numeric"))
     expect_true(all(isolationWindowTargetMz(be) == 2))
 
     expect_error(isolationWindowTargetMz(be) <- 2, "of length 509")
@@ -188,7 +188,7 @@ test_that("isolationWindowUpperMz,MsBackendMzR works", {
                     isolationWindowTargetMz(be)[msLevel(be) == 2]))
 
     isolationWindowUpperMz(be) <- rep(2, length(be))
-    expect_true(is(be@spectraData$isolationWindowUpperMz, "Rle"))
+    expect_true(is(be@spectraData$isolationWindowUpperMz, "numeric"))
     expect_true(all(isolationWindowUpperMz(be) == 2))
 
     expect_error(isolationWindowUpperMz(be) <- 2, "of length 509")
@@ -202,7 +202,7 @@ test_that("msLevel,MsBackendMzR works", {
     expect_equal(msLevel(be), integer())
 
     expect_true(is(msLevel(sciex_mzr), "integer"))
-    expect_true(is(sciex_mzr@spectraData$msLevel, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$msLevel, "integer"))
     expect_true(all(msLevel(sciex_mzr) == 1L))
 
     expect_true(sum(msLevel(tmt_mzr) == 2) == 451)
@@ -259,7 +259,7 @@ test_that("polarity, polarity<- MsBackendMzR works", {
     expect_equal(polarity(be), integer())
 
     expect_true(is(polarity(sciex_mzr), "integer"))
-    expect_true(is(sciex_mzr@spectraData$polarity, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$polarity, "integer"))
     expect_true(all(polarity(sciex_mzr) == 1L))
 
     expect_error(polarity(sciex_mzr) <- "a", "has to be an 'integer'")
@@ -280,7 +280,7 @@ test_that("precScanNum,MsBackendMzR works", {
     expect_false(any(colnames(sciex_mzr@spectraData) == "precScanNum"))
     expect_true(all(is.na(precScanNum(sciex_mzr))))
 
-    expect_true(is(tmt_mzr@spectraData$precScanNum, "Rle"))
+    expect_true(is(tmt_mzr@spectraData$precScanNum, "integer"))
     expect_true(length(unique(precScanNum(tmt_mzr))) > 1)
 })
 
@@ -337,7 +337,7 @@ test_that("rtime, rtime<-,MsBackendMzR works", {
     rts <- rtime(sciex_mzr)
     rtime(sciex_mzr) <- rep(0.1, length(sciex_mzr))
     expect_true(is(rtime(sciex_mzr), "numeric"))
-    expect_true(is(sciex_mzr@spectraData$rtime, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$rtime, "numeric"))
 
     rtime(sciex_mzr) <- rts
     expect_equal(rtime(sciex_mzr), rts)
@@ -364,12 +364,12 @@ test_that("smoothed, smoothed<-,MsBackendMzR works", {
 
     smoothed(sciex_mzr) <- TRUE
     expect_true(is(smoothed(sciex_mzr), "logical"))
-    expect_true(is(sciex_mzr@spectraData$smoothed, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$smoothed, "logical"))
     expect_true(all(smoothed(sciex_mzr)))
 
     smoothed(sciex_mzr) <- rep(FALSE, length(sciex_mzr))
     expect_true(is(smoothed(sciex_mzr), "logical"))
-    expect_true(is(sciex_mzr@spectraData$smoothed, "Rle"))
+    expect_true(is(sciex_mzr@spectraData$smoothed, "logical"))
     expect_true(all(!smoothed(sciex_mzr)))
 })
 
@@ -425,7 +425,7 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
 
     spectraData(tmp)$new_col <- 1
     expect_true(any(colnames(tmp@spectraData) == "new_col"))
-    expect_true(is(tmp@spectraData$new_col, "Rle"))
+    expect_true(is(tmp@spectraData$new_col, "numeric"))
     expect_true(any(spectraVariables(tmp) == "new_col"))
 
     res <- .spectra_data_mzR(tmp, columns = c("msLevel", "new_col", "rtime"))
@@ -487,14 +487,14 @@ test_that("selectSpectraVariables,MsBackendMzR works", {
                  "scanIndex is/are missing")
 })
 
-test_that("$,$<-,MsBackendDataFrame works", {
+test_that("$,$<-,MsBackendMzR works", {
     tmp <- sciex_mzr
     tmp$new_col <- 5
     expect_true(any(spectraVariables(tmp) == "new_col"))
     expect_true(all(tmp$new_col == 5))
     expect_equal(rtime(tmp), rtime(sciex_mzr))
     expect_true(is.numeric(tmp$new_col))
-    expect_true(is(tmp@spectraData$new_col, "Rle"))
+    expect_true(is(tmp@spectraData$new_col, "numeric"))
 
     expect_error(tmp$mz <- NumericList(1:4, 1:6, compress = FALSE),
                  "not support replacing mz")
