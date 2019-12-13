@@ -79,7 +79,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -142,6 +142,8 @@ combineSpectra(
   ...,
   BPPARAM = bpparam()
 )
+
+dropNaSpectraVariables(x)
 
 # S4 method for DataFrame
 Spectra(
@@ -849,6 +851,11 @@ spectrum, <code>0</code> is returned.</p></li>
 listed methods.</p><ul>
 <li><p><code>[</code>: subsets the spectra keeping only selected elements (<code>i</code>). The method
 <strong>always</strong> returns a <code>Spectra</code> object.</p></li>
+<li><p><code>dropNaSpectraVariables</code>: removes spectra variables (i.e. columns in the
+object's <code>spectraData</code> that contain only missing values (<code>NA</code>). Note that
+while columns with only <code>NA</code>s are removed, a <code>spectraData</code> call after
+<code>dropNaSpectraVariables</code> might still show columns containing <code>NA</code> values
+for <em>core</em> spectra variables.</p></li>
 <li><p><code>filterAcquisitionNum</code>: filters the object keeping only spectra matching
 the provided acquisition numbers (argument <code>n</code>). If <code>dataOrigin</code> or
 <code>dataStorage</code> is also provided, <code>object</code> is subsetted to the spectra with
@@ -1081,11 +1088,11 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1862         1       259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Tue Dec 10 15:09:16 2019] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Dec 13 21:27:22 2019] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/object.size.html'>object.size</a></span>(<span class='no'>sciex</span>)</div><div class='output co'>#&gt; 236848 bytes</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/object.size.html'>object.size</a></span>(<span class='no'>sciex_im</span>)</div><div class='output co'>#&gt; 54666496 bytes</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/object.size.html'>object.size</a></span>(<span class='no'>sciex</span>)</div><div class='output co'>#&gt; 395352 bytes</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/object.size.html'>object.size</a></span>(<span class='no'>sciex_im</span>)</div><div class='output co'>#&gt; 54926576 bytes</div><div class='input'>
 <span class='co'>## The spectra variable `dataStorage` returns for each spectrum the location</span>
 <span class='co'>## where the data is stored. For in-memory objects:</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>dataStorage</span>(<span class='no'>sciex_im</span>))</div><div class='output co'>#&gt; [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</div><div class='input'>
@@ -1261,7 +1268,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Tue Dec 10 15:09:17 2019] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Fri Dec 13 21:27:23 2019] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='no'>data_comb</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>data</span>, <span class='no'>sciex_im</span>)
 
@@ -1281,7 +1288,43 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Tue Dec 10 15:09:18 2019] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Dec 13 21:27:23 2019] </div><div class='input'>
+<span class='co'>## Remove empty spectra variables</span>
+<span class='no'>sciex_noNA</span> <span class='kw'>&lt;-</span> <span class='fu'>dropNaSpectraVariables</span>(<span class='no'>sciex</span>)
+
+<span class='co'>## Available spectra variables before and after dropNaSpectraVariables</span>
+<span class='fu'>spectraVariables</span>(<span class='no'>sciex</span>)</div><div class='output co'>#&gt;  [1] "msLevel"                  "rtime"                   
+#&gt;  [3] "acquisitionNum"           "scanIndex"               
+#&gt;  [5] "mz"                       "intensity"               
+#&gt;  [7] "dataStorage"              "dataOrigin"              
+#&gt;  [9] "centroided"               "smoothed"                
+#&gt; [11] "polarity"                 "precScanNum"             
+#&gt; [13] "precursorMz"              "precursorIntensity"      
+#&gt; [15] "precursorCharge"          "collisionEnergy"         
+#&gt; [17] "isolationWindowLowerMz"   "isolationWindowTargetMz" 
+#&gt; [19] "isolationWindowUpperMz"   "peaksCount"              
+#&gt; [21] "totIonCurrent"            "basePeakMZ"              
+#&gt; [23] "basePeakIntensity"        "ionisationEnergy"        
+#&gt; [25] "lowMZ"                    "highMZ"                  
+#&gt; [27] "mergedScan"               "mergedResultScanNum"     
+#&gt; [29] "mergedResultStartScanNum" "mergedResultEndScanNum"  
+#&gt; [31] "injectionTime"            "filterString"            
+#&gt; [33] "spectrumId"               "ionMobilityDriftTime"    
+#&gt; [35] "scanWindowLowerLimit"     "scanWindowUpperLimit"    </div><div class='input'><span class='fu'>spectraVariables</span>(<span class='no'>sciex_noNA</span>)</div><div class='output co'>#&gt;  [1] "msLevel"                 "rtime"                  
+#&gt;  [3] "acquisitionNum"          "scanIndex"              
+#&gt;  [5] "mz"                      "intensity"              
+#&gt;  [7] "dataStorage"             "dataOrigin"             
+#&gt;  [9] "centroided"              "smoothed"               
+#&gt; [11] "polarity"                "precScanNum"            
+#&gt; [13] "precursorMz"             "precursorIntensity"     
+#&gt; [15] "precursorCharge"         "collisionEnergy"        
+#&gt; [17] "isolationWindowLowerMz"  "isolationWindowTargetMz"
+#&gt; [19] "isolationWindowUpperMz"  "peaksCount"             
+#&gt; [21] "totIonCurrent"           "basePeakMZ"             
+#&gt; [23] "basePeakIntensity"       "ionisationEnergy"       
+#&gt; [25] "lowMZ"                   "highMZ"                 
+#&gt; [27] "injectionTime"           "spectrumId"             </div><div class='input'>
+
 <span class='co'>## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----</span>
 
 <span class='co'>## Set the data to be centroided</span>
@@ -1297,7 +1340,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Dec 10 15:09:19 2019] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Dec 13 21:27:24 2019] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='no'>res</span>)<span class='kw'>[[</span><span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400   0   0</div><div class='input'><span class='fu'>intensity</span>(<span class='no'>res</span>)<span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt; [1] 0 0 0</div><div class='input'>
 <span class='co'>## Clean all spectra removing all 0-intensity peaks.</span>
