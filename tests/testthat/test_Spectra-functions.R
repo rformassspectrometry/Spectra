@@ -337,3 +337,14 @@ test_that("combineSpectra works", {
     expect_equal(res$crude_rtime[res$dataOrigin == fls[2]],
                  unique(sps$crude_rtime[sps$dataOrigin == fls[2]]))
 })
+
+test_that("dropNaSpectraVariables works", {
+    ## with a MsBackend
+    res <- dropNaSpectraVariables(sciex_mzr)
+    expect_true(all(vapply1l(res@spectraData, function(z) !any(is.na(z)))))
+    ## with a Spectra
+    sps <- Spectra(sciex_mzr)
+    res <- dropNaSpectraVariables(sps)
+    expect_true(all(vapply1l(res@backend@spectraData,
+                             function(z) !any(is.na(z)))))
+})

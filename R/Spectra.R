@@ -219,6 +219,12 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
+#' - `dropNaSpectraVariables`: removes spectra variables (i.e. columns in the
+#'   object's `spectraData` that contain only missing values (`NA`). Note that
+#'   while columns with only `NA`s are removed, a `spectraData` call after
+#'   `dropNaSpectraVariables` might still show columns containing `NA` values
+#'   for *core* spectra variables.
+#'
 #' - `filterAcquisitionNum`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
 #'   `dataStorage` is also provided, `object` is subsetted to the spectra with
@@ -704,6 +710,14 @@ NULL
 #' spd$precursorMz <- c(323.4, 543.2302)
 #' data_filt <- Spectra(spd)
 #' filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
+#'
+#' ## Remove empty spectra variables
+#' sciex_noNA <- dropNaSpectraVariables(sciex)
+#'
+#' ## Available spectra variables before and after dropNaSpectraVariables
+#' spectraVariables(sciex)
+#' spectraVariables(sciex_noNA)
+#'
 #'
 #' ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 #'
