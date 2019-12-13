@@ -648,7 +648,7 @@ listed methods.
 \itemize{
 \item \code{[}: subsets the spectra keeping only selected elements (\code{i}). The method
 \strong{always} returns a \code{Spectra} object.
-\item \code{dropNaSpectraVariables}: remove spectra variables (i.e. columns in the
+\item \code{dropNaSpectraVariables}: removes spectra variables (i.e. columns in the
 object's \code{spectraData} that contain only missing values (\code{NA}). Note that
 while columns with only \code{NA}s are removed, a \code{spectraData} call after
 \code{dropNaSpectraVariables} might still show columns containing \code{NA} values
