@@ -319,7 +319,7 @@ NULL
 #' - `bin`: aggregates individual spectra into discrete (m/z) bins. All
 #'   intensity values for peaks falling into the same bin are summed.
 #'
-#' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
+#' - `clean`: removes 0-intensity data points (e.g. *trim* the spectra). For `all = FALSE` (the default)
 #'   0-intensity peaks next to non-zero intensity peaks are retained while with
 #'   `all = TRUE` all 0-intensity peaks are removed.
 #'
@@ -370,8 +370,8 @@ NULL
 #'   If the ratio of the signal to the highest intensity of the peak is below
 #'   `threshold` it will be ignored for the weighted average.
 #'
-#' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
-#'   value `threshold` by setting their intensity to `0`. With the default
+#' - `removePeaks`: marks peaks lower or equal to a threshold intensity
+#'   value `threshold` for removal by setting their intensity to `0`. With the default
 #'   `threshold = "min"` all peaks with an intensity smaller or equal to the
 #'   minimal non-zero intensity is set to `0`. If the spectrum is in
 #'   profile mode, ranges of successive non-0 peaks <= `threshold` are set to 0.
