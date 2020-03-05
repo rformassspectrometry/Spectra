@@ -84,8 +84,6 @@ NULL
     rtime = "numeric",
     acquisitionNum = "integer",
     scanIndex = "integer",
-    mz = "NumericList",
-    intensity = "NumericList",
     dataStorage = "character",
     dataOrigin = "character",
     centroided = "logical",
