@@ -61,8 +61,8 @@
 \alias{selectSpectraVariables,MsBackend-method}
 \alias{smoothed,MsBackend-method}
 \alias{smoothed<-,MsBackend-method}
-\alias{spectraData,MsBackend-method}
-\alias{spectraData<-,MsBackend-method}
+\alias{asDataFrame,MsBackend-method}
+\alias{setDataFrame<-,MsBackend-method}
 \alias{spectraNames,MsBackend-method}
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
@@ -181,9 +181,9 @@
 
 \S4method{smoothed}{MsBackend}(object) <- value
 
-\S4method{spectraData}{MsBackend}(object, columns = spectraVariables(object))
+\S4method{asDataFrame}{MsBackend}(object, columns = spectraVariables(object))
 
-\S4method{spectraData}{MsBackend}(object) <- value
+\S4method{setDataFrame}{MsBackend}(object) <- value
 
 \S4method{spectraNames}{MsBackend}(object)
 
@@ -256,7 +256,7 @@ be used to subset/filter \code{object}.}
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
 
-\item{columns}{For \code{spectraData} accessor: optional \code{character} with column
+\item{columns}{For \code{asDataFrame} accessor: optional \code{character} with column
 names (spectra variables) that should be included in the
 returned \code{DataFrame}. By default, all columns are returned.}
 
@@ -276,7 +276,7 @@ total ion current should be (re)calculated on the actual data
 \item{name}{For \code{$} and \verb{$<-}: the name of the spectra variable to return
 or set.}
 
-\item{spectraData}{For \code{backendInitialize}: \code{DataFrame} with spectrum
+\item{data}{For \code{backendInitialize}: \code{DataFrame} with spectrum
 metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
 but needs to be provided for \code{MsBackendDataFrame} backends.}
 }
@@ -468,9 +468,9 @@ the selected spectra variables.
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
-\item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
-metadata (annotation, also called header).  \code{spectraData} returns
-a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame} with the same number
+\item \code{asDataFrame}, \verb{setDataFrame<-}: gets or sets general spectrum
+metadata (annotation, also called header).  \code{asDataFrame} returns
+a \code{DataFrame}, \verb{setDataFrame<-} expects a \code{DataFrame} with the same number
 of rows as there are spectra in \code{object}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
 the spectra in \code{object}.
@@ -581,7 +581,7 @@ names (parameter \code{files}).
 
 By default \code{backendInitialize} will store all peak data into a single HDF5
 file which name has to be provided with the parameter \code{files}. To store peak
-data across several HDF5 files \code{spectraData} has to contain a column
+data across several HDF5 files \code{data} has to contain a column
 \code{"dataStorage"} that defines the grouping of spectra/peaks into files: peaks
 for spectra with the same value in \code{"dataStorage"} are saved into the same
 HDF5 file. If parameter \code{files} is omitted, the value in \code{dataStorage} is

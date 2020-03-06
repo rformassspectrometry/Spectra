@@ -226,10 +226,10 @@ pks <- as.list(sps)
 pks[[1]]
 ```
 
-The `spectraData` function returns a `DataFrame` with the full data
-for each spectrum, or with selected spectra variables (which can be specified
-with the `columns` parameter). Below we extract the spectra data for variables
-`"msLevel"`, `"id"` and `"name"`.
+The `spectraData` function returns a `DataFrame` with the full data for each
+spectrum (except m/z and intensity values), or with selected spectra variables
+(which can be specified with the `columns` parameter). Below we extract the
+spectra data for variables `"msLevel"`, `"id"` and `"name"`.
 
 ```{r spectradata}
 spectraData(sps, columns = c("msLevel", "id", "name"))

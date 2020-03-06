@@ -625,10 +625,8 @@ to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
 \item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
 metadata (annotation, also called header). \code{spectraData} returns
-a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame}. Note that not all
-backends support replacing all spectra variables (the \code{\link[=MsBackendMzR]{MsBackendMzR()}}
-does for example not allow to replace \code{mz} and \code{intensity} values with the
-\verb{spectraData<-} method.
+a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame}. Note that this
+method does not return m/z or intensity values.
 \item \code{spectraNames}, \verb{spectraNames<-}: gets or sets the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)

@@ -132,13 +132,13 @@ setReplaceMethod("mz", "MsBackendMzR", function(object, value) {
 #' @rdname hidden_aliases
 #'
 #' @importFrom methods as
-setMethod("spectraData", "MsBackendMzR",
+setMethod("asDataFrame", "MsBackendMzR",
           function(object, columns = spectraVariables(object)) {
               .spectra_data_mzR(object, columns)
           })
 
 #' @rdname hidden_aliases
-setReplaceMethod("spectraData", "MsBackendMzR", function(object, value) {
+setReplaceMethod("setDataFrame", "MsBackendMzR", function(object, value) {
     if (inherits(value, "DataFrame") && any(colnames(value) %in%
                                             c("mz", "intensity"))) {
         warning("Ignoring columns \"mz\" and \"intensity\" as the ",

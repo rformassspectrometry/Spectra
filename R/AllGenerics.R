@@ -2,6 +2,11 @@
 NULL
 
 #' @rdname hidden_aliases
+setGeneric("asDataFrame", function(object, ...) standardGeneric("asDataFrame"))
+#' @rdname hidden_aliases
+setGeneric("setDataFrame<-", function(object, value)
+    standardGeneric("setDataFrame<-"))
+#' @rdname hidden_aliases
 setGeneric("backendInitialize",
            def = function(object, ...)
                standardGeneric("backendInitialize"),

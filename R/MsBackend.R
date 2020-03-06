@@ -44,7 +44,7 @@ NULL
 #'     acquisition number of the spectra to which the object should be
 #'     subsetted.
 #'
-#' @param columns For `spectraData` accessor: optional `character` with column
+#' @param columns For `asDataFrame` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
@@ -96,7 +96,7 @@ NULL
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
-#' @param spectraData For `backendInitialize`: `DataFrame` with spectrum
+#' @param data For `backendInitialize`: `DataFrame` with spectrum
 #'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
 #'     but needs to be provided for `MsBackendDataFrame` backends.
 #'
@@ -312,9 +312,9 @@ NULL
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
-#'   metadata (annotation, also called header).  `spectraData` returns
-#'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
+#' - `asDataFrame`, `setDataFrame<-`: gets or sets general spectrum
+#'   metadata (annotation, also called header).  `asDataFrame` returns
+#'   a `DataFrame`, `setDataFrame<-` expects a `DataFrame` with the same number
 #'   of rows as there are spectra in `object`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
@@ -418,7 +418,7 @@ NULL
 #'
 #' By default `backendInitialize` will store all peak data into a single HDF5
 #' file which name has to be provided with the parameter `files`. To store peak
-#' data across several HDF5 files `spectraData` has to contain a column
+#' data across several HDF5 files `data` has to contain a column
 #' `"dataStorage"` that defines the grouping of spectra/peaks into files: peaks
 #' for spectra with the same value in `"dataStorage"` are saved into the same
 #' HDF5 file. If parameter `files` is omitted, the value in `dataStorage` is
@@ -935,22 +935,18 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod spectraData
-#'
-#' @importMethodsFrom ProtGenerics spectraData
+#' @exportMethod asDataFrame
 #'
 #' @rdname MsBackend
-setMethod("spectraData", "MsBackend",
+setMethod("asDataFrame", "MsBackend",
           function(object, columns = spectraVariables(object)) {
               stop("Not implemented for ", class(object), ".")
           })
 
-#' @exportMethod spectraData<-
-#'
-#' @importMethodsFrom ProtGenerics spectraData<-
+#' @exportMethod setDataFrame<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("spectraData", "MsBackend", function(object, value) {
+setReplaceMethod("setDataFrame", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
