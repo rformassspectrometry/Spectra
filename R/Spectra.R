@@ -171,8 +171,8 @@ NULL
 #' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
 #'   `precScanNum`, `precAcquisitionNum`: gets the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
-#'   and acquisition number (`interger`) of the precursor for MS level
-#'   > 2 spectra from the object. Returns a vector of length equal to
+#'   and acquisition number (`interger`) of the precursor for MS level >
+#'   2 spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
@@ -988,6 +988,15 @@ setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
 setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
 
 #' @rdname Spectra
+setMethod("dropNaSpectraVariables", "Spectra", function(object) {
+    svs <- spectraVariables(object)
+    spd <- spectraData(object, columns = svs[!(svs %in% c("mz", "intensity"))])
+    keep <- !vapply1l(spd, function(z) all(is.na(z)))
+    spectraData(object) <- spd[, keep, drop = FALSE]
+    object
+})
+
+#' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
     if (length(object@processingQueue))
         NumericList(.peaksapply(object, FUN = function(z, ...) z[, 2], ...),
@@ -1157,6 +1166,8 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 #'
+#' @importMethodsFrom ProtGenerics spectraData
+#'
 #' @exportMethod spectraData
 setMethod("spectraData", "Spectra", function(object,
                                              columns = spectraVariables(object))
@@ -1166,9 +1177,11 @@ setMethod("spectraData", "Spectra", function(object,
 
 #' @rdname Spectra
 #'
+#' @importMethodsFrom ProtGenerics spectraData<-
+#'
 #' @exportMethod spectraData<-
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
-    setDataFrame(object@backend) <- value
+    asDataFrame(object@backend) <- value
     object
 })
 

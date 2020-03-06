@@ -247,7 +247,7 @@ test_that("asDataFrame,MsBackendHdf5Peaks works", {
                                                 compress = FALSE))
 })
 
-test_that("setDataFrame<-,MsBackendHdf5Peaks works", {
+test_that("asDataFrame<-,MsBackendHdf5Peaks works", {
     be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(),
                             data = test_df)
     df <- test_df
@@ -256,7 +256,7 @@ test_that("setDataFrame<-,MsBackendHdf5Peaks works", {
     df$intensity <- NULL
     df$mz <- NULL
 
-    setDataFrame(be) <- df
+    asDataFrame(be) <- df
     expect_identical(be@modCount, 0L)
     expect_identical(msLevel(be), rep(1L, 3))
     expect_identical(intensity(be), NumericList(test_df$intensity,
@@ -266,7 +266,7 @@ test_that("setDataFrame<-,MsBackendHdf5Peaks works", {
 
     ## Only m/z, no intensities.
     df$mz <- test_df$mz
-    setDataFrame(be) <- df
+    asDataFrame(be) <- df
     expect_identical(mz(be), NumericList(test_df$mz, compress = FALSE))
     expect_true(all(is.na(unlist(intensity(be)))))
     expect_identical(be@modCount, 1L)
@@ -275,15 +275,15 @@ test_that("setDataFrame<-,MsBackendHdf5Peaks works", {
     df$mz <- list(c(1.1, 1.2), numeric(), c(1.3, 1.4))
     df$intensity <- list(c(45.3, 345.1), numeric(), c(1234.2, 12.1))
 
-    setDataFrame(be) <- df
+    asDataFrame(be) <- df
     expect_identical(intensity(be), NumericList(df$intensity, compress = FALSE))
     expect_identical(mz(be), NumericList(df$mz, compress = FALSE))
     expect_identical(lengths(be), c(2L, 0L, 2L))
     expect_identical(be@modCount, 2L)
 
     ## Error:
-    expect_error(setDataFrame(be) <- "a", "has to be a 'DataFrame'")
-    expect_error(setDataFrame(be) <- df[1:2, ], "have to match the length of")
+    expect_error(asDataFrame(be) <- "a", "has to be a 'DataFrame'")
+    expect_error(asDataFrame(be) <- df[1:2, ], "have to match the length of")
 })
 
 test_that("$<-,MsBackendHdf5Peaks works", {

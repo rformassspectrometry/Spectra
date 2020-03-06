@@ -483,13 +483,13 @@ test_that("asDataFrame, asDataFrame<-, MsBackendDataFrame works", {
                                             compress = FALSE))
     expect_equal(res$a, c("a", "a"))
 
-    setDataFrame(be) <- DataFrame(mzLevel = c(3L, 4L),
-                                  rtime = c(1.2, 1.4), other_col = "b")
+    asDataFrame(be) <- DataFrame(mzLevel = c(3L, 4L),
+                                 rtime = c(1.2, 1.4), other_col = "b")
     expect_identical(rtime(be), c(1.2, 1.4))
     expect_true(any(spectraVariables(be) == "other_col"))
     expect_identical(asDataFrame(be, "other_col")[, 1], c("b", "b"))
 
-    expect_error(setDataFrame(be) <- DataFrame(msLevel = 1:3),
+    expect_error(asDataFrame(be) <- DataFrame(msLevel = 1:3),
                  "with 2 rows")
 })
 

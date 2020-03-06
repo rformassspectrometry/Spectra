@@ -138,7 +138,7 @@ setMethod("asDataFrame", "MsBackendMzR",
           })
 
 #' @rdname hidden_aliases
-setReplaceMethod("setDataFrame", "MsBackendMzR", function(object, value) {
+setReplaceMethod("asDataFrame", "MsBackendMzR", function(object, value) {
     if (inherits(value, "DataFrame") && any(colnames(value) %in%
                                             c("mz", "intensity"))) {
         warning("Ignoring columns \"mz\" and \"intensity\" as the ",

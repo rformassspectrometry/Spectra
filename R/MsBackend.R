@@ -153,6 +153,12 @@ NULL
 #'   in `object` with the data storage of each spectrum. Note that a
 #'   `dataStorage` of `NA_character_` is not supported.
 #'
+#' - `dropNaSpectraVariables`: removes spectra variables (i.e. columns in the
+#'   object's `spectraData` that contain only missing values (`NA`). Note that
+#'   while columns with only `NA`s are removed, a `spectraData` call after
+#'   `dropNaSpectraVariables` might still show columns containing `NA` values
+#'   for *core* spectra variables.
+#'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
@@ -198,8 +204,8 @@ NULL
 #'    provided with parameter `file`.
 #'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
-#'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
-#'   and `isolationWindowUpperMz` >= `mz`.
+#'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` `<=` `mz`
+#'   and `isolationWindowUpperMz` `>=` `mz`.
 #'
 #' - `filterMsLevel`: retains spectra of MS level `msLevel`.
 #'
@@ -282,7 +288,7 @@ NULL
 #'   `precScanNum`, `precAcquisitionNum`: get the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
 #'   and acquisition number (`interger`) of the precursor for MS level
-#'   > 2 spectra from the object. Returns a vector of length equal to
+#'   2 and above spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
@@ -312,9 +318,9 @@ NULL
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `asDataFrame`, `setDataFrame<-`: gets or sets general spectrum
+#' - `asDataFrame`, `asDataFrame<-`: gets or sets general spectrum
 #'   metadata (annotation, also called header).  `asDataFrame` returns
-#'   a `DataFrame`, `setDataFrame<-` expects a `DataFrame` with the same number
+#'   a `DataFrame`, `asDataFrame<-` expects a `DataFrame` with the same number
 #'   of rows as there are spectra in `object`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
@@ -578,6 +584,17 @@ setMethod("dataStorage", "MsBackend", function(object) {
 #' @rdname MsBackend
 setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
     stop("Method 'dataStorage' is not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dropNaSpectraVariables
+#'
+#' @rdname MsBackend
+setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
+    svs <- spectraVariables(object)
+    spd <- asDataFrame(object, columns = svs[!(svs %in% c("mz", "intensity"))])
+    keep <- !vapply1l(spd, function(z) all(is.na(z)))
+    asDataFrame(object) <- spd[, keep, drop = FALSE]
+    object
 })
 
 #' @exportMethod filterAcquisitionNum
@@ -943,10 +960,10 @@ setMethod("asDataFrame", "MsBackend",
               stop("Not implemented for ", class(object), ".")
           })
 
-#' @exportMethod setDataFrame<-
+#' @exportMethod asDataFrame<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("setDataFrame", "MsBackend", function(object, value) {
+setReplaceMethod("asDataFrame", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 

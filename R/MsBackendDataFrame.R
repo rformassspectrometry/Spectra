@@ -50,7 +50,7 @@ setMethod("show", "MsBackendDataFrame", function(object) {
 #'
 #' @importFrom IRanges NumericList
 #'
-#' @rdname hidden_aliases
+#' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackendDataFrame",
           function(object, data, ...) {
               if (missing(data)) data <- DataFrame()
@@ -101,7 +101,6 @@ setMethod("centroided", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 #'
 #' @aliases centroided<-,MsBackendDataFrame-method
-#'
 setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)
@@ -433,7 +432,7 @@ setMethod("asDataFrame", "MsBackendDataFrame",
           })
 
 #' @rdname hidden_aliases
-setReplaceMethod("setDataFrame", "MsBackendDataFrame", function(object, value) {
+setReplaceMethod("asDataFrame", "MsBackendDataFrame", function(object, value) {
     if (inherits(value, "DataFrame")) {
         if (length(object) && nrow(value) != length(object))
             stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")

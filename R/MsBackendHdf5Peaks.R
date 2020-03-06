@@ -231,7 +231,7 @@ setMethod("asDataFrame", "MsBackendHdf5Peaks",
           })
 
 #' @rdname hidden_aliases
-setReplaceMethod("setDataFrame", "MsBackendHdf5Peaks", function(object, value) {
+setReplaceMethod("asDataFrame", "MsBackendHdf5Peaks", function(object, value) {
     pks <- NULL
     if (!inherits(value, "DataFrame"))
         stop("'value' has to be a 'DataFrame'")
