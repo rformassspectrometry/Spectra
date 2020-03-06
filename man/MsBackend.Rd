@@ -316,8 +316,8 @@ See below for more details about individual backends.
 \section{Backend functions}{
 
 
-New backend classes \strong{must} extend the base \code{MsBackend} class and
-\strong{have} to implement the following methods:
+New backend classes \emph{must} extend the base \code{MsBackend} class and
+\emph{have} to implement the following methods:
 \itemize{
 \item \code{[}: subset the backend. Only subsetting by element (\emph{row}/\code{i}) is
 allowed

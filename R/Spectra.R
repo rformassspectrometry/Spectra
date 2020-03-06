@@ -1156,6 +1156,8 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
+#'
+#' @exportMethod spectraData
 setMethod("spectraData", "Spectra", function(object,
                                              columns = spectraVariables(object))
 {
@@ -1163,6 +1165,8 @@ setMethod("spectraData", "Spectra", function(object,
 })
 
 #' @rdname Spectra
+#'
+#' @exportMethod spectraData<-
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
     setDataFrame(object@backend) <- value
     object
@@ -1198,7 +1202,7 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
 #'
 #' @importMethodsFrom S4Vectors $
 setMethod("$", "Spectra", function(x, name) {
-    if (!(name %in% spectraVariables(x)))
+    if (!(name %in% c(spectraVariables(x), "mz", "intensity")))
         stop("No spectra variable '", name, "' available")
     if (name == "mz")
         mz(x)

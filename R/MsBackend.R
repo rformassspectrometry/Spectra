@@ -48,6 +48,10 @@ NULL
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
+#' @param data For `backendInitialize`: `DataFrame` with spectrum
+#'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
+#'     but needs to be provided for `MsBackendDataFrame` backends.
+#'
 #' @param dataOrigin For `filterDataOrigin`: `character` to define which
 #'     spectra to keep.
 #'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
@@ -95,10 +99,6 @@ NULL
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
-#'
-#' @param data For `backendInitialize`: `DataFrame` with spectrum
-#'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
-#'     but needs to be provided for `MsBackendDataFrame` backends.
 #'
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.

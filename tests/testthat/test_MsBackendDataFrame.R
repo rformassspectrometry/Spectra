@@ -235,8 +235,8 @@ test_that("isolationWindowUpperMz,MsBackendDataFrame works", {
 test_that("length,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(length(be), 0)
-    be <- new("MsBackendDataFrame", data = DataFrame(a = 1:3,
-                                                     dataStorage = "a"))
+    be <- new("MsBackendDataFrame", spectraData = DataFrame(a = 1:3,
+                                                            dataStorage = "a"))
     expect_equal(length(be), 3)
 })
 
