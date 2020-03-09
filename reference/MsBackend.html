@@ -101,7 +101,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -141,7 +141,7 @@ See below for more details about individual backends." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Mass spectrometry data backends</h1>
-    <small class="dont-index">Source: <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackend.R'><code>R/MsBackend.R</code></a>, <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackendDataFrame-functions.R'><code>R/MsBackendDataFrame-functions.R</code></a>, <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackendHdf5Peaks-functions.R'><code>R/MsBackendHdf5Peaks-functions.R</code></a>, and 2 more</small>
+    <small class="dont-index">Source: <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackend.R'><code>R/MsBackend.R</code></a>, <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackendDataFrame-functions.R'><code>R/MsBackendDataFrame-functions.R</code></a>, <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackendDataFrame.R'><code>R/MsBackendDataFrame.R</code></a>, and 3 more</small>
     <div class="hidden name"><code>MsBackend.Rd</code></div>
     </div>
 
@@ -212,6 +212,9 @@ dataStorage(object)
 
 # S4 method for MsBackend
 dataStorage(object) <- value
+
+# S4 method for MsBackend
+dropNaSpectraVariables(object)
 
 # S4 method for MsBackend
 filterAcquisitionNum(object, n, file, ...)
@@ -334,10 +337,10 @@ smoothed(object)
 smoothed(object) <- value
 
 # S4 method for MsBackend
-spectraData(object, columns = spectraVariables(object))
+asDataFrame(object, columns = spectraVariables(object))
 
 # S4 method for MsBackend
-spectraData(object) <- value
+asDataFrame(object) <- value
 
 # S4 method for MsBackend
 spectraNames(object)
@@ -364,6 +367,9 @@ $(x, name)
 $(x, name) <- value
 
 MsBackendDataFrame()
+
+# S4 method for MsBackendDataFrame
+backendInitialize(object, data, ...)
 
 MsBackendHdf5Peaks()
 
@@ -452,7 +458,7 @@ names of the spectra variables to which the backend should be subsetted.</p></td
     </tr>
     <tr>
       <th>columns</th>
-      <td><p>For <code>spectraData</code> accessor: optional <code>character</code> with column
+      <td><p>For <code>asDataFrame</code> accessor: optional <code>character</code> with column
 names (spectra variables) that should be included in the
 returned <code>DataFrame</code>. By default, all columns are returned.</p></td>
     </tr>
@@ -485,7 +491,7 @@ total ion current should be (re)calculated on the actual data
 or set.</p></td>
     </tr>
     <tr>
-      <th>spectraData</th>
+      <th>data</th>
       <td><p>For <code>backendInitialize</code>: <code>DataFrame</code> with spectrum
 metadata/data. This parameter can be empty for <code>MsBackendMzR</code> backends
 but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></td>
@@ -526,6 +532,11 @@ the mzML file from which the data was read.</p></li>
 <li><p><code>dataStorage</code>: gets a <code>character</code> of length equal to the number of spectra
 in <code>object</code> with the data storage of each spectrum. Note that a
 <code>dataStorage</code> of <code>NA_character_</code> is not supported.</p></li>
+<li><p><code>dropNaSpectraVariables</code>: removes spectra variables (i.e. columns in the
+object's <code>spectraData</code> that contain only missing values (<code>NA</code>). Note that
+while columns with only <code>NA</code>s are removed, a <code>spectraData</code> call after
+<code>dropNaSpectraVariables</code> might still show columns containing <code>NA</code> values
+for <em>core</em> spectra variables.</p></li>
 <li><p><code>centroided</code>, <code>centroided&lt;-</code>: gets or sets the centroiding
 information of the spectra. <code>centroided</code> returns a <code>logical</code>
 vector of length equal to the number of spectra with <code>TRUE</code> if a
@@ -564,8 +575,8 @@ spectra from data storage <code>"2"</code> and then from <code>"1"</code>).</p><
 <li><p><code>filterFile</code>: retains data of files matching the file index or file name
 provided with parameter <code>file</code>.</p></li>
 <li><p><code>filterIsolationWindow</code>: retains spectra that contain <code>mz</code> in their
-isolation window m/z range (i.e. with an <code>isolationWindowLowerMz</code> &lt;= <code>mz</code>
-and <code>isolationWindowUpperMz</code> &gt;= <code>mz</code>.</p></li>
+isolation window m/z range (i.e. with an <code>isolationWindowLowerMz</code> <code>&lt;=</code> <code>mz</code>
+and <code>isolationWindowUpperMz</code> <code>&gt;=</code> <code>mz</code>.</p></li>
 <li><p><code>filterMsLevel</code>: retains spectra of MS level <code>msLevel</code>.</p></li>
 <li><p><code>filterPolarity</code>: retains spectra of polarity <code>polarity</code>.</p></li>
 <li><p><code>filterPrecursorMz</code>: retains spectra with a precursor m/z within the
@@ -626,7 +637,10 @@ integer vector of length 1 or equal to the number of spectra.</p></li>
 <li><p><code>precursorCharge</code>, <code>precursorIntensity</code>, <code>precursorMz</code>,
 <code>precScanNum</code>, <code>precAcquisitionNum</code>: get the charge (<code>integer</code>),
 intensity (<code>numeric</code>), m/z (<code>numeric</code>), scan index (<code>integer</code>)
-and acquisition number (<code>interger</code>) of the precursor for MS level2 spectra from the object. Returns a vector of length equal tothe number of spectra in object. NA are reported for MS1spectra of if no precursor information is available.</p></li>
+and acquisition number (<code>interger</code>) of the precursor for MS level
+2 and above spectra from the object. Returns a vector of length equal to
+the number of spectra in <code>object</code>. <code>NA</code> are reported for MS1
+spectra of if no precursor information is available.</p></li>
 <li><p><code>replaceList&lt;-</code> replaces the peak data (m/z and intensity values) of the
 backend. This method expects a <code>list</code> of <code>matrix</code> objects with columns
 <code>"mz"</code> and <code>"intensity"</code> that has the same length as the number of
@@ -648,9 +662,9 @@ the selected spectra variables.</p></li>
 <em>smoothed</em>. <code>smoothed</code> returns a <code>logical</code> vector of length equal
 to the number of spectra. <code>smoothed&lt;-</code> takes a <code>logical</code> vector
 of length 1 or equal to the number of spectra in <code>object</code>.</p></li>
-<li><p><code>spectraData</code>, <code>spectraData&lt;-</code>: gets or sets general spectrum
-metadata (annotation, also called header).  <code>spectraData</code> returns
-a <code>DataFrame</code>, <code>spectraData&lt;-</code> expects a <code>DataFrame</code> with the same number
+<li><p><code>asDataFrame</code>, <code>asDataFrame&lt;-</code>: gets or sets general spectrum
+metadata (annotation, also called header).  <code>asDataFrame</code> returns
+a <code>DataFrame</code>, <code>asDataFrame&lt;-</code> expects a <code>DataFrame</code> with the same number
 of rows as there are spectra in <code>object</code>.</p></li>
 <li><p><code>spectraNames</code>: returns a <code>character</code> vector with the names of
 the spectra in <code>object</code>.</p></li>
@@ -755,7 +769,7 @@ stored to. If provided, this is added as the path to the submitted file
 names (parameter <code>files</code>).</p>
 <p>By default <code>backendInitialize</code> will store all peak data into a single HDF5
 file which name has to be provided with the parameter <code>files</code>. To store peak
-data across several HDF5 files <code>spectraData</code> has to contain a column
+data across several HDF5 files <code>data</code> has to contain a column
 <code>"dataStorage"</code> that defines the grouping of spectra/peaks into files: peaks
 for spectra with the same value in <code>"dataStorage"</code> are saved into the same
 HDF5 file. If parameter <code>files</code> is omitted, the value in <code>dataStorage</code> is

@@ -76,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -124,7 +124,11 @@
     <p>For S4 methods that require a documentation entry but only clutter the index.</p>
     </div>
 
-    <pre class="usage">backendInitialize(object, ...)
+    <pre class="usage">asDataFrame(object, ...)
+
+asDataFrame(object) <- value
+
+backendInitialize(object, ...)
 
 backendMerge(object, ...)
 
@@ -143,6 +147,8 @@ clean(object, ...)
 
 compareSpectra(x, y, ...)
 
+dropNaSpectraVariables(object, ...)
+
 isReadOnly(object, ...)
 
 pickPeaks(object, ...)
@@ -157,9 +163,6 @@ setBackend(object, backend, ...)
 
 # S4 method for MsBackendDataFrame
 show(object)
-
-# S4 method for MsBackendDataFrame
-backendInitialize(object, spectraData, ...)
 
 # S4 method for MsBackendDataFrame
 backendMerge(object, ...)
@@ -282,10 +285,10 @@ smoothed(object)
 smoothed(object) <- value
 
 # S4 method for MsBackendDataFrame
-spectraData(object, columns = spectraVariables(object))
+asDataFrame(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendDataFrame
-spectraData(object) <- value
+asDataFrame(object) <- value
 
 # S4 method for MsBackendDataFrame
 spectraNames(object)
@@ -350,7 +353,7 @@ filterRt(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 backendInitialize(
   object,
   files = character(),
-  spectraData = DataFrame(),
+  data = DataFrame(),
   hdf5path = character(),
   ...,
   BPPARAM = bpparam()
@@ -390,10 +393,10 @@ mz(object) <- value
 replaceList(object) <- value
 
 # S4 method for MsBackendHdf5Peaks
-spectraData(object, columns = spectraVariables(object))
+asDataFrame(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendHdf5Peaks
-spectraData(object) <- value
+asDataFrame(object) <- value
 
 # S4 method for MsBackendHdf5Peaks
 $(x, name) <- value
@@ -438,10 +441,10 @@ mz(object)
 mz(object) <- value
 
 # S4 method for MsBackendMzR
-spectraData(object, columns = spectraVariables(object))
+asDataFrame(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendMzR
-spectraData(object) <- value
+asDataFrame(object) <- value
 
 # S4 method for MsBackendMzR
 spectraNames(object)

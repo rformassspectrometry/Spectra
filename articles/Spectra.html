@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.11/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2019-12-13 21:23:06<br><strong>Compiled</strong>: Fri Dec 13 21:27:28 2019</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.11/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2020-03-09 16:30:39<br><strong>Compiled</strong>: Mon Mar 9 16:34:10 2020</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -187,19 +187,19 @@ document.addEventListener("DOMContentLoaded", function() {
 <a class="sourceLine" id="cb3-2" data-line-number="2">sps_sciex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Spectra.html">Spectra</a></span>(fls, <span class="dt">backend =</span> <span class="kw"><a href="../reference/MsBackend.html">MsBackendMzR</a></span>())</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">sps_sciex</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
-##        msLevel         rtime scanIndex
-##      &lt;integer&gt;     &lt;numeric&gt; &lt;integer&gt;
-## 1            1 0.28000000002         1
-## 2            1 0.55900000002         2
-## 3            1 0.83800000002         3
-## 4            1 1.11700000002         4
-## 5            1 1.39600000002         5
-## ...        ...           ...       ...
-## 1858         1       258.636       927
-## 1859         1       258.915       928
-## 1860         1       259.194       929
-## 1861         1       259.473       930
-## 1862         1       259.752       931
+##        msLevel     rtime scanIndex
+##      &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
+## 1            1     0.280         1
+## 2            1     0.559         2
+## 3            1     0.838         3
+## 4            1     1.117         4
+## 5            1     1.396         5
+## ...        ...       ...       ...
+## 1858         1   258.636       927
+## 1859         1   258.915       928
+## 1860         1   259.194       929
+## 1861         1   259.473       930
+## 1862         1   259.752       931
 ##  ... 33 more variables/columns.
 ## 
 ## file(s):
@@ -216,34 +216,32 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">spectraVariables</span>(sps)</a></code></pre></div>
 <pre><code>##  [1] "msLevel"                 "rtime"                  
 ##  [3] "acquisitionNum"          "scanIndex"              
-##  [5] "mz"                      "intensity"              
-##  [7] "dataStorage"             "dataOrigin"             
-##  [9] "centroided"              "smoothed"               
-## [11] "polarity"                "precScanNum"            
-## [13] "precursorMz"             "precursorIntensity"     
-## [15] "precursorCharge"         "collisionEnergy"        
-## [17] "isolationWindowLowerMz"  "isolationWindowTargetMz"
-## [19] "isolationWindowUpperMz"  "id"                     
-## [21] "name"</code></pre>
+##  [5] "dataStorage"             "dataOrigin"             
+##  [7] "centroided"              "smoothed"               
+##  [9] "polarity"                "precScanNum"            
+## [11] "precursorMz"             "precursorIntensity"     
+## [13] "precursorCharge"         "collisionEnergy"        
+## [15] "isolationWindowLowerMz"  "isolationWindowTargetMz"
+## [17] "isolationWindowUpperMz"  "id"                     
+## [19] "name"</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">spectraVariables</span>(sps_sciex)</a></code></pre></div>
 <pre><code>##  [1] "msLevel"                  "rtime"                   
 ##  [3] "acquisitionNum"           "scanIndex"               
-##  [5] "mz"                       "intensity"               
-##  [7] "dataStorage"              "dataOrigin"              
-##  [9] "centroided"               "smoothed"                
-## [11] "polarity"                 "precScanNum"             
-## [13] "precursorMz"              "precursorIntensity"      
-## [15] "precursorCharge"          "collisionEnergy"         
-## [17] "isolationWindowLowerMz"   "isolationWindowTargetMz" 
-## [19] "isolationWindowUpperMz"   "peaksCount"              
-## [21] "totIonCurrent"            "basePeakMZ"              
-## [23] "basePeakIntensity"        "ionisationEnergy"        
-## [25] "lowMZ"                    "highMZ"                  
-## [27] "mergedScan"               "mergedResultScanNum"     
-## [29] "mergedResultStartScanNum" "mergedResultEndScanNum"  
-## [31] "injectionTime"            "filterString"            
-## [33] "spectrumId"               "ionMobilityDriftTime"    
-## [35] "scanWindowLowerLimit"     "scanWindowUpperLimit"</code></pre>
+##  [5] "dataStorage"              "dataOrigin"              
+##  [7] "centroided"               "smoothed"                
+##  [9] "polarity"                 "precScanNum"             
+## [11] "precursorMz"              "precursorIntensity"      
+## [13] "precursorCharge"          "collisionEnergy"         
+## [15] "isolationWindowLowerMz"   "isolationWindowTargetMz" 
+## [17] "isolationWindowUpperMz"   "peaksCount"              
+## [19] "totIonCurrent"            "basePeakMZ"              
+## [21] "basePeakIntensity"        "ionisationEnergy"        
+## [23] "lowMZ"                    "highMZ"                  
+## [25] "mergedScan"               "mergedResultScanNum"     
+## [27] "mergedResultStartScanNum" "mergedResultEndScanNum"  
+## [29] "injectionTime"            "filterString"            
+## [31] "spectrumId"               "ionMobilityDriftTime"    
+## [33] "scanWindowLowerLimit"     "scanWindowUpperLimit"</code></pre>
 <p>The two <code>Spectra</code> contain a different set of variables: besides <code>"msLevel"</code>, <code>"polarity"</code>, <code>"id"</code> and <code>"name"</code>, that were specified for the <code>Spectra</code> object <code>sps</code>, it contains more variables such as <code>"rtime"</code>, <code>"acquisitionNum"</code> and <code>"scanIndex"</code>. These are part of the <em>core variables</em> defining a spectrum and for all of these accessor methods exist. Below we use <code>msLevel</code> and <code>rtime</code> to access the MS levels and retention times for the spectra in <code>sps</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">msLevel</span>(sps)</a></code></pre></div>
 <pre><code>## [1] 2 2 2</code></pre>
@@ -288,7 +286,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [3,] 124.50     3.094
 ## [4,] 170.16   100.000
 ## [5,] 170.52    13.240</code></pre>
-<p>The <code>spectraData</code> function returns a <code>DataFrame</code> with the full data for each spectrum, or with selected spectra variables (which can be specified with the <code>columns</code> parameter). Below we extract the spectra data for variables <code>"msLevel"</code>, <code>"id"</code> and <code>"name"</code>.</p>
+<p>The <code>spectraData</code> function returns a <code>DataFrame</code> with the full data for each spectrum (except m/z and intensity values), or with selected spectra variables (which can be specified with the <code>columns</code> parameter). Below we extract the spectra data for variables <code>"msLevel"</code>, <code>"id"</code> and <code>"name"</code>.</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw">spectraData</span>(sps, <span class="dt">columns =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"msLevel"</span>, <span class="st">"id"</span>, <span class="st">"name"</span>))</a></code></pre></div>
 <pre><code>## DataFrame with 3 rows and 3 columns
 ##     msLevel          id              name
@@ -351,19 +349,19 @@ document.addEventListener("DOMContentLoaded", function() {
 <a class="sourceLine" id="cb42-2" data-line-number="2"><span class="st">          </span>sps_sciex<span class="op">$</span>rtime <span class="op">&gt;=</span><span class="st"> </span><span class="dv">175</span> <span class="op">&amp;</span></a>
 <a class="sourceLine" id="cb42-3" data-line-number="3"><span class="st">          </span>sps_sciex<span class="op">$</span>rtime <span class="op">&lt;=</span><span class="st"> </span><span class="dv">189</span>]</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 50 spectra in a MsBackendMzR backend:
-##       msLevel           rtime scanIndex
-##     &lt;integer&gt;       &lt;numeric&gt; &lt;integer&gt;
-## 1           1         175.212       628
-## 2           1         175.491       629
-## 3           1          175.77       630
-## 4           1         176.049       631
-## 5           1         176.328       632
-## ...       ...             ...       ...
-## 46          1 187.76800000002       673
-## 47          1 188.04700000002       674
-## 48          1 188.32600000002       675
-## 49          1 188.60500000002       676
-## 50          1 188.88400000002       677
+##       msLevel     rtime scanIndex
+##     &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
+## 1           1   175.212       628
+## 2           1   175.491       629
+## 3           1   175.770       630
+## 4           1   176.049       631
+## 5           1   176.328       632
+## ...       ...       ...       ...
+## 46          1   187.768       673
+## 47          1   188.047       674
+## 48          1   188.326       675
+## 49          1   188.605       676
+## 50          1   188.884       677
 ##  ... 33 more variables/columns.
 ## 
 ## file(s):
@@ -376,26 +374,26 @@ document.addEventListener("DOMContentLoaded", function() {
 <a class="sourceLine" id="cb44-3" data-line-number="3"><span class="st">    </span><span class="kw">filterDataOrigin</span>(fls[<span class="dv">2</span>]) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb44-4" data-line-number="4"><span class="st">    </span><span class="kw">filterRt</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">175</span>, <span class="dv">189</span>))</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 50 spectra in a MsBackendMzR backend:
-##       msLevel           rtime scanIndex
-##     &lt;integer&gt;       &lt;numeric&gt; &lt;integer&gt;
-## 1           1         175.212       628
-## 2           1         175.491       629
-## 3           1          175.77       630
-## 4           1         176.049       631
-## 5           1         176.328       632
-## ...       ...             ...       ...
-## 46          1 187.76800000002       673
-## 47          1 188.04700000002       674
-## 48          1 188.32600000002       675
-## 49          1 188.60500000002       676
-## 50          1 188.88400000002       677
+##       msLevel     rtime scanIndex
+##     &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
+## 1           1   175.212       628
+## 2           1   175.491       629
+## 3           1   175.770       630
+## 4           1   176.049       631
+## 5           1   176.328       632
+## ...       ...       ...       ...
+## 46          1   187.768       673
+## 47          1   188.047       674
+## 48          1   188.326       675
+## 49          1   188.605       676
+## 50          1   188.884       677
 ##  ... 33 more variables/columns.
 ## 
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Dec 13 21:27:32 2019]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Dec 13 21:27:32 2019]</code></pre>
+##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Mon Mar  9 16:34:13 2020]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Mon Mar  9 16:34:13 2020]</code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">caf_df &lt;-<span class="st"> </span><span class="kw">DataFrame</span>(<span class="dt">msLevel =</span> 2L, <span class="dt">name =</span> <span class="st">"Caffeine"</span>,</a>
@@ -419,21 +417,20 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Fri Dec 13 21:27:32 2019]</code></pre>
+##  Merge 2 Spectra into one [Mon Mar  9 16:34:13 2020]</code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="kw">spectraVariables</span>(sps)</a></code></pre></div>
 <pre><code>##  [1] "msLevel"                 "rtime"                  
 ##  [3] "acquisitionNum"          "scanIndex"              
-##  [5] "mz"                      "intensity"              
-##  [7] "dataStorage"             "dataOrigin"             
-##  [9] "centroided"              "smoothed"               
-## [11] "polarity"                "precScanNum"            
-## [13] "precursorMz"             "precursorIntensity"     
-## [15] "precursorCharge"         "collisionEnergy"        
-## [17] "isolationWindowLowerMz"  "isolationWindowTargetMz"
-## [19] "isolationWindowUpperMz"  "id"                     
-## [21] "name"                    "splash"                 
-## [23] "instrument"</code></pre>
+##  [5] "dataStorage"             "dataOrigin"             
+##  [7] "centroided"              "smoothed"               
+##  [9] "polarity"                "precScanNum"            
+## [11] "precursorMz"             "precursorIntensity"     
+## [13] "precursorCharge"         "collisionEnergy"        
+## [15] "isolationWindowLowerMz"  "isolationWindowTargetMz"
+## [17] "isolationWindowUpperMz"  "id"                     
+## [19] "name"                    "splash"                 
+## [21] "instrument"</code></pre>
 <p>The second object had an additional spectra variable <em>instrument</em> that was not present in <code>sps</code> and all the spectra in this object will thus get a value of <code>NA</code> for this variable.</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1">sps<span class="op">$</span>instrument</a></code></pre></div>
 <pre><code>## [1] NA                                    
@@ -474,9 +471,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 2 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Fri Dec 13 21:27:32 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Dec 13 21:27:32 2019]
-##  Spectra of MS level(s) 2 cleaned. [Fri Dec 13 21:27:33 2019]</code></pre>
+##  Merge 2 Spectra into one [Mon Mar  9 16:34:13 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Mar  9 16:34:13 2020]
+##  Spectra of MS level(s) 2 cleaned. [Mon Mar  9 16:34:13 2020]</code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">## Define a function that takes a matrix as input, divides the second</a>
 <a class="sourceLine" id="cb61-2" data-line-number="2">## column by parameter y and returns it. Note that ... is required in</a>
@@ -499,9 +496,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 3 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Fri Dec 13 21:27:32 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Dec 13 21:27:32 2019]
-##  Spectra of MS level(s) 2 cleaned. [Fri Dec 13 21:27:33 2019]</code></pre>
+##  Merge 2 Spectra into one [Mon Mar  9 16:34:13 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Mar  9 16:34:13 2020]
+##  Spectra of MS level(s) 2 cleaned. [Mon Mar  9 16:34:13 2020]</code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="kw">intensity</span>(sps_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## NumericList of length 4
@@ -546,10 +543,10 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Fri Dec 13 21:27:32 2019]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Dec 13 21:27:32 2019]
-##  Spectra of MS level(s) 2 cleaned. [Fri Dec 13 21:27:33 2019]
-##  Applied processing queue with 2 steps [Fri Dec 13 21:27:33 2019]</code></pre>
+##  Merge 2 Spectra into one [Mon Mar  9 16:34:13 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Mar  9 16:34:13 2020]
+##  Spectra of MS level(s) 2 cleaned. [Mon Mar  9 16:34:13 2020]
+##  Applied processing queue with 2 steps [Mon Mar  9 16:34:14 2020]</code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage.</p>
 </div>
 <div id="changing-backends" class="section level2">
@@ -561,22 +558,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1">sps_sciex &lt;-<span class="st"> </span><span class="kw"><a href="../reference/hidden_aliases.html">setBackend</a></span>(sps_sciex, <span class="kw"><a href="../reference/MsBackend.html">MsBackendDataFrame</a></span>())</a>
 <a class="sourceLine" id="cb79-2" data-line-number="2">sps_sciex</a></code></pre></div>
 <pre><code>## MSn data (Spectra) with 1862 spectra in a MsBackendDataFrame backend:
-##        msLevel         rtime scanIndex
-##      &lt;integer&gt;     &lt;numeric&gt; &lt;integer&gt;
-## 1            1 0.28000000002         1
-## 2            1 0.55900000002         2
-## 3            1 0.83800000002         3
-## 4            1 1.11700000002         4
-## 5            1 1.39600000002         5
-## ...        ...           ...       ...
-## 1858         1       258.636       927
-## 1859         1       258.915       928
-## 1860         1       259.194       929
-## 1861         1       259.473       930
-## 1862         1       259.752       931
+##        msLevel     rtime scanIndex
+##      &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
+## 1            1     0.280         1
+## 2            1     0.559         2
+## 3            1     0.838         3
+## 4            1     1.117         4
+## 5            1     1.396         5
+## ...        ...       ...       ...
+## 1858         1   258.636       927
+## 1859         1   258.915       928
+## 1860         1   259.194       929
+## 1861         1   259.473       930
+## 1862         1   259.752       931
 ##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Dec 13 21:27:35 2019]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Mar  9 16:34:15 2020]</code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(sps_sciex), <span class="dt">units =</span> <span class="st">"Mb"</span>)</a></code></pre></div>
 <pre><code>## 52.4 Mb</code></pre>
@@ -621,7 +618,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h1 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session information</h1>
 <div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a></code></pre></div>
-<pre><code>## R Under development (unstable) (2019-12-13 r77566)
+<pre><code>## R Under development (unstable) (2020-03-09 r77918)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 14.04.5 LTS
 ## 
@@ -642,22 +639,22 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [8] methods   base     
 ## 
 ## other attached packages:
-## [1] msdata_0.27.0       magrittr_1.5        Spectra_0.4.1      
-## [4] ProtGenerics_1.19.1 BiocParallel_1.21.0 S4Vectors_0.25.6   
-## [7] BiocGenerics_0.33.0 BiocStyle_2.15.2   
+## [1] msdata_0.27.0       magrittr_1.5        Spectra_0.5.0      
+## [4] ProtGenerics_1.19.3 BiocParallel_1.21.2 S4Vectors_0.25.12  
+## [7] BiocGenerics_0.33.0 BiocStyle_2.15.6   
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.3          compiler_4.0.0      BiocManager_1.30.10
-##  [4] tools_4.0.0         ncdf4_1.17          digest_0.6.23      
-##  [7] evaluate_0.14       memoise_1.1.0       rhdf5_2.31.1       
-## [10] rlang_0.4.2         yaml_2.2.0          pkgdown_1.4.1      
-## [13] xfun_0.11           stringr_1.4.0       knitr_1.26         
-## [16] desc_1.2.0          fs_1.3.1            IRanges_2.21.2     
-## [19] MsCoreUtils_0.0.3   rprojroot_1.3-2     Biobase_2.47.1     
-## [22] R6_2.4.1            rmarkdown_2.0       bookdown_0.16      
-## [25] Rhdf5lib_1.9.0      mzR_2.21.0          backports_1.1.5    
-## [28] codetools_0.2-16    htmltools_0.4.0     MASS_7.3-51.4      
-## [31] assertthat_0.2.1    stringi_1.4.3       crayon_1.3.4</code></pre>
+##  [4] tools_4.0.0         ncdf4_1.17          digest_0.6.25      
+##  [7] evaluate_0.14       memoise_1.1.0       rhdf5_2.31.6       
+## [10] rlang_0.4.5         yaml_2.2.1          pkgdown_1.4.1      
+## [13] xfun_0.12           stringr_1.4.0       knitr_1.28         
+## [16] desc_1.2.0          fs_1.3.2            IRanges_2.21.3     
+## [19] MsCoreUtils_0.99.1  rprojroot_1.3-2     Biobase_2.47.2     
+## [22] R6_2.4.1            rmarkdown_2.1       bookdown_0.18      
+## [25] Rhdf5lib_1.9.2      mzR_2.21.1          backports_1.1.5    
+## [28] codetools_0.2-16    htmltools_0.4.0     MASS_7.3-51.5      
+## [31] assertthat_0.2.1    stringi_1.4.6       crayon_1.3.4</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1 class="hasAnchor">
