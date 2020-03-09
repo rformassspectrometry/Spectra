@@ -989,10 +989,7 @@ setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend)
 
 #' @rdname Spectra
 setMethod("dropNaSpectraVariables", "Spectra", function(object) {
-    svs <- spectraVariables(object)
-    spd <- spectraData(object, columns = svs[!(svs %in% c("mz", "intensity"))])
-    keep <- !vapply1l(spd, function(z) all(is.na(z)))
-    spectraData(object) <- spd[, keep, drop = FALSE]
+    object@backend <- dropNaSpectraVariables(object@backend)
     object
 })
 
