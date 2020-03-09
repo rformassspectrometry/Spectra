@@ -4,7 +4,6 @@
 \alias{addProcessing}
 \alias{applyProcessing}
 \alias{combineSpectra}
-\alias{dropNaSpectraVariables}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -24,6 +23,7 @@
 \alias{dataOrigin,Spectra-method}
 \alias{dataOrigin<-,Spectra-method}
 \alias{dataStorage,Spectra-method}
+\alias{dropNaSpectraVariables,Spectra-method}
 \alias{intensity,Spectra-method}
 \alias{ionCount,Spectra-method}
 \alias{isCentroided,Spectra-method}
@@ -91,8 +91,6 @@ combineSpectra(
   BPPARAM = bpparam()
 )
 
-dropNaSpectraVariables(x)
-
 \S4method{Spectra}{DataFrame}(
   object,
   processingQueue = list(),
@@ -152,6 +150,8 @@ dropNaSpectraVariables(x)
 \S4method{dataOrigin}{Spectra}(object) <- value
 
 \S4method{dataStorage}{Spectra}(object)
+
+\S4method{dropNaSpectraVariables}{Spectra}(object)
 
 \S4method{intensity}{Spectra}(object, ...)
 
@@ -608,7 +608,10 @@ and positive polarities, respectively. \verb{polarity<-} expects an
 \item \code{precursorCharge}, \code{precursorIntensity}, \code{precursorMz},
 \code{precScanNum}, \code{precAcquisitionNum}: gets the charge (\code{integer}),
 intensity (\code{numeric}), m/z (\code{numeric}), scan index (\code{integer})
-and acquisition number (\code{interger}) of the precursor for MS level2 spectra from the object. Returns a vector of length equal tothe number of spectra in object. NA are reported for MS1spectra of if no precursor information is available.
+and acquisition number (\code{interger}) of the precursor for MS level >
+2 spectra from the object. Returns a vector of length equal to
+the number of spectra in \code{object}. \code{NA} are reported for MS1
+spectra of if no precursor information is available.
 \item \code{rtime}, \verb{rtime<-}: gets or sets the retention times (in seconds)
 for each spectrum.  \code{rtime} returns a \code{numeric} vector (length
 equal to the number of spectra) with the retention time for each
@@ -625,10 +628,8 @@ to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
 \item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
 metadata (annotation, also called header). \code{spectraData} returns
-a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame}. Note that not all
-backends support replacing all spectra variables (the \code{\link[=MsBackendMzR]{MsBackendMzR()}}
-does for example not allow to replace \code{mz} and \code{intensity} values with the
-\verb{spectraData<-} method.
+a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame}. Note that this
+method does not return m/z or intensity values.
 \item \code{spectraNames}, \verb{spectraNames<-}: gets or sets the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)

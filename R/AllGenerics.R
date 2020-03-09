@@ -2,6 +2,11 @@
 NULL
 
 #' @rdname hidden_aliases
+setGeneric("asDataFrame", function(object, ...) standardGeneric("asDataFrame"))
+#' @rdname hidden_aliases
+setGeneric("asDataFrame<-", function(object, value)
+    standardGeneric("asDataFrame<-"))
+#' @rdname hidden_aliases
 setGeneric("backendInitialize",
            def = function(object, ...)
                standardGeneric("backendInitialize"),
@@ -20,6 +25,9 @@ setGeneric("clean", function(object, ...) standardGeneric("clean"))
 #' @rdname hidden_aliases
 setGeneric("compareSpectra", function(x, y, ...)
     standardGeneric("compareSpectra"))
+#' @rdname hidden_aliases
+setGeneric("dropNaSpectraVariables", function(object, ...)
+    standardGeneric("dropNaSpectraVariables"))
 #' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))

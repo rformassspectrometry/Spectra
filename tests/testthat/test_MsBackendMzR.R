@@ -409,21 +409,21 @@ test_that("spectraVariables,MsBackendMzR works", {
                                names(.SPECTRA_DATA_COLUMNS))))
 })
 
-test_that("spectraData, spectraData<-, MsBackendMzR works", {
+test_that("asDataFrame, asDataFrame<-, MsBackendMzR works", {
     be <- MsBackendMzR()
-    res <- spectraData(be)
+    res <- asDataFrame(be)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)
-    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+    expect_true(all(names(Spectra:::.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
 
     tmp <- sciex_mzr
-    res <- .spectra_data_mzR(tmp)
-    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+    res <- Spectra:::.spectra_data_mzR(tmp)
+    expect_true(all(names(Spectra:::.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
     expect_true(all(colnames(tmp@spectraData) %in% colnames(res)))
     expect_true(is.logical(res$smoothed))
     expect_equal(nrow(res), length(tmp))
 
-    spectraData(tmp)$new_col <- 1
+    asDataFrame(tmp)$new_col <- 1
     expect_true(any(colnames(tmp@spectraData) == "new_col"))
     expect_true(is(tmp@spectraData$new_col, "numeric"))
     expect_true(any(spectraVariables(tmp) == "new_col"))
@@ -434,18 +434,18 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(is.numeric(res$new_col))
     expect_true(is.numeric(res$rtime))
 
-    res <- spectraData(tmp, columns = c("msLevel", "new_col", "smoothed"))
+    res <- asDataFrame(tmp, columns = c("msLevel", "new_col", "smoothed"))
     expect_equal(colnames(res), c("msLevel", "new_col", "smoothed"))
     expect_true(is.integer(res$msLevel))
     expect_true(is.numeric(res$new_col))
     expect_true(is.logical(res$smoothed))
     expect_true(all(is.na(res$smoothed)))
 
-    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "dataStorage"))
-    expect_error(spectraData(tmp) <- spd, "scanIndex")
-    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "dataStorage",
+    spd <- asDataFrame(tmp, columns = c("msLevel", "rtime", "dataStorage"))
+    expect_error(asDataFrame(tmp) <- spd, "scanIndex")
+    spd <- asDataFrame(tmp, columns = c("msLevel", "rtime", "dataStorage",
                                         "scanIndex"))
-    spectraData(tmp) <- spd
+    asDataFrame(tmp) <- spd
     expect_true(all(is.na(centroided(tmp))))
     expect_true(all(is.na(polarity(tmp))))
     expect_equal(mz(tmp), mz(sciex_mzr))
@@ -466,13 +466,13 @@ test_that("[,MsBackendMzR works", {
     expect_true(all(is.na(smoothed(tmp))))
 
     ints <- intensity(tmp)
-    spd <- spectraData(tmp)
+    spd <- asDataFrame(tmp)
     expect_equal(ints, spd$intensity)
 
     tmp <- sciex_mzr[1000]
     expect_true(validObject(tmp))
     expect_equal(length(tmp), 1)
-    spd <- spectraData(tmp)
+    spd <- asDataFrame(tmp)
     expect_equal(spd$mz, mz(tmp))
 })
 

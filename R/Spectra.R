@@ -171,8 +171,8 @@ NULL
 #' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
 #'   `precScanNum`, `precAcquisitionNum`: gets the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
-#'   and acquisition number (`interger`) of the precursor for MS level
-#'   > 2 spectra from the object. Returns a vector of length equal to
+#'   and acquisition number (`interger`) of the precursor for MS level >
+#'   2 spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
@@ -195,10 +195,8 @@ NULL
 #'
 #' - `spectraData`, `spectraData<-`: gets or sets general spectrum
 #'   metadata (annotation, also called header). `spectraData` returns
-#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`. Note that not all
-#'   backends support replacing all spectra variables (the [MsBackendMzR()]
-#'   does for example not allow to replace `mz` and `intensity` values with the
-#'   `spectraData<-` method.
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`. Note that this
+#'   method does not return m/z or intensity values.
 #'
 #' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
 #'
@@ -904,7 +902,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               data_storage <- object@backend$dataStorage
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
                   backendInitialize(backend,
-                                    spectraData = spectraData(z),
+                                    data = asDataFrame(z),
                                     ...)
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
@@ -988,6 +986,12 @@ setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
+
+#' @rdname Spectra
+setMethod("dropNaSpectraVariables", "Spectra", function(object) {
+    object@backend <- dropNaSpectraVariables(object@backend)
+    object
+})
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
@@ -1158,29 +1162,23 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
+#'
+#' @importMethodsFrom ProtGenerics spectraData
+#'
+#' @exportMethod spectraData
 setMethod("spectraData", "Spectra", function(object,
                                              columns = spectraVariables(object))
 {
-    skip_cols <- c("mz", "intensity") # Eventually also tic, peak count etc
-    if (all(columns %in% skip_cols))
-        res <- DataFrame(matrix(ncol = 0, nrow = length(object)))
-    else res <- spectraData(object@backend,
-                            columns = columns[!(columns %in% skip_cols)])
-    if (any(columns %in% skip_cols)) {
-        pks <- .peaksapply(object)
-        if (any(columns == "mz"))
-            res$mz <- NumericList(lapply(pks, function(z) z[, 1]),
-                                  compress = FALSE)
-        if (any(columns == "intensity"))
-            res$intensity <- NumericList(lapply(pks, function(z) z[, 2]),
-                                         compress = FALSE)
-    }
-    res[, columns, drop = FALSE]
+    asDataFrame(object@backend, columns = columns)
 })
 
 #' @rdname Spectra
+#'
+#' @importMethodsFrom ProtGenerics spectraData<-
+#'
+#' @exportMethod spectraData<-
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
-    spectraData(object@backend) <- value
+    asDataFrame(object@backend) <- value
     object
 })
 
@@ -1197,7 +1195,8 @@ setReplaceMethod("spectraNames", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("spectraVariables", "Spectra", function(object) {
-    spectraVariables(object@backend)
+    svars <- spectraVariables(object@backend)
+    svars[!(svars %in% c("mz", "intensity"))]
 })
 
 #' @rdname Spectra
@@ -1213,17 +1212,18 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
 #'
 #' @importMethodsFrom S4Vectors $
 setMethod("$", "Spectra", function(x, name) {
-    if (!(name %in% spectraVariables(x)))
+    if (!(name %in% c(spectraVariables(x), "mz", "intensity")))
         stop("No spectra variable '", name, "' available")
-    ## Use spectraData instead of x@backend$name to support the processing
-    ## queue.
-    spectraData(x, column = name)[, 1]
+    if (name == "mz")
+        mz(x)
+    else if (name == "intensity")
+        intensity(x)
+    else
+        do.call("$", list(x@backend, name))
 })
 
 #' @rdname Spectra
 setReplaceMethod("$", "Spectra", function(x, name, value) {
-    ## if (any(name %in% c("mz", "intensity")))
-    ##     stop("Replacing mz or intensity values is currently not supported")
     x@backend <- do.call("$<-", list(x@backend, name, value))
     x
 })

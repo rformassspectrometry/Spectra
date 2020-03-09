@@ -548,7 +548,7 @@ test_that("spectraData,Spectra works", {
     res <- spectraData(sps)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)
-    expect_true(all(c("msLevel", "rtime", "mz", "intensity") %in% colnames(res)))
+    expect_true(all(c("msLevel", "rtime") %in% colnames(res)))
 
     df <- DataFrame(msLevel = c(1L, 1L), rtime = c(1.2, 1.3), centroided = TRUE)
     df$mz <- list(1:10, 1:10)
@@ -560,15 +560,15 @@ test_that("spectraData,Spectra works", {
     expect_equal(res$msLevel, c(1L, 1L))
     expect_equal(res$rtime, c(1.2, 1.3))
     expect_equal(res$precScanNum, c(NA_integer_, NA_integer_))
-    expect_equal(res$mz, NumericList(1:10, 1:10, compress = FALSE))
-    expect_equal(res$intensity, NumericList(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
+    expect_equal(sps$mz, NumericList(1:10, 1:10, compress = FALSE))
+    expect_equal(sps$intensity, NumericList(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
                                             c(9, 6, 0, 0, 3, 0, 0, 0, 3, 2),
                                             compress = FALSE))
     sps <- clean(sps, all = TRUE)
     res <- spectraData(sps)
-    expect_equal(res$mz, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 9, 10),
+    expect_equal(sps$mz, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 9, 10),
                                      compress = FALSE))
-    expect_equal(res$intensity, NumericList(c(1, 6, 3, 9, 1), c(9, 6, 3, 3, 2),
+    expect_equal(sps$intensity, NumericList(c(1, 6, 3, 9, 1), c(9, 6, 3, 3, 2),
                                             compress = FALSE))
 })
 
@@ -596,7 +596,7 @@ test_that("spectraData<-,Spectra works", {
 
     tmp <- sciex_mzr
     sps <- Spectra(tmp)
-    expect_warning(spectraData(sps)$some_col <- "yes")
+    spectraData(sps)$some_col <- "yes"
     expect_true(any(spectraVariables(sps) == "some_col"))
     expect_true(all(spectraData(sps, "some_col")[, 1] == "yes"))
     expect_true(is(sps@backend@spectraData$some_col, "character"))
@@ -626,8 +626,8 @@ test_that("spectraNames,spectraNames<-,Spectra works", {
 test_that("spectraVariables,Spectra works", {
     sps <- Spectra()
     res <- spectraVariables(sps)
-    exp_col <- c("msLevel", "rtime", "acquisitionNum", "scanIndex", "mz",
-                 "intensity", "dataStorage", "centroided", "smoothed",
+    exp_col <- c("msLevel", "rtime", "acquisitionNum", "scanIndex",
+                 "dataStorage", "centroided", "smoothed",
                  "polarity", "precScanNum", "precursorMz", "precursorIntensity",
                  "precursorCharge", "collisionEnergy")
     expect_true(all(exp_col %in% res))
