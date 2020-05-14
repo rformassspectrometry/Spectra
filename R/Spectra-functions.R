@@ -259,7 +259,7 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' @noRd
 .compare_spectra <- function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0,
-                             ppm = 20, FUN = dotproduct, ...) {
+                             ppm = 20, FUN = ndotproduct, ...) {
     x_idx <- seq_along(x)
     y_idx <- seq_along(y)
 
@@ -313,7 +313,7 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' @noRd
 .compare_spectra_self <- function(x, MAPFUN = joinPeaks, tolerance = 0,
-                                  ppm = 20, FUN = dotproduct, ...) {
+                                  ppm = 20, FUN = ndotproduct, ...) {
     nx <- length(x)
     m <- matrix(NA_real_, nrow = nx, ncol = nx,
                   dimnames = list(spectraNames(x), spectraNames(x)))
