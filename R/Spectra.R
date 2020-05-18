@@ -340,7 +340,7 @@ NULL
 #'   unique levels of `f`.
 #'
 #' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
-#'   using the function provided with `FUN` (defaults to [dotproduct()]). If
+#'   using the function provided with `FUN` (defaults to [ndotproduct()]). If
 #'   `y` is missing, each spectrum in `x` is compared with each other spectrum
 #'   in `x`.
 #'   The matching/mapping of peaks between the compared spectra is done with the
@@ -742,7 +742,7 @@ NULL
 #' lengths(mz(data))
 #'
 #' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
-#' ## dotproduct method.
+#' ## the normalized dotproduct method.
 #' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
 #' ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 #' ## the second row comparisons of spectrum 3 with spectra 10 to 20
@@ -1410,12 +1410,12 @@ setMethod("clean", "Spectra",
 #'
 #' @exportMethod compareSpectra
 #'
-#' @importFrom MsCoreUtils dotproduct
+#' @importFrom MsCoreUtils ndotproduct
 #'
 #' @export ppm
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
           function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = dotproduct, ..., SIMPLIFY = TRUE) {
+                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
               mat <- .compare_spectra(x, y, MAPFUN = MAPFUN,
                                       tolerance = tolerance,
                                       ppm = ppm, FUN = FUN, ...)
@@ -1426,7 +1426,7 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
 #' @rdname Spectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
           function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = dotproduct, ..., SIMPLIFY = TRUE) {
+                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
               if (length(x) == 1)
                   return(compareSpectra(x, x, MAPFUN = MAPFUN,
                                         tolerance = tolerance,

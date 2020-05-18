@@ -260,7 +260,7 @@ combineSpectra(
   MAPFUN = joinPeaks,
   tolerance = 0,
   ppm = 20,
-  FUN = dotproduct,
+  FUN = ndotproduct,
   ...,
   SIMPLIFY = TRUE
 )
@@ -271,7 +271,7 @@ combineSpectra(
   MAPFUN = joinPeaks,
   tolerance = 0,
   ppm = 20,
-  FUN = dotproduct,
+  FUN = ndotproduct,
   ...,
   SIMPLIFY = TRUE
 )
@@ -758,7 +758,7 @@ processing is applied for \code{Spectra} with file-based backends (such as the
 \code{\link[=MsBackendMzR]{MsBackendMzR()}}). The function returns a \code{Spectra} of length equal to the
 unique levels of \code{f}.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
-using the function provided with \code{FUN} (defaults to \code{\link[=dotproduct]{dotproduct()}}). If
+using the function provided with \code{FUN} (defaults to \code{\link[=ndotproduct]{ndotproduct()}}). If
 \code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
 in \code{x}.
 The matching/mapping of peaks between the compared spectra is done with the
@@ -985,7 +985,7 @@ lengths(mz(res))
 lengths(mz(data))
 
 ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
-## dotproduct method.
+## the normalized dotproduct method.
 res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
 ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 ## the second row comparisons of spectrum 3 with spectra 10 to 20
