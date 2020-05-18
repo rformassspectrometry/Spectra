@@ -17,23 +17,27 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -69,7 +73,6 @@ DataFrame). This backend requires the rhdf5 package.
 
 
 See below for more details about individual backends." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -87,7 +90,7 @@ See below for more details about individual backends." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -101,7 +104,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -122,7 +125,7 @@ See below for more details about individual backends." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/RforMassSpectrometry/Spectra">
+  <a href="https://github.com/RforMassSpectrometry/Spectra/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -141,7 +144,7 @@ See below for more details about individual backends." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Mass spectrometry data backends</h1>
-    <small class="dont-index">Source: <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackend.R'><code>R/MsBackend.R</code></a>, <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackendDataFrame-functions.R'><code>R/MsBackendDataFrame-functions.R</code></a>, <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackendDataFrame.R'><code>R/MsBackendDataFrame.R</code></a>, and 3 more</small>
+    <small class="dont-index">Source: <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackend.R'><code>R/MsBackend.R</code></a>, <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackendDataFrame-functions.R'><code>R/MsBackendDataFrame-functions.R</code></a>, <a href='https://github.com/RforMassSpectrometry/Spectra/blob/master/R/MsBackendDataFrame.R'><code>R/MsBackendDataFrame.R</code></a>, and 2 more</small>
     <div class="hidden name"><code>MsBackend.Rd</code></div>
     </div>
 
@@ -193,25 +196,25 @@ as.list(x)
 centroided(object)
 
 # S4 method for MsBackend
-centroided(object) <- value
+centroided(object) &lt;- value
 
 # S4 method for MsBackend
 collisionEnergy(object)
 
 # S4 method for MsBackend
-collisionEnergy(object) <- value
+collisionEnergy(object) &lt;- value
 
 # S4 method for MsBackend
 dataOrigin(object)
 
 # S4 method for MsBackend
-dataOrigin(object) <- value
+dataOrigin(object) &lt;- value
 
 # S4 method for MsBackend
 dataStorage(object)
 
 # S4 method for MsBackend
-dataStorage(object) <- value
+dataStorage(object) &lt;- value
 
 # S4 method for MsBackend
 dropNaSpectraVariables(object)
@@ -250,7 +253,7 @@ filterRt(object, rt, msLevel, ...)
 intensity(object)
 
 # S4 method for MsBackend
-intensity(object) <- value
+intensity(object) &lt;- value
 
 # S4 method for MsBackend
 ionCount(object)
@@ -265,19 +268,19 @@ isEmpty(x)
 isolationWindowLowerMz(object)
 
 # S4 method for MsBackend
-isolationWindowLowerMz(object) <- value
+isolationWindowLowerMz(object) &lt;- value
 
 # S4 method for MsBackend
 isolationWindowTargetMz(object)
 
 # S4 method for MsBackend
-isolationWindowTargetMz(object) <- value
+isolationWindowTargetMz(object) &lt;- value
 
 # S4 method for MsBackend
 isolationWindowUpperMz(object)
 
 # S4 method for MsBackend
-isolationWindowUpperMz(object) <- value
+isolationWindowUpperMz(object) &lt;- value
 
 # S4 method for MsBackend
 isReadOnly(object)
@@ -292,7 +295,7 @@ msLevel(object)
 mz(object)
 
 # S4 method for MsBackend
-mz(object) <- value
+mz(object) &lt;- value
 
 # S4 method for MsBackend
 lengths(x, use.names = FALSE)
@@ -301,7 +304,7 @@ lengths(x, use.names = FALSE)
 polarity(object)
 
 # S4 method for MsBackend
-polarity(object) <- value
+polarity(object) &lt;- value
 
 # S4 method for MsBackend
 precScanNum(object)
@@ -316,13 +319,13 @@ precursorIntensity(object)
 precursorMz(object)
 
 # S4 method for MsBackend
-replaceList(object) <- value
+replaceList(object) &lt;- value
 
 # S4 method for MsBackend
 rtime(object)
 
 # S4 method for MsBackend
-rtime(object) <- value
+rtime(object) &lt;- value
 
 # S4 method for MsBackend
 scanIndex(object)
@@ -334,19 +337,19 @@ selectSpectraVariables(object, spectraVariables = spectraVariables(object))
 smoothed(object)
 
 # S4 method for MsBackend
-smoothed(object) <- value
+smoothed(object) &lt;- value
 
 # S4 method for MsBackend
 asDataFrame(object, columns = spectraVariables(object))
 
 # S4 method for MsBackend
-asDataFrame(object) <- value
+asDataFrame(object) &lt;- value
 
 # S4 method for MsBackend
 spectraNames(object)
 
 # S4 method for MsBackend
-spectraNames(object) <- value
+spectraNames(object) &lt;- value
 
 # S4 method for MsBackend
 spectraVariables(object)
@@ -364,7 +367,7 @@ tic(object, initial = TRUE)
 $(x, name)
 
 # S4 method for MsBackend
-$(x, name) <- value
+$(x, name) &lt;- value
 
 MsBackendDataFrame()
 
@@ -792,20 +795,10 @@ of m/z or intensity values.</p></li>
 
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#backend-functions">Backend functions</a></li>
-      <li><a href="#subsetting-and-merging-backend-classes">Subsetting and merging backend classes</a></li>
-      <li><a href="#msbackenddataframe-in-memory-ms-data-backend"><code>MsBackendDataFrame</code>, in-memory MS data backend</a></li>
-      <li><a href="#msbackendmzr-on-disk-ms-data-backend"><code>MsBackendMzR</code>, on-disk MS data backend</a></li>
-      <li><a href="#msbackendhdf-peaks-on-disk-ms-data-backend"><code>MsBackendHdf5Peaks</code>, on-disk MS data backend</a></li>
-      <li><a href="#implementation-notes">Implementation notes</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Johannes Rainer, Sebastian Gibb, Laurent Gatto</p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -816,7 +809,7 @@ of m/z or intensity values.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
