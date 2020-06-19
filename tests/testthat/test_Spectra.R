@@ -1125,3 +1125,28 @@ test_that("containsMz,Spectra works", {
     res_2 <- containsMz(sps, c(14.15))
     expect_equal(res, res_2)
 })
+
+test_that("containsNeutralLoss,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = SerialParam())
+    expect_equal(res, c(NA, TRUE, FALSE))
+    res <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = SerialParam(),
+                               tolerance = 0.1)
+    expect_equal(res, c(NA, TRUE, TRUE))
+
+    ## Compare with splitting/parallel.
+    res <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = SerialParam())
+    expect_equal(res, c(NA, TRUE, FALSE))
+
+    res_2 <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = MulticoreParam())
+    expect_equal(res, res_2)
+
+    sps@backend$dataStorage <- c("3", "1", "2")
+    res_2 <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = MulticoreParam())
+    expect_equal(res, res_2)
+})

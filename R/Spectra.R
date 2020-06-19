@@ -154,6 +154,11 @@ NULL
 #'   all (`which = "all"`) of the `mz` have to match. The function returns
 #'   `NA` if `mz` is of length 0 or is `NA`.
 #'
+#' - `containsNeutralLoss`: checks for each spectrum in `object` if it has a
+#'   peak with an m/z value equal to its precursor m/z - `neutralLoss` (given
+#'   acceptable difference as defined by parameters `tolerance` and `ppm`).
+#'   Returns `NA` for MS1 spectra (or spectra without a precursor m/z).
+#'
 #' - `length`: gets the number of spectra in the object.
 #'
 #' - `lengths`: gets the number of peaks (m/z-intensity values) per
@@ -520,6 +525,9 @@ NULL
 #'
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
+#'
+#' @param neutralLoss for `containsNeutralLoss`: `numeric(1)` defining the value
+#'     which should be subtracted from the spectrum's precursor m/z.
 #'
 #' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
 #'     on creation of `Spectra` objects for details. For all other methods a
@@ -1089,12 +1097,33 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
         return(rep(NA, length(object)))
     if(is(BPPARAM, "SerialParam"))
         .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
-                condFun = cond_fun)
+                condFun = cond_fun, parallel = BPPARAM)
     else {
         sp <- SerialParam()
         f <- as.factor(dataStorage(object))
         res <- .lapply(object, FUN = .has_mz, mz = mz, tolerance = tolerance,
                        condFun = cond_fun, parallel = sp, f = f,
+                       BPPARAM = BPPARAM)
+        unsplit(res, f = f)
+    }
+})
+
+#' @rdname Spectra
+#'
+#' @exportMethod containsNeutralLoss
+setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
+                                                     tolerance = 0, ppm = 20,
+                                                     BPPARAM = bpparam()) {
+    if (is(BPPARAM, "SerialParam")) {
+        .has_mz_each(object, precursorMz(object) - neutralLoss,
+                     tolerance = tolerance, ppm = ppm, parallel = BPPARAM)
+    } else {
+        sp <- SerialParam()
+        f <- as.factor(dataStorage(object))
+        res <- .lapply(object, FUN = function(obj, n, tol, ppm, par) {
+            .has_mz_each(obj, precursorMz(obj) - n, tolerance = tol,
+                         ppm = ppm, parallel = sp)
+        }, n = neutralLoss, tol = tolerance, ppm = ppm, par = sp, f = f,
                        BPPARAM = BPPARAM)
         unsplit(res, f = f)
     }

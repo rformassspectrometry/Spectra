@@ -16,6 +16,7 @@
 \alias{clean}
 \alias{compareSpectra}
 \alias{containsMz}
+\alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
 \alias{isReadOnly}
 \alias{pickPeaks}
@@ -145,6 +146,8 @@ clean(object, ...)
 compareSpectra(x, y, ...)
 
 containsMz(object, ...)
+
+containsNeutralLoss(object, ...)
 
 dropNaSpectraVariables(object, ...)
 

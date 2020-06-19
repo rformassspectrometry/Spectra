@@ -384,3 +384,21 @@ test_that(".has_mz works", {
     res <- .has_mz(sps, mz = c(14, 34), condFun = all, tolerance = 0.15)
     expect_equal(res, c(FALSE, TRUE, TRUE))
 })
+
+test_that(".has_mz_each works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- .has_mz_each(sps, mz = c(14, 34, 12.1), ppm = 0)
+    expect_true(is.logical(res))
+    expect_true(length(res) == length(sps))
+    expect_equal(res, c(TRUE, TRUE, TRUE))
+
+    res <- .has_mz_each(sps, mz = c(NA, 34, 34))
+    expect_equal(res, c(NA, TRUE, FALSE))
+
+    res <- .has_mz_each(sps, mz = c(14, 14, 14), tolerance = 0.1)
+    expect_equal(res, c(TRUE, TRUE, FALSE))
+})

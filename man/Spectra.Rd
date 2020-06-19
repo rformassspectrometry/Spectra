@@ -35,6 +35,7 @@
 \alias{isolationWindowUpperMz,Spectra-method}
 \alias{isolationWindowUpperMz<-,Spectra-method}
 \alias{containsMz,Spectra-method}
+\alias{containsNeutralLoss,Spectra-method}
 \alias{lapply,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
@@ -180,6 +181,14 @@ combineSpectra(
   tolerance = 0,
   ppm = 20,
   which = c("any", "all"),
+  BPPARAM = bpparam()
+)
+
+\S4method{containsNeutralLoss}{Spectra}(
+  object,
+  neutralLoss = 0,
+  tolerance = 0,
+  ppm = 20,
   BPPARAM = bpparam()
 )
 
@@ -372,6 +381,9 @@ for peaks to be matched.}
 
 \item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
 (the default) or all provided \code{mz} have to be present in the spectrum.}
+
+\item{neutralLoss}{for \code{containsNeutralLoss}: \code{numeric(1)} defining the value
+which should be subtracted from the spectrum's precursor m/z.}
 
 \item{X}{A \code{Spectra} object.}
 
@@ -608,6 +620,10 @@ parameters \code{tolerance} and \code{ppm} - see \code{\link[=common]{common()}}
 \code{which} allows to define whether any (\code{which = "any"}, the default) or
 all (\code{which = "all"}) of the \code{mz} have to match. The function returns
 \code{NA} if \code{mz} is of length 0 or is \code{NA}.
+\item \code{containsNeutralLoss}: checks for each spectrum in \code{object} if it has a
+peak with an m/z value equal to its precursor m/z - \code{neutralLoss} (given
+acceptable difference as defined by parameters \code{tolerance} and \code{ppm}).
+Returns \code{NA} for MS1 spectra (or spectra without a precursor m/z).
 \item \code{length}: gets the number of spectra in the object.
 \item \code{lengths}: gets the number of peaks (m/z-intensity values) per
 spectrum. Returns an \code{integer} vector (length equal to the
