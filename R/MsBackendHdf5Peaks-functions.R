@@ -61,8 +61,10 @@ MsBackendHdf5Peaks <- function() {
 }
 
 .valid_h5peaks_file <- function(x) {
+    fapl <- rhdf5::H5Pcreate("H5P_FILE_ACCESS")
+    on.exit(rhdf5::H5Pclose(fapl))
     msg <- NULL
-    fid <- try(.Call("_H5Fopen", x, 0L, PACKAGE = "rhdf5"))
+    fid <- try(.Call("_H5Fopen", x, 0L, fapl@ID, PACKAGE = "rhdf5"))
     if (is(fid, "try-error"))
         return(paste0("File ", x, " is not a Hdf5 file"))
     on.exit(invisible(.Call("_H5Fclose", fid, PACKAGE = "rhdf5")))
@@ -139,7 +141,9 @@ MsBackendHdf5Peaks <- function() {
         return(list(matrix(ncol = 2, nrow = 0,
                            dimnames = list(character(), c("mz", "intensity")))))
     requireNamespace("rhdf5", quietly = TRUE)
-    fid <- .Call("_H5Fopen", x, 0L, PACKAGE = "rhdf5")
+    fapl <- rhdf5::H5Pcreate("H5P_FILE_ACCESS")
+    on.exit(rhdf5::H5Pclose(fapl))
+    fid <- .Call("_H5Fopen", x, 0L, fapl@ID, PACKAGE = "rhdf5")
     on.exit(invisible(.Call("_H5Fclose", fid, PACKAGE = "rhdf5")))
     h5modCount <- .h5_read_bare(fid, "/header/modcount")
     if (h5modCount != modCount)
