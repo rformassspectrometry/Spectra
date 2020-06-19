@@ -34,6 +34,7 @@
 \alias{isolationWindowTargetMz<-,Spectra-method}
 \alias{isolationWindowUpperMz,Spectra-method}
 \alias{isolationWindowUpperMz<-,Spectra-method}
+\alias{containsMz,Spectra-method}
 \alias{lapply,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
@@ -173,7 +174,16 @@ combineSpectra(
 
 \S4method{isolationWindowUpperMz}{Spectra}(object) <- value
 
-\S4method{lapply}{Spectra}(X, FUN, ..., BPPARAM = SerialParam())
+\S4method{containsMz}{Spectra}(
+  object,
+  mz = numeric(),
+  tolerance = 0,
+  ppm = 20,
+  which = c("any", "all"),
+  BPPARAM = bpparam()
+)
+
+\S4method{lapply}{Spectra}(X, FUN, f = as.factor(seq_along(X)), ..., BPPARAM = SerialParam())
 
 \S4method{length}{Spectra}(x)
 
@@ -316,7 +326,7 @@ for details. For \code{setBackend}: factor defining how to split the data for
 parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
-should be combined.}
+should be combined. For \code{lapply}: \code{factor} how \code{X} should be splitted.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
@@ -347,6 +357,21 @@ of objects, conversion and changing the backend} for more details.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
+
+\item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
+filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
+lower and upper m/z boundary.}
+
+\item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
+define a constant maximal accepted difference between m/z values for
+peaks to be matched.}
+
+\item{ppm}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} defining a
+relative, m/z-dependent, maximal accepted difference between m/z values
+for peaks to be matched.}
+
+\item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
+(the default) or all provided \code{mz} have to be present in the spectrum.}
 
 \item{X}{A \code{Spectra} object.}
 
@@ -384,10 +409,6 @@ spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
-\item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
-filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
-lower and upper m/z boundary.}
-
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of \code{object}.
 For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
@@ -416,14 +437,6 @@ non-zero intensity peak should be kept (\code{FALSE}).}
 \item{MAPFUN}{For \code{compareSpectra}: function to map/match peaks between the
 two compared spectra. See \code{\link[=joinPeaks]{joinPeaks()}} for more information and possible
 functions.}
-
-\item{tolerance}{For \code{compareSpectra}: \code{numeric(1)} allowing to define a
-constant maximal accepted difference between m/z values for peaks to be
-matched.}
-
-\item{ppm}{For \code{compareSpectra}: \code{numeric(1)} defining a relative,
-m/z-dependent, maximal accepted difference between m/z values for peaks
-to be matched.}
 
 \item{SIMPLIFY}{For \code{compareSpectra} whether the result matrix should be
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
@@ -589,6 +602,12 @@ m/z boundary of the isolation window.
 target m/z of the isolation window.
 \item \code{isolationWindowUpperMz}, \verb{isolationWindowUpperMz<-}: gets or sets the upper
 m/z boundary of the isolation window.
+\item \code{containsMz}: checks for each of the spectra whether they contain mass peaks
+with an m/z equal to \code{mz} given (given acceptable difference as defined by
+parameters \code{tolerance} and \code{ppm} - see \code{\link[=common]{common()}} for details). Parameter
+\code{which} allows to define whether any (\code{which = "any"}, the default) or
+all (\code{which = "all"}) of the \code{mz} have to match. The function returns
+\code{NA} if \code{mz} is of length 0 or is \code{NA}.
 \item \code{length}: gets the number of spectra in the object.
 \item \code{lengths}: gets the number of peaks (m/z-intensity values) per
 spectrum. Returns an \code{integer} vector (length equal to the
@@ -784,6 +803,9 @@ parameters to \code{FUN} can be passed with the \code{...} argument. Parameter
 \code{BPPARAM} allows to enable parallel processing, which however makes only
 sense if \code{FUN} is computational intense. \code{lapply} returns a \code{list} (same
 length than \code{X}) with the result from \code{FUN}. See examples for more details.
+Note that the result and its order depends on the factor \code{f} used for
+splitting \code{X} with \code{split}, i.e. no re-ordering or \code{unsplit} is performed
+on the result.
 \item \code{smooth}: smooth individual spectra using a moving window-based approach
 (window size = \code{2 * halfWindowSize}). Currently, the
 Moving-Average- (\code{method = "MovingAverage"}),
@@ -883,6 +905,9 @@ data$msLevel
 ## Get the intensity and m/z values.
 intensity(data)
 mz(data)
+
+## Determine whether one of the spectra has a specific m/z value
+containsMz(data, mz = 120.4)
 
 ## Accessing spectra variables works for all backends:
 intensity(sciex)

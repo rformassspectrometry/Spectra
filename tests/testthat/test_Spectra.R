@@ -1079,9 +1079,9 @@ test_that("removePeaks,Spectra works", {
 test_that("lapply,Spectra works", {
     sps <- Spectra(sciex_mzr)[c(1:3, 1400:1410)]
     rts <- lapply(sps, rtime)
-    expect_equal(unlist(rts), rtime(sps))
+    expect_equal(unlist(rts, use.names = FALSE), rtime(sps))
 
-    expect_equal(unname(split(sps, 1:length(sps))), lapply(sps))
+    expect_equal(unname(split(sps, 1:length(sps))), unname(lapply(sps)))
 
     ## test on a mzR backend using intensities.
     myFun <- function(x, add) {
@@ -1089,16 +1089,39 @@ test_that("lapply,Spectra works", {
     }
     res <- lapply(sps, FUN = myFun, add = 3)
     ints <- intensity(sps)
-    expect_equal(unlist(res), vapply(ints, mean, numeric(1)) + 3)
+    expect_equal(unlist(res, use.names = FALSE),
+                 vapply(ints, mean, numeric(1)) + 3)
 
     ## Same after removePeaks and clean.
     sps <- clean(removePeaks(sps, t = 4000), all = TRUE)
     res <- lapply(sps, FUN = function(x) mean(x$intensity[[1]]))
-    expect_equal(unlist(res), vapply(intensity(sps), mean, numeric(1)))
+    expect_equal(unlist(res, use.names = FALSE),
+                 vapply(intensity(sps), mean, numeric(1)))
 })
 
 test_that("split,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- split(sps, f = sps$dataStorage)
     expect_identical(res, split.default(sps, f = sps$dataStorage))
+})
+
+test_that("containsMz,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- containsMz(sps)
+    expect_true(all(is.na(res)))
+
+    res <- containsMz(sps, NA)
+    expect_true(all(is.na(res)))
+
+    res <- containsMz(sps, c(14.15), which = "any")
+    expect_equal(res, c(FALSE, FALSE, TRUE))
+
+    ## Check that unsplit works.
+    sps@backend$dataStorage <- c("3", "1", "2")
+    res_2 <- containsMz(sps, c(14.15))
+    expect_equal(res, res_2)
 })

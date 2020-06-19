@@ -26,6 +26,9 @@ setGeneric("clean", function(object, ...) standardGeneric("clean"))
 setGeneric("compareSpectra", function(x, y, ...)
     standardGeneric("compareSpectra"))
 #' @rdname hidden_aliases
+setGeneric("containsMz", function(object, ...)
+    standardGeneric("containsMz"))
+#' @rdname hidden_aliases
 setGeneric("dropNaSpectraVariables", function(object, ...)
     standardGeneric("dropNaSpectraVariables"))
 #' @rdname hidden_aliases

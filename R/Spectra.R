@@ -147,6 +147,13 @@ NULL
 #' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the upper
 #'   m/z boundary of the isolation window.
 #'
+#' - `containsMz`: checks for each of the spectra whether they contain mass peaks
+#'   with an m/z equal to `mz` given (given acceptable difference as defined by
+#'   parameters `tolerance` and `ppm` - see [common()] for details). Parameter
+#'   `which` allows to define whether any (`which = "any"`, the default) or
+#'   all (`which = "all"`) of the `mz` have to match. The function returns
+#'   `NA` if `mz` is of length 0 or is `NA`.
+#'
 #' - `length`: gets the number of spectra in the object.
 #'
 #' - `lengths`: gets the number of peaks (m/z-intensity values) per
@@ -367,6 +374,9 @@ NULL
 #'   `BPPARAM` allows to enable parallel processing, which however makes only
 #'   sense if `FUN` is computational intense. `lapply` returns a `list` (same
 #'   length than `X`) with the result from `FUN`. See examples for more details.
+#'   Note that the result and its order depends on the factor `f` used for
+#'   splitting `X` with `split`, i.e. no re-ordering or `unsplit` is performed
+#'   on the result.
 #'
 #' - `smooth`: smooth individual spectra using a moving window-based approach
 #'    (window size = `2 * halfWindowSize`). Currently, the
@@ -453,7 +463,7 @@ NULL
 #'     parallelized copying of the spectra data to the new backend. For some
 #'     backends changing this parameter can lead to errors.
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
-#'     should be combined.
+#'     should be combined. For `lapply`: `factor` how `X` should be splitted.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
@@ -523,9 +533,9 @@ NULL
 #' @param polarity for `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
-#' @param ppm For `compareSpectra`: `numeric(1)` defining a relative,
-#'     m/z-dependent, maximal accepted difference between m/z values for peaks
-#'     to be matched.
+#' @param ppm For `compareSpectra`, `containsMz`: `numeric(1)` defining a
+#'     relative, m/z-dependent, maximal accepted difference between m/z values
+#'     for peaks to be matched.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -545,9 +555,9 @@ NULL
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
 #'
-#' @param tolerance For `compareSpectra`: `numeric(1)` allowing to define a
-#'     constant maximal accepted difference between m/z values for peaks to be
-#'     matched.
+#' @param tolerance For `compareSpectra`, `containsMz`: `numeric(1)` allowing to
+#'     define a constant maximal accepted difference between m/z values for
+#'     peaks to be matched.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
@@ -561,6 +571,9 @@ NULL
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
+#'     (the default) or all provided `mz` have to be present in the spectrum.
 #'
 #' @param x A `Spectra` object.
 #'
@@ -640,6 +653,9 @@ NULL
 #' ## Get the intensity and m/z values.
 #' intensity(data)
 #' mz(data)
+#'
+#' ## Determine whether one of the spectra has a specific m/z value
+#' containsMz(data, mz = 120.4)
 #'
 #' ## Accessing spectra variables works for all backends:
 #' intensity(sciex)
@@ -1060,12 +1076,38 @@ setReplaceMethod("isolationWindowUpperMz", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 #'
-#' @exportMethod lapply
-setMethod("lapply", "Spectra", function(X, FUN, ..., BPPARAM = SerialParam()) {
-    if (missing(FUN)) {
-        FUN <- identity
+#' @importFrom methods getFunction
+#'
+#' @exportMethod containsMz
+setMethod("containsMz", "Spectra", function(object, mz = numeric(),
+                                            tolerance = 0,
+                                            ppm = 20, which = c("any", "all"),
+                                            BPPARAM = bpparam()) {
+    which <- match.arg(which)
+    cond_fun <- getFunction(which)
+    if (all(is.na(mz)))
+        return(rep(NA, length(object)))
+    if(is(BPPARAM, "SerialParam"))
+        .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
+                condFun = cond_fun)
+    else {
+        sp <- SerialParam()
+        f <- as.factor(dataStorage(object))
+        res <- .lapply(object, FUN = .has_mz, mz = mz, tolerance = tolerance,
+                       condFun = cond_fun, parallel = sp, f = f,
+                       BPPARAM = BPPARAM)
+        unsplit(res, f = f)
     }
-    .lapply(x = X, FUN = FUN, ..., BPPARAM = BPPARAM)
+})
+
+#' @rdname Spectra
+#'
+#' @exportMethod lapply
+setMethod("lapply", "Spectra", function(X, FUN, f = as.factor(seq_along(X)),
+                                        ..., BPPARAM = SerialParam()) {
+    if (missing(FUN))
+        FUN <- identity
+    .lapply(X, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
 })
 
 #' @rdname Spectra
