@@ -373,7 +373,8 @@ lower and upper m/z boundary.}
 
 \item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
 define a constant maximal accepted difference between m/z values for
-peaks to be matched.}
+peaks to be matched. For \code{containsMz} it can also be of length equal \code{mz}
+to specify a different tolerance for each m/z value.}
 
 \item{ppm}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} defining a
 relative, m/z-dependent, maximal accepted difference between m/z values
@@ -615,7 +616,7 @@ target m/z of the isolation window.
 \item \code{isolationWindowUpperMz}, \verb{isolationWindowUpperMz<-}: gets or sets the upper
 m/z boundary of the isolation window.
 \item \code{containsMz}: checks for each of the spectra whether they contain mass peaks
-with an m/z equal to \code{mz} given (given acceptable difference as defined by
+with an m/z equal to \code{mz} (given acceptable difference as defined by
 parameters \code{tolerance} and \code{ppm} - see \code{\link[=common]{common()}} for details). Parameter
 \code{which} allows to define whether any (\code{which = "any"}, the default) or
 all (\code{which = "all"}) of the \code{mz} have to match. The function returns

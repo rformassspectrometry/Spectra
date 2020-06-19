@@ -101,7 +101,7 @@ addProcessing <- function(object, FUN, ...) {
     unsplit(res, f = f, drop = TRUE)
 }
 
-#' @title Apply a function to (subsets) of Spectra
+#' @title Apply a function to subsets of Spectra
 #'
 #' @description
 #'
@@ -461,9 +461,8 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
 .has_mz <- function(x, mz = numeric(), tolerance = 0, ppm = 20, condFun = any,
                     parallel = SerialParam()) {
     mzs <- mz(x, BPPARAM = parallel)
-    vapply(mzs, FUN = function(z) {
-        condFun(common(mz, z, tolerance = tolerance, ppm = ppm))
-    }, logical(1))
+    vapply(mzs, FUN = function(z)
+        condFun(common(mz, z, tolerance = tolerance, ppm = ppm)), logical(1))
 }
 
 #' @description

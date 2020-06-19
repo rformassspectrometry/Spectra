@@ -565,7 +565,8 @@ NULL
 #'
 #' @param tolerance For `compareSpectra`, `containsMz`: `numeric(1)` allowing to
 #'     define a constant maximal accepted difference between m/z values for
-#'     peaks to be matched.
+#'     peaks to be matched. For `containsMz` it can also be of length equal `mz`
+#'     to specify a different tolerance for each m/z value.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
@@ -1084,15 +1085,12 @@ setReplaceMethod("isolationWindowUpperMz", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 #'
-#' @importFrom methods getFunction
-#'
 #' @exportMethod containsMz
 setMethod("containsMz", "Spectra", function(object, mz = numeric(),
                                             tolerance = 0,
                                             ppm = 20, which = c("any", "all"),
                                             BPPARAM = bpparam()) {
-    which <- match.arg(which)
-    cond_fun <- getFunction(which)
+    which <- match.fun(match.arg(which))
     if (all(is.na(mz)))
         return(rep(NA, length(object)))
     if(is(BPPARAM, "SerialParam"))
