@@ -148,7 +148,7 @@ NULL
 #'   m/z boundary of the isolation window.
 #'
 #' - `containsMz`: checks for each of the spectra whether they contain mass peaks
-#'   with an m/z equal to `mz` given (given acceptable difference as defined by
+#'   with an m/z equal to `mz` (given acceptable difference as defined by
 #'   parameters `tolerance` and `ppm` - see [common()] for details). Parameter
 #'   `which` allows to define whether any (`which = "any"`, the default) or
 #'   all (`which = "all"`) of the `mz` have to match. The function returns
