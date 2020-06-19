@@ -471,7 +471,7 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
 #' Same as `.has_mz` only that a different `mz` is used for each spectrum in
 #' `x`. Length of `mz` is thus expected to be equal to length of `x`.
 #'
-#' @param mz `numeric` **same length than `x`**.
+#' @param mz `numeric` **same length as `x`**.
 #'
 #' @author Johannes Rainer
 #'
