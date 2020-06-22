@@ -1,6 +1,6 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 0.5.1
+Version: 0.5.2
 Description: The Spectra package defines a efficient infrastructure
    for storing and handling for raw mass spectrometry spectra.
 Authors@R: c(person(given = "Laurent", family = "Gatto",
@@ -34,7 +34,7 @@ Suggests:
     roxygen2,
     BiocStyle (>= 2.5.19),
     mzR (>= 2.19.6),
-    rhdf5,
+    rhdf5 (>= 2.32.0),
     rmarkdown,
     magrittr
 Remotes:

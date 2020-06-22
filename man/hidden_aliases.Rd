@@ -15,6 +15,8 @@
 \alias{bin,numeric-method}
 \alias{clean}
 \alias{compareSpectra}
+\alias{containsMz}
+\alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
 \alias{isReadOnly}
 \alias{pickPeaks}
@@ -142,6 +144,10 @@ bin(x, ...)
 clean(object, ...)
 
 compareSpectra(x, y, ...)
+
+containsMz(object, ...)
+
+containsNeutralLoss(object, ...)
 
 dropNaSpectraVariables(object, ...)
 
