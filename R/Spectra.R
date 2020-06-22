@@ -1090,7 +1090,7 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
                                             tolerance = 0,
                                             ppm = 20, which = c("any", "all"),
                                             BPPARAM = bpparam()) {
-    which <- match.fun(match.arg(which))
+    cond_fun <- match.fun(match.arg(which))
     if (all(is.na(mz)))
         return(rep(NA, length(object)))
     if(is(BPPARAM, "SerialParam"))
