@@ -82,7 +82,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -256,7 +256,26 @@ isolationWindowUpperMz(object)
 isolationWindowUpperMz(object) &lt;- value
 
 # S4 method for Spectra
-lapply(X, FUN, ..., BPPARAM = SerialParam())
+containsMz(
+  object,
+  mz = numeric(),
+  tolerance = 0,
+  ppm = 20,
+  which = c("any", "all"),
+  BPPARAM = bpparam()
+)
+
+# S4 method for Spectra
+containsNeutralLoss(
+  object,
+  neutralLoss = 0,
+  tolerance = 0,
+  ppm = 20,
+  BPPARAM = bpparam()
+)
+
+# S4 method for Spectra
+lapply(X, FUN, f = as.factor(seq_along(X)), ..., BPPARAM = SerialParam())
 
 # S4 method for Spectra
 length(x)
@@ -451,7 +470,7 @@ for details. For <code>setBackend</code>: factor defining how to split the data 
 parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For <code>combineSpectra</code>: <code>factor</code> defining the grouping of the spectra that
-should be combined.</p></td>
+should be combined. For <code>lapply</code>: <code>factor</code> how <code>X</code> should be splitted.</p></td>
     </tr>
     <tr>
       <th>BPPARAM</th>
@@ -500,6 +519,35 @@ of objects, conversion and changing the backend</em> for more details.</p></td>
       <th>value</th>
       <td><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></td>
+    </tr>
+    <tr>
+      <th>mz</th>
+      <td><p>For <code>filterIsolationWindow</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the m/z value to
+filter the object. For <code>filterPrecursorMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> defining the
+lower and upper m/z boundary.</p></td>
+    </tr>
+    <tr>
+      <th>tolerance</th>
+      <td><p>For <code>compareSpectra</code>, <code>containsMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> allowing to
+define a constant maximal accepted difference between m/z values for
+peaks to be matched. For <code>containsMz</code> it can also be of length equal <code>mz</code>
+to specify a different tolerance for each m/z value.</p></td>
+    </tr>
+    <tr>
+      <th>ppm</th>
+      <td><p>For <code>compareSpectra</code>, <code>containsMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining a
+relative, m/z-dependent, maximal accepted difference between m/z values
+for peaks to be matched.</p></td>
+    </tr>
+    <tr>
+      <th>which</th>
+      <td><p>for <code>containsMz</code>: either <code>"any"</code> or <code>"all"</code> defining whether any
+(the default) or all provided <code>mz</code> have to be present in the spectrum.</p></td>
+    </tr>
+    <tr>
+      <th>neutralLoss</th>
+      <td><p>for <code>containsNeutralLoss</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining the value
+which should be subtracted from the spectrum's precursor m/z.</p></td>
     </tr>
     <tr>
       <th>X</th>
@@ -560,12 +608,6 @@ For <code>filterAcquisitionNum</code>: optionally specify if filtering should oc
 only for spectra of selected <code>dataOrigin</code>.</p></td>
     </tr>
     <tr>
-      <th>mz</th>
-      <td><p>For <code>filterIsolationWindow</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the m/z value to
-filter the object. For <code>filterPrecursorMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> defining the
-lower and upper m/z boundary.</p></td>
-    </tr>
-    <tr>
       <th>msLevel.</th>
       <td><p><code>integer</code> defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of <code>object</code>.
@@ -611,18 +653,6 @@ non-zero intensity peak should be kept (<code>FALSE</code>).</p></td>
       <td><p>For <code>compareSpectra</code>: function to map/match peaks between the
 two compared spectra. See <code><a href='joinPeaks.html'>joinPeaks()</a></code> for more information and possible
 functions.</p></td>
-    </tr>
-    <tr>
-      <th>tolerance</th>
-      <td><p>For <code>compareSpectra</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> allowing to define a
-constant maximal accepted difference between m/z values for peaks to be
-matched.</p></td>
-    </tr>
-    <tr>
-      <th>ppm</th>
-      <td><p>For <code>compareSpectra</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining a relative,
-m/z-dependent, maximal accepted difference between m/z values for peaks
-to be matched.</p></td>
     </tr>
     <tr>
       <th>SIMPLIFY</th>
@@ -796,6 +826,16 @@ m/z boundary of the isolation window.</p></li>
 target m/z of the isolation window.</p></li>
 <li><p><code>isolationWindowUpperMz</code>, <code>isolationWindowUpperMz&lt;-</code>: gets or sets the upper
 m/z boundary of the isolation window.</p></li>
+<li><p><code>containsMz</code>: checks for each of the spectra whether they contain mass peaks
+with an m/z equal to <code>mz</code> (given acceptable difference as defined by
+parameters <code>tolerance</code> and <code>ppm</code> - see <code>common()</code> for details). Parameter
+<code>which</code> allows to define whether any (<code>which = "any"</code>, the default) or
+all (<code>which = "all"</code>) of the <code>mz</code> have to match. The function returns
+<code>NA</code> if <code>mz</code> is of length 0 or is <code>NA</code>.</p></li>
+<li><p><code>containsNeutralLoss</code>: checks for each spectrum in <code>object</code> if it has a
+peak with an m/z value equal to its precursor m/z - <code>neutralLoss</code> (given
+acceptable difference as defined by parameters <code>tolerance</code> and <code>ppm</code>).
+Returns <code>NA</code> for MS1 spectra (or spectra without a precursor m/z).</p></li>
 <li><p><code>length</code>: gets the number of spectra in the object.</p></li>
 <li><p><code>lengths</code>: gets the number of peaks (m/z-intensity values) per
 spectrum. Returns an <code>integer</code> vector (length equal to the
@@ -989,7 +1029,10 @@ The <code>Spectra</code> is splitted into individual spectra and on each of them
 parameters to <code>FUN</code> can be passed with the <code>...</code> argument. Parameter
 <code>BPPARAM</code> allows to enable parallel processing, which however makes only
 sense if <code>FUN</code> is computational intense. <code>lapply</code> returns a <code>list</code> (same
-length than <code>X</code>) with the result from <code>FUN</code>. See examples for more details.</p></li>
+length than <code>X</code>) with the result from <code>FUN</code>. See examples for more details.
+Note that the result and its order depends on the factor <code>f</code> used for
+splitting <code>X</code> with <code>split</code>, i.e. no re-ordering or <code>unsplit</code> is performed
+on the result.</p></li>
 <li><p><code>smooth</code>: smooth individual spectra using a moving window-based approach
 (window size = <code>2 * halfWindowSize</code>). Currently, the
 Moving-Average- (<code>method = "MovingAverage"</code>),
@@ -1093,7 +1136,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon May 18 07:10:00 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Jun 22 09:45:13 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1137,6 +1180,8 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; [[2]] 12.3 15.2 6.8</div><div class='input'><span class='fu'>mz</span>(<span class='no'>data</span>)</div><div class='output co'>#&gt; NumericList of length 2
 #&gt; [[1]] 100 103.2 104.3 106.5
 #&gt; [[2]] 45.6 120.4 190.2</div><div class='input'>
+<span class='co'>## Determine whether one of the spectra has a specific m/z value</span>
+<span class='fu'><a href='hidden_aliases.html'>containsMz</a></span>(<span class='no'>data</span>, <span class='kw'>mz</span> <span class='kw'>=</span> <span class='fl'>120.4</span>)</div><div class='output co'>#&gt; [1] FALSE  TRUE</div><div class='input'>
 <span class='co'>## Accessing spectra variables works for all backends:</span>
 <span class='fu'>intensity</span>(<span class='no'>sciex</span>)</div><div class='output co'>#&gt; NumericList of length 1862
 #&gt; [[1]] 0 412 0 0 412 0 0 412 0 0 412 0 0 ... 0 412 0 0 412 0 0 412 0 0 412 412 0
@@ -1267,7 +1312,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Mon May 18 07:10:02 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Mon Jun 22 09:45:14 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='no'>data_comb</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>data</span>, <span class='no'>sciex_im</span>)
 
@@ -1287,7 +1332,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Mon May 18 07:10:02 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Mon Jun 22 09:45:15 2020] </div><div class='input'>
 <span class='co'>## Remove empty spectra variables</span>
 <span class='no'>sciex_noNA</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>dropNaSpectraVariables</a></span>(<span class='no'>sciex</span>)
 
@@ -1337,7 +1382,7 @@ called after <code>removePeaks</code>.</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon May 18 07:10:02 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Jun 22 09:45:15 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='no'>res</span>)<span class='kw'>[[</span><span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400   0   0</div><div class='input'><span class='fu'>intensity</span>(<span class='no'>res</span>)<span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt; [1] 0 0 0</div><div class='input'>
 <span class='co'>## Clean all spectra removing all 0-intensity peaks.</span>
@@ -1387,22 +1432,22 @@ called after <code>removePeaks</code>.</p></li>
 <span class='co'>## of each individual spectrum either with the `$` operator or the</span>
 <span class='co'>## corresponding method.</span>
 <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='no'>sciex_im</span>[<span class='fl'>1</span>:<span class='fl'>20</span>], <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>x</span>$<span class='no'>intensity</span><span class='kw'>[[</span><span class='fl'>1</span>]]))
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; $`1`
 #&gt; [1] 1553.953
 #&gt; 
-#&gt; [[2]]
+#&gt; $`2`
 #&gt; [1] 678.2289
 #&gt; 
-#&gt; [[3]]
+#&gt; $`3`
 #&gt; [1] 684.3569
 #&gt; 
-#&gt; [[4]]
+#&gt; $`4`
 #&gt; [1] 682.1004
 #&gt; 
-#&gt; [[5]]
+#&gt; $`5`
 #&gt; [1] 780.6867
 #&gt; 
-#&gt; [[6]]
+#&gt; $`6`
 #&gt; [1] 737.5087
 #&gt; </div><div class='input'>
 <span class='co'>## It is however important to note that dedicated methods to access the</span>
