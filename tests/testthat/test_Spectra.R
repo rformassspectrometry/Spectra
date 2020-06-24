@@ -261,7 +261,7 @@ test_that("ionCount,Spectra works", {
     res <- ionCount(sps)
     expect_identical(res, c(17, 19))
 
-    sps <- removePeaks(sps, threshold = 4)
+    sps <- replaceIntensitiesBelow(sps, threshold = 4)
     res <- ionCount(sps)
     expect_identical(res, c(14, 17))
 })
@@ -298,7 +298,7 @@ test_that("isEmpty,Spectra works", {
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
-    sps <- removePeaks(sps, threshold = 100)
+    sps <- replaceIntensitiesBelow(sps, threshold = 100)
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
@@ -413,7 +413,7 @@ test_that("lengths,Spectra works", {
     res <- lengths(sps)
     expect_identical(res, c(3L, 2L))
 
-    sps <- removePeaks(sps, threshold = 100)
+    sps <- replaceIntensitiesBelow(sps, threshold = 100)
     res <- lengths(sps)
     expect_identical(res, c(3L, 2L))
 
@@ -779,13 +779,13 @@ test_that("filterEmptySpectra,Spectra works", {
     expect_equal(length(res@processing), 1)
     expect_equal(rtime(res), c(1, 1))
 
-    sps <- clean(removePeaks(sps, threshold = 20), all = TRUE)
+    sps <- clean(replaceIntensitiesBelow(sps, threshold = 20), all = TRUE)
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 1)
     expect_equal(rtime(res), 1)
     expect_equal(length(res@processing), 3)
 
-    sps <- clean(removePeaks(sps, threshold = 50), all = TRUE)
+    sps <- clean(replaceIntensitiesBelow(sps, threshold = 50), all = TRUE)
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 0)
 
@@ -1060,18 +1060,19 @@ test_that("smooth,Spectra works", {
     expect_identical(as.list(res), SimpleList(pks_res))
 })
 
-test_that("removePeaks,Spectra works", {
+test_that("replaceIntensitiesBelow,Spectra works", {
     sps <- Spectra()
-    res <- removePeaks(sps, threshold = 10)
+    res <- replaceIntensitiesBelow(sps, threshold = 10)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.peaks_remove,
-                                list(threshold = 10, msLevel = integer())))
+                 ProcessingStep(.peaks_replace_intensity,
+                                list(threshold = 10, value = 0,
+                                     msLevel = integer())))
 
     sps <- Spectra(sciex_mzr)
     centroided(sps) <- TRUE
-    res <- removePeaks(sps, threshold = 5000)
-    pks_res <- lapply(sciex_pks, .peaks_remove, threshold = 5000,
+    res <- replaceIntensitiesBelow(sps, threshold = 5000)
+    pks_res <- lapply(sciex_pks, .peaks_replace_intensity, threshold = 5000,
                       spectrumMsLevel = 1L, centroided = TRUE)
     expect_identical(as.list(res), SimpleList(pks_res))
 })
@@ -1092,8 +1093,8 @@ test_that("lapply,Spectra works", {
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(ints, mean, numeric(1)) + 3)
 
-    ## Same after removePeaks and clean.
-    sps <- clean(removePeaks(sps, t = 4000), all = TRUE)
+    ## Same after replaceIntensitiesBelow and clean.
+    sps <- clean(replaceIntensitiesBelow(sps, t = 4000), all = TRUE)
     res <- lapply(sps, FUN = function(x) mean(x$intensity[[1]]))
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(intensity(sps), mean, numeric(1)))

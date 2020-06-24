@@ -76,7 +76,7 @@
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
 \alias{pickPeaks,Spectra-method}
-\alias{removePeaks,Spectra-method}
+\alias{replaceIntensitiesBelow,Spectra-method}
 \alias{smooth,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
@@ -306,7 +306,12 @@ combineSpectra(
   msLevel. = unique(msLevel(object))
 )
 
-\S4method{removePeaks}{Spectra}(object, threshold = "min", msLevel. = unique(msLevel(object)))
+\S4method{replaceIntensitiesBelow}{Spectra}(
+  object,
+  threshold = min,
+  value = 0,
+  msLevel. = unique(msLevel(object))
+)
 
 \S4method{smooth}{Spectra}(
   x,
@@ -487,7 +492,9 @@ the nearest valleys around the peak centroids are used.}
 \item{threshold}{\itemize{
 \item For \code{pickPeaks}: a \code{double(1)} defining the proportion of the maximal peak
 intensity. Just values above are used for the weighted mean calclulation.
-\item For \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.
+\item For \code{replaceIntensitiesBelow}: a \code{numeric(1)} defining the threshold or
+a \code{function} to calculate the threshold for each spectrum on its intensity
+values. Defaults to \code{threshold = min}.
 }}
 }
 \value{
@@ -502,12 +509,13 @@ on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}) or HDF5 (\code{\li
 }
 \details{
 The \code{Spectra} class uses by default a lazy data manipulation strategy,
-i.e. data manipulations such as performed with \code{removePeaks} are not applied
-immediately to the data, but applied on-the-fly to the spectrum data once it
-is retrieved. For some backends that allow to write data back to the data
-storage (such as the \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} and \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it
-is possible to apply to queue with the \code{applyProcessing} function. See the
-\emph{Data manipulation and analysis methods} section below for more details.
+i.e. data manipulations such as performed with \code{replaceIntensitiesBelow} are
+not applied immediately to the data, but applied on-the-fly to the spectrum
+data once it is retrieved. For some backends that allow to write data back
+to the data storage (such as the \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} and
+\code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it is possible to apply to queue with the
+\code{applyProcessing} function. See the \emph{Data manipulation and analysis
+methods} section below for more details.
 }
 \section{Creation of objects, conversion and changing the backend}{
 
@@ -849,14 +857,18 @@ has to be chosen general larger. See \code{\link[MsCoreUtils:refineCentroids]{Ms
 details.
 If the ratio of the signal to the highest intensity of the peak is below
 \code{threshold} it will be ignored for the weighted average.
-\item \code{removePeaks}: \emph{removes} peaks lower or equal to a threshold intensity
-value \code{threshold} by setting their intensity to \code{0}. With the default
-\code{threshold = "min"} all peaks with an intensity smaller or equal to the
-minimal non-zero intensity is set to \code{0}. If the spectrum is in
-profile mode, ranges of successive non-0 peaks <= \code{threshold} are set to 0.
-If the spectrum is centroided, then individual peaks <= \code{threshold} are set
-to 0. Note that the number of peaks is not changed unless \code{clean} is
-called after \code{removePeaks}.
+\item \code{replaceIntensitiesBelow}: replaces intensities below a specified
+threshold with the provided \code{value}. Parameter \code{threshold} can be either
+a single numeric value or a function which is applied to all non-\code{NA}
+intensities of each spectrum to determine a threshold value for each
+spectrum. The default is \code{threshold = min} which replaces all values
+which are <= the minimum intensity in a spectrum with \code{value} (the
+default for \code{value} is \code{0}). Note that the function specified with
+\code{threshold} is expected to have a parameter \code{na.rm} since \code{na.rm = TRUE}
+will be passed to the function. If the spectrum is in profile mode,
+ranges of successive non-0 peaks <= \code{threshold} are set to 0.
+Parameter \code{msLevel.} allows to apply this to only spectra of certain MS
+level(s).
 }
 }
 
@@ -1007,8 +1019,8 @@ spectraVariables(sciex_noNA)
 ## Set the data to be centroided
 centroided(data) <- TRUE
 
-## Remove peaks with an intensity below 40.
-res <- removePeaks(data, threshold = 40)
+## Replace peak intensities below 40 with 3.
+res <- replaceIntensitiesBelow(data, threshold = 40, value = 3)
 res
 
 ## Get the intensities of the first and second spectrum.

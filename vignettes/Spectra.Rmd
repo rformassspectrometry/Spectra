@@ -373,17 +373,16 @@ function can be used to retain only specified spectra variables.
 Some analyses require manipulation of the mass peak data (i.e. the m/z and/or
 intensity values). One example would be to remove all peaks from a spectrum that
 have an intensity lower than a certain threshold. Below we perform such an
-operation with the `removePeaks` function to remove peaks in each spectrum in
-`sps` with an intensity below 10. Note that this function does not actually
-*remove* the peaks, but sets their intensity to `0`.
+operation with the `replaceIntensitiesBelow` function to replace peak
+intensities below 10 in each spectrum in `sps` with a value of 0.
 
-```{r removepeaks}
-sps <- removePeaks(sps, threshold = 10)
+```{r replaceintensities}
+sps <- replaceIntensitiesBelow(sps, threshold = 10, value = 0)
 ```
 
 As a result intensities below 10 were set to 0 for all peaks.
 
-```{r removepeaks-intensity}
+```{r replaceintensities-intensity}
 intensity(sps)
 ```
 

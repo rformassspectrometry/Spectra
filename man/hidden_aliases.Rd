@@ -20,7 +20,7 @@
 \alias{dropNaSpectraVariables}
 \alias{isReadOnly}
 \alias{pickPeaks}
-\alias{removePeaks}
+\alias{replaceIntensitiesBelow}
 \alias{replaceList<-}
 \alias{selectSpectraVariables}
 \alias{setBackend}
@@ -155,7 +155,7 @@ isReadOnly(object, ...)
 
 pickPeaks(object, ...)
 
-removePeaks(object, t = "min", ...)
+replaceIntensitiesBelow(object, threshold = min, ...)
 
 replaceList(object) <- value
 
