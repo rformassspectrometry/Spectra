@@ -36,6 +36,8 @@ setValidity("MsBackendMzR", function(object) {
 #'
 #' @importFrom methods callNextMethod
 #'
+#' @importFrom MsCoreUtils rbindFill
+#'
 #' @importMethodsFrom BiocParallel bpmapply
 #'
 #' @importFrom BiocParallel bpparam
@@ -52,7 +54,7 @@ setMethod("backendInitialize", "MsBackendMzR",
               if (length(msg))
                   stop(msg)
               spectraData <- do.call(
-                  rbind, bplapply(files,
+                  rbindFill, bplapply(files,
                                   FUN = function(fl) {
                                       cbind(Spectra:::.mzR_header(fl),
                                             dataStorage = fl)
