@@ -30,21 +30,17 @@ test_that(".peaks_replace_intensity works", {
                              0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 5, 0))
 })
 
-test_that(".peaks_clean works", {
-    int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
-             0, 1, 5, 10, 5, 1)
-    x <- cbind(mz = 1:length(int), intensity = int)
+test_that(".peaks_filter_intensity works", {
+    ints <- c(5, 3, 12, 14.4, 13.3, 9, 3, 0, NA, 21, 89, 55, 33, 5, 2)
+    x <- cbind(mz = seq_along(ints), intensity = ints)
+    res <- .peaks_filter_intensity(x, spectrumMsLevel = 1L)
+    expect_equal(res[, 1], c(1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15))
 
-    res <- .peaks_clean(x, 1L, all = FALSE)
-    expect_true(is.matrix(res))
-    expect_equal(res[, "intensity"], c(0, 1, 2, 3, 1, 0, 0, 1, 3, 10, 6, 2,
-                                       1, 0, 1, 2, 0, 0, 1, 5, 10, 5, 1))
-    res <- .peaks_clean(x, 1L, all = TRUE)
-    expect_equal(res[, "intensity"], c(1, 2, 3, 1, 1, 3, 10, 6, 2, 1, 1, 2,
-                                       1, 5, 10, 5, 1))
+    res <- .peaks_filter_intensity(x, spectrumMsLevel = 1L, msLevel = 2L)
+    expect_equal(res, x)
 
-    expect_equal(.peaks_clean(x, 2L, msLevel = 1L), x)
-    expect_equal(.peaks_clean(x, 1L, msLevel = 2L), x)
+    res <- .peaks_filter_intensity(x, spectrumMsLevel = 1L, intensity = c(5, 15))
+    expect_equal(res[, 1], c(1, 3, 4, 5, 6, 14))
 })
 
 test_that(".peaks_bin works", {

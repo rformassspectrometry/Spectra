@@ -73,18 +73,21 @@ NULL
 
 #' @description
 #'
-#' Clean spectrum by removing 0-intensity peaks.
+#' Filtering the spectrum keeping only peaks which are within the provided
+#' intensity range. Note that also peaks with `NA` intensities are removed.
 #'
 #' @inheritParams .peaks_remove
 #'
-#' @return `matrix` with columns `"mz"` and `"intensity"`.
+#' @param intensity `numeric(2)` with the lower and upper range.
+#'
+#' @importFrom MsCoreUtils between
 #'
 #' @noRd
-.peaks_clean <- function(x, spectrumMsLevel, all = FALSE,
-                         msLevel = spectrumMsLevel, ...) {
+.peaks_filter_intensity <- function(x, spectrumMsLevel, intensity = c(0, Inf),
+                                    msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    x[utils.clean(x[, "intensity"], all), , drop = FALSE]
+    x[which(between(x[, "intensity"], intensity)), , drop = FALSE]
 }
 
 #' @description
