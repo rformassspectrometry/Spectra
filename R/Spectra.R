@@ -1574,7 +1574,7 @@ setMethod("pickPeaks", "Spectra",
 setMethod("replaceIntensitiesBelow", "Spectra",
           function(object, threshold = min, value = 0,
                    msLevel. = unique(msLevel(object))) {
-              if (!is.numeric(threshold) & !is.function(threshold))
+              if (!is.numeric(threshold) && !is.function(threshold))
                   stop("Argument 'threshold' has to be either numeric or ",
                        "a function.")
               if (!.check_ms_level(object, msLevel.))
