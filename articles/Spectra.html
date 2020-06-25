@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.12/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2020-06-24 14:56:39<br><strong>Compiled</strong>: Wed Jun 24 15:00:18 2020</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.12/Spectra">Spectra</a></em><br><strong>Authors</strong>: Laurent Gatto, Johannes Rainer and Sebastian Gibb.<br><strong>Last modified:</strong> 2020-06-25 06:31:55<br><strong>Compiled</strong>: Thu Jun 25 06:35:45 2020</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -392,8 +392,8 @@ document.addEventListener("DOMContentLoaded", function() {
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Jun 24 15:00:21 2020]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Jun 24 15:00:21 2020]</code></pre>
+##  Filter: select data origin(s) /home/travis/R/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Thu Jun 25 06:35:48 2020]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Thu Jun 25 06:35:48 2020]</code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb46"><html><body><pre class="r"><span class="no">caf_df</span> <span class="kw">&lt;-</span> <span class="fu">DataFrame</span>(<span class="kw">msLevel</span> <span class="kw">=</span> <span class="fl">2L</span>, <span class="kw">name</span> <span class="kw">=</span> <span class="st">"Caffeine"</span>,
@@ -417,7 +417,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Wed Jun 24 15:00:21 2020]</code></pre>
+##  Merge 2 Spectra into one [Thu Jun 25 06:35:48 2020]</code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb49"><html><body><pre class="r"><span class="fu">spectraVariables</span>(<span class="no">sps</span>)</pre></body></html></div>
 <pre><code>##  [1] "msLevel"                 "rtime"                  
@@ -442,8 +442,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="data-manipulations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-manipulations" class="anchor"></a>Data manipulations</h2>
-<p>Some analyses require manipulation of the mass peak data (i.e. the m/z and/or intensity values). One example would be to remove all peaks from a spectrum that have an intensity lower than a certain threshold. Below we perform such an operation with the <code>removePeaks</code> function to remove peaks in each spectrum in <code>sps</code> with an intensity below 10. Note that this function does not actually <em>remove</em> the peaks, but sets their intensity to <code>0</code>.</p>
-<div class="sourceCode" id="cb53"><html><body><pre class="r"><span class="no">sps</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">removePeaks</a></span>(<span class="no">sps</span>, <span class="kw">threshold</span> <span class="kw">=</span> <span class="fl">10</span>)</pre></body></html></div>
+<p>Some analyses require manipulation of the mass peak data (i.e. the m/z and/or intensity values). One example would be to remove all peaks from a spectrum that have an intensity lower than a certain threshold. Below we perform such an operation with the <code>replaceIntensitiesBelow</code> function to replace peak intensities below 10 in each spectrum in <code>sps</code> with a value of 0.</p>
+<div class="sourceCode" id="cb53"><html><body><pre class="r"><span class="no">sps</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">replaceIntensitiesBelow</a></span>(<span class="no">sps</span>, <span class="kw">threshold</span> <span class="kw">=</span> <span class="fl">10</span>, <span class="kw">value</span> <span class="kw">=</span> <span class="fl">0</span>)</pre></body></html></div>
 <p>As a result intensities below 10 were set to 0 for all peaks.</p>
 <div class="sourceCode" id="cb54"><html><body><pre class="r"><span class="fu">intensity</span>(<span class="no">sps</span>)</pre></body></html></div>
 <pre><code>## NumericList of length 4
@@ -471,9 +471,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 2 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Wed Jun 24 15:00:21 2020]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Jun 24 15:00:21 2020]
-##  Spectra of MS level(s) 2 cleaned. [Wed Jun 24 15:00:21 2020]</code></pre>
+##  Merge 2 Spectra into one [Thu Jun 25 06:35:48 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Jun 25 06:35:48 2020]
+##  Spectra of MS level(s) 2 cleaned. [Thu Jun 25 06:35:48 2020]</code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb61"><html><body><pre class="r"><span class="co">## Define a function that takes a matrix as input, divides the second</span>
 <span class="co">## column by parameter y and returns it. Note that ... is required in</span>
@@ -496,9 +496,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 3 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Wed Jun 24 15:00:21 2020]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Jun 24 15:00:21 2020]
-##  Spectra of MS level(s) 2 cleaned. [Wed Jun 24 15:00:21 2020]</code></pre>
+##  Merge 2 Spectra into one [Thu Jun 25 06:35:48 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Jun 25 06:35:48 2020]
+##  Spectra of MS level(s) 2 cleaned. [Thu Jun 25 06:35:48 2020]</code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb63"><html><body><pre class="r"><span class="fu">intensity</span>(<span class="no">sps_2</span>)</pre></body></html></div>
 <pre><code>## NumericList of length 4
@@ -543,10 +543,10 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Wed Jun 24 15:00:21 2020]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Jun 24 15:00:21 2020]
-##  Spectra of MS level(s) 2 cleaned. [Wed Jun 24 15:00:21 2020]
-##  Applied processing queue with 2 steps [Wed Jun 24 15:00:21 2020]</code></pre>
+##  Merge 2 Spectra into one [Thu Jun 25 06:35:48 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Jun 25 06:35:48 2020]
+##  Spectra of MS level(s) 2 cleaned. [Thu Jun 25 06:35:48 2020]
+##  Applied processing queue with 2 steps [Thu Jun 25 06:35:49 2020]</code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage.</p>
 </div>
 <div id="changing-backends" class="section level2">
@@ -573,7 +573,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 1862         1   259.752       931
 ##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Jun 24 15:00:23 2020]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Thu Jun 25 06:35:50 2020]</code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
 <div class="sourceCode" id="cb81"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="no">sps_sciex</span>), <span class="kw">units</span> <span class="kw">=</span> <span class="st">"Mb"</span>)</pre></body></html></div>
 <pre><code>## 52.4 Mb</code></pre>
@@ -639,7 +639,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [8] methods   base     
 ## 
 ## other attached packages:
-## [1] msdata_0.29.0       magrittr_1.5        Spectra_0.5.3      
+## [1] msdata_0.29.0       magrittr_1.5        Spectra_0.5.4      
 ## [4] ProtGenerics_1.19.3 BiocParallel_1.23.0 S4Vectors_0.27.12  
 ## [7] BiocGenerics_0.35.4 BiocStyle_2.17.0   
 ## 
