@@ -18,12 +18,13 @@ NULL
 #' @details
 #'
 #' The `Spectra` class uses by default a lazy data manipulation strategy,
-#' i.e. data manipulations such as performed with `removePeaks` are not applied
-#' immediately to the data, but applied on-the-fly to the spectrum data once it
-#' is retrieved. For some backends that allow to write data back to the data
-#' storage (such as the [MsBackendDataFrame()] and [MsBackendHdf5Peaks()]) it
-#' is possible to apply to queue with the `applyProcessing` function. See the
-#' *Data manipulation and analysis methods* section below for more details.
+#' i.e. data manipulations such as performed with `replaceIntensitiesBelow` are
+#' not applied immediately to the data, but applied on-the-fly to the spectrum
+#' data once it is retrieved. For some backends that allow to write data back
+#' to the data storage (such as the [MsBackendDataFrame()] and
+#' [MsBackendHdf5Peaks()]) it is possible to apply to queue with the
+#' `applyProcessing` function. See the *Data manipulation and analysis
+#' methods* section below for more details.
 #'
 #' @section Creation of objects, conversion and changing the backend:
 #'
@@ -411,14 +412,18 @@ NULL
 #'   If the ratio of the signal to the highest intensity of the peak is below
 #'   `threshold` it will be ignored for the weighted average.
 #'
-#' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
-#'   value `threshold` by setting their intensity to `0`. With the default
-#'   `threshold = "min"` all peaks with an intensity smaller or equal to the
-#'   minimal non-zero intensity is set to `0`. If the spectrum is in
-#'   profile mode, ranges of successive non-0 peaks <= `threshold` are set to 0.
-#'   If the spectrum is centroided, then individual peaks <= `threshold` are set
-#'   to 0. Note that the number of peaks is not changed unless `clean` is
-#'   called after `removePeaks`.
+#' - `replaceIntensitiesBelow`: replaces intensities below a specified
+#'   threshold with the provided `value`. Parameter `threshold` can be either
+#'   a single numeric value or a function which is applied to all non-`NA`
+#'   intensities of each spectrum to determine a threshold value for each
+#'   spectrum. The default is `threshold = min` which replaces all values
+#'   which are <= the minimum intensity in a spectrum with `value` (the
+#'   default for `value` is `0`). Note that the function specified with
+#'   `threshold` is expected to have a parameter `na.rm` since `na.rm = TRUE`
+#'   will be passed to the function. If the spectrum is in profile mode,
+#'   ranges of successive non-0 peaks <= `threshold` are set to 0.
+#'   Parameter `msLevel.` allows to apply this to only spectra of certain MS
+#'   level(s).
 #'
 #' @return See individual method description for the return value.
 #'
@@ -574,7 +579,9 @@ NULL
 #' @param threshold
 #' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
 #'      intensity. Just values above are used for the weighted mean calclulation.
-#' - For `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
+#' - For `replaceIntensitiesBelow`: a `numeric(1)` defining the threshold or
+#'   a `function` to calculate the threshold for each spectrum on its intensity
+#'   values. Defaults to `threshold = min`.
 #'
 #' @param use.names For `lengths`: ignored.
 #'
@@ -747,8 +754,8 @@ NULL
 #' ## Set the data to be centroided
 #' centroided(data) <- TRUE
 #'
-#' ## Remove peaks with an intensity below 40.
-#' res <- removePeaks(data, threshold = 40)
+#' ## Replace peak intensities below 40 with 3.
+#' res <- replaceIntensitiesBelow(data, threshold = 40, value = 3)
 #' res
 #'
 #' ## Get the intensities of the first and second spectrum.
@@ -1563,19 +1570,24 @@ setMethod("pickPeaks", "Spectra",
 
 #' @rdname Spectra
 #'
-#' @exportMethod removePeaks
-setMethod("removePeaks", "Spectra",
-          function(object, threshold = "min",
+#' @exportMethod replaceIntensitiesBelow
+setMethod("replaceIntensitiesBelow", "Spectra",
+          function(object, threshold = min, value = 0,
                    msLevel. = unique(msLevel(object))) {
-              if (!is.numeric(threshold) & threshold != "min")
+              if (!is.numeric(threshold) && !is.function(threshold))
                   stop("Argument 'threshold' has to be either numeric or ",
-                       "'min'.")
+                       "a function.")
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .peaks_remove,
-                                      threshold = threshold, msLevel = msLevel.)
+              object <- addProcessing(object, .peaks_replace_intensity,
+                                      threshold = threshold, value = value,
+                                      msLevel = msLevel.)
+              msg <- ifelse(
+                  is.function(threshold),
+                  yes = "a threshold defined by a provided function",
+                  no = threshold)
               object@processing <- .logging(object@processing,
-                                            "Signal <= ", threshold,
+                                            "Signal <= ", msg,
                                             " in MS level(s) ",
                                             paste0(msLevel., collapse = ", "),
                                             " set to 0")

@@ -41,8 +41,8 @@ setGeneric("isReadOnly", function(object, ...)
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
 #' @rdname hidden_aliases
-setGeneric("removePeaks", function(object, t="min", ...)
-    standardGeneric("removePeaks"))
+setGeneric("replaceIntensitiesBelow", function(object, threshold = min, ...)
+    standardGeneric("replaceIntensitiesBelow"))
 #' @rdname hidden_aliases
 setGeneric("replaceList<-", function(object, value)
     standardGeneric("replaceList<-"))
