@@ -13,11 +13,11 @@
 \alias{backendMerge}
 \alias{bin}
 \alias{bin,numeric-method}
-\alias{clean}
 \alias{compareSpectra}
 \alias{containsMz}
 \alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
+\alias{filterIntensity}
 \alias{isReadOnly}
 \alias{pickPeaks}
 \alias{replaceIntensitiesBelow}
@@ -141,8 +141,6 @@ bin(x, ...)
   FUN = max
 )
 
-clean(object, ...)
-
 compareSpectra(x, y, ...)
 
 containsMz(object, ...)
@@ -150,6 +148,8 @@ containsMz(object, ...)
 containsNeutralLoss(object, ...)
 
 dropNaSpectraVariables(object, ...)
+
+filterIntensity(object, ...)
 
 isReadOnly(object, ...)
 

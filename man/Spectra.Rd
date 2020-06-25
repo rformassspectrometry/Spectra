@@ -72,7 +72,7 @@
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
 \alias{bin,Spectra-method}
-\alias{clean,Spectra-method}
+\alias{filterIntensity,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
 \alias{pickPeaks,Spectra-method}
@@ -271,7 +271,11 @@ combineSpectra(
 
 \S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
 
-\S4method{clean}{Spectra}(object, all = FALSE, msLevel. = unique(msLevel(object)))
+\S4method{filterIntensity}{Spectra}(
+  object,
+  intensity = c(0, Inf),
+  msLevel. = unique(msLevel(object))
+)
 
 \S4method{compareSpectra}{Spectra,Spectra}(
   x,
@@ -446,9 +450,10 @@ Defaults to \code{binSize = 1}.}
 
 \item{breaks}{For \code{bin}: \code{numeric} defining the m/z breakpoints between bins.}
 
-\item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
-removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
-non-zero intensity peak should be kept (\code{FALSE}).}
+\item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
+either the lower or the lower and upper intensity limit for the
+filtering. Defaults to \code{intensity = c(0, Inf)} thus only peaks with \code{NA}
+intensity are removed.}
 
 \item{y}{A \code{Spectra} object.}
 
@@ -787,9 +792,6 @@ parallel processing alltogether. Other partitionings might result in
 errors (especially if a \code{MsBackendHdf5Peaks} backend is used).
 \item \code{bin}: aggregates individual spectra into discrete (m/z) bins. All
 intensity values for peaks falling into the same bin are summed.
-\item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
-0-intensity peaks next to non-zero intensity peaks are retained while with
-\code{all = TRUE} all 0-intensity peaks are removed.
 \item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum
 are used and the peak matrices are combined using the function specified
@@ -821,6 +823,14 @@ comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+\item \code{filterIntensity}: filters each spectrum keeping only peaks with
+intensities that are within the provided range (parameter \code{intensity}). To
+remove only peaks with intensities below a certain threshold, say 100, use
+\code{intensity = c(100, Inf)}. Note: also a single value can be passed with
+the \code{intensity} parameter in which case an upper limit of \code{Inf} is used.
+Note that this function removes also peaks with missing intensities
+(i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
+filtering to spectra of the specified MS level(s).
 \item \code{lapply}: apply a given function to each spectrum in a \code{Spectra} object.
 The \code{Spectra} is splitted into individual spectra and on each of them
 (i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
@@ -1027,8 +1037,8 @@ res
 intensity(res)[[1]]
 intensity(res)[[2]]
 
-## Clean all spectra removing all 0-intensity peaks.
-res <- clean(res, all = TRUE)
+## Remove all peaks with an intensity below 40.
+res <- filterIntensity(res, intensity = c(40, Inf))
 
 ## Get the intensities of the first and second spectrum.
 intensity(res)[[1]]
