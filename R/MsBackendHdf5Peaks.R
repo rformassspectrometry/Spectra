@@ -61,10 +61,9 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
                        "elements in 'data' column \"dataStorage\" (",
                        length(unique(data$dataStorage)), "\"")
               if (length(hdf5path)) {
-                  suppressWarnings(hdf5path <- normalizePath(hdf5path))
                   if (!dir.exists(hdf5path))
                       dir.create(hdf5path, recursive = TRUE)
-                  files <- file.path(hdf5path, basename(files))
+                  files <- normalizePath(file.path(hdf5path, basename(files)))
               }
               if (any(file.exists(files)))
                   stop("File(s) ", files[file.exists(files)],
