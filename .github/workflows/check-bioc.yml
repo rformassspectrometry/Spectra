@@ -402,6 +402,10 @@ jobs:
           deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
           BiocManager::install(deps$package[deps$diff != 0])
 
+          ## Force install of rhdf5
+          BiocManager::install(c('grimbough/Rhdf5lib'), ask = FALSE, update = FALSE, INSTALL_opts = '--force-biarch')
+          BiocManager::install('rhdf5', dependencies = TRUE, ask = FALSE, update = FALSE, INSTALL_opts = '--force-biarch')
+
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")
