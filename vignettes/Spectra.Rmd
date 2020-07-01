@@ -386,10 +386,12 @@ As a result intensities below 10 were set to 0 for all peaks.
 intensity(sps)
 ```
 
-Zero-intensity peaks can then be removed with the `clean` function.
+Zero-intensity peaks (and peaks with missing intensities) can then be removed
+with the `filterIntensity` function specifying a lower required intensity level
+or optionally also an upper intensity limit.
 
 ```{r clean}
-sps <- clean(sps, all = TRUE)
+sps <- filterIntensity(sps, intensity = c(0.1, Inf))
 ```
 
 ```{r clean-intensity}

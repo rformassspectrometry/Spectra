@@ -336,10 +336,6 @@ NULL
 #' - `bin`: aggregates individual spectra into discrete (m/z) bins. All
 #'   intensity values for peaks falling into the same bin are summed.
 #'
-#' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
-#'   0-intensity peaks next to non-zero intensity peaks are retained while with
-#'   `all = TRUE` all 0-intensity peaks are removed.
-#'
 #' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
@@ -372,6 +368,15 @@ NULL
 #'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
+#'
+#' - `filterIntensity`: filters each spectrum keeping only peaks with
+#'   intensities that are within the provided range (parameter `intensity`). To
+#'   remove only peaks with intensities below a certain threshold, say 100, use
+#'   `intensity = c(100, Inf)`. Note: also a single value can be passed with
+#'   the `intensity` parameter in which case an upper limit of `Inf` is used.
+#'   Note that this function removes also peaks with missing intensities
+#'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
+#'   filtering to spectra of the specified MS level(s).
 #'
 #' - `lapply`: apply a given function to each spectrum in a `Spectra` object.
 #'   The `Spectra` is splitted into individual spectra and on each of them
@@ -426,10 +431,6 @@ NULL
 #'   level(s).
 #'
 #' @return See individual method description for the return value.
-#'
-#' @param all for `clean`: `logical(1)` whether all 0 intensity peaks should be
-#'     removed (`TRUE`) or whether 0-intensity peaks directly adjacent to a
-#'     non-zero intensity peak should be kept (`FALSE`).
 #'
 #' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
 #'     acquisition number of the spectra to which the object should be
@@ -497,6 +498,11 @@ NULL
 #'     reported total ion current should be reported, or whether the
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`, same as `ionCount`).
+#'
+#' @param intensity For `filterIntensity`: `numeric` of length 1 or 2 defining
+#'     either the lower or the lower and upper intensity limit for the
+#'     filtering. Defaults to `intensity = c(0, Inf)` thus only peaks with `NA`
+#'     intensity are removed.
 #'
 #' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
@@ -762,8 +768,8 @@ NULL
 #' intensity(res)[[1]]
 #' intensity(res)[[2]]
 #'
-#' ## Clean all spectra removing all 0-intensity peaks.
-#' res <- clean(res, all = TRUE)
+#' ## Remove all peaks with an intensity below 40.
+#' res <- filterIntensity(res, intensity = c(40, Inf))
 #'
 #' ## Get the intensities of the first and second spectrum.
 #' intensity(res)[[1]]
@@ -1466,19 +1472,25 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
 
 #' @rdname Spectra
 #'
-#' @exportMethod clean
-setMethod("clean", "Spectra",
-          function(object, all = FALSE, msLevel. = unique(msLevel(object))) {
-              if (!is.logical(all) || length(all) != 1)
-                  stop("Argument 'all' must be a logical of length 1")
+#' @exportMethod filterIntensity
+setMethod("filterIntensity", "Spectra",
+          function(object, intensity = c(0, Inf),
+                   msLevel. = unique(msLevel(object))) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .peaks_clean, all = all,
+              if (length(intensity) == 1)
+                  intensity <- c(intensity, Inf)
+              if (length(intensity) != 2)
+                  stop("'intensity' should be of length specifying a lower ",
+                       "intensity limit or of length two defining a lower and",
+                       " upper limit.")
+              object <- addProcessing(object, .peaks_filter_intensity,
+                                      intensity = intensity,
                                       msLevel = msLevel.)
-              object@processing <- .logging(object@processing,
-                                            "Spectra of MS level(s) ",
-                                            paste0(msLevel., collapse = ", "),
-                                            " cleaned.")
+              object@processing <- .logging(
+                  object@processing, "Remove peaks with intensities outside [",
+                  intensity[1], ", ", intensity[2], "] in spectra of MS level(s) ",
+                  paste0(msLevel., collapse = ", "), ".")
               object
           })
 

@@ -21,8 +21,6 @@ setGeneric("bin", function(x, ...) standardGeneric("bin"))
 #' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
 #' @rdname hidden_aliases
-setGeneric("clean", function(object, ...) standardGeneric("clean"))
-#' @rdname hidden_aliases
 setGeneric("compareSpectra", function(x, y, ...)
     standardGeneric("compareSpectra"))
 #' @rdname hidden_aliases
@@ -34,6 +32,9 @@ setGeneric("containsNeutralLoss", function(object, ...)
 #' @rdname hidden_aliases
 setGeneric("dropNaSpectraVariables", function(object, ...)
     standardGeneric("dropNaSpectraVariables"))
+#' @rdname hidden_aliases
+setGeneric("filterIntensity", function(object, ...)
+    standardGeneric("filterIntensity"))
 #' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))

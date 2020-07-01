@@ -37,7 +37,8 @@ test_that(".apply_processing_queue works", {
     expect_equal(vapply(res, nrow, integer(1)), vapply(pks, nrow, integer(1)))
 
     ## Length 2
-    pq <- c(pq, list(ProcessingStep(.peaks_clean, list(all = TRUE))))
+    pq <- c(pq, list(ProcessingStep(.peaks_filter_intensity,
+                                    list(intensity = c(0.1, Inf)))))
     res <- .apply_processing_queue(pks, msLevel(be),
                                    rep(TRUE, length(be)), pq)
     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
@@ -63,13 +64,15 @@ test_that(".peaksapply works", {
     res_2 <- .peaksapply(sps)
     expect_equal(res, res_2)
 
-    res_3 <- .peaksapply(sps, FUN = .peaks_clean, all = TRUE)
+    res_3 <- .peaksapply(sps, FUN = .peaks_filter_intensity,
+                         intensity = c(0.1, Inf))
     expect_true(all(vapply(res_3, nrow, integer(1)) <
                     vapply(res_2, nrow, integer(1))))
     expect_true(!any(vapply(res_3, function(z) any(z[, 2] == 0), logical(1))))
 
     sps@processingQueue <- c(sps@processingQueue,
-                             list(ProcessingStep(.peaks_clean, list(all = TRUE))))
+                             list(ProcessingStep(.peaks_filter_intensity,
+                                                 list(intensity = c(0.1, Inf)))))
     res_4 <- .peaksapply(sps)
     expect_equal(res_3, res_4)
 })
@@ -79,8 +82,9 @@ test_that("applyProcessing works", {
     sps_mzr <- filterRt(Spectra(sciex_mzr), rt = c(10, 20))
     ## Add processings.
     centroided(sps_mzr) <- TRUE
-    sps_mzr <- replaceIntensitiesBelow(sps_mzr, threshold = 5000)
-    sps_mzr <- clean(sps_mzr, all = TRUE)
+    sps_mzr <- replaceIntensitiesBelow(sps_mzr, threshold = 5000,
+                                       value = NA_real_)
+    sps_mzr <- filterIntensity(sps_mzr)
     expect_true(length(sps_mzr@processingQueue) == 2)
     expect_error(applyProcessing(sps_mzr), "is read-only")
 
@@ -207,7 +211,8 @@ test_that(".lapply works", {
     expect_identical(rtime(sps) + 3, unlist(res, use.names = FALSE))
 
     ## After clean and stuff
-    spsc <- clean(replaceIntensitiesBelow(sps, threshold = 4000), all = TRUE)
+    spsc <- filterIntensity(replaceIntensitiesBelow(
+        sps, threshold = 4000, value = NA_real_))
     res <- .lapply(spsc, FUN = function(z) sum(intensity(z)))
     res_2 <- vapply(intensity(spsc), sum, numeric(1))
     expect_identical(unlist(res, use.names = FALSE), res_2)

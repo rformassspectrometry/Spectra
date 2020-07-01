@@ -242,7 +242,7 @@ test_that("intensity,Spectra works", {
                           c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
                           c(9, 6, 0, 0, 3, 9, 4, 0, 0, 0),
                           compress = FALSE))
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- intensity(sps)
     expect_identical(res, NumericList(c(1, 6, 3, 9, 1), c(9, 6, 3, 9, 4),
                                       compress = FALSE))
@@ -302,7 +302,7 @@ test_that("isEmpty,Spectra works", {
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- isEmpty(sps)
     expect_identical(res, c(TRUE, TRUE))
 })
@@ -377,7 +377,7 @@ test_that("mz,Spectra works", {
     sps <- Spectra(df)
     res <- mz(sps)
     expect_identical(res, NumericList(1:10, 1:10, compress = FALSE))
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- mz(sps)
     expect_equal(res, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 6, 7),
                                   compress = FALSE))
@@ -417,7 +417,7 @@ test_that("lengths,Spectra works", {
     res <- lengths(sps)
     expect_identical(res, c(3L, 2L))
 
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- lengths(sps)
     expect_identical(res, c(0L, 0L))
 })
@@ -564,7 +564,7 @@ test_that("spectraData,Spectra works", {
     expect_equal(sps$intensity, NumericList(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
                                             c(9, 6, 0, 0, 3, 0, 0, 0, 3, 2),
                                             compress = FALSE))
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- spectraData(sps)
     expect_equal(sps$mz, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 9, 10),
                                      compress = FALSE))
@@ -779,13 +779,15 @@ test_that("filterEmptySpectra,Spectra works", {
     expect_equal(length(res@processing), 1)
     expect_equal(rtime(res), c(1, 1))
 
-    sps <- clean(replaceIntensitiesBelow(sps, threshold = 20), all = TRUE)
+    sps <- filterIntensity(replaceIntensitiesBelow(
+        sps, threshold = 20, value = NA_real_))
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 1)
     expect_equal(rtime(res), 1)
     expect_equal(length(res@processing), 3)
 
-    sps <- clean(replaceIntensitiesBelow(sps, threshold = 50), all = TRUE)
+    sps <- filterIntensity(replaceIntensitiesBelow(
+        sps, threshold = 50, value = NA_real_))
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 0)
 
@@ -923,24 +925,25 @@ test_that("bin,Spectra works", {
     expect_identical(res, sps)
 })
 
-test_that("clean,Spectra works", {
+test_that("filterIntensity,Spectra works", {
     sps <- Spectra()
-    res <- clean(sps)
+    res <- filterIntensity(sps)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.peaks_clean,
-                                list(all = FALSE, msLevel = integer())))
+                 ProcessingStep(.peaks_filter_intensity,
+                                list(intensity = c(0, Inf),
+                                     msLevel = integer())))
 
-    res <- clean(sps, all = TRUE, msLevel = 2L)
+    res <- filterIntensity(sps, msLevel = 2L)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.peaks_clean,
-                                list(all = TRUE, msLevel = 2L)))
+                 ProcessingStep(.peaks_filter_intensity,
+                                list(intensity = c(0, Inf),
+                                     msLevel = 2L)))
 
-    res <- clean(Spectra(sciex_mzr), all = TRUE)
-    pks_res <- lapply(sciex_pks, .peaks_clean, all = TRUE,
-                      spectrumMsLevel = 1L)
-    expect_identical(as.list(res), SimpleList(pks_res))
+    res <- filterIntensity(Spectra(sciex_mzr), intensity = c(500, 9000))
+    ints <- unlist(intensity(res), use.names = FALSE)
+    expect_true(all(ints >= 500 & ints <= 9000))
 })
 
 test_that("compareSpectra works", {
@@ -1094,7 +1097,8 @@ test_that("lapply,Spectra works", {
                  vapply(ints, mean, numeric(1)) + 3)
 
     ## Same after replaceIntensitiesBelow and clean.
-    sps <- clean(replaceIntensitiesBelow(sps, t = 4000), all = TRUE)
+    sps <- filterIntensity(replaceIntensitiesBelow(sps, t = 4000),
+                           intensity = 0.1)
     res <- lapply(sps, FUN = function(x) mean(x$intensity[[1]]))
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(intensity(sps), mean, numeric(1)))
