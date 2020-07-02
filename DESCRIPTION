@@ -36,6 +36,7 @@ Suggests:
     mzR (>= 2.19.6),
     rhdf5 (>= 2.32.0),
     rmarkdown,
+    vdiffr,
     magrittr
 Remotes:
     RforMassSpectrometry/MsCoreUtils
@@ -45,7 +46,7 @@ VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/Spectra/issues
 URL: https://github.com/RforMassSpectrometry/Spectra
 biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Roxygen: list(markdown=TRUE)
 Collate:
     'hidden_aliases.R'
@@ -64,4 +65,5 @@ Collate:
     'functions-util.R'
     'peak-list-functions.R'
     'peaks-functions.R'
+    'plotting-functions.R'
     'zzz.R'
