@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.12/Spectra">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Last modified:</strong> 2020-07-03 10:25:04<br><strong>Compiled</strong>: Fri Jul 3 10:35:23 2020</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.12/Spectra">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Last modified:</strong> 2020-07-03 15:03:54<br><strong>Compiled</strong>: Fri Jul 3 15:13:15 2020</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -356,11 +356,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <li>
 <code>filterAcquisitionNum</code>: retain spectra with certain acquisition numbers.</li>
 <li>
-<code>filterEmptySpectra</code>: remove spectra without mass peaks.</li>
-<li>
 <code>filterDataOrigin</code>: subset to spectra from specific origins.</li>
 <li>
 <code>filterDataStorage</code>: subset to spectra from certain data storage files.</li>
+<li>
+<code>filterEmptySpectra</code>: remove spectra without mass peaks.</li>
 <li>
 <code>filterIsolationWindow</code>: keep spectra with the provided <code>mz</code> in their isolation window (m/z range).</li>
 <li>
@@ -438,8 +438,8 @@ document.addEventListener("DOMContentLoaded", function() {
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Jul  3 10:35:26 2020]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Jul  3 10:35:26 2020]</code></pre>
+##  Filter: select data origin(s) /usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Jul  3 15:13:18 2020]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Jul  3 15:13:18 2020]</code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit">
@@ -467,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Fri Jul  3 10:35:26 2020]</code></pre>
+##  Merge 2 Spectra into one [Fri Jul  3 15:13:18 2020]</code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb49"><pre class="downlit">
 <span class="fu">spectraVariables</span>(<span class="kw">sps</span>)
@@ -535,9 +535,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 2 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Fri Jul  3 10:35:26 2020]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul  3 10:35:26 2020]
-##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul  3 10:35:26 2020]</code></pre>
+##  Merge 2 Spectra into one [Fri Jul  3 15:13:18 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul  3 15:13:18 2020]
+##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul  3 15:13:18 2020]</code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb61"><pre class="downlit">
 <span class="co">## Define a function that takes a matrix as input, divides the second</span>
@@ -562,9 +562,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 3 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Fri Jul  3 10:35:26 2020]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul  3 10:35:26 2020]
-##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul  3 10:35:26 2020]</code></pre>
+##  Merge 2 Spectra into one [Fri Jul  3 15:13:18 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul  3 15:13:18 2020]
+##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul  3 15:13:18 2020]</code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb63"><pre class="downlit">
 <span class="fu">intensity</span>(<span class="kw">sps_2</span>)
@@ -623,21 +623,47 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Fri Jul  3 10:35:26 2020]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul  3 10:35:26 2020]
-##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul  3 10:35:26 2020]
-##  Applied processing queue with 2 steps [Fri Jul  3 10:35:27 2020]</code></pre>
+##  Merge 2 Spectra into one [Fri Jul  3 15:13:18 2020]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul  3 15:13:18 2020]
+##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul  3 15:13:18 2020]
+##  Applied processing queue with 2 steps [Fri Jul  3 15:13:19 2020]</code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage.</p>
+</div>
+<div id="plotting-spectra" class="section level2">
+<h2 class="hasAnchor">
+<a href="#plotting-spectra" class="anchor"></a>Plotting <code>Spectra</code>
+</h2>
+<p>The <code>Spectra</code> package provides the following functions to visualize spectra data: - <code>plotSpectra</code>: plot each spectrum in <code>Spectra</code> in its own panel. - <code>plotSpectraOverlay</code>: plot multiple spectra into the <strong>same</strong> plot.</p>
+<p>Below we use <code>plotSpectra</code> to plot the 4 spectra from the <code>sps</code> object using their names (as provided in spectra variable <code>"name"</code>) as plot titles.</p>
+<div class="sourceCode" id="cb77"><pre class="downlit">
+<span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span>(<span class="kw">sps</span>, main = <span class="kw">sps</span><span class="op">$</span><span class="kw">name</span>)
+</pre></div>
+<p><img src="Spectra_files/figure-html/plotspectra-1.png" width="768"></p>
+<p>It is also possible to label individual peaks in each plot. Below we use the m/z value of each peak as its label. In the example we define a function that accesses information from each spectrum (<code>z</code>) and returns a <code>character</code> for each peak with the text that should be used as label. Parameters <code>labelSrt</code>, <code>labelPos</code> and <code>labelOffset</code> define the rotation of the label text and its position relative to the x and y coordinates of the peak.</p>
+<div class="sourceCode" id="cb78"><pre class="downlit">
+<span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span>(<span class="kw">sps</span>, main = <span class="kw">sps</span><span class="op">$</span><span class="kw">name</span>,
+            labels = <span class="fu">function</span>(<span class="kw">z</span>) <span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span>(<span class="fu">mz</span>(<span class="kw">z</span>)[[<span class="fl">1L</span>]], digits = <span class="fl">4</span>),
+            labelSrt = <span class="op">-</span><span class="fl">30</span>, labelPos = <span class="fl">2</span>, labelOffset = <span class="fl">0.1</span>)
+</pre></div>
+<p><img src="Spectra_files/figure-html/plotspectra-label-1.png" width="768"></p>
+<p>Sometimes it might be of interest to plot multiple spectra into the <strong>same</strong> plot (e.g. to directly compare peaks from multiple spectra). This can be done with <code>plotSpectraOverlay</code> which we use below to create an <em>overlay-plot</em> of our 4 example spectra, using a different color for each spectrum.</p>
+<div class="sourceCode" id="cb79"><pre class="downlit">
+<span class="kw">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#E41A1C80"</span>, <span class="st">"#377EB880"</span>, <span class="st">"#4DAF4A80"</span>, <span class="st">"#984EA380"</span>)
+<span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraOverlay</a></span>(<span class="kw">sps</span>, lwd = <span class="fl">2</span>, col = <span class="kw">cols</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topleft"</span>, col = <span class="kw">cols</span>, legend = <span class="kw">sps</span><span class="op">$</span><span class="kw">name</span>, pch = <span class="fl">15</span>)
+</pre></div>
+<p><img src="Spectra_files/figure-html/plotspectraoverlay-1.png" width="576"></p>
+<p>See also <code><a href="../reference/spectra-plotting.html">?plotSpectra</a></code> for more plotting options and examples.</p>
 </div>
 <div id="changing-backends" class="section level2">
 <h2 class="hasAnchor">
 <a href="#changing-backends" class="anchor"></a>Changing backends</h2>
 <p>In the previous sections we learned already that a <code>Spectra</code> object can use different backends for the actual data handling. It is also possible to change the backend of a <code>Spectra</code> to a different one with the <code>setBackend</code> function. We could for example change the (<code>MsBackendMzR</code>) backend of the <code>sps_sciex</code> object to a <code>MsBackendDataFrame</code> backend to enable use of the data even without the need to keep the original mzML files. Below we change the backend of <code>sps_sciex</code> to the in-memory <code>MsBackendDataFrame</code> backend.</p>
-<div class="sourceCode" id="cb77"><pre class="downlit">
+<div class="sourceCode" id="cb80"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="kw">sps_sciex</span>), units = <span class="st">"Mb"</span>)
 </pre></div>
 <pre><code>## 0.4 Mb</code></pre>
-<div class="sourceCode" id="cb79"><pre class="downlit">
+<div class="sourceCode" id="cb82"><pre class="downlit">
 <span class="kw">sps_sciex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">setBackend</a></span>(<span class="kw">sps_sciex</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendDataFrame</a></span>())
 <span class="kw">sps_sciex</span>
 </pre></div>
@@ -657,18 +683,18 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 1862         1   259.752       931
 ##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Jul  3 10:35:28 2020]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Jul  3 15:13:21 2020]</code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
-<div class="sourceCode" id="cb81"><pre class="downlit">
+<div class="sourceCode" id="cb84"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="kw">sps_sciex</span>), units = <span class="st">"Mb"</span>)
 </pre></div>
 <pre><code>## 52.4 Mb</code></pre>
 <p>The <code>dataStorage</code> spectrum variable has now changed, while <code>dataOrigin</code> still keeps the information about the originating files:</p>
-<div class="sourceCode" id="cb83"><pre class="downlit">
+<div class="sourceCode" id="cb86"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu">dataStorage</span>(<span class="kw">sps_sciex</span>))
 </pre></div>
 <pre><code>## [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</code></pre>
-<div class="sourceCode" id="cb85"><pre class="downlit">
+<div class="sourceCode" id="cb88"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(<span class="fu">dataOrigin</span>(<span class="kw">sps_sciex</span>)))
 </pre></div>
 <pre><code>## [1] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"
@@ -692,16 +718,16 @@ document.addEventListener("DOMContentLoaded", function() {
 </ul>
 <p>All of the above mentioned backends support changing all of their their spectra variables, <strong>except</strong> the <code>MsBackendMzR</code> that does not support changing m/z or intensity values for the mass peaks.</p>
 <p>With the example below we load the data from a single mzML file and use a <code>MsBackendHdf5Peaks</code> backend for data storage. The <code>hdf5path</code> parameter allows us to specify the storage location of the HDF5 file.</p>
-<div class="sourceCode" id="cb87"><pre class="downlit">
+<div class="sourceCode" id="cb90"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">msdata</span>)
 <span class="kw">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msdata/man/proteomics.html">proteomics</a></span>(full.names = <span class="fl">TRUE</span>)[<span class="fl">5</span>]
 
 <span class="kw">sps_tmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">Spectra</a></span>(<span class="kw">fl</span>, backend = <span class="fu"><a href="../reference/MsBackend.html">MsBackendHdf5Peaks</a></span>(), hdf5path = <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())
 </pre></div>
 <pre><code>## Warning in normalizePath(file.path(hdf5path, basename(files))): path[1]="/tmp/
-## RtmpAwCdxk/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.h5": No
+## RtmpYNgIxU/TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.h5": No
 ## such file or directory</code></pre>
-<div class="sourceCode" id="cb89"><pre class="downlit">
+<div class="sourceCode" id="cb92"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(<span class="fu">dataStorage</span>(<span class="kw">sps_tmt</span>)))
 </pre></div>
 <pre><code>## [1] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.h5"
@@ -714,7 +740,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="session-information" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session information</h1>
-<div class="sourceCode" id="cb91"><pre class="downlit">
+<div class="sourceCode" id="cb94"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
 </pre></div>
 <pre><code>## R version 4.0.0 (2020-04-24)
@@ -747,7 +773,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  [7] digest_0.6.25       evaluate_0.14       memoise_1.1.0      
 ## [10] rhdf5_2.33.5        rlang_0.4.6         yaml_2.2.1         
 ## [13] pkgdown_1.5.1.9000  xfun_0.15           stringr_1.4.0      
-## [16] knitr_1.29          desc_1.2.0          fs_1.4.1           
+## [16] knitr_1.29          desc_1.2.0          fs_1.4.2           
 ## [19] IRanges_2.23.10     MsCoreUtils_1.1.3   rprojroot_1.3-2    
 ## [22] Biobase_2.49.0      R6_2.4.1            rmarkdown_2.3.2    
 ## [25] bookdown_0.20       Rhdf5lib_1.11.2     mzR_2.23.0         
