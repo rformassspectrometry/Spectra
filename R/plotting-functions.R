@@ -12,6 +12,9 @@
 #'
 #' - `plotSpectraMirror`: plots a pair of spectra as a *mirror plot*.
 #'
+#' For details on plotting spectra see also the `plot` help page from the
+#' `MSnbase` package.
+#'
 #' @param x a [Spectra()] object. For `plotSpectraMirror` it has to be an
 #'     object of length 2.
 #'
@@ -57,7 +60,7 @@
 #' @param ... additional parameters to be passed to the [plot.default()]
 #'     function.
 #'
-#' @author Johannes Rainer
+#' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
 #'
 #' @name spectra-plotting
 #'
@@ -181,14 +184,15 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
                                   labelCol = col, labelCex = 1, labelSrt = 0,
                                   labelAdj = NULL, labelPos = NULL,
                                   labelOffset = 0.5, add = FALSE,
-                                  axes = TRUE, frame.plot = axes, ...) {
+                                  axes = TRUE, frame.plot = axes,
+                                  orientation = 1, ...) {
     v <- as.list(x)[[1L]]
     mzs <- v[, "mz"]
-    ints <- v[, "intensity"]
+    ints <- orientation * v[, "intensity"]
     if (!length(xlim))
         xlim <- range(mzs, na.rm = TRUE)
     if (!length(ylim))
-        ylim <- c(0, max(ints, na.rm = TRUE))
+        ylim <- range(orientation * c(0, max(abs(ints), na.rm = TRUE)))
     if (!add) {
         dev.hold()
         on.exit(dev.flush())

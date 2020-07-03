@@ -78,6 +78,9 @@ the plot area into as many panels as there are spectra.
 overlay).
 \item \code{plotSpectraMirror}: plots a pair of spectra as a \emph{mirror plot}.
 }
+
+For details on plotting spectra see also the \code{plot} help page from the
+\code{MSnbase} package.
 }
 \examples{
 
@@ -124,5 +127,5 @@ plotSpectra(sp, labels = function(z) unlist(z$label),
 plotSpectra(sp[2], labels = c("A", "B", "C", "D"))
 }
 \author{
-Johannes Rainer
+Johannes Rainer, Sebastian Gibb, Laurent Gatto
 }
