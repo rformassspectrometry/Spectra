@@ -86,6 +86,8 @@ test_that(".sel_file works", {
     df <- DataFrame(msLevel = 1L,
                     dataOrigin = c("a", "a", "a", "a", "b", "c"))
     be <- backendInitialize(MsBackendDataFrame(), df)
+    expect_error(.sel_file(be, dataStorage = 5), "should be an integer")
+    expect_error(.sel_file(be, dataOrigin = 5), "should be an integer")
     res <- .sel_file(be)
     expect_identical(res, rep(TRUE, length(be)))
     dataStorage(be) <- c("a", "a", "b", "b", "c", "c")

@@ -1,4 +1,3 @@
-
 test_that("initializeBackend,MsBackendMzR works", {
     fl <- normalizePath(
         dir(system.file("sciex", package = "msdata"), full.names = TRUE))
