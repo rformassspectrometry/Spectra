@@ -104,7 +104,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.6</span>
       </span>
     </div>
 
@@ -471,7 +471,7 @@ returned <code>DataFrame</code>. By default, all columns are returned.</p></td>
     </tr>
     <tr>
       <th>drop</th>
-      <td><p>For <code>[</code>: not considered.</p></td>
+      <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>: not considered.</p></td>
     </tr>
     <tr>
       <th>initial</th>
@@ -482,15 +482,15 @@ total ion current should be (re)calculated on the actual data
     </tr>
     <tr>
       <th>i</th>
-      <td><p>For <code>[</code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></td>
+      <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></td>
     </tr>
     <tr>
       <th>j</th>
-      <td><p>For <code>[</code>: not supported.</p></td>
+      <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>: not supported.</p></td>
     </tr>
     <tr>
       <th>name</th>
-      <td><p>For <code>$</code> and <code>$&lt;-</code>: the name of the spectra variable to return
+      <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>$</a></code> and <code>$&lt;-</code>: the name of the spectra variable to return
 or set.</p></td>
     </tr>
     <tr>
@@ -508,9 +508,9 @@ but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></td>
 
 <p>New backend classes <strong>must</strong> extend the base <code>MsBackend</code> class and
 <strong>have</strong> to implement the following methods:</p><ul>
-<li><p><code>[</code>: subset the backend. Only subsetting by element (<em>row</em>/<code>i</code>) is
+<li><p><code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>: subset the backend. Only subsetting by element (<em>row</em>/<code>i</code>) is
 allowed</p></li>
-<li><p><code>$</code>, <code>$&lt;-</code>: access or set/add a single spectrum variable (column) in the
+<li><p><code><a href='https://rdrr.io/r/base/Extract.html'>$</a></code>, <code>$&lt;-</code>: access or set/add a single spectrum variable (column) in the
 backend.</p></li>
 <li><p><code>acquisitionNum</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
@@ -689,7 +689,7 @@ spectrum, <code>NA_real_</code> is returned.</p></li>
     
 
 
-<p>Backend classes must support (implement) the <code>[</code> method to subset the object.
+<p>Backend classes must support (implement) the <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code> method to subset the object.
 This method should only support subsetting by spectra (rows, <code>i</code>) and has
 to return a <code>MsBackend</code> class.</p>
 <p>Backends extending <code>MsBackend</code> should also implement the <code>backendMerge</code>
@@ -779,7 +779,7 @@ HDF5 file. If parameter <code>files</code> is omitted, the value in <code>dataSt
 used as file name (replacing any file ending with <code>".h5"</code>. To specify the
 file names, <code>files</code>' length has to match the number of unique elements in
 <code>"dataStorage"</code>.</p>
-<p>For details see examples on the <code><a href='Spectra.html'>Spectra()</a></code> help page.</p>
+<p>For details see examples on the <code>Spectra()</code> help page.</p>
     <h2 class="hasAnchor" id="implementation-notes"><a class="anchor" href="#implementation-notes"></a>Implementation notes</h2>
 
     
@@ -793,6 +793,9 @@ above). Developers of new <code>MsBackend</code>s should follow the
 of m/z or intensity values.</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Johannes Rainer, Sebastian Gibb, Laurent Gatto</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -809,7 +812,7 @@ of m/z or intensity values.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>
