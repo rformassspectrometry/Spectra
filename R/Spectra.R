@@ -3,7 +3,7 @@ NULL
 
 #' @title The Spectra class to manage and access MS data
 #'
-#' @aliases Spectra-class [,Spectra-method
+#' @aliases Spectra-class [,Spectra-method compareSpectra asDataFrame
 #'
 #' @name Spectra
 #'
