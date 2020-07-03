@@ -521,6 +521,8 @@ to the data storage (such as the \code{\link[=MsBackendDataFrame]{MsBackendDataF
 \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it is possible to apply to queue with the
 \code{applyProcessing} function. See the \emph{Data manipulation and analysis
 methods} section below for more details.
+
+For details on plotting spectra, see \code{\link[=plotSpectra]{plotSpectra()}}.
 }
 \section{Creation of objects, conversion and changing the backend}{
 
