@@ -31,6 +31,25 @@ test_that("plotSpectra works", {
 
 })
 
+test_that("plotSpectraOverlay works", {
+    vdiffr::expect_doppelganger(
+                "plotSpectraOverlay-basic",
+                function() plotSpectraOverlay(s, col = c("red", "green"))
+            )
+
+    vdiffr::expect_doppelganger(
+                "plotSpectraOverlay-xlim",
+                function() plotSpectraOverlay(s, xlim = c(0, 500))
+            )
+
+    vdiffr::expect_doppelganger(
+                "plotSpectraOverlay-no-axes",
+                function() plotSpectraOverlay(
+                               s, axes = FALSE,
+                               labels = function(z) mz(z)[[1L]])
+            )
+})
+
 test_that(".plot_single_spectrum works", {
     vdiffr::expect_doppelganger(
                 "plot_single_spectrum-basic",
