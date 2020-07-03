@@ -12,9 +12,6 @@
 #'
 #' - `plotSpectraMirror`: plots a pair of spectra as a *mirror plot*.
 #'
-#' For details on plotting spectra see also the `plot` help page from the
-#' `MSnbase` package.
-#'
 #' @param x a [Spectra()] object. For `plotSpectraMirror` it has to be an
 #'     object of length 2.
 #'

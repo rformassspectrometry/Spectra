@@ -26,6 +26,8 @@ NULL
 #' `applyProcessing` function. See the *Data manipulation and analysis
 #' methods* section below for more details.
 #'
+#' For details on plotting spectra, see [plotSpectra()].
+#'
 #' @section Creation of objects, conversion and changing the backend:
 #'
 #' `Spectra` classes can be created with the `Spectra` constructor function
