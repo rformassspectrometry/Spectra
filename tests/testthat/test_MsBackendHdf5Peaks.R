@@ -66,6 +66,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     expect_true(validObject(res))
     expect_identical(scanIndex(res), c(1L, 1L, 2L))
 
+    show(res)
     ## Errors
     expect_error(backendInitialize(MsBackendHdf5Peaks(), files = "single",
                                    data = df, hdf5path = dr),

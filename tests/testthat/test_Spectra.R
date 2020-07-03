@@ -44,6 +44,8 @@ test_that("Spectra,character works", {
     res_2 <- Spectra(sciex_file)
     expect_true(is(res@backend, "MsBackendDataFrame"))
     expect_identical(rtime(res), rtime(res_2))
+
+    show(res)
 })
 
 test_that("setBackend,Spectra works", {
@@ -659,6 +661,8 @@ test_that("$, $<-,Spectra works", {
     sps <- Spectra()
     expect_identical(sps$msLevel, integer())
 
+    expect_error(sps$not_there, "No spectra variable")
+
     sps <- Spectra(DataFrame(msLevel = c(1L, 2L), other_column = "a"))
     expect_identical(sps$msLevel, c(1L, 2L))
     expect_identical(sps$other_column, c("a", "a"))
@@ -722,6 +726,9 @@ test_that("filterAcquisitionNum,Spectra works", {
     res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = sciex_file[2])
     expect_equal(acquisitionNum(res),
                  c(1:sum(dataStorage(sps) == sciex_file[1]), 1:10))
+
+    expect_error(filterAcquisitionNum(sps, dataStorage = 2), "type character")
+    expect_error(filterAcquisitionNum(sps, dataOrigin = 2), "type character")
 })
 
 test_that("filterDataOrigin,Spectra works", {
@@ -729,6 +736,8 @@ test_that("filterDataOrigin,Spectra works", {
     res <- filterDataOrigin(sps)
     expect_true(length(res) == 0)
     expect_true(length(res@processing) == 1)
+
+    expect_error(filterDataOrigin(sps, 3), "type character")
 
     sps <- Spectra(sciex_mzr)
     res <- filterDataOrigin(sps, dataOrigin = "2")
@@ -751,6 +760,8 @@ test_that("filterDataStorage,Spectra works", {
     res <- filterDataStorage(sps)
     expect_true(length(res) == 0)
     expect_true(length(res@processing) == 1)
+
+    expect_error(filterDataStorage(sps, 3), "type character")
 
     sps <- Spectra(sciex_mzr)
     res <- filterDataStorage(sps, "2")
@@ -944,6 +955,8 @@ test_that("filterIntensity,Spectra works", {
     res <- filterIntensity(Spectra(sciex_mzr), intensity = c(500, 9000))
     ints <- unlist(intensity(res), use.names = FALSE)
     expect_true(all(ints >= 500 & ints <= 9000))
+
+    expect_error(filterIntensity(Spectra(sciex_mzr), c(1, 2, 3)), "limit")
 })
 
 test_that("compareSpectra works", {
@@ -1072,6 +1085,8 @@ test_that("replaceIntensitiesBelow,Spectra works", {
                                 list(threshold = 10, value = 0,
                                      msLevel = integer())))
 
+    expect_error(replaceIntensitiesBelow(sps, threshold = "b"), "numeric")
+
     sps <- Spectra(sciex_mzr)
     centroided(sps) <- TRUE
     res <- replaceIntensitiesBelow(sps, threshold = 5000)
@@ -1125,6 +1140,9 @@ test_that("containsMz,Spectra works", {
     res <- containsMz(sps, c(14.15), which = "any")
     expect_equal(res, c(FALSE, FALSE, TRUE))
 
+    res_2 <- containsMz(sps, c(14.15), which = "any",
+                        BPPARAM = MulticoreParam(2))
+    expect_equal(res, res_2)
     ## Check that unsplit works.
     sps@backend$dataStorage <- c("3", "1", "2")
     res_2 <- containsMz(sps, c(14.15))

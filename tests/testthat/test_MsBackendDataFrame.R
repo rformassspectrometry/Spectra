@@ -11,6 +11,11 @@ test_that("backendInitialize,MsBackendDataFrame works", {
     expect_true(validObject(be))
     expect_equal(dataStorage(be), "<memory>")
 
+    be_2 <- backendInitialize(be, data = data.frame(msLevel = 2L))
+    expect_equal(be, be_2)
+
+    expect_error(backendInitialize(be, data = 4), "has to be a")
+
     df <- test_df
     be <- backendInitialize(be, df)
     expect_true(validObject(be))
@@ -129,6 +134,7 @@ test_that("dataStorage,MsBackendDataFrame works", {
     dataStorage(be) <- c("a", "b")
     expect_identical(dataStorage(be), c("a", "b"))
     expect_error(dataStorage(be) <- c("a", NA), "not allowed")
+    expect_error(dataStorage(be) <- c("a", "b", "c"), "of length")
 })
 
 test_that("intensity,MsBackendDataFrame works", {
@@ -466,6 +472,8 @@ test_that("asDataFrame, asDataFrame<-, MsBackendDataFrame works", {
     expect_equal(res$a, c("a", "a"))
     expect_equal(res$b, c("b", "b"))
 
+    expect_error(asDataFrame(be) <- data.frame(4), "not valid")
+
     res <- asDataFrame(be, "msLevel")
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), "msLevel")
@@ -569,6 +577,8 @@ test_that("$,$<-,MsBackendDataFrame works", {
     be <- backendInitialize(MsBackendDataFrame(), df)
     expect_identical(be$msLevel, 1:2)
     expect_identical(be$other_col, c(2, 2))
+
+    expect_error(be$not_there, "not available")
 
     be$other_col <- 4
     expect_equal(be$other_col, c(4, 4))
@@ -839,4 +849,10 @@ test_that("split,MsBackendDataFrame works", {
 
     msb2 <- backendMerge(msbl)
     expect_identical(msb2, msb)
+})
+
+test_that("isCentroided,MsBackendDataFrame works", {
+    msb <- MsBackendDataFrame()
+    msb <- backendInitialize(msb, test_df)
+    expect_true(all(is.na(isCentroided(msb))))
 })

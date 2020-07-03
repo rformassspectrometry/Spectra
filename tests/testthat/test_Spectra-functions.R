@@ -11,6 +11,7 @@ test_that("addProcessing works", {
     expect_error(addProcessing(tst, "4"))
     tst <- addProcessing(tst, function(z, t) z * t, t = 4)
     expect_true(length(tst@processingQueue) == 2)
+    show(tst)
 })
 
 test_that(".apply_processing_queue works", {
