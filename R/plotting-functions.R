@@ -7,10 +7,11 @@
 #' - `plotSpectra`: plots each spectrum in its separate plot by splitting
 #'   the plot area into as many panels as there are spectra.
 #'
-#' - `plotSpectraOverlay`: plots all spectra **into the same** plot (as an
-#'   overlay).
+#' - `plotSpectraOverlay`: plots all spectra in `x` **into the same** plot (as
+#'   an overlay).
 #'
 #' - `plotSpectraMirror`: plots a pair of spectra as a *mirror plot*.
+#'   Parameters `x` and `y` both have to be a `Spectra` of length 1.
 #'
 #' For details on plotting spectra see also the `plot` help page from the
 #' `MSnbase` package.
@@ -57,6 +58,11 @@
 #'
 #' @param labelOffset see parameter `offset` in [text()].
 #'
+#' @param axes `logical(1)` whether (x and y) axes should be drawn.
+#'
+#' @param frame.plot `logical(1)` whether a box should be drawn around the
+#'     plotting area.
+#'
 #' @param ... additional parameters to be passed to the [plot.default()]
 #'     function.
 #'
@@ -79,34 +85,53 @@
 #' #### --------------------------------------------- ####
 #' ##                   plotSpectra                     ##
 #'
-#' ## Plot one spectrum
+#' ## Plot one spectrum.
 #' plotSpectra(sp[1])
 #'
-#' ## Plot both spectra
+#' ## Plot both spectra.
 #' plotSpectra(sp)
 #'
-#' ## Define a color for each peak in each spectrum
+#' ## Define a color for each peak in each spectrum.
 #' plotSpectra(sp, col = list(c(1, 2, 3, 4, 5), 1:4))
 #'
 #' ## Color peaks from each spectrum in different colors.
 #' plotSpectra(sp, col = c("green", "blue"))
 #'
-#' ## Label each peak with its m/z
+#' ## Label each peak with its m/z.
 #' plotSpectra(sp, labels = function(z) format(unlist(mz(z)), digits = 4))
 #'
-#' ## Rotate the labels
+#' ## Rotate the labels.
 #' plotSpectra(sp, labels = function(z) format(unlist(mz(z)), digits = 4),
 #'     labelPos = 2, labelOffset = 0.1, labelSrt = -30)
 #'
-#' ## Add a custom annotation for each peak
+#' ## Add a custom annotation for each peak.
 #' sp$label <- list(c("", "A", "B", "C", "D"),
 #'     c("Frodo", "Bilbo", "Peregrin", "Samwise"))
 #' ## Plot each peak in a different color
 #' plotSpectra(sp, labels = function(z) unlist(z$label),
 #'     col = list(1:5, 1:4))
 #'
-#' ## Plot a single spectrum specifying the label
+#' ## Plot a single spectrum specifying the label.
 #' plotSpectra(sp[2], labels = c("A", "B", "C", "D"))
+#'
+#'
+#' #### --------------------------------------------- ####
+#' ##                plotSpectraOverlay                 ##
+#'
+#' ## Plot both spectra overlaying.
+#' plotSpectraOverlay(sp)
+#'
+#' ## Use a different color for each spectrum.
+#' plotSpectraOverlay(sp, col = c("#ff000080", "#0000ff80"))
+#'
+#' ## Label also the peaks with their m/z if their intensity is above 15.
+#' plotSpectraOverlay(sp, col = c("#ff000080", "#0000ff80"),
+#'     labels = function(z) {
+#'         lbls <- format(mz(z)[[1L]], digits = 4)
+#'         lbls[intensity(z)[[1L]] <= 15] <- ""
+#'         lbls
+#'     })
+#' abline(h = 15, lty = 2)
 NULL
 
 #' @rdname spectra-plotting
@@ -136,6 +161,46 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
                               labelCex = labelCex, labelSrt = labelSrt,
                               labelAdj = labelAdj, labelPos = labelPos,
                               labelOffset = labelOffset, ...)
+}
+
+#' @rdname spectra-plotting
+#'
+#' @export plotSpectraOverlay
+plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
+                               type = "h", xlim = numeric(),
+                               ylim = numeric(),
+                               main = paste(length(x), "spectra"),
+                               col = "#00000080", labels = character(),
+                               labelCex = 1, labelSrt = 0,
+                               labelAdj = NULL, labelPos = NULL,
+                               labelOffset = 0.5, axes = TRUE,
+                               frame.plot = axes, ...) {
+    nsp <- length(x)
+    if (nsp == 1)
+        col <- list(col)
+    if (length(col) != nsp)
+        col <- rep(col[1], nsp)
+    if (!length(xlim))
+        xlim <- range(unlist(mz(x)), na.rm = TRUE)
+    if (!length(ylim))
+        ylim <- c(0, max(unlist(intensity(x)), na.rm = TRUE))
+    dev.hold()
+    on.exit(dev.flush())
+    plot.new()
+    plot.window(xlim = xlim, ylim = ylim)
+    if (axes) {
+        axis(side = 1, ...)
+        axis(side = 2, ...)
+    }
+    if (frame.plot)
+        box(...)
+    title(main = main, xlab = xlab, ylab = ylab, ...)
+    for (i in seq_len(nsp))
+        .plot_single_spectrum(x[i], add = TRUE, type = type, col = col[[i]],
+                              labels = labels, labelCex = labelCex,
+                              labelSrt = labelSrt, labelAdj = labelAdj,
+                              labelPos = labelPos, labelOffset = labelOffset,
+                              ...)
 }
 
 #' @description
