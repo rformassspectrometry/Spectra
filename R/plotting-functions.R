@@ -11,7 +11,9 @@
 #'   an overlay).
 #'
 #' - `plotSpectraMirror`: plots a pair of spectra as a *mirror plot*.
-#'   Parameters `x` and `y` both have to be a `Spectra` of length 1.
+#'   Parameters `x` and `y` both have to be a `Spectra` of length 1. Matching
+#'   peaks (considering `ppm` and `tolerance`) are highlighted. See [common()]
+#'   for details on m/z matching.
 #'
 #' @param x a [Spectra()] object. For `plotSpectraMirror` it has to be an
 #'     object of length 2.
@@ -42,6 +44,7 @@
 #' @param labels allows to specify a label for each peak. Can be a `character`
 #'     with length equal to the number of peaks, or, ideally, a `function` that
 #'     uses one of the `Spectra`'s variables (see examples below).
+#'     `plotSpectraMirror` supports only `labels` of type *function*.
 #'
 #' @param labelCex `numeric(1)` giving the amount by which the text should be
 #'     magnified relative to the default. See parameter `cex` in [par()].
@@ -59,6 +62,26 @@
 #'
 #' @param frame.plot `logical(1)` whether a box should be drawn around the
 #'     plotting area.
+#'
+#' @param ppm for `plotSpectraMirror`: m/z relative acceptable difference (in
+#'     ppm) for peaks to be considered matching (see [common()] for more
+#'     details).
+#'
+#' @param tolerance for `plotSpectraMirror`: absolute acceptable difference of
+#'     m/z values for peaks to be considered matching (see [common()] for more
+#'     details).
+#'
+#' @param matchCol for `plotSpectraMirror`: color for matching peaks.
+#'
+#' @param matchLwd for `plotSpectraMirror`: line width (`lwd`) to draw matching
+#'     peaks. See [par()] for more details.
+#'
+#' @param matchLty for `plotSpectraMirror`: line type (`lty`) to draw matching
+#'     peaks. See [par()] for more details.
+#'
+#' @param matchPch for `plotSpectraMirror`: point character to be used to label
+#'     matching peaks. Defaults to `matchPch = 16`, set to `matchPch = NA` to
+#'     avoid plotting points. See [par()] for more details.
 #'
 #' @param ... additional parameters to be passed to the [plot.default()]
 #'     function.
@@ -129,6 +152,25 @@
 #'         lbls
 #'     })
 #' abline(h = 15, lty = 2)
+#'
+#'
+#' #### --------------------------------------------- ####
+#' ##                plotSpectraMirror                  ##
+#'
+#' ## Plot two spectra against each other.
+#' plotSpectraMirror(sp[1], sp[2])
+#'
+#' ## Label the peaks with their m/z
+#' plotSpectraMirror(sp[1], sp[2],
+#'     labels = function(z) format(mz(z)[[1L]], digits = 3),
+#'     labelSrt = -30, labelPos = 2, labelOffset = 0.2)
+#' grid()
+#'
+#' ## The same plot with a tolerance of 0.1.
+#' plotSpectraMirror(sp[1], sp[2],
+#'     labels = function(z) format(mz(z)[[1L]], digits = 3),
+#'     labelSrt = -30, labelPos = 2, labelOffset = 0.2, tolerance = 0.1)
+#' grid()
 NULL
 
 #' @rdname spectra-plotting
@@ -198,6 +240,90 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
                               labelSrt = labelSrt, labelAdj = labelAdj,
                               labelPos = labelPos, labelOffset = labelOffset,
                               ...)
+}
+
+#' @rdname spectra-plotting
+#'
+#' @importFrom MsCoreUtils common
+#'
+#' @export plotSpectraOverlay
+plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
+                              type = "h", xlim = numeric(),
+                              ylim = numeric(),
+                              main = character(),
+                              col = "#00000080", labels = character(),
+                              labelCex = 1, labelSrt = 0,
+                              labelAdj = NULL, labelPos = NULL,
+                              labelOffset = 0.5, axes = TRUE,
+                              frame.plot = axes, ppm = 20, tolerance = 0,
+                              matchCol = "#80B1D3", matchLwd = 1,
+                              matchLty = 1, matchPch = 16, ...) {
+    if (length(x) != 1 || length(y) != 1)
+        stop("'x' and 'y' have to be of length 1")
+    if (length(labels) & !is.function(labels))
+        stop("'plotSpectraMirror' supports only a function with ",
+             "parameter 'labels'")
+    if (length(col) != 2)
+        col <- rep(col[1], 2)
+    if (!length(xlim))
+        xlim <- range(unlist(mz(x)), unlist(mz(y)), na.rm = TRUE)
+    if (!length(ylim))
+        ylim <- c(-1, 1) * max(unlist(intensity(x)), unlist(intensity(y)),
+                               na.rm = TRUE)
+    dev.hold()
+    on.exit(dev.flush())
+    plot.new()
+    plot.window(xlim = xlim, ylim = ylim)
+    if (length(labels)) {
+        l <- c(labels(x), labels(y))
+        wdths <- max(strwidth(l, cex = labelCex)) / 2
+        ylim[1L] <- ylim[1L] - wdths * diff(ylim) / diff(xlim)
+        ylim[2L] <- - ylim[1L]
+        xlim[1L] <- xlim[1L] - wdths
+        xlim[2L] <- xlim[2L] + wdths
+        plot.window(xlim = xlim, ylim = ylim, ...)
+    }
+    if (axes) {
+        axis(side = 1, ...)
+        axis(side = 2, ...)
+    }
+    if (frame.plot)
+        box(...)
+    title(main = main, xlab = xlab, ylab = ylab, ...)
+    ## Find common peaks
+    x_data <- as.list(x)[[1L]]
+    y_data <- as.list(y)[[1L]]
+    Spectra:::.plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
+                          labels = labels, labelCex = labelCex,
+                          labelSrt = labelSrt, labelAdj = labelAdj,
+                          labelPos = labelPos, labelOffset = labelOffset, ...)
+    idx <- which(common(x_data[, "mz"], y_data[, "mz"],
+                        tolerance = tolerance, ppm = ppm))
+    if (length(idx)) {
+        plot.xy(xy.coords(x_data[idx, "mz"], x_data[idx, "intensity"]),
+                type = "h", col = matchCol, lwd = matchLwd, ...)
+        plot.xy(xy.coords(x_data[idx, "mz"], x_data[idx, "intensity"]),
+                type = "p", col = matchCol, pch = matchPch, ...)
+    }
+    abline(h = 0)
+    if (length(labelPos) && labelPos == 1)
+        labelPos <- 3
+    if (length(labelPos) && labelPos == 3)
+        labelPos <- 1
+    labelSrt <- -1 * labelSrt
+    Spectra:::.plot_single_spectrum(y, add = TRUE, type = type, col = col[[1L]],
+                          labels = labels, labelCex = labelCex,
+                          labelSrt = labelSrt, labelAdj = labelAdj,
+                          labelPos = labelPos, labelOffset = labelOffset,
+                          orientation = -1, ...)
+    idx <- which(common(y_data[, "mz"], x_data[, "mz"],
+                        tolerance = tolerance, ppm = ppm))
+    if (length(idx)) {
+        plot.xy(xy.coords(y_data[idx, "mz"], -y_data[idx, "intensity"]),
+                type = "h", col = matchCol, lwd = matchLwd, ...)
+        plot.xy(xy.coords(y_data[idx, "mz"], -y_data[idx, "intensity"]),
+                type = "p", col = matchCol, pch = matchPch, ...)
+    }
 }
 
 #' @description
