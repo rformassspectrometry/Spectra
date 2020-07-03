@@ -271,9 +271,9 @@ filter functions are defined for `Spectra` objects (for detailed help please see
 the `?Spectra` help):
 
 - `filterAcquisitionNum`: retain spectra with certain acquisition numbers.
-- `filterEmptySpectra`: remove spectra without mass peaks.
 - `filterDataOrigin`: subset to spectra from specific origins.
 - `filterDataStorage`: subset to spectra from certain data storage files.
+- `filterEmptySpectra`: remove spectra without mass peaks.
 - `filterIsolationWindow`: keep spectra with the provided `mz` in their
   isolation window (m/z range).
 - `filterMsLevel`: filter by MS level.
@@ -472,6 +472,47 @@ sps
 
 Before `applyProcessing` the lazy evaluation queue contained 2 processing steps,
 which were then applied to the peak data and *written* to the data storage.
+
+
+## Plotting `Spectra`
+
+The `Spectra` package provides the following functions to visualize spectra
+data:
+- `plotSpectra`: plot each spectrum in `Spectra` in its own panel.
+- `plotSpectraOverlay`: plot multiple spectra into the **same** plot.
+
+Below we use `plotSpectra` to plot the 4 spectra from the `sps` object using
+their names (as provided in spectra variable `"name"`) as plot titles.
+
+```{r plotspectra, fig.width = 8, fig.height = 8}
+plotSpectra(sps, main = sps$name)
+```
+
+It is also possible to label individual peaks in each plot. Below we use the m/z
+value of each peak as its label. In the example we define a function that
+accesses information from each spectrum (`z`) and returns a `character` for each
+peak with the text that should be used as label. Parameters `labelSrt`,
+`labelPos` and `labelOffset` define the rotation of the label text and its
+position relative to the x and y coordinates of the peak.
+
+```{r plotspectra-label, fig.width = 8, fig.height = 8}
+plotSpectra(sps, main = sps$name,
+            labels = function(z) format(mz(z)[[1L]], digits = 4),
+            labelSrt = -30, labelPos = 2, labelOffset = 0.1)
+```
+
+Sometimes it might be of interest to plot multiple spectra into the **same**
+plot (e.g. to directly compare peaks from multiple spectra). This can be done
+with `plotSpectraOverlay` which we use below to create an *overlay-plot* of our
+4 example spectra, using a different color for each spectrum.
+
+```{r plotspectraoverlay, fig.width = 6, fig.heigh = 6}
+cols <- c("#E41A1C80", "#377EB880", "#4DAF4A80", "#984EA380")
+plotSpectraOverlay(sps, lwd = 2, col = cols)
+legend("topleft", col = cols, legend = sps$name, pch = 15)
+```
+
+See also `?plotSpectra` for more plotting options and examples.
 
 
 ## Changing backends
