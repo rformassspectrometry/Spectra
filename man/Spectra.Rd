@@ -7,8 +7,6 @@
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
-\alias{compareSpectra}
-\alias{asDataFrame}
 \alias{Spectra,DataFrame-method}
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
