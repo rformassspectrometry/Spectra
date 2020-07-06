@@ -377,13 +377,13 @@ operation with the `replaceIntensitiesBelow` function to replace peak
 intensities below 10 in each spectrum in `sps` with a value of 0.
 
 ```{r replaceintensities}
-sps <- replaceIntensitiesBelow(sps, threshold = 10, value = 0)
+sps_rep <- replaceIntensitiesBelow(sps, threshold = 10, value = 0)
 ```
 
 As a result intensities below 10 were set to 0 for all peaks.
 
 ```{r replaceintensities-intensity}
-intensity(sps)
+intensity(sps_rep)
 ```
 
 Zero-intensity peaks (and peaks with missing intensities) can then be removed
@@ -391,11 +391,11 @@ with the `filterIntensity` function specifying a lower required intensity level
 or optionally also an upper intensity limit.
 
 ```{r clean}
-sps <- filterIntensity(sps, intensity = c(0.1, Inf))
+sps_rep <- filterIntensity(sps_rep, intensity = c(0.1, Inf))
 ```
 
 ```{r clean-intensity}
-intensity(sps)
+intensity(sps_rep)
 ```
 
 Note that any data manipulations on `Spectra` objects are not immediately
@@ -407,7 +407,7 @@ backends or database-based backends). The information about the number of such
 processing steps can be seen below (next to *Lazy evaluation queue*).
 
 ```{r processing-queue}
-sps
+sps_rep
 ```
 
 It is possible to add also custom functions to the processing queue of a
@@ -428,7 +428,7 @@ divide_intensities <- function(x, y, ...) {
 }
 
 ## Add the function to the procesing queue
-sps_2 <- addProcessing(sps, divide_intensities, y = 2)
+sps_2 <- addProcessing(sps_rep, divide_intensities, y = 2)
 sps_2
 ```
 
@@ -438,7 +438,7 @@ intensities of the original objects `sps`.
 
 ```{r custom-processing}
 intensity(sps_2)
-intensity(sps)
+intensity(sps_rep)
 ```
 
 Alternatively we could define a function that returns the maximum peak from each
@@ -449,7 +449,7 @@ max_peak <- function(x, ...) {
     x[which.max(x[, 2]), , drop = FALSE]
 }
 
-sps_2 <- addProcessing(sps, max_peak)
+sps_2 <- addProcessing(sps_rep, max_peak)
 lengths(sps_2)
 intensity(sps_2)
 ```
@@ -460,14 +460,14 @@ Finally, for `Spectra` that use a *writeable* backend, such as the
 `MsBackendDataFrame` or `MsBackendHdf5Peaks`, it is possible to apply the
 processing queue to the peak data and write that back to the data storage with
 the `applyProcessing` function. Below we use this to make all data manipulations
-on peak data of the `sps` object persistent.
+on peak data of the `sps_rep` object persistent.
 
 ```{r applyProcessing}
-length(sps@processingQueue)
+length(sps_rep@processingQueue)
 
-sps <- applyProcessing(sps)
-length(sps@processingQueue)
-sps
+sps_rep <- applyProcessing(sps_rep)
+length(sps_rep@processingQueue)
+sps_rep
 ```
 
 Before `applyProcessing` the lazy evaluation queue contained 2 processing steps,
@@ -501,15 +501,49 @@ plotSpectra(sps, main = sps$name,
             labelSrt = -30, labelPos = 2, labelOffset = 0.1)
 ```
 
+These plots are rather busy and for some peaks the m/z values are
+overplotted. Below we define a *label function* that will only indicate the m/z
+of peaks with an intensity higher than 30.
+
+```{r plotspectra-label-int, fig.width = 8, fig.height = 8}
+mzLabel <- function(z) {
+    z <- as.list(z)[[1L]]
+    lbls <- format(z[, "mz"], digits = 4)
+    lbls[z[, "intensity"] < 30] <- ""
+    lbls
+}
+plotSpectra(sps, main = sps$name, labels = mzLabel,
+            labelSrt = -30, labelPos = 2, labelOffset = 0.1)
+```
+
 Sometimes it might be of interest to plot multiple spectra into the **same**
 plot (e.g. to directly compare peaks from multiple spectra). This can be done
 with `plotSpectraOverlay` which we use below to create an *overlay-plot* of our
 4 example spectra, using a different color for each spectrum.
 
-```{r plotspectraoverlay, fig.width = 6, fig.heigh = 6}
+```{r plotspectraoverlay, fig.width = 6, fig.height = 6}
 cols <- c("#E41A1C80", "#377EB880", "#4DAF4A80", "#984EA380")
 plotSpectraOverlay(sps, lwd = 2, col = cols)
 legend("topleft", col = cols, legend = sps$name, pch = 15)
+```
+
+Lastly, `plotSpectraMirror` allows to plot two spectra against each other as a
+*mirror plot* which is ideal to visualize spectra comparison results. Below we
+plot a spectrum of 1-Methylhistidine against one of Caffeine.
+
+```{r plotspectramirror, fig.width = 6, fig.height = 6}
+plotSpectraMirror(sps[1], sps[3])
+```
+
+The upper panel shows the spectrum from 1-Methylhistidine, the lower the one of
+Caffeine. None of the peaks of the two spectra match. Below we plot the two
+spectra of 1-Methylhistidine and the two of Caffeine against each other matching
+peaks with a `ppm` of 50.
+
+```{r plotspectramirror-ppm, fig.width = 12, fig.height = 6}
+par(mfrow = c(1, 2))
+plotSpectraMirror(sps[1], sps[2], main = "1-Methylhistidine", ppm = 50)
+plotSpectraMirror(sps[3], sps[4], main = "Caffeine", ppm = 50)
 ```
 
 See also `?plotSpectra` for more plotting options and examples.

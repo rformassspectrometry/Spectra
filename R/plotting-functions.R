@@ -13,7 +13,9 @@
 #' - `plotSpectraMirror`: plots a pair of spectra as a *mirror plot*.
 #'   Parameters `x` and `y` both have to be a `Spectra` of length 1. Matching
 #'   peaks (considering `ppm` and `tolerance`) are highlighted. See [common()]
-#'   for details on m/z matching.
+#'   for details on peak matching. Parameters `matchCol`, `matchLty`,
+#'   `matchLwd` and `matchPch` allow to customize how matching peaks are
+#'   indicated.
 #'
 #' @param x a [Spectra()] object. For `plotSpectraMirror` it has to be an
 #'     object of length 2.
@@ -79,9 +81,12 @@
 #' @param matchLty for `plotSpectraMirror`: line type (`lty`) to draw matching
 #'     peaks. See [par()] for more details.
 #'
-#' @param matchPch for `plotSpectraMirror`: point character to be used to label
+#' @param matchPch for `plotSpectraMirror`: point character (`pch`) to label
 #'     matching peaks. Defaults to `matchPch = 16`, set to `matchPch = NA` to
-#'     avoid plotting points. See [par()] for more details.
+#'     disable. See [par()] for more details.
+#'
+#' @param y for `plotSpectraMirror`: `Spectra` object of length 1 against which
+#'     `x` should be plotted against.
 #'
 #' @param ... additional parameters to be passed to the [plot.default()]
 #'     function.
@@ -166,10 +171,12 @@
 #'     labelSrt = -30, labelPos = 2, labelOffset = 0.2)
 #' grid()
 #'
-#' ## The same plot with a tolerance of 0.1.
+#' ## The same plot with a tolerance of 0.1 and using a different color to
+#' ## highlight matching peaks
 #' plotSpectraMirror(sp[1], sp[2],
 #'     labels = function(z) format(mz(z)[[1L]], digits = 3),
-#'     labelSrt = -30, labelPos = 2, labelOffset = 0.2, tolerance = 0.1)
+#'     labelSrt = -30, labelPos = 2, labelOffset = 0.2, tolerance = 0.1,
+#'     matchCol = "#ff000080", matchLwd = 2)
 #' grid()
 NULL
 
@@ -246,7 +253,9 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
 #'
 #' @importFrom MsCoreUtils common
 #'
-#' @export plotSpectraOverlay
+#' @importFrom graphics abline
+#'
+#' @export plotSpectraMirror
 plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
                               type = "h", xlim = numeric(),
                               ylim = numeric(),
@@ -293,7 +302,7 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
     ## Find common peaks
     x_data <- as.list(x)[[1L]]
     y_data <- as.list(y)[[1L]]
-    Spectra:::.plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
+    .plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
                           labels = labels, labelCex = labelCex,
                           labelSrt = labelSrt, labelAdj = labelAdj,
                           labelPos = labelPos, labelOffset = labelOffset, ...)
@@ -305,13 +314,12 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
         plot.xy(xy.coords(x_data[idx, "mz"], x_data[idx, "intensity"]),
                 type = "p", col = matchCol, pch = matchPch, ...)
     }
-    abline(h = 0)
     if (length(labelPos) && labelPos == 1)
         labelPos <- 3
     if (length(labelPos) && labelPos == 3)
         labelPos <- 1
     labelSrt <- -1 * labelSrt
-    Spectra:::.plot_single_spectrum(y, add = TRUE, type = type, col = col[[1L]],
+    .plot_single_spectrum(y, add = TRUE, type = type, col = col[[1L]],
                           labels = labels, labelCex = labelCex,
                           labelSrt = labelSrt, labelAdj = labelAdj,
                           labelPos = labelPos, labelOffset = labelOffset,
@@ -324,6 +332,7 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
         plot.xy(xy.coords(y_data[idx, "mz"], -y_data[idx, "intensity"]),
                 type = "p", col = matchCol, pch = matchPch, ...)
     }
+    abline(h = 0)
 }
 
 #' @description
