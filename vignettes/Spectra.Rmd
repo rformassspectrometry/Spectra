@@ -474,6 +474,30 @@ Before `applyProcessing` the lazy evaluation queue contained 2 processing steps,
 which were then applied to the peak data and *written* to the data storage.
 
 
+## Comparing spectra and other functions
+
+Spectra can be compared with the `compareSpectra` function, that allows to
+calculate similarities between spectra using a variety of methods. However,
+peaks from the compared spectra have to be first matched before similarities can
+be calculated. `compareSpectra` uses by default the [joinPeaks()] function from
+the `r Biocpkg("MsCoreUtils")` package but supports also other mapping functions
+to be passed with the `MAPFUN` parameter (see `?joinPeaks` man page in
+`MsCoreUtils` for more details). The similarity calculation function can be
+specified with the `FUN` parameter and defaults to [ndotproduct()], the
+normalized dot-product. Below we calculate pairwise similarities between all
+spectra in `sps` accepting a 50 ppm difference of peaks' m/z values for being
+considered matching.
+
+```{r comparespectra}
+compareSpectra(sps, ppm = 50)
+```
+
+The resulting matrix represents the result from the pairwise comparison. As
+expected, the first two and the last two spectra are similar, albeit only
+moderately while the spectra from 1-Methylhistidine don't share any similarity
+with those of Caffeine.
+
+
 ## Plotting `Spectra`
 
 The `Spectra` package provides the following functions to visualize spectra
