@@ -4,6 +4,7 @@
 \alias{spectra-plotting}
 \alias{plotSpectra}
 \alias{plotSpectraOverlay}
+\alias{plotSpectraMirror}
 \title{Plotting Spectra}
 \usage{
 plotSpectra(
@@ -43,6 +44,33 @@ plotSpectraOverlay(
   frame.plot = axes,
   ...
 )
+
+plotSpectraMirror(
+  x,
+  y,
+  xlab = "m/z",
+  ylab = "intensity",
+  type = "h",
+  xlim = numeric(),
+  ylim = numeric(),
+  main = character(),
+  col = "#00000080",
+  labels = character(),
+  labelCex = 1,
+  labelSrt = 0,
+  labelAdj = NULL,
+  labelPos = NULL,
+  labelOffset = 0.5,
+  axes = TRUE,
+  frame.plot = axes,
+  ppm = 20,
+  tolerance = 0,
+  matchCol = "#80B1D3",
+  matchLwd = 1,
+  matchLty = 1,
+  matchPch = 16,
+  ...
+)
 }
 \arguments{
 \item{x}{a \code{\link[=Spectra]{Spectra()}} object. For \code{plotSpectraMirror} it has to be an
@@ -73,7 +101,8 @@ spectrum.}
 
 \item{labels}{allows to specify a label for each peak. Can be a \code{character}
 with length equal to the number of peaks, or, ideally, a \code{function} that
-uses one of the \code{Spectra}'s variables (see examples below).}
+uses one of the \code{Spectra}'s variables (see examples below).
+\code{plotSpectraMirror} supports only \code{labels} of type \emph{function}.}
 
 \item{labelCex}{\code{numeric(1)} giving the amount by which the text should be
 magnified relative to the default. See parameter \code{cex} in \code{\link[=par]{par()}}.}
@@ -94,6 +123,29 @@ function.}
 
 \item{frame.plot}{\code{logical(1)} whether a box should be drawn around the
 plotting area.}
+
+\item{y}{for \code{plotSpectraMirror}: \code{Spectra} object of length 1 against which
+\code{x} should be plotted against.}
+
+\item{ppm}{for \code{plotSpectraMirror}: m/z relative acceptable difference (in
+ppm) for peaks to be considered matching (see \code{\link[=common]{common()}} for more
+details).}
+
+\item{tolerance}{for \code{plotSpectraMirror}: absolute acceptable difference of
+m/z values for peaks to be considered matching (see \code{\link[=common]{common()}} for more
+details).}
+
+\item{matchCol}{for \code{plotSpectraMirror}: color for matching peaks.}
+
+\item{matchLwd}{for \code{plotSpectraMirror}: line width (\code{lwd}) to draw matching
+peaks. See \code{\link[=par]{par()}} for more details.}
+
+\item{matchLty}{for \code{plotSpectraMirror}: line type (\code{lty}) to draw matching
+peaks. See \code{\link[=par]{par()}} for more details.}
+
+\item{matchPch}{for \code{plotSpectraMirror}: point character (\code{pch}) to label
+matching peaks. Defaults to \code{matchPch = 16}, set to \code{matchPch = NA} to
+disable. See \code{\link[=par]{par()}} for more details.}
 }
 \description{
 \code{\link[=Spectra]{Spectra()}} can be plotted with one of the following functions
@@ -103,7 +155,11 @@ the plot area into as many panels as there are spectra.
 \item \code{plotSpectraOverlay}: plots all spectra in \code{x} \strong{into the same} plot (as
 an overlay).
 \item \code{plotSpectraMirror}: plots a pair of spectra as a \emph{mirror plot}.
-Parameters \code{x} and \code{y} both have to be a \code{Spectra} of length 1.
+Parameters \code{x} and \code{y} both have to be a \code{Spectra} of length 1. Matching
+peaks (considering \code{ppm} and \code{tolerance}) are highlighted. See \code{\link[=common]{common()}}
+for details on peak matching. Parameters \code{matchCol}, \code{matchLty},
+\code{matchLwd} and \code{matchPch} allow to customize how matching peaks are
+indicated.
 }
 }
 \examples{
@@ -168,6 +224,27 @@ plotSpectraOverlay(sp, col = c("#ff000080", "#0000ff80"),
         lbls
     })
 abline(h = 15, lty = 2)
+
+
+#### --------------------------------------------- ####
+##                plotSpectraMirror                  ##
+
+## Plot two spectra against each other.
+plotSpectraMirror(sp[1], sp[2])
+
+## Label the peaks with their m/z
+plotSpectraMirror(sp[1], sp[2],
+    labels = function(z) format(mz(z)[[1L]], digits = 3),
+    labelSrt = -30, labelPos = 2, labelOffset = 0.2)
+grid()
+
+## The same plot with a tolerance of 0.1 and using a different color to
+## highlight matching peaks
+plotSpectraMirror(sp[1], sp[2],
+    labels = function(z) format(mz(z)[[1L]], digits = 3),
+    labelSrt = -30, labelPos = 2, labelOffset = 0.2, tolerance = 0.1,
+    matchCol = "#ff000080", matchLwd = 2)
+grid()
 }
 \author{
 Johannes Rainer, Sebastian Gibb, Laurent Gatto

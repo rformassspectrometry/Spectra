@@ -50,6 +50,27 @@ test_that("plotSpectraOverlay works", {
             )
 })
 
+test_that("plotSpectraMirror works", {
+    vdiffr::expect_doppelganger(
+                "plotSpectraMirror-plain",
+                function() plotSpectraMirror(s[1], s[2], main = "Comparison"))
+    vdiffr::expect_doppelganger(
+                "plotSpectraMirror-same",
+                function() plotSpectraMirror(s[1], s[1], ppm = 0, tolerance = 0,
+                                             frame.plot = FALSE))
+    vdiffr::expect_doppelganger(
+                "plotSpectraMirror-match-color",
+                function() plotSpectraMirror(s[2], s[1], ppm = 0,
+                                             tolerance = 0.1,
+                                             labels = function(z) mz(z)[[1L]],
+                                             matchCol = "red",
+                                             matchLwd = 2, axes = FALSE,
+                                             matchPch = 17))
+    expect_error(plotSpectraMirror(s), "have to be of length")
+    expect_error(plotSpectraMirror(s[1], s[1], labels = c("a")),
+                 "only a function")
+})
+
 test_that(".plot_single_spectrum works", {
     vdiffr::expect_doppelganger(
                 "plot_single_spectrum-basic",
