@@ -92,7 +92,7 @@ peaks present in both spectra are reported.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.7</span>
       </span>
     </div>
 
@@ -215,8 +215,8 @@ definition. Parameters <code>ppm</code> and <code>tolerance</code> are suggested
     <pre class="examples"><div class='input'>
 <span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>31.34</span>, <span class='fl'>50.14</span>, <span class='fl'>60.3</span>, <span class='fl'>120.9</span>, <span class='fl'>230</span>, <span class='fl'>514.13</span>, <span class='fl'>874.1</span>),
     <span class='fl'>1</span><span class='op'>:</span><span class='fl'>7</span>)
-<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12</span>, <span class='fl'>31.35</span>, <span class='fl'>70.3</span>, <span class='fl'>120.9</span> <span class='op'>+</span> <span class='fu'>ppm</span>(<span class='fl'>120.9</span>, <span class='fl'>5</span>),
-    <span class='fl'>230</span> <span class='op'>+</span> <span class='fu'>ppm</span>(<span class='fl'>230</span>, <span class='fl'>10</span>), <span class='fl'>315</span>, <span class='fl'>514.14</span>, <span class='fl'>901</span>, <span class='fl'>1202</span>),
+<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12</span>, <span class='fl'>31.35</span>, <span class='fl'>70.3</span>, <span class='fl'>120.9</span> <span class='op'>+</span> <span class='fu'><a href='hidden_aliases.html'>ppm</a></span>(<span class='fl'>120.9</span>, <span class='fl'>5</span>),
+    <span class='fl'>230</span> <span class='op'>+</span> <span class='fu'><a href='hidden_aliases.html'>ppm</a></span>(<span class='fl'>230</span>, <span class='fl'>10</span>), <span class='fl'>315</span>, <span class='fl'>514.14</span>, <span class='fl'>901</span>, <span class='fl'>1202</span>),
     <span class='fl'>1</span><span class='op'>:</span><span class='fl'>9</span>)
 
 <span class='co'>## No peaks with identical m/z</span>

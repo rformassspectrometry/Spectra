@@ -53,7 +53,11 @@ the plot area into as many panels as there are spectra.
 plotSpectraOverlay: plots all spectra in x into the same plot (as
 an overlay).
 plotSpectraMirror: plots a pair of spectra as a mirror plot.
-Parameters x and y both have to be a Spectra of length 1.
+Parameters x and y both have to be a Spectra of length 1. Matching
+peaks (considering ppm and tolerance) are highlighted. See common()
+for details on peak matching. Parameters matchCol, matchLty,
+matchLwd and matchPch allow to customize how matching peaks are
+indicated.
 
 " />
 
@@ -87,7 +91,7 @@ Parameters x and y both have to be a Spectra of length 1.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.7</span>
       </span>
     </div>
 
@@ -132,13 +136,17 @@ Parameters x and y both have to be a Spectra of length 1.
     </div>
 
     <div class="ref-description">
-    <p><code>Spectra()</code> can be plotted with one of the following functions</p><ul>
+    <p><code><a href='addProcessing.html'>Spectra()</a></code> can be plotted with one of the following functions</p><ul>
 <li><p><code>plotSpectra</code>: plots each spectrum in its separate plot by splitting
 the plot area into as many panels as there are spectra.</p></li>
 <li><p><code>plotSpectraOverlay</code>: plots all spectra in <code>x</code> <strong>into the same</strong> plot (as
 an overlay).</p></li>
 <li><p><code>plotSpectraMirror</code>: plots a pair of spectra as a <em>mirror plot</em>.
-Parameters <code>x</code> and <code>y</code> both have to be a <code>Spectra</code> of length 1.</p></li>
+Parameters <code>x</code> and <code>y</code> both have to be a <code>Spectra</code> of length 1. Matching
+peaks (considering <code>ppm</code> and <code>tolerance</code>) are highlighted. See <code>common()</code>
+for details on peak matching. Parameters <code>matchCol</code>, <code>matchLty</code>,
+<code>matchLwd</code> and <code>matchPch</code> allow to customize how matching peaks are
+indicated.</p></li>
 </ul>
 
     </div>
@@ -179,6 +187,33 @@ Parameters <code>x</code> and <code>y</code> both have to be a <code>Spectra</co
   axes = <span class='fl'>TRUE</span>,
   frame.plot = <span class='kw'>axes</span>,
   <span class='kw'>...</span>
+)
+
+<span class='fu'>plotSpectraMirror</span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>y</span>,
+  xlab = <span class='st'>"m/z"</span>,
+  ylab = <span class='st'>"intensity"</span>,
+  type = <span class='st'>"h"</span>,
+  xlim = <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(),
+  ylim = <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(),
+  main = <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(),
+  col = <span class='st'>"#00000080"</span>,
+  labels = <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(),
+  labelCex = <span class='fl'>1</span>,
+  labelSrt = <span class='fl'>0</span>,
+  labelAdj = <span class='kw'>NULL</span>,
+  labelPos = <span class='kw'>NULL</span>,
+  labelOffset = <span class='fl'>0.5</span>,
+  axes = <span class='fl'>TRUE</span>,
+  frame.plot = <span class='kw'>axes</span>,
+  ppm = <span class='fl'>20</span>,
+  tolerance = <span class='fl'>0</span>,
+  matchCol = <span class='st'>"#80B1D3"</span>,
+  matchLwd = <span class='fl'>1</span>,
+  matchLty = <span class='fl'>1</span>,
+  matchPch = <span class='fl'>16</span>,
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -186,7 +221,7 @@ Parameters <code>x</code> and <code>y</code> both have to be a <code>Spectra</co
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>a <code>Spectra()</code> object. For <code>plotSpectraMirror</code> it has to be an
+      <td><p>a <code><a href='addProcessing.html'>Spectra()</a></code> object. For <code>plotSpectraMirror</code> it has to be an
 object of length 2.</p></td>
     </tr>
     <tr>
@@ -230,7 +265,8 @@ spectrum.</p></td>
       <th>labels</th>
       <td><p>allows to specify a label for each peak. Can be a <code>character</code>
 with length equal to the number of peaks, or, ideally, a <code>function</code> that
-uses one of the <code>Spectra</code>'s variables (see examples below).</p></td>
+uses one of the <code>Spectra</code>'s variables (see examples below).
+<code>plotSpectraMirror</code> supports only <code>labels</code> of type <em>function</em>.</p></td>
     </tr>
     <tr>
       <th>labelCex</th>
@@ -268,6 +304,43 @@ function.</p></td>
       <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether a box should be drawn around the
 plotting area.</p></td>
     </tr>
+    <tr>
+      <th>y</th>
+      <td><p>for <code>plotSpectraMirror</code>: <code>Spectra</code> object of length 1 against which
+<code>x</code> should be plotted against.</p></td>
+    </tr>
+    <tr>
+      <th>ppm</th>
+      <td><p>for <code>plotSpectraMirror</code>: m/z relative acceptable difference (in
+ppm) for peaks to be considered matching (see <code>common()</code> for more
+details).</p></td>
+    </tr>
+    <tr>
+      <th>tolerance</th>
+      <td><p>for <code>plotSpectraMirror</code>: absolute acceptable difference of
+m/z values for peaks to be considered matching (see <code>common()</code> for more
+details).</p></td>
+    </tr>
+    <tr>
+      <th>matchCol</th>
+      <td><p>for <code>plotSpectraMirror</code>: color for matching peaks.</p></td>
+    </tr>
+    <tr>
+      <th>matchLwd</th>
+      <td><p>for <code>plotSpectraMirror</code>: line width (<code>lwd</code>) to draw matching
+peaks. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>matchLty</th>
+      <td><p>for <code>plotSpectraMirror</code>: line type (<code>lty</code>) to draw matching
+peaks. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>matchPch</th>
+      <td><p>for <code>plotSpectraMirror</code>: point character (<code>pch</code>) to label
+matching peaks. Defaults to <code>matchPch = 16</code>, set to <code>matchPch = NA</code> to
+disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code> for more details.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
@@ -284,7 +357,7 @@ plotting area.</p></td>
 <span class='kw'>df</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span>(msLevel = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1L</span>, <span class='fl'>1L</span>), rtime = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>123.12</span>, <span class='fl'>124</span>))
 <span class='kw'>df</span><span class='op'>$</span><span class='kw'>mz</span> <span class='op'>&lt;-</span> <span class='kw'>mzs</span>
 <span class='kw'>df</span><span class='op'>$</span><span class='kw'>intensity</span> <span class='op'>&lt;-</span> <span class='kw'>ints</span>
-<span class='kw'>sp</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='kw'>df</span>)
+<span class='kw'>sp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='addProcessing.html'>Spectra</a></span>(<span class='kw'>df</span>)
 
 <span class='co'>#### --------------------------------------------- ####</span>
 <span class='co'>##                   plotSpectra                     ##</span>
@@ -324,7 +397,23 @@ plotting area.</p></td>
         <span class='kw'>lbls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]], digits = <span class='fl'>4</span>)
         <span class='kw'>lbls</span>[<span class='fu'>intensity</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]] <span class='op'>&lt;=</span> <span class='fl'>15</span>] <span class='op'>&lt;-</span> <span class='st'>""</span>
         <span class='kw'>lbls</span>
-    })</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span>(h = <span class='fl'>15</span>, lty = <span class='fl'>2</span>)</div><div class='img'><img src='spectra-plotting-10.png' alt='' width='700' height='433' /></div></pre>
+    })</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span>(h = <span class='fl'>15</span>, lty = <span class='fl'>2</span>)</div><div class='img'><img src='spectra-plotting-10.png' alt='' width='700' height='433' /></div><div class='input'>
+
+<span class='co'>#### --------------------------------------------- ####</span>
+<span class='co'>##                plotSpectraMirror                  ##</span>
+
+<span class='co'>## Plot two spectra against each other.</span>
+<span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>])</div><div class='img'><img src='spectra-plotting-11.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'>## Label the peaks with their m/z</span>
+<span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>],
+    labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]], digits = <span class='fl'>3</span>),
+    labelSrt = <span class='op'>-</span><span class='fl'>30</span>, labelPos = <span class='fl'>2</span>, labelOffset = <span class='fl'>0.2</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span>()</div><div class='img'><img src='spectra-plotting-12.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'>## The same plot with a tolerance of 0.1 and using a different color to</span>
+<span class='co'>## highlight matching peaks</span>
+<span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>],
+    labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]], digits = <span class='fl'>3</span>),
+    labelSrt = <span class='op'>-</span><span class='fl'>30</span>, labelPos = <span class='fl'>2</span>, labelOffset = <span class='fl'>0.2</span>, tolerance = <span class='fl'>0.1</span>,
+    matchCol = <span class='st'>"#ff000080"</span>, matchLwd = <span class='fl'>2</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span>()</div><div class='img'><img src='spectra-plotting-13.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

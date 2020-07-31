@@ -82,7 +82,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.7</span>
       </span>
     </div>
 
@@ -129,8 +129,8 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
     <div class="ref-description">
     <p>The <code>Spectra</code> class encapsules spectral mass spectrometry data and
 related metadata.</p>
-<p>It supports multiple data backends, e.g. in-memory (<code>MsBackendDataFrame()</code>),
-on-disk as mzML (<code>MsBackendMzR()</code>) or HDF5 (<code>MsBackendHdf5Peaks()</code>).</p>
+<p>It supports multiple data backends, e.g. in-memory (<code><a href='MsBackend.html'>MsBackendDataFrame()</a></code>),
+on-disk as mzML (<code><a href='MsBackend.html'>MsBackendMzR()</a></code>) or HDF5 (<code><a href='MsBackend.html'>MsBackendHdf5Peaks()</a></code>).</p>
     </div>
 
     <pre class="usage">addProcessing(object, FUN, ...)
@@ -484,8 +484,8 @@ should be combined. For <code>lapply</code>: <code>factor</code> how <code>X</co
     <tr>
       <th>BPPARAM</th>
       <td><p>Parallel setup configuration. See <code>bpparam()</code> for more
-information. This is passed directly to the <code>backendInitialize()</code> method
-of the MsBackend.</p></td>
+information. This is passed directly to the <code><a href='hidden_aliases.html'>backendInitialize()</a></code> method
+of the <a href='MsBackend.html'>MsBackend</a>.</p></td>
     </tr>
     <tr>
       <th>x</th>
@@ -501,7 +501,7 @@ performed.</p></td>
     <tr>
       <th>processingQueue</th>
       <td><p>For <code>Spectra</code>: optional <code>list</code> of
-ProcessingStep objects.</p></td>
+<a href='hidden_aliases.html'>ProcessingStep</a> objects.</p></td>
     </tr>
     <tr>
       <th>metadata</th>
@@ -509,14 +509,14 @@ ProcessingStep objects.</p></td>
     </tr>
     <tr>
       <th>backend</th>
-      <td><p>For <code>Spectra</code>: MsBackend to be used as backend. See
+      <td><p>For <code>Spectra</code>: <a href='MsBackend.html'>MsBackend</a> to be used as backend. See
 section on creation of <code>Spectra</code> objects for details. For <code>setBackend</code>:
-instance of MsBackend. See section on creation of <code>Spectra</code>
+instance of <a href='MsBackend.html'>MsBackend</a>. See section on creation of <code>Spectra</code>
 objects for details.</p></td>
     </tr>
     <tr>
       <th>source</th>
-      <td><p>For <code>Spectra</code>: instance of MsBackend that can be used
+      <td><p>For <code>Spectra</code>: instance of <a href='MsBackend.html'>MsBackend</a> that can be used
 to import spectrum data from the provided files. See section <em>Creation
 of objects, conversion and changing the backend</em> for more details.</p></td>
     </tr>
@@ -661,7 +661,7 @@ intensity are removed.</p></td>
     <tr>
       <th>MAPFUN</th>
       <td><p>For <code>compareSpectra</code>: function to map/match peaks between the
-two compared spectra. See <code>joinPeaks()</code> for more information and possible
+two compared spectra. See <code><a href='joinPeaks.html'>joinPeaks()</a></code> for more information and possible
 functions.</p></td>
     </tr>
     <tr>
@@ -730,11 +730,11 @@ values. Defaults to <code>threshold = min</code>.</p></li>
 i.e. data manipulations such as performed with <code>replaceIntensitiesBelow</code> are
 not applied immediately to the data, but applied on-the-fly to the spectrum
 data once it is retrieved. For some backends that allow to write data back
-to the data storage (such as the <code>MsBackendDataFrame()</code> and
-<code>MsBackendHdf5Peaks()</code>) it is possible to apply to queue with the
+to the data storage (such as the <code><a href='MsBackend.html'>MsBackendDataFrame()</a></code> and
+<code><a href='MsBackend.html'>MsBackendHdf5Peaks()</a></code>) it is possible to apply to queue with the
 <code>applyProcessing</code> function. See the <em>Data manipulation and analysis
 methods</em> section below for more details.</p>
-<p>For details on plotting spectra, see <code>plotSpectra()</code>.</p>
+<p>For details on plotting spectra, see <code><a href='spectra-plotting.html'>plotSpectra()</a></code>.</p>
     <h2 class="hasAnchor" id="creation-of-objects-conversion-and-changing-the-backend"><a class="anchor" href="#creation-of-objects-conversion-and-changing-the-backend"></a>Creation of objects, conversion and changing the backend</h2>
 
     
@@ -743,43 +743,43 @@ methods</em> section below for more details.</p>
 <p><code>Spectra</code> classes can be created with the <code>Spectra</code> constructor function
 which supports the following formats:</p><ul>
 <li><p>parameter <code>object</code> is a <code>DataFrame</code> containing the spectrum data. The
-provided <code>backend</code> (by default a MsBackendDataFrame) will be
+provided <code>backend</code> (by default a <a href='MsBackend.html'>MsBackendDataFrame</a>) will be
 initialized with that data.</p></li>
-<li><p>parameter <code>object</code> is a MsBackend (assumed to be already
+<li><p>parameter <code>object</code> is a <a href='MsBackend.html'>MsBackend</a> (assumed to be already
 initialized).</p></li>
 <li><p>parameter <code>object</code> is missing, in which case it is supposed that the data
-is provided by the MsBackend class passed along with the <code>backend</code>
+is provided by the <a href='MsBackend.html'>MsBackend</a> class passed along with the <code>backend</code>
 argument.</p></li>
 <li><p>parameter <code>object</code> is of type <code>character</code> and is expected to be the file
 names(s) from which spectra should be imported. Parameter <code>source</code> allows
-to define a MsBackend that is able to import the data from the
-provided source files. The default value for <code>source</code> is <code>MsBackendMzR()</code>
+to define a <a href='MsBackend.html'>MsBackend</a> that is able to import the data from the
+provided source files. The default value for <code>source</code> is <code><a href='MsBackend.html'>MsBackendMzR()</a></code>
 which allows to import spectra data from mzML, mzXML or CDF files.</p></li>
 </ul>
 
 <p>With <code>...</code> additional arguments can be passed to the backend's
-<code>backendInitialize()</code> method. Parameter <code>backend</code> allows to specify which
-MsBackend should be used for data storage.</p>
+<code><a href='hidden_aliases.html'>backendInitialize()</a></code> method. Parameter <code>backend</code> allows to specify which
+<a href='MsBackend.html'>MsBackend</a> should be used for data storage.</p>
 <p>The backend of a <code>Spectra</code> object can be changed with the <code>setBackend</code>
 method that takes an instance of the new backend as second parameter
-<code>backend</code>. A call to <code>setBackend(sps, backend = MsBackendDataFrame())</code> would
+<code>backend</code>. A call to <code><a href='hidden_aliases.html'>setBackend(sps, backend = MsBackendDataFrame())</a></code> would
 for example change the backend or <code>sps</code> to the <em>in-memory</em>
 <code>MsBackendDataFrame</code>. Note that it is not possible to change the backend
-to a <em>read-only</em> backend (such as the <code>MsBackendMzR()</code> backend). <code>setBackend</code>
+to a <em>read-only</em> backend (such as the <code><a href='MsBackend.html'>MsBackendMzR()</a></code> backend). <code>setBackend</code>
 changes the <code>"dataOrigin"</code> variable of the resulting <code>Spectra</code> object to the
 <code>"dataStorage"</code> variable of the backend before the switch.</p>
 <p>The definition of the function is:
-<code>setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())</code>
+<code><a href='hidden_aliases.html'>setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())</a></code>
 and its parameters are:</p><ul>
 <li><p>parameter <code>object</code>: the <code>Spectra</code> object.</p></li>
 <li><p>parameter <code>backend</code>: an instance of the new backend, e.g.
-<code>MsBackendDataFrame()</code>.</p></li>
+<code><a href='MsBackend.html'>MsBackendDataFrame()</a></code>.</p></li>
 <li><p>parameter <code>f</code>: factor allowing to parallelize the change of the backends.
 By default the process of copying the spectra data from the original to the
 new backend is performed separately (and in parallel) for each file. Users
 are advised to use the default setting.</p></li>
 <li><p>parameter <code>...</code>: optional additional arguments passed to the
-<code>backendInitialize()</code> method of the new <code>backend</code>.</p></li>
+<code><a href='hidden_aliases.html'>backendInitialize()</a></code> method of the new <code>backend</code>.</p></li>
 <li><p>parameter <code>BPPARAM</code>: setup for the parallel processing. See <code>bpparam()</code> for
 details.</p></li>
 </ul>
@@ -982,8 +982,8 @@ not applied immediately to the spectra, but added to a
 applied on-the-fly to spectra data each time it is accessed. This lazy
 execution guarantees the same functionality for <code>Spectra</code> objects with
 any backend, i.e. backends supporting to save changes to spectrum data
-(<code>MsBackendDataFrame()</code> or <code>MsBackendHdf5Peaks()</code>) as well as read-only
-backends (such as the <code>MsBackendMzR()</code>). Note that for the former it is
+(<code><a href='MsBackend.html'>MsBackendDataFrame()</a></code> or <code><a href='MsBackend.html'>MsBackendHdf5Peaks()</a></code>) as well as read-only
+backends (such as the <code><a href='MsBackend.html'>MsBackendMzR()</a></code>). Note that for the former it is
 possible to apply the processing queue and write the modified peak data back
 to the data storage with the <code>applyProcessing</code> function.</p><ul>
 <li><p><code>addProcessing</code>: adds an arbitrary function that should be applied to the
@@ -1006,23 +1006,23 @@ intensity values for peaks falling into the same bin are summed.</p></li>
 <li><p><code>combineSpectra</code>: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum
 are used and the peak matrices are combined using the function specified
-with <code>FUN</code>, which defaults to <code>combinePeaks()</code>. The sets of spectra can be
+with <code>FUN</code>, which defaults to <code><a href='combinePeaks.html'>combinePeaks()</a></code>. The sets of spectra can be
 specified with parameter <code>f</code>.
 In addition it is possible to define, with parameter <code>p</code> if and how to
 split the input data for parallel processing.
 This defaults to <code>p = x$dataStorage</code> and hence a per-file parallel
 processing is applied for <code>Spectra</code> with file-based backends (such as the
-<code>MsBackendMzR()</code>). The function returns a <code>Spectra</code> of length equal to the
+<code><a href='MsBackend.html'>MsBackendMzR()</a></code>). The function returns a <code>Spectra</code> of length equal to the
 unique levels of <code>f</code>.</p></li>
 <li><p><code>compareSpectra</code>: compare each spectrum in <code>x</code> with each spectrum in <code>y</code>
 using the function provided with <code>FUN</code> (defaults to <code>ndotproduct()</code>). If
 <code>y</code> is missing, each spectrum in <code>x</code> is compared with each other spectrum
 in <code>x</code>.
 The matching/mapping of peaks between the compared spectra is done with the
-<code>MAPFUN</code> function. The default <code>joinPeaks()</code> matches peaks of both spectra
+<code>MAPFUN</code> function. The default <code><a href='joinPeaks.html'>joinPeaks()</a></code> matches peaks of both spectra
 and allows to keep all peaks from the first spectrum (<code>type = "left"</code>),
 from the second (<code>type = "right"</code>), from both (<code>type = "outer"</code>) and to
-keep only matching peaks (<code>type = "inner"</code>); see <code>joinPeaks()</code> for more
+keep only matching peaks (<code>type = "inner"</code>); see <code><a href='joinPeaks.html'>joinPeaks()</a></code> for more
 information and examples).
 <code>FUN</code> is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
@@ -1120,7 +1120,7 @@ level(s).</p></li>
 <span class='co'>## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk</span>
 <span class='co'>## backend.</span>
 <span class='kw'>sciex_file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>dir</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"sciex"</span>, package = <span class='st'>"msdata"</span>), full.names = <span class='fl'>TRUE</span>)
-<span class='kw'>sciex</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='kw'>sciex_file</span>, backend = <span class='fu'>MsBackendMzR</span>())
+<span class='kw'>sciex</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='kw'>sciex_file</span>, backend = <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>())
 <span class='kw'>sciex</span></div><div class='output co'>#&gt; MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
 #&gt;        msLevel     rtime scanIndex
 #&gt;      &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
@@ -1145,7 +1145,7 @@ level(s).</p></li>
 <span class='co'>## The MS data is on disk and will be read into memory on-demand. We can</span>
 <span class='co'>## however change the backend to a MsBackendDataFrame backend which will</span>
 <span class='co'>## keep all of the data in memory.</span>
-<span class='kw'>sciex_im</span> <span class='op'>&lt;-</span> <span class='fu'>setBackend</span>(<span class='kw'>sciex</span>, <span class='fu'>MsBackendDataFrame</span>())
+<span class='kw'>sciex_im</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>setBackend</a></span>(<span class='kw'>sciex</span>, <span class='fu'><a href='MsBackend.html'>MsBackendDataFrame</a></span>())
 <span class='kw'>sciex_im</span></div><div class='output co'>#&gt; MSn data (Spectra) with 1862 spectra in a MsBackendDataFrame backend:
 #&gt;        msLevel     rtime scanIndex
 #&gt;      &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
@@ -1162,7 +1162,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Jul  3 16:07:30 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Jul 31 14:53:01 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1207,7 +1207,7 @@ level(s).</p></li>
 #&gt; [[1]] 100 103.2 104.3 106.5
 #&gt; [[2]] 45.6 120.4 190.2</div><div class='input'>
 <span class='co'>## Determine whether one of the spectra has a specific m/z value</span>
-<span class='fu'>containsMz</span>(<span class='kw'>data</span>, mz = <span class='fl'>120.4</span>)</div><div class='output co'>#&gt; [1] FALSE  TRUE</div><div class='input'>
+<span class='fu'><a href='hidden_aliases.html'>containsMz</a></span>(<span class='kw'>data</span>, mz = <span class='fl'>120.4</span>)</div><div class='output co'>#&gt; [1] FALSE  TRUE</div><div class='input'>
 <span class='co'>## Accessing spectra variables works for all backends:</span>
 <span class='fu'>intensity</span>(<span class='kw'>sciex</span>)</div><div class='output co'>#&gt; NumericList of length 1862
 #&gt; [[1]] 0 412 0 0 412 0 0 412 0 0 412 0 0 ... 0 412 0 0 412 0 0 412 0 0 412 412 0
@@ -1281,7 +1281,7 @@ level(s).</p></li>
 #&gt; 1        sp_1         1
 #&gt; 2        sp_2         2</div><div class='input'>
 <span class='co'>## Drop spectra variable data and/or columns.</span>
-<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>selectSpectraVariables</span>(<span class='kw'>data</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mz"</span>, <span class='st'>"intensity"</span>))
+<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>selectSpectraVariables</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mz"</span>, <span class='st'>"intensity"</span>))
 
 <span class='co'>## This removed the additional columns "spectrum_id" and deleted all values</span>
 <span class='co'>## for all spectra variables, except "mz" and "intensity".</span>
@@ -1338,7 +1338,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Fri Jul  3 16:07:32 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Fri Jul 31 14:53:03 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1352,15 +1352,15 @@ level(s).</p></li>
 <span class='co'>## Filter a Spectra for a target precursor m/z with a tolerance of 10ppm</span>
 <span class='kw'>spd</span><span class='op'>$</span><span class='kw'>precursorMz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>323.4</span>, <span class='fl'>543.2302</span>)
 <span class='kw'>data_filt</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='kw'>spd</span>)
-<span class='fu'>filterPrecursorMz</span>(<span class='kw'>data_filt</span>, mz = <span class='fl'>543.23</span> <span class='op'>+</span> <span class='fu'>ppm</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>543.23</span>, <span class='fl'>543.23</span>), <span class='fl'>10</span>))</div><div class='output co'>#&gt; MSn data (Spectra) with 1 spectra in a MsBackendDataFrame backend:
+<span class='fu'>filterPrecursorMz</span>(<span class='kw'>data_filt</span>, mz = <span class='fl'>543.23</span> <span class='op'>+</span> <span class='fu'><a href='hidden_aliases.html'>ppm</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>543.23</span>, <span class='fl'>543.23</span>), <span class='fl'>10</span>))</div><div class='output co'>#&gt; MSn data (Spectra) with 1 spectra in a MsBackendDataFrame backend:
 #&gt;     msLevel     rtime scanIndex
 #&gt;   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Jul  3 16:07:32 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Jul 31 14:53:03 2020] </div><div class='input'>
 <span class='co'>## Remove empty spectra variables</span>
-<span class='kw'>sciex_noNA</span> <span class='op'>&lt;-</span> <span class='fu'>dropNaSpectraVariables</span>(<span class='kw'>sciex</span>)
+<span class='kw'>sciex_noNA</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>dropNaSpectraVariables</a></span>(<span class='kw'>sciex</span>)
 
 <span class='co'>## Available spectra variables before and after dropNaSpectraVariables</span>
 <span class='fu'>spectraVariables</span>(<span class='kw'>sciex</span>)</div><div class='output co'>#&gt;  [1] "msLevel"                  "rtime"                   
@@ -1399,7 +1399,7 @@ level(s).</p></li>
 <span class='fu'>centroided</span>(<span class='kw'>data</span>) <span class='op'>&lt;-</span> <span class='fl'>TRUE</span>
 
 <span class='co'>## Replace peak intensities below 40 with 3.</span>
-<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>replaceIntensitiesBelow</span>(<span class='kw'>data</span>, threshold = <span class='fl'>40</span>, value = <span class='fl'>3</span>)
+<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>replaceIntensitiesBelow</a></span>(<span class='kw'>data</span>, threshold = <span class='fl'>40</span>, value = <span class='fl'>3</span>)
 <span class='kw'>res</span></div><div class='output co'>#&gt; MSn data (Spectra) with 2 spectra in a MsBackendDataFrame backend:
 #&gt;     msLevel     rtime scanIndex
 #&gt;   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
@@ -1408,11 +1408,11 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Jul  3 16:07:32 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Jul 31 14:53:03 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]</div><div class='output co'>#&gt; [1] 3 3 3</div><div class='input'>
 <span class='co'>## Remove all peaks with an intensity below 40.</span>
-<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>filterIntensity</span>(<span class='kw'>res</span>, intensity = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>40</span>, <span class='fl'>Inf</span>))
+<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterIntensity</a></span>(<span class='kw'>res</span>, intensity = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>40</span>, <span class='fl'>Inf</span>))
 
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]</div><div class='output co'>#&gt; numeric(0)</div><div class='input'>
@@ -1420,7 +1420,7 @@ level(s).</p></li>
 <span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))</div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))</div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
 <span class='co'>## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using</span>
 <span class='co'>## the normalized dotproduct method.</span>
-<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>compareSpectra</span>(<span class='kw'>sciex_im</span>[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span>], <span class='kw'>sciex_im</span>[<span class='fl'>10</span><span class='op'>:</span><span class='fl'>20</span>])
+<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>compareSpectra</a></span>(<span class='kw'>sciex_im</span>[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span>], <span class='kw'>sciex_im</span>[<span class='fl'>10</span><span class='op'>:</span><span class='fl'>20</span>])
 <span class='co'>## first row contains comparisons of spectrum 2 with spectra 10 to 20 and</span>
 <span class='co'>## the second row comparisons of spectrum 3 with spectra 10 to 20</span>
 <span class='kw'>res</span></div><div class='output co'>#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
@@ -1435,7 +1435,7 @@ level(s).</p></li>
 <span class='kw'>correlateSpectra</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>x</span>, <span class='kw'>y</span>, <span class='kw'>use</span> = <span class='st'>"pairwise.complete.obs"</span>, <span class='kw'>...</span>) {
     <span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cor</a></span>(<span class='kw'>x</span>[, <span class='fl'>2</span>], <span class='kw'>y</span>[, <span class='fl'>2</span>], use = <span class='kw'>use</span>, <span class='kw'>...</span>)
 }
-<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>compareSpectra</span>(<span class='kw'>sciex_im</span>[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span>], <span class='kw'>sciex_im</span>[<span class='fl'>10</span><span class='op'>:</span><span class='fl'>20</span>],
+<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>compareSpectra</a></span>(<span class='kw'>sciex_im</span>[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span>], <span class='kw'>sciex_im</span>[<span class='fl'>10</span><span class='op'>:</span><span class='fl'>20</span>],
     FUN = <span class='kw'>correlateSpectra</span>)
 <span class='kw'>res</span></div><div class='output co'>#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
 #&gt; [1,] 0.9974393 0.9989579 0.9973735 0.9974334 0.9987225 0.9992306 0.9978620
@@ -1448,7 +1448,7 @@ level(s).</p></li>
 <span class='co'>## type = "inner" uses a *inner join* to match peaks, i.e. keeps only</span>
 <span class='co'>## peaks that can be mapped betwen both spectra. The provided FUN returns</span>
 <span class='co'>## simply the number of matching peaks.</span>
-<span class='fu'>compareSpectra</span>(<span class='kw'>sciex_im</span>[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span>], <span class='kw'>sciex_im</span>[<span class='fl'>10</span><span class='op'>:</span><span class='fl'>20</span>], ppm = <span class='fl'>10</span>, type = <span class='st'>"inner"</span>,
+<span class='fu'><a href='hidden_aliases.html'>compareSpectra</a></span>(<span class='kw'>sciex_im</span>[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span>], <span class='kw'>sciex_im</span>[<span class='fl'>10</span><span class='op'>:</span><span class='fl'>20</span>], ppm = <span class='fl'>10</span>, type = <span class='st'>"inner"</span>,
     FUN = <span class='fu'>function</span>(<span class='kw'>x</span>, <span class='kw'>y</span>, <span class='kw'>...</span>) <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='kw'>x</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]
 #&gt; [1,]  530  501  484  576  592  515  549  578  539   542   550
 #&gt; [2,]  526  548  524  592  639  502  589  571  575   564   613</div><div class='input'>
