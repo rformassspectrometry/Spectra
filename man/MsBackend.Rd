@@ -287,6 +287,9 @@ or set.}
 metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
 but needs to be provided for \code{MsBackendDataFrame} backends.}
 }
+\value{
+See documentation of respective function.
+}
 \description{
 Note that the classes described here are not meant to be used
 directly by the end-users and the material in this man page is
@@ -371,8 +374,8 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \verb{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
-\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching the
-provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
+\item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
+the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
 an acquisition number equal to \code{n} \strong{in spectra with matching dataOrigin
 or dataStorage values} retaining all other spectra.

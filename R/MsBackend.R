@@ -2,7 +2,8 @@
 
 #' @title Mass spectrometry data backends
 #'
-#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class [,MsBackend-method
+#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class
+#' @aliases MsBackendMzR-class [,MsBackend-method
 #'
 #' @description
 #'
@@ -173,8 +174,8 @@
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
-#'   provided acquisition numbers (argument `n`). If `dataOrigin` or
+#' - `filterAcquisitionNum`: filters the object keeping only spectra matching
+#'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
 #'   `dataStorage` is also provided, `object` is subsetted to the spectra with
 #'   an acquisition number equal to `n` **in spectra with matching dataOrigin
 #'   or dataStorage values** retaining all other spectra.
@@ -446,6 +447,8 @@
 #'
 #' @name MsBackend
 #'
+#' @return See documentation of respective function.
+#'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
 #'
 #' @md
@@ -453,13 +456,13 @@
 #' @exportClass MsBackend MsBackendDataFrame MsBackendMzR
 NULL
 
-setClass("MsBackend",
-         contains = "VIRTUAL",
-         slots = c(
-             readonly = "logical",
-             version = "character"),
-         prototype = prototype(readonly = FALSE,
-                               version = "0.1"))
+setClass(
+    "MsBackend",
+    contains = "VIRTUAL",
+    slots = c(
+        readonly = "logical",
+        version = "character"),
+    prototype = prototype(readonly = FALSE, version = "0.1"))
 
 #' @importFrom methods .valueClassTest is new validObject
 #'
@@ -475,11 +478,10 @@ setValidity("MsBackend", function(object) {
 #' @exportMethod backendInitialize
 #'
 #' @rdname MsBackend
-setMethod("backendInitialize", signature = "MsBackend",
-          definition = function(object, ...) {
-              validObject(object)
-              object
-          })
+setMethod("backendInitialize", signature = "MsBackend", function(object, ...) {
+    validObject(object)
+    object
+})
 
 #' @rdname MsBackend
 setMethod("backendMerge", "list", function(object, ...) {
@@ -746,10 +748,10 @@ setMethod("isolationWindowLowerMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowLowerMz<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("isolationWindowLowerMz", "MsBackend",
-                 function(object, value) {
-                     stop("Not implemented for ", class(object), ".")
-                 })
+setReplaceMethod("isolationWindowLowerMz", "MsBackend", function(object,
+                                                                 value) {
+    stop("Not implemented for ", class(object), ".")
+})
 
 #' @exportMethod isolationWindowTargetMz
 #'
@@ -765,10 +767,10 @@ setMethod("isolationWindowTargetMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowTargetMz<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("isolationWindowTargetMz", "MsBackend",
-                 function(object, value) {
-                     stop("Not implemented for ", class(object), ".")
-                 })
+setReplaceMethod("isolationWindowTargetMz", "MsBackend", function(object,
+                                                                  value) {
+    stop("Not implemented for ", class(object), ".")
+})
 
 #' @exportMethod isolationWindowUpperMz
 #'
@@ -784,10 +786,10 @@ setMethod("isolationWindowUpperMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowUpperMz<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("isolationWindowUpperMz", "MsBackend",
-                 function(object, value) {
-                     stop("Not implemented for ", class(object), ".")
-                 })
+setReplaceMethod("isolationWindowUpperMz", "MsBackend", function(object,
+                                                                 value) {
+    stop("Not implemented for ", class(object), ".")
+})
 
 #' @exportMethod isReadOnly
 #'
@@ -926,10 +928,11 @@ setMethod("scanIndex", "MsBackend", function(object) {
 #' @exportMethod selectSpectraVariables
 #'
 #' @rdname MsBackend
-setMethod("selectSpectraVariables", "MsBackend",
-          function(object, spectraVariables = spectraVariables(object)) {
-              stop("Not implemented for ", class(object), ".")
-})
+setMethod(
+    "selectSpectraVariables", "MsBackend",
+    function(object, spectraVariables = spectraVariables(object)) {
+        stop("Not implemented for ", class(object), ".")
+    })
 
 #' @exportMethod smoothed
 #'
@@ -954,10 +957,11 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
 #' @exportMethod asDataFrame
 #'
 #' @rdname MsBackend
-setMethod("asDataFrame", "MsBackend",
-          function(object, columns = spectraVariables(object)) {
-              stop("Not implemented for ", class(object), ".")
-          })
+setMethod(
+    "asDataFrame", "MsBackend",
+    function(object, columns = spectraVariables(object)) {
+        stop("Not implemented for ", class(object), ".")
+    })
 
 #' @exportMethod asDataFrame<-
 #'

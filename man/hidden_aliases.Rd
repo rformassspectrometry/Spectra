@@ -369,6 +369,9 @@ setBackend(object, backend, ...)
 
 \S4method{show}{Spectra}(object)
 }
+\value{
+Not applicable
+}
 \description{
 For S4 methods that require a documentation entry but only clutter the index.
 }

@@ -81,8 +81,8 @@ MsBackendHdf5Peaks <- function() {
                              " not found"))
     } else {
         if (!is.integer(modc))
-            msg <- c(msg, paste0("Wrong Hdf5 file format: modification counter is",
-                                 " not an integer"))
+            msg <- c(msg, paste0("Wrong Hdf5 file format: modification counter",
+                                 "is not an integer"))
     }
     if (length(msg)) msg
     else NULL
@@ -122,9 +122,9 @@ MsBackendHdf5Peaks <- function() {
 #' @param scanIndex `integer` with the scan indices/ids.
 #'
 #' @param modCount `integer`: the modification counter stored in the R object
-#'     This is checked against one stored in the hdf5 file and an error is thrown
-#'     if they differ, i.e. if the object was copied and the hdf5 files modified
-#'     by the original/source object.
+#'     This is checked against one stored in the hdf5 file and an error is
+#'     thrown if they differ, i.e. if the object was copied and the hdf5 files
+#'     modified by the original/source object.
 #'
 #' @return list of `matrix` objects with the peak data.
 #'
