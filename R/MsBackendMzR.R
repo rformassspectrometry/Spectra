@@ -71,7 +71,7 @@ setMethod("show", "MsBackendMzR", function(object) {
     fls <- unique(object@spectraData$dataStorage)
     if (length(fls)) {
         to <- min(3, length(fls))
-        cat("\nfile(s):\n", paste(basename(fls[1:to]), collapse = "\n"),
+        cat("\nfile(s):\n", paste(basename(fls[seq_len(to)]), collapse = "\n"),
             "\n", sep = "")
         if (length(fls) > 3)
             cat(" ...", length(fls) - 3, "more files\n")

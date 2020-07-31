@@ -147,6 +147,9 @@ peaks. See \code{\link[=par]{par()}} for more details.}
 matching peaks. Defaults to \code{matchPch = 16}, set to \code{matchPch = NA} to
 disable. See \code{\link[=par]{par()}} for more details.}
 }
+\value{
+These functions create a plot.
+}
 \description{
 \code{\link[=Spectra]{Spectra()}} can be plotted with one of the following functions
 \itemize{

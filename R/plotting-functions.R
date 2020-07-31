@@ -91,6 +91,8 @@
 #' @param ... additional parameters to be passed to the [plot.default()]
 #'     function.
 #'
+#' @return These functions create a plot.
+#'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
 #'
 #' @name spectra-plotting

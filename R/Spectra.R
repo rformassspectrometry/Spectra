@@ -921,7 +921,7 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
               backend = be)
-    if (class(source) != class(backend))
+    if (!is(source, class(backend)[1]))
         setBackend(sp, backend, ..., BPPARAM = BPPARAM)
     else sp
 })

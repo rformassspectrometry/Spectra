@@ -1,5 +1,4 @@
 #' @include hidden_aliases.R
-NULL
 
 #' @title Mass spectrometry data backends
 #'

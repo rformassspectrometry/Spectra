@@ -18,6 +18,10 @@ executeProcessingStep(object, ...)
 
 \item{...}{optional additional arguments to be passed along.}
 }
+\value{
+The \code{ProcessingStep} function returns and object of type
+\code{ProcessingStep}.
+}
 \description{
 Class containing the function and arguments to be applied in a lazy-execution
 framework.
