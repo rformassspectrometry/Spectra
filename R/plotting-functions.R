@@ -88,6 +88,11 @@
 #' @param y for `plotSpectraMirror`: `Spectra` object of length 1 against which
 #'     `x` should be plotted against.
 #'
+#' @param asp for `plotSpectra`: the target ratio (columns / rows) when plotting
+#' mutliple spectra (e.g. for 20 spectra use `asp = 4/5` for 4 columns and 5 rows
+#' or `asp = 5/4` for 5 columns and 4 rows; see [grDevices::n2mfrow()] for
+#' details).
+#'
 #' @param ... additional parameters to be passed to the [plot.default()]
 #'     function.
 #'
@@ -160,6 +165,9 @@
 #'     })
 #' abline(h = 15, lty = 2)
 #'
+#' ## Use different asp values
+#' plotSpectra(sp, asp = 1/2)
+#' plotSpectra(sp, asp = 2/1)
 #'
 #' #### --------------------------------------------- ####
 #' ##                plotSpectraMirror                  ##
@@ -185,6 +193,7 @@ NULL
 #' @rdname spectra-plotting
 #'
 #' @importFrom graphics par
+#' @importFrom grDevices n2mfrow
 #'
 #' @export plotSpectra
 plotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
@@ -193,7 +202,7 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
                         col = "#00000080", labels = character(),
                         labelCex = 1, labelSrt = 0,
                         labelAdj = NULL, labelPos = NULL,
-                        labelOffset = 0.5, ...) {
+                        labelOffset = 0.5, asp = 1, ...) {
     nsp <- length(x)
     if (nsp == 1)
         col <- list(col)
@@ -201,7 +210,7 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
         col <- rep(col[1], nsp)
     if (length(main) != nsp)
         main <- rep(main[1], nsp)
-    par(mfrow = c(round(sqrt(nsp)), ceiling(sqrt(nsp))))
+    par(mfrow = n2mfrow(nsp, asp = asp))
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], xlab = xlab, ylab = ylab, type = type,
                               xlim = xlim, ylim = ylim, main = main[i],

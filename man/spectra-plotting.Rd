@@ -22,6 +22,7 @@ plotSpectra(
   labelAdj = NULL,
   labelPos = NULL,
   labelOffset = 0.5,
+  asp = 1,
   ...
 )
 
@@ -115,6 +116,11 @@ parameter \code{srt} in \code{\link[=text]{text()}}.}
 \item{labelPos}{see parameter \code{pos} in \code{\link[=text]{text()}}.}
 
 \item{labelOffset}{see parameter \code{offset} in \code{\link[=text]{text()}}.}
+
+\item{asp}{for \code{plotSpectra}: the target ratio (columns / rows) when plotting
+mutliple spectra (e.g. for 20 spectra use \code{asp = 4/5} for 4 columns and 5 rows
+or \code{asp = 5/4} for 5 columns and 4 rows; see \code{\link[grDevices:n2mfrow]{grDevices::n2mfrow()}} for
+details).}
 
 \item{...}{additional parameters to be passed to the \code{\link[=plot.default]{plot.default()}}
 function.}
@@ -228,6 +234,9 @@ plotSpectraOverlay(sp, col = c("#ff000080", "#0000ff80"),
     })
 abline(h = 15, lty = 2)
 
+## Use different asp values
+plotSpectra(sp, asp = 1/2)
+plotSpectra(sp, asp = 2/1)
 
 #### --------------------------------------------- ####
 ##                plotSpectraMirror                  ##
