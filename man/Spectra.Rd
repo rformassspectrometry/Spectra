@@ -496,7 +496,7 @@ the nearest valleys around the peak centroids are used.}
 
 \item{threshold}{\itemize{
 \item For \code{pickPeaks}: a \code{double(1)} defining the proportion of the maximal peak
-intensity. Just values above are used for the weighted mean calclulation.
+intensity. Just values above are used for the weighted mean calculation.
 \item For \code{replaceIntensitiesBelow}: a \code{numeric(1)} defining the threshold or
 a \code{function} to calculate the threshold for each spectrum on its intensity
 values. Defaults to \code{threshold = min}.
@@ -559,8 +559,7 @@ changes the \code{"dataOrigin"} variable of the resulting \code{Spectra} object 
 \code{"dataStorage"} variable of the backend before the switch.
 
 The definition of the function is:
-\code{setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())}
-and its parameters are:
+\code{setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())} and its parameters are:
 \itemize{
 \item parameter \code{object}: the \code{Spectra} object.
 \item parameter \code{backend}: an instance of the new backend, e.g.
@@ -624,14 +623,14 @@ the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
 length equal number of spectra.
-\item \code{isolationWindowLowerMz}, \verb{isolationWindowLowerMz<-}: gets or sets the lower
-m/z boundary of the isolation window.
+\item \code{isolationWindowLowerMz}, \verb{isolationWindowLowerMz<-}: gets or sets the
+lower m/z boundary of the isolation window.
 \item \code{isolationWindowTargetMz}, \verb{isolationWindowTargetMz<-}: gets or sets the
 target m/z of the isolation window.
-\item \code{isolationWindowUpperMz}, \verb{isolationWindowUpperMz<-}: gets or sets the upper
-m/z boundary of the isolation window.
-\item \code{containsMz}: checks for each of the spectra whether they contain mass peaks
-with an m/z equal to \code{mz} (given acceptable difference as defined by
+\item \code{isolationWindowUpperMz}, \verb{isolationWindowUpperMz<-}: gets or sets the
+upper m/z boundary of the isolation window.
+\item \code{containsMz}: checks for each of the spectra whether they contain mass
+peaks with an m/z equal to \code{mz} (given acceptable difference as defined by
 parameters \code{tolerance} and \code{ppm} - see \code{\link[=common]{common()}} for details). Parameter
 \code{which} allows to define whether any (\code{which = "any"}, the default) or
 all (\code{which = "all"}) of the \code{mz} have to match. The function returns
@@ -903,7 +902,8 @@ lengths(data)
 
 ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
 ## backend.
-sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+sciex_file <- dir(system.file("sciex", package = "msdata"),
+    full.names = TRUE)
 sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 sciex
 

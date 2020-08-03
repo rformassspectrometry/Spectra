@@ -91,6 +91,8 @@
 #' @param ... additional parameters to be passed to the [plot.default()]
 #'     function.
 #'
+#' @return These functions create a plot.
+#'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
 #'
 #' @name spectra-plotting
@@ -342,7 +344,9 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
 #'
 #' @author Johannes Rainer, Sebastian Gibb
 #'
-#' @importFrom graphics axis box plot.new plot.window plot.xy strwidth text title
+#' @importFrom graphics axis box plot.new plot.window plot.xy strwidth
+#'
+#' @importFrom graphics text title
 #'
 #' @importFrom grDevices dev.flush dev.hold xy.coords
 #'
@@ -369,14 +373,16 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
 #' grid()
 #' .plot_single_spectrum(sp, col = "red", type = "p", add = TRUE)
 #'
-#' .plot_single_spectrum(sp, labels = function(z) format(mz(z)[[1]], digits = 5),
+#' .plot_single_spectrum(sp,
+#'     labels = function(z) format(mz(z)[[1]], digits = 5),
 #'     labelPos = 2, labelOffset = 0.1, labelSrt = -30)
 #' grid()
 #'
 #' @noRd
 .plot_single_spectrum <- function(x, xlab = "m/z", ylab = "intensity",
                                   type = "h", xlim = numeric(),
-                                  ylim = numeric(), main = paste("RT", rtime(x)),
+                                  ylim = numeric(),
+                                  main = paste("RT", rtime(x)),
                                   col = "#00000080", labels = character(),
                                   labelCol = col, labelCex = 1, labelSrt = 0,
                                   labelAdj = NULL, labelPos = NULL,

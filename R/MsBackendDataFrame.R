@@ -118,13 +118,15 @@ setMethod("collisionEnergy", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("collisionEnergy", "MsBackendDataFrame", function(object, value) {
-    if (!is.numeric(value) || length(value) != length(object))
-        stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$collisionEnergy <- as.numeric(value)
-    validObject(object)
-    object
-})
+setReplaceMethod("collisionEnergy", "MsBackendDataFrame",
+                 function(object, value) {
+                     if (!is.numeric(value) || length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$collisionEnergy <- as.numeric(value)
+                     validObject(object)
+                     object
+                 })
 
 #' @rdname hidden_aliases
 setMethod("dataOrigin", "MsBackendDataFrame", function(object) {
@@ -425,7 +427,8 @@ setMethod("asDataFrame", "MsBackendDataFrame",
                       res$mz <- if (length(other_res$mz)) other_res$mz
                                 else NumericList(compress = FALSE)
                   if (any(names(other_res) == "intensity"))
-                      res$intensity <- if (length(other_res$intensity)) other_res$intensity
+                      res$intensity <- if (length(other_res$intensity))
+                                           other_res$intensity
                                        else NumericList(compress = FALSE)
               }
               res[, columns, drop = FALSE]
@@ -435,7 +438,8 @@ setMethod("asDataFrame", "MsBackendDataFrame",
 setReplaceMethod("asDataFrame", "MsBackendDataFrame", function(object, value) {
     if (inherits(value, "DataFrame")) {
         if (length(object) && nrow(value) != length(object))
-            stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
+            stop("'value' has to be a 'DataFrame' with ",
+                 length(object), " rows.")
         if (!is(value$mz, "NumericList"))
             value$mz <- NumericList(value$mz, compress = FALSE)
         if (!is(value$intensity, "NumericList"))

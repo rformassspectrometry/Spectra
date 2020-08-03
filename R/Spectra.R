@@ -64,8 +64,8 @@ NULL
 #' `"dataStorage"` variable of the backend before the switch.
 #'
 #' The definition of the function is:
-#' `setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())`
-#' and its parameters are:
+#' `setBackend(object, backend, ..., f = dataStorage(object),
+#'     BPPARAM = bpparam())` and its parameters are:
 #'
 #' - parameter `object`: the `Spectra` object.
 #'
@@ -141,17 +141,17 @@ NULL
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the lower
-#'   m/z boundary of the isolation window.
+#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the
+#'   lower m/z boundary of the isolation window.
 #'
 #' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the upper
-#'   m/z boundary of the isolation window.
+#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the
+#'   upper m/z boundary of the isolation window.
 #'
-#' - `containsMz`: checks for each of the spectra whether they contain mass peaks
-#'   with an m/z equal to `mz` (given acceptable difference as defined by
+#' - `containsMz`: checks for each of the spectra whether they contain mass
+#'   peaks with an m/z equal to `mz` (given acceptable difference as defined by
 #'   parameters `tolerance` and `ppm` - see [common()] for details). Parameter
 #'   `which` allows to define whether any (`which = "any"`, the default) or
 #'   all (`which = "all"`) of the `mz` have to match. The function returns
@@ -586,7 +586,7 @@ NULL
 #'
 #' @param threshold
 #' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
-#'      intensity. Just values above are used for the weighted mean calclulation.
+#'      intensity. Just values above are used for the weighted mean calculation.
 #' - For `replaceIntensitiesBelow`: a `numeric(1)` defining the threshold or
 #'   a `function` to calculate the threshold for each spectrum on its intensity
 #'   values. Defaults to `threshold = min`.
@@ -634,7 +634,8 @@ NULL
 #'
 #' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
 #' ## backend.
-#' sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+#' sciex_file <- dir(system.file("sciex", package = "msdata"),
+#'     full.names = TRUE)
 #' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 #' sciex
 #'
@@ -921,7 +922,7 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
               backend = be)
-    if (class(source) != class(backend))
+    if (!is(source, class(backend)[1]))
         setBackend(sp, backend, ..., BPPARAM = BPPARAM)
     else sp
 })
@@ -1025,7 +1026,8 @@ setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
-setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
+setMethod("dataStorage", "Spectra",
+          function(object) dataStorage(object@backend))
 
 #' @rdname Spectra
 setMethod("dropNaSpectraVariables", "Spectra", function(object) {
@@ -1331,7 +1333,7 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
 #' @rdname Spectra
 setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
                                                       dataStorage = character(),
-                                                      dataOrigin = character()) {
+                                                      dataOrigin = character()){
     if (length(dataStorage) && !is.character(dataStorage))
         stop("'dataStorage' is expected to be of type character")
     if (length(dataOrigin) && !is.character(dataOrigin))
@@ -1434,7 +1436,8 @@ setMethod("filterRt", "Spectra",
               if (!is.numeric(msLevel.))
                   stop("Please provide a numeric MS level.")
               if (length(rt) != 2L || !is.numeric(rt) || rt[1] >= rt[2])
-                  stop("Please provide a lower and upper numeric retention time range.")
+                  stop("Please provide a lower and upper numeric retention",
+                       " time range.")
               suppressWarnings(rt <- range(rt))
               object@backend <- filterRt(object@backend, rt, msLevel.)
               object@processing <- .logging(
@@ -1491,7 +1494,8 @@ setMethod("filterIntensity", "Spectra",
                                       msLevel = msLevel.)
               object@processing <- .logging(
                   object@processing, "Remove peaks with intensities outside [",
-                  intensity[1], ", ", intensity[2], "] in spectra of MS level(s) ",
+                  intensity[1], ", ", intensity[2],
+                  "] in spectra of MS level(s) ",
                   paste0(msLevel., collapse = ", "), ".")
               object
           })

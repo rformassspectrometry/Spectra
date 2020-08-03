@@ -7,11 +7,9 @@ setGeneric("asDataFrame", function(object, ...) standardGeneric("asDataFrame"))
 setGeneric("asDataFrame<-", function(object, value)
     standardGeneric("asDataFrame<-"))
 #' @rdname hidden_aliases
-setGeneric("backendInitialize",
-           def = function(object, ...)
-               standardGeneric("backendInitialize"),
-           valueClass = "MsBackend"
-           )
+setGeneric("backendInitialize", def = function(object, ...)
+    standardGeneric("backendInitialize"),
+    valueClass = "MsBackend")
 #' @rdname hidden_aliases
 setGeneric("backendMerge", def = function(object, ...)
     standardGeneric("backendMerge"),

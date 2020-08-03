@@ -20,6 +20,9 @@ setClassUnion("characterOrFunction", c("character", "function"))
 #' This object is mainly used to record possible processing steps of a
 #' [Spectra()] object.
 #'
+#' @return The `ProcessingStep` function returns and object of type
+#'     `ProcessingStep`.
+#'
 #' @author Johannes Rainer
 #'
 #' @exportClass ProcessingStep
@@ -86,7 +89,7 @@ setMethod("show", "ProcessingStep", function(object) {
     args <- object@ARGS
     if (length(args) > 0) {
         cat(" Arguments:\n")
-        for (i in 1:length(args)) {
+        for (i in seq_along(args)) {
             cat("  o ", names(args)[i], " = ",
                 paste(args[[i]], collapse = ", "), "\n", sep = "")
         }

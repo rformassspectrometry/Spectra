@@ -41,7 +41,8 @@ MsBackendMzR <- function() {
     hdr$isolationWindowLowerOffset <- NULL
     ## Remove core spectra variables that contain only `NA`
     S4Vectors::DataFrame(hdr[, !(vapply1l(hdr, function(z) all(is.na(z))) &
-                                 colnames(hdr) %in% names(.SPECTRA_DATA_COLUMNS))
+                                 colnames(hdr) %in%
+                                 names(.SPECTRA_DATA_COLUMNS))
                              ])
 }
 

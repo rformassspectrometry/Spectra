@@ -609,7 +609,8 @@ head(basename(dataOrigin(sps_sciex)))
 
 Most functions on `Spectra` support (and use) parallel processing out of the
 box. Peak data access and manipulation methods perform by default parallel
-processing on a per-file basis. `Spectra` uses `r Biocpkg("BiocParallel")` for
+processing on a per-file basis (i.e. using the `dataStorage` variable as
+splitting factor). `Spectra` uses `r Biocpkg("BiocParallel")` for
 parallel processing and all functions use the default registered parallel
 processing setup of that package.
 

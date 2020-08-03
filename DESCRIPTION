@@ -1,8 +1,12 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 0.5.7
-Description: The Spectra package defines a efficient infrastructure
-   for storing and handling for raw mass spectrometry spectra.
+Version: 0.99.0
+Description: The Spectra package defines an efficient infrastructure
+   for storing and handling mass spectrometry spectra and functionality to
+   subset, process, visualize and compare spectra data. It provides different
+   implementations (backends) to store mass spectrometry data. These comprise
+   backends tuned for fast data access and processing and backends for very
+   large data sets ensuring a small memory footprint.
 Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
                     email = "maintainer@rformassspectrometry.org",
                     role = "cre"),
@@ -19,7 +23,7 @@ Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
 		    role = "aut",
 		    comment = c(ORCID = "0000-0001-7406-4443")))
 Depends:
-    R (>= 3.5.0),
+    R (>= 4.0.0),
     S4Vectors,
     BiocParallel,
     ProtGenerics (>= 1.17.4)
@@ -29,7 +33,10 @@ Imports:
     MsCoreUtils (>= 1.1.3),
     BiocGenerics,
     graphics,
-    grDevices
+    grDevices,
+    stats,
+    tools,
+    utils
 Suggests:
     testthat,
     knitr (>= 1.1.0),
@@ -41,8 +48,6 @@ Suggests:
     rmarkdown,
     vdiffr,
     magrittr
-Remotes:
-    RforMassSpectrometry/MsCoreUtils
 License: Artistic-2.0
 LazyData: yes
 VignetteBuilder: knitr
