@@ -80,7 +80,7 @@ addProcessing <- function(object, FUN, ...) {
 #'
 #' @noRd
 .peaksapply <- function(object, FUN = NULL, ..., f = dataStorage(object),
-                        BPPARAM = bpparam()) {
+                         BPPARAM = bpparam()) {
     len <- length(object)
     if (!len)
         return(list())
@@ -91,14 +91,15 @@ addProcessing <- function(object, FUN, ...) {
     pqueue <- object@processingQueue
     if (!is.null(FUN))
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
-    ## Question whether we would use a slim version of the backend, i.e.
-    ## reduce it to certain columns/spectra variables.
-    res <- bplapply(split(object@backend, f), function(z, queue) {
-        .apply_processing_queue(as.list(z), msLevel(z),
-                                centroided(z), queue = queue)
-    }, queue = pqueue, BPPARAM = BPPARAM)
-    unsplit(res, f = f, drop = TRUE)
+    if (length(levels(f)) > 1 && length(pqueue)) {
+        res <- bplapply(split(object@backend, f), function(z, queue) {
+            .apply_processing_queue(as.list(z), msLevel(z),
+                                    centroided(z), queue = queue)
+        }, queue = pqueue, BPPARAM = BPPARAM)
+        unsplit(res, f = f, drop = TRUE)
+    } else as.list(object@backend)
 }
+
 
 #' @title Apply a function to subsets of Spectra
 #'
