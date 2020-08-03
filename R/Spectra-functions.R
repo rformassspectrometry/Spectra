@@ -91,7 +91,7 @@ addProcessing <- function(object, FUN, ...) {
     pqueue <- object@processingQueue
     if (!is.null(FUN))
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
-    if (length(levels(f)) > 1 && length(pqueue)) {
+    if (length(levels(f)) > 1 || length(pqueue)) {
         res <- bplapply(split(object@backend, f), function(z, queue) {
             .apply_processing_queue(as.list(z), msLevel(z),
                                     centroided(z), queue = queue)
