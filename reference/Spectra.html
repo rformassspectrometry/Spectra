@@ -82,7 +82,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -99,6 +99,9 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -713,7 +716,7 @@ the nearest valleys around the peak centroids are used.</p></td>
       <th>threshold</th>
       <td><ul>
 <li><p>For <code>pickPeaks</code>: a <code><a href='https://rdrr.io/r/base/double.html'>double(1)</a></code> defining the proportion of the maximal peak
-intensity. Just values above are used for the weighted mean calclulation.</p></li>
+intensity. Just values above are used for the weighted mean calculation.</p></li>
 <li><p>For <code>replaceIntensitiesBelow</code>: a <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining the threshold or
 a <code>function</code> to calculate the threshold for each spectrum on its intensity
 values. Defaults to <code>threshold = min</code>.</p></li>
@@ -769,8 +772,7 @@ to a <em>read-only</em> backend (such as the <code><a href='MsBackend.html'>MsBa
 changes the <code>"dataOrigin"</code> variable of the resulting <code>Spectra</code> object to the
 <code>"dataStorage"</code> variable of the backend before the switch.</p>
 <p>The definition of the function is:
-<code><a href='hidden_aliases.html'>setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())</a></code>
-and its parameters are:</p><ul>
+<code><a href='hidden_aliases.html'>setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())</a></code> and its parameters are:</p><ul>
 <li><p>parameter <code>object</code>: the <code>Spectra</code> object.</p></li>
 <li><p>parameter <code>backend</code>: an instance of the new backend, e.g.
 <code><a href='MsBackend.html'>MsBackendDataFrame()</a></code>.</p></li>
@@ -834,14 +836,14 @@ the code.)</p></li>
 <li><p><code>isEmpty</code>: checks whether a spectrum in <code>object</code> is empty
 (i.e. does not contain any peaks). Returns a <code>logical</code> vector of
 length equal number of spectra.</p></li>
-<li><p><code>isolationWindowLowerMz</code>, <code>isolationWindowLowerMz&lt;-</code>: gets or sets the lower
-m/z boundary of the isolation window.</p></li>
+<li><p><code>isolationWindowLowerMz</code>, <code>isolationWindowLowerMz&lt;-</code>: gets or sets the
+lower m/z boundary of the isolation window.</p></li>
 <li><p><code>isolationWindowTargetMz</code>, <code>isolationWindowTargetMz&lt;-</code>: gets or sets the
 target m/z of the isolation window.</p></li>
-<li><p><code>isolationWindowUpperMz</code>, <code>isolationWindowUpperMz&lt;-</code>: gets or sets the upper
-m/z boundary of the isolation window.</p></li>
-<li><p><code>containsMz</code>: checks for each of the spectra whether they contain mass peaks
-with an m/z equal to <code>mz</code> (given acceptable difference as defined by
+<li><p><code>isolationWindowUpperMz</code>, <code>isolationWindowUpperMz&lt;-</code>: gets or sets the
+upper m/z boundary of the isolation window.</p></li>
+<li><p><code>containsMz</code>: checks for each of the spectra whether they contain mass
+peaks with an m/z equal to <code>mz</code> (given acceptable difference as defined by
 parameters <code>tolerance</code> and <code>ppm</code> - see <code>common()</code> for details). Parameter
 <code>which</code> allows to define whether any (<code>which = "any"</code>, the default) or
 all (<code>which = "all"</code>) of the <code>mz</code> have to match. The function returns
@@ -1119,7 +1121,8 @@ level(s).</p></li>
 <span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='kw'>data</span>)</div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
 <span class='co'>## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk</span>
 <span class='co'>## backend.</span>
-<span class='kw'>sciex_file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>dir</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"sciex"</span>, package = <span class='st'>"msdata"</span>), full.names = <span class='fl'>TRUE</span>)
+<span class='kw'>sciex_file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>dir</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"sciex"</span>, package = <span class='st'>"msdata"</span>),
+    full.names = <span class='fl'>TRUE</span>)
 <span class='kw'>sciex</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='kw'>sciex_file</span>, backend = <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>())
 <span class='kw'>sciex</span></div><div class='output co'>#&gt; MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
 #&gt;        msLevel     rtime scanIndex
@@ -1162,7 +1165,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Jul 31 14:53:01 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Aug  3 08:03:00 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1338,7 +1341,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Fri Jul 31 14:53:03 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Mon Aug  3 08:03:01 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1358,7 +1361,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Jul 31 14:53:03 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Mon Aug  3 08:03:01 2020] </div><div class='input'>
 <span class='co'>## Remove empty spectra variables</span>
 <span class='kw'>sciex_noNA</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>dropNaSpectraVariables</a></span>(<span class='kw'>sciex</span>)
 
@@ -1408,7 +1411,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Jul 31 14:53:03 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Aug  3 08:03:01 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]</div><div class='output co'>#&gt; [1] 3 3 3</div><div class='input'>
 <span class='co'>## Remove all peaks with an intensity below 40.</span>

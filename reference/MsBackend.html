@@ -104,7 +104,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -121,6 +121,9 @@ See below for more details about individual backends." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -501,6 +504,9 @@ but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>See documentation of respective function.</p>
     <h2 class="hasAnchor" id="backend-functions"><a class="anchor" href="#backend-functions"></a>Backend functions</h2>
 
     
@@ -553,8 +559,8 @@ collision energy for all spectra in <code>object</code>. <code>collisionEnergy</
 returns a <code>numeric</code> with length equal to the number of spectra
 (<code>NA_real_</code> if not present/defined), <code>collisionEnergy&lt;-</code> takes a
 <code>numeric</code> of length equal to the number of spectra in <code>object</code>.</p></li>
-<li><p><code>filterAcquisitionNum</code>: filters the object keeping only spectra matching the
-provided acquisition numbers (argument <code>n</code>). If <code>dataOrigin</code> or
+<li><p><code>filterAcquisitionNum</code>: filters the object keeping only spectra matching
+the provided acquisition numbers (argument <code>n</code>). If <code>dataOrigin</code> or
 <code>dataStorage</code> is also provided, <code>object</code> is subsetted to the spectra with
 an acquisition number equal to <code>n</code> <strong>in spectra with matching dataOrigin
 or dataStorage values</strong> retaining all other spectra.</p></li>
