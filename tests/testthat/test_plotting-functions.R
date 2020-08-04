@@ -28,7 +28,14 @@ test_that("plotSpectra works", {
                                labelPos = 2, labelOffset = 0.1, labelSrt = -30,
                                col = list(1:5, 1:4))
             )
-
+    vdiffr::expect_doppelganger(
+                "plotSpectra-asp05",
+                function() plotSpectra(s, asp = 1/2)
+            )
+    vdiffr::expect_doppelganger(
+                "plotSpectra-asp2",
+                function() plotSpectra(s, asp = 2)
+            )
 })
 
 test_that("plotSpectraOverlay works", {
