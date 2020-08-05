@@ -160,37 +160,50 @@ test_that(".check_ms_level works", {
     expect_true(.check_ms_level(tmt_mzr, c(1, 4)))
 })
 
-test_that(".compare_spectra, .compare_spectra_self work", {
+test_that(".compare_spectra_self work", {
     sps <- Spectra(sciex_hd5)[120:126]
     sps <- setBackend(sps, MsBackendDataFrame())
 
-    res <- .compare_spectra(sps, sps)
+    res <- .compare_spectra_chunk(sps, sps)
     expect_true(ncol(res) == length(sps))
     expect_true(nrow(res) == length(sps))
     expect_equal(diag(res), rep(1, length(sps)))
-
-    res_2 <- .compare_spectra(sps, sps[3])
-    expect_true(ncol(res_2) == 1)
-    expect_true(nrow(res_2) == length(sps))
-    expect_identical(res_2[, 1], res[, 3])
-
-    res_2 <- .compare_spectra(sps[5], sps)
-    expect_true(ncol(res_2) == length(sps))
-    expect_true(nrow(res_2) == 1)
-    expect_identical(res_2[1, ], res[5, ])
 
     res_2 <- .compare_spectra_self(sps)
     expect_equal(dim(res), dim(res_2))
     expect_identical(diag(res), diag(res_2))
     expect_identical(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
+})
+
+test_that(".compare_spectra_chunk works", {
+    sps <- Spectra(sciex_hd5)[120:126]
+    sps <- setBackend(sps, MsBackendDataFrame())
+
+    res <- .compare_spectra_chunk(sps, sps)
+    expect_true(ncol(res) == length(sps))
+    expect_true(nrow(res) == length(sps))
+    expect_equal(diag(res), rep(1, length(sps)))
+
+    res_2 <- .compare_spectra_chunk(sps, sps[3])
+    expect_true(ncol(res_2) == 1)
+    expect_true(nrow(res_2) == length(sps))
+    expect_identical(res_2[, 1], res[, 3])
+
+    res_2 <- .compare_spectra_chunk(sps[5], sps)
+    expect_true(ncol(res_2) == length(sps))
+    expect_true(nrow(res_2) == 1)
+    expect_identical(res_2[1, ], res[5, ])
+
+    res_3 <- .compare_spectra_chunk(sps[5], sps, chunkSize = 2)
+    expect_equal(res_2, res_3)
 
     cor_fun <- function(x, y, ...) {
         cor(x[, 2], y[, 2], use = "pairwise.complete.obs")
     }
-    res <- .compare_spectra(sps[1], sps[1], FUN = cor_fun)
+    res <- .compare_spectra_chunk(sps[1], sps[1], FUN = cor_fun)
     expect_true(res[1, 1] == 1)
-    res <- .compare_spectra(sps[1], sps[2], FUN = cor_fun)
-    res_2 <- .compare_spectra(sps[1], sps[2])
+    res <- .compare_spectra_chunk(sps[1], sps[2], FUN = cor_fun)
+    res_2 <- .compare_spectra_chunk(sps[1], sps[2])
     expect_true(res[1, 1] > res_2[1, 1])
 })
 

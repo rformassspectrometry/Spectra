@@ -1510,9 +1510,9 @@ setMethod("filterIntensity", "Spectra",
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
           function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
                    FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
-              mat <- .compare_spectra(x, y, MAPFUN = MAPFUN,
-                                      tolerance = tolerance,
-                                      ppm = ppm, FUN = FUN, ...)
+              mat <- .compare_spectra_chunk(x, y, MAPFUN = MAPFUN,
+                                            tolerance = tolerance,
+                                            ppm = ppm, FUN = FUN, ...)
               if (SIMPLIFY && (length(x) == 1 || length(y) == 1))
                   mat <- as.vector(mat)
               mat

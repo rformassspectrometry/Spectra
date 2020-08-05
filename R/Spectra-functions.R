@@ -200,7 +200,9 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' Compare each spectrum in `x` with each spectrum in `y` with function `FUN`.
 #' Mapping between the peaks in both spectra can be defined with the `MAPFUN`
-#' function.
+#' function. This function *realizes* the peak matrices in chunks to balance
+#' between performance (high `chunkSize`) and low memory demand
+#' (small `chunkSize`).
 #'
 #' @note
 #'
@@ -226,6 +228,11 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @param ppm `numeric(1)` allowing to define a relative, m/z-dependent,
 #'     maximal accepted difference between m/z values for peaks to be matched.
 #'
+#' @param chunkSize `integer(1)` defining the number of peak matrices that
+#'     should be realized (i.e. loaded into memory) in each iteration. Large
+#'     `chunkSize` will result in faster processing, small `chunkSize` in
+#'     lower memory demand. Defaults to `chunkSize = 10000`.
+#'
 #' @param ... additional parameters passed to `FUN` and `MAPFUN`.
 #'
 #' @return
@@ -241,50 +248,42 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' fl <- system.file("TripleTOF-SWATH/PestMix1_SWATH.mzML", package = "msdata")
 #' sps <- Spectra(fl, source = MsBackendMzR())
 #'
-#' correlateSpectra <- function(x, y, use = "pairwise.complete.obs", ...) {
-#'     cor(x[, 2], y[, 2], use = use, ...)
-#' }
-#'
 #' sps <- sps[1:10]
-#' res <- .compare_spectra(sps, sps, ppm = 20, FUN = correlateSpectra)
-#' res <- .compare_spectra(sps, sps, FUN = correlateSpectra,
-#'     method = "spearman", ppm = 40)
+#' res <- .compare_spectra_chunk(sps, sps, ppm = 20)
 #'
-#' res <- .compare_spectra(sps[1], sps, FUN = correlateSpectra)
-#' res <- .compare_spectra(sps, sps[1], FUN = correlateSpectra)
+#' res <- .compare_spectra_chunk(sps[1], sps, FUN = correlateSpectra)
+#' res <- .compare_spectra_chunk(sps, sps[1], FUN = correlateSpectra)
 #'
 #' @noRd
-.compare_spectra <- function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0,
-                             ppm = 20, FUN = ndotproduct, ...) {
-    x_idx <- seq_along(x)
-    y_idx <- seq_along(y)
+.compare_spectra_chunk <- function(x, y = NULL, MAPFUN = joinPeaks,
+                                 tolerance = 0, ppm = 20,
+                                 FUN = ndotproduct, chunkSize = 10000, ...) {
+    nx <- length(x)
+    ny <- length(y)
+    if (nx <= chunkSize && ny <= chunkSize) {
+        mat <- .peaks_compare(.peaksapply(x), .peaksapply(y), MAPFUN = MAPFUN,
+                              tolerance = tolerance, ppm = ppm,
+                              FUN = FUN, ...)
+        dimnames(mat) <- list(spectraNames(x), spectraNames(y))
+        return(mat)
+    }
 
-    nx <- length(x_idx)
-    ny <- length(y_idx)
+    x_idx <- seq_len(nx)
+    x_chunks <- split(x_idx, ceiling(x_idx / chunkSize))
+
+    y_idx <- seq_len(ny)
+    y_chunks <- split(y_idx, ceiling(y_idx / chunkSize))
+    rm(x_idx)
+    rm(y_idx)
 
     mat <- matrix(NA_real_, nrow = nx, ncol = ny,
                   dimnames = list(spectraNames(x), spectraNames(y)))
-    f <- as.factor(1L)
-    ## This code duplication may be overengineering.
-    if (nx >= ny) {
-        for (i in x_idx) {
-            px <- .peaksapply(x[i], f = f)[[1L]]
-            for (j in y_idx) {
-                peak_map <- MAPFUN(px, .peaksapply(y[j], f = f)[[1L]],
-                                   tolerance = tolerance, ppm = ppm, ...)
-                mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
-                                 ...)
-            }
-        }
-    } else {
-        for (j in y_idx) {
-            py <- .peaksapply(y[j], f = f)[[1L]]
-            for (i in x_idx) {
-                peak_map <- MAPFUN(.peaksapply(x[i], f = f)[[1]], py,
-                                   tolerance = tolerance, ppm = ppm, ...)
-                mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
-                                 ...)
-            }
+    for (x_chunk in x_chunks) {
+        for (y_chunk in y_chunks) {
+            mat[x_chunk, y_chunk] <- .peaks_compare(
+                .peaksapply(x[x_chunk]), .peaksapply(y[y_chunk]),
+                MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
+                FUN = FUN, ...)
         }
     }
     mat
