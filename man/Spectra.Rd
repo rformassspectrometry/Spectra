@@ -4,7 +4,6 @@
 \alias{addProcessing}
 \alias{applyProcessing}
 \alias{combineSpectra}
-\alias{dropNaSpectraVariables}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -24,6 +23,7 @@
 \alias{dataOrigin,Spectra-method}
 \alias{dataOrigin<-,Spectra-method}
 \alias{dataStorage,Spectra-method}
+\alias{dropNaSpectraVariables,Spectra-method}
 \alias{intensity,Spectra-method}
 \alias{ionCount,Spectra-method}
 \alias{isCentroided,Spectra-method}
@@ -34,6 +34,8 @@
 \alias{isolationWindowTargetMz<-,Spectra-method}
 \alias{isolationWindowUpperMz,Spectra-method}
 \alias{isolationWindowUpperMz<-,Spectra-method}
+\alias{containsMz,Spectra-method}
+\alias{containsNeutralLoss,Spectra-method}
 \alias{lapply,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
@@ -70,11 +72,11 @@
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
 \alias{bin,Spectra-method}
-\alias{clean,Spectra-method}
+\alias{filterIntensity,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
 \alias{pickPeaks,Spectra-method}
-\alias{removePeaks,Spectra-method}
+\alias{replaceIntensitiesBelow,Spectra-method}
 \alias{smooth,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
@@ -90,8 +92,6 @@ combineSpectra(
   ...,
   BPPARAM = bpparam()
 )
-
-dropNaSpectraVariables(x)
 
 \S4method{Spectra}{DataFrame}(
   object,
@@ -153,6 +153,8 @@ dropNaSpectraVariables(x)
 
 \S4method{dataStorage}{Spectra}(object)
 
+\S4method{dropNaSpectraVariables}{Spectra}(object)
+
 \S4method{intensity}{Spectra}(object, ...)
 
 \S4method{ionCount}{Spectra}(object)
@@ -173,7 +175,24 @@ dropNaSpectraVariables(x)
 
 \S4method{isolationWindowUpperMz}{Spectra}(object) <- value
 
-\S4method{lapply}{Spectra}(X, FUN, ..., BPPARAM = SerialParam())
+\S4method{containsMz}{Spectra}(
+  object,
+  mz = numeric(),
+  tolerance = 0,
+  ppm = 20,
+  which = c("any", "all"),
+  BPPARAM = bpparam()
+)
+
+\S4method{containsNeutralLoss}{Spectra}(
+  object,
+  neutralLoss = 0,
+  tolerance = 0,
+  ppm = 20,
+  BPPARAM = bpparam()
+)
+
+\S4method{lapply}{Spectra}(X, FUN, f = as.factor(seq_along(X)), ..., BPPARAM = SerialParam())
 
 \S4method{length}{Spectra}(x)
 
@@ -252,7 +271,11 @@ dropNaSpectraVariables(x)
 
 \S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
 
-\S4method{clean}{Spectra}(object, all = FALSE, msLevel. = unique(msLevel(object)))
+\S4method{filterIntensity}{Spectra}(
+  object,
+  intensity = c(0, Inf),
+  msLevel. = unique(msLevel(object))
+)
 
 \S4method{compareSpectra}{Spectra,Spectra}(
   x,
@@ -260,7 +283,7 @@ dropNaSpectraVariables(x)
   MAPFUN = joinPeaks,
   tolerance = 0,
   ppm = 20,
-  FUN = dotproduct,
+  FUN = ndotproduct,
   ...,
   SIMPLIFY = TRUE
 )
@@ -271,7 +294,7 @@ dropNaSpectraVariables(x)
   MAPFUN = joinPeaks,
   tolerance = 0,
   ppm = 20,
-  FUN = dotproduct,
+  FUN = ndotproduct,
   ...,
   SIMPLIFY = TRUE
 )
@@ -287,7 +310,12 @@ dropNaSpectraVariables(x)
   msLevel. = unique(msLevel(object))
 )
 
-\S4method{removePeaks}{Spectra}(object, threshold = "min", msLevel. = unique(msLevel(object)))
+\S4method{replaceIntensitiesBelow}{Spectra}(
+  object,
+  threshold = min,
+  value = 0,
+  msLevel. = unique(msLevel(object))
+)
 
 \S4method{smooth}{Spectra}(
   x,
@@ -316,7 +344,7 @@ for details. For \code{setBackend}: factor defining how to split the data for
 parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
-should be combined.}
+should be combined. For \code{lapply}: \code{factor} how \code{X} should be splitted.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
@@ -347,6 +375,25 @@ of objects, conversion and changing the backend} for more details.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
+
+\item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
+filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
+lower and upper m/z boundary.}
+
+\item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
+define a constant maximal accepted difference between m/z values for
+peaks to be matched. For \code{containsMz} it can also be of length equal \code{mz}
+to specify a different tolerance for each m/z value.}
+
+\item{ppm}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} defining a
+relative, m/z-dependent, maximal accepted difference between m/z values
+for peaks to be matched.}
+
+\item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
+(the default) or all provided \code{mz} have to be present in the spectrum.}
+
+\item{neutralLoss}{for \code{containsNeutralLoss}: \code{numeric(1)} defining the value
+which should be subtracted from the spectrum's precursor m/z.}
 
 \item{X}{A \code{Spectra} object.}
 
@@ -384,10 +431,6 @@ spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
-\item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
-filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
-lower and upper m/z boundary.}
-
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of \code{object}.
 For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
@@ -407,23 +450,16 @@ Defaults to \code{binSize = 1}.}
 
 \item{breaks}{For \code{bin}: \code{numeric} defining the m/z breakpoints between bins.}
 
-\item{all}{for \code{clean}: \code{logical(1)} whether all 0 intensity peaks should be
-removed (\code{TRUE}) or whether 0-intensity peaks directly adjacent to a
-non-zero intensity peak should be kept (\code{FALSE}).}
+\item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
+either the lower or the lower and upper intensity limit for the
+filtering. Defaults to \code{intensity = c(0, Inf)} thus only peaks with \code{NA}
+intensity are removed.}
 
 \item{y}{A \code{Spectra} object.}
 
 \item{MAPFUN}{For \code{compareSpectra}: function to map/match peaks between the
 two compared spectra. See \code{\link[=joinPeaks]{joinPeaks()}} for more information and possible
 functions.}
-
-\item{tolerance}{For \code{compareSpectra}: \code{numeric(1)} allowing to define a
-constant maximal accepted difference between m/z values for peaks to be
-matched.}
-
-\item{ppm}{For \code{compareSpectra}: \code{numeric(1)} defining a relative,
-m/z-dependent, maximal accepted difference between m/z values for peaks
-to be matched.}
 
 \item{SIMPLIFY}{For \code{compareSpectra} whether the result matrix should be
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
@@ -460,8 +496,10 @@ the nearest valleys around the peak centroids are used.}
 
 \item{threshold}{\itemize{
 \item For \code{pickPeaks}: a \code{double(1)} defining the proportion of the maximal peak
-intensity. Just values above are used for the weighted mean calclulation.
-\item For \code{removePeaks}: a \code{numeric(1)} defining the threshold or \code{"min"}.
+intensity. Just values above are used for the weighted mean calculation.
+\item For \code{replaceIntensitiesBelow}: a \code{numeric(1)} defining the threshold or
+a \code{function} to calculate the threshold for each spectrum on its intensity
+values. Defaults to \code{threshold = min}.
 }}
 }
 \value{
@@ -476,12 +514,15 @@ on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}) or HDF5 (\code{\li
 }
 \details{
 The \code{Spectra} class uses by default a lazy data manipulation strategy,
-i.e. data manipulations such as performed with \code{removePeaks} are not applied
-immediately to the data, but applied on-the-fly to the spectrum data once it
-is retrieved. For some backends that allow to write data back to the data
-storage (such as the \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} and \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it
-is possible to apply to queue with the \code{applyProcessing} function. See the
-\emph{Data manipulation and analysis methods} section below for more details.
+i.e. data manipulations such as performed with \code{replaceIntensitiesBelow} are
+not applied immediately to the data, but applied on-the-fly to the spectrum
+data once it is retrieved. For some backends that allow to write data back
+to the data storage (such as the \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} and
+\code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it is possible to apply to queue with the
+\code{applyProcessing} function. See the \emph{Data manipulation and analysis
+methods} section below for more details.
+
+For details on plotting spectra, see \code{\link[=plotSpectra]{plotSpectra()}}.
 }
 \section{Creation of objects, conversion and changing the backend}{
 
@@ -518,8 +559,7 @@ changes the \code{"dataOrigin"} variable of the resulting \code{Spectra} object 
 \code{"dataStorage"} variable of the backend before the switch.
 
 The definition of the function is:
-\code{setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())}
-and its parameters are:
+\code{setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())} and its parameters are:
 \itemize{
 \item parameter \code{object}: the \code{Spectra} object.
 \item parameter \code{backend}: an instance of the new backend, e.g.
@@ -583,12 +623,22 @@ the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
 length equal number of spectra.
-\item \code{isolationWindowLowerMz}, \verb{isolationWindowLowerMz<-}: gets or sets the lower
-m/z boundary of the isolation window.
+\item \code{isolationWindowLowerMz}, \verb{isolationWindowLowerMz<-}: gets or sets the
+lower m/z boundary of the isolation window.
 \item \code{isolationWindowTargetMz}, \verb{isolationWindowTargetMz<-}: gets or sets the
 target m/z of the isolation window.
-\item \code{isolationWindowUpperMz}, \verb{isolationWindowUpperMz<-}: gets or sets the upper
-m/z boundary of the isolation window.
+\item \code{isolationWindowUpperMz}, \verb{isolationWindowUpperMz<-}: gets or sets the
+upper m/z boundary of the isolation window.
+\item \code{containsMz}: checks for each of the spectra whether they contain mass
+peaks with an m/z equal to \code{mz} (given acceptable difference as defined by
+parameters \code{tolerance} and \code{ppm} - see \code{\link[=common]{common()}} for details). Parameter
+\code{which} allows to define whether any (\code{which = "any"}, the default) or
+all (\code{which = "all"}) of the \code{mz} have to match. The function returns
+\code{NA} if \code{mz} is of length 0 or is \code{NA}.
+\item \code{containsNeutralLoss}: checks for each spectrum in \code{object} if it has a
+peak with an m/z value equal to its precursor m/z - \code{neutralLoss} (given
+acceptable difference as defined by parameters \code{tolerance} and \code{ppm}).
+Returns \code{NA} for MS1 spectra (or spectra without a precursor m/z).
 \item \code{length}: gets the number of spectra in the object.
 \item \code{lengths}: gets the number of peaks (m/z-intensity values) per
 spectrum. Returns an \code{integer} vector (length equal to the
@@ -608,7 +658,10 @@ and positive polarities, respectively. \verb{polarity<-} expects an
 \item \code{precursorCharge}, \code{precursorIntensity}, \code{precursorMz},
 \code{precScanNum}, \code{precAcquisitionNum}: gets the charge (\code{integer}),
 intensity (\code{numeric}), m/z (\code{numeric}), scan index (\code{integer})
-and acquisition number (\code{interger}) of the precursor for MS level2 spectra from the object. Returns a vector of length equal tothe number of spectra in object. NA are reported for MS1spectra of if no precursor information is available.
+and acquisition number (\code{interger}) of the precursor for MS level >
+2 spectra from the object. Returns a vector of length equal to
+the number of spectra in \code{object}. \code{NA} are reported for MS1
+spectra of if no precursor information is available.
 \item \code{rtime}, \verb{rtime<-}: gets or sets the retention times (in seconds)
 for each spectrum.  \code{rtime} returns a \code{numeric} vector (length
 equal to the number of spectra) with the retention time for each
@@ -625,10 +678,8 @@ to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
 \item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
 metadata (annotation, also called header). \code{spectraData} returns
-a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame}. Note that not all
-backends support replacing all spectra variables (the \code{\link[=MsBackendMzR]{MsBackendMzR()}}
-does for example not allow to replace \code{mz} and \code{intensity} values with the
-\verb{spectraData<-} method.
+a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame}. Note that this
+method does not return m/z or intensity values.
 \item \code{spectraNames}, \verb{spectraNames<-}: gets or sets the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
@@ -742,9 +793,6 @@ parallel processing alltogether. Other partitionings might result in
 errors (especially if a \code{MsBackendHdf5Peaks} backend is used).
 \item \code{bin}: aggregates individual spectra into discrete (m/z) bins. All
 intensity values for peaks falling into the same bin are summed.
-\item \code{clean}: removes 0-intensity data points. For \code{all = FALSE} (the default)
-0-intensity peaks next to non-zero intensity peaks are retained while with
-\code{all = TRUE} all 0-intensity peaks are removed.
 \item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum
 are used and the peak matrices are combined using the function specified
@@ -757,7 +805,7 @@ processing is applied for \code{Spectra} with file-based backends (such as the
 \code{\link[=MsBackendMzR]{MsBackendMzR()}}). The function returns a \code{Spectra} of length equal to the
 unique levels of \code{f}.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
-using the function provided with \code{FUN} (defaults to \code{\link[=dotproduct]{dotproduct()}}). If
+using the function provided with \code{FUN} (defaults to \code{\link[=ndotproduct]{ndotproduct()}}). If
 \code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
 in \code{x}.
 The matching/mapping of peaks between the compared spectra is done with the
@@ -776,6 +824,14 @@ comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+\item \code{filterIntensity}: filters each spectrum keeping only peaks with
+intensities that are within the provided range (parameter \code{intensity}). To
+remove only peaks with intensities below a certain threshold, say 100, use
+\code{intensity = c(100, Inf)}. Note: also a single value can be passed with
+the \code{intensity} parameter in which case an upper limit of \code{Inf} is used.
+Note that this function removes also peaks with missing intensities
+(i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
+filtering to spectra of the specified MS level(s).
 \item \code{lapply}: apply a given function to each spectrum in a \code{Spectra} object.
 The \code{Spectra} is splitted into individual spectra and on each of them
 (i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
@@ -783,6 +839,9 @@ parameters to \code{FUN} can be passed with the \code{...} argument. Parameter
 \code{BPPARAM} allows to enable parallel processing, which however makes only
 sense if \code{FUN} is computational intense. \code{lapply} returns a \code{list} (same
 length than \code{X}) with the result from \code{FUN}. See examples for more details.
+Note that the result and its order depends on the factor \code{f} used for
+splitting \code{X} with \code{split}, i.e. no re-ordering or \code{unsplit} is performed
+on the result.
 \item \code{smooth}: smooth individual spectra using a moving window-based approach
 (window size = \code{2 * halfWindowSize}). Currently, the
 Moving-Average- (\code{method = "MovingAverage"}),
@@ -809,14 +868,18 @@ has to be chosen general larger. See \code{\link[MsCoreUtils:refineCentroids]{Ms
 details.
 If the ratio of the signal to the highest intensity of the peak is below
 \code{threshold} it will be ignored for the weighted average.
-\item \code{removePeaks}: \emph{removes} peaks lower or equal to a threshold intensity
-value \code{threshold} by setting their intensity to \code{0}. With the default
-\code{threshold = "min"} all peaks with an intensity smaller or equal to the
-minimal non-zero intensity is set to \code{0}. If the spectrum is in
-profile mode, ranges of successive non-0 peaks <= \code{threshold} are set to 0.
-If the spectrum is centroided, then individual peaks <= \code{threshold} are set
-to 0. Note that the number of peaks is not changed unless \code{clean} is
-called after \code{removePeaks}.
+\item \code{replaceIntensitiesBelow}: replaces intensities below a specified
+threshold with the provided \code{value}. Parameter \code{threshold} can be either
+a single numeric value or a function which is applied to all non-\code{NA}
+intensities of each spectrum to determine a threshold value for each
+spectrum. The default is \code{threshold = min} which replaces all values
+which are <= the minimum intensity in a spectrum with \code{value} (the
+default for \code{value} is \code{0}). Note that the function specified with
+\code{threshold} is expected to have a parameter \code{na.rm} since \code{na.rm = TRUE}
+will be passed to the function. If the spectrum is in profile mode,
+ranges of successive non-0 peaks <= \code{threshold} are set to 0.
+Parameter \code{msLevel.} allows to apply this to only spectra of certain MS
+level(s).
 }
 }
 
@@ -839,7 +902,8 @@ lengths(data)
 
 ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
 ## backend.
-sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+sciex_file <- dir(system.file("sciex", package = "msdata"),
+    full.names = TRUE)
 sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 sciex
 
@@ -882,6 +946,9 @@ data$msLevel
 ## Get the intensity and m/z values.
 intensity(data)
 mz(data)
+
+## Determine whether one of the spectra has a specific m/z value
+containsMz(data, mz = 120.4)
 
 ## Accessing spectra variables works for all backends:
 intensity(sciex)
@@ -964,16 +1031,16 @@ spectraVariables(sciex_noNA)
 ## Set the data to be centroided
 centroided(data) <- TRUE
 
-## Remove peaks with an intensity below 40.
-res <- removePeaks(data, threshold = 40)
+## Replace peak intensities below 40 with 3.
+res <- replaceIntensitiesBelow(data, threshold = 40, value = 3)
 res
 
 ## Get the intensities of the first and second spectrum.
 intensity(res)[[1]]
 intensity(res)[[2]]
 
-## Clean all spectra removing all 0-intensity peaks.
-res <- clean(res, all = TRUE)
+## Remove all peaks with an intensity below 40.
+res <- filterIntensity(res, intensity = c(40, Inf))
 
 ## Get the intensities of the first and second spectrum.
 intensity(res)[[1]]
@@ -984,7 +1051,7 @@ lengths(mz(res))
 lengths(mz(data))
 
 ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
-## dotproduct method.
+## the normalized dotproduct method.
 res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
 ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 ## the second row comparisons of spectrum 3 with spectra 10 to 20

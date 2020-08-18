@@ -36,6 +36,8 @@ setValidity("MsBackendMzR", function(object) {
 #'
 #' @importFrom methods callNextMethod
 #'
+#' @importFrom MsCoreUtils rbindFill
+#'
 #' @importMethodsFrom BiocParallel bpmapply
 #'
 #' @importFrom BiocParallel bpparam
@@ -52,7 +54,7 @@ setMethod("backendInitialize", "MsBackendMzR",
               if (length(msg))
                   stop(msg)
               spectraData <- do.call(
-                  rbind, bplapply(files,
+                  rbindFill, bplapply(files,
                                   FUN = function(fl) {
                                       cbind(Spectra:::.mzR_header(fl),
                                             dataStorage = fl)
@@ -69,7 +71,7 @@ setMethod("show", "MsBackendMzR", function(object) {
     fls <- unique(object@spectraData$dataStorage)
     if (length(fls)) {
         to <- min(3, length(fls))
-        cat("\nfile(s):\n", paste(basename(fls[1:to]), collapse = "\n"),
+        cat("\nfile(s):\n", paste(basename(fls[seq_len(to)]), collapse = "\n"),
             "\n", sep = "")
         if (length(fls) > 3)
             cat(" ...", length(fls) - 3, "more files\n")
@@ -132,13 +134,13 @@ setReplaceMethod("mz", "MsBackendMzR", function(object, value) {
 #' @rdname hidden_aliases
 #'
 #' @importFrom methods as
-setMethod("spectraData", "MsBackendMzR",
+setMethod("asDataFrame", "MsBackendMzR",
           function(object, columns = spectraVariables(object)) {
               .spectra_data_mzR(object, columns)
           })
 
 #' @rdname hidden_aliases
-setReplaceMethod("spectraData", "MsBackendMzR", function(object, value) {
+setReplaceMethod("asDataFrame", "MsBackendMzR", function(object, value) {
     if (inherits(value, "DataFrame") && any(colnames(value) %in%
                                             c("mz", "intensity"))) {
         warning("Ignoring columns \"mz\" and \"intensity\" as the ",

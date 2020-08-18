@@ -7,9 +7,14 @@ test_that("backendInitialize,MsBackendDataFrame works", {
     expect_true(validObject(be))
     be <- backendInitialize(be)
     expect_true(validObject(be))
-    be <- backendInitialize(be, spectraData = DataFrame(msLevel = 2L))
+    be <- backendInitialize(be, data = DataFrame(msLevel = 2L))
     expect_true(validObject(be))
     expect_equal(dataStorage(be), "<memory>")
+
+    be_2 <- backendInitialize(be, data = data.frame(msLevel = 2L))
+    expect_equal(be, be_2)
+
+    expect_error(backendInitialize(be, data = 4), "has to be a")
 
     df <- test_df
     be <- backendInitialize(be, df)
@@ -80,17 +85,17 @@ test_that("backendMerge,MsBackendDataFrame works", {
 test_that("acquisitionNum, MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(acquisitionNum(be), integer())
-    be <- backendInitialize(be, spectraData = DataFrame(msLevel = c(1L, 2L)))
+    be <- backendInitialize(be, data = DataFrame(msLevel = c(1L, 2L)))
     expect_equal(acquisitionNum(be), c(NA_integer_, NA_integer_))
-    be <- backendInitialize(be, spectraData = DataFrame(msLevel = 1L,
-                                                        acquisitionNum = 1:10))
+    be <- backendInitialize(be, data = DataFrame(msLevel = 1L,
+                                                 acquisitionNum = 1:10))
     expect_equal(acquisitionNum(be), 1:10)
 })
 
 test_that("centroided, centroided<-, MsBackendDataFrame work", {
     be <- MsBackendDataFrame()
     expect_equal(centroided(be), logical())
-    be <- backendInitialize(be, spectraData = DataFrame(msLevel = c(1L, 2L)))
+    be <- backendInitialize(be, data = DataFrame(msLevel = c(1L, 2L)))
     expect_equal(centroided(be), c(NA, NA))
     expect_error(centroided(be) <- "a", "to be a 'logical'")
     expect_error(centroided(be) <- c(FALSE, TRUE, TRUE), "has to be a")
@@ -103,7 +108,7 @@ test_that("centroided, centroided<-, MsBackendDataFrame work", {
 test_that("collisionEnergy, collisionEnergy<-,MsBackendDataFrame work", {
     be <- MsBackendDataFrame()
     expect_equal(collisionEnergy(be), numeric())
-    be <- backendInitialize(be, spectraData = DataFrame(msLevel = c(1L, 2L)))
+    be <- backendInitialize(be, data = DataFrame(msLevel = c(1L, 2L)))
     expect_equal(collisionEnergy(be), c(NA_real_, NA_real_))
     expect_error(collisionEnergy(be) <- "a", "to be a 'numeric'")
     expect_error(collisionEnergy(be) <- c(2.3), "has to be a")
@@ -114,7 +119,7 @@ test_that("collisionEnergy, collisionEnergy<-,MsBackendDataFrame work", {
 test_that("dataOrigin,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(dataOrigin(be), character())
-    be <- backendInitialize(be, spectraData = DataFrame(msLevel = c(1L, 2L)))
+    be <- backendInitialize(be, data = DataFrame(msLevel = c(1L, 2L)))
     expect_identical(dataOrigin(be), rep(NA_character_, 2))
     expect_error(dataOrigin(be) <- "a", "of length 2")
     dataOrigin(be) <- c("b", "a")
@@ -124,28 +129,29 @@ test_that("dataOrigin,MsBackendDataFrame works", {
 test_that("dataStorage,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(dataStorage(be), character())
-    be <- backendInitialize(be, spectraData = DataFrame(msLevel = c(1L, 2L)))
+    be <- backendInitialize(be, data = DataFrame(msLevel = c(1L, 2L)))
     expect_identical(dataStorage(be), rep("<memory>", 2))
     dataStorage(be) <- c("a", "b")
     expect_identical(dataStorage(be), c("a", "b"))
     expect_error(dataStorage(be) <- c("a", NA), "not allowed")
+    expect_error(dataStorage(be) <- c("a", "b", "c"), "of length")
 })
 
 test_that("intensity,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(intensity(be), NumericList(compress = FALSE))
-    be <- backendInitialize(be, spectraData = DataFrame(msLevel = c(1L, 2L)))
+    be <- backendInitialize(be, data = DataFrame(msLevel = c(1L, 2L)))
     expect_equal(intensity(be), NumericList(numeric(), numeric(),
                                             compress = FALSE))
     df <- DataFrame(msLevel = c(1L, 2L))
     df$intensity <- list(1:4, c(2.1, 3.4))
     df$mz <- list(1:4, 1:2)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(intensity(be), NumericList(1:4, c(2.1, 3.4), compress = FALSE))
 })
 
 test_that("intensity<-,MsBackendDataFrame works", {
-    be <- backendInitialize(MsBackendDataFrame(), spectraData = test_df)
+    be <- backendInitialize(MsBackendDataFrame(), data = test_df)
 
     new_ints <- lapply(test_df$intensity, function(z) z / 2)
     intensity(be) <- new_ints
@@ -162,7 +168,7 @@ test_that("ionCound,MsBackendDataFrame works", {
     df <- DataFrame(msLevel = c(1L, 2L))
     df$intensity <- list(1:4, c(2.1, 3.4))
     df$mz <- list(1:4, 1:2)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(ionCount(be), c(sum(1:4), sum(c(2.1, 3.4))))
 })
 
@@ -170,11 +176,11 @@ test_that("isEmpty,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(isEmpty(be), logical())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(isEmpty(be), c(TRUE, TRUE))
     df$intensity <- list(1:2, 1:5)
     df$mz <- list(1:2, 1:5)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(isEmpty(be), c(FALSE, FALSE))
 })
 
@@ -253,16 +259,16 @@ test_that("mz,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(mz(be), NumericList(compress = FALSE))
     df <- DataFrame(msLevel = c(1L, 1L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(mz(be), NumericList(numeric(), numeric(), compress = FALSE))
     df$intensity <- list(1:3, 4)
     df$mz <- list(1:3, c(2.1))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(mz(be), NumericList(1:3, 2.1, compress = FALSE))
 })
 
 test_that("mz<-,MsBackendDataFrame works", {
-    be <- backendInitialize(MsBackendDataFrame(), spectraData = test_df)
+    be <- backendInitialize(MsBackendDataFrame(), data = test_df)
 
     new_mzs <- lapply(test_df$mz, function(z) z / 2)
     mz(be) <- new_mzs
@@ -277,18 +283,18 @@ test_that("as.list,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(as.list(be), list())
     df <- DataFrame(msLevel = c(1L, 1L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(as.list(be), list(cbind(mz = numeric(), intensity = numeric()),
                                    cbind(mz = numeric(), intensity = numeric())))
     df$mz <- list(1:3, c(2.1))
     df$intensity <- list(1:3, 4)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(as.list(be), list(cbind(mz = 1:3, intensity = 1:3),
                                    cbind(mz = 2.1, intensity = 4)))
 })
 
 test_that("replaceList<-,MsBackendDataFrame works", {
-    be <- backendInitialize(MsBackendDataFrame(), spectraData = test_df)
+    be <- backendInitialize(MsBackendDataFrame(), data = test_df)
 
     pks <- lapply(as.list(be), function(z) z / 2)
     replaceList(be) <- pks
@@ -303,11 +309,11 @@ test_that("lengths,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(lengths(be), integer())
     df <- DataFrame(msLevel = c(1L, 1L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(lengths(be), c(0L, 0L))
     df$mz <- list(1:3, c(2.1))
     df$intensity <- list(1:3, 4)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(lengths(be), c(3L, 1L))
 })
 
@@ -315,7 +321,7 @@ test_that("polarity, polarity<- MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(polarity(be), integer())
     df <- DataFrame(msLevel = c(1L, 1L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(polarity(be), c(NA_integer_, NA_integer_))
     expect_error(polarity(be) <- "a", "has to be an 'integer'")
     expect_error(polarity(be) <- c(1L, 1L, 2L), "has to be")
@@ -329,10 +335,10 @@ test_that("precScanNum,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(precScanNum(be), integer())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(precScanNum(be), c(NA_integer_, NA_integer_))
     df$precScanNum <- c(0L, 1L)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(precScanNum(be), c(0L, 1L))
 })
 
@@ -340,10 +346,10 @@ test_that("precursorCharge,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(precursorCharge(be), integer())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(precursorCharge(be), c(NA_integer_, NA_integer_))
     df$precursorCharge <- c(-1L, 1L)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(precursorCharge(be), c(-1L, 1L))
 })
 
@@ -351,10 +357,10 @@ test_that("precursorIntensity,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(precursorIntensity(be), numeric())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(precursorIntensity(be), c(NA_real_, NA_real_))
     df$precursorIntensity <- c(134.4, 4322.2)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(precursorIntensity(be), c(134.4, 4322.2))
 })
 
@@ -362,10 +368,10 @@ test_that("precursorMz,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(precursorMz(be), numeric())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(precursorMz(be), c(NA_real_, NA_real_))
     df$precursorMz <- c(134.4, 342.2)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(precursorMz(be), c(134.4, 342.2))
 })
 
@@ -373,7 +379,7 @@ test_that("rtime, rtime<-,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(rtime(be), numeric())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(rtime(be), c(NA_real_, NA_real_))
     expect_error(rtime(be) <- "2", "has to be a 'numeric'")
     expect_error(rtime(be) <- 1:4, "of length 2")
@@ -385,10 +391,10 @@ test_that("scanIndex,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(scanIndex(be), integer())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(scanIndex(be), c(NA_integer_, NA_integer_))
     df$scanIndex <- c(1L, 2L)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(scanIndex(be), c(1L, 2L))
 })
 
@@ -396,7 +402,7 @@ test_that("smoothed, smoothed<-,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(smoothed(be), logical())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(smoothed(be), c(NA, NA))
     expect_error(smoothed(be) <- "2", "has to be a 'logical'")
     expect_error(smoothed(be) <- c(TRUE, TRUE, FALSE), "of length 1 or 2")
@@ -410,11 +416,11 @@ test_that("spectraNames, spectraNames<-,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_null(spectraNames(be))
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_null(spectraNames(be))
     df <- DataFrame(msLevel = c(1L, 2L))
     rownames(df) <- c("sp_1", "sp_2")
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(spectraNames(be), c("sp_1", "sp_2"))
     expect_error(spectraNames(be) <- "a", "rownames length")
     spectraNames(be) <- c("a", "b")
@@ -425,16 +431,16 @@ test_that("tic,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(tic(be), numeric())
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(tic(be), c(NA_real_, NA_real_))
     expect_equal(tic(be, initial = FALSE), c(0, 0))
     df$totIonCurrent <- c(5, 3)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(tic(be), c(5, 3))
     expect_equal(tic(be, initial = FALSE), c(0, 0))
     df$intensity <- list(5:7, 1:4)
     df$mz <- list(1:3, 1:4)
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(tic(be, initial = FALSE), c(sum(5:7), sum(1:4)))
 })
 
@@ -442,54 +448,56 @@ test_that("spectraVariables,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(spectraVariables(be), names(.SPECTRA_DATA_COLUMNS))
     df <- DataFrame(msLevel = c(1L, 2L))
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(spectraVariables(be), names(.SPECTRA_DATA_COLUMNS))
     df$other_column <- 3
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
     expect_equal(spectraVariables(be), c(names(.SPECTRA_DATA_COLUMNS),
                                          "other_column"))
 })
 
-test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
+test_that("asDataFrame, asDataFrame<-, MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    res <- spectraData(be)
+    res <- asDataFrame(be)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)
     expect_equal(colnames(res), names(.SPECTRA_DATA_COLUMNS))
 
     df <- DataFrame(scanIndex = 1:2, a = "a", b = "b")
-    be <- backendInitialize(be, spectraData = df)
+    be <- backendInitialize(be, data = df)
 
-    res <- spectraData(be)
+    res <- asDataFrame(be)
     expect_true(is(res, "DataFrame"))
     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
     expect_equal(res$a, c("a", "a"))
     expect_equal(res$b, c("b", "b"))
 
-    res <- spectraData(be, "msLevel")
+    expect_error(asDataFrame(be) <- data.frame(4), "not valid")
+
+    res <- asDataFrame(be, "msLevel")
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), "msLevel")
     expect_equal(res$msLevel, c(NA_integer_, NA_integer_))
 
-    res <- spectraData(be, c("mz"))
+    res <- asDataFrame(be, c("mz"))
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), "mz")
     expect_equal(res$mz, NumericList(numeric(), numeric(), compress = FALSE))
 
-    res <- spectraData(be, c("a", "intensity"))
+    res <- asDataFrame(be, c("a", "intensity"))
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), c("a", "intensity"))
     expect_equal(res$intensity, NumericList(numeric(), numeric(),
                                             compress = FALSE))
     expect_equal(res$a, c("a", "a"))
 
-    spectraData(be) <- DataFrame(mzLevel = c(3L, 4L),
+    asDataFrame(be) <- DataFrame(mzLevel = c(3L, 4L),
                                  rtime = c(1.2, 1.4), other_col = "b")
     expect_identical(rtime(be), c(1.2, 1.4))
     expect_true(any(spectraVariables(be) == "other_col"))
-    expect_identical(spectraData(be, "other_col")[, 1], c("b", "b"))
+    expect_identical(asDataFrame(be, "other_col")[, 1], c("b", "b"))
 
-    expect_error(spectraData(be) <- DataFrame(msLevel = 1:3),
+    expect_error(asDataFrame(be) <- DataFrame(msLevel = 1:3),
                  "with 2 rows")
 })
 
@@ -569,6 +577,8 @@ test_that("$,$<-,MsBackendDataFrame works", {
     be <- backendInitialize(MsBackendDataFrame(), df)
     expect_identical(be$msLevel, 1:2)
     expect_identical(be$other_col, c(2, 2))
+
+    expect_error(be$not_there, "not available")
 
     be$other_col <- 4
     expect_equal(be$other_col, c(4, 4))
@@ -839,4 +849,10 @@ test_that("split,MsBackendDataFrame works", {
 
     msb2 <- backendMerge(msbl)
     expect_identical(msb2, msb)
+})
+
+test_that("isCentroided,MsBackendDataFrame works", {
+    msb <- MsBackendDataFrame()
+    msb <- backendInitialize(msb, test_df)
+    expect_true(all(is.na(isCentroided(msb))))
 })

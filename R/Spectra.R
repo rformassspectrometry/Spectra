@@ -18,12 +18,15 @@ NULL
 #' @details
 #'
 #' The `Spectra` class uses by default a lazy data manipulation strategy,
-#' i.e. data manipulations such as performed with `removePeaks` are not applied
-#' immediately to the data, but applied on-the-fly to the spectrum data once it
-#' is retrieved. For some backends that allow to write data back to the data
-#' storage (such as the [MsBackendDataFrame()] and [MsBackendHdf5Peaks()]) it
-#' is possible to apply to queue with the `applyProcessing` function. See the
-#' *Data manipulation and analysis methods* section below for more details.
+#' i.e. data manipulations such as performed with `replaceIntensitiesBelow` are
+#' not applied immediately to the data, but applied on-the-fly to the spectrum
+#' data once it is retrieved. For some backends that allow to write data back
+#' to the data storage (such as the [MsBackendDataFrame()] and
+#' [MsBackendHdf5Peaks()]) it is possible to apply to queue with the
+#' `applyProcessing` function. See the *Data manipulation and analysis
+#' methods* section below for more details.
+#'
+#' For details on plotting spectra, see [plotSpectra()].
 #'
 #' @section Creation of objects, conversion and changing the backend:
 #'
@@ -61,8 +64,8 @@ NULL
 #' `"dataStorage"` variable of the backend before the switch.
 #'
 #' The definition of the function is:
-#' `setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())`
-#' and its parameters are:
+#' `setBackend(object, backend, ..., f = dataStorage(object),
+#'     BPPARAM = bpparam())` and its parameters are:
 #'
 #' - parameter `object`: the `Spectra` object.
 #'
@@ -138,14 +141,26 @@ NULL
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the lower
-#'   m/z boundary of the isolation window.
+#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the
+#'   lower m/z boundary of the isolation window.
 #'
 #' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the upper
-#'   m/z boundary of the isolation window.
+#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the
+#'   upper m/z boundary of the isolation window.
+#'
+#' - `containsMz`: checks for each of the spectra whether they contain mass
+#'   peaks with an m/z equal to `mz` (given acceptable difference as defined by
+#'   parameters `tolerance` and `ppm` - see [common()] for details). Parameter
+#'   `which` allows to define whether any (`which = "any"`, the default) or
+#'   all (`which = "all"`) of the `mz` have to match. The function returns
+#'   `NA` if `mz` is of length 0 or is `NA`.
+#'
+#' - `containsNeutralLoss`: checks for each spectrum in `object` if it has a
+#'   peak with an m/z value equal to its precursor m/z - `neutralLoss` (given
+#'   acceptable difference as defined by parameters `tolerance` and `ppm`).
+#'   Returns `NA` for MS1 spectra (or spectra without a precursor m/z).
 #'
 #' - `length`: gets the number of spectra in the object.
 #'
@@ -171,8 +186,8 @@ NULL
 #' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
 #'   `precScanNum`, `precAcquisitionNum`: gets the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
-#'   and acquisition number (`interger`) of the precursor for MS level
-#'   > 2 spectra from the object. Returns a vector of length equal to
+#'   and acquisition number (`interger`) of the precursor for MS level >
+#'   2 spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
@@ -195,10 +210,8 @@ NULL
 #'
 #' - `spectraData`, `spectraData<-`: gets or sets general spectrum
 #'   metadata (annotation, also called header). `spectraData` returns
-#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`. Note that not all
-#'   backends support replacing all spectra variables (the [MsBackendMzR()]
-#'   does for example not allow to replace `mz` and `intensity` values with the
-#'   `spectraData<-` method.
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`. Note that this
+#'   method does not return m/z or intensity values.
 #'
 #' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
 #'
@@ -325,10 +338,6 @@ NULL
 #' - `bin`: aggregates individual spectra into discrete (m/z) bins. All
 #'   intensity values for peaks falling into the same bin are summed.
 #'
-#' - `clean`: removes 0-intensity data points. For `all = FALSE` (the default)
-#'   0-intensity peaks next to non-zero intensity peaks are retained while with
-#'   `all = TRUE` all 0-intensity peaks are removed.
-#'
 #' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
@@ -342,7 +351,7 @@ NULL
 #'   unique levels of `f`.
 #'
 #' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
-#'   using the function provided with `FUN` (defaults to [dotproduct()]). If
+#'   using the function provided with `FUN` (defaults to [ndotproduct()]). If
 #'   `y` is missing, each spectrum in `x` is compared with each other spectrum
 #'   in `x`.
 #'   The matching/mapping of peaks between the compared spectra is done with the
@@ -362,6 +371,15 @@ NULL
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
+#' - `filterIntensity`: filters each spectrum keeping only peaks with
+#'   intensities that are within the provided range (parameter `intensity`). To
+#'   remove only peaks with intensities below a certain threshold, say 100, use
+#'   `intensity = c(100, Inf)`. Note: also a single value can be passed with
+#'   the `intensity` parameter in which case an upper limit of `Inf` is used.
+#'   Note that this function removes also peaks with missing intensities
+#'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
+#'   filtering to spectra of the specified MS level(s).
+#'
 #' - `lapply`: apply a given function to each spectrum in a `Spectra` object.
 #'   The `Spectra` is splitted into individual spectra and on each of them
 #'   (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
@@ -369,6 +387,9 @@ NULL
 #'   `BPPARAM` allows to enable parallel processing, which however makes only
 #'   sense if `FUN` is computational intense. `lapply` returns a `list` (same
 #'   length than `X`) with the result from `FUN`. See examples for more details.
+#'   Note that the result and its order depends on the factor `f` used for
+#'   splitting `X` with `split`, i.e. no re-ordering or `unsplit` is performed
+#'   on the result.
 #'
 #' - `smooth`: smooth individual spectra using a moving window-based approach
 #'    (window size = `2 * halfWindowSize`). Currently, the
@@ -398,20 +419,20 @@ NULL
 #'   If the ratio of the signal to the highest intensity of the peak is below
 #'   `threshold` it will be ignored for the weighted average.
 #'
-#' - `removePeaks`: *removes* peaks lower or equal to a threshold intensity
-#'   value `threshold` by setting their intensity to `0`. With the default
-#'   `threshold = "min"` all peaks with an intensity smaller or equal to the
-#'   minimal non-zero intensity is set to `0`. If the spectrum is in
-#'   profile mode, ranges of successive non-0 peaks <= `threshold` are set to 0.
-#'   If the spectrum is centroided, then individual peaks <= `threshold` are set
-#'   to 0. Note that the number of peaks is not changed unless `clean` is
-#'   called after `removePeaks`.
+#' - `replaceIntensitiesBelow`: replaces intensities below a specified
+#'   threshold with the provided `value`. Parameter `threshold` can be either
+#'   a single numeric value or a function which is applied to all non-`NA`
+#'   intensities of each spectrum to determine a threshold value for each
+#'   spectrum. The default is `threshold = min` which replaces all values
+#'   which are <= the minimum intensity in a spectrum with `value` (the
+#'   default for `value` is `0`). Note that the function specified with
+#'   `threshold` is expected to have a parameter `na.rm` since `na.rm = TRUE`
+#'   will be passed to the function. If the spectrum is in profile mode,
+#'   ranges of successive non-0 peaks <= `threshold` are set to 0.
+#'   Parameter `msLevel.` allows to apply this to only spectra of certain MS
+#'   level(s).
 #'
 #' @return See individual method description for the return value.
-#'
-#' @param all for `clean`: `logical(1)` whether all 0 intensity peaks should be
-#'     removed (`TRUE`) or whether 0-intensity peaks directly adjacent to a
-#'     non-zero intensity peak should be kept (`FALSE`).
 #'
 #' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
 #'     acquisition number of the spectra to which the object should be
@@ -455,7 +476,7 @@ NULL
 #'     parallelized copying of the spectra data to the new backend. For some
 #'     backends changing this parameter can lead to errors.
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
-#'     should be combined.
+#'     should be combined. For `lapply`: `factor` how `X` should be splitted.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
@@ -479,6 +500,11 @@ NULL
 #'     reported total ion current should be reported, or whether the
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`, same as `ionCount`).
+#'
+#' @param intensity For `filterIntensity`: `numeric` of length 1 or 2 defining
+#'     either the lower or the lower and upper intensity limit for the
+#'     filtering. Defaults to `intensity = c(0, Inf)` thus only peaks with `NA`
+#'     intensity are removed.
 #'
 #' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
@@ -513,6 +539,9 @@ NULL
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
 #'
+#' @param neutralLoss for `containsNeutralLoss`: `numeric(1)` defining the value
+#'     which should be subtracted from the spectrum's precursor m/z.
+#'
 #' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
 #'     on creation of `Spectra` objects for details. For all other methods a
 #'     `Spectra` object.
@@ -525,9 +554,9 @@ NULL
 #' @param polarity for `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
-#' @param ppm For `compareSpectra`: `numeric(1)` defining a relative,
-#'     m/z-dependent, maximal accepted difference between m/z values for peaks
-#'     to be matched.
+#' @param ppm For `compareSpectra`, `containsMz`: `numeric(1)` defining a
+#'     relative, m/z-dependent, maximal accepted difference between m/z values
+#'     for peaks to be matched.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -547,22 +576,28 @@ NULL
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
 #'
-#' @param tolerance For `compareSpectra`: `numeric(1)` allowing to define a
-#'     constant maximal accepted difference between m/z values for peaks to be
-#'     matched.
+#' @param tolerance For `compareSpectra`, `containsMz`: `numeric(1)` allowing to
+#'     define a constant maximal accepted difference between m/z values for
+#'     peaks to be matched. For `containsMz` it can also be of length equal `mz`
+#'     to specify a different tolerance for each m/z value.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
 #' @param threshold
 #' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
-#'      intensity. Just values above are used for the weighted mean calclulation.
-#' - For `removePeaks`: a `numeric(1)` defining the threshold or `"min"`.
+#'      intensity. Just values above are used for the weighted mean calculation.
+#' - For `replaceIntensitiesBelow`: a `numeric(1)` defining the threshold or
+#'   a `function` to calculate the threshold for each spectrum on its intensity
+#'   values. Defaults to `threshold = min`.
 #'
 #' @param use.names For `lengths`: ignored.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
+#'     (the default) or all provided `mz` have to be present in the spectrum.
 #'
 #' @param x A `Spectra` object.
 #'
@@ -599,7 +634,8 @@ NULL
 #'
 #' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
 #' ## backend.
-#' sciex_file <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+#' sciex_file <- dir(system.file("sciex", package = "msdata"),
+#'     full.names = TRUE)
 #' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 #' sciex
 #'
@@ -642,6 +678,9 @@ NULL
 #' ## Get the intensity and m/z values.
 #' intensity(data)
 #' mz(data)
+#'
+#' ## Determine whether one of the spectra has a specific m/z value
+#' containsMz(data, mz = 120.4)
 #'
 #' ## Accessing spectra variables works for all backends:
 #' intensity(sciex)
@@ -724,16 +763,16 @@ NULL
 #' ## Set the data to be centroided
 #' centroided(data) <- TRUE
 #'
-#' ## Remove peaks with an intensity below 40.
-#' res <- removePeaks(data, threshold = 40)
+#' ## Replace peak intensities below 40 with 3.
+#' res <- replaceIntensitiesBelow(data, threshold = 40, value = 3)
 #' res
 #'
 #' ## Get the intensities of the first and second spectrum.
 #' intensity(res)[[1]]
 #' intensity(res)[[2]]
 #'
-#' ## Clean all spectra removing all 0-intensity peaks.
-#' res <- clean(res, all = TRUE)
+#' ## Remove all peaks with an intensity below 40.
+#' res <- filterIntensity(res, intensity = c(40, Inf))
 #'
 #' ## Get the intensities of the first and second spectrum.
 #' intensity(res)[[1]]
@@ -744,7 +783,7 @@ NULL
 #' lengths(mz(data))
 #'
 #' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
-#' ## dotproduct method.
+#' ## the normalized dotproduct method.
 #' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
 #' ## first row contains comparisons of spectrum 2 with spectra 10 to 20 and
 #' ## the second row comparisons of spectrum 3 with spectra 10 to 20
@@ -883,7 +922,7 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
               backend = be)
-    if (class(source) != class(backend))
+    if (!is(source, class(backend)[1]))
         setBackend(sp, backend, ..., BPPARAM = BPPARAM)
     else sp
 })
@@ -904,7 +943,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               data_storage <- object@backend$dataStorage
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
                   backendInitialize(backend,
-                                    spectraData = spectraData(z),
+                                    data = asDataFrame(z),
                                     ...)
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
@@ -987,7 +1026,14 @@ setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
-setMethod("dataStorage", "Spectra", function(object) dataStorage(object@backend))
+setMethod("dataStorage", "Spectra",
+          function(object) dataStorage(object@backend))
+
+#' @rdname Spectra
+setMethod("dropNaSpectraVariables", "Spectra", function(object) {
+    object@backend <- dropNaSpectraVariables(object@backend)
+    object
+})
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
@@ -1056,12 +1102,56 @@ setReplaceMethod("isolationWindowUpperMz", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 #'
-#' @exportMethod lapply
-setMethod("lapply", "Spectra", function(X, FUN, ..., BPPARAM = SerialParam()) {
-    if (missing(FUN)) {
-        FUN <- identity
+#' @exportMethod containsMz
+setMethod("containsMz", "Spectra", function(object, mz = numeric(),
+                                            tolerance = 0,
+                                            ppm = 20, which = c("any", "all"),
+                                            BPPARAM = bpparam()) {
+    cond_fun <- match.fun(match.arg(which))
+    if (all(is.na(mz)))
+        return(rep(NA, length(object)))
+    if(is(BPPARAM, "SerialParam"))
+        .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
+                condFun = cond_fun, parallel = BPPARAM)
+    else {
+        sp <- SerialParam()
+        f <- as.factor(dataStorage(object))
+        res <- .lapply(object, FUN = .has_mz, mz = mz, tolerance = tolerance,
+                       condFun = cond_fun, parallel = sp, f = f,
+                       BPPARAM = BPPARAM)
+        unsplit(res, f = f)
     }
-    .lapply(x = X, FUN = FUN, ..., BPPARAM = BPPARAM)
+})
+
+#' @rdname Spectra
+#'
+#' @exportMethod containsNeutralLoss
+setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
+                                                     tolerance = 0, ppm = 20,
+                                                     BPPARAM = bpparam()) {
+    if (is(BPPARAM, "SerialParam")) {
+        .has_mz_each(object, precursorMz(object) - neutralLoss,
+                     tolerance = tolerance, ppm = ppm, parallel = BPPARAM)
+    } else {
+        sp <- SerialParam()
+        f <- as.factor(dataStorage(object))
+        res <- .lapply(object, FUN = function(obj, n, tol, ppm, par) {
+            .has_mz_each(obj, precursorMz(obj) - n, tolerance = tol,
+                         ppm = ppm, parallel = sp)
+        }, n = neutralLoss, tol = tolerance, ppm = ppm, par = sp, f = f,
+                       BPPARAM = BPPARAM)
+        unsplit(res, f = f)
+    }
+})
+
+#' @rdname Spectra
+#'
+#' @exportMethod lapply
+setMethod("lapply", "Spectra", function(X, FUN, f = as.factor(seq_along(X)),
+                                        ..., BPPARAM = SerialParam()) {
+    if (missing(FUN))
+        FUN <- identity
+    .lapply(X, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
 })
 
 #' @rdname Spectra
@@ -1158,29 +1248,23 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 })
 
 #' @rdname Spectra
+#'
+#' @importMethodsFrom ProtGenerics spectraData
+#'
+#' @exportMethod spectraData
 setMethod("spectraData", "Spectra", function(object,
                                              columns = spectraVariables(object))
 {
-    skip_cols <- c("mz", "intensity") # Eventually also tic, peak count etc
-    if (all(columns %in% skip_cols))
-        res <- DataFrame(matrix(ncol = 0, nrow = length(object)))
-    else res <- spectraData(object@backend,
-                            columns = columns[!(columns %in% skip_cols)])
-    if (any(columns %in% skip_cols)) {
-        pks <- .peaksapply(object)
-        if (any(columns == "mz"))
-            res$mz <- NumericList(lapply(pks, function(z) z[, 1]),
-                                  compress = FALSE)
-        if (any(columns == "intensity"))
-            res$intensity <- NumericList(lapply(pks, function(z) z[, 2]),
-                                         compress = FALSE)
-    }
-    res[, columns, drop = FALSE]
+    asDataFrame(object@backend, columns = columns)
 })
 
 #' @rdname Spectra
+#'
+#' @importMethodsFrom ProtGenerics spectraData<-
+#'
+#' @exportMethod spectraData<-
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
-    spectraData(object@backend) <- value
+    asDataFrame(object@backend) <- value
     object
 })
 
@@ -1197,7 +1281,8 @@ setReplaceMethod("spectraNames", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("spectraVariables", "Spectra", function(object) {
-    spectraVariables(object@backend)
+    svars <- spectraVariables(object@backend)
+    svars[!(svars %in% c("mz", "intensity"))]
 })
 
 #' @rdname Spectra
@@ -1213,17 +1298,18 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
 #'
 #' @importMethodsFrom S4Vectors $
 setMethod("$", "Spectra", function(x, name) {
-    if (!(name %in% spectraVariables(x)))
+    if (!(name %in% c(spectraVariables(x), "mz", "intensity")))
         stop("No spectra variable '", name, "' available")
-    ## Use spectraData instead of x@backend$name to support the processing
-    ## queue.
-    spectraData(x, column = name)[, 1]
+    if (name == "mz")
+        mz(x)
+    else if (name == "intensity")
+        intensity(x)
+    else
+        do.call("$", list(x@backend, name))
 })
 
 #' @rdname Spectra
 setReplaceMethod("$", "Spectra", function(x, name, value) {
-    ## if (any(name %in% c("mz", "intensity")))
-    ##     stop("Replacing mz or intensity values is currently not supported")
     x@backend <- do.call("$<-", list(x@backend, name, value))
     x
 })
@@ -1247,7 +1333,7 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
 #' @rdname Spectra
 setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
                                                       dataStorage = character(),
-                                                      dataOrigin = character()) {
+                                                      dataOrigin = character()){
     if (length(dataStorage) && !is.character(dataStorage))
         stop("'dataStorage' is expected to be of type character")
     if (length(dataOrigin) && !is.character(dataOrigin))
@@ -1350,7 +1436,8 @@ setMethod("filterRt", "Spectra",
               if (!is.numeric(msLevel.))
                   stop("Please provide a numeric MS level.")
               if (length(rt) != 2L || !is.numeric(rt) || rt[1] >= rt[2])
-                  stop("Please provide a lower and upper numeric retention time range.")
+                  stop("Please provide a lower and upper numeric retention",
+                       " time range.")
               suppressWarnings(rt <- range(rt))
               object@backend <- filterRt(object@backend, rt, msLevel.)
               object@processing <- .logging(
@@ -1390,19 +1477,26 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
 
 #' @rdname Spectra
 #'
-#' @exportMethod clean
-setMethod("clean", "Spectra",
-          function(object, all = FALSE, msLevel. = unique(msLevel(object))) {
-              if (!is.logical(all) || length(all) != 1)
-                  stop("Argument 'all' must be a logical of length 1")
+#' @exportMethod filterIntensity
+setMethod("filterIntensity", "Spectra",
+          function(object, intensity = c(0, Inf),
+                   msLevel. = unique(msLevel(object))) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .peaks_clean, all = all,
+              if (length(intensity) == 1)
+                  intensity <- c(intensity, Inf)
+              if (length(intensity) != 2)
+                  stop("'intensity' should be of length specifying a lower ",
+                       "intensity limit or of length two defining a lower and",
+                       " upper limit.")
+              object <- addProcessing(object, .peaks_filter_intensity,
+                                      intensity = intensity,
                                       msLevel = msLevel.)
-              object@processing <- .logging(object@processing,
-                                            "Spectra of MS level(s) ",
-                                            paste0(msLevel., collapse = ", "),
-                                            " cleaned.")
+              object@processing <- .logging(
+                  object@processing, "Remove peaks with intensities outside [",
+                  intensity[1], ", ", intensity[2],
+                  "] in spectra of MS level(s) ",
+                  paste0(msLevel., collapse = ", "), ".")
               object
           })
 
@@ -1410,12 +1504,12 @@ setMethod("clean", "Spectra",
 #'
 #' @exportMethod compareSpectra
 #'
-#' @importFrom MsCoreUtils dotproduct
+#' @importFrom MsCoreUtils ndotproduct
 #'
 #' @export ppm
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
           function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = dotproduct, ..., SIMPLIFY = TRUE) {
+                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
               mat <- .compare_spectra(x, y, MAPFUN = MAPFUN,
                                       tolerance = tolerance,
                                       ppm = ppm, FUN = FUN, ...)
@@ -1426,7 +1520,7 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
 #' @rdname Spectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
           function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = dotproduct, ..., SIMPLIFY = TRUE) {
+                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
               if (length(x) == 1)
                   return(compareSpectra(x, x, MAPFUN = MAPFUN,
                                         tolerance = tolerance,
@@ -1494,19 +1588,24 @@ setMethod("pickPeaks", "Spectra",
 
 #' @rdname Spectra
 #'
-#' @exportMethod removePeaks
-setMethod("removePeaks", "Spectra",
-          function(object, threshold = "min",
+#' @exportMethod replaceIntensitiesBelow
+setMethod("replaceIntensitiesBelow", "Spectra",
+          function(object, threshold = min, value = 0,
                    msLevel. = unique(msLevel(object))) {
-              if (!is.numeric(threshold) & threshold != "min")
+              if (!is.numeric(threshold) && !is.function(threshold))
                   stop("Argument 'threshold' has to be either numeric or ",
-                       "'min'.")
+                       "a function.")
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .peaks_remove,
-                                      threshold = threshold, msLevel = msLevel.)
+              object <- addProcessing(object, .peaks_replace_intensity,
+                                      threshold = threshold, value = value,
+                                      msLevel = msLevel.)
+              msg <- ifelse(
+                  is.function(threshold),
+                  yes = "a threshold defined by a provided function",
+                  no = threshold)
               object@processing <- .logging(object@processing,
-                                            "Signal <= ", threshold,
+                                            "Signal <= ", msg,
                                             " in MS level(s) ",
                                             paste0(msLevel., collapse = ", "),
                                             " set to 0")

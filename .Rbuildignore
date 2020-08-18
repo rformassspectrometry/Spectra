@@ -1,11 +1,4 @@
+^\.github$
 .editorconfig
-.gitignore
-.gitignores
 .travis.yml
-docs
-^docs$
-^pkgdown$
-Makefile
-local_data
-NEWS.md
-README.Rmd
+favicon

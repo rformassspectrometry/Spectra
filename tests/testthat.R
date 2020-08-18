@@ -15,7 +15,7 @@ fl <- normalizePath(
 tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
 sciex_hd5 <- backendInitialize(MsBackendHdf5Peaks(),
-                               spectraData = spectraData(sciex_mzr),
+                               data = asDataFrame(sciex_mzr),
                                hdf5path = tempdir())
 
 test_check("Spectra")

@@ -1,3 +1,7 @@
+test_that(".valid_ms_backend_mod_count works", {
+    expect_match(Spectra:::.valid_ms_backend_mod_count(3, 1:34), "Different number")
+})
+
 test_that(".initialize_h5peaks_file works", {
     if (!requireNamespace("rhdf5", quietly = TRUE))
         stop("Unable to load package rhdf5")
@@ -45,7 +49,9 @@ test_that(".h5_read_bare works", {
         stop("Unable to load package rhdf5")
     tmpf <- tempfile()
     h5 <- .initialize_h5peaks_file(tmpf)
-    h5 <- .Call("_H5Fopen", tmpf, 0L, PACKAGE = "rhdf5")
+    fapl <- rhdf5::H5Pcreate("H5P_FILE_ACCESS")
+    on.exit(rhdf5::H5Pclose(fapl))
+    h5 <- .Call("_H5Fopen", tmpf, 0L, fapl@ID, PACKAGE = "rhdf5")
     res <- .h5_read_bare(h5, "/header/class")
     expect_equal(res[[1]], "Spectra::MsBackendHdf5Peaks")
 })
@@ -59,6 +65,9 @@ test_that(".hdf5_compression_level works", {
 })
 
 test_that(".h5_read_peaks, .h5_write_peaks works", {
+    expect_error(.h5_read_peaks(c("a", "b")), "should have length 1")
+    expect_error(.h5_write_peaks(list(), 1:4), "have to match")
+    expect_error(.h5_write_peaks(list(4, 3), c(1, 1)), "no duplicated")
     tmpf <- tempfile()
     expect_true(.initialize_h5peaks_file(tmpf))
     matlist <- list(cbind(mz = c(1.1, 1.2, 1.3, 1.4),

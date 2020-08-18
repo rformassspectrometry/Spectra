@@ -3,7 +3,7 @@ test_df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
 test_df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
 
 test_be <- backendInitialize(MsBackendHdf5Peaks(), file = tempfile(),
-                             spectraData = test_df)
+                             data = test_df)
 
 test_that("backendInitialize,MsBackendHdf5Peaks works", {
     if (!requireNamespace("rhdf5", quietly = TRUE))
@@ -20,7 +20,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     df$dataStorage <- "myfile"
 
     dr <- normalizePath(tempdir())
-    res <- backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
+    res <- backendInitialize(MsBackendHdf5Peaks(), data = df,
                              hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
     expect_identical(res$msLevel, c(1L, 2L, 2L))
@@ -34,13 +34,13 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     m$mz <- list(1:4, 1:4)
     m$intensity <- list(1:4, 5:8)
     res <- backendInitialize(MsBackendHdf5Peaks(), files = "mapply.h5",
-                             spectraData = m, hdf5path = dr)
+                             data = m, hdf5path = dr)
     expect_equal(NumericList(m$intensity, compress = FALSE), intensity(res))
 
     ## Two files.
     df$dataStorage <- c("2", "1", "2")
     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("a.h5", "b.h5"),
-                             spectraData = df, hdf5path = dr)
+                             data = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
     expect_equal(unique(res$dataStorage),
                  normalizePath(paste0(dr, c("/a.h5", "/b.h5"))))
@@ -49,7 +49,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
 
     ## Two dataStorage, no files provided
     res <- backendInitialize(MsBackendHdf5Peaks(),
-                             spectraData = df, hdf5path = dr)
+                             data = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
     expect_equal(unique(res$dataStorage),
                  normalizePath(paste0(dr, c("/2.h5", "/1.h5"))))
@@ -59,24 +59,25 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     ## Same but with scanIndex provide
     df$scanIndex <- c(1L, 1L, 2L)
     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("c", "d"),
-                             spectraData = df, hdf5path = dr)
+                             data = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
     expect_equal(unique(res$dataStorage),
                  normalizePath(paste0(dr, c("/c", "/d"))))
     expect_true(validObject(res))
     expect_identical(scanIndex(res), c(1L, 1L, 2L))
 
+    show(res)
     ## Errors
     expect_error(backendInitialize(MsBackendHdf5Peaks(), files = "single",
-                                   spectraData = df, hdf5path = dr),
+                                   data = df, hdf5path = dr),
                  "provided file names has to match")
-    expect_error(backendInitialize(MsBackendHdf5Peaks(), spectraData = "a"),
+    expect_error(backendInitialize(MsBackendHdf5Peaks(), data = "a"),
                  "with spectrum data")
-    expect_error(backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
+    expect_error(backendInitialize(MsBackendHdf5Peaks(), data = df,
                                    files = c("a", "b", "c", "d")),
                  "Number of provided")
     df$dataStorage <- NULL
-    expect_error(backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
+    expect_error(backendInitialize(MsBackendHdf5Peaks(), data = df,
                                    hdf5path = dr),
                  "Column \"dataStorage\" is required")
 
@@ -91,7 +92,7 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     spd$mz <- NULL
     spd$scanIndex <- 1:3
     res <- backendInitialize(MsBackendHdf5Peaks(), files = "no-peak-data",
-                             spectraData = spd, hdf5path = dr)
+                             data = spd, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
     expect_true(validObject(res))
     expect_true(length(res) == 3)
@@ -156,7 +157,7 @@ test_that("isEmpty,MsBackendHdf5Peaks works", {
     df$intensity[[2]] <- numeric()
     df$mz[[2]] <- numeric()
     be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(),
-                            spectraData = df)
+                            data = df)
     res <- isEmpty(be)
     expect_identical(res, c(FALSE, TRUE, FALSE))
 })
@@ -195,11 +196,11 @@ test_that("as.list,MsBackendHdf5Peaks works", {
     matl <- mapply(function(mz, intensity) cbind(mz, intensity),
                    df$mz, df$intensity)
     fl <- normalizePath(tempfile())
-    be <- backendInitialize(MsBackendHdf5Peaks(), file = fl, spectraData = df)
+    be <- backendInitialize(MsBackendHdf5Peaks(), file = fl, data = df)
     expect_identical(as.list(be), matl)
 
     df$dataStorage <- c("2", "1", "2")
-    be <- backendInitialize(MsBackendHdf5Peaks(), spectraData = df,
+    be <- backendInitialize(MsBackendHdf5Peaks(), data = df,
                             files = c(tempfile(), tempfile()))
     expect_identical(as.list(be), matl)
 
@@ -208,7 +209,7 @@ test_that("as.list,MsBackendHdf5Peaks works", {
 
 test_that("replaceList<-,MsBackendHdf5Peaks works", {
     be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(),
-                            spectraData = test_df)
+                            data = test_df)
     pks <- as.list(be)
     pks_2 <- list(pks[[1]][2, , drop = FALSE],
                   pks[[2]],
@@ -234,29 +235,29 @@ test_that("lenghts,MsBackendHdf5Peaks works", {
     expect_identical(res, lengths(test_be$mz))
 })
 
-test_that("spectraData,MsBackendHdf5Peaks works", {
+test_that("asDataFrame,MsBackendHdf5Peaks works", {
     be <- MsBackendHdf5Peaks()
-    res <- spectraData(be)
+    res <- asDataFrame(be)
     expect_true(nrow(res) == 0)
     expect_identical(colnames(res), spectraVariables(be))
 
-    res <- spectraData(test_be)
+    res <- asDataFrame(test_be)
     expect_identical(res$msLevel, test_df$msLevel)
     expect_identical(res$mz, NumericList(test_df$mz, compress = FALSE))
     expect_identical(res$intensity, NumericList(test_df$intensity,
                                                 compress = FALSE))
 })
 
-test_that("spectraData<-,MsBackendHdf5Peaks works", {
+test_that("asDataFrame<-,MsBackendHdf5Peaks works", {
     be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(),
-                            spectraData = test_df)
+                            data = test_df)
     df <- test_df
     df$new_col <- "a"
     df$msLevel <- 1L
     df$intensity <- NULL
     df$mz <- NULL
 
-    spectraData(be) <- df
+    asDataFrame(be) <- df
     expect_identical(be@modCount, 0L)
     expect_identical(msLevel(be), rep(1L, 3))
     expect_identical(intensity(be), NumericList(test_df$intensity,
@@ -266,7 +267,7 @@ test_that("spectraData<-,MsBackendHdf5Peaks works", {
 
     ## Only m/z, no intensities.
     df$mz <- test_df$mz
-    spectraData(be) <- df
+    asDataFrame(be) <- df
     expect_identical(mz(be), NumericList(test_df$mz, compress = FALSE))
     expect_true(all(is.na(unlist(intensity(be)))))
     expect_identical(be@modCount, 1L)
@@ -275,15 +276,15 @@ test_that("spectraData<-,MsBackendHdf5Peaks works", {
     df$mz <- list(c(1.1, 1.2), numeric(), c(1.3, 1.4))
     df$intensity <- list(c(45.3, 345.1), numeric(), c(1234.2, 12.1))
 
-    spectraData(be) <- df
+    asDataFrame(be) <- df
     expect_identical(intensity(be), NumericList(df$intensity, compress = FALSE))
     expect_identical(mz(be), NumericList(df$mz, compress = FALSE))
     expect_identical(lengths(be), c(2L, 0L, 2L))
     expect_identical(be@modCount, 2L)
 
     ## Error:
-    expect_error(spectraData(be) <- "a", "has to be a 'DataFrame'")
-    expect_error(spectraData(be) <- df[1:2, ], "have to match the length of")
+    expect_error(asDataFrame(be) <- "a", "has to be a 'DataFrame'")
+    expect_error(asDataFrame(be) <- df[1:2, ], "have to match the length of")
 })
 
 test_that("$<-,MsBackendHdf5Peaks works", {
@@ -310,7 +311,7 @@ test_that("$<-,MsBackendHdf5Peaks works", {
 test_that("[,MsBackendHdf5Peaks works", {
     fls <- normalizePath(c(tempfile(), tempfile()))
     be <- backendInitialize(MsBackendHdf5Peaks(), files = fls,
-                            spectraData = spectraData(sciex_mzr))
+                            data = asDataFrame(sciex_mzr))
     idx <- sample(seq_along(be), 30)
     res <- be[idx]
     expect_true(validObject(res))

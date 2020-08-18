@@ -11,6 +11,7 @@ test_that("addProcessing works", {
     expect_error(addProcessing(tst, "4"))
     tst <- addProcessing(tst, function(z, t) z * t, t = 4)
     expect_true(length(tst@processingQueue) == 2)
+    show(tst)
 })
 
 test_that(".apply_processing_queue works", {
@@ -29,7 +30,7 @@ test_that(".apply_processing_queue works", {
 
     be <- sciex_mzr
     pks <- as.list(be)
-    pq <- list(ProcessingStep(.peaks_remove, list(t = 50000)))
+    pq <- list(ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
     res <- .apply_processing_queue(pks, msLevel(be),
                                    rep(TRUE, length(be)), pq)
     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
@@ -37,7 +38,8 @@ test_that(".apply_processing_queue works", {
     expect_equal(vapply(res, nrow, integer(1)), vapply(pks, nrow, integer(1)))
 
     ## Length 2
-    pq <- c(pq, list(ProcessingStep(.peaks_clean, list(all = TRUE))))
+    pq <- c(pq, list(ProcessingStep(.peaks_filter_intensity,
+                                    list(intensity = c(0.1, Inf)))))
     res <- .apply_processing_queue(pks, msLevel(be),
                                    rep(TRUE, length(be)), pq)
     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
@@ -48,27 +50,30 @@ test_that(".apply_processing_queue works", {
 
 test_that(".peaksapply works", {
     sps <- Spectra(backend = sciex_mzr)
-    res <- .peaksapply(sps, FUN = .peaks_remove, t = 50000)
+    res <- .peaksapply(sps, FUN = .peaks_replace_intensity, t = 50000)
     expect_true(is.list(res))
     expect_equal(length(res), length(sps))
     expect_true(all(vapply(res, is.matrix, logical(1))))
 
     ## Ensure that this works with arbitrary ordering of the factor f
-    res2 <- .peaksapply(sps, FUN = .peaks_remove, t = 50000,
+    res2 <- .peaksapply(sps, FUN = .peaks_replace_intensity, t = 50000,
                         f = rep(1:2, length(sps)/2))
     expect_identical(res, res2)
 
-    sps@processingQueue <- list(ProcessingStep(.peaks_remove, list(t = 50000)))
+    sps@processingQueue <- list(
+        ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
     res_2 <- .peaksapply(sps)
     expect_equal(res, res_2)
 
-    res_3 <- .peaksapply(sps, FUN = .peaks_clean, all = TRUE)
+    res_3 <- .peaksapply(sps, FUN = .peaks_filter_intensity,
+                         intensity = c(0.1, Inf))
     expect_true(all(vapply(res_3, nrow, integer(1)) <
                     vapply(res_2, nrow, integer(1))))
     expect_true(!any(vapply(res_3, function(z) any(z[, 2] == 0), logical(1))))
 
     sps@processingQueue <- c(sps@processingQueue,
-                             list(ProcessingStep(.peaks_clean, list(all = TRUE))))
+                             list(ProcessingStep(.peaks_filter_intensity,
+                                                 list(intensity = c(0.1, Inf)))))
     res_4 <- .peaksapply(sps)
     expect_equal(res_3, res_4)
 })
@@ -78,8 +83,9 @@ test_that("applyProcessing works", {
     sps_mzr <- filterRt(Spectra(sciex_mzr), rt = c(10, 20))
     ## Add processings.
     centroided(sps_mzr) <- TRUE
-    sps_mzr <- removePeaks(sps_mzr, t = 5000)
-    sps_mzr <- clean(sps_mzr, all = TRUE)
+    sps_mzr <- replaceIntensitiesBelow(sps_mzr, threshold = 5000,
+                                       value = NA_real_)
+    sps_mzr <- filterIntensity(sps_mzr)
     expect_true(length(sps_mzr@processingQueue) == 2)
     expect_error(applyProcessing(sps_mzr), "is read-only")
 
@@ -189,20 +195,31 @@ test_that(".compare_spectra, .compare_spectra_self work", {
 })
 
 test_that(".lapply works", {
-    sps <- Spectra(sciex_hd5)[120:126]
-    expect_identical(.lapply(sps), unname(split(sps, 1:length(sps))))
+    sps <- Spectra(sciex_mzr)[120:126]
+    expect_error(.lapply(sps), "missing")
     res <- .lapply(sps, FUN = rtime)
-    expect_identical(unlist(res), rtime(sps))
+    expect_identical(unlist(res, use.names = FALSE), rtime(sps))
+
+    ## Effect of unsplit: get everything in right order.
+    res <- .lapply(sps, FUN = rtime, f = c(4, 1, 6, 7, 2, 3, 5))
+    expect_identical(unsplit(res, f = c(4, 1, 6, 7, 2, 3, 5)), rtime(sps))
 
     ## arbitrary function
     my_fun <- function(x, add) {
         x$rtime + add
     }
     res <- .lapply(sps, FUN = my_fun, add = 3)
-    expect_identical(rtime(sps) + 3, unlist(res))
+    expect_identical(rtime(sps) + 3, unlist(res, use.names = FALSE))
+
+    ## After clean and stuff
+    spsc <- filterIntensity(replaceIntensitiesBelow(
+        sps, threshold = 4000, value = NA_real_))
+    res <- .lapply(spsc, FUN = function(z) sum(intensity(z)))
+    res_2 <- vapply(intensity(spsc), sum, numeric(1))
+    expect_identical(unlist(res, use.names = FALSE), res_2)
 })
 
-test_that(".comcatenate_spectra works", {
+test_that(".concatenate_spectra works", {
     df1 <- DataFrame(msLevel = c(1L, 1L, 1L))
     df1$mz <- list(c(1.1, 1.2), c(1.5), c(1.4, 1.5, 1.6))
     df1$intensity <- list(c(4.5, 23), 452.1, c(4.1, 342, 123))
@@ -347,4 +364,48 @@ test_that("dropNaSpectraVariables works", {
     res <- dropNaSpectraVariables(sps)
     expect_true(all(vapply1l(res@backend@spectraData,
                              function(z) !any(is.na(z)))))
+})
+
+test_that(".has_mz works", {
+    sps <- Spectra(sciex_mzr)[1:10]
+    sps <- setBackend(sps, MsBackendDataFrame())
+    mzs <- mz(sps)
+    x <- c(mzs[[2]][5], mzs[[3]][8])
+
+    res <- .has_mz(sps, mz = x, ppm = 0)
+    expect_true(length(res) == length(sps))
+    expect_true(is.logical(res))
+
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- .has_mz(sps, mz = c(14, 34))
+    expect_equal(res, c(TRUE, TRUE, FALSE))
+    res <- .has_mz(sps, mz = c(14, 34), tolerance = 0.15)
+    expect_equal(res, c(TRUE, TRUE, TRUE))
+
+    res <- .has_mz(sps, mz = c(14, 34), condFun = all)
+    expect_true(all(!res))
+    res <- .has_mz(sps, mz = c(14, 34), condFun = all, tolerance = 0.15)
+    expect_equal(res, c(FALSE, TRUE, TRUE))
+})
+
+test_that(".has_mz_each works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- .has_mz_each(sps, mz = c(14, 34, 12.1), ppm = 0)
+    expect_true(is.logical(res))
+    expect_true(length(res) == length(sps))
+    expect_equal(res, c(TRUE, TRUE, TRUE))
+
+    res <- .has_mz_each(sps, mz = c(NA, 34, 34))
+    expect_equal(res, c(NA, TRUE, FALSE))
+
+    res <- .has_mz_each(sps, mz = c(14, 14, 14), tolerance = 0.1)
+    expect_equal(res, c(TRUE, TRUE, FALSE))
 })

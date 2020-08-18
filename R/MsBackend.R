@@ -1,9 +1,9 @@
 #' @include hidden_aliases.R
-NULL
 
 #' @title Mass spectrometry data backends
 #'
-#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class MsBackendMzR-class [,MsBackend-method
+#' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class
+#' @aliases MsBackendMzR-class [,MsBackend-method
 #'
 #' @description
 #'
@@ -44,9 +44,13 @@ NULL
 #'     acquisition number of the spectra to which the object should be
 #'     subsetted.
 #'
-#' @param columns For `spectraData` accessor: optional `character` with column
+#' @param columns For `asDataFrame` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
+#'
+#' @param data For `backendInitialize`: `DataFrame` with spectrum
+#'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
+#'     but needs to be provided for `MsBackendDataFrame` backends.
 #'
 #' @param dataOrigin For `filterDataOrigin`: `character` to define which
 #'     spectra to keep.
@@ -95,10 +99,6 @@ NULL
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
-#'
-#' @param spectraData For `backendInitialize`: `DataFrame` with spectrum
-#'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
-#'     but needs to be provided for `MsBackendDataFrame` backends.
 #'
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
@@ -153,6 +153,12 @@ NULL
 #'   in `object` with the data storage of each spectrum. Note that a
 #'   `dataStorage` of `NA_character_` is not supported.
 #'
+#' - `dropNaSpectraVariables`: removes spectra variables (i.e. columns in the
+#'   object's `spectraData` that contain only missing values (`NA`). Note that
+#'   while columns with only `NA`s are removed, a `spectraData` call after
+#'   `dropNaSpectraVariables` might still show columns containing `NA` values
+#'   for *core* spectra variables.
+#'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
@@ -168,8 +174,8 @@ NULL
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `filterAcquisitionNum`: filters the object keeping only spectra matching the
-#'   provided acquisition numbers (argument `n`). If `dataOrigin` or
+#' - `filterAcquisitionNum`: filters the object keeping only spectra matching
+#'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
 #'   `dataStorage` is also provided, `object` is subsetted to the spectra with
 #'   an acquisition number equal to `n` **in spectra with matching dataOrigin
 #'   or dataStorage values** retaining all other spectra.
@@ -198,8 +204,8 @@ NULL
 #'    provided with parameter `file`.
 #'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
-#'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
-#'   and `isolationWindowUpperMz` >= `mz`.
+#'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` `<=` `mz`
+#'   and `isolationWindowUpperMz` `>=` `mz`.
 #'
 #' - `filterMsLevel`: retains spectra of MS level `msLevel`.
 #'
@@ -282,7 +288,7 @@ NULL
 #'   `precScanNum`, `precAcquisitionNum`: get the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
 #'   and acquisition number (`interger`) of the precursor for MS level
-#'   > 2 spectra from the object. Returns a vector of length equal to
+#'   2 and above spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
@@ -312,9 +318,9 @@ NULL
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
-#'   metadata (annotation, also called header).  `spectraData` returns
-#'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
+#' - `asDataFrame`, `asDataFrame<-`: gets or sets general spectrum
+#'   metadata (annotation, also called header).  `asDataFrame` returns
+#'   a `DataFrame`, `asDataFrame<-` expects a `DataFrame` with the same number
 #'   of rows as there are spectra in `object`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
@@ -418,7 +424,7 @@ NULL
 #'
 #' By default `backendInitialize` will store all peak data into a single HDF5
 #' file which name has to be provided with the parameter `files`. To store peak
-#' data across several HDF5 files `spectraData` has to contain a column
+#' data across several HDF5 files `data` has to contain a column
 #' `"dataStorage"` that defines the grouping of spectra/peaks into files: peaks
 #' for spectra with the same value in `"dataStorage"` are saved into the same
 #' HDF5 file. If parameter `files` is omitted, the value in `dataStorage` is
@@ -441,6 +447,8 @@ NULL
 #'
 #' @name MsBackend
 #'
+#' @return See documentation of respective function.
+#'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
 #'
 #' @md
@@ -448,13 +456,13 @@ NULL
 #' @exportClass MsBackend MsBackendDataFrame MsBackendMzR
 NULL
 
-setClass("MsBackend",
-         contains = "VIRTUAL",
-         slots = c(
-             readonly = "logical",
-             version = "character"),
-         prototype = prototype(readonly = FALSE,
-                               version = "0.1"))
+setClass(
+    "MsBackend",
+    contains = "VIRTUAL",
+    slots = c(
+        readonly = "logical",
+        version = "character"),
+    prototype = prototype(readonly = FALSE, version = "0.1"))
 
 #' @importFrom methods .valueClassTest is new validObject
 #'
@@ -470,11 +478,10 @@ setValidity("MsBackend", function(object) {
 #' @exportMethod backendInitialize
 #'
 #' @rdname MsBackend
-setMethod("backendInitialize", signature = "MsBackend",
-          definition = function(object, ...) {
-              validObject(object)
-              object
-          })
+setMethod("backendInitialize", signature = "MsBackend", function(object, ...) {
+    validObject(object)
+    object
+})
 
 #' @rdname MsBackend
 setMethod("backendMerge", "list", function(object, ...) {
@@ -578,6 +585,17 @@ setMethod("dataStorage", "MsBackend", function(object) {
 #' @rdname MsBackend
 setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
     stop("Method 'dataStorage' is not implemented for ", class(object), ".")
+})
+
+#' @exportMethod dropNaSpectraVariables
+#'
+#' @rdname MsBackend
+setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
+    svs <- spectraVariables(object)
+    spd <- asDataFrame(object, columns = svs[!(svs %in% c("mz", "intensity"))])
+    keep <- !vapply1l(spd, function(z) all(is.na(z)))
+    asDataFrame(object) <- spd[, keep, drop = FALSE]
+    object
 })
 
 #' @exportMethod filterAcquisitionNum
@@ -730,10 +748,10 @@ setMethod("isolationWindowLowerMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowLowerMz<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("isolationWindowLowerMz", "MsBackend",
-                 function(object, value) {
-                     stop("Not implemented for ", class(object), ".")
-                 })
+setReplaceMethod("isolationWindowLowerMz", "MsBackend", function(object,
+                                                                 value) {
+    stop("Not implemented for ", class(object), ".")
+})
 
 #' @exportMethod isolationWindowTargetMz
 #'
@@ -749,10 +767,10 @@ setMethod("isolationWindowTargetMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowTargetMz<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("isolationWindowTargetMz", "MsBackend",
-                 function(object, value) {
-                     stop("Not implemented for ", class(object), ".")
-                 })
+setReplaceMethod("isolationWindowTargetMz", "MsBackend", function(object,
+                                                                  value) {
+    stop("Not implemented for ", class(object), ".")
+})
 
 #' @exportMethod isolationWindowUpperMz
 #'
@@ -768,10 +786,10 @@ setMethod("isolationWindowUpperMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowUpperMz<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("isolationWindowUpperMz", "MsBackend",
-                 function(object, value) {
-                     stop("Not implemented for ", class(object), ".")
-                 })
+setReplaceMethod("isolationWindowUpperMz", "MsBackend", function(object,
+                                                                 value) {
+    stop("Not implemented for ", class(object), ".")
+})
 
 #' @exportMethod isReadOnly
 #'
@@ -910,10 +928,11 @@ setMethod("scanIndex", "MsBackend", function(object) {
 #' @exportMethod selectSpectraVariables
 #'
 #' @rdname MsBackend
-setMethod("selectSpectraVariables", "MsBackend",
-          function(object, spectraVariables = spectraVariables(object)) {
-              stop("Not implemented for ", class(object), ".")
-})
+setMethod(
+    "selectSpectraVariables", "MsBackend",
+    function(object, spectraVariables = spectraVariables(object)) {
+        stop("Not implemented for ", class(object), ".")
+    })
 
 #' @exportMethod smoothed
 #'
@@ -935,22 +954,19 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod spectraData
-#'
-#' @importMethodsFrom ProtGenerics spectraData
+#' @exportMethod asDataFrame
 #'
 #' @rdname MsBackend
-setMethod("spectraData", "MsBackend",
-          function(object, columns = spectraVariables(object)) {
-              stop("Not implemented for ", class(object), ".")
-          })
+setMethod(
+    "asDataFrame", "MsBackend",
+    function(object, columns = spectraVariables(object)) {
+        stop("Not implemented for ", class(object), ".")
+    })
 
-#' @exportMethod spectraData<-
-#'
-#' @importMethodsFrom ProtGenerics spectraData<-
+#' @exportMethod asDataFrame<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("spectraData", "MsBackend", function(object, value) {
+setReplaceMethod("asDataFrame", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 

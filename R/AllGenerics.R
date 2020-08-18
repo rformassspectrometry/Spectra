@@ -2,11 +2,14 @@
 NULL
 
 #' @rdname hidden_aliases
-setGeneric("backendInitialize",
-           def = function(object, ...)
-               standardGeneric("backendInitialize"),
-           valueClass = "MsBackend"
-           )
+setGeneric("asDataFrame", function(object, ...) standardGeneric("asDataFrame"))
+#' @rdname hidden_aliases
+setGeneric("asDataFrame<-", function(object, value)
+    standardGeneric("asDataFrame<-"))
+#' @rdname hidden_aliases
+setGeneric("backendInitialize", def = function(object, ...)
+    standardGeneric("backendInitialize"),
+    valueClass = "MsBackend")
 #' @rdname hidden_aliases
 setGeneric("backendMerge", def = function(object, ...)
     standardGeneric("backendMerge"),
@@ -16,10 +19,20 @@ setGeneric("bin", function(x, ...) standardGeneric("bin"))
 #' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
 #' @rdname hidden_aliases
-setGeneric("clean", function(object, ...) standardGeneric("clean"))
-#' @rdname hidden_aliases
 setGeneric("compareSpectra", function(x, y, ...)
     standardGeneric("compareSpectra"))
+#' @rdname hidden_aliases
+setGeneric("containsMz", function(object, ...)
+    standardGeneric("containsMz"))
+#' @rdname hidden_aliases
+setGeneric("containsNeutralLoss", function(object, ...)
+    standardGeneric("containsNeutralLoss"))
+#' @rdname hidden_aliases
+setGeneric("dropNaSpectraVariables", function(object, ...)
+    standardGeneric("dropNaSpectraVariables"))
+#' @rdname hidden_aliases
+setGeneric("filterIntensity", function(object, ...)
+    standardGeneric("filterIntensity"))
 #' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
@@ -27,8 +40,8 @@ setGeneric("isReadOnly", function(object, ...)
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
 #' @rdname hidden_aliases
-setGeneric("removePeaks", function(object, t="min", ...)
-    standardGeneric("removePeaks"))
+setGeneric("replaceIntensitiesBelow", function(object, threshold = min, ...)
+    standardGeneric("replaceIntensitiesBelow"))
 #' @rdname hidden_aliases
 setGeneric("replaceList<-", function(object, value)
     standardGeneric("replaceList<-"))

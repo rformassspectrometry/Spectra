@@ -44,6 +44,8 @@ test_that("Spectra,character works", {
     res_2 <- Spectra(sciex_file)
     expect_true(is(res@backend, "MsBackendDataFrame"))
     expect_identical(rtime(res), rtime(res_2))
+
+    show(res)
 })
 
 test_that("setBackend,Spectra works", {
@@ -242,7 +244,7 @@ test_that("intensity,Spectra works", {
                           c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
                           c(9, 6, 0, 0, 3, 9, 4, 0, 0, 0),
                           compress = FALSE))
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- intensity(sps)
     expect_identical(res, NumericList(c(1, 6, 3, 9, 1), c(9, 6, 3, 9, 4),
                                       compress = FALSE))
@@ -261,7 +263,7 @@ test_that("ionCount,Spectra works", {
     res <- ionCount(sps)
     expect_identical(res, c(17, 19))
 
-    sps <- removePeaks(sps, threshold = 4)
+    sps <- replaceIntensitiesBelow(sps, threshold = 4)
     res <- ionCount(sps)
     expect_identical(res, c(14, 17))
 })
@@ -298,11 +300,11 @@ test_that("isEmpty,Spectra works", {
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
-    sps <- removePeaks(sps, threshold = 100)
+    sps <- replaceIntensitiesBelow(sps, threshold = 100)
     res <- isEmpty(sps)
     expect_identical(res, c(FALSE, FALSE))
 
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- isEmpty(sps)
     expect_identical(res, c(TRUE, TRUE))
 })
@@ -377,7 +379,7 @@ test_that("mz,Spectra works", {
     sps <- Spectra(df)
     res <- mz(sps)
     expect_identical(res, NumericList(1:10, 1:10, compress = FALSE))
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- mz(sps)
     expect_equal(res, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 6, 7),
                                   compress = FALSE))
@@ -413,11 +415,11 @@ test_that("lengths,Spectra works", {
     res <- lengths(sps)
     expect_identical(res, c(3L, 2L))
 
-    sps <- removePeaks(sps, threshold = 100)
+    sps <- replaceIntensitiesBelow(sps, threshold = 100)
     res <- lengths(sps)
     expect_identical(res, c(3L, 2L))
 
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- lengths(sps)
     expect_identical(res, c(0L, 0L))
 })
@@ -548,7 +550,7 @@ test_that("spectraData,Spectra works", {
     res <- spectraData(sps)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)
-    expect_true(all(c("msLevel", "rtime", "mz", "intensity") %in% colnames(res)))
+    expect_true(all(c("msLevel", "rtime") %in% colnames(res)))
 
     df <- DataFrame(msLevel = c(1L, 1L), rtime = c(1.2, 1.3), centroided = TRUE)
     df$mz <- list(1:10, 1:10)
@@ -560,15 +562,15 @@ test_that("spectraData,Spectra works", {
     expect_equal(res$msLevel, c(1L, 1L))
     expect_equal(res$rtime, c(1.2, 1.3))
     expect_equal(res$precScanNum, c(NA_integer_, NA_integer_))
-    expect_equal(res$mz, NumericList(1:10, 1:10, compress = FALSE))
-    expect_equal(res$intensity, NumericList(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
+    expect_equal(sps$mz, NumericList(1:10, 1:10, compress = FALSE))
+    expect_equal(sps$intensity, NumericList(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
                                             c(9, 6, 0, 0, 3, 0, 0, 0, 3, 2),
                                             compress = FALSE))
-    sps <- clean(sps, all = TRUE)
+    sps <- filterIntensity(sps, intensity = 0.1)
     res <- spectraData(sps)
-    expect_equal(res$mz, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 9, 10),
+    expect_equal(sps$mz, NumericList(c(3, 4, 5, 8, 9), c(1, 2, 5, 9, 10),
                                      compress = FALSE))
-    expect_equal(res$intensity, NumericList(c(1, 6, 3, 9, 1), c(9, 6, 3, 3, 2),
+    expect_equal(sps$intensity, NumericList(c(1, 6, 3, 9, 1), c(9, 6, 3, 3, 2),
                                             compress = FALSE))
 })
 
@@ -596,7 +598,7 @@ test_that("spectraData<-,Spectra works", {
 
     tmp <- sciex_mzr
     sps <- Spectra(tmp)
-    expect_warning(spectraData(sps)$some_col <- "yes")
+    spectraData(sps)$some_col <- "yes"
     expect_true(any(spectraVariables(sps) == "some_col"))
     expect_true(all(spectraData(sps, "some_col")[, 1] == "yes"))
     expect_true(is(sps@backend@spectraData$some_col, "character"))
@@ -626,8 +628,8 @@ test_that("spectraNames,spectraNames<-,Spectra works", {
 test_that("spectraVariables,Spectra works", {
     sps <- Spectra()
     res <- spectraVariables(sps)
-    exp_col <- c("msLevel", "rtime", "acquisitionNum", "scanIndex", "mz",
-                 "intensity", "dataStorage", "centroided", "smoothed",
+    exp_col <- c("msLevel", "rtime", "acquisitionNum", "scanIndex",
+                 "dataStorage", "centroided", "smoothed",
                  "polarity", "precScanNum", "precursorMz", "precursorIntensity",
                  "precursorCharge", "collisionEnergy")
     expect_true(all(exp_col %in% res))
@@ -658,6 +660,8 @@ test_that("tic,Spectra works", {
 test_that("$, $<-,Spectra works", {
     sps <- Spectra()
     expect_identical(sps$msLevel, integer())
+
+    expect_error(sps$not_there, "No spectra variable")
 
     sps <- Spectra(DataFrame(msLevel = c(1L, 2L), other_column = "a"))
     expect_identical(sps$msLevel, c(1L, 2L))
@@ -722,6 +726,9 @@ test_that("filterAcquisitionNum,Spectra works", {
     res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = sciex_file[2])
     expect_equal(acquisitionNum(res),
                  c(1:sum(dataStorage(sps) == sciex_file[1]), 1:10))
+
+    expect_error(filterAcquisitionNum(sps, dataStorage = 2), "type character")
+    expect_error(filterAcquisitionNum(sps, dataOrigin = 2), "type character")
 })
 
 test_that("filterDataOrigin,Spectra works", {
@@ -729,6 +736,8 @@ test_that("filterDataOrigin,Spectra works", {
     res <- filterDataOrigin(sps)
     expect_true(length(res) == 0)
     expect_true(length(res@processing) == 1)
+
+    expect_error(filterDataOrigin(sps, 3), "type character")
 
     sps <- Spectra(sciex_mzr)
     res <- filterDataOrigin(sps, dataOrigin = "2")
@@ -751,6 +760,8 @@ test_that("filterDataStorage,Spectra works", {
     res <- filterDataStorage(sps)
     expect_true(length(res) == 0)
     expect_true(length(res@processing) == 1)
+
+    expect_error(filterDataStorage(sps, 3), "type character")
 
     sps <- Spectra(sciex_mzr)
     res <- filterDataStorage(sps, "2")
@@ -779,13 +790,15 @@ test_that("filterEmptySpectra,Spectra works", {
     expect_equal(length(res@processing), 1)
     expect_equal(rtime(res), c(1, 1))
 
-    sps <- clean(removePeaks(sps, threshold = 20), all = TRUE)
+    sps <- filterIntensity(replaceIntensitiesBelow(
+        sps, threshold = 20, value = NA_real_))
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 1)
     expect_equal(rtime(res), 1)
     expect_equal(length(res@processing), 3)
 
-    sps <- clean(removePeaks(sps, threshold = 50), all = TRUE)
+    sps <- filterIntensity(replaceIntensitiesBelow(
+        sps, threshold = 50, value = NA_real_))
     res <- filterEmptySpectra(sps)
     expect_equal(length(res), 0)
 
@@ -923,24 +936,27 @@ test_that("bin,Spectra works", {
     expect_identical(res, sps)
 })
 
-test_that("clean,Spectra works", {
+test_that("filterIntensity,Spectra works", {
     sps <- Spectra()
-    res <- clean(sps)
+    res <- filterIntensity(sps)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.peaks_clean,
-                                list(all = FALSE, msLevel = integer())))
+                 ProcessingStep(.peaks_filter_intensity,
+                                list(intensity = c(0, Inf),
+                                     msLevel = integer())))
 
-    res <- clean(sps, all = TRUE, msLevel = 2L)
+    res <- filterIntensity(sps, msLevel = 2L)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.peaks_clean,
-                                list(all = TRUE, msLevel = 2L)))
+                 ProcessingStep(.peaks_filter_intensity,
+                                list(intensity = c(0, Inf),
+                                     msLevel = 2L)))
 
-    res <- clean(Spectra(sciex_mzr), all = TRUE)
-    pks_res <- lapply(sciex_pks, .peaks_clean, all = TRUE,
-                      spectrumMsLevel = 1L)
-    expect_identical(as.list(res), SimpleList(pks_res))
+    res <- filterIntensity(Spectra(sciex_mzr), intensity = c(500, 9000))
+    ints <- unlist(intensity(res), use.names = FALSE)
+    expect_true(all(ints >= 500 & ints <= 9000))
+
+    expect_error(filterIntensity(Spectra(sciex_mzr), c(1, 2, 3)), "limit")
 })
 
 test_that("compareSpectra works", {
@@ -1060,18 +1076,21 @@ test_that("smooth,Spectra works", {
     expect_identical(as.list(res), SimpleList(pks_res))
 })
 
-test_that("removePeaks,Spectra works", {
+test_that("replaceIntensitiesBelow,Spectra works", {
     sps <- Spectra()
-    res <- removePeaks(sps, threshold = 10)
+    res <- replaceIntensitiesBelow(sps, threshold = 10)
     expect_true(length(res@processingQueue) == 1)
     expect_equal(res@processingQueue[[1]],
-                 ProcessingStep(.peaks_remove,
-                                list(threshold = 10, msLevel = integer())))
+                 ProcessingStep(.peaks_replace_intensity,
+                                list(threshold = 10, value = 0,
+                                     msLevel = integer())))
+
+    expect_error(replaceIntensitiesBelow(sps, threshold = "b"), "numeric")
 
     sps <- Spectra(sciex_mzr)
     centroided(sps) <- TRUE
-    res <- removePeaks(sps, threshold = 5000)
-    pks_res <- lapply(sciex_pks, .peaks_remove, threshold = 5000,
+    res <- replaceIntensitiesBelow(sps, threshold = 5000)
+    pks_res <- lapply(sciex_pks, .peaks_replace_intensity, threshold = 5000,
                       spectrumMsLevel = 1L, centroided = TRUE)
     expect_identical(as.list(res), SimpleList(pks_res))
 })
@@ -1079,9 +1098,9 @@ test_that("removePeaks,Spectra works", {
 test_that("lapply,Spectra works", {
     sps <- Spectra(sciex_mzr)[c(1:3, 1400:1410)]
     rts <- lapply(sps, rtime)
-    expect_equal(unlist(rts), rtime(sps))
+    expect_equal(unlist(rts, use.names = FALSE), rtime(sps))
 
-    expect_equal(unname(split(sps, 1:length(sps))), lapply(sps))
+    expect_equal(unname(split(sps, 1:length(sps))), unname(lapply(sps)))
 
     ## test on a mzR backend using intensities.
     myFun <- function(x, add) {
@@ -1089,16 +1108,68 @@ test_that("lapply,Spectra works", {
     }
     res <- lapply(sps, FUN = myFun, add = 3)
     ints <- intensity(sps)
-    expect_equal(unlist(res), vapply(ints, mean, numeric(1)) + 3)
+    expect_equal(unlist(res, use.names = FALSE),
+                 vapply(ints, mean, numeric(1)) + 3)
 
-    ## Same after removePeaks and clean.
-    sps <- clean(removePeaks(sps, t = 4000), all = TRUE)
+    ## Same after replaceIntensitiesBelow and clean.
+    sps <- filterIntensity(replaceIntensitiesBelow(sps, t = 4000),
+                           intensity = 0.1)
     res <- lapply(sps, FUN = function(x) mean(x$intensity[[1]]))
-    expect_equal(unlist(res), vapply(intensity(sps), mean, numeric(1)))
+    expect_equal(unlist(res, use.names = FALSE),
+                 vapply(intensity(sps), mean, numeric(1)))
 })
 
 test_that("split,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- split(sps, f = sps$dataStorage)
     expect_identical(res, split.default(sps, f = sps$dataStorage))
+})
+
+test_that("containsMz,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- containsMz(sps)
+    expect_true(all(is.na(res)))
+
+    res <- containsMz(sps, NA)
+    expect_true(all(is.na(res)))
+
+    res <- containsMz(sps, c(14.15), which = "any")
+    expect_equal(res, c(FALSE, FALSE, TRUE))
+
+    res_2 <- containsMz(sps, c(14.15), which = "any",
+                        BPPARAM = MulticoreParam(2))
+    expect_equal(res, res_2)
+    ## Check that unsplit works.
+    sps@backend$dataStorage <- c("3", "1", "2")
+    res_2 <- containsMz(sps, c(14.15))
+    expect_equal(res, res_2)
+})
+
+test_that("containsNeutralLoss,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = SerialParam())
+    expect_equal(res, c(NA, TRUE, FALSE))
+    res <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = SerialParam(),
+                               tolerance = 0.1)
+    expect_equal(res, c(NA, TRUE, TRUE))
+
+    ## Compare with splitting/parallel.
+    res <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = SerialParam())
+    expect_equal(res, c(NA, TRUE, FALSE))
+
+    res_2 <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = MulticoreParam())
+    expect_equal(res, res_2)
+
+    sps@backend$dataStorage <- c("3", "1", "2")
+    res_2 <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = MulticoreParam())
+    expect_equal(res, res_2)
 })

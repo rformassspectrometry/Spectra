@@ -34,7 +34,7 @@ setValidity("MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("show", "MsBackendDataFrame", function(object) {
-    spd <- spectraData(object, c("msLevel", "rtime", "scanIndex"))
+    spd <- asDataFrame(object, c("msLevel", "rtime", "scanIndex"))
     cat(class(object), "with", nrow(spd), "spectra\n")
     if (nrow(spd)) {
         txt <- capture.output(print(spd))
@@ -50,23 +50,23 @@ setMethod("show", "MsBackendDataFrame", function(object) {
 #'
 #' @importFrom IRanges NumericList
 #'
-#' @rdname hidden_aliases
+#' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackendDataFrame",
-          function(object, spectraData, ...) {
-              if (missing(spectraData)) spectraData <- DataFrame()
-              if (is.data.frame(spectraData))
-                  spectraData <- DataFrame(spectraData)
-              if (!is(spectraData, "DataFrame"))
-                  stop("'spectraData' has to be a 'DataFrame'")
-              if (!nrow(spectraData))
+          function(object, data, ...) {
+              if (missing(data)) data <- DataFrame()
+              if (is.data.frame(data))
+                  data <- DataFrame(data)
+              if (!is(data, "DataFrame"))
+                  stop("'data' has to be a 'DataFrame'")
+              if (!nrow(data))
                   return(object)
-              spectraData$dataStorage <- "<memory>"
-              if (nrow(spectraData) && !is(spectraData$mz, "NumericList"))
-                  spectraData$mz <- NumericList(spectraData$mz, compress = FALSE)
-              if (nrow(spectraData) && !is(spectraData$intensity, "NumericList"))
-                  spectraData$intensity <- NumericList(spectraData$intensity,
-                                                       compress = FALSE)
-              object@spectraData <- spectraData
+              data$dataStorage <- "<memory>"
+              if (nrow(data) && !is(data$mz, "NumericList"))
+                  data$mz <- NumericList(data$mz, compress = FALSE)
+              if (nrow(data) && !is(data$intensity, "NumericList"))
+                  data$intensity <- NumericList(data$intensity,
+                                                compress = FALSE)
+              object@spectraData <- data
               validObject(object)
               object
           })
@@ -101,7 +101,6 @@ setMethod("centroided", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 #'
 #' @aliases centroided<-,MsBackendDataFrame-method
-#'
 setReplaceMethod("centroided", "MsBackendDataFrame", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)
@@ -119,13 +118,15 @@ setMethod("collisionEnergy", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("collisionEnergy", "MsBackendDataFrame", function(object, value) {
-    if (!is.numeric(value) || length(value) != length(object))
-        stop("'value' has to be a 'numeric' of length ", length(object))
-    object@spectraData$collisionEnergy <- as.numeric(value)
-    validObject(object)
-    object
-})
+setReplaceMethod("collisionEnergy", "MsBackendDataFrame",
+                 function(object, value) {
+                     if (!is.numeric(value) || length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$collisionEnergy <- as.numeric(value)
+                     validObject(object)
+                     object
+                 })
 
 #' @rdname hidden_aliases
 setMethod("dataOrigin", "MsBackendDataFrame", function(object) {
@@ -410,7 +411,7 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
 #' @importFrom S4Vectors SimpleList
 #'
 #' @importMethodsFrom S4Vectors lapply
-setMethod("spectraData", "MsBackendDataFrame",
+setMethod("asDataFrame", "MsBackendDataFrame",
           function(object, columns = spectraVariables(object)) {
               df_columns <- intersect(columns,colnames(object@spectraData))
               res <- object@spectraData[, df_columns, drop = FALSE]
@@ -426,17 +427,19 @@ setMethod("spectraData", "MsBackendDataFrame",
                       res$mz <- if (length(other_res$mz)) other_res$mz
                                 else NumericList(compress = FALSE)
                   if (any(names(other_res) == "intensity"))
-                      res$intensity <- if (length(other_res$intensity)) other_res$intensity
+                      res$intensity <- if (length(other_res$intensity))
+                                           other_res$intensity
                                        else NumericList(compress = FALSE)
               }
               res[, columns, drop = FALSE]
           })
 
 #' @rdname hidden_aliases
-setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
+setReplaceMethod("asDataFrame", "MsBackendDataFrame", function(object, value) {
     if (inherits(value, "DataFrame")) {
         if (length(object) && nrow(value) != length(object))
-            stop("'value' has to be a 'DataFrame' with ", length(object), " rows.")
+            stop("'value' has to be a 'DataFrame' with ",
+                 length(object), " rows.")
         if (!is(value$mz, "NumericList"))
             value$mz <- NumericList(value$mz, compress = FALSE)
         if (!is(value$intensity, "NumericList"))
@@ -484,7 +487,7 @@ setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
 setMethod("$", "MsBackendDataFrame", function(x, name) {
     if (!any(spectraVariables(x) == name))
         stop("spectra variable '", name, "' not available")
-    spectraData(x, name)[, 1]
+    asDataFrame(x, name)[, 1]
 })
 
 #' @rdname hidden_aliases
