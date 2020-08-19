@@ -91,14 +91,15 @@ addProcessing <- function(object, FUN, ...) {
     pqueue <- object@processingQueue
     if (!is.null(FUN))
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
-    ## Question whether we would use a slim version of the backend, i.e.
-    ## reduce it to certain columns/spectra variables.
-    res <- bplapply(split(object@backend, f), function(z, queue) {
-        .apply_processing_queue(as.list(z), msLevel(z),
-                                centroided(z), queue = queue)
-    }, queue = pqueue, BPPARAM = BPPARAM)
-    unsplit(res, f = f, drop = TRUE)
+    if (length(levels(f)) > 1 || length(pqueue)) {
+        res <- bplapply(split(object@backend, f), function(z, queue) {
+            .apply_processing_queue(as.list(z), msLevel(z),
+                                    centroided(z), queue = queue)
+        }, queue = pqueue, BPPARAM = BPPARAM)
+        unsplit(res, f = f, drop = TRUE)
+    } else as.list(object@backend)
 }
+
 
 #' @title Apply a function to subsets of Spectra
 #'
@@ -263,13 +264,13 @@ applyProcessing <- function(object, f = dataStorage(object),
 
     mat <- matrix(NA_real_, nrow = nx, ncol = ny,
                   dimnames = list(spectraNames(x), spectraNames(y)))
-
+    f <- as.factor(1L)
     ## This code duplication may be overengineering.
     if (nx >= ny) {
         for (i in x_idx) {
-            px <- .peaksapply(x[i])[[1L]]
+            px <- .peaksapply(x[i], f = f)[[1L]]
             for (j in y_idx) {
-                peak_map <- MAPFUN(px, .peaksapply(y[j])[[1L]],
+                peak_map <- MAPFUN(px, .peaksapply(y[j], f = f)[[1L]],
                                    tolerance = tolerance, ppm = ppm, ...)
                 mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
                                  ...)
@@ -277,9 +278,9 @@ applyProcessing <- function(object, f = dataStorage(object),
         }
     } else {
         for (j in y_idx) {
-            py <- .peaksapply(y[j])[[1L]]
+            py <- .peaksapply(y[j], f = f)[[1L]]
             for (i in x_idx) {
-                peak_map <- MAPFUN(.peaksapply(x[i])[[1]], py,
+                peak_map <- MAPFUN(.peaksapply(x[i], f = f)[[1]], py,
                                    tolerance = tolerance, ppm = ppm, ...)
                 mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
                                  ...)
