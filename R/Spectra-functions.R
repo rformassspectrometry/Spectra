@@ -80,7 +80,7 @@ addProcessing <- function(object, FUN, ...) {
 #'
 #' @noRd
 .peaksapply <- function(object, FUN = NULL, ..., f = dataStorage(object),
-                         BPPARAM = bpparam()) {
+                        BPPARAM = bpparam()) {
     len <- length(object)
     if (!len)
         return(list())
