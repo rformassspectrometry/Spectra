@@ -169,6 +169,7 @@ indicated.</p></li>
   labelAdj = <span class='kw'>NULL</span>,
   labelPos = <span class='kw'>NULL</span>,
   labelOffset = <span class='fl'>0.5</span>,
+  asp = <span class='fl'>1</span>,
   <span class='kw'>...</span>
 )
 
@@ -294,6 +295,13 @@ parameter <code>srt</code> in <code><a href='https://rdrr.io/r/graphics/text.htm
       <td><p>see parameter <code>offset</code> in <code><a href='https://rdrr.io/r/graphics/text.html'>text()</a></code>.</p></td>
     </tr>
     <tr>
+      <th>asp</th>
+      <td><p>for <code>plotSpectra</code>: the target ratio (columns / rows) when plotting
+mutliple spectra (e.g. for 20 spectra use <code>asp = 4/5</code> for 4 columns and 5 rows
+or <code>asp = 5/4</code> for 5 columns and 4 rows; see <code><a href='https://rdrr.io/r/grDevices/n2mfrow.html'>grDevices::n2mfrow()</a></code> for
+details).</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>additional parameters to be passed to the <code><a href='https://rdrr.io/r/graphics/plot.default.html'>plot.default()</a></code>
 function.</p></td>
@@ -404,12 +412,14 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
         <span class='kw'>lbls</span>[<span class='fu'>intensity</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]] <span class='op'>&lt;=</span> <span class='fl'>15</span>] <span class='op'>&lt;-</span> <span class='st'>""</span>
         <span class='kw'>lbls</span>
     })</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span>(h = <span class='fl'>15</span>, lty = <span class='fl'>2</span>)</div><div class='img'><img src='spectra-plotting-10.png' alt='' width='700' height='433' /></div><div class='input'>
-
+<span class='co'>## Use different asp values</span>
+<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, asp = <span class='fl'>1</span><span class='op'>/</span><span class='fl'>2</span>)</div><div class='input'><span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, asp = <span class='fl'>2</span><span class='op'>/</span><span class='fl'>1</span>)</div><div class='img'><img src='spectra-plotting-11.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>#### --------------------------------------------- ####</span>
 <span class='co'>##                plotSpectraMirror                  ##</span>
 
 <span class='co'>## Plot two spectra against each other.</span>
-<span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>])</div><div class='img'><img src='spectra-plotting-11.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>])
+
 <span class='co'>## Label the peaks with their m/z</span>
 <span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>],
     labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]], digits = <span class='fl'>3</span>),
@@ -419,7 +429,8 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
 <span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>],
     labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]], digits = <span class='fl'>3</span>),
     labelSrt = <span class='op'>-</span><span class='fl'>30</span>, labelPos = <span class='fl'>2</span>, labelOffset = <span class='fl'>0.2</span>, tolerance = <span class='fl'>0.1</span>,
-    matchCol = <span class='st'>"#ff000080"</span>, matchLwd = <span class='fl'>2</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span>()</div><div class='img'><img src='spectra-plotting-13.png' alt='' width='700' height='433' /></div></pre>
+    matchCol = <span class='st'>"#ff000080"</span>, matchLwd = <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span>()</div><div class='img'><img src='spectra-plotting-13.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
