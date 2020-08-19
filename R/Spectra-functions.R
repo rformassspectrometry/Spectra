@@ -270,18 +270,19 @@ applyProcessing <- function(object, f = dataStorage(object),
 
     x_idx <- seq_len(nx)
     x_chunks <- split(x_idx, ceiling(x_idx / chunkSize))
+    rm(x_idx)
 
     y_idx <- seq_len(ny)
     y_chunks <- split(y_idx, ceiling(y_idx / chunkSize))
-    rm(x_idx)
     rm(y_idx)
 
     mat <- matrix(NA_real_, nrow = nx, ncol = ny,
                   dimnames = list(spectraNames(x), spectraNames(y)))
     for (x_chunk in x_chunks) {
+        x_buff <- .peaksapply(x[x_chunk])
         for (y_chunk in y_chunks) {
             mat[x_chunk, y_chunk] <- .peaks_compare(
-                .peaksapply(x[x_chunk]), .peaksapply(y[y_chunk]),
+                x_buff, .peaksapply(y[y_chunk]),
                 MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
                 FUN = FUN, ...)
         }
