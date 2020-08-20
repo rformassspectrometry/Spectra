@@ -1165,7 +1165,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Aug 19 07:51:41 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Thu Aug 20 10:01:12 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1341,7 +1341,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Wed Aug 19 07:51:42 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Thu Aug 20 10:01:14 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1361,7 +1361,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Wed Aug 19 07:51:43 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Thu Aug 20 10:01:14 2020] </div><div class='input'>
 <span class='co'>## Remove empty spectra variables</span>
 <span class='kw'>sciex_noNA</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>dropNaSpectraVariables</a></span>(<span class='kw'>sciex</span>)
 
@@ -1411,7 +1411,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Aug 19 07:51:43 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Thu Aug 20 10:01:14 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]</div><div class='output co'>#&gt; [1] 3 3 3</div><div class='input'>
 <span class='co'>## Remove all peaks with an intensity below 40.</span>
