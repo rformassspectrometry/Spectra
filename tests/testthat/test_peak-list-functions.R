@@ -111,3 +111,23 @@ test_that("combinePeaks works", {
 
     expect_error(combinePeaks(list(p1, p2, p3), main = 5), "has to be")
 })
+
+test_that(".peaks_compare works", {
+    sps <- Spectra(sciex_hd5)[120:126]
+    sps <- setBackend(sps, MsBackendDataFrame())
+
+    res <- .peaks_compare(.peaksapply(sps), .peaksapply(sps))
+    expect_true(ncol(res) == length(sps))
+    expect_true(nrow(res) == length(sps))
+    expect_equal(diag(res), rep(1, length(sps)))
+
+    res_2 <- .peaks_compare(.peaksapply(sps), .peaksapply(sps[3]))
+    expect_true(ncol(res_2) == 1)
+    expect_true(nrow(res_2) == length(sps))
+    expect_identical(res_2[, 1], res[, 3])
+
+    res_2 <- .peaks_compare(.peaksapply(sps[5]), .peaksapply(sps))
+    expect_true(ncol(res_2) == length(sps))
+    expect_true(nrow(res_2) == 1)
+    expect_identical(res_2[1, ], res[5, ])
+})
