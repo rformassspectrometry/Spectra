@@ -476,7 +476,7 @@ method.
 \item \code{reset} a backend (if supported). This method will be called on the backend
 by the \verb{reset,Spectra} method that is supposed to restore the data to its
 original state (see \verb{reset,Spectra} for more details). The function
-returns the \emph{resetted} backend. The default implementation for \code{MsBackend}
+returns the \emph{reset} backend. The default implementation for \code{MsBackend}
 returns the backend as-is.
 \item \code{rtime}, \verb{rtime<-}: gets or sets the retention times for each
 spectrum (in seconds). \code{rtime} returns a \code{numeric} vector (length equal to
