@@ -301,7 +301,7 @@
 #' - `reset` a backend (if supported). This method will be called on the backend
 #'   by the `reset,Spectra` method that is supposed to restore the data to its
 #'   original state (see `reset,Spectra` for more details). The function
-#'   returns the *resetted* backend. The default implementation for `MsBackend`
+#'   returns the *reset* backend. The default implementation for `MsBackend`
 #'   returns the backend as-is.
 #'
 #' - `rtime`, `rtime<-`: gets or sets the retention times for each
