@@ -930,8 +930,8 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 #' @rdname Spectra
 setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            metadata = list(),
-                                           source = MsBackendMzR(),
-                                           backend = MsBackendDataFrame(),
+                                           source = backend,
+                                           backend = MsBackendMzR(),
                                            ..., BPPARAM = bpparam()) {
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,

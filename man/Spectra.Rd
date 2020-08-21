@@ -124,8 +124,8 @@ combineSpectra(
   object,
   processingQueue = list(),
   metadata = list(),
-  source = MsBackendMzR(),
-  backend = MsBackendDataFrame(),
+  source = backend,
+  backend = MsBackendMzR(),
   ...,
   BPPARAM = bpparam()
 )
