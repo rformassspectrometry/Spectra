@@ -325,6 +325,9 @@ precursorMz(object)
 replaceList(object) &lt;- value
 
 # S4 method for MsBackend
+reset(object)
+
+# S4 method for MsBackend
 rtime(object)
 
 # S4 method for MsBackend
@@ -655,6 +658,11 @@ backend. This method expects a <code>list</code> of <code>matrix</code> objects 
 <code>"mz"</code> and <code>"intensity"</code> that has the same length as the number of
 spectra in the backend. Note that just writeable backends support this
 method.</p></li>
+<li><p><code>reset</code> a backend (if supported). This method will be called on the backend
+by the <code>reset,Spectra</code> method that is supposed to restore the data to its
+original state (see <code>reset,Spectra</code> for more details). The function
+returns the <em>reset</em> backend. The default implementation for <code>MsBackend</code>
+returns the backend as-is.</p></li>
 <li><p><code>rtime</code>, <code>rtime&lt;-</code>: gets or sets the retention times for each
 spectrum (in seconds). <code>rtime</code> returns a <code>numeric</code> vector (length equal to
 the number of spectra) with the retention time for each spectrum.

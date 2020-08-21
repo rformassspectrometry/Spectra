@@ -183,8 +183,8 @@ Spectra(
   object,
   processingQueue = list(),
   metadata = list(),
-  source = MsBackendMzR(),
-  backend = MsBackendDataFrame(),
+  source = backend,
+  backend = MsBackendMzR(),
   ...,
   BPPARAM = bpparam()
 )
@@ -389,6 +389,9 @@ filterPrecursorScan(object, acquisitionNum = integer())
 
 # S4 method for Spectra
 filterRt(object, rt = numeric(), msLevel. = unique(msLevel(object)))
+
+# S4 method for Spectra
+reset(object, ...)
 
 # S4 method for Spectra
 bin(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
@@ -958,6 +961,10 @@ MS2) of acquisition number <code>acquisitionNum</code>. Returns the filtered
 times (in seconds) within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>)
 <code>rt[2]</code>. Returns the filtered <code>Spectra</code> (with spectra in their
 original order).</p></li>
+<li><p><code>reset</code>: restores the data to its original state (as much as possible):
+removes any processing steps from the lazy processing queue and calls
+<code>reset</code> on the backend which, depending on the backend, can also undo e.g.
+data filtering operations.</p></li>
 <li><p><code>selectSpectraVariables</code>: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as <em>msLevel</em>, <em>rtime</em> ...) only
@@ -1165,7 +1172,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Thu Aug 20 10:01:12 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Aug 21 11:35:55 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1341,7 +1348,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Thu Aug 20 10:01:14 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Fri Aug 21 11:35:56 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1361,7 +1368,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Thu Aug 20 10:01:14 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Aug 21 11:35:57 2020] </div><div class='input'>
 <span class='co'>## Remove empty spectra variables</span>
 <span class='kw'>sciex_noNA</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>dropNaSpectraVariables</a></span>(<span class='kw'>sciex</span>)
 
@@ -1411,7 +1418,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Thu Aug 20 10:01:14 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Aug 21 11:35:57 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]</div><div class='output co'>#&gt; [1] 3 3 3</div><div class='input'>
 <span class='co'>## Remove all peaks with an intensity below 40.</span>
@@ -1421,6 +1428,20 @@ level(s).</p></li>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]</div><div class='output co'>#&gt; [1] 200 400</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]</div><div class='output co'>#&gt; numeric(0)</div><div class='input'>
 <span class='co'>## Lengths of spectra is now different</span>
 <span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))</div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))</div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
+<span class='co'>## Since data manipulation operations are by default not directly applied to</span>
+<span class='co'>## the data but only added to the internal lazy evaluation queue, it is also</span>
+<span class='co'>## possible to remove these data manipulations with the `reset` function:</span>
+<span class='kw'>res_rest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>reset</a></span>(<span class='kw'>res</span>)
+<span class='kw'>res_rest</span></div><div class='output co'>#&gt; MSn data (Spectra) with 2 spectra in a MsBackendDataFrame backend:
+#&gt;     msLevel     rtime scanIndex
+#&gt;   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
+#&gt; 1         1       1.1        NA
+#&gt; 2         2       1.2        NA
+#&gt;  ... 17 more variables/columns.
+#&gt; Processing:
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Aug 21 11:35:57 2020]
+#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Aug 21 11:35:57 2020]
+#&gt;  Reset object. [Fri Aug 21 11:35:57 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))</div><div class='output co'>#&gt; [1] 4 3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))</div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))</div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
 <span class='co'>## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using</span>
 <span class='co'>## the normalized dotproduct method.</span>
 <span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>compareSpectra</a></span>(<span class='kw'>sciex_im</span>[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span>], <span class='kw'>sciex_im</span>[<span class='fl'>10</span><span class='op'>:</span><span class='fl'>20</span>])
