@@ -298,6 +298,12 @@
 #'   spectra in the backend. Note that just writeable backends support this
 #'   method.
 #'
+#' - `reset` a backend (if supported). This method will be called on the backend
+#'   by the `reset,Spectra` method that is supposed to restore the data to its
+#'   original state (see `reset,Spectra` for more details). The function
+#'   returns the *resetted* backend. The default implementation for `MsBackend`
+#'   returns the backend as-is.
+#'
 #' - `rtime`, `rtime<-`: gets or sets the retention times for each
 #'   spectrum (in seconds). `rtime` returns a `numeric` vector (length equal to
 #'   the number of spectra) with the retention time for each spectrum.
@@ -896,6 +902,13 @@ setMethod("precursorMz", "MsBackend", function(object) {
 #' @rdname MsBackend
 setReplaceMethod("replaceList", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod reset
+#'
+#' @rdname MsBackend
+setMethod("reset", "MsBackend", function(object) {
+    object
 })
 
 #' @exportMethod rtime

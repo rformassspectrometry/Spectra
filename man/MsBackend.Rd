@@ -57,6 +57,7 @@
 \alias{precursorIntensity,MsBackend-method}
 \alias{precursorMz,MsBackend-method}
 \alias{replaceList<-,MsBackend-method}
+\alias{reset,MsBackend-method}
 \alias{rtime,MsBackend-method}
 \alias{rtime<-,MsBackend-method}
 \alias{scanIndex,MsBackend-method}
@@ -173,6 +174,8 @@
 \S4method{precursorMz}{MsBackend}(object)
 
 \S4method{replaceList}{MsBackend}(object) <- value
+
+\S4method{reset}{MsBackend}(object)
 
 \S4method{rtime}{MsBackend}(object)
 
@@ -470,6 +473,11 @@ backend. This method expects a \code{list} of \code{matrix} objects with columns
 \code{"mz"} and \code{"intensity"} that has the same length as the number of
 spectra in the backend. Note that just writeable backends support this
 method.
+\item \code{reset} a backend (if supported). This method will be called on the backend
+by the \verb{reset,Spectra} method that is supposed to restore the data to its
+original state (see \verb{reset,Spectra} for more details). The function
+returns the \emph{resetted} backend. The default implementation for \code{MsBackend}
+returns the backend as-is.
 \item \code{rtime}, \verb{rtime<-}: gets or sets the retention times for each
 spectrum (in seconds). \code{rtime} returns a \code{numeric} vector (length equal to
 the number of spectra) with the retention time for each spectrum.

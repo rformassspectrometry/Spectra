@@ -71,6 +71,7 @@
 \alias{filterPrecursorMz,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
+\alias{reset,Spectra-method}
 \alias{bin,Spectra-method}
 \alias{filterIntensity,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
@@ -268,6 +269,8 @@ combineSpectra(
 \S4method{filterPrecursorScan}{Spectra}(object, acquisitionNum = integer())
 
 \S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
+
+\S4method{reset}{Spectra}(object, ...)
 
 \S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
 
@@ -745,6 +748,10 @@ MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
 \code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
 original order).
+\item \code{reset}: restores the data to its original state (as much as possible):
+removes any processing steps from the lazy processing queue and calls
+\code{reset} on the backend which, depending on the backend, can also undo e.g.
+data filtering operations.
 \item \code{selectSpectraVariables}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
@@ -1047,6 +1054,15 @@ intensity(res)[[1]]
 intensity(res)[[2]]
 
 ## Lengths of spectra is now different
+lengths(mz(res))
+lengths(mz(data))
+
+## Since data manipulation operations are by default not directly applied to
+## the data but only added to the internal lazy evaluation queue, it is also
+## possible to remove these data manipulations with the `reset` function:
+res_rest <- reset(res)
+res_rest
+lengths(mz(res_rest))
 lengths(mz(res))
 lengths(mz(data))
 

@@ -22,6 +22,7 @@
 \alias{pickPeaks}
 \alias{replaceIntensitiesBelow}
 \alias{replaceList<-}
+\alias{reset}
 \alias{selectSpectraVariables}
 \alias{setBackend}
 \alias{show,MsBackendDataFrame-method}
@@ -158,6 +159,8 @@ pickPeaks(object, ...)
 replaceIntensitiesBelow(object, threshold = min, ...)
 
 replaceList(object) <- value
+
+reset(object, ...)
 
 selectSpectraVariables(object, ...)
 
