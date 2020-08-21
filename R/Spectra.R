@@ -289,6 +289,11 @@ NULL
 #'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
+#' - `reset`: restores the data to its original state (as much as possible):
+#'   removes any processing steps from the lazy processing queue and calls
+#'   `reset` on the backend which, depending on the backend, can also undo e.g.
+#'   data filtering operations.
+#'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
@@ -782,6 +787,15 @@ NULL
 #' lengths(mz(res))
 #' lengths(mz(data))
 #'
+#' ## Since data manipulation operations are by default not directly applied to
+#' ## the data but only added to the internal lazy evaluation queue, it is also
+#' ## possible to remove these data manipulations with the `reset` function:
+#' res_rest <- reset(res)
+#' res_rest
+#' lengths(mz(res_rest))
+#' lengths(mz(res))
+#' lengths(mz(data))
+#'
 #' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
 #' ## the normalized dotproduct method.
 #' res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
@@ -916,8 +930,8 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 #' @rdname Spectra
 setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            metadata = list(),
-                                           source = MsBackendMzR(),
-                                           backend = MsBackendDataFrame(),
+                                           source = backend,
+                                           backend = MsBackendMzR(),
                                            ..., BPPARAM = bpparam()) {
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
@@ -1446,6 +1460,14 @@ setMethod("filterRt", "Spectra",
                   "] on MS level(s) ", paste0(msLevel., collapse = " "))
               object
           })
+
+#' @rdname Spectra
+setMethod("reset", "Spectra", function(object, ...) {
+    object@backend <- reset(object@backend)
+    object@processingQueue <- list()
+    object@processing <- .logging(object@processing, "Reset object.")
+    object
+})
 
 #### ---------------------------------------------------------------------------
 ##

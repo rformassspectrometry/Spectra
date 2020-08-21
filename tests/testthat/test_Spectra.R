@@ -1173,3 +1173,18 @@ test_that("containsNeutralLoss,Spectra works", {
     res_2 <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = MulticoreParam())
     expect_equal(res, res_2)
 })
+
+test_that("reset,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- reset(sps)
+    expect_equal(mz(res), mz(sps))
+
+    sps_mod <- filterIntensity(sps, intensity = 29)
+    res <- reset(sps_mod)
+    expect_equal(mz(res), mz(sps))
+})

@@ -65,3 +65,8 @@ test_that("MsBackend methods throw errors", {
     expect_error(dm$a, "implemented for")
     expect_error(dm$a <- "a", "implemented for")
 })
+
+test_that("reset,MsBackend works", {
+    res <- reset(sciex_mzr)
+    expect_equal(res, sciex_mzr)
+})

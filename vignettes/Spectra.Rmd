@@ -454,7 +454,18 @@ lengths(sps_2)
 intensity(sps_2)
 ```
 
-Each spectrum in `sps_2` thus contains only a single peak.
+Each spectrum in `sps_2` thus contains only a single peak. The
+original data can be *restored* with the `reset` function which will empty the
+lazy evaluation queue and call the `reset` method on the storage backend. Below
+we call `reset` on the `sps_2` object and hence restore the data to its original
+state.
+
+```{r reset}
+sps_2_rest <- reset(sps_2)
+
+intensity(sps_2_rest)
+intensity(sps)
+```
 
 Finally, for `Spectra` that use a *writeable* backend, such as the
 `MsBackendDataFrame` or `MsBackendHdf5Peaks`, it is possible to apply the
@@ -471,7 +482,9 @@ sps_rep
 ```
 
 Before `applyProcessing` the lazy evaluation queue contained 2 processing steps,
-which were then applied to the peak data and *written* to the data storage.
+which were then applied to the peak data and *written* to the data storage. Note
+that calling `reset` **after** `applyProcessing` can no longer *restore* the
+data.
 
 
 ## Comparing spectra and other functions

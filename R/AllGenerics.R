@@ -46,6 +46,9 @@ setGeneric("replaceIntensitiesBelow", function(object, threshold = min, ...)
 setGeneric("replaceList<-", function(object, value)
     standardGeneric("replaceList<-"))
 #' @rdname hidden_aliases
+setGeneric("reset", function(object, ...)
+    standardGeneric("reset"))
+#' @rdname hidden_aliases
 setGeneric("selectSpectraVariables", function(object, ...)
     standardGeneric("selectSpectraVariables"))
 #' @rdname hidden_aliases
