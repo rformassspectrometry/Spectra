@@ -292,7 +292,8 @@ NULL
 #' - `reset`: restores the data to its original state (as much as possible):
 #'   removes any processing steps from the lazy processing queue and calls
 #'   `reset` on the backend which, depending on the backend, can also undo e.g.
-#'   data filtering operations.
+#'   data filtering operations. Note that a `reset` call after `applyProcessing`
+#'   will not have any effect. See examples below for more information.
 #'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
@@ -795,6 +796,16 @@ NULL
 #' lengths(mz(res_rest))
 #' lengths(mz(res))
 #' lengths(mz(data))
+#'
+#' ## `reset` after a `applyProcessing` can not restore the data, because the
+#' ## data in the backend was changed. Similarly, `reset` after any filter
+#' ## operations can not restore data for a `Spectra` with a
+#' ## `MsBackendDataFrame`.
+#' res_2 <- applyProcessing(res)
+#' res_rest <- reset(res_2)
+#' lengths(mz(res))
+#' lengths(mz(res_rest))
+#'
 #'
 #' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
 #' ## the normalized dotproduct method.
