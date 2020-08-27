@@ -608,7 +608,7 @@ exports the data in Mascot Generic Format (MGF). By default all non-empty
 spectra variables in \code{Spectra} are exported.
 
 The definition of the function is
-\code{export(object, file = tempfile(), format = "mgf", variableMapping = spectraVariableMapping(format), ...)} and ist
+\code{export(object, file = tempfile(), format = "mgf", variableMapping = spectraVariableMapping(format), ...)} and its
 parameters are:
 \itemize{
 \item \code{object}: the \code{Spectra} object to be exported.

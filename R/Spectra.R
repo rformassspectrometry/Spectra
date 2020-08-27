@@ -91,7 +91,7 @@ NULL
 #'
 #' The definition of the function is
 #' `export(object, file = tempfile(), format = "mgf",
-#'     variableMapping = spectraVariableMapping(format), ...)` and ist
+#'     variableMapping = spectraVariableMapping(format), ...)` and its
 #' parameters are:
 #'
 #' - `object`: the `Spectra` object to be exported.
