@@ -28,7 +28,7 @@ NULL
 #'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
-#' @section Creation of objects, conversion and changing the backend:
+#' @section Creation of objects, conversion, changing the backend and export:
 #'
 #' `Spectra` classes can be created with the `Spectra` constructor function
 #' which supports the following formats:
@@ -82,6 +82,31 @@ NULL
 #'
 #' - parameter `BPPARAM`: setup for the parallel processing. See [bpparam()] for
 #'   details.
+#'
+#' Data from a `Spectra` object can be **exported** to a file with the `export`
+#' function. The file format for the exported data can be specified with the
+#' parameter `format`; currently only `format = "mgf"` is supported which
+#' exports the data in Mascot Generic Format (MGF). By default all non-empty
+#' spectra variables in `Spectra` are exported.
+#'
+#' The definition of the function is
+#' `export(object, file = tempfile(), format = "mgf",
+#'     variableMapping = spectraVariableMapping(format), ...)` and its
+#' parameters are:
+#'
+#' - `object`: the `Spectra` object to be exported.
+#'
+#' - `file`: the name of the file.
+#'
+#' - `format`: `character(1)` defining the export file format. Currently only
+#'   `format = "mgf"` is supported.
+#'
+#' - `variableMapping`: named `character` defining the mapping of spectra
+#'   variables (names of `variableMapping`) to fields in the output file
+#'   (elements of `variableMapping`). See output of `spectraVariableMapping()`
+#'   for the expected format. All spectra variables for which no mapping to a
+#'   field in the output format is provided are exported as they are.
+#'
 #'
 #' @section Accessing spectra data:
 #'
@@ -484,6 +509,12 @@ NULL
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
 #'     should be combined. For `lapply`: `factor` how `X` should be splitted.
 #'
+#' @param file For `export`: `character(1)` specifying the of the file to which
+#'     the data should be exported.
+#'
+#' @param format For `export`: `character(1)` defining the format of the output
+#'     file. Currently only `format = "mgf"` is supported.
+#'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
 #'     intensities of peaks between two spectra with each other.
@@ -601,6 +632,12 @@ NULL
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param variableMapping For `export`: a named `character` vector with the
+#'     names of the fields in the exported file to which spectra variables
+#'     should be mapped, names being spectra variable names and elements of the
+#'     vector the fields in the output file. See output from
+#'     `spectraVariableMapping()` for the default.
 #'
 #' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
 #'     (the default) or all provided `mz` have to be present in the spectrum.
@@ -1003,6 +1040,18 @@ setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
         x
     })
 })
+
+#' @rdname Spectra
+#'
+#' @export
+setMethod("export", "Spectra",
+          function(object, file = tempfile(), format = "mgf",
+                   variableMapping = spectraVariableMapping(format), ...) {
+              switch(match.arg(format),
+                     "mgf" = .export_mgf(object, con = file,
+                                         mapping = variableMapping)
+                     )
+          })
 
 #### ---------------------------------------------------------------------------
 ##
