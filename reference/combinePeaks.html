@@ -318,7 +318,8 @@ values. With <code>timeDomain = FALSE</code>, the actual m/z values will be used
 <span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span>(<span class='kw'>p3</span>[, <span class='fl'>1</span>], <span class='kw'>p3</span>[, <span class='fl'>2</span>], type = <span class='st'>"h"</span>, col = <span class='st'>"blue"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>p</span>[, <span class='fl'>1</span>], <span class='kw'>p</span>[, <span class='fl'>2</span>], xlim = <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span>(<span class='kw'>mzs</span>[<span class='fl'>5</span><span class='op'>:</span><span class='fl'>25</span>]), type = <span class='st'>"h"</span>,
-    col = <span class='st'>"black"</span>)</div><div class='img'><img src='combinePeaks-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'>## The peaks were not merged, because their m/z differs too much.</span>
+    col = <span class='st'>"black"</span>)
+</div><div class='img'><img src='combinePeaks-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'>## The peaks were not merged, because their m/z differs too much.</span>
 
 <span class='co'>## Combine spectra with `tolerance = 0.05`. This will merge all triplets.</span>
 <span class='kw'>p</span> <span class='op'>&lt;-</span> <span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), tolerance = <span class='fl'>0.05</span>)
@@ -330,7 +331,8 @@ values. With <code>timeDomain = FALSE</code>, the actual m/z values will be used
 <span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span>(<span class='kw'>p3</span>[, <span class='fl'>1</span>], <span class='kw'>p3</span>[, <span class='fl'>2</span>], type = <span class='st'>"h"</span>, col = <span class='st'>"blue"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>p</span>[, <span class='fl'>1</span>], <span class='kw'>p</span>[, <span class='fl'>2</span>], xlim = <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span>(<span class='kw'>mzs</span>[<span class='fl'>5</span><span class='op'>:</span><span class='fl'>25</span>]), type = <span class='st'>"h"</span>,
-    col = <span class='st'>"black"</span>)</div><div class='img'><img src='combinePeaks-2.png' alt='' width='700' height='433' /></div><div class='input'>
+    col = <span class='st'>"black"</span>)
+</div><div class='img'><img src='combinePeaks-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## With `intensityFun = max` the maximal intensity per peak is reported.</span>
 <span class='kw'>p</span> <span class='op'>&lt;-</span> <span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), tolerance = <span class='fl'>0.05</span>,
     intensityFun = <span class='kw'>max</span>)
@@ -342,10 +344,12 @@ values. With <code>timeDomain = FALSE</code>, the actual m/z values will be used
 <span class='kw'>p3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(mz = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12.1</span>, <span class='fl'>44.9</span>, <span class='fl'>63</span>), intensity = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12</span>, <span class='fl'>22</span>, <span class='fl'>32</span>))
 
 <span class='co'>## No mass peaks identical thus consensus peaks are empty</span>
-<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), peaks = <span class='st'>"intersect"</span>)</div><div class='output co'>#&gt;      mz intensity</div><div class='input'>
+<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), peaks = <span class='st'>"intersect"</span>)
+</div><div class='output co'>#&gt;      mz intensity</div><div class='input'>
 <span class='co'>## Reducing the minProp to 0.2. The consensus spectrum will contain all</span>
 <span class='co'>## peaks</span>
-<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), peaks = <span class='st'>"intersect"</span>, minProp = <span class='fl'>0.2</span>)</div><div class='output co'>#&gt;         mz intensity
+<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), peaks = <span class='st'>"intersect"</span>, minProp = <span class='fl'>0.2</span>)
+</div><div class='output co'>#&gt;         mz intensity
 #&gt;  [1,] 12.0        10
 #&gt;  [2,] 12.1        12
 #&gt;  [3,] 17.0        11
@@ -358,13 +362,15 @@ values. With <code>timeDomain = FALSE</code>, the actual m/z values will be used
 #&gt; [10,] 70.0        40
 #&gt; [11,] 70.2        41</div><div class='input'>
 <span class='co'>## With a tolerance of 0.1 mass peaks can be matched across spectra</span>
-<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), peaks = <span class='st'>"intersect"</span>, tolerance = <span class='fl'>0.1</span>)</div><div class='output co'>#&gt;         mz intensity
+<span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), peaks = <span class='st'>"intersect"</span>, tolerance = <span class='fl'>0.1</span>)
+</div><div class='output co'>#&gt;         mz intensity
 #&gt; [1,] 12.05      11.0
 #&gt; [2,] 45.00      21.0
 #&gt; [3,] 63.95      30.5</div><div class='input'>
 <span class='co'>## Report the minimal m/z and intensity</span>
 <span class='fu'>combinePeaks</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>p1</span>, <span class='kw'>p2</span>, <span class='kw'>p3</span>), peaks = <span class='st'>"intersect"</span>, tolerance = <span class='fl'>0.1</span>,
-    intensityFun = <span class='kw'>min</span>, mzFun = <span class='kw'>min</span>)</div><div class='output co'>#&gt;        mz intensity
+    intensityFun = <span class='kw'>min</span>, mzFun = <span class='kw'>min</span>)
+</div><div class='output co'>#&gt;        mz intensity
 #&gt; [1,] 12.0        10
 #&gt; [2,] 44.9        20
 #&gt; [3,] 63.9        30</div></pre>

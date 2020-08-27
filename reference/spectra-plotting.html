@@ -377,43 +377,57 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
 <span class='co'>##                   plotSpectra                     ##</span>
 
 <span class='co'>## Plot one spectrum.</span>
-<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>])</div><div class='input'>
+<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>])
+</div><div class='input'>
 <span class='co'>## Plot both spectra.</span>
-<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>)</div><div class='img'><img src='spectra-plotting-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>)
+</div><div class='img'><img src='spectra-plotting-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Define a color for each peak in each spectrum.</span>
-<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, col = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>), <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>))</div><div class='img'><img src='spectra-plotting-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, col = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>), <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>))
+</div><div class='img'><img src='spectra-plotting-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Color peaks from each spectrum in different colors.</span>
-<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, col = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"green"</span>, <span class='st'>"blue"</span>))</div><div class='img'><img src='spectra-plotting-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, col = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"green"</span>, <span class='st'>"blue"</span>))
+</div><div class='img'><img src='spectra-plotting-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Label each peak with its m/z.</span>
-<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)), digits = <span class='fl'>4</span>))</div><div class='img'><img src='spectra-plotting-4.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)), digits = <span class='fl'>4</span>))
+</div><div class='img'><img src='spectra-plotting-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Rotate the labels.</span>
 <span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)), digits = <span class='fl'>4</span>),
-    labelPos = <span class='fl'>2</span>, labelOffset = <span class='fl'>0.1</span>, labelSrt = <span class='op'>-</span><span class='fl'>30</span>)</div><div class='img'><img src='spectra-plotting-5.png' alt='' width='700' height='433' /></div><div class='input'>
+    labelPos = <span class='fl'>2</span>, labelOffset = <span class='fl'>0.1</span>, labelSrt = <span class='op'>-</span><span class='fl'>30</span>)
+</div><div class='img'><img src='spectra-plotting-5.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Add a custom annotation for each peak.</span>
 <span class='kw'>sp</span><span class='op'>$</span><span class='kw'>label</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>""</span>, <span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"D"</span>),
     <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Frodo"</span>, <span class='st'>"Bilbo"</span>, <span class='st'>"Peregrin"</span>, <span class='st'>"Samwise"</span>))
 <span class='co'>## Plot each peak in a different color</span>
 <span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='kw'>z</span><span class='op'>$</span><span class='kw'>label</span>),
-    col = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>))</div><div class='img'><img src='spectra-plotting-6.png' alt='' width='700' height='433' /></div><div class='input'>
+    col = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>))
+</div><div class='img'><img src='spectra-plotting-6.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plot a single spectrum specifying the label.</span>
-<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>[<span class='fl'>2</span>], labels = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"D"</span>))</div><div class='img'><img src='spectra-plotting-7.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>[<span class='fl'>2</span>], labels = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"D"</span>))
+</div><div class='img'><img src='spectra-plotting-7.png' alt='' width='700' height='433' /></div><div class='input'>
 
 <span class='co'>#### --------------------------------------------- ####</span>
 <span class='co'>##                plotSpectraOverlay                 ##</span>
 
 <span class='co'>## Plot both spectra overlaying.</span>
-<span class='fu'>plotSpectraOverlay</span>(<span class='kw'>sp</span>)</div><div class='img'><img src='spectra-plotting-8.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectraOverlay</span>(<span class='kw'>sp</span>)
+</div><div class='img'><img src='spectra-plotting-8.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Use a different color for each spectrum.</span>
-<span class='fu'>plotSpectraOverlay</span>(<span class='kw'>sp</span>, col = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"#ff000080"</span>, <span class='st'>"#0000ff80"</span>))</div><div class='img'><img src='spectra-plotting-9.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectraOverlay</span>(<span class='kw'>sp</span>, col = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"#ff000080"</span>, <span class='st'>"#0000ff80"</span>))
+</div><div class='img'><img src='spectra-plotting-9.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Label also the peaks with their m/z if their intensity is above 15.</span>
 <span class='fu'>plotSpectraOverlay</span>(<span class='kw'>sp</span>, col = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"#ff000080"</span>, <span class='st'>"#0000ff80"</span>),
     labels = <span class='fu'>function</span>(<span class='kw'>z</span>) {
         <span class='kw'>lbls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]], digits = <span class='fl'>4</span>)
         <span class='kw'>lbls</span>[<span class='fu'>intensity</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]] <span class='op'>&lt;=</span> <span class='fl'>15</span>] <span class='op'>&lt;-</span> <span class='st'>""</span>
         <span class='kw'>lbls</span>
-    })</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span>(h = <span class='fl'>15</span>, lty = <span class='fl'>2</span>)</div><div class='img'><img src='spectra-plotting-10.png' alt='' width='700' height='433' /></div><div class='input'>
+    })
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span>(h = <span class='fl'>15</span>, lty = <span class='fl'>2</span>)
+</div><div class='img'><img src='spectra-plotting-10.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Use different asp values</span>
-<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, asp = <span class='fl'>1</span><span class='op'>/</span><span class='fl'>2</span>)</div><div class='input'><span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, asp = <span class='fl'>2</span><span class='op'>/</span><span class='fl'>1</span>)</div><div class='img'><img src='spectra-plotting-11.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, asp = <span class='fl'>1</span><span class='op'>/</span><span class='fl'>2</span>)
+</div><div class='input'><span class='fu'>plotSpectra</span>(<span class='kw'>sp</span>, asp = <span class='fl'>2</span><span class='op'>/</span><span class='fl'>1</span>)
+</div><div class='img'><img src='spectra-plotting-11.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>#### --------------------------------------------- ####</span>
 <span class='co'>##                plotSpectraMirror                  ##</span>
 
@@ -423,14 +437,17 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
 <span class='co'>## Label the peaks with their m/z</span>
 <span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>],
     labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]], digits = <span class='fl'>3</span>),
-    labelSrt = <span class='op'>-</span><span class='fl'>30</span>, labelPos = <span class='fl'>2</span>, labelOffset = <span class='fl'>0.2</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span>()</div><div class='img'><img src='spectra-plotting-12.png' alt='' width='700' height='433' /></div><div class='input'>
+    labelSrt = <span class='op'>-</span><span class='fl'>30</span>, labelPos = <span class='fl'>2</span>, labelOffset = <span class='fl'>0.2</span>)
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span>()
+</div><div class='img'><img src='spectra-plotting-12.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## The same plot with a tolerance of 0.1 and using a different color to</span>
 <span class='co'>## highlight matching peaks</span>
 <span class='fu'>plotSpectraMirror</span>(<span class='kw'>sp</span>[<span class='fl'>1</span>], <span class='kw'>sp</span>[<span class='fl'>2</span>],
     labels = <span class='fu'>function</span>(<span class='kw'>z</span>) <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='fu'>mz</span>(<span class='kw'>z</span>)[[<span class='fl'>1L</span>]], digits = <span class='fl'>3</span>),
     labelSrt = <span class='op'>-</span><span class='fl'>30</span>, labelPos = <span class='fl'>2</span>, labelOffset = <span class='fl'>0.2</span>, tolerance = <span class='fl'>0.1</span>,
     matchCol = <span class='st'>"#ff000080"</span>, matchLwd = <span class='fl'>2</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span>()</div><div class='img'><img src='spectra-plotting-13.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span>()
+</div><div class='img'><img src='spectra-plotting-13.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
