@@ -17,6 +17,7 @@
 \alias{containsMz}
 \alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
+\alias{export}
 \alias{filterIntensity}
 \alias{isReadOnly}
 \alias{pickPeaks}
@@ -149,6 +150,8 @@ containsMz(object, ...)
 containsNeutralLoss(object, ...)
 
 dropNaSpectraVariables(object, ...)
+
+export(object, ...)
 
 filterIntensity(object, ...)
 

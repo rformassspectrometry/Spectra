@@ -1188,3 +1188,17 @@ test_that("reset,Spectra works", {
     res <- reset(sps_mod)
     expect_equal(mz(res), mz(sps))
 })
+
+test_that("export,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    fl <- tempfile()
+    expect_error(export(sps, file = fl, format = "other"), "'arg' should be")
+    Spectra:::export(sps, file = fl)
+    res <- readLines(fl)
+    expect_equal(length(grep("PEPMASS", res)), 2)
+})
