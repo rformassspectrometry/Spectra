@@ -128,8 +128,8 @@ spectraVariableMapping(format = c("mgf"))
   object,
   processingQueue = list(),
   metadata = list(),
-  source = backend,
-  backend = MsBackendMzR(),
+  source = MsBackendMzR(),
+  backend = source,
   ...,
   BPPARAM = bpparam()
 )
