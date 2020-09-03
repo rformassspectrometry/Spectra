@@ -174,6 +174,16 @@
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
+#' - `export`: exports data from a `Spectra` class to a file. This method is
+#'   called by the `export,Spectra` method that passes itself as a second
+#'   argument to the function. The `export,MsBackend` implementation is thus
+#'   expected to take a `Spectra` class as second argument from which all data
+#'   is exported. Taking data from a `Spectra` class ensures that also all
+#'   eventual data manipulations (cached in the `Spectra`'s lazy evaluation
+#'   queue) are applied prior to export - this would not be possible with a
+#'   [MsBackend] class. An example implementation would be available in the
+#'   `MsBackendMgf` package/backend.
+#'
 #' - `filterAcquisitionNum`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
 #'   `dataStorage` is also provided, `object` is subsetted to the spectra with
@@ -499,6 +509,12 @@ setMethod("backendMerge", "list", function(object, ...) {
 #' @rdname MsBackend
 setMethod("backendMerge", "MsBackend", function(object, ...) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname MsBackend
+setMethod("export", "MsBackend", function(object, ...) {
+    stop(class(object), " does not support export of data; please provide a ",
+         "backend that supports data export with parameter 'backend'.")
 })
 
 #' @exportMethod acquisitionNum

@@ -12,6 +12,7 @@
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
+\alias{export,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
 \alias{as.list,MsBackend-method}
 \alias{centroided,MsBackend-method}
@@ -84,6 +85,8 @@
 \S4method{backendMerge}{list}(object, ...)
 
 \S4method{backendMerge}{MsBackend}(object, ...)
+
+\S4method{export}{MsBackend}(object, ...)
 
 \S4method{acquisitionNum}{MsBackend}(object)
 
@@ -377,6 +380,15 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \verb{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
+\item \code{export}: exports data from a \code{Spectra} class to a file. This method is
+called by the \verb{export,Spectra} method that passes itself as a second
+argument to the function. The \verb{export,MsBackend} implementation is thus
+expected to take a \code{Spectra} class as second argument from which all data
+is exported. Taking data from a \code{Spectra} class ensures that also all
+eventual data manipulations (cached in the \code{Spectra}'s lazy evaluation
+queue) are applied prior to export - this would not be possible with a
+\link{MsBackend} class. An example implementation would be available in the
+\code{MsBackendMgf} package/backend.
 \item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with

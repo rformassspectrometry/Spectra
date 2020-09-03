@@ -1197,8 +1197,5 @@ test_that("export,Spectra works", {
     sps <- Spectra(spd)
 
     fl <- tempfile()
-    expect_error(export(sps, file = fl, format = "other"), "'arg' should be")
-    Spectra:::export(sps, file = fl)
-    res <- readLines(fl)
-    expect_equal(length(grep("PEPMASS", res)), 2)
+    expect_error(export(sps, file = fl), "MsBackendDataFrame does not")
 })
