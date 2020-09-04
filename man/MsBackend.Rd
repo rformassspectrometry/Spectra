@@ -632,6 +632,58 @@ of m/z or intensity values.
 }
 }
 
+\examples{
+
+## The MsBackend class is a virtual class and can not be instantiated
+## directly. Below we define a new backend class extending this virtual
+## class
+MsBackendDummy <- setClass("MsBackendDummy", contains = "MsBackend")
+MsBackendDummy()
+
+## This class inherits now all methods from `MsBackend`, all of which
+## however throw an error. These methods would have to be implemented
+## for the new backend class.
+try(mz(MsBackendDummy()))
+
+## See `MsBackendDataFrame` as a reference implementation for a backend
+## class (in the *R/MsBackendDataFrame.R* file).
+
+## MsBackendDataFrame
+##
+## The `MsBackendDataFrame` uses a `S4Vectors::DataFrame` to store all MS
+## data. Below we create such a backend by passing a `DataFrame` with all
+## data to it.
+data <- DataFrame(msLevel = c(1L, 2L, 1L), scanIndex = 1:3)
+data$mz <- list(c(1.1, 1.2, 1.3), c(1.4, 54.2, 56.4, 122.1), c(15.3, 23.2))
+data$intensity <- list(c(3, 2, 3), c(45, 100, 12.2, 1), c(123, 12324.2))
+
+## Backends are supposed to be created with their specific constructor
+## function
+be <- MsBackendDataFrame()
+
+be
+
+## The `backendInitialize` method initializes the backend filling it with
+## data. This method can take any parameters needed for the backend to
+## get loaded with the data (e.g. a file name from which to load the data,
+## a database connection or, in this case, a data frame containing the data).
+be <- backendInitialize(be, data)
+
+be
+
+## Data can be accessed with the accessor methods
+msLevel(be)
+
+mz(be)
+
+## Even if no data was provided for all spectra variables, its accessor
+## methods are supposed to return a value.
+precursorMz(be)
+
+## The `as.list` method is supposed to return the peaks of the spectra as
+## a `list`.
+as.list(be)
+}
 \author{
 Johannes Rainer, Sebastian Gibb, Laurent Gatto
 }
