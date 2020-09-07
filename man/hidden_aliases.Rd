@@ -120,6 +120,7 @@
 \alias{spectraNames<-,MsBackendMzR-method}
 \alias{spectraVariables,MsBackendMzR-method}
 \alias{$<-,MsBackendMzR-method}
+\alias{export,MsBackendMzR-method}
 \alias{ProcessingStep-class}
 \alias{show,ProcessingStep-method}
 \alias{show,Spectra-method}
@@ -370,6 +371,15 @@ setBackend(object, backend, ...)
 \S4method{spectraVariables}{MsBackendMzR}(object)
 
 \S4method{$}{MsBackendMzR}(x, name) <- value
+
+\S4method{export}{MsBackendMzR}(
+  object,
+  x,
+  file = tempfile(),
+  format = c("mzML", "mzXML"),
+  copy = FALSE,
+  BPPARAM = bpparam()
+)
 
 \S4method{show}{ProcessingStep}(object)
 

@@ -1197,5 +1197,9 @@ test_that("export,Spectra works", {
     sps <- Spectra(spd)
 
     fl <- tempfile()
-    expect_error(export(sps, file = fl), "MsBackendDataFrame does not")
+    expect_error(export(sps, backend = MsBackendDataFrame(),
+                        file = fl), "MsBackendDataFrame does not")
+    expect_warning(
+        export(sps, backend = MsBackendMzR(), file = fl, copy = TRUE),
+        "Original data file not found")
 })

@@ -137,7 +137,7 @@ combineSpectra(
 
 \S4method{split}{Spectra,ANY}(x, f, drop = FALSE, ...)
 
-\S4method{export}{Spectra}(object, backend = object@backend, ...)
+\S4method{export}{Spectra}(object, backend, ...)
 
 \S4method{acquisitionNum}{Spectra}(object)
 
@@ -583,19 +583,22 @@ details.
 
 Data from a \code{Spectra} object can be \strong{exported} to a file with the \code{export}
 function. The actual export of the data has to be performed by the \code{export}
-method of the \link{MsBackend} class defined with parameter \code{backend} (which
-defaults to the backend currently used by the \code{Spectra} object). Note
-however that not all backend classes support export of the data. Please refer
-to the help page of the specific backend class to see whether it supports
-export of the data and in which file formats.
+method of the \link{MsBackend} class defined with the mandatory parameter
+\code{backend}. Note however that not all backend classes support export of data.
+From the \code{MsBackend} classes in the \code{Spectra} package currently only the
+\code{MsBackendMzR} backend supports data export (to mzML/mzXML file(s));
+see the help page of the \linkS4class{MsBackend} for information on its arguments
+or the examples below or the vignette for examples.
 
 The definition of the function is
-\code{export(object, backend = object@backend,  ...)} and its
+\code{export(object, backend,  ...)} and its
 parameters are:
 \itemize{
 \item \code{object}: the \code{Spectra} object to be exported.
 \item \code{backend}: instance of a class extending \link{MsBackend} which supports export
 of the data (i.e. which has a defined \code{export} method).
+\item \code{...}: additional parameters specific for the \code{MsBackend} passed with
+parameter \code{backend}.
 }
 }
 
@@ -1135,6 +1138,37 @@ head(res)
 ## data (such as `intensity`) are much more efficient than using `lapply`:
 res <- lapply(intensity(sciex_im[1:20]), mean)
 head(res)
+
+
+## ---- DATA EXPORT ----
+
+## Some `MsBackend` classes provide an `export` method to export the data to
+## the file format supported by the backend. The `MsBackendMzR` for example
+## allows to export MS data to mzML or mzXML file(s), the `MsBackendMgf`
+## (defined in the MsBackendMgf R package) would allow to export the data
+## in mgf file format. Below we export the MS data in `data`. We
+## call the `export` method on this object, specify the backend that should
+## be used to export the data (and which also defines the output format) and
+## provide a file name.
+fl <- tempfile()
+export(data, MsBackendMzR(), file = fl)
+
+## This exported our data in mzML format. Below we read the first 6 lines
+## from that file.
+readLines(fl, n = 6)
+
+## If only a single file name is provided, all spectra are exported to that
+## file. To export data with the `MsBackendMzR` backend to different files, a
+## file name for each individual spectrum has to be provided.
+## Below we export each spectrum to its own file.
+fls <- c(tempfile(), tempfile())
+export(data, MsBackendMzR(), file = fls)
+
+## Reading the data from the first file
+res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+
+mz(res)
+mz(data)
 }
 \author{
 Sebastian Gibb, Johannes Rainer

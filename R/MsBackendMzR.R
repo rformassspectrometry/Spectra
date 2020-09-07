@@ -183,3 +183,20 @@ setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
     validObject(x)
     x
 })
+
+#' @rdname hidden_aliases
+setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
+                                             format = c("mzML", "mzXML"),
+                                             copy = FALSE,
+                                             BPPARAM = bpparam()) {
+    l <- length(x)
+    if (length(file) == 1)
+        file <- rep_len(file, l)
+    if (length(file) != l)
+        stop("Parameter 'file' has to be either of length 1 or ",
+             length(x), ", i.e. 'length(x)'.", call. = FALSE)
+    f <- factor(file, levels = unique(file))
+    tmp <- bpmapply(.write_ms_data_mzR, split(x, f), levels(f),
+                    MoreArgs = list(format = format, copy = copy),
+                    BPPARAM = BPPARAM)
+})

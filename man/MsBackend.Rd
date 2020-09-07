@@ -234,7 +234,8 @@ method description or expected data type.}
 to filter for.}
 
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
-should be subsetted.}
+should be subsetted. For \code{export}: \code{character} of length 1 or equal to
+the number of spectra.}
 
 \item{dataOrigin}{For \code{filterDataOrigin}: \code{character} to define which
 spectra to keep.
@@ -387,8 +388,10 @@ expected to take a \code{Spectra} class as second argument from which all data
 is exported. Taking data from a \code{Spectra} class ensures that also all
 eventual data manipulations (cached in the \code{Spectra}'s lazy evaluation
 queue) are applied prior to export - this would not be possible with a
-\link{MsBackend} class. An example implementation would be available in the
-\code{MsBackendMgf} package/backend.
+\link{MsBackend} class. An example implementation is the \code{export} method
+for the \code{MsBackendMzR} backend that supports export of the data in
+\emph{mzML} or \emph{mzXML} format. See the documentation for the \code{MsBackendMzR}
+class below for more information.
 \item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
@@ -598,6 +601,30 @@ memory.
 New objects can be created with the \code{MsBackendMzR()} function which
 can be subsequently filled with data by calling \code{backendInitialize}
 passing the file names of the input data files with argument \code{files}.
+
+This backend provides an \code{export} method to export data from a \code{Spectra} in
+\emph{mzML} or \emph{mzXML} format. The definition of the function is:
+
+\code{export(object, x, file = tempfile(), format = c("mzML", "mzXML"), copy = FALSE)}
+
+The parameters are:
+\itemize{
+\item \code{object}: an instance of the \code{MsBackendMzR} class.
+\item \code{x}: the \code{\link[=Spectra]{Spectra()}} object to be exported.
+\item \code{file}: \code{character} with the (full) output file name(s). Should be
+of length 1 or equal \code{length(x)}. If a single file is specified, all
+spectra are exported to that file. Alternatively it is possible to specify
+for each spectrum in \code{x} the name of the file to which it should be
+exported (and hence \code{file} has to be of length equal \code{length(x)}).
+\item \code{format}: \code{character(1)}, either \code{"mzML"} or \code{"mzXML"} defining the output
+file format.
+\item \code{copy}: \code{logical(1)} whether general file information should be copied from
+the original MS data files. This only works if \code{x} uses a \code{MsBackendMzR}
+backend and if \code{dataOrigin(x)} contains the original MS data file names.
+\item \code{BPPARAM}: parallel processing settings.
+}
+
+See examples in \code{\link[=Spectra]{Spectra()}} or the vignette for more details and examples.
 }
 
 \section{\code{MsBackendHdf5Peaks}, on-disk MS data backend}{

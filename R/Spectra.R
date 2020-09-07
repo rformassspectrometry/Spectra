@@ -28,6 +28,7 @@ NULL
 #'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
+#'
 #' @section Creation of objects, conversion, changing the backend and export:
 #'
 #' `Spectra` classes can be created with the `Spectra` constructor function
@@ -85,20 +86,24 @@ NULL
 #'
 #' Data from a `Spectra` object can be **exported** to a file with the `export`
 #' function. The actual export of the data has to be performed by the `export`
-#' method of the [MsBackend] class defined with parameter `backend` (which
-#' defaults to the backend currently used by the `Spectra` object). Note
-#' however that not all backend classes support export of the data. Please refer
-#' to the help page of the specific backend class to see whether it supports
-#' export of the data and in which file formats.
+#' method of the [MsBackend] class defined with the mandatory parameter
+#' `backend`. Note however that not all backend classes support export of data.
+#' From the `MsBackend` classes in the `Spectra` package currently only the
+#' `MsBackendMzR` backend supports data export (to mzML/mzXML file(s));
+#' see the help page of the [MsBackend-class] for information on its arguments
+#' or the examples below or the vignette for examples.
 #'
 #' The definition of the function is
-#' `export(object, backend = object@backend,  ...)` and its
+#' `export(object, backend,  ...)` and its
 #' parameters are:
 #'
 #' - `object`: the `Spectra` object to be exported.
 #'
 #' - `backend`: instance of a class extending [MsBackend] which supports export
 #'   of the data (i.e. which has a defined `export` method).
+#'
+#' - `...`: additional parameters specific for the `MsBackend` passed with
+#'   parameter `backend`.
 #'
 #'
 #' @section Accessing spectra data:
@@ -242,6 +247,7 @@ NULL
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `0` is returned.
 #'
+#'
 #' @section Data subsetting, filtering and merging:
 #'
 #' Subsetting and filtering of `Spectra` objects can be performed with the below
@@ -328,6 +334,7 @@ NULL
 #' `Spectra` objects. The spectra variables of the resulting `Spectra`
 #' object is the union of the spectra variables of the individual `Spectra`
 #' objects.
+#'
 #'
 #' @section Data manipulation and analysis methods:
 #'
@@ -863,6 +870,37 @@ NULL
 #' ## data (such as `intensity`) are much more efficient than using `lapply`:
 #' res <- lapply(intensity(sciex_im[1:20]), mean)
 #' head(res)
+#'
+#'
+#' ## ---- DATA EXPORT ----
+#'
+#' ## Some `MsBackend` classes provide an `export` method to export the data to
+#' ## the file format supported by the backend. The `MsBackendMzR` for example
+#' ## allows to export MS data to mzML or mzXML file(s), the `MsBackendMgf`
+#' ## (defined in the MsBackendMgf R package) would allow to export the data
+#' ## in mgf file format. Below we export the MS data in `data`. We
+#' ## call the `export` method on this object, specify the backend that should
+#' ## be used to export the data (and which also defines the output format) and
+#' ## provide a file name.
+#' fl <- tempfile()
+#' export(data, MsBackendMzR(), file = fl)
+#'
+#' ## This exported our data in mzML format. Below we read the first 6 lines
+#' ## from that file.
+#' readLines(fl, n = 6)
+#'
+#' ## If only a single file name is provided, all spectra are exported to that
+#' ## file. To export data with the `MsBackendMzR` backend to different files, a
+#' ## file name for each individual spectrum has to be provided.
+#' ## Below we export each spectrum to its own file.
+#' fls <- c(tempfile(), tempfile())
+#' export(data, MsBackendMzR(), file = fls)
+#'
+#' ## Reading the data from the first file
+#' res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+#'
+#' mz(res)
+#' mz(data)
 NULL
 
 #' The Spectra class
@@ -1027,7 +1065,9 @@ setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
 #'
 #' @export
 setMethod("export", "Spectra",
-          function(object, backend = object@backend, ...) {
+          function(object, backend, ...) {
+              if (missing(backend))
+                  stop("Parameter 'backend' is required.")
               export(backend, object, ...)
           })
 
