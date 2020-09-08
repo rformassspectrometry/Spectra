@@ -34,7 +34,7 @@ setValidity("MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("show", "MsBackendDataFrame", function(object) {
-    spd <- asDataFrame(object, c("msLevel", "rtime", "scanIndex"))
+    spd <- spectraData(object, c("msLevel", "rtime", "scanIndex"))
     cat(class(object), "with", nrow(spd), "spectra\n")
     if (nrow(spd)) {
         txt <- capture.output(print(spd))
@@ -411,7 +411,7 @@ setReplaceMethod("smoothed", "MsBackendDataFrame", function(object, value) {
 #' @importFrom S4Vectors SimpleList
 #'
 #' @importMethodsFrom S4Vectors lapply
-setMethod("asDataFrame", "MsBackendDataFrame",
+setMethod("spectraData", "MsBackendDataFrame",
           function(object, columns = spectraVariables(object)) {
               df_columns <- intersect(columns,colnames(object@spectraData))
               res <- object@spectraData[, df_columns, drop = FALSE]
@@ -435,7 +435,7 @@ setMethod("asDataFrame", "MsBackendDataFrame",
           })
 
 #' @rdname hidden_aliases
-setReplaceMethod("asDataFrame", "MsBackendDataFrame", function(object, value) {
+setReplaceMethod("spectraData", "MsBackendDataFrame", function(object, value) {
     if (inherits(value, "DataFrame")) {
         if (length(object) && nrow(value) != length(object))
             stop("'value' has to be a 'DataFrame' with ",
@@ -487,7 +487,7 @@ setMethod("tic", "MsBackendDataFrame", function(object, initial = TRUE) {
 setMethod("$", "MsBackendDataFrame", function(x, name) {
     if (!any(spectraVariables(x) == name))
         stop("spectra variable '", name, "' not available")
-    asDataFrame(x, name)[, 1]
+    spectraData(x, name)[, 1]
 })
 
 #' @rdname hidden_aliases

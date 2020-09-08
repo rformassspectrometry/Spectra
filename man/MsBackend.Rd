@@ -64,8 +64,8 @@
 \alias{selectSpectraVariables,MsBackend-method}
 \alias{smoothed,MsBackend-method}
 \alias{smoothed<-,MsBackend-method}
-\alias{asDataFrame,MsBackend-method}
-\alias{asDataFrame<-,MsBackend-method}
+\alias{spectraData,MsBackend-method}
+\alias{spectraData<-,MsBackend-method}
 \alias{spectraNames,MsBackend-method}
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
@@ -189,9 +189,9 @@
 
 \S4method{smoothed}{MsBackend}(object) <- value
 
-\S4method{asDataFrame}{MsBackend}(object, columns = spectraVariables(object))
+\S4method{spectraData}{MsBackend}(object, columns = spectraVariables(object))
 
-\S4method{asDataFrame}{MsBackend}(object) <- value
+\S4method{spectraData}{MsBackend}(object) <- value
 
 \S4method{spectraNames}{MsBackend}(object)
 
@@ -266,7 +266,7 @@ be used to subset/filter \code{object}.}
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
 
-\item{columns}{For \code{asDataFrame} accessor: optional \code{character} with column
+\item{columns}{For \code{spectraData} accessor: optional \code{character} with column
 names (spectra variables) that should be included in the
 returned \code{DataFrame}. By default, all columns are returned.}
 
@@ -494,9 +494,9 @@ the selected spectra variables.
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
-\item \code{asDataFrame}, \verb{asDataFrame<-}: gets or sets general spectrum
-metadata (annotation, also called header).  \code{asDataFrame} returns
-a \code{DataFrame}, \verb{asDataFrame<-} expects a \code{DataFrame} with the same number
+\item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
+metadata (annotation, also called header).  \code{spectraData} returns
+a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame} with the same number
 of rows as there are spectra in \code{object}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
 the spectra in \code{object}.

@@ -235,20 +235,20 @@ test_that("lenghts,MsBackendHdf5Peaks works", {
     expect_identical(res, lengths(test_be$mz))
 })
 
-test_that("asDataFrame,MsBackendHdf5Peaks works", {
+test_that("spectraData,MsBackendHdf5Peaks works", {
     be <- MsBackendHdf5Peaks()
-    res <- asDataFrame(be)
+    res <- spectraData(be)
     expect_true(nrow(res) == 0)
     expect_identical(colnames(res), spectraVariables(be))
 
-    res <- asDataFrame(test_be)
+    res <- spectraData(test_be)
     expect_identical(res$msLevel, test_df$msLevel)
     expect_identical(res$mz, NumericList(test_df$mz, compress = FALSE))
     expect_identical(res$intensity, NumericList(test_df$intensity,
                                                 compress = FALSE))
 })
 
-test_that("asDataFrame<-,MsBackendHdf5Peaks works", {
+test_that("spectraData<-,MsBackendHdf5Peaks works", {
     be <- backendInitialize(MsBackendHdf5Peaks(), files = tempfile(),
                             data = test_df)
     df <- test_df
@@ -257,7 +257,7 @@ test_that("asDataFrame<-,MsBackendHdf5Peaks works", {
     df$intensity <- NULL
     df$mz <- NULL
 
-    asDataFrame(be) <- df
+    spectraData(be) <- df
     expect_identical(be@modCount, 0L)
     expect_identical(msLevel(be), rep(1L, 3))
     expect_identical(intensity(be), NumericList(test_df$intensity,
@@ -267,7 +267,7 @@ test_that("asDataFrame<-,MsBackendHdf5Peaks works", {
 
     ## Only m/z, no intensities.
     df$mz <- test_df$mz
-    asDataFrame(be) <- df
+    spectraData(be) <- df
     expect_identical(mz(be), NumericList(test_df$mz, compress = FALSE))
     expect_true(all(is.na(unlist(intensity(be)))))
     expect_identical(be@modCount, 1L)
@@ -276,15 +276,15 @@ test_that("asDataFrame<-,MsBackendHdf5Peaks works", {
     df$mz <- list(c(1.1, 1.2), numeric(), c(1.3, 1.4))
     df$intensity <- list(c(45.3, 345.1), numeric(), c(1234.2, 12.1))
 
-    asDataFrame(be) <- df
+    spectraData(be) <- df
     expect_identical(intensity(be), NumericList(df$intensity, compress = FALSE))
     expect_identical(mz(be), NumericList(df$mz, compress = FALSE))
     expect_identical(lengths(be), c(2L, 0L, 2L))
     expect_identical(be@modCount, 2L)
 
     ## Error:
-    expect_error(asDataFrame(be) <- "a", "has to be a 'DataFrame'")
-    expect_error(asDataFrame(be) <- df[1:2, ], "have to match the length of")
+    expect_error(spectraData(be) <- "a", "has to be a 'DataFrame'")
+    expect_error(spectraData(be) <- df[1:2, ], "have to match the length of")
 })
 
 test_that("$<-,MsBackendHdf5Peaks works", {
@@ -311,7 +311,7 @@ test_that("$<-,MsBackendHdf5Peaks works", {
 test_that("[,MsBackendHdf5Peaks works", {
     fls <- normalizePath(c(tempfile(), tempfile()))
     be <- backendInitialize(MsBackendHdf5Peaks(), files = fls,
-                            data = asDataFrame(sciex_mzr))
+                            data = spectraData(sciex_mzr))
     idx <- sample(seq_along(be), 30)
     res <- be[idx]
     expect_true(validObject(res))

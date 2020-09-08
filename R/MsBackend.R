@@ -44,7 +44,7 @@
 #'     acquisition number of the spectra to which the object should be
 #'     subsetted.
 #'
-#' @param columns For `asDataFrame` accessor: optional `character` with column
+#' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
@@ -324,9 +324,9 @@
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `asDataFrame`, `asDataFrame<-`: gets or sets general spectrum
-#'   metadata (annotation, also called header).  `asDataFrame` returns
-#'   a `DataFrame`, `asDataFrame<-` expects a `DataFrame` with the same number
+#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
+#'   metadata (annotation, also called header).  `spectraData` returns
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
 #'   of rows as there are spectra in `object`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
@@ -650,9 +650,9 @@ setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
 #' @rdname MsBackend
 setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     svs <- spectraVariables(object)
-    spd <- asDataFrame(object, columns = svs[!(svs %in% c("mz", "intensity"))])
+    spd <- spectraData(object, columns = svs[!(svs %in% c("mz", "intensity"))])
     keep <- !vapply1l(spd, function(z) all(is.na(z)))
-    asDataFrame(object) <- spd[, keep, drop = FALSE]
+    spectraData(object) <- spd[, keep, drop = FALSE]
     object
 })
 
@@ -1019,19 +1019,19 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod asDataFrame
+#' @exportMethod spectraData
 #'
 #' @rdname MsBackend
 setMethod(
-    "asDataFrame", "MsBackend",
+    "spectraData", "MsBackend",
     function(object, columns = spectraVariables(object)) {
         stop("Not implemented for ", class(object), ".")
     })
 
-#' @exportMethod asDataFrame<-
+#' @exportMethod spectraData<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("asDataFrame", "MsBackend", function(object, value) {
+setReplaceMethod("spectraData", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 

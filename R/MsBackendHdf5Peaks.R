@@ -225,13 +225,13 @@ setReplaceMethod("replaceList", "MsBackendHdf5Peaks", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("asDataFrame", "MsBackendHdf5Peaks",
+setMethod("spectraData", "MsBackendHdf5Peaks",
           function(object, columns = spectraVariables(object)) {
               .spectra_data_mzR(object, columns)
           })
 
 #' @rdname hidden_aliases
-setReplaceMethod("asDataFrame", "MsBackendHdf5Peaks", function(object, value) {
+setReplaceMethod("spectraData", "MsBackendHdf5Peaks", function(object, value) {
     pks <- NULL
     if (!inherits(value, "DataFrame"))
         stop("'value' has to be a 'DataFrame'")

@@ -1006,7 +1006,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               data_storage <- object@backend$dataStorage
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
                   backendInitialize(backend,
-                                    data = asDataFrame(z),
+                                    data = spectraData(z),
                                     ...)
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
@@ -1330,7 +1330,7 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 setMethod("spectraData", "Spectra", function(object,
                                              columns = spectraVariables(object))
 {
-    asDataFrame(object@backend, columns = columns)
+    spectraData(object@backend, columns = columns)
 })
 
 #' @rdname Spectra
@@ -1339,7 +1339,7 @@ setMethod("spectraData", "Spectra", function(object,
 #'
 #' @exportMethod spectraData<-
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
-    asDataFrame(object@backend) <- value
+    spectraData(object@backend) <- value
     object
 })
 

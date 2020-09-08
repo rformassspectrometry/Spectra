@@ -7,8 +7,7 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
-\alias{asDataFrame}
-\alias{asDataFrame<-}
+\alias{replaceList<-}
 \alias{backendInitialize}
 \alias{backendMerge}
 \alias{bin}
@@ -20,9 +19,10 @@
 \alias{export}
 \alias{filterIntensity}
 \alias{isReadOnly}
+\alias{peaksData}
+\alias{peaksData<-}
 \alias{pickPeaks}
 \alias{replaceIntensitiesBelow}
-\alias{replaceList<-}
 \alias{reset}
 \alias{selectSpectraVariables}
 \alias{setBackend}
@@ -67,8 +67,8 @@
 \alias{selectSpectraVariables,MsBackendDataFrame-method}
 \alias{smoothed,MsBackendDataFrame-method}
 \alias{smoothed<-,MsBackendDataFrame-method}
-\alias{asDataFrame,MsBackendDataFrame-method}
-\alias{asDataFrame<-,MsBackendDataFrame-method}
+\alias{spectraData,MsBackendDataFrame-method}
+\alias{spectraData<-,MsBackendDataFrame-method}
 \alias{spectraNames,MsBackendDataFrame-method}
 \alias{spectraNames<-,MsBackendDataFrame-method}
 \alias{spectraVariables,MsBackendDataFrame-method}
@@ -98,8 +98,8 @@
 \alias{mz,MsBackendHdf5Peaks-method}
 \alias{mz<-,MsBackendHdf5Peaks-method}
 \alias{replaceList<-,MsBackendHdf5Peaks-method}
-\alias{asDataFrame,MsBackendHdf5Peaks-method}
-\alias{asDataFrame<-,MsBackendHdf5Peaks-method}
+\alias{spectraData,MsBackendHdf5Peaks-method}
+\alias{spectraData<-,MsBackendHdf5Peaks-method}
 \alias{$<-,MsBackendHdf5Peaks-method}
 \alias{[,MsBackendHdf5Peaks-method}
 \alias{backendMerge,MsBackendHdf5Peaks-method}
@@ -114,8 +114,8 @@
 \alias{lengths,MsBackendMzR-method}
 \alias{mz,MsBackendMzR-method}
 \alias{mz<-,MsBackendMzR-method}
-\alias{asDataFrame,MsBackendMzR-method}
-\alias{asDataFrame<-,MsBackendMzR-method}
+\alias{spectraData,MsBackendMzR-method}
+\alias{spectraData<-,MsBackendMzR-method}
 \alias{spectraNames,MsBackendMzR-method}
 \alias{spectraNames<-,MsBackendMzR-method}
 \alias{spectraVariables,MsBackendMzR-method}
@@ -125,9 +125,7 @@
 \alias{show,Spectra-method}
 \title{Internal page for hidden aliases}
 \usage{
-asDataFrame(object, ...)
-
-asDataFrame(object) <- value
+replaceList(object) <- value
 
 backendInitialize(object, ...)
 
@@ -157,11 +155,13 @@ filterIntensity(object, ...)
 
 isReadOnly(object, ...)
 
+peaksData(object, ...)
+
+peaksData(object) <- value
+
 pickPeaks(object, ...)
 
 replaceIntensitiesBelow(object, threshold = min, ...)
-
-replaceList(object) <- value
 
 reset(object, ...)
 
@@ -251,9 +251,9 @@ setBackend(object, backend, ...)
 
 \S4method{smoothed}{MsBackendDataFrame}(object) <- value
 
-\S4method{asDataFrame}{MsBackendDataFrame}(object, columns = spectraVariables(object))
+\S4method{spectraData}{MsBackendDataFrame}(object, columns = spectraVariables(object))
 
-\S4method{asDataFrame}{MsBackendDataFrame}(object) <- value
+\S4method{spectraData}{MsBackendDataFrame}(object) <- value
 
 \S4method{spectraNames}{MsBackendDataFrame}(object)
 
@@ -327,9 +327,9 @@ setBackend(object, backend, ...)
 
 \S4method{replaceList}{MsBackendHdf5Peaks}(object) <- value
 
-\S4method{asDataFrame}{MsBackendHdf5Peaks}(object, columns = spectraVariables(object))
+\S4method{spectraData}{MsBackendHdf5Peaks}(object, columns = spectraVariables(object))
 
-\S4method{asDataFrame}{MsBackendHdf5Peaks}(object) <- value
+\S4method{spectraData}{MsBackendHdf5Peaks}(object) <- value
 
 \S4method{$}{MsBackendHdf5Peaks}(x, name) <- value
 
@@ -359,9 +359,9 @@ setBackend(object, backend, ...)
 
 \S4method{mz}{MsBackendMzR}(object) <- value
 
-\S4method{asDataFrame}{MsBackendMzR}(object, columns = spectraVariables(object))
+\S4method{spectraData}{MsBackendMzR}(object, columns = spectraVariables(object))
 
-\S4method{asDataFrame}{MsBackendMzR}(object) <- value
+\S4method{spectraData}{MsBackendMzR}(object) <- value
 
 \S4method{spectraNames}{MsBackendMzR}(object)
 
