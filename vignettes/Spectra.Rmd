@@ -35,6 +35,14 @@ large variety of different ways to store and retrieve mass spectrometry
 data. Such backends range from mzML/mzXML/CDF files, simple flat files, or
 database systems.
 
+
+# Installation
+
+The package can be installed with the `BiocManager` package. To
+install `BiocManager` use `install.packages("BiocManager")` and, after that,
+`BiocManager::install("Spectra")` to install `Spectra`.
+
+
 # General usage
 
 Mass spectrometry data in `Spectra` objects can be thought of as a list of
