@@ -346,10 +346,10 @@ smoothed(object)
 smoothed(object) &lt;- value
 
 # S4 method for MsBackend
-asDataFrame(object, columns = spectraVariables(object))
+spectraData(object, columns = spectraVariables(object))
 
 # S4 method for MsBackend
-asDataFrame(object) &lt;- value
+spectraData(object) &lt;- value
 
 # S4 method for MsBackend
 spectraNames(object)
@@ -467,7 +467,7 @@ names of the spectra variables to which the backend should be subsetted.</p></td
     </tr>
     <tr>
       <th>columns</th>
-      <td><p>For <code>asDataFrame</code> accessor: optional <code>character</code> with column
+      <td><p>For <code>spectraData</code> accessor: optional <code>character</code> with column
 names (spectra variables) that should be included in the
 returned <code>DataFrame</code>. By default, all columns are returned.</p></td>
     </tr>
@@ -679,9 +679,9 @@ the selected spectra variables.</p></li>
 <em>smoothed</em>. <code>smoothed</code> returns a <code>logical</code> vector of length equal
 to the number of spectra. <code>smoothed&lt;-</code> takes a <code>logical</code> vector
 of length 1 or equal to the number of spectra in <code>object</code>.</p></li>
-<li><p><code>asDataFrame</code>, <code>asDataFrame&lt;-</code>: gets or sets general spectrum
-metadata (annotation, also called header).  <code>asDataFrame</code> returns
-a <code>DataFrame</code>, <code>asDataFrame&lt;-</code> expects a <code>DataFrame</code> with the same number
+<li><p><code>spectraData</code>, <code>spectraData&lt;-</code>: gets or sets general spectrum
+metadata (annotation, also called header).  <code>spectraData</code> returns
+a <code>DataFrame</code>, <code>spectraData&lt;-</code> expects a <code>DataFrame</code> with the same number
 of rows as there are spectra in <code>object</code>.</p></li>
 <li><p><code>spectraNames</code>: returns a <code>character</code> vector with the names of
 the spectra in <code>object</code>.</p></li>

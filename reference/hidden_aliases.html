@@ -130,9 +130,7 @@
     <p>For S4 methods that require a documentation entry but only clutter the index.</p>
     </div>
 
-    <pre class="usage">asDataFrame(object, ...)
-
-asDataFrame(object) &lt;- value
+    <pre class="usage">replaceList(object) &lt;- value
 
 backendInitialize(object, ...)
 
@@ -163,11 +161,13 @@ filterIntensity(object, ...)
 
 isReadOnly(object, ...)
 
+peaksData(object, ...)
+
+peaksData(object) &lt;- value
+
 pickPeaks(object, ...)
 
 replaceIntensitiesBelow(object, threshold = min, ...)
-
-replaceList(object) &lt;- value
 
 reset(object, ...)
 
@@ -299,10 +299,10 @@ smoothed(object)
 smoothed(object) &lt;- value
 
 # S4 method for MsBackendDataFrame
-asDataFrame(object, columns = spectraVariables(object))
+spectraData(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendDataFrame
-asDataFrame(object) &lt;- value
+spectraData(object) &lt;- value
 
 # S4 method for MsBackendDataFrame
 spectraNames(object)
@@ -407,10 +407,10 @@ mz(object) &lt;- value
 replaceList(object) &lt;- value
 
 # S4 method for MsBackendHdf5Peaks
-asDataFrame(object, columns = spectraVariables(object))
+spectraData(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendHdf5Peaks
-asDataFrame(object) &lt;- value
+spectraData(object) &lt;- value
 
 # S4 method for MsBackendHdf5Peaks
 $(x, name) &lt;- value
@@ -455,10 +455,10 @@ mz(object)
 mz(object) &lt;- value
 
 # S4 method for MsBackendMzR
-asDataFrame(object, columns = spectraVariables(object))
+spectraData(object, columns = spectraVariables(object))
 
 # S4 method for MsBackendMzR
-asDataFrame(object) &lt;- value
+spectraData(object) &lt;- value
 
 # S4 method for MsBackendMzR
 spectraNames(object)
