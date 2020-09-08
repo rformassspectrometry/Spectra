@@ -946,7 +946,8 @@ setMethod("show", "Spectra",
         if (length(object@processingQueue))
             cat("Lazy evaluation queue:", length(object@processingQueue),
                 "processing step(s)\n")
-        cat("Processing:\n", paste(object@processing, collapse="\n "), "\n")
+        if (length(object@processing))
+            cat("Processing:\n", paste(object@processing, collapse="\n "), "\n")
     })
 
 #' @rdname Spectra
