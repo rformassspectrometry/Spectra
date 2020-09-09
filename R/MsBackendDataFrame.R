@@ -88,8 +88,8 @@ setMethod("acquisitionNum", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("as.list", "MsBackendDataFrame", function(x) {
-    mapply(cbind, mz = mz(x), intensity = intensity(x),
+setMethod("peaksData", "MsBackendDataFrame", function(object) {
+    mapply(cbind, mz = mz(object), intensity = intensity(object),
            SIMPLIFY = FALSE, USE.NAMES = FALSE)
 })
 
@@ -191,7 +191,7 @@ setMethod("ionCount", "MsBackendDataFrame", function(object) {
 #' @rdname hidden_aliases
 #' @importFrom MsCoreUtils vapply1l
 setMethod("isCentroided", "MsBackendDataFrame", function(object, ...) {
-    vapply1l(as.list(object), .peaks_is_centroided)
+    vapply1l(peaksData(object), .peaks_is_centroided)
 })
 
 #' @rdname hidden_aliases
@@ -329,7 +329,7 @@ setMethod("precursorMz", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("replaceList", "MsBackendDataFrame", function(object, value) {
+setReplaceMethod("peaksData", "MsBackendDataFrame", function(object, value) {
     if (!(is.list(value) || inherits(value, "SimpleList")))
         stop("'value' has to be a list-like object")
     if (length(value) != length(object))

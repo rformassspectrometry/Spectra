@@ -279,30 +279,32 @@ test_that("mz<-,MsBackendDataFrame works", {
     expect_error(mz(be) <- list(3, 2, 4), "number of peaks")
 })
 
-test_that("as.list,MsBackendDataFrame works", {
+test_that("peaksData,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_equal(as.list(be), list())
+    expect_equal(peaksData(be), list())
     df <- DataFrame(msLevel = c(1L, 1L))
     be <- backendInitialize(be, data = df)
-    expect_equal(as.list(be), list(cbind(mz = numeric(), intensity = numeric()),
-                                   cbind(mz = numeric(), intensity = numeric())))
+    expect_equal(peaksData(be), list(cbind(mz = numeric(),
+                                           intensity = numeric()),
+                                     cbind(mz = numeric(),
+                                           intensity = numeric())))
     df$mz <- list(1:3, c(2.1))
     df$intensity <- list(1:3, 4)
     be <- backendInitialize(be, data = df)
-    expect_equal(as.list(be), list(cbind(mz = 1:3, intensity = 1:3),
-                                   cbind(mz = 2.1, intensity = 4)))
+    expect_equal(peaksData(be), list(cbind(mz = 1:3, intensity = 1:3),
+                                     cbind(mz = 2.1, intensity = 4)))
 })
 
-test_that("replaceList<-,MsBackendDataFrame works", {
+test_that("peaksData<-,MsBackendDataFrame works", {
     be <- backendInitialize(MsBackendDataFrame(), data = test_df)
 
-    pks <- lapply(as.list(be), function(z) z / 2)
-    replaceList(be) <- pks
-    expect_identical(as.list(be), pks)
+    pks <- lapply(peaksData(be), function(z) z / 2)
+    peaksData(be) <- pks
+    expect_identical(peaksData(be), pks)
 
-    expect_error(replaceList(be) <- 3, "has to be a list")
-    expect_error(replaceList(be) <- list(3, 2), "match length")
-    expect_error(replaceList(be) <- list(3, 2, 4), "dimensions")
+    expect_error(peaksData(be) <- 3, "has to be a list")
+    expect_error(peaksData(be) <- list(3, 2), "match length")
+    expect_error(peaksData(be) <- list(3, 2, 4), "dimensions")
 })
 
 test_that("lengths,MsBackendDataFrame works", {

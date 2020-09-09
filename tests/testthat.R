@@ -9,7 +9,7 @@ cdf_file <- normalizePath(
     dir(system.file("cdf", package = "msdata"), full.names = TRUE))
 
 sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
-sciex_pks <- as.list(sciex_mzr)
+sciex_pks <- peaksData(sciex_mzr)
 fl <- normalizePath(
     dir(system.file("proteomics", package = "msdata"), full.names = TRUE))
 tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])

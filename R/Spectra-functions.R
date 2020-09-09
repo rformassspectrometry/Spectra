@@ -93,11 +93,11 @@ addProcessing <- function(object, FUN, ...) {
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
     if (length(levels(f)) > 1 || length(pqueue)) {
         res <- bplapply(split(object@backend, f), function(z, queue) {
-            .apply_processing_queue(as.list(z), msLevel(z),
+            .apply_processing_queue(peaksData(z), msLevel(z),
                                     centroided(z), queue = queue)
         }, queue = pqueue, BPPARAM = BPPARAM)
         unsplit(res, f = f, drop = TRUE)
-    } else as.list(object@backend)
+    } else peaksData(object@backend)
 }
 
 
@@ -158,8 +158,8 @@ applyProcessing <- function(object, f = dataStorage(object),
         stop("length 'f' has to be equal to the length of 'object' (",
              length(object), ")")
     bknds <- bplapply(split(object@backend, f = f), function(z, queue) {
-        replaceList(z) <- .apply_processing_queue(as.list(z), msLevel(z),
-                                                  centroided(z), queue)
+        peaksData(z) <- .apply_processing_queue(peaksData(z), msLevel(z),
+                                                centroided(z), queue)
         z
     }, queue = object@processingQueue, BPPARAM = BPPARAM)
     bknds <- backendMerge(bknds)
@@ -318,9 +318,9 @@ applyProcessing <- function(object, f = dataStorage(object),
     for (i in seq_len(nrow(cb))) {
         cur <- cb[i, 2L]
         if (i == 1L || cb[i - 1L, 2L] != cur)
-            py <- px <- as.list(x[cur])[[1L]]
+            py <- px <- peaksData(x[cur])[[1L]]
         else
-            py <- as.list(x[cb[i, 1L]])[[1L]]
+            py <- peaksData(x[cb[i, 1L]])[[1L]]
         map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm, ...)
         m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
             FUN(map[[1L]], map[[2L]], ...)
@@ -375,7 +375,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     x_new <- x[match(levels(f), f)]
     if (isReadOnly(x_new@backend))
         x_new <- setBackend(x_new, MsBackendDataFrame())
-    replaceList(x_new@backend) <- lapply(
+    peaksData(x_new@backend) <- lapply(
         split(.peaksapply(x), f = f), FUN = FUN, ...)
     validObject(x_new)
     x_new

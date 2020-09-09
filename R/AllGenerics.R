@@ -2,9 +2,6 @@
 NULL
 
 #' @rdname hidden_aliases
-setGeneric("replaceList<-", function(object, value)
-    standardGeneric("replaceList<-"))
-#' @rdname hidden_aliases
 setGeneric("backendInitialize", def = function(object, ...)
     standardGeneric("backendInitialize"),
     valueClass = "MsBackend")

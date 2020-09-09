@@ -16,8 +16,8 @@ test_that("initializeBackend,MsBackendMzR works", {
 
 test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
     splt <- split(sciex_mzr, dataStorage(sciex_mzr))
-    expect_equal(as.list(splt[[1]]), sciex_pks[1:931])
-    expect_equal(as.list(splt[[2]]), sciex_pks[932:1862])
+    expect_equal(peaksData(splt[[1]]), sciex_pks[1:931])
+    expect_equal(peaksData(splt[[2]]), sciex_pks[932:1862])
     res <- backendMerge(splt)
     expect_equal(res, sciex_mzr)
 
@@ -223,24 +223,24 @@ test_that("mz<-,MsBackendMzR works", {
     expect_error(mz(be) <- list(), "does not support replacing")
 })
 
-test_that("as.list,MsBackendMzR works", {
+test_that("peaksData,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(as.list(be), list())
+    expect_equal(peaksData(be), list())
 
-    res <- as.list(sciex_mzr)
+    res <- peaksData(sciex_mzr)
     expect_true(is(res, "list"))
     expect_equal(length(res), length(sciex_mzr))
     expect_true(is(res[[1]], "matrix"))
     expect_equal(colnames(res[[1]]), c("mz", "intensity"))
 
     tmp_one <- backendInitialize(MsBackendMzR(), sciex_file[1])
-    res_one <- as.list(tmp_one)
+    res_one <- peaksData(tmp_one)
     expect_equal(res[1:length(res_one)], res_one)
 
     ## Arbitrary ordering.
     idx <- sample(1:length(sciex_mzr))
     be <- sciex_mzr[idx]
-    pks <- as.list(be)
+    pks <- peaksData(be)
     expect_identical(pks, sciex_pks[idx])
 })
 

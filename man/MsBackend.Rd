@@ -13,7 +13,7 @@
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
-\alias{as.list,MsBackend-method}
+\alias{peaksData,MsBackend-method}
 \alias{centroided,MsBackend-method}
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
@@ -56,7 +56,7 @@
 \alias{precursorCharge,MsBackend-method}
 \alias{precursorIntensity,MsBackend-method}
 \alias{precursorMz,MsBackend-method}
-\alias{replaceList<-,MsBackend-method}
+\alias{peaksData<-,MsBackend-method}
 \alias{reset,MsBackend-method}
 \alias{rtime,MsBackend-method}
 \alias{rtime<-,MsBackend-method}
@@ -87,7 +87,7 @@
 
 \S4method{acquisitionNum}{MsBackend}(object)
 
-\S4method{as.list}{MsBackend}(x)
+\S4method{peaksData}{MsBackend}(object)
 
 \S4method{centroided}{MsBackend}(object)
 
@@ -173,7 +173,7 @@
 
 \S4method{precursorMz}{MsBackend}(object)
 
-\S4method{replaceList}{MsBackend}(object) <- value
+\S4method{peaksData}{MsBackend}(object) <- value
 
 \S4method{reset}{MsBackend}(object)
 
@@ -222,8 +222,6 @@ MsBackendMzR()
 
 \item{...}{Additional arguments.}
 
-\item{x}{Object extending \code{MsBackend}.}
-
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
 
@@ -260,6 +258,8 @@ subsetted.}
 
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
+
+\item{x}{Object extending \code{MsBackend}.}
 
 \item{use.names}{For \code{lengths}: whether spectrum names should be used.}
 
@@ -339,7 +339,7 @@ backend.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
-\item \code{as.list} returns a \code{list} with the spectras' peak data. The length of
+\item \code{peaksData} returns a \code{list} with the spectras' peak data. The length of
 the list is equal to the number of spectra in \code{object}. Each element of
 the list is a \code{matrix} with columns \code{"mz"} and \code{"intensity"}. For an empty
 spectrum, a \code{matrix} with 0 rows and two columns (named \code{mz} and
@@ -468,7 +468,7 @@ and acquisition number (\code{interger}) of the precursor for MS level
 2 and above spectra from the object. Returns a vector of length equal to
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
-\item \verb{replaceList<-} replaces the peak data (m/z and intensity values) of the
+\item \verb{peaksData<-} replaces the peak data (m/z and intensity values) of the
 backend. This method expects a \code{list} of \code{matrix} objects with columns
 \code{"mz"} and \code{"intensity"} that has the same length as the number of
 spectra in the backend. Note that just writeable backends support this
@@ -680,9 +680,9 @@ mz(be)
 ## methods are supposed to return a value.
 precursorMz(be)
 
-## The `as.list` method is supposed to return the peaks of the spectra as
+## The `peaksData` method is supposed to return the peaks of the spectra as
 ## a `list`.
-as.list(be)
+peaksData(be)
 }
 \author{
 Johannes Rainer, Sebastian Gibb, Laurent Gatto

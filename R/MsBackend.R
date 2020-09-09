@@ -128,7 +128,7 @@
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `as.list` returns a `list` with the spectras' peak data. The length of
+#' - `peaksData` returns a `list` with the spectras' peak data. The length of
 #'   the list is equal to the number of spectra in `object`. Each element of
 #'   the list is a `matrix` with columns `"mz"` and `"intensity"`. For an empty
 #'   spectrum, a `matrix` with 0 rows and two columns (named `mz` and
@@ -292,7 +292,7 @@
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `replaceList<-` replaces the peak data (m/z and intensity values) of the
+#' - `peaksData<-` replaces the peak data (m/z and intensity values) of the
 #'   backend. This method expects a `list` of `matrix` objects with columns
 #'   `"mz"` and `"intensity"` that has the same length as the number of
 #'   spectra in the backend. Note that just writeable backends support this
@@ -509,9 +509,9 @@
 #' ## methods are supposed to return a value.
 #' precursorMz(be)
 #'
-#' ## The `as.list` method is supposed to return the peaks of the spectra as
+#' ## The `peaksData` method is supposed to return the peaks of the spectra as
 #' ## a `list`.
-#' as.list(be)
+#' peaksData(be)
 NULL
 
 setClass(
@@ -562,13 +562,11 @@ setMethod("acquisitionNum", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod as.list
-#'
-#' @importMethodsFrom BiocGenerics as.list
+#' @exportMethod peaksData
 #'
 #' @rdname MsBackend
-setMethod("as.list", "MsBackend", function(x) {
-    stop("Not implemented for ", class(x), ".")
+setMethod("peaksData", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod centroided
@@ -949,10 +947,10 @@ setMethod("precursorMz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod replaceList<-
+#' @exportMethod peaksData<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("replaceList", "MsBackend", function(object, value) {
+setReplaceMethod("peaksData", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
