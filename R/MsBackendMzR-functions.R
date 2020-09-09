@@ -154,7 +154,7 @@ MsBackendMzR <- function() {
         }
     } else copy <- FALSE
     hdr <- as.data.frame(spectraData(x))
-    pks <- as.list(as.list(x))
+    pks <- as(x, "list")
     updated_values <- t(vapply(pks, function(z) {
         z <- unname(z)
         max_peak <- which.max(z[, 2L])[1L]
