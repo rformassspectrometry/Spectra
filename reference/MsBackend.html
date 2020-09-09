@@ -193,7 +193,7 @@ backendMerge(object, ...)
 acquisitionNum(object)
 
 # S4 method for MsBackend
-as.list(x)
+peaksData(object)
 
 # S4 method for MsBackend
 centroided(object)
@@ -322,7 +322,7 @@ precursorIntensity(object)
 precursorMz(object)
 
 # S4 method for MsBackend
-replaceList(object) &lt;- value
+peaksData(object) &lt;- value
 
 # S4 method for MsBackend
 reset(object)
@@ -396,10 +396,6 @@ MsBackendMzR()</pre>
       <td><p>Additional arguments.</p></td>
     </tr>
     <tr>
-      <th>x</th>
-      <td><p>Object extending <code>MsBackend</code>.</p></td>
-    </tr>
-    <tr>
       <th>value</th>
       <td><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></td>
@@ -455,6 +451,10 @@ subsetted.</p></td>
       <th>rt</th>
       <td><p>for <code>filterRt</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> defining the retention time range to
 be used to subset/filter <code>object</code>.</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>Object extending <code>MsBackend</code>.</p></td>
     </tr>
     <tr>
       <th>use.names</th>
@@ -524,7 +524,7 @@ backend.</p></li>
 <li><p><code>acquisitionNum</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
 spectra (with <code>NA_integer_</code> if not available).</p></li>
-<li><p><code>as.list</code> returns a <code>list</code> with the spectras' peak data. The length of
+<li><p><code>peaksData</code> returns a <code>list</code> with the spectras' peak data. The length of
 the list is equal to the number of spectra in <code>object</code>. Each element of
 the list is a <code>matrix</code> with columns <code>"mz"</code> and <code>"intensity"</code>. For an empty
 spectrum, a <code>matrix</code> with 0 rows and two columns (named <code>mz</code> and
@@ -653,7 +653,7 @@ and acquisition number (<code>interger</code>) of the precursor for MS level
 2 and above spectra from the object. Returns a vector of length equal to
 the number of spectra in <code>object</code>. <code>NA</code> are reported for MS1
 spectra of if no precursor information is available.</p></li>
-<li><p><code>replaceList&lt;-</code> replaces the peak data (m/z and intensity values) of the
+<li><p><code>peaksData&lt;-</code> replaces the peak data (m/z and intensity values) of the
 backend. This method expects a <code>list</code> of <code>matrix</code> objects with columns
 <code>"mz"</code> and <code>"intensity"</code> that has the same length as the number of
 spectra in the backend. Note that just writeable backends support this
@@ -874,9 +874,9 @@ of m/z or intensity values.</p></li>
 <span class='co'>## methods are supposed to return a value.</span>
 <span class='fu'>precursorMz</span>(<span class='kw'>be</span>)
 </div><div class='output co'>#&gt; [1] NA NA NA</div><div class='input'>
-<span class='co'>## The `as.list` method is supposed to return the peaks of the spectra as</span>
+<span class='co'>## The `peaksData` method is supposed to return the peaks of the spectra as</span>
 <span class='co'>## a `list`.</span>
-<span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span>(<span class='kw'>be</span>)
+<span class='fu'><a href='hidden_aliases.html'>peaksData</a></span>(<span class='kw'>be</span>)
 </div><div class='output co'>#&gt; [[1]]
 #&gt;       mz intensity
 #&gt; [1,] 1.1         3

@@ -130,9 +130,7 @@
     <p>For S4 methods that require a documentation entry but only clutter the index.</p>
     </div>
 
-    <pre class="usage">replaceList(object) &lt;- value
-
-backendInitialize(object, ...)
+    <pre class="usage">backendInitialize(object, ...)
 
 backendMerge(object, ...)
 
@@ -185,7 +183,7 @@ backendMerge(object, ...)
 acquisitionNum(object)
 
 # S4 method for MsBackendDataFrame
-as.list(x)
+peaksData(object)
 
 # S4 method for MsBackendDataFrame
 centroided(object)
@@ -278,7 +276,7 @@ precursorIntensity(object)
 precursorMz(object)
 
 # S4 method for MsBackendDataFrame
-replaceList(object) &lt;- value
+peaksData(object) &lt;- value
 
 # S4 method for MsBackendDataFrame
 rtime(object)
@@ -377,7 +375,7 @@ backendInitialize(
 show(object)
 
 # S4 method for MsBackendHdf5Peaks
-as.list(x)
+peaksData(object)
 
 # S4 method for MsBackendHdf5Peaks
 intensity(object)
@@ -404,7 +402,7 @@ mz(object)
 mz(object) &lt;- value
 
 # S4 method for MsBackendHdf5Peaks
-replaceList(object) &lt;- value
+peaksData(object) &lt;- value
 
 # S4 method for MsBackendHdf5Peaks
 spectraData(object, columns = spectraVariables(object))
@@ -428,7 +426,7 @@ backendInitialize(object, files, ..., BPPARAM = bpparam())
 show(object)
 
 # S4 method for MsBackendMzR
-as.list(x)
+peaksData(object)
 
 # S4 method for MsBackendMzR
 intensity(object)
