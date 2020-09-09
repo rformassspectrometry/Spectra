@@ -117,10 +117,12 @@ NULL
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `as.list`: gets the *peaks* matrices for all spectra in `object`. The
+#' - `peaksData`: gets the *peaks* matrices for all spectra in `object`. The
 #'   function returns a [SimpleList()] of matrices, each `matrix` with columns
 #'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
-#'   a spectrum.
+#'   a spectrum. Note that it is also possible to extract the peaks matrices
+#'   with `as(x, "list")` and `as(x, "SimpleList")` as a `list` and
+#'   `SimpleList`, respectively.
 #'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
@@ -733,10 +735,15 @@ NULL
 #' mz(data)[[1]]
 #'
 #' ## Get the peak data (m/z and intensity values).
-#' pks <- as.list(data)
+#' pks <- peaksData(data)
 #' pks
 #' pks[[1]]
 #' pks[[2]]
+#'
+#' ## Note that we could get the same resulb by coercing the `Spectra` to
+#' ## a `list` or `SimpleList`:
+#' as(data, "list")
+#' as(data, "SimpleList")
 #'
 #' ## List all available spectra variables (i.e. spectrum data and metadata).
 #' spectraVariables(data)
@@ -1065,8 +1072,17 @@ setMethod("acquisitionNum", "Spectra", function(object)
     acquisitionNum(object@backend))
 
 #' @rdname Spectra
-setMethod("as.list", "Spectra", function(x, ...) {
-    SimpleList(.peaksapply(x, ...))
+setMethod("peaksData", "Spectra", function(object, ...) {
+    SimpleList(.peaksapply(object, ...))
+})
+
+#' @importFrom methods setAs
+setAs("Spectra", "list", function(from, to) {
+    .peaksapply(from)
+})
+
+setAs("Spectra", "SimpleList", function(from, to) {
+    peaksData(from)
 })
 
 #' @rdname Spectra

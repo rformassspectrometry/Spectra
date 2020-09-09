@@ -133,7 +133,7 @@ setMethod("peaksData", "MsBackendHdf5Peaks", function(object) {
             SIMPLIFY = FALSE, USE.NAMES = FALSE, BPPARAM = bpparam()),
             f)
     } else
-        .h5_read_peaks(fls, scanIndex(object), x@modCount)
+        .h5_read_peaks(fls, scanIndex(object), object@modCount)
 })
 
 #' @rdname hidden_aliases

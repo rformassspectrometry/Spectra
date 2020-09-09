@@ -225,13 +225,20 @@ mz(sps)
 intensity(sps)
 ```
 
-Peak data can also be extracted with the `as.list` function that returns a list
-of matrices, each with columns `"mz"` and `"intensity"` containing the m/z and
-intensity values for one spectrum.
+Peak data can also be extracted with the `peaksData` function that returns a
+list of matrices, each with columns `"mz"` and `"intensity"` containing the m/z
+and intensity values for one spectrum.
 
 ```{r peaks}
-pks <- as.list(sps)
+pks <- peaksData(sps)
 pks[[1]]
+```
+
+Note that we would get the same result by using the `as` method to coerce a
+`Spectra` object to a `list` or `SimpleList`:
+
+```{r as}
+as(sps, "SimpleList")
 ```
 
 The `spectraData` function returns a `DataFrame` with the full data for each
@@ -408,7 +415,7 @@ intensity(sps_rep)
 
 Note that any data manipulations on `Spectra` objects are not immediately
 applied to the peak data. They are added to a so called *processing queue* which
-is applied each time peak data is accessed (with the `as.list`, `mz` or
+is applied each time peak data is accessed (with the `peaksData`, `mz` or
 `intensity` functions). Thanks to this processing queue data manipulation
 operations are also possible for *read-only* backends (e.g. mzML-file based
 backends or database-based backends). The information about the number of such
@@ -552,7 +559,7 @@ of peaks with an intensity higher than 30.
 
 ```{r plotspectra-label-int, fig.width = 8, fig.height = 8}
 mzLabel <- function(z) {
-    z <- as.list(z)[[1L]]
+    z <- peaksData(z)[[1L]]
     lbls <- format(z[, "mz"], digits = 4)
     lbls[z[, "intensity"] < 30] <- ""
     lbls
