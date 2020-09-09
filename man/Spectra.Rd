@@ -16,7 +16,7 @@
 \alias{split,Spectra,ANY-method}
 \alias{export,Spectra-method}
 \alias{acquisitionNum,Spectra-method}
-\alias{as.list,Spectra-method}
+\alias{peaksData,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
 \alias{collisionEnergy,Spectra-method}
@@ -141,7 +141,7 @@ combineSpectra(
 
 \S4method{acquisitionNum}{Spectra}(object)
 
-\S4method{as.list}{Spectra}(x, ...)
+\S4method{peaksData}{Spectra}(object, ...)
 
 \S4method{centroided}{Spectra}(object)
 
@@ -610,10 +610,12 @@ See examples for details.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
-\item \code{as.list}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
+\item \code{peaksData}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
 function returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns
 \code{"mz"} and \code{"intensity"} with the m/z and intensity values for all peaks of
-a spectrum.
+a spectrum. Note that it is also possible to extract the peaks matrices
+with \code{as(x, "list")} and \code{as(x, "SimpleList")} as a \code{list} and
+\code{SimpleList}, respectively.
 \item \code{centroided}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -990,10 +992,15 @@ intensity(sciex_im)
 mz(data)[[1]]
 
 ## Get the peak data (m/z and intensity values).
-pks <- as.list(data)
+pks <- peaksData(data)
 pks
 pks[[1]]
 pks[[2]]
+
+## Note that we could get the same resulb by coercing the `Spectra` to
+## a `list` or `SimpleList`:
+as(data, "list")
+as(data, "SimpleList")
 
 ## List all available spectra variables (i.e. spectrum data and metadata).
 spectraVariables(data)

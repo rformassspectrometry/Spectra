@@ -49,7 +49,7 @@ Suggests:
     vdiffr,
     magrittr
 License: Artistic-2.0
-LazyData: yes
+LazyData: false
 VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/Spectra/issues
 URL: https://github.com/RforMassSpectrometry/Spectra

@@ -115,10 +115,12 @@ NULL
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `as.list`: gets the *peaks* matrices for all spectra in `object`. The
+#' - `peaksData`: gets the *peaks* matrices for all spectra in `object`. The
 #'   function returns a [SimpleList()] of matrices, each `matrix` with columns
 #'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
-#'   a spectrum.
+#'   a spectrum. Note that it is also possible to extract the peaks matrices
+#'   with `as(x, "list")` and `as(x, "SimpleList")` as a `list` and
+#'   `SimpleList`, respectively.
 #'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
@@ -722,10 +724,15 @@ NULL
 #' mz(data)[[1]]
 #'
 #' ## Get the peak data (m/z and intensity values).
-#' pks <- as.list(data)
+#' pks <- peaksData(data)
 #' pks
 #' pks[[1]]
 #' pks[[2]]
+#'
+#' ## Note that we could get the same resulb by coercing the `Spectra` to
+#' ## a `list` or `SimpleList`:
+#' as(data, "list")
+#' as(data, "SimpleList")
 #'
 #' ## List all available spectra variables (i.e. spectrum data and metadata).
 #' spectraVariables(data)
@@ -966,7 +973,8 @@ setMethod("show", "Spectra",
         if (length(object@processingQueue))
             cat("Lazy evaluation queue:", length(object@processingQueue),
                 "processing step(s)\n")
-        cat("Processing:\n", paste(object@processing, collapse="\n "), "\n")
+        if (length(object@processing))
+            cat("Processing:\n", paste(object@processing, collapse="\n "), "\n")
     })
 
 #' @rdname Spectra
@@ -1025,7 +1033,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               data_storage <- object@backend$dataStorage
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
                   backendInitialize(backend,
-                                    data = asDataFrame(z),
+                                    data = spectraData(z),
                                     ...)
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
@@ -1082,8 +1090,17 @@ setMethod("acquisitionNum", "Spectra", function(object)
     acquisitionNum(object@backend))
 
 #' @rdname Spectra
-setMethod("as.list", "Spectra", function(x, ...) {
-    SimpleList(.peaksapply(x, ...))
+setMethod("peaksData", "Spectra", function(object, ...) {
+    SimpleList(.peaksapply(object, ...))
+})
+
+#' @importFrom methods setAs
+setAs("Spectra", "list", function(from, to) {
+    .peaksapply(from)
+})
+
+setAs("Spectra", "SimpleList", function(from, to) {
+    peaksData(from)
 })
 
 #' @rdname Spectra
@@ -1347,7 +1364,7 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 setMethod("spectraData", "Spectra", function(object,
                                              columns = spectraVariables(object))
 {
-    asDataFrame(object@backend, columns = columns)
+    spectraData(object@backend, columns = columns)
 })
 
 #' @rdname Spectra
@@ -1356,7 +1373,7 @@ setMethod("spectraData", "Spectra", function(object,
 #'
 #' @exportMethod spectraData<-
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
-    asDataFrame(object@backend) <- value
+    spectraData(object@backend) <- value
     object
 })
 

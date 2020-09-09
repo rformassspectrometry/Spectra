@@ -2,11 +2,6 @@
 NULL
 
 #' @rdname hidden_aliases
-setGeneric("asDataFrame", function(object, ...) standardGeneric("asDataFrame"))
-#' @rdname hidden_aliases
-setGeneric("asDataFrame<-", function(object, value)
-    standardGeneric("asDataFrame<-"))
-#' @rdname hidden_aliases
 setGeneric("backendInitialize", def = function(object, ...)
     standardGeneric("backendInitialize"),
     valueClass = "MsBackend")
@@ -40,14 +35,16 @@ setGeneric("filterIntensity", function(object, ...)
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
 #' @rdname hidden_aliases
+setGeneric("peaksData", function(object, ...) standardGeneric("peaksData"))
+#' @rdname hidden_aliases
+setGeneric("peaksData<-", function(object, value)
+    standardGeneric("peaksData<-"))
+#' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
 #' @rdname hidden_aliases
 setGeneric("replaceIntensitiesBelow", function(object, threshold = min, ...)
     standardGeneric("replaceIntensitiesBelow"))
-#' @rdname hidden_aliases
-setGeneric("replaceList<-", function(object, value)
-    standardGeneric("replaceList<-"))
 #' @rdname hidden_aliases
 setGeneric("reset", function(object, ...)
     standardGeneric("reset"))
