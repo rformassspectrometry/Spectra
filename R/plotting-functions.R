@@ -311,8 +311,8 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
         box(...)
     title(main = main, xlab = xlab, ylab = ylab, ...)
     ## Find common peaks
-    x_data <- as.list(x)[[1L]]
-    y_data <- as.list(y)[[1L]]
+    x_data <- peaksData(x)[[1L]]
+    y_data <- peaksData(y)[[1L]]
     .plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
                           labels = labels, labelCex = labelCex,
                           labelSrt = labelSrt, labelAdj = labelAdj,
@@ -398,7 +398,7 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
                                   labelOffset = 0.5, add = FALSE,
                                   axes = TRUE, frame.plot = axes,
                                   orientation = 1, ...) {
-    v <- as.list(x)[[1L]]
+    v <- peaksData(x)[[1L]]
     mzs <- v[, "mz"]
     ints <- orientation * v[, "intensity"]
     if (!length(xlim))

@@ -91,14 +91,15 @@ addProcessing <- function(object, FUN, ...) {
     pqueue <- object@processingQueue
     if (!is.null(FUN))
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
-    ## Question whether we would use a slim version of the backend, i.e.
-    ## reduce it to certain columns/spectra variables.
-    res <- bplapply(split(object@backend, f), function(z, queue) {
-        .apply_processing_queue(as.list(z), msLevel(z),
-                                centroided(z), queue = queue)
-    }, queue = pqueue, BPPARAM = BPPARAM)
-    unsplit(res, f = f, drop = TRUE)
+    if (length(levels(f)) > 1 || length(pqueue)) {
+        res <- bplapply(split(object@backend, f), function(z, queue) {
+            .apply_processing_queue(peaksData(z), msLevel(z),
+                                    centroided(z), queue = queue)
+        }, queue = pqueue, BPPARAM = BPPARAM)
+        unsplit(res, f = f, drop = TRUE)
+    } else peaksData(object@backend)
 }
+
 
 #' @title Apply a function to subsets of Spectra
 #'
@@ -157,8 +158,8 @@ applyProcessing <- function(object, f = dataStorage(object),
         stop("length 'f' has to be equal to the length of 'object' (",
              length(object), ")")
     bknds <- bplapply(split(object@backend, f = f), function(z, queue) {
-        replaceList(z) <- .apply_processing_queue(as.list(z), msLevel(z),
-                                                  centroided(z), queue)
+        peaksData(z) <- .apply_processing_queue(peaksData(z), msLevel(z),
+                                                centroided(z), queue)
         z
     }, queue = object@processingQueue, BPPARAM = BPPARAM)
     bknds <- backendMerge(bknds)
@@ -199,7 +200,9 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' Compare each spectrum in `x` with each spectrum in `y` with function `FUN`.
 #' Mapping between the peaks in both spectra can be defined with the `MAPFUN`
-#' function.
+#' function. This function *realizes* the peak matrices in chunks to balance
+#' between performance (high `chunkSize`) and low memory demand
+#' (small `chunkSize`).
 #'
 #' @note
 #'
@@ -225,6 +228,11 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @param ppm `numeric(1)` allowing to define a relative, m/z-dependent,
 #'     maximal accepted difference between m/z values for peaks to be matched.
 #'
+#' @param chunkSize `integer(1)` defining the number of peak matrices that
+#'     should be realized (i.e. loaded into memory) in each iteration. Large
+#'     `chunkSize` will result in faster processing, small `chunkSize` in
+#'     lower memory demand. Defaults to `chunkSize = 10000`.
+#'
 #' @param ... additional parameters passed to `FUN` and `MAPFUN`.
 #'
 #' @return
@@ -240,50 +248,43 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' fl <- system.file("TripleTOF-SWATH/PestMix1_SWATH.mzML", package = "msdata")
 #' sps <- Spectra(fl, source = MsBackendMzR())
 #'
-#' correlateSpectra <- function(x, y, use = "pairwise.complete.obs", ...) {
-#'     cor(x[, 2], y[, 2], use = use, ...)
-#' }
-#'
 #' sps <- sps[1:10]
-#' res <- .compare_spectra(sps, sps, ppm = 20, FUN = correlateSpectra)
-#' res <- .compare_spectra(sps, sps, FUN = correlateSpectra,
-#'     method = "spearman", ppm = 40)
+#' res <- .compare_spectra_chunk(sps, sps, ppm = 20)
 #'
-#' res <- .compare_spectra(sps[1], sps, FUN = correlateSpectra)
-#' res <- .compare_spectra(sps, sps[1], FUN = correlateSpectra)
+#' res <- .compare_spectra_chunk(sps[1], sps, FUN = correlateSpectra)
+#' res <- .compare_spectra_chunk(sps, sps[1], FUN = correlateSpectra)
 #'
 #' @noRd
-.compare_spectra <- function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0,
-                             ppm = 20, FUN = ndotproduct, ...) {
-    x_idx <- seq_along(x)
-    y_idx <- seq_along(y)
+.compare_spectra_chunk <- function(x, y = NULL, MAPFUN = joinPeaks,
+                                 tolerance = 0, ppm = 20,
+                                 FUN = ndotproduct, chunkSize = 10000, ...) {
+    nx <- length(x)
+    ny <- length(y)
+    if (nx <= chunkSize && ny <= chunkSize) {
+        mat <- .peaks_compare(.peaksapply(x), .peaksapply(y), MAPFUN = MAPFUN,
+                              tolerance = tolerance, ppm = ppm,
+                              FUN = FUN, ...)
+        dimnames(mat) <- list(spectraNames(x), spectraNames(y))
+        return(mat)
+    }
 
-    nx <- length(x_idx)
-    ny <- length(y_idx)
+    x_idx <- seq_len(nx)
+    x_chunks <- split(x_idx, ceiling(x_idx / chunkSize))
+    rm(x_idx)
+
+    y_idx <- seq_len(ny)
+    y_chunks <- split(y_idx, ceiling(y_idx / chunkSize))
+    rm(y_idx)
 
     mat <- matrix(NA_real_, nrow = nx, ncol = ny,
                   dimnames = list(spectraNames(x), spectraNames(y)))
-
-    ## This code duplication may be overengineering.
-    if (nx >= ny) {
-        for (i in x_idx) {
-            px <- .peaksapply(x[i])[[1L]]
-            for (j in y_idx) {
-                peak_map <- MAPFUN(px, .peaksapply(y[j])[[1L]],
-                                   tolerance = tolerance, ppm = ppm, ...)
-                mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
-                                 ...)
-            }
-        }
-    } else {
-        for (j in y_idx) {
-            py <- .peaksapply(y[j])[[1L]]
-            for (i in x_idx) {
-                peak_map <- MAPFUN(.peaksapply(x[i])[[1]], py,
-                                   tolerance = tolerance, ppm = ppm, ...)
-                mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
-                                 ...)
-            }
+    for (x_chunk in x_chunks) {
+        x_buff <- .peaksapply(x[x_chunk])
+        for (y_chunk in y_chunks) {
+            mat[x_chunk, y_chunk] <- .peaks_compare(
+                x_buff, .peaksapply(y[y_chunk]),
+                MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
+                FUN = FUN, ...)
         }
     }
     mat
@@ -317,9 +318,9 @@ applyProcessing <- function(object, f = dataStorage(object),
     for (i in seq_len(nrow(cb))) {
         cur <- cb[i, 2L]
         if (i == 1L || cb[i - 1L, 2L] != cur)
-            py <- px <- as.list(x[cur])[[1L]]
+            py <- px <- peaksData(x[cur])[[1L]]
         else
-            py <- as.list(x[cb[i, 1L]])[[1L]]
+            py <- peaksData(x[cb[i, 1L]])[[1L]]
         map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm, ...)
         m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
             FUN(map[[1L]], map[[2L]], ...)
@@ -374,7 +375,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     x_new <- x[match(levels(f), f)]
     if (isReadOnly(x_new@backend))
         x_new <- setBackend(x_new, MsBackendDataFrame())
-    replaceList(x_new@backend) <- lapply(
+    peaksData(x_new@backend) <- lapply(
         split(.peaksapply(x), f = f), FUN = FUN, ...)
     validObject(x_new)
     x_new
@@ -482,4 +483,67 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
             NA # if m/z is NA is better to return NA instead of FALSE
         else common(y, z, tolerance = tolerance, ppm = ppm)
     })
+}
+
+#' @export
+#'
+#' @rdname Spectra
+spectraVariableMapping <- function(format = c("mgf")) {
+    switch(match.arg(format),
+           "mgf" = c(
+               rtime = "RTINSECONDS",
+               acquisitionNum = "SCANS",
+               precursorMz = "PEPMASS",
+               precursorIntensity = "PEPMASSINT",
+               precursorCharge = "CHARGE"
+           )
+           )
+}
+
+#' @description
+#'
+#' Function to export a `Spectra` object in MGF format to `con`.
+#'
+#' @param x `Spectra`
+#'
+#' @param con output file.
+#'
+#' @param mapping named `character` vector that maps from `spectraVariables`
+#'    (i.e. `names(mapping)`) to the variable name that should be used in the
+#'    MGF file.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+#'
+#' @examples
+#'
+#' spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+#' spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+#' spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+#'
+#' sps <- Spectra(spd)
+#'
+#' .export_mgf(sps)
+.export_mgf <- function(x, con = stdout(), mapping = spectraVariableMapping()) {
+    spv <- spectraVariables(x)
+    spd <- spectraData(x, spv[!(spv %in% c("dataOrigin", "dataStorage"))])
+    idx <- match(colnames(spd), names(mapping))
+    colnames(spd)[!is.na(idx)] <- mapping[idx[!is.na(idx)]]
+    l <- nrow(spd)
+    tmp <- lapply(colnames(spd), function(z) {
+        paste0(z, "=", spd[, z], "\n")
+    })
+    if (!is.null(spectraNames(x)))
+        title <- paste0("TITLE=", spectraNames(x), "\n")
+    else
+        title <- paste0("TITLE=msLevel ", spd$msLevel, "; retentionTime ",
+                        spd$rtime, "; scanNum ", spd$acquisitionNum, "\n")
+    pks <- vapply(.peaksapply(x), function(z)
+        paste0(paste0(z[, 1], " ", z[, 2], "\n"), collapse = ""),
+        character(1))
+    tmp <- do.call(cbind, c(list(rep_len("BEGIN IONS\n", l)), list(title),
+                            tmp, list(pks), list(rep_len("END IONS\n", l))))
+    tmp[grep("=NA\n", tmp)] <- ""
+    writeLines(apply(tmp, 1, paste0, collapse = ""), con = con)
 }

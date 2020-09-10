@@ -82,7 +82,7 @@ test_that("setBackend,Spectra works", {
     tdir <- normalizePath(paste0(tempdir(), "/a"))
     res <- setBackend(sps, MsBackendHdf5Peaks(), hdf5path = tdir)
     expect_identical(rtime(sps), rtime(res))
-    expect_identical(as.list(sps), as.list(res))
+    expect_identical(peaksData(sps), peaksData(res))
     expect_identical(dataOrigin(res), dataStorage(sps))
 
     ## from DataFrame to hdf5 providing file names - need to disable
@@ -91,7 +91,7 @@ test_that("setBackend,Spectra works", {
                       files = c(tempfile(), tempfile()),
                       f = rep(1, length(sps)))
     expect_identical(rtime(sps), rtime(res))
-    expect_identical(as.list(sps), as.list(res))
+    expect_identical(peaksData(sps), peaksData(res))
 
     ## errors:
     expect_error(setBackend(sps, MsBackendMzR()), "is read-only")
@@ -385,20 +385,32 @@ test_that("mz,Spectra works", {
                                   compress = FALSE))
 })
 
-test_that("as.list,Spectra works", {
+test_that("peaksData,Spectra works", {
     df <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L)
     df$mz <- list(1:4, 1:5)
     df$intensity <- list(1:4, 1:5)
     be <- backendInitialize(MsBackendDataFrame(), file = NA_character_, df)
     sps <- Spectra(backend = be)
-    res <- as.list(sps)
+    res <- peaksData(sps)
     expect_true(is(res, "SimpleList"))
+    expect_equal(res[[1]][, 1], 1:4)
+    expect_equal(res[[2]][, 1], 1:5)
+    res_2 <- as(sps, "SimpleList")
+    expect_equal(res, res_2)
+    res <- as(sps, "list")
+    expect_true(is.list(res))
     expect_equal(res[[1]][, 1], 1:4)
     expect_equal(res[[2]][, 1], 1:5)
 
     sps <- Spectra(backend = MsBackendDataFrame())
-    res <- as.list(sps)
+    res <- peaksData(sps)
     expect_true(is(res, "SimpleList"))
+    expect_true(length(res) == 0)
+
+    res_2 <- as(sps, "SimpleList")
+    expect_equal(res, res_2)
+    res <- as(sps, "list")
+    expect_true(is(res, "list"))
     expect_true(length(res) == 0)
 })
 
@@ -751,7 +763,7 @@ test_that("filterDataOrigin,Spectra works", {
     res <- filterDataOrigin(sps, dataOrigin = c("d", "a"))
     expect_equal(unique(dataOrigin(res)), c("d", "a"))
     expect_equal(rtime(res)[1:266], rtime(sps)[sps$dataOrigin == "d"])
-    expect_equal(as.list(res)[1:266],
+    expect_equal(peaksData(res)[1:266],
                  SimpleList(sciex_pks[sps$dataOrigin == "d"]))
 })
 
@@ -769,7 +781,7 @@ test_that("filterDataStorage,Spectra works", {
     res <- filterDataStorage(sps, sciex_file[2])
     expect_identical(rtime(res), rtime(sps)[dataStorage(sps) == sciex_file[2]])
     expect_true(length(res@processing) > length(sps@processing))
-    expect_identical(as.list(res),
+    expect_identical(peaksData(res),
                      SimpleList(sciex_pks[dataStorage(sps) == sciex_file[2]]))
 })
 
@@ -915,19 +927,19 @@ test_that("filterRt,Spectra works", {
 
 test_that("bin,Spectra works", {
     sps <- Spectra(tmt_mzr)
-    pks <- as.list(sps)
+    pks <- peaksData(sps)
     res <- bin(sps, binSize = 2)
     expect_true(length(res@processingQueue) == 1)
     res1 <- bin(sps, msLevel = 1, binSize = 2)
 
-    expect_identical(as.list(res1)[res1$msLevel == 2],
+    expect_identical(peaksData(res1)[res1$msLevel == 2],
                      pks[sps$msLevel == 2])
 
     mzr <- range(unlist(mz(sps)))
     brks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = 2)
     res1 <- bin(sps, msLevel = 1, binSize = 2, breaks = brks)
-    res1_pks <- as.list(res1)
-    res_pks <- as.list(res)
+    res1_pks <- peaksData(res1)
+    res_pks <- peaksData(res)
     expect_identical(res1_pks[res1$msLevel == 1],
                      res_pks[res$msLevel == 1])
     expect_true(all(lengths(res_pks) != lengths(pks)))
@@ -1046,7 +1058,7 @@ test_that("pickPeaks,Spectra works", {
     res <- pickPeaks(sps)
     pks_res <- lapply(sciex_pks, .peaks_pick, spectrumMsLevel = 1L,
                       centroided = FALSE)
-    expect_identical(as.list(res), SimpleList(pks_res))
+    expect_identical(peaksData(res), SimpleList(pks_res))
     expect_true(all(centroided(res)))
 })
 
@@ -1073,7 +1085,7 @@ test_that("smooth,Spectra works", {
     res <- smooth(sps)
     pks_res <- lapply(sciex_pks, .peaks_smooth,
                       spectrumMsLevel = 1L, coef = coefMA(2L))
-    expect_identical(as.list(res), SimpleList(pks_res))
+    expect_identical(peaksData(res), SimpleList(pks_res))
 })
 
 test_that("replaceIntensitiesBelow,Spectra works", {
@@ -1092,7 +1104,7 @@ test_that("replaceIntensitiesBelow,Spectra works", {
     res <- replaceIntensitiesBelow(sps, threshold = 5000)
     pks_res <- lapply(sciex_pks, .peaks_replace_intensity, threshold = 5000,
                       spectrumMsLevel = 1L, centroided = TRUE)
-    expect_identical(as.list(res), SimpleList(pks_res))
+    expect_identical(peaksData(res), SimpleList(pks_res))
 })
 
 test_that("lapply,Spectra works", {
@@ -1172,4 +1184,33 @@ test_that("containsNeutralLoss,Spectra works", {
     sps@backend$dataStorage <- c("3", "1", "2")
     res_2 <- containsNeutralLoss(sps, neutralLoss = 4, BPPARAM = MulticoreParam())
     expect_equal(res, res_2)
+})
+
+test_that("reset,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- reset(sps)
+    expect_equal(mz(res), mz(sps))
+
+    sps_mod <- filterIntensity(sps, intensity = 29)
+    res <- reset(sps_mod)
+    expect_equal(mz(res), mz(sps))
+})
+
+test_that("export,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    fl <- tempfile()
+    expect_error(export(sps, file = fl, format = "other"), "'arg' should be")
+    Spectra:::export(sps, file = fl)
+    res <- readLines(fl)
+    expect_equal(length(grep("PEPMASS", res)), 2)
 })

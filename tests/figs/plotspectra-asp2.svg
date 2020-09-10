@@ -42,7 +42,7 @@
 <text transform='translate(41.76,190.84) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>25</text>
 <text transform='translate(41.76,130.45) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>30</text>
 <text transform='translate(41.76,70.06) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>35</text>
-<polygon points='59.04,502.56 329.76,502.56 329.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' />
+<polyline points='59.04,502.56 329.76,502.56 329.76,59.04 59.04,59.04 59.04,502.56 ' style='stroke-width: 0.75;' />
 <defs>
   <clipPath id='cpMC4wMHwzNjAuMDB8NTc2LjAwfDAuMDA='>
     <rect x='0.00' y='0.00' width='360.00' height='576.00' />
@@ -99,7 +99,7 @@
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text transform='translate(401.76,236.14) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>20</text></g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text transform='translate(401.76,171.97) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>25</text></g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text transform='translate(401.76,107.81) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>30</text></g>
-<polygon points='419.04,502.56 689.76,502.56 689.76,59.04 419.04,59.04 ' style='stroke-width: 0.75; fill: none;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
+<polyline points='419.04,502.56 689.76,502.56 689.76,59.04 419.04,59.04 419.04,502.56 ' style='stroke-width: 0.75;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
 <defs>
   <clipPath id='cpMzYwLjAwfDcyMC4wMHw1NzYuMDB8MC4wMA=='>
     <rect x='360.00' y='0.00' width='360.00' height='576.00' />

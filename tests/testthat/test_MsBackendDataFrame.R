@@ -279,30 +279,32 @@ test_that("mz<-,MsBackendDataFrame works", {
     expect_error(mz(be) <- list(3, 2, 4), "number of peaks")
 })
 
-test_that("as.list,MsBackendDataFrame works", {
+test_that("peaksData,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_equal(as.list(be), list())
+    expect_equal(peaksData(be), list())
     df <- DataFrame(msLevel = c(1L, 1L))
     be <- backendInitialize(be, data = df)
-    expect_equal(as.list(be), list(cbind(mz = numeric(), intensity = numeric()),
-                                   cbind(mz = numeric(), intensity = numeric())))
+    expect_equal(peaksData(be), list(cbind(mz = numeric(),
+                                           intensity = numeric()),
+                                     cbind(mz = numeric(),
+                                           intensity = numeric())))
     df$mz <- list(1:3, c(2.1))
     df$intensity <- list(1:3, 4)
     be <- backendInitialize(be, data = df)
-    expect_equal(as.list(be), list(cbind(mz = 1:3, intensity = 1:3),
-                                   cbind(mz = 2.1, intensity = 4)))
+    expect_equal(peaksData(be), list(cbind(mz = 1:3, intensity = 1:3),
+                                     cbind(mz = 2.1, intensity = 4)))
 })
 
-test_that("replaceList<-,MsBackendDataFrame works", {
+test_that("peaksData<-,MsBackendDataFrame works", {
     be <- backendInitialize(MsBackendDataFrame(), data = test_df)
 
-    pks <- lapply(as.list(be), function(z) z / 2)
-    replaceList(be) <- pks
-    expect_identical(as.list(be), pks)
+    pks <- lapply(peaksData(be), function(z) z / 2)
+    peaksData(be) <- pks
+    expect_identical(peaksData(be), pks)
 
-    expect_error(replaceList(be) <- 3, "has to be a list")
-    expect_error(replaceList(be) <- list(3, 2), "match length")
-    expect_error(replaceList(be) <- list(3, 2, 4), "dimensions")
+    expect_error(peaksData(be) <- 3, "has to be a list")
+    expect_error(peaksData(be) <- list(3, 2), "match length")
+    expect_error(peaksData(be) <- list(3, 2, 4), "dimensions")
 })
 
 test_that("lengths,MsBackendDataFrame works", {
@@ -456,9 +458,9 @@ test_that("spectraVariables,MsBackendDataFrame works", {
                                          "other_column"))
 })
 
-test_that("asDataFrame, asDataFrame<-, MsBackendDataFrame works", {
+test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    res <- asDataFrame(be)
+    res <- spectraData(be)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)
     expect_equal(colnames(res), names(.SPECTRA_DATA_COLUMNS))
@@ -466,38 +468,38 @@ test_that("asDataFrame, asDataFrame<-, MsBackendDataFrame works", {
     df <- DataFrame(scanIndex = 1:2, a = "a", b = "b")
     be <- backendInitialize(be, data = df)
 
-    res <- asDataFrame(be)
+    res <- spectraData(be)
     expect_true(is(res, "DataFrame"))
     expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
     expect_equal(res$a, c("a", "a"))
     expect_equal(res$b, c("b", "b"))
 
-    expect_error(asDataFrame(be) <- data.frame(4), "not valid")
+    expect_error(spectraData(be) <- data.frame(4), "not valid")
 
-    res <- asDataFrame(be, "msLevel")
+    res <- spectraData(be, "msLevel")
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), "msLevel")
     expect_equal(res$msLevel, c(NA_integer_, NA_integer_))
 
-    res <- asDataFrame(be, c("mz"))
+    res <- spectraData(be, c("mz"))
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), "mz")
     expect_equal(res$mz, NumericList(numeric(), numeric(), compress = FALSE))
 
-    res <- asDataFrame(be, c("a", "intensity"))
+    res <- spectraData(be, c("a", "intensity"))
     expect_true(is(res, "DataFrame"))
     expect_equal(colnames(res), c("a", "intensity"))
     expect_equal(res$intensity, NumericList(numeric(), numeric(),
                                             compress = FALSE))
     expect_equal(res$a, c("a", "a"))
 
-    asDataFrame(be) <- DataFrame(mzLevel = c(3L, 4L),
+    spectraData(be) <- DataFrame(mzLevel = c(3L, 4L),
                                  rtime = c(1.2, 1.4), other_col = "b")
     expect_identical(rtime(be), c(1.2, 1.4))
     expect_true(any(spectraVariables(be) == "other_col"))
-    expect_identical(asDataFrame(be, "other_col")[, 1], c("b", "b"))
+    expect_identical(spectraData(be, "other_col")[, 1], c("b", "b"))
 
-    expect_error(asDataFrame(be) <- DataFrame(msLevel = 1:3),
+    expect_error(spectraData(be) <- DataFrame(msLevel = 1:3),
                  "with 2 rows")
 })
 

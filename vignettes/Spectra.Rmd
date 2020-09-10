@@ -35,6 +35,14 @@ large variety of different ways to store and retrieve mass spectrometry
 data. Such backends range from mzML/mzXML/CDF files, simple flat files, or
 database systems.
 
+
+# Installation
+
+The package can be installed with the `BiocManager` package. To
+install `BiocManager` use `install.packages("BiocManager")` and, after that,
+`BiocManager::install("Spectra")` to install `Spectra`.
+
+
 # General usage
 
 Mass spectrometry data in `Spectra` objects can be thought of as a list of
@@ -217,13 +225,20 @@ mz(sps)
 intensity(sps)
 ```
 
-Peak data can also be extracted with the `as.list` function that returns a list
-of matrices, each with columns `"mz"` and `"intensity"` containing the m/z and
-intensity values for one spectrum.
+Peak data can also be extracted with the `peaksData` function that returns a
+list of matrices, each with columns `"mz"` and `"intensity"` containing the m/z
+and intensity values for one spectrum.
 
 ```{r peaks}
-pks <- as.list(sps)
+pks <- peaksData(sps)
 pks[[1]]
+```
+
+Note that we would get the same result by using the `as` method to coerce a
+`Spectra` object to a `list` or `SimpleList`:
+
+```{r as}
+as(sps, "SimpleList")
 ```
 
 The `spectraData` function returns a `DataFrame` with the full data for each
@@ -400,7 +415,7 @@ intensity(sps_rep)
 
 Note that any data manipulations on `Spectra` objects are not immediately
 applied to the peak data. They are added to a so called *processing queue* which
-is applied each time peak data is accessed (with the `as.list`, `mz` or
+is applied each time peak data is accessed (with the `peaksData`, `mz` or
 `intensity` functions). Thanks to this processing queue data manipulation
 operations are also possible for *read-only* backends (e.g. mzML-file based
 backends or database-based backends). The information about the number of such
@@ -454,7 +469,18 @@ lengths(sps_2)
 intensity(sps_2)
 ```
 
-Each spectrum in `sps_2` thus contains only a single peak.
+Each spectrum in `sps_2` thus contains only a single peak. The
+original data can be *restored* with the `reset` function which will empty the
+lazy evaluation queue and call the `reset` method on the storage backend. Below
+we call `reset` on the `sps_2` object and hence restore the data to its original
+state.
+
+```{r reset}
+sps_2_rest <- reset(sps_2)
+
+intensity(sps_2_rest)
+intensity(sps)
+```
 
 Finally, for `Spectra` that use a *writeable* backend, such as the
 `MsBackendDataFrame` or `MsBackendHdf5Peaks`, it is possible to apply the
@@ -471,7 +497,9 @@ sps_rep
 ```
 
 Before `applyProcessing` the lazy evaluation queue contained 2 processing steps,
-which were then applied to the peak data and *written* to the data storage.
+which were then applied to the peak data and *written* to the data storage. Note
+that calling `reset` **after** `applyProcessing` can no longer *restore* the
+data.
 
 
 ## Comparing spectra and other functions
@@ -531,7 +559,7 @@ of peaks with an intensity higher than 30.
 
 ```{r plotspectra-label-int, fig.width = 8, fig.height = 8}
 mzLabel <- function(z) {
-    z <- as.list(z)[[1L]]
+    z <- peaksData(z)[[1L]]
     lbls <- format(z[, "mz"], digits = 4)
     lbls[z[, "intensity"] < 30] <- ""
     lbls

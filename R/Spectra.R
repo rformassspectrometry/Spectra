@@ -28,7 +28,7 @@ NULL
 #'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
-#' @section Creation of objects, conversion and changing the backend:
+#' @section Creation of objects, conversion, changing the backend and export:
 #'
 #' `Spectra` classes can be created with the `Spectra` constructor function
 #' which supports the following formats:
@@ -83,6 +83,31 @@ NULL
 #' - parameter `BPPARAM`: setup for the parallel processing. See [bpparam()] for
 #'   details.
 #'
+#' Data from a `Spectra` object can be **exported** to a file with the `export`
+#' function. The file format for the exported data can be specified with the
+#' parameter `format`; currently only `format = "mgf"` is supported which
+#' exports the data in Mascot Generic Format (MGF). By default all non-empty
+#' spectra variables in `Spectra` are exported.
+#'
+#' The definition of the function is
+#' `export(object, file = tempfile(), format = "mgf",
+#'     variableMapping = spectraVariableMapping(format), ...)` and its
+#' parameters are:
+#'
+#' - `object`: the `Spectra` object to be exported.
+#'
+#' - `file`: the name of the file.
+#'
+#' - `format`: `character(1)` defining the export file format. Currently only
+#'   `format = "mgf"` is supported.
+#'
+#' - `variableMapping`: named `character` defining the mapping of spectra
+#'   variables (names of `variableMapping`) to fields in the output file
+#'   (elements of `variableMapping`). See output of `spectraVariableMapping()`
+#'   for the expected format. All spectra variables for which no mapping to a
+#'   field in the output format is provided are exported as they are.
+#'
+#'
 #' @section Accessing spectra data:
 #'
 #' - `$`, `$<-`: gets (or sets) a spectra variable for all spectra in `object`.
@@ -92,10 +117,12 @@ NULL
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `as.list`: gets the *peaks* matrices for all spectra in `object`. The
+#' - `peaksData`: gets the *peaks* matrices for all spectra in `object`. The
 #'   function returns a [SimpleList()] of matrices, each `matrix` with columns
 #'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
-#'   a spectrum.
+#'   a spectrum. Note that it is also possible to extract the peaks matrices
+#'   with `as(x, "list")` and `as(x, "SimpleList")` as a `list` and
+#'   `SimpleList`, respectively.
 #'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
@@ -289,6 +316,12 @@ NULL
 #'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
+#' - `reset`: restores the data to its original state (as much as possible):
+#'   removes any processing steps from the lazy processing queue and calls
+#'   `reset` on the backend which, depending on the backend, can also undo e.g.
+#'   data filtering operations. Note that a `reset` call after `applyProcessing`
+#'   will not have any effect. See examples below for more information.
+#'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
@@ -478,6 +511,12 @@ NULL
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
 #'     should be combined. For `lapply`: `factor` how `X` should be splitted.
 #'
+#' @param file For `export`: `character(1)` specifying the of the file to which
+#'     the data should be exported.
+#'
+#' @param format For `export`: `character(1)` defining the format of the output
+#'     file. Currently only `format = "mgf"` is supported.
+#'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
 #'     intensities of peaks between two spectra with each other.
@@ -596,6 +635,12 @@ NULL
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
+#' @param variableMapping For `export`: a named `character` vector with the
+#'     names of the fields in the exported file to which spectra variables
+#'     should be mapped, names being spectra variable names and elements of the
+#'     vector the fields in the output file. See output from
+#'     `spectraVariableMapping()` for the default.
+#'
 #' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
 #'     (the default) or all provided `mz` have to be present in the spectrum.
 #'
@@ -690,10 +735,15 @@ NULL
 #' mz(data)[[1]]
 #'
 #' ## Get the peak data (m/z and intensity values).
-#' pks <- as.list(data)
+#' pks <- peaksData(data)
 #' pks
 #' pks[[1]]
 #' pks[[2]]
+#'
+#' ## Note that we could get the same resulb by coercing the `Spectra` to
+#' ## a `list` or `SimpleList`:
+#' as(data, "list")
+#' as(data, "SimpleList")
 #'
 #' ## List all available spectra variables (i.e. spectrum data and metadata).
 #' spectraVariables(data)
@@ -781,6 +831,25 @@ NULL
 #' ## Lengths of spectra is now different
 #' lengths(mz(res))
 #' lengths(mz(data))
+#'
+#' ## Since data manipulation operations are by default not directly applied to
+#' ## the data but only added to the internal lazy evaluation queue, it is also
+#' ## possible to remove these data manipulations with the `reset` function:
+#' res_rest <- reset(res)
+#' res_rest
+#' lengths(mz(res_rest))
+#' lengths(mz(res))
+#' lengths(mz(data))
+#'
+#' ## `reset` after a `applyProcessing` can not restore the data, because the
+#' ## data in the backend was changed. Similarly, `reset` after any filter
+#' ## operations can not restore data for a `Spectra` with a
+#' ## `MsBackendDataFrame`.
+#' res_2 <- applyProcessing(res)
+#' res_rest <- reset(res_2)
+#' lengths(mz(res))
+#' lengths(mz(res_rest))
+#'
 #'
 #' ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
 #' ## the normalized dotproduct method.
@@ -884,7 +953,8 @@ setMethod("show", "Spectra",
         if (length(object@processingQueue))
             cat("Lazy evaluation queue:", length(object@processingQueue),
                 "processing step(s)\n")
-        cat("Processing:\n", paste(object@processing, collapse="\n "), "\n")
+        if (length(object@processing))
+            cat("Processing:\n", paste(object@processing, collapse="\n "), "\n")
     })
 
 #' @rdname Spectra
@@ -916,8 +986,8 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 #' @rdname Spectra
 setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            metadata = list(),
-                                           source = MsBackendMzR(),
-                                           backend = MsBackendDataFrame(),
+                                           source = backend,
+                                           backend = MsBackendMzR(),
                                            ..., BPPARAM = bpparam()) {
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
@@ -943,7 +1013,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               data_storage <- object@backend$dataStorage
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
                   backendInitialize(backend,
-                                    data = asDataFrame(z),
+                                    data = spectraData(z),
                                     ...)
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
@@ -979,6 +1049,18 @@ setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
     })
 })
 
+#' @rdname Spectra
+#'
+#' @export
+setMethod("export", "Spectra",
+          function(object, file = tempfile(), format = "mgf",
+                   variableMapping = spectraVariableMapping(format), ...) {
+              switch(match.arg(format),
+                     "mgf" = .export_mgf(object, con = file,
+                                         mapping = variableMapping)
+                     )
+          })
+
 #### ---------------------------------------------------------------------------
 ##
 ##                          ACCESSOR METHODS
@@ -990,8 +1072,17 @@ setMethod("acquisitionNum", "Spectra", function(object)
     acquisitionNum(object@backend))
 
 #' @rdname Spectra
-setMethod("as.list", "Spectra", function(x, ...) {
-    SimpleList(.peaksapply(x, ...))
+setMethod("peaksData", "Spectra", function(object, ...) {
+    SimpleList(.peaksapply(object, ...))
+})
+
+#' @importFrom methods setAs
+setAs("Spectra", "list", function(from, to) {
+    .peaksapply(from)
+})
+
+setAs("Spectra", "SimpleList", function(from, to) {
+    peaksData(from)
 })
 
 #' @rdname Spectra
@@ -1255,7 +1346,7 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 setMethod("spectraData", "Spectra", function(object,
                                              columns = spectraVariables(object))
 {
-    asDataFrame(object@backend, columns = columns)
+    spectraData(object@backend, columns = columns)
 })
 
 #' @rdname Spectra
@@ -1264,7 +1355,7 @@ setMethod("spectraData", "Spectra", function(object,
 #'
 #' @exportMethod spectraData<-
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
-    asDataFrame(object@backend) <- value
+    spectraData(object@backend) <- value
     object
 })
 
@@ -1447,6 +1538,14 @@ setMethod("filterRt", "Spectra",
               object
           })
 
+#' @rdname Spectra
+setMethod("reset", "Spectra", function(object, ...) {
+    object@backend <- reset(object@backend)
+    object@processingQueue <- list()
+    object@processing <- .logging(object@processing, "Reset object.")
+    object
+})
+
 #### ---------------------------------------------------------------------------
 ##
 ##                      DATA MANIPULATION METHODS
@@ -1510,9 +1609,9 @@ setMethod("filterIntensity", "Spectra",
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
           function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
                    FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
-              mat <- .compare_spectra(x, y, MAPFUN = MAPFUN,
-                                      tolerance = tolerance,
-                                      ppm = ppm, FUN = FUN, ...)
+              mat <- .compare_spectra_chunk(x, y, MAPFUN = MAPFUN,
+                                            tolerance = tolerance,
+                                            ppm = ppm, FUN = FUN, ...)
               if (SIMPLIFY && (length(x) == 1 || length(y) == 1))
                   mat <- as.vector(mat)
               mat

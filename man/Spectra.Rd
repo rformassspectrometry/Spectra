@@ -4,6 +4,7 @@
 \alias{addProcessing}
 \alias{applyProcessing}
 \alias{combineSpectra}
+\alias{spectraVariableMapping}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -14,8 +15,9 @@
 \alias{setBackend,Spectra,MsBackend-method}
 \alias{c,Spectra-method}
 \alias{split,Spectra,ANY-method}
+\alias{export,Spectra-method}
 \alias{acquisitionNum,Spectra-method}
-\alias{as.list,Spectra-method}
+\alias{peaksData,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
 \alias{collisionEnergy,Spectra-method}
@@ -71,6 +73,7 @@
 \alias{filterPrecursorMz,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
+\alias{reset,Spectra-method}
 \alias{bin,Spectra-method}
 \alias{filterIntensity,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
@@ -92,6 +95,8 @@ combineSpectra(
   ...,
   BPPARAM = bpparam()
 )
+
+spectraVariableMapping(format = c("mgf"))
 
 \S4method{Spectra}{DataFrame}(
   object,
@@ -123,8 +128,8 @@ combineSpectra(
   object,
   processingQueue = list(),
   metadata = list(),
-  source = MsBackendMzR(),
-  backend = MsBackendDataFrame(),
+  source = backend,
+  backend = MsBackendMzR(),
   ...,
   BPPARAM = bpparam()
 )
@@ -135,9 +140,17 @@ combineSpectra(
 
 \S4method{split}{Spectra,ANY}(x, f, drop = FALSE, ...)
 
+\S4method{export}{Spectra}(
+  object,
+  file = tempfile(),
+  format = "mgf",
+  variableMapping = spectraVariableMapping(format),
+  ...
+)
+
 \S4method{acquisitionNum}{Spectra}(object)
 
-\S4method{as.list}{Spectra}(x, ...)
+\S4method{peaksData}{Spectra}(object, ...)
 
 \S4method{centroided}{Spectra}(object)
 
@@ -269,6 +282,8 @@ combineSpectra(
 
 \S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
+\S4method{reset}{Spectra}(object, ...)
+
 \S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
 
 \S4method{filterIntensity}{Spectra}(
@@ -357,6 +372,9 @@ of the \linkS4class{MsBackend}.}
 depending on the used backend, per-file parallel processing will be
 performed.}
 
+\item{format}{For \code{export}: \code{character(1)} defining the format of the output
+file. Currently only \code{format = "mgf"} is supported.}
+
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
 
@@ -372,6 +390,15 @@ to import spectrum data from the provided files. See section \emph{Creation
 of objects, conversion and changing the backend} for more details.}
 
 \item{drop}{For \code{[}, \code{split}: not considered.}
+
+\item{file}{For \code{export}: \code{character(1)} specifying the of the file to which
+the data should be exported.}
+
+\item{variableMapping}{For \code{export}: a named \code{character} vector with the
+names of the fields in the exported file to which spectra variables
+should be mapped, names being spectra variable names and elements of the
+vector the fields in the output file. See output from
+\code{spectraVariableMapping()} for the default.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
@@ -524,7 +551,7 @@ methods} section below for more details.
 
 For details on plotting spectra, see \code{\link[=plotSpectra]{plotSpectra()}}.
 }
-\section{Creation of objects, conversion and changing the backend}{
+\section{Creation of objects, conversion, changing the backend and export}{
 
 
 \code{Spectra} classes can be created with the \code{Spectra} constructor function
@@ -573,6 +600,27 @@ are advised to use the default setting.
 \item parameter \code{BPPARAM}: setup for the parallel processing. See \code{\link[=bpparam]{bpparam()}} for
 details.
 }
+
+Data from a \code{Spectra} object can be \strong{exported} to a file with the \code{export}
+function. The file format for the exported data can be specified with the
+parameter \code{format}; currently only \code{format = "mgf"} is supported which
+exports the data in Mascot Generic Format (MGF). By default all non-empty
+spectra variables in \code{Spectra} are exported.
+
+The definition of the function is
+\code{export(object, file = tempfile(), format = "mgf", variableMapping = spectraVariableMapping(format), ...)} and its
+parameters are:
+\itemize{
+\item \code{object}: the \code{Spectra} object to be exported.
+\item \code{file}: the name of the file.
+\item \code{format}: \code{character(1)} defining the export file format. Currently only
+\code{format = "mgf"} is supported.
+\item \code{variableMapping}: named \code{character} defining the mapping of spectra
+variables (names of \code{variableMapping}) to fields in the output file
+(elements of \code{variableMapping}). See output of \code{spectraVariableMapping()}
+for the expected format. All spectra variables for which no mapping to a
+field in the output format is provided are exported as they are.
+}
 }
 
 \section{Accessing spectra data}{
@@ -583,10 +631,12 @@ See examples for details.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
-\item \code{as.list}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
+\item \code{peaksData}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
 function returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns
 \code{"mz"} and \code{"intensity"} with the m/z and intensity values for all peaks of
-a spectrum.
+a spectrum. Note that it is also possible to extract the peaks matrices
+with \code{as(x, "list")} and \code{as(x, "SimpleList")} as a \code{list} and
+\code{SimpleList}, respectively.
 \item \code{centroided}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -745,6 +795,11 @@ MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
 \code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
 original order).
+\item \code{reset}: restores the data to its original state (as much as possible):
+removes any processing steps from the lazy processing queue and calls
+\code{reset} on the backend which, depending on the backend, can also undo e.g.
+data filtering operations. Note that a \code{reset} call after \code{applyProcessing}
+will not have any effect. See examples below for more information.
 \item \code{selectSpectraVariables}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
@@ -958,10 +1013,15 @@ intensity(sciex_im)
 mz(data)[[1]]
 
 ## Get the peak data (m/z and intensity values).
-pks <- as.list(data)
+pks <- peaksData(data)
 pks
 pks[[1]]
 pks[[2]]
+
+## Note that we could get the same resulb by coercing the `Spectra` to
+## a `list` or `SimpleList`:
+as(data, "list")
+as(data, "SimpleList")
 
 ## List all available spectra variables (i.e. spectrum data and metadata).
 spectraVariables(data)
@@ -1049,6 +1109,25 @@ intensity(res)[[2]]
 ## Lengths of spectra is now different
 lengths(mz(res))
 lengths(mz(data))
+
+## Since data manipulation operations are by default not directly applied to
+## the data but only added to the internal lazy evaluation queue, it is also
+## possible to remove these data manipulations with the `reset` function:
+res_rest <- reset(res)
+res_rest
+lengths(mz(res_rest))
+lengths(mz(res))
+lengths(mz(data))
+
+## `reset` after a `applyProcessing` can not restore the data, because the
+## data in the backend was changed. Similarly, `reset` after any filter
+## operations can not restore data for a `Spectra` with a
+## `MsBackendDataFrame`.
+res_2 <- applyProcessing(res)
+res_rest <- reset(res_2)
+lengths(mz(res))
+lengths(mz(res_rest))
+
 
 ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
 ## the normalized dotproduct method.

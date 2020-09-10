@@ -39,7 +39,7 @@
 <text transform='translate(41.76,173.12) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>10</text>
 <text transform='translate(41.76,130.77) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>20</text>
 <text transform='translate(41.76,88.41) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>30</text>
-<polygon points='59.04,214.56 689.76,214.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' />
+<polyline points='59.04,214.56 689.76,214.56 689.76,59.04 59.04,59.04 59.04,214.56 ' style='stroke-width: 0.75;' />
 <defs>
   <clipPath id='cpMC4wMHw3MjAuMDB8Mjg4LjAwfDAuMDA='>
     <rect x='0.00' y='0.00' width='720.00' height='288.00' />
@@ -94,7 +94,7 @@
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text transform='translate(41.76,458.47) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>10</text></g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text transform='translate(41.76,413.47) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>20</text></g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text transform='translate(41.76,368.47) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>30</text></g>
-<polygon points='59.04,502.56 689.76,502.56 689.76,347.04 59.04,347.04 ' style='stroke-width: 0.75; fill: none;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
+<polyline points='59.04,502.56 689.76,502.56 689.76,347.04 59.04,347.04 59.04,502.56 ' style='stroke-width: 0.75;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
 <defs>
   <clipPath id='cpMC4wMHw3MjAuMDB8NTc2LjAwfDI4OC4wMA=='>
     <rect x='0.00' y='288.00' width='720.00' height='288.00' />
