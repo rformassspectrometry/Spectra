@@ -1107,18 +1107,18 @@ test_that("replaceIntensitiesBelow,Spectra works", {
     expect_identical(peaksData(res), SimpleList(pks_res))
 })
 
-test_that("lapply,Spectra works", {
+test_that("spectrapply,Spectra works", {
     sps <- Spectra(sciex_mzr)[c(1:3, 1400:1410)]
-    rts <- lapply(sps, rtime)
+    rts <- spectrapply(sps, rtime)
     expect_equal(unlist(rts, use.names = FALSE), rtime(sps))
 
-    expect_equal(unname(split(sps, 1:length(sps))), unname(lapply(sps)))
+    expect_equal(unname(split(sps, 1:length(sps))), unname(spectrapply(sps)))
 
     ## test on a mzR backend using intensities.
     myFun <- function(x, add) {
         mean(intensity(x)[[1]]) + add
     }
-    res <- lapply(sps, FUN = myFun, add = 3)
+    res <- spectrapply(sps, FUN = myFun, add = 3)
     ints <- intensity(sps)
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(ints, mean, numeric(1)) + 3)
@@ -1126,7 +1126,7 @@ test_that("lapply,Spectra works", {
     ## Same after replaceIntensitiesBelow and clean.
     sps <- filterIntensity(replaceIntensitiesBelow(sps, t = 4000),
                            intensity = 0.1)
-    res <- lapply(sps, FUN = function(x) mean(x$intensity[[1]]))
+    res <- spectrapply(sps, FUN = function(x) mean(x$intensity[[1]]))
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(intensity(sps), mean, numeric(1)))
 })

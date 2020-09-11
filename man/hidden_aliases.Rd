@@ -25,6 +25,7 @@
 \alias{reset}
 \alias{selectSpectraVariables}
 \alias{setBackend}
+\alias{spectrapply}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendMerge,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
@@ -165,6 +166,8 @@ reset(object, ...)
 selectSpectraVariables(object, ...)
 
 setBackend(object, backend, ...)
+
+spectrapply(object, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 
