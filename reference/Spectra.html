@@ -82,7 +82,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
       </span>
     </div>
 
@@ -289,7 +289,13 @@ containsNeutralLoss(
 )
 
 # S4 method for Spectra
-lapply(X, FUN, f = as.factor(seq_along(X)), ..., BPPARAM = SerialParam())
+spectrapply(
+  object,
+  FUN,
+  f = as.factor(seq_along(object)),
+  ...,
+  BPPARAM = SerialParam()
+)
 
 # S4 method for Spectra
 length(x)
@@ -496,7 +502,8 @@ for details. For <code>setBackend</code>: factor defining how to split the data 
 parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For <code>combineSpectra</code>: <code>factor</code> defining the grouping of the spectra that
-should be combined. For <code>lapply</code>: <code>factor</code> how <code>X</code> should be splitted.</p></td>
+should be combined. For <code>spectrapply</code>: <code>factor</code> how <code>object</code> should be
+splitted.</p></td>
     </tr>
     <tr>
       <th>BPPARAM</th>
@@ -592,10 +599,6 @@ for peaks to be matched.</p></td>
       <th>neutralLoss</th>
       <td><p>for <code>containsNeutralLoss</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining the value
 which should be subtracted from the spectrum's precursor m/z.</p></td>
-    </tr>
-    <tr>
-      <th>X</th>
-      <td><p>A <code>Spectra</code> object.</p></td>
     </tr>
     <tr>
       <th>use.names</th>
@@ -1102,16 +1105,17 @@ the <code>intensity</code> parameter in which case an upper limit of <code>Inf</
 Note that this function removes also peaks with missing intensities
 (i.e. an intensity of <code>NA</code>). Parameter <code>msLevel.</code> allows to restrict the
 filtering to spectra of the specified MS level(s).</p></li>
-<li><p><code>lapply</code>: apply a given function to each spectrum in a <code>Spectra</code> object.
-The <code>Spectra</code> is splitted into individual spectra and on each of them
-(i.e. <code>Spectra</code> of length 1) the function <code>FUN</code> is applied. Additional
+<li><p><code>spectrapply</code>: apply a given function to each spectrum in a <code>Spectra</code>
+object. The <code>Spectra</code> is splitted into individual spectra and on each of
+them (i.e. <code>Spectra</code> of length 1) the function <code>FUN</code> is applied. Additional
 parameters to <code>FUN</code> can be passed with the <code>...</code> argument. Parameter
 <code>BPPARAM</code> allows to enable parallel processing, which however makes only
-sense if <code>FUN</code> is computational intense. <code>lapply</code> returns a <code>list</code> (same
-length than <code>X</code>) with the result from <code>FUN</code>. See examples for more details.
+sense if <code>FUN</code> is computational intense. <code>spectrapply</code> returns a <code>list</code>
+(same length than <code>object</code>) with the result from <code>FUN</code>. See examples for
+more details.
 Note that the result and its order depends on the factor <code>f</code> used for
-splitting <code>X</code> with <code>split</code>, i.e. no re-ordering or <code>unsplit</code> is performed
-on the result.</p></li>
+splitting <code>object</code> with <code>split</code>, i.e. no re-ordering or <code>unsplit</code> is
+performed on the result.</p></li>
 <li><p><code>smooth</code>: smooth individual spectra using a moving window-based approach
 (window size = <code>2 * halfWindowSize</code>). Currently, the
 Moving-Average- (<code>method = "MovingAverage"</code>),
@@ -1224,7 +1228,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Sep  9 07:26:44 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Sep 11 09:45:37 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1444,7 +1448,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Wed Sep  9 07:26:45 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Fri Sep 11 09:45:38 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1469,7 +1473,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Wed Sep  9 07:26:45 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Sep 11 09:45:38 2020] </div><div class='input'>
 <span class='co'>## Remove empty spectra variables</span>
 <span class='kw'>sciex_noNA</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>dropNaSpectraVariables</a></span>(<span class='kw'>sciex</span>)
 
@@ -1522,7 +1526,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Sep  9 07:26:45 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Sep 11 09:45:39 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]
 </div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]
@@ -1550,9 +1554,9 @@ level(s).</p></li>
 #&gt; 2         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Sep  9 07:26:45 2020]
-#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Wed Sep  9 07:26:45 2020]
-#&gt;  Reset object. [Wed Sep  9 07:26:45 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Sep 11 09:45:39 2020]
+#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Sep 11 09:45:39 2020]
+#&gt;  Reset object. [Fri Sep 11 09:45:39 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))
 </div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
@@ -1608,7 +1612,7 @@ level(s).</p></li>
 <span class='co'>## in a subset of the sciex_im data. Note that we can access all variables</span>
 <span class='co'>## of each individual spectrum either with the `$` operator or the</span>
 <span class='co'>## corresponding method.</span>
-<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='kw'>sciex_im</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>], FUN = <span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='kw'>x</span><span class='op'>$</span><span class='kw'>intensity</span>[[<span class='fl'>1</span>]]))
+<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>spectrapply</a></span>(<span class='kw'>sciex_im</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>], FUN = <span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='kw'>x</span><span class='op'>$</span><span class='kw'>intensity</span>[[<span class='fl'>1</span>]]))
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='kw'>res</span>)
 </div><div class='output co'>#&gt; $`1`
 #&gt; [1] 1553.953
