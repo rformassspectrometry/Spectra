@@ -1,6 +1,6 @@
 # Spectra 0.99
 
-## Changes in 0.99.3
+## Changes in 0.99.4
 
 - Add `export,MsBackendMzR` to export spectra data to mzML or mzXML file(s).
 - Add an `export,MsBackend` method to allow backends to take care of data
@@ -9,6 +9,10 @@
 - Change parameter `source` in `Spectra,character` to `MsBackendMzR` and set
   parameter `backend = source`. Thus by default, the import backend will also
   be used to store the data.
+
+## Changes in 0.99.3
+
+- Replace `lapply,Spectra` with `spectrapply,Spectra`.
 
 ## Changes in 0.99.2
 

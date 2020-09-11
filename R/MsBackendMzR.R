@@ -49,7 +49,7 @@ setMethod("backendInitialize", "MsBackendMzR",
                   stop("Parameter 'files' is expected to be a character vector",
                        " with the files names from where data should be",
                        " imported")
-              files <- normalizePath(files)
+              files <- normalizePath(files, mustWork = FALSE)
               msg <- .valid_ms_backend_files_exist(files)
               if (length(msg))
                   stop(msg)
