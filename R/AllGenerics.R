@@ -55,3 +55,5 @@ setGeneric("selectSpectraVariables", function(object, ...)
 setGeneric("setBackend", function(object, backend, ...)
     standardGeneric("setBackend"))
 setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
+#' @rdname hidden_aliases
+setGeneric("spectrapply", function(object, ...) standardGeneric("spectrapply"))

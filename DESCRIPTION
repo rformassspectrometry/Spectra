@@ -31,7 +31,6 @@ Imports:
     methods,
     IRanges,
     MsCoreUtils (>= 1.1.3),
-    BiocGenerics,
     graphics,
     grDevices,
     stats,

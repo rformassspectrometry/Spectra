@@ -413,16 +413,17 @@ NULL
 #'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
 #'   filtering to spectra of the specified MS level(s).
 #'
-#' - `lapply`: apply a given function to each spectrum in a `Spectra` object.
-#'   The `Spectra` is splitted into individual spectra and on each of them
-#'   (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
+#' - `spectrapply`: apply a given function to each spectrum in a `Spectra`
+#'   object. The `Spectra` is splitted into individual spectra and on each of
+#'   them (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
 #'   parameters to `FUN` can be passed with the `...` argument. Parameter
 #'   `BPPARAM` allows to enable parallel processing, which however makes only
-#'   sense if `FUN` is computational intense. `lapply` returns a `list` (same
-#'   length than `X`) with the result from `FUN`. See examples for more details.
+#'   sense if `FUN` is computational intense. `spectrapply` returns a `list`
+#'   (same length than `object`) with the result from `FUN`. See examples for
+#'   more details.
 #'   Note that the result and its order depends on the factor `f` used for
-#'   splitting `X` with `split`, i.e. no re-ordering or `unsplit` is performed
-#'   on the result.
+#'   splitting `object` with `split`, i.e. no re-ordering or `unsplit` is
+#'   performed on the result.
 #'
 #' - `smooth`: smooth individual spectra using a moving window-based approach
 #'    (window size = `2 * halfWindowSize`). Currently, the
@@ -510,7 +511,8 @@ NULL
 #'     parallelized copying of the spectra data to the new backend. For some
 #'     backends changing this parameter can lead to errors.
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
-#'     should be combined. For `lapply`: `factor` how `X` should be splitted.
+#'     should be combined. For `spectrapply`: `factor` how `object` should be
+#'     splitted.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
@@ -634,8 +636,6 @@ NULL
 #'     (the default) or all provided `mz` have to be present in the spectrum.
 #'
 #' @param x A `Spectra` object.
-#'
-#' @param X A `Spectra` object.
 #'
 #' @param y A `Spectra` object.
 #'
@@ -870,7 +870,7 @@ NULL
 #' ## in a subset of the sciex_im data. Note that we can access all variables
 #' ## of each individual spectrum either with the `$` operator or the
 #' ## corresponding method.
-#' res <- lapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
+#' res <- spectrapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
 #' head(res)
 #'
 #' ## It is however important to note that dedicated methods to access the
@@ -1255,12 +1255,13 @@ setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
 
 #' @rdname Spectra
 #'
-#' @exportMethod lapply
-setMethod("lapply", "Spectra", function(X, FUN, f = as.factor(seq_along(X)),
-                                        ..., BPPARAM = SerialParam()) {
+#' @exportMethod spectrapply
+setMethod("spectrapply", "Spectra", function(object, FUN,
+                                             f = as.factor(seq_along(object)),
+                                             ..., BPPARAM = SerialParam()) {
     if (missing(FUN))
         FUN <- identity
-    .lapply(X, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
+    .lapply(object, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
 })
 
 #' @rdname Spectra

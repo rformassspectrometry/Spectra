@@ -37,7 +37,7 @@
 \alias{isolationWindowUpperMz<-,Spectra-method}
 \alias{containsMz,Spectra-method}
 \alias{containsNeutralLoss,Spectra-method}
-\alias{lapply,Spectra-method}
+\alias{spectrapply,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{mz,Spectra-method}
@@ -196,7 +196,13 @@ combineSpectra(
   BPPARAM = bpparam()
 )
 
-\S4method{lapply}{Spectra}(X, FUN, f = as.factor(seq_along(X)), ..., BPPARAM = SerialParam())
+\S4method{spectrapply}{Spectra}(
+  object,
+  FUN,
+  f = as.factor(seq_along(object)),
+  ...,
+  BPPARAM = SerialParam()
+)
 
 \S4method{length}{Spectra}(x)
 
@@ -350,7 +356,8 @@ for details. For \code{setBackend}: factor defining how to split the data for
 parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
-should be combined. For \code{lapply}: \code{factor} how \code{X} should be splitted.}
+should be combined. For \code{spectrapply}: \code{factor} how \code{object} should be
+splitted.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
@@ -401,8 +408,6 @@ for peaks to be matched.}
 
 \item{neutralLoss}{for \code{containsNeutralLoss}: \code{numeric(1)} defining the value
 which should be subtracted from the spectrum's precursor m/z.}
-
-\item{X}{A \code{Spectra} object.}
 
 \item{use.names}{For \code{lengths}: ignored.}
 
@@ -866,16 +871,17 @@ the \code{intensity} parameter in which case an upper limit of \code{Inf} is use
 Note that this function removes also peaks with missing intensities
 (i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
 filtering to spectra of the specified MS level(s).
-\item \code{lapply}: apply a given function to each spectrum in a \code{Spectra} object.
-The \code{Spectra} is splitted into individual spectra and on each of them
-(i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
+\item \code{spectrapply}: apply a given function to each spectrum in a \code{Spectra}
+object. The \code{Spectra} is splitted into individual spectra and on each of
+them (i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
 parameters to \code{FUN} can be passed with the \code{...} argument. Parameter
 \code{BPPARAM} allows to enable parallel processing, which however makes only
-sense if \code{FUN} is computational intense. \code{lapply} returns a \code{list} (same
-length than \code{X}) with the result from \code{FUN}. See examples for more details.
+sense if \code{FUN} is computational intense. \code{spectrapply} returns a \code{list}
+(same length than \code{object}) with the result from \code{FUN}. See examples for
+more details.
 Note that the result and its order depends on the factor \code{f} used for
-splitting \code{X} with \code{split}, i.e. no re-ordering or \code{unsplit} is performed
-on the result.
+splitting \code{object} with \code{split}, i.e. no re-ordering or \code{unsplit} is
+performed on the result.
 \item \code{smooth}: smooth individual spectra using a moving window-based approach
 (window size = \code{2 * halfWindowSize}). Currently, the
 Moving-Average- (\code{method = "MovingAverage"}),
@@ -1138,7 +1144,7 @@ compareSpectra(sciex_im[2:3], sciex_im[10:20], ppm = 10, type = "inner",
 ## in a subset of the sciex_im data. Note that we can access all variables
 ## of each individual spectrum either with the `$` operator or the
 ## corresponding method.
-res <- lapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
+res <- spectrapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
 head(res)
 
 ## It is however important to note that dedicated methods to access the
