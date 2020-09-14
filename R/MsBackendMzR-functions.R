@@ -145,8 +145,7 @@ MsBackendMzR <- function() {
         message("Writing file ", basename(file), "...", appendLF = FALSE)
     file <- path.expand(file)
     if (copy && length(unique(dataOrigin(x))) == 1) {
-        original_file <- unique(dataOrigin(x))
-        if (any(is.na(original_file))) original_file <- "NA"
+        original_file <- as.character(dataOrigin(x)[1]
         if (!file.exists(original_file)) {
             warning("Original data file not found, setting 'copy = FALSE'.",
                     call. = FALSE)
