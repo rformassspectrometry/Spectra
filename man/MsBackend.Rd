@@ -624,7 +624,8 @@ backend and if \code{dataOrigin(x)} contains the original MS data file names.
 \item \code{BPPARAM}: parallel processing settings.
 }
 
-See examples in \linkS4class{Spectra()} or the vignette for more details and examples.
+See examples in \linkS4class{Spectra} or the vignette for more details and
+examples.
 }
 
 \section{\code{MsBackendHdf5Peaks}, on-disk MS data backend}{

@@ -447,7 +447,8 @@
 #'   backend and if `dataOrigin(x)` contains the original MS data file names.
 #' - `BPPARAM`: parallel processing settings.
 #'
-#' See examples in [Spectra()-class] or the vignette for more details and examples.
+#' See examples in [Spectra-class] or the vignette for more details and
+#' examples.
 #'
 #'
 #' @section `MsBackendHdf5Peaks`, on-disk MS data backend:
