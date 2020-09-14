@@ -104,7 +104,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.4</span>
       </span>
     </div>
 
@@ -188,6 +188,9 @@ backendMerge(object, ...)
 
 # S4 method for MsBackend
 backendMerge(object, ...)
+
+# S4 method for MsBackend
+export(object, ...)
 
 # S4 method for MsBackend
 acquisitionNum(object)
@@ -408,7 +411,8 @@ to filter for.</p></td>
     <tr>
       <th>file</th>
       <td><p>For <code>filterFile</code>: index or name of the file(s) to which the data
-should be subsetted.</p></td>
+should be subsetted. For <code>export</code>: <code>character</code> of length 1 or equal to
+the number of spectra.</p></td>
     </tr>
     <tr>
       <th>dataOrigin</th>
@@ -562,6 +566,17 @@ collision energy for all spectra in <code>object</code>. <code>collisionEnergy</
 returns a <code>numeric</code> with length equal to the number of spectra
 (<code>NA_real_</code> if not present/defined), <code>collisionEnergy&lt;-</code> takes a
 <code>numeric</code> of length equal to the number of spectra in <code>object</code>.</p></li>
+<li><p><code>export</code>: exports data from a <code>Spectra</code> class to a file. This method is
+called by the <code>export,Spectra</code> method that passes itself as a second
+argument to the function. The <code>export,MsBackend</code> implementation is thus
+expected to take a <code>Spectra</code> class as second argument from which all data
+is exported. Taking data from a <code>Spectra</code> class ensures that also all
+eventual data manipulations (cached in the <code>Spectra</code>'s lazy evaluation
+queue) are applied prior to export - this would not be possible with only a
+MsBackend class. An example implementation is the <code>export</code> method
+for the <code>MsBackendMzR</code> backend that supports export of the data in
+<em>mzML</em> or <em>mzXML</em> format. See the documentation for the <code>MsBackendMzR</code>
+class below for more information.</p></li>
 <li><p><code>filterAcquisitionNum</code>: filters the object keeping only spectra matching
 the provided acquisition numbers (argument <code>n</code>). If <code>dataOrigin</code> or
 <code>dataStorage</code> is also provided, <code>object</code> is subsetted to the spectra with
@@ -767,6 +782,27 @@ memory.</p>
 <p>New objects can be created with the <code>MsBackendMzR()</code> function which
 can be subsequently filled with data by calling <code>backendInitialize</code>
 passing the file names of the input data files with argument <code>files</code>.</p>
+<p>This backend provides an <code>export</code> method to export data from a <code>Spectra</code> in
+<em>mzML</em> or <em>mzXML</em> format. The definition of the function is:</p>
+<p><code><a href='hidden_aliases.html'>export(object, x, file = tempfile(), format = c("mzML", "mzXML"), copy = FALSE)</a></code></p>
+<p>The parameters are:</p><ul>
+<li><p><code>object</code>: an instance of the <code>MsBackendMzR</code> class.</p></li>
+<li><p><code>x</code>: the <a href='addProcessing.html'>Spectra</a> object to be exported.</p></li>
+<li><p><code>file</code>: <code>character</code> with the (full) output file name(s). Should be
+of length 1 or equal <code><a href='https://rdrr.io/r/base/length.html'>length(x)</a></code>. If a single file is specified, all
+spectra are exported to that file. Alternatively it is possible to specify
+for each spectrum in <code>x</code> the name of the file to which it should be
+exported (and hence <code>file</code> has to be of length equal <code><a href='https://rdrr.io/r/base/length.html'>length(x)</a></code>).</p></li>
+<li><p><code>format</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>, either <code>"mzML"</code> or <code>"mzXML"</code> defining the output
+file format.</p></li>
+<li><p><code>copy</code>: <code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether general file information should be copied from
+the original MS data files. This only works if <code>x</code> uses a <code>MsBackendMzR</code>
+backend and if <code>dataOrigin(x)</code> contains the original MS data file names.</p></li>
+<li><p><code>BPPARAM</code>: parallel processing settings.</p></li>
+</ul>
+
+<p>See examples in <a href='addProcessing.html'>Spectra</a> or the vignette for more details and
+examples.</p>
     <h2 class="hasAnchor" id="msbackendhdf-peaks-on-disk-ms-data-backend"><a class="anchor" href="#msbackendhdf-peaks-on-disk-ms-data-backend"></a><code>MsBackendHdf5Peaks</code>, on-disk MS data backend</h2>
 
     
@@ -910,7 +946,7 @@ of m/z or intensity values.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

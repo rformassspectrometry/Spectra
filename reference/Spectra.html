@@ -82,7 +82,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.4</span>
       </span>
     </div>
 
@@ -149,8 +149,6 @@ combineSpectra(
   BPPARAM = bpparam()
 )
 
-spectraVariableMapping(format = c("mgf"))
-
 # S4 method for DataFrame
 Spectra(
   object,
@@ -185,8 +183,8 @@ Spectra(
   object,
   processingQueue = list(),
   metadata = list(),
-  source = backend,
-  backend = MsBackendMzR(),
+  source = MsBackendMzR(),
+  backend = source,
   ...,
   BPPARAM = bpparam()
 )
@@ -201,13 +199,7 @@ c(x, ...)
 split(x, f, drop = FALSE, ...)
 
 # S4 method for Spectra
-export(
-  object,
-  file = tempfile(),
-  format = "mgf",
-  variableMapping = spectraVariableMapping(format),
-  ...
-)
+export(object, backend, ...)
 
 # S4 method for Spectra
 acquisitionNum(object)
@@ -523,11 +515,6 @@ depending on the used backend, per-file parallel processing will be
 performed.</p></td>
     </tr>
     <tr>
-      <th>format</th>
-      <td><p>For <code>export</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> defining the format of the output
-file. Currently only <code>format = "mgf"</code> is supported.</p></td>
-    </tr>
-    <tr>
       <th>processingQueue</th>
       <td><p>For <code>Spectra</code>: optional <code>list</code> of
 <a href='hidden_aliases.html'>ProcessingStep</a> objects.</p></td>
@@ -541,7 +528,8 @@ file. Currently only <code>format = "mgf"</code> is supported.</p></td>
       <td><p>For <code>Spectra</code>: <a href='MsBackend.html'>MsBackend</a> to be used as backend. See
 section on creation of <code>Spectra</code> objects for details. For <code>setBackend</code>:
 instance of <a href='MsBackend.html'>MsBackend</a>. See section on creation of <code>Spectra</code>
-objects for details.</p></td>
+objects for details. For <code>export</code>: <a href='MsBackend.html'>MsBackend</a> to be used to export
+the data.</p></td>
     </tr>
     <tr>
       <th>source</th>
@@ -552,19 +540,6 @@ of objects, conversion and changing the backend</em> for more details.</p></td>
     <tr>
       <th>drop</th>
       <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>, <code>split</code>: not considered.</p></td>
-    </tr>
-    <tr>
-      <th>file</th>
-      <td><p>For <code>export</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> specifying the of the file to which
-the data should be exported.</p></td>
-    </tr>
-    <tr>
-      <th>variableMapping</th>
-      <td><p>For <code>export</code>: a named <code>character</code> vector with the
-names of the fields in the exported file to which spectra variables
-should be mapped, names being spectra variable names and elements of the
-vector the fields in the output file. See output from
-<code>spectraVariableMapping()</code> for the default.</p></td>
     </tr>
     <tr>
       <th>value</th>
@@ -822,22 +797,21 @@ details.</p></li>
 </ul>
 
 <p>Data from a <code>Spectra</code> object can be <strong>exported</strong> to a file with the <code>export</code>
-function. The file format for the exported data can be specified with the
-parameter <code>format</code>; currently only <code>format = "mgf"</code> is supported which
-exports the data in Mascot Generic Format (MGF). By default all non-empty
-spectra variables in <code>Spectra</code> are exported.</p>
+function. The actual export of the data has to be performed by the <code>export</code>
+method of the <a href='MsBackend.html'>MsBackend</a> class defined with the mandatory parameter
+<code>backend</code>. Note however that not all backend classes support export of data.
+From the <code>MsBackend</code> classes in the <code>Spectra</code> package currently only the
+<code>MsBackendMzR</code> backend supports data export (to mzML/mzXML file(s));
+see the help page of the <a href='MsBackend.html'>MsBackend</a> for information on its arguments
+or the examples below or the vignette for examples.</p>
 <p>The definition of the function is
-<code><a href='hidden_aliases.html'>export(object, file = tempfile(), format = "mgf", variableMapping = spectraVariableMapping(format), ...)</a></code> and its
+<code><a href='hidden_aliases.html'>export(object, backend,  ...)</a></code> and its
 parameters are:</p><ul>
 <li><p><code>object</code>: the <code>Spectra</code> object to be exported.</p></li>
-<li><p><code>file</code>: the name of the file.</p></li>
-<li><p><code>format</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> defining the export file format. Currently only
-<code>format = "mgf"</code> is supported.</p></li>
-<li><p><code>variableMapping</code>: named <code>character</code> defining the mapping of spectra
-variables (names of <code>variableMapping</code>) to fields in the output file
-(elements of <code>variableMapping</code>). See output of <code>spectraVariableMapping()</code>
-for the expected format. All spectra variables for which no mapping to a
-field in the output format is provided are exported as they are.</p></li>
+<li><p><code>backend</code>: instance of a class extending <a href='MsBackend.html'>MsBackend</a> which supports export
+of the data (i.e. which has a defined <code>export</code> method).</p></li>
+<li><p><code>...</code>: additional parameters specific for the <code>MsBackend</code> passed with
+parameter <code>backend</code>.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="accessing-spectra-data"><a class="anchor" href="#accessing-spectra-data"></a>Accessing spectra data</h2>
@@ -1228,7 +1202,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Sep 11 09:45:37 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Sep 14 11:40:12 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1448,7 +1422,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Fri Sep 11 09:45:38 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Mon Sep 14 11:40:13 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1473,7 +1447,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Sep 11 09:45:38 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Mon Sep 14 11:40:14 2020] </div><div class='input'>
 <span class='co'>## Remove empty spectra variables</span>
 <span class='kw'>sciex_noNA</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>dropNaSpectraVariables</a></span>(<span class='kw'>sciex</span>)
 
@@ -1526,7 +1500,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Sep 11 09:45:39 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Sep 14 11:40:14 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]
 </div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]
@@ -1554,9 +1528,9 @@ level(s).</p></li>
 #&gt; 2         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Sep 11 09:45:39 2020]
-#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Sep 11 09:45:39 2020]
-#&gt;  Reset object. [Fri Sep 11 09:45:39 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Sep 14 11:40:14 2020]
+#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Mon Sep 14 11:40:14 2020]
+#&gt;  Reset object. [Mon Sep 14 11:40:14 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))
 </div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
@@ -1653,7 +1627,46 @@ level(s).</p></li>
 #&gt; 
 #&gt; [[6]]
 #&gt; [1] 737.5087
-#&gt; </div></pre>
+#&gt; </div><div class='input'>
+
+<span class='co'>## ---- DATA EXPORT ----</span>
+
+<span class='co'>## Some `MsBackend` classes provide an `export` method to export the data to</span>
+<span class='co'>## the file format supported by the backend. The `MsBackendMzR` for example</span>
+<span class='co'>## allows to export MS data to mzML or mzXML file(s), the `MsBackendMgf`</span>
+<span class='co'>## (defined in the MsBackendMgf R package) would allow to export the data</span>
+<span class='co'>## in mgf file format. Below we export the MS data in `data`. We</span>
+<span class='co'>## call the `export` method on this object, specify the backend that should</span>
+<span class='co'>## be used to export the data (and which also defines the output format) and</span>
+<span class='co'>## provide a file name.</span>
+<span class='kw'>fl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
+<span class='fu'><a href='hidden_aliases.html'>export</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), file = <span class='kw'>fl</span>)
+</div><div class='output co'>#&gt; <span class='message'>Writing file filece05045ec8...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+<span class='co'>## This exported our data in mzML format. Below we read the first 6 lines</span>
+<span class='co'>## from that file.</span>
+<span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span>(<span class='kw'>fl</span>, n = <span class='fl'>6</span>)
+</div><div class='output co'>#&gt; [1] "&lt;?xml version=\"1.0\" encoding=\"utf-8\"?&gt;"                                                                                                                                                                                            
+#&gt; [2] "&lt;indexedmzML xmlns=\"http://psi.hupo.org/ms/mzml\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\"&gt;"                 
+#&gt; [3] "  &lt;mzML xmlns=\"http://psi.hupo.org/ms/mzml\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\" id=\"\" version=\"1.1.0\"&gt;"
+#&gt; [4] "    &lt;cvList count=\"2\"&gt;"                                                                                                                                                                                                              
+#&gt; [5] "      &lt;cv id=\"MS\" fullName=\"Proteomics Standards Initiative Mass Spectrometry Ontology\" version=\"4.1.41\" URI=\"https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo\"/&gt;"                                       
+#&gt; [6] "      &lt;cv id=\"UO\" fullName=\"Unit Ontology\" version=\"09:04:2014\" URI=\"https://raw.githubusercontent.com/bio-ontology-research-group/unit-ontology/master/unit.obo\"/&gt;"                                                           </div><div class='input'>
+<span class='co'>## If only a single file name is provided, all spectra are exported to that</span>
+<span class='co'>## file. To export data with the `MsBackendMzR` backend to different files, a</span>
+<span class='co'>## file name for each individual spectrum has to be provided.</span>
+<span class='co'>## Below we export each spectrum to its own file.</span>
+<span class='kw'>fls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(), <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
+<span class='fu'><a href='hidden_aliases.html'>export</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), file = <span class='kw'>fls</span>)
+</div><div class='output co'>#&gt; <span class='message'>Writing file filece055d1c15d...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file filece034eab561...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+<span class='co'>## Reading the data from the first file</span>
+<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='fu'><a href='hidden_aliases.html'>backendInitialize</a></span>(<span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), <span class='kw'>fls</span>[<span class='fl'>1</span>]))
+
+<span class='fu'>mz</span>(<span class='kw'>res</span>)
+</div><div class='output co'>#&gt; NumericList of length 1
+#&gt; [[1]] 100 103.2 104.3 106.5</div><div class='input'><span class='fu'>mz</span>(<span class='kw'>data</span>)
+</div><div class='output co'>#&gt; NumericList of length 2
+#&gt; [[1]] 100 103.2 104.3 106.5
+#&gt; [[2]] 45.6 120.4 190.2</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -1669,7 +1682,7 @@ level(s).</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

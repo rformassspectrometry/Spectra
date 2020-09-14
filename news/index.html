@@ -78,7 +78,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.4</span>
       </span>
     </div>
 
@@ -127,6 +127,34 @@
     <div id="spectra-099" class="section level1">
 <h1 class="page-header" data-toc-text="0.99">
 <a href="#spectra-099" class="anchor"></a>Spectra 0.99</h1>
+<div id="changes-in-0994" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes-in-0994" class="anchor"></a>Changes in 0.99.4</h2>
+<ul>
+<li>Add <code>export,MsBackendMzR</code> to export spectra data to mzML or mzXML file(s).</li>
+<li>Add an <code>export,MsBackend</code> method to allow backends to take care of data export.</li>
+<li>Refactor <code>export,Spectra</code> to use the <code>MsBackend</code> class to export the data.</li>
+<li>Change parameter <code>source</code> in <code>Spectra,character</code> to <code>MsBackendMzR</code> and set parameter <code>backend = source</code>. Thus by default, the import backend will also be used to store the data.</li>
+</ul>
+</div>
+<div id="changes-in-0993" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes-in-0993" class="anchor"></a>Changes in 0.99.3</h2>
+<ul>
+<li>Replace <code>lapply,Spectra</code> with <code>spectrapply,Spectra</code>.</li>
+</ul>
+</div>
+<div id="changes-in-0992" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes-in-0992" class="anchor"></a>Changes in 0.99.2</h2>
+<ul>
+<li>Replace <code>asDataFrame,MsBackend</code> with <code>spectraData,MsBackend</code>.</li>
+<li>Replace <code>asDataFrame&lt;-,MsBackend</code> with <code>spectraData&lt;-,MsBackend</code>.</li>
+<li>Replace <code>as.list,MsBackend</code> with <code>peaksData,MsBackend</code>.</li>
+<li>Replace <code>replaceList&lt;-,MsBackend</code> with <code>peaksData&lt;-,MsBackend</code>.</li>
+<li>Replace <code>as.list,Spectra</code> with <code>peaksData,Spectra</code> and add methods to coerce a <code>Spectra</code> to a <code>list</code> or <code>SimpleList</code>.</li>
+</ul>
+</div>
 <div id="changes-in-0990" class="section level2">
 <h2 class="hasAnchor">
 <a href="#changes-in-0990" class="anchor"></a>Changes in 0.99.0</h2>
@@ -153,7 +181,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

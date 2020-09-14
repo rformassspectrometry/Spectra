@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.4</span>
       </span>
     </div>
 
@@ -472,6 +472,16 @@ spectraVariables(object)
 # S4 method for MsBackendMzR
 $(x, name) &lt;- value
 
+# S4 method for MsBackendMzR
+export(
+  object,
+  x,
+  file = tempfile(),
+  format = c("mzML", "mzXML"),
+  copy = FALSE,
+  BPPARAM = bpparam()
+)
+
 # S4 method for ProcessingStep
 show(object)
 
@@ -498,7 +508,7 @@ show(object)</pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
