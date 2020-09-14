@@ -28,6 +28,7 @@ NULL
 #'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
+#'
 #' @section Creation of objects, conversion, changing the backend and export:
 #'
 #' `Spectra` classes can be created with the `Spectra` constructor function
@@ -84,28 +85,25 @@ NULL
 #'   details.
 #'
 #' Data from a `Spectra` object can be **exported** to a file with the `export`
-#' function. The file format for the exported data can be specified with the
-#' parameter `format`; currently only `format = "mgf"` is supported which
-#' exports the data in Mascot Generic Format (MGF). By default all non-empty
-#' spectra variables in `Spectra` are exported.
+#' function. The actual export of the data has to be performed by the `export`
+#' method of the [MsBackend] class defined with the mandatory parameter
+#' `backend`. Note however that not all backend classes support export of data.
+#' From the `MsBackend` classes in the `Spectra` package currently only the
+#' `MsBackendMzR` backend supports data export (to mzML/mzXML file(s));
+#' see the help page of the [MsBackend-class] for information on its arguments
+#' or the examples below or the vignette for examples.
 #'
 #' The definition of the function is
-#' `export(object, file = tempfile(), format = "mgf",
-#'     variableMapping = spectraVariableMapping(format), ...)` and its
+#' `export(object, backend,  ...)` and its
 #' parameters are:
 #'
 #' - `object`: the `Spectra` object to be exported.
 #'
-#' - `file`: the name of the file.
+#' - `backend`: instance of a class extending [MsBackend] which supports export
+#'   of the data (i.e. which has a defined `export` method).
 #'
-#' - `format`: `character(1)` defining the export file format. Currently only
-#'   `format = "mgf"` is supported.
-#'
-#' - `variableMapping`: named `character` defining the mapping of spectra
-#'   variables (names of `variableMapping`) to fields in the output file
-#'   (elements of `variableMapping`). See output of `spectraVariableMapping()`
-#'   for the expected format. All spectra variables for which no mapping to a
-#'   field in the output format is provided are exported as they are.
+#' - `...`: additional parameters specific for the `MsBackend` passed with
+#'   parameter `backend`.
 #'
 #'
 #' @section Accessing spectra data:
@@ -251,6 +249,7 @@ NULL
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `0` is returned.
 #'
+#'
 #' @section Data subsetting, filtering and merging:
 #'
 #' Subsetting and filtering of `Spectra` objects can be performed with the below
@@ -337,6 +336,7 @@ NULL
 #' `Spectra` objects. The spectra variables of the resulting `Spectra`
 #' object is the union of the spectra variables of the individual `Spectra`
 #' objects.
+#'
 #'
 #' @section Data manipulation and analysis methods:
 #'
@@ -475,7 +475,8 @@ NULL
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
 #'     section on creation of `Spectra` objects for details. For `setBackend`:
 #'     instance of [MsBackend-class]. See section on creation of `Spectra`
-#'     objects for details.
+#'     objects for details. For `export`: [MsBackend-class] to be used to export
+#'     the data.
 #'
 #' @param binSize For `bin`: `numeric(1)` defining the size for the m/z bins.
 #'     Defaults to `binSize = 1`.
@@ -512,12 +513,6 @@ NULL
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
 #'     should be combined. For `spectrapply`: `factor` how `object` should be
 #'     splitted.
-#'
-#' @param file For `export`: `character(1)` specifying the of the file to which
-#'     the data should be exported.
-#'
-#' @param format For `export`: `character(1)` defining the format of the output
-#'     file. Currently only `format = "mgf"` is supported.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
@@ -636,12 +631,6 @@ NULL
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
-#'
-#' @param variableMapping For `export`: a named `character` vector with the
-#'     names of the fields in the exported file to which spectra variables
-#'     should be mapped, names being spectra variable names and elements of the
-#'     vector the fields in the output file. See output from
-#'     `spectraVariableMapping()` for the default.
 #'
 #' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
 #'     (the default) or all provided `mz` have to be present in the spectrum.
@@ -888,6 +877,37 @@ NULL
 #' ## data (such as `intensity`) are much more efficient than using `lapply`:
 #' res <- lapply(intensity(sciex_im[1:20]), mean)
 #' head(res)
+#'
+#'
+#' ## ---- DATA EXPORT ----
+#'
+#' ## Some `MsBackend` classes provide an `export` method to export the data to
+#' ## the file format supported by the backend. The `MsBackendMzR` for example
+#' ## allows to export MS data to mzML or mzXML file(s), the `MsBackendMgf`
+#' ## (defined in the MsBackendMgf R package) would allow to export the data
+#' ## in mgf file format. Below we export the MS data in `data`. We
+#' ## call the `export` method on this object, specify the backend that should
+#' ## be used to export the data (and which also defines the output format) and
+#' ## provide a file name.
+#' fl <- tempfile()
+#' export(data, MsBackendMzR(), file = fl)
+#'
+#' ## This exported our data in mzML format. Below we read the first 6 lines
+#' ## from that file.
+#' readLines(fl, n = 6)
+#'
+#' ## If only a single file name is provided, all spectra are exported to that
+#' ## file. To export data with the `MsBackendMzR` backend to different files, a
+#' ## file name for each individual spectrum has to be provided.
+#' ## Below we export each spectrum to its own file.
+#' fls <- c(tempfile(), tempfile())
+#' export(data, MsBackendMzR(), file = fls)
+#'
+#' ## Reading the data from the first file
+#' res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+#'
+#' mz(res)
+#' mz(data)
 NULL
 
 #' The Spectra class
@@ -986,8 +1006,8 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 #' @rdname Spectra
 setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            metadata = list(),
-                                           source = backend,
-                                           backend = MsBackendMzR(),
+                                           source = MsBackendMzR(),
+                                           backend = source,
                                            ..., BPPARAM = bpparam()) {
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
@@ -1053,12 +1073,10 @@ setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
 #'
 #' @export
 setMethod("export", "Spectra",
-          function(object, file = tempfile(), format = "mgf",
-                   variableMapping = spectraVariableMapping(format), ...) {
-              switch(match.arg(format),
-                     "mgf" = .export_mgf(object, con = file,
-                                         mapping = variableMapping)
-                     )
+          function(object, backend, ...) {
+              if (missing(backend))
+                  stop("Parameter 'backend' is required.")
+              export(backend, object, ...)
           })
 
 #### ---------------------------------------------------------------------------

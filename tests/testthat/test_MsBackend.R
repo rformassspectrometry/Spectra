@@ -5,6 +5,7 @@ test_that("MsBackend methods throw errors", {
 
     expect_error(backendInitialize(dm), "not implemented for")
     expect_error(backendMerge(dm), "implemented for")
+    expect_error(export(dm), "does not support")
     expect_error(acquisitionNum(dm), "implemented for")
     expect_error(peaksData(dm), "implemented for")
     expect_error(centroided(dm), "implemented for")

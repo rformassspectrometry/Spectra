@@ -1017,6 +1017,18 @@ test_that("compareSpectra works", {
     res <- compareSpectra(sps[1], sps[2])
     res_2 <- compareSpectra(sps[1], sps[2], FUN = cor_fun)
     expect_true(res < res_2)
+
+    ## Empty spectra:
+    sps2 <- Spectra()
+    res <- compareSpectra(sps2)
+    expect_true(is.matrix(res))
+    expect_true(nrow(res) == 0)
+    expect_true(ncol(res) == 0)
+
+    res <- compareSpectra(sps, sps2)
+    expect_true(is.matrix(res))
+    expect_true(ncol(res) == 0)
+    expect_true(nrow(res) == length(sps))
 })
 
 test_that("pickPeaks,Spectra works", {
@@ -1209,8 +1221,9 @@ test_that("export,Spectra works", {
     sps <- Spectra(spd)
 
     fl <- tempfile()
-    expect_error(export(sps, file = fl, format = "other"), "'arg' should be")
-    Spectra:::export(sps, file = fl)
-    res <- readLines(fl)
-    expect_equal(length(grep("PEPMASS", res)), 2)
+    expect_error(export(sps, backend = MsBackendDataFrame(),
+                        file = fl), "MsBackendDataFrame does not")
+    expect_warning(
+        export(sps, backend = MsBackendMzR(), file = fl, copy = TRUE),
+        "Original data file not found")
 })

@@ -4,7 +4,6 @@
 \alias{addProcessing}
 \alias{applyProcessing}
 \alias{combineSpectra}
-\alias{spectraVariableMapping}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -96,8 +95,6 @@ combineSpectra(
   BPPARAM = bpparam()
 )
 
-spectraVariableMapping(format = c("mgf"))
-
 \S4method{Spectra}{DataFrame}(
   object,
   processingQueue = list(),
@@ -128,8 +125,8 @@ spectraVariableMapping(format = c("mgf"))
   object,
   processingQueue = list(),
   metadata = list(),
-  source = backend,
-  backend = MsBackendMzR(),
+  source = MsBackendMzR(),
+  backend = source,
   ...,
   BPPARAM = bpparam()
 )
@@ -140,13 +137,7 @@ spectraVariableMapping(format = c("mgf"))
 
 \S4method{split}{Spectra,ANY}(x, f, drop = FALSE, ...)
 
-\S4method{export}{Spectra}(
-  object,
-  file = tempfile(),
-  format = "mgf",
-  variableMapping = spectraVariableMapping(format),
-  ...
-)
+\S4method{export}{Spectra}(object, backend, ...)
 
 \S4method{acquisitionNum}{Spectra}(object)
 
@@ -379,9 +370,6 @@ of the \linkS4class{MsBackend}.}
 depending on the used backend, per-file parallel processing will be
 performed.}
 
-\item{format}{For \code{export}: \code{character(1)} defining the format of the output
-file. Currently only \code{format = "mgf"} is supported.}
-
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
 
@@ -390,22 +378,14 @@ file. Currently only \code{format = "mgf"} is supported.}
 \item{backend}{For \code{Spectra}: \linkS4class{MsBackend} to be used as backend. See
 section on creation of \code{Spectra} objects for details. For \code{setBackend}:
 instance of \linkS4class{MsBackend}. See section on creation of \code{Spectra}
-objects for details.}
+objects for details. For \code{export}: \linkS4class{MsBackend} to be used to export
+the data.}
 
 \item{source}{For \code{Spectra}: instance of \linkS4class{MsBackend} that can be used
 to import spectrum data from the provided files. See section \emph{Creation
 of objects, conversion and changing the backend} for more details.}
 
 \item{drop}{For \code{[}, \code{split}: not considered.}
-
-\item{file}{For \code{export}: \code{character(1)} specifying the of the file to which
-the data should be exported.}
-
-\item{variableMapping}{For \code{export}: a named \code{character} vector with the
-names of the fields in the exported file to which spectra variables
-should be mapped, names being spectra variable names and elements of the
-vector the fields in the output file. See output from
-\code{spectraVariableMapping()} for the default.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
@@ -607,24 +587,23 @@ details.
 }
 
 Data from a \code{Spectra} object can be \strong{exported} to a file with the \code{export}
-function. The file format for the exported data can be specified with the
-parameter \code{format}; currently only \code{format = "mgf"} is supported which
-exports the data in Mascot Generic Format (MGF). By default all non-empty
-spectra variables in \code{Spectra} are exported.
+function. The actual export of the data has to be performed by the \code{export}
+method of the \link{MsBackend} class defined with the mandatory parameter
+\code{backend}. Note however that not all backend classes support export of data.
+From the \code{MsBackend} classes in the \code{Spectra} package currently only the
+\code{MsBackendMzR} backend supports data export (to mzML/mzXML file(s));
+see the help page of the \linkS4class{MsBackend} for information on its arguments
+or the examples below or the vignette for examples.
 
 The definition of the function is
-\code{export(object, file = tempfile(), format = "mgf", variableMapping = spectraVariableMapping(format), ...)} and its
+\code{export(object, backend,  ...)} and its
 parameters are:
 \itemize{
 \item \code{object}: the \code{Spectra} object to be exported.
-\item \code{file}: the name of the file.
-\item \code{format}: \code{character(1)} defining the export file format. Currently only
-\code{format = "mgf"} is supported.
-\item \code{variableMapping}: named \code{character} defining the mapping of spectra
-variables (names of \code{variableMapping}) to fields in the output file
-(elements of \code{variableMapping}). See output of \code{spectraVariableMapping()}
-for the expected format. All spectra variables for which no mapping to a
-field in the output format is provided are exported as they are.
+\item \code{backend}: instance of a class extending \link{MsBackend} which supports export
+of the data (i.e. which has a defined \code{export} method).
+\item \code{...}: additional parameters specific for the \code{MsBackend} passed with
+parameter \code{backend}.
 }
 }
 
@@ -1172,6 +1151,37 @@ head(res)
 ## data (such as `intensity`) are much more efficient than using `lapply`:
 res <- lapply(intensity(sciex_im[1:20]), mean)
 head(res)
+
+
+## ---- DATA EXPORT ----
+
+## Some `MsBackend` classes provide an `export` method to export the data to
+## the file format supported by the backend. The `MsBackendMzR` for example
+## allows to export MS data to mzML or mzXML file(s), the `MsBackendMgf`
+## (defined in the MsBackendMgf R package) would allow to export the data
+## in mgf file format. Below we export the MS data in `data`. We
+## call the `export` method on this object, specify the backend that should
+## be used to export the data (and which also defines the output format) and
+## provide a file name.
+fl <- tempfile()
+export(data, MsBackendMzR(), file = fl)
+
+## This exported our data in mzML format. Below we read the first 6 lines
+## from that file.
+readLines(fl, n = 6)
+
+## If only a single file name is provided, all spectra are exported to that
+## file. To export data with the `MsBackendMzR` backend to different files, a
+## file name for each individual spectrum has to be provided.
+## Below we export each spectrum to its own file.
+fls <- c(tempfile(), tempfile())
+export(data, MsBackendMzR(), file = fls)
+
+## Reading the data from the first file
+res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+
+mz(res)
+mz(data)
 }
 \author{
 Sebastian Gibb, Johannes Rainer

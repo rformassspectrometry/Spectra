@@ -67,7 +67,8 @@
 #' @param f `factor` defining the grouping to split `x`. See [split()].
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
-#'     should be subsetted.
+#'     should be subsetted. For `export`: `character` of length 1 or equal to
+#'     the number of spectra.
 #'
 #' @param initial For `tic`: `logical(1)` whether the initially
 #'     reported total ion current should be reported, or whether the
@@ -173,6 +174,18 @@
 #'   returns a `numeric` with length equal to the number of spectra
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
+#'
+#' - `export`: exports data from a `Spectra` class to a file. This method is
+#'   called by the `export,Spectra` method that passes itself as a second
+#'   argument to the function. The `export,MsBackend` implementation is thus
+#'   expected to take a `Spectra` class as second argument from which all data
+#'   is exported. Taking data from a `Spectra` class ensures that also all
+#'   eventual data manipulations (cached in the `Spectra`'s lazy evaluation
+#'   queue) are applied prior to export - this would not be possible with only a
+#'   [MsBackend] class. An example implementation is the `export` method
+#'   for the `MsBackendMzR` backend that supports export of the data in
+#'   *mzML* or *mzXML* format. See the documentation for the `MsBackendMzR`
+#'   class below for more information.
 #'
 #' - `filterAcquisitionNum`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
@@ -395,6 +408,7 @@
 #'
 #' Additional columns are allowed too.
 #'
+#'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
 #' The `MsBackendMzR` keeps only a limited amount of data in memory,
@@ -411,6 +425,31 @@
 #' New objects can be created with the `MsBackendMzR()` function which
 #' can be subsequently filled with data by calling `backendInitialize`
 #' passing the file names of the input data files with argument `files`.
+#'
+#' This backend provides an `export` method to export data from a `Spectra` in
+#' *mzML* or *mzXML* format. The definition of the function is:
+#'
+#' `export(object, x, file = tempfile(), format = c("mzML", "mzXML"),
+#'         copy = FALSE)`
+#'
+#' The parameters are:
+#' - `object`: an instance of the `MsBackendMzR` class.
+#' - `x`: the [Spectra-class] object to be exported.
+#' - `file`: `character` with the (full) output file name(s). Should be
+#'   of length 1 or equal `length(x)`. If a single file is specified, all
+#'   spectra are exported to that file. Alternatively it is possible to specify
+#'   for each spectrum in `x` the name of the file to which it should be
+#'   exported (and hence `file` has to be of length equal `length(x)`).
+#' - `format`: `character(1)`, either `"mzML"` or `"mzXML"` defining the output
+#'   file format.
+#' - `copy`: `logical(1)` whether general file information should be copied from
+#'   the original MS data files. This only works if `x` uses a `MsBackendMzR`
+#'   backend and if `dataOrigin(x)` contains the original MS data file names.
+#' - `BPPARAM`: parallel processing settings.
+#'
+#' See examples in [Spectra-class] or the vignette for more details and
+#' examples.
+#'
 #'
 #' @section `MsBackendHdf5Peaks`, on-disk MS data backend:
 #'
@@ -551,6 +590,12 @@ setMethod("backendMerge", "list", function(object, ...) {
 #' @rdname MsBackend
 setMethod("backendMerge", "MsBackend", function(object, ...) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @rdname MsBackend
+setMethod("export", "MsBackend", function(object, ...) {
+    stop(class(object), " does not support export of data; please provide a ",
+         "backend that supports data export with parameter 'backend'.")
 })
 
 #' @exportMethod acquisitionNum
