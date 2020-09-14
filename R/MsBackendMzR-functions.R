@@ -126,8 +126,6 @@ MsBackendMzR <- function() {
 #'
 #' @param format `character(1)` with the format.
 #'
-#' @param verbose `logical(1)` verbosity.
-#'
 #' @param copy `logical(1)` whether general file information should be copied
 #'     from the original MS file. Note this only works on `Spectra` with a
 #'     `MsBackendMzR` backend as it assumes `dataStorage` contains the original
@@ -137,12 +135,9 @@ MsBackendMzR <- function() {
 #'
 #' @author Johannes Rainer
 .write_ms_data_mzR <- function(x, file, format = c("mzML", "mzXML"),
-                               software_processing = NULL,
-                               verbose = TRUE,
-                               copy = FALSE) {
+                               software_processing = NULL, copy = FALSE) {
     match.arg(tolower(format), c("mzml", "mzxml"))
-    if (verbose)
-        message("Writing file ", basename(file), "...", appendLF = FALSE)
+    message("Writing file ", basename(file), "...", appendLF = FALSE)
     file <- path.expand(file)
     if (copy && length(unique(dataOrigin(x))) == 1) {
         original_file <- as.character(dataOrigin(x))[1]
@@ -233,8 +228,7 @@ MsBackendMzR <- function() {
     else
         mzR::writeMSData(object = pks, file = file, header = hdr,
                          outformat = format, software_processing = soft_proc)
-    if (verbose)
-        message("OK")
+    message("OK")
 }
 
 #' @description Determine data processing steps based on the `@processing`.

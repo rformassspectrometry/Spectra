@@ -636,12 +636,12 @@ sps_im <- Spectra(backendInitialize(MsBackendMzR(), fl))
 spectraVariables(sps)[!spectraVariables(sps) %in% spectraVariables(sps_im)]
 ```
 
-These additionally added variables were thus not exported. How data export is
-performed and handled depends also on the used backend. The `MsBackendMzR` for
-example exports all spectra by default to a single file (specified with the
-`file` parameter), but it allows also to specify for each individual spectrum in
-the `Spectra` to which file it should be exported (parameter `file` has thus to
-be of length equal to the number of spectra). As an example we export below the
+These additional variables were thus not exported. How data export is performed
+and handled depends also on the used backend. The `MsBackendMzR` for example
+exports all spectra by default to a single file (specified with the `file`
+parameter), but it allows also to specify for each individual spectrum in the
+`Spectra` to which file it should be exported (parameter `file` has thus to be
+of length equal to the number of spectra). As an example we export below the
 spectrum 1 and 3 to one file and spectra 2 and 4 to another.
 
 ```{r export-twofiles}
@@ -650,9 +650,8 @@ export(sps, MsBackendMzR(), file = fls[c(1, 2, 1, 2)])
 ```
 
 A more realistic use case for mzML export would be to export MS data after
-computational intense processing, such as smoothing (using the `smooth`
-function) and centroiding (using the `pickPeaks` function) of raw profile-mode
-MS data.
+processing, such as smoothing (using the `smooth` function) and centroiding
+(using the `pickPeaks` function) of raw profile-mode MS data.
 
 
 ## Changing backends
