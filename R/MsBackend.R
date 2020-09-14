@@ -434,7 +434,7 @@
 #'
 #' The parameters are:
 #' - `object`: an instance of the `MsBackendMzR` class.
-#' - `x`: the [Spectra()] object to be exported.
+#' - `x`: the [Spectra-class] object to be exported.
 #' - `file`: `character` with the (full) output file name(s). Should be
 #'   of length 1 or equal `length(x)`. If a single file is specified, all
 #'   spectra are exported to that file. Alternatively it is possible to specify
