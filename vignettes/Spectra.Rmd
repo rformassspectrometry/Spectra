@@ -627,7 +627,7 @@ fl <- tempfile()
 export(sps, MsBackendMzR(), file = fl)
 ```
 
-The evaluate which of the spectra variables were exported, we load the exported
+To evaluate which of the spectra variables were exported, we load the exported
 data again and identify spectra variables in the original file which could not
 be exported (because they are not defined variables in the mzML standard).
 
