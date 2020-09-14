@@ -17,6 +17,8 @@
 \alias{dropNaSpectraVariables}
 \alias{export}
 \alias{filterIntensity}
+\alias{filterMzRange}
+\alias{filterMzValues}
 \alias{isReadOnly}
 \alias{peaksData}
 \alias{peaksData<-}
@@ -151,6 +153,10 @@ dropNaSpectraVariables(object, ...)
 export(object, ...)
 
 filterIntensity(object, ...)
+
+filterMzRange(object, ...)
+
+filterMzValues(object, ...)
 
 isReadOnly(object, ...)
 

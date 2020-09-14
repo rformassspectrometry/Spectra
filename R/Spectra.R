@@ -298,6 +298,15 @@ NULL
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra` (with spectra in their original order).
 #'
+#' - `filterMzRange`: filters the object keeping only peaks in each spectrum
+#'   that are within the provided m/z range.
+#'
+#' - `filterMzValues`: filters the object keeping only peaks in each spectrum
+#'   that match the provided m/z value(s) considering also the absolute
+#'   `tolerance` and m/z-relative `ppm` (`tolerance` and `ppm` can be either
+#'   of length 1 or equal to the length of `mz` to define a different tolerance
+#'   for each m/z).
+#'
 #' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
@@ -566,8 +575,10 @@ NULL
 #'     For `filterMsLevel`: the MS level to which `object` should be subsetted.
 #'
 #' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
-#'     filter the object. For `filterPrecursorMz`: `numeric(2)` defining the
-#'     lower and upper m/z boundary.
+#'     filter the object. For `filterPrecursorMz` and `filterMzRange`:
+#'     `numeric(2)` defining the lower and upper m/z boundary.
+#'     For `filterMzValues`: `numeric` with the m/z values to match peaks
+#'     against.
 #'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
@@ -590,9 +601,9 @@ NULL
 #' @param polarity for `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
-#' @param ppm For `compareSpectra`, `containsMz`: `numeric(1)` defining a
-#'     relative, m/z-dependent, maximal accepted difference between m/z values
-#'     for peaks to be matched.
+#' @param ppm For `compareSpectra`, `containsMz`, `filterMzValues`: `numeric(1)`
+#'     defining a relative, m/z-dependent, maximal accepted difference between
+#'     m/z values for peaks to be matched.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -614,8 +625,9 @@ NULL
 #'
 #' @param tolerance For `compareSpectra`, `containsMz`: `numeric(1)` allowing to
 #'     define a constant maximal accepted difference between m/z values for
-#'     peaks to be matched. For `containsMz` it can also be of length equal `mz`
-#'     to specify a different tolerance for each m/z value.
+#'     peaks to be matched. For `containsMz` and `filterMzValues` it can also
+#'     be of length equal `mz` to specify a different tolerance for each m/z
+#'     value.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
@@ -788,6 +800,14 @@ NULL
 #' spd$precursorMz <- c(323.4, 543.2302)
 #' data_filt <- Spectra(spd)
 #' filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
+#'
+#' ## Filter a Spectra keeping only peaks matching certain m/z values
+#' sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
+#' mz(sps_sub)
+#'
+#' ## Filter a Spectra keeping only peaks within a m/z range
+#' sps_sub <- filterMzRange(data, mz = c(100, 300))
+#' mz(sps_sub)
 #'
 #' ## Remove empty spectra variables
 #' sciex_noNA <- dropNaSpectraVariables(sciex)
@@ -1491,6 +1511,32 @@ setMethod("filterDataStorage", "Spectra", function(object,
 })
 
 #' @rdname Spectra
+#'
+#' @exportMethod filterIntensity
+setMethod("filterIntensity", "Spectra",
+          function(object, intensity = c(0, Inf),
+                   msLevel. = unique(msLevel(object))) {
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              if (length(intensity) == 1)
+                  intensity <- c(intensity, Inf)
+              if (length(intensity) != 2)
+                  stop("'intensity' should be of length specifying a lower ",
+                       "intensity limit or of length two defining a lower and",
+                       " upper limit.")
+              object <- addProcessing(object, .peaks_filter_intensity,
+                                      intensity = intensity,
+                                      msLevel = msLevel.)
+              object@processing <- .logging(
+                  object@processing, "Remove peaks with intensities outside [",
+                  intensity[1], ", ", intensity[2],
+                  "] in spectra of MS level(s) ",
+                  paste0(msLevel., collapse = ", "), ".")
+              object
+          })
+
+
+#' @rdname Spectra
 setMethod("filterIsolationWindow", "Spectra", function(object, mz = numeric()) {
     object@backend <- filterIsolationWindow(object@backend, mz = mz)
     object@processing <- .logging(object@processing,
@@ -1507,6 +1553,48 @@ setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
                                   paste0(unique(msLevel.), collapse = " "))
     object
 })
+
+#' @rdname Spectra
+#'
+#' @export
+setMethod("filterMzRange", "Spectra",
+          function(object, mz = numeric(), msLevel. = unique(msLevel(object))) {
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              mz <- range(mz)
+              object <- addProcessing(object, .peaks_filter_mz_range,
+                                      mz = mz, msLevel = msLevel.)
+              object@processing <- .logging(
+                  object@processing, "Filter: select peaks with an m/z within ",
+                  "[", paste0(mz, collapse = ", "), "]")
+              object
+          })
+
+#' @rdname Spectra
+#'
+#' @export
+setMethod("filterMzValues", "Spectra",
+          function(object, mz = numeric(), tolerance = 0, ppm = 20,
+                   msLevel. = unique(msLevel(object))) {
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              if (is.unsorted(mz)) {
+                  idx <- order(mz)
+                  mz <- mz[idx]
+                  l <- length(mz)
+                  if (length(tolerance) == l)
+                      tolerance <- tolerance[idx]
+                  if (length(ppm) == l)
+                      ppm <- ppm[idx]
+              }
+              object <- addProcessing(object, .peaks_filter_mz_value,
+                                      mz = mz, tolerance = tolerance,
+                                      ppm = ppm, msLevel = msLevel.)
+              object@processing <- .logging(
+                  object@processing, "Filter: select peaks matching provided ",
+                  "m/z values")
+              object
+          })
 
 #' @rdname Spectra
 setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
@@ -1592,31 +1680,6 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
                              " binned.")
     x
 })
-
-#' @rdname Spectra
-#'
-#' @exportMethod filterIntensity
-setMethod("filterIntensity", "Spectra",
-          function(object, intensity = c(0, Inf),
-                   msLevel. = unique(msLevel(object))) {
-              if (!.check_ms_level(object, msLevel.))
-                  return(object)
-              if (length(intensity) == 1)
-                  intensity <- c(intensity, Inf)
-              if (length(intensity) != 2)
-                  stop("'intensity' should be of length specifying a lower ",
-                       "intensity limit or of length two defining a lower and",
-                       " upper limit.")
-              object <- addProcessing(object, .peaks_filter_intensity,
-                                      intensity = intensity,
-                                      msLevel = msLevel.)
-              object@processing <- .logging(
-                  object@processing, "Remove peaks with intensities outside [",
-                  intensity[1], ", ", intensity[2],
-                  "] in spectra of MS level(s) ",
-                  paste0(msLevel., collapse = ", "), ".")
-              object
-          })
 
 #' @rdname Spectra
 #'

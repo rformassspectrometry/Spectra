@@ -289,6 +289,10 @@ the `?Spectra` help):
 - `filterDataOrigin`: subset to spectra from specific origins.
 - `filterDataStorage`: subset to spectra from certain data storage files.
 - `filterEmptySpectra`: remove spectra without mass peaks.
+- `filterMzRange`: subset spectra keeping only peaks with an m/z within the
+  provided m/z range.
+- `filterMzValues`: subset spectra keeping only peaks matching provided m/z
+  value(s).
 - `filterIsolationWindow`: keep spectra with the provided `mz` in their
   isolation window (m/z range).
 - `filterMsLevel`: filter by MS level.

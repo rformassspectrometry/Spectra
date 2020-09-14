@@ -1227,3 +1227,48 @@ test_that("export,Spectra works", {
         export(sps, backend = MsBackendMzR(), file = fl, copy = TRUE),
         "Original data file not found")
 })
+
+test_that("filterMzRange,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    expect_warning(res <- filterMzRange(sps, msLevel = 1L), "not available")
+    expect_equal(mz(res), mz(sps))
+
+    expect_warning(res <- filterMzRange(sps), "Inf")
+    expect_equal(mz(res), mz(sps))
+
+    res <- filterMzRange(sps, mz = c(200, 400))
+    expect_true(all(lengths(mz(res)) == 0))
+
+    res <- filterMzRange(sps, mz = c(40, 60))
+    expect_equal(mz(res)[[1L]], c(45, 56))
+    expect_equal(unname(mz(res)[[2L]]), 56.1)
+    expect_true(length(mz(res)[[3L]]) == 0)
+})
+
+test_that("filterMzValue,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- filterMzValues(sps, mz = 56)
+    expect_equal(unname(mz(res)[[1L]]), 56)
+    expect_true(length(mz(res)[[2L]]) == 0)
+    expect_true(length(mz(res)[[3L]]) == 0)
+
+    res <- filterMzValues(sps, mz = c(56, 12), tolerance = c(0.2, 0))
+    expect_equal(mz(res)[[1L]], c(12, 56))
+    expect_equal(unname(mz(res)[[2L]]), 56.1)
+    expect_true(length(mz(res)[[3L]]) == 0)
+
+    res <- filterMzValues(sps, mz = c(56, 12), tolerance = c(0.2))
+    expect_equal(mz(res)[[1L]], c(12, 56))
+    expect_equal(unname(mz(res)[[2L]]), 56.1)
+    expect_equal(unname(mz(res)[[3L]]), 12.1)
+})
