@@ -387,7 +387,7 @@ argument to the function. The \verb{export,MsBackend} implementation is thus
 expected to take a \code{Spectra} class as second argument from which all data
 is exported. Taking data from a \code{Spectra} class ensures that also all
 eventual data manipulations (cached in the \code{Spectra}'s lazy evaluation
-queue) are applied prior to export - this would not be possible with a
+queue) are applied prior to export - this would not be possible with only a
 \link{MsBackend} class. An example implementation is the \code{export} method
 for the \code{MsBackendMzR} backend that supports export of the data in
 \emph{mzML} or \emph{mzXML} format. See the documentation for the \code{MsBackendMzR}
@@ -610,7 +610,7 @@ This backend provides an \code{export} method to export data from a \code{Spectr
 The parameters are:
 \itemize{
 \item \code{object}: an instance of the \code{MsBackendMzR} class.
-\item \code{x}: the \code{\link[=Spectra]{Spectra()}} object to be exported.
+\item \code{x}: the \linkS4class{Spectra} object to be exported.
 \item \code{file}: \code{character} with the (full) output file name(s). Should be
 of length 1 or equal \code{length(x)}. If a single file is specified, all
 spectra are exported to that file. Alternatively it is possible to specify
@@ -624,7 +624,7 @@ backend and if \code{dataOrigin(x)} contains the original MS data file names.
 \item \code{BPPARAM}: parallel processing settings.
 }
 
-See examples in \code{\link[=Spectra]{Spectra()}} or the vignette for more details and examples.
+See examples in \linkS4class{Spectra()} or the vignette for more details and examples.
 }
 
 \section{\code{MsBackendHdf5Peaks}, on-disk MS data backend}{

@@ -181,7 +181,7 @@
 #'   expected to take a `Spectra` class as second argument from which all data
 #'   is exported. Taking data from a `Spectra` class ensures that also all
 #'   eventual data manipulations (cached in the `Spectra`'s lazy evaluation
-#'   queue) are applied prior to export - this would not be possible with a
+#'   queue) are applied prior to export - this would not be possible with only a
 #'   [MsBackend] class. An example implementation is the `export` method
 #'   for the `MsBackendMzR` backend that supports export of the data in
 #'   *mzML* or *mzXML* format. See the documentation for the `MsBackendMzR`
