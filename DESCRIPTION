@@ -30,7 +30,7 @@ Depends:
 Imports:
     methods,
     IRanges,
-    MsCoreUtils (>= 1.1.3),
+    MsCoreUtils (>= 1.1.5),
     graphics,
     grDevices,
     stats,
