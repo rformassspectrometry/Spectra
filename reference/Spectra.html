@@ -82,7 +82,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.5</span>
       </span>
     </div>
 
@@ -382,10 +382,29 @@ filterDataOrigin(object, dataOrigin = character())
 filterDataStorage(object, dataStorage = character())
 
 # S4 method for Spectra
+filterIntensity(
+  object,
+  intensity = c(0, Inf),
+  msLevel. = unique(msLevel(object))
+)
+
+# S4 method for Spectra
 filterIsolationWindow(object, mz = numeric())
 
 # S4 method for Spectra
 filterMsLevel(object, msLevel. = integer())
+
+# S4 method for Spectra
+filterMzRange(object, mz = numeric(), msLevel. = unique(msLevel(object)))
+
+# S4 method for Spectra
+filterMzValues(
+  object,
+  mz = numeric(),
+  tolerance = 0,
+  ppm = 20,
+  msLevel. = unique(msLevel(object))
+)
 
 # S4 method for Spectra
 filterPolarity(object, polarity = integer())
@@ -404,13 +423,6 @@ reset(object, ...)
 
 # S4 method for Spectra
 bin(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
-
-# S4 method for Spectra
-filterIntensity(
-  object,
-  intensity = c(0, Inf),
-  msLevel. = unique(msLevel(object))
-)
 
 # S4 method for Spectra,Spectra
 compareSpectra(
@@ -549,21 +561,24 @@ method description or expected data type.</p></td>
     <tr>
       <th>mz</th>
       <td><p>For <code>filterIsolationWindow</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the m/z value to
-filter the object. For <code>filterPrecursorMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> defining the
-lower and upper m/z boundary.</p></td>
+filter the object. For <code>filterPrecursorMz</code> and <code>filterMzRange</code>:
+<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> defining the lower and upper m/z boundary.
+For <code>filterMzValues</code>: <code>numeric</code> with the m/z values to match peaks
+against.</p></td>
     </tr>
     <tr>
       <th>tolerance</th>
       <td><p>For <code>compareSpectra</code>, <code>containsMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> allowing to
 define a constant maximal accepted difference between m/z values for
-peaks to be matched. For <code>containsMz</code> it can also be of length equal <code>mz</code>
-to specify a different tolerance for each m/z value.</p></td>
+peaks to be matched. For <code>containsMz</code> and <code>filterMzValues</code> it can also
+be of length equal <code>mz</code> to specify a different tolerance for each m/z
+value.</p></td>
     </tr>
     <tr>
       <th>ppm</th>
-      <td><p>For <code>compareSpectra</code>, <code>containsMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining a
-relative, m/z-dependent, maximal accepted difference between m/z values
-for peaks to be matched.</p></td>
+      <td><p>For <code>compareSpectra</code>, <code>containsMz</code>, <code>filterMzValues</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>
+defining a relative, m/z-dependent, maximal accepted difference between
+m/z values for peaks to be matched.</p></td>
     </tr>
     <tr>
       <th>which</th>
@@ -630,6 +645,13 @@ For <code>filterAcquisitionNum</code>: optionally specify if filtering should oc
 only for spectra of selected <code>dataOrigin</code>.</p></td>
     </tr>
     <tr>
+      <th>intensity</th>
+      <td><p>For <code>filterIntensity</code>: <code>numeric</code> of length 1 or 2 defining
+either the lower or the lower and upper intensity limit for the
+filtering. Defaults to <code>intensity = c(0, Inf)</code> thus only peaks with <code>NA</code>
+intensity are removed.</p></td>
+    </tr>
+    <tr>
       <th>msLevel.</th>
       <td><p><code>integer</code> defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of <code>object</code>.
@@ -659,13 +681,6 @@ Defaults to <code>binSize = 1</code>.</p></td>
     <tr>
       <th>breaks</th>
       <td><p>For <code>bin</code>: <code>numeric</code> defining the m/z breakpoints between bins.</p></td>
-    </tr>
-    <tr>
-      <th>intensity</th>
-      <td><p>For <code>filterIntensity</code>: <code>numeric</code> of length 1 or 2 defining
-either the lower or the lower and upper intensity limit for the
-filtering. Defaults to <code>intensity = c(0, Inf)</code> thus only peaks with <code>NA</code>
-intensity are removed.</p></td>
     </tr>
     <tr>
       <th>y</th>
@@ -975,6 +990,13 @@ object (with spectra in their original order).</p></li>
 <li><p><code>filterMsLevel</code>: filters object by MS level keeping only spectra matching
 the MS level specified with argument <code>msLevel</code>. Returns the filtered
 <code>Spectra</code> (with spectra in their original order).</p></li>
+<li><p><code>filterMzRange</code>: filters the object keeping only peaks in each spectrum
+that are within the provided m/z range.</p></li>
+<li><p><code>filterMzValues</code>: filters the object keeping only peaks in each spectrum
+that match the provided m/z value(s) considering also the absolute
+<code>tolerance</code> and m/z-relative <code>ppm</code> (<code>tolerance</code> and <code>ppm</code> can be either
+of length 1 or equal to the length of <code>mz</code> to define a different tolerance
+for each m/z).</p></li>
 <li><p><code>filterPolarity</code>: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered <code>Spectra</code> (with spectra in their
 original order).</p></li>
@@ -1202,7 +1224,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Sep 14 11:40:12 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Sep 18 13:58:10 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1422,7 +1444,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Mon Sep 14 11:40:13 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Fri Sep 18 13:58:12 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1447,7 +1469,19 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Mon Sep 14 11:40:14 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Sep 18 13:58:12 2020] </div><div class='input'>
+<span class='co'>## Filter a Spectra keeping only peaks matching certain m/z values</span>
+<span class='kw'>sps_sub</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterMzValues</a></span>(<span class='kw'>data</span>, mz = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>103</span>, <span class='fl'>104</span>), tolerance = <span class='fl'>0.3</span>)
+<span class='fu'>mz</span>(<span class='kw'>sps_sub</span>)
+</div><div class='output co'>#&gt; NumericList of length 2
+#&gt; [[1]] 103.2 104.3
+#&gt; [[2]] numeric(0)</div><div class='input'>
+<span class='co'>## Filter a Spectra keeping only peaks within a m/z range</span>
+<span class='kw'>sps_sub</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterMzRange</a></span>(<span class='kw'>data</span>, mz = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>300</span>))
+<span class='fu'>mz</span>(<span class='kw'>sps_sub</span>)
+</div><div class='output co'>#&gt; NumericList of length 2
+#&gt; [[1]] 100 103.2 104.3 106.5
+#&gt; [[2]] 120.4 190.2</div><div class='input'>
 <span class='co'>## Remove empty spectra variables</span>
 <span class='kw'>sciex_noNA</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>dropNaSpectraVariables</a></span>(<span class='kw'>sciex</span>)
 
@@ -1500,7 +1534,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Sep 14 11:40:14 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Sep 18 13:58:12 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]
 </div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]
@@ -1528,9 +1562,9 @@ level(s).</p></li>
 #&gt; 2         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Sep 14 11:40:14 2020]
-#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Mon Sep 14 11:40:14 2020]
-#&gt;  Reset object. [Mon Sep 14 11:40:14 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Sep 18 13:58:12 2020]
+#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Sep 18 13:58:12 2020]
+#&gt;  Reset object. [Fri Sep 18 13:58:12 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))
 </div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
@@ -1641,7 +1675,7 @@ level(s).</p></li>
 <span class='co'>## provide a file name.</span>
 <span class='kw'>fl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
 <span class='fu'><a href='hidden_aliases.html'>export</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), file = <span class='kw'>fl</span>)
-</div><div class='output co'>#&gt; <span class='message'>Writing file filece05045ec8...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Writing file filebd249b9cb3...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## This exported our data in mzML format. Below we read the first 6 lines</span>
 <span class='co'>## from that file.</span>
 <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span>(<span class='kw'>fl</span>, n = <span class='fl'>6</span>)
@@ -1657,7 +1691,7 @@ level(s).</p></li>
 <span class='co'>## Below we export each spectrum to its own file.</span>
 <span class='kw'>fls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(), <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
 <span class='fu'><a href='hidden_aliases.html'>export</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), file = <span class='kw'>fls</span>)
-</div><div class='output co'>#&gt; <span class='message'>Writing file filece055d1c15d...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file filece034eab561...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Writing file filebd26eb01e10...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file filebd273bd3018...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## Reading the data from the first file</span>
 <span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='fu'><a href='hidden_aliases.html'>backendInitialize</a></span>(<span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), <span class='kw'>fls</span>[<span class='fl'>1</span>]))
 
