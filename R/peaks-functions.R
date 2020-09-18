@@ -135,7 +135,7 @@ NULL
                                    msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    x[which(between(x[, "mz"], mz)), , drop = FALSE]
+    x[between(x[, "mz"], mz), , drop = FALSE]
 }
 
 #' @description
