@@ -167,16 +167,16 @@ test_that(".peaks_filter_mz_range works", {
 test_that(".peaks_match_mz_value works", {
     p <- cbind(mz = c(2, 5.6, 123.2, 422.8, 599.3, 599.4, 599.5, 743.1),
                intensity = 1:8)
-    res <- Spectra:::.peaks_filter_mz_value(p, 1L, mz = numeric())
+    res <- .peaks_filter_mz_value(p, 1L, mz = numeric())
     expect_true(is.matrix(res))
     expect_true(nrow(res) == 0)
     expect_equal(colnames(res), c("mz", "intensity"))
-    res <- Spectra:::.peaks_filter_mz_value(p, 1L, mz = NA)
+    res <- .peaks_filter_mz_value(p, 1L, mz = NA)
     expect_true(is.matrix(res))
     expect_equal(colnames(res), c("mz", "intensity"))
     expect_true(nrow(res) == 0)
 
-    res <- Spectra:::.peaks_filter_mz_value(p, 1L, mz = 5, tolerance = 1)
+    res <- .peaks_filter_mz_value(p, 1L, mz = 5, tolerance = 1)
     expect_equal(unname(res[, "intensity"]), 2)
     res <- .peaks_filter_mz_value(p, 1L, mz = c(5.5, 599.41), tolerance = 0.1)
     expect_equal(unname(res[, "intensity"]), c(2, 6))
