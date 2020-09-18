@@ -1271,4 +1271,9 @@ test_that("filterMzValue,Spectra works", {
     expect_equal(mz(res)[[1L]], c(12, 56))
     expect_equal(unname(mz(res)[[2L]]), 56.1)
     expect_equal(unname(mz(res)[[3L]]), 12.1)
+
+    expect_error(filterMzValues(sps, mz = c(56, 12), tolerance = c(1, 2, 3)),
+                 "length 1 or equal")
+    expect_error(filterMzValues(sps, mz = c(56, 12), ppm = c(1, 2, 3)),
+                 "length 1 or equal")
 })

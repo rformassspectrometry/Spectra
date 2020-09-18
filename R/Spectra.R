@@ -1566,7 +1566,7 @@ setMethod("filterMzRange", "Spectra",
                                       mz = mz, msLevel = msLevel.)
               object@processing <- .logging(
                   object@processing, "Filter: select peaks with an m/z within ",
-                  "[", paste0(mz, collapse = ", "), "]")
+                  "[", mz[1L], ", ", mz[2L], "]")
               object
           })
 
@@ -1578,10 +1578,14 @@ setMethod("filterMzValues", "Spectra",
                    msLevel. = unique(msLevel(object))) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
+              l <- length(mz)
+              if (!(length(tolerance) == 1 || length(tolerance) == l))
+                  stop("'tolerance' should be of length 1 or equal 'length(mz)'")
+              if (!(length(ppm) == 1 || length(ppm) == l))
+                  stop("'ppm' should be of length 1 or equal 'length(mz)'")
               if (is.unsorted(mz)) {
                   idx <- order(mz)
                   mz <- mz[idx]
-                  l <- length(mz)
                   if (length(tolerance) == l)
                       tolerance <- tolerance[idx]
                   if (length(ppm) == l)
@@ -1590,9 +1594,12 @@ setMethod("filterMzValues", "Spectra",
               object <- addProcessing(object, .peaks_filter_mz_value,
                                       mz = mz, tolerance = tolerance,
                                       ppm = ppm, msLevel = msLevel.)
+              if (length(mz) <= 3)
+                  what <- paste0(format(mz, digits = 4), collapse = ", ")
+              else what <- ""
               object@processing <- .logging(
                   object@processing, "Filter: select peaks matching provided ",
-                  "m/z values")
+                  "m/z values ", what)
               object
           })
 
