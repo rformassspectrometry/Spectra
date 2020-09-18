@@ -114,9 +114,9 @@ NULL
                                    msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    idx <- closest(mz, x[, "mz"], tolerance = tolerance, ppm = ppm,
+    keep <- common(mz, x[, "mz"], tolerance = tolerance, ppm = ppm,
                    duplicates = "closest")
-    x[idx[!is.na(idx)], , drop = FALSE]
+    x[keep, , drop = FALSE]
 }
 
 #' @description
