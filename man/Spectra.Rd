@@ -66,15 +66,17 @@
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterDataOrigin,Spectra-method}
 \alias{filterDataStorage,Spectra-method}
+\alias{filterIntensity,Spectra-method}
 \alias{filterIsolationWindow,Spectra-method}
 \alias{filterMsLevel,Spectra-method}
+\alias{filterMzRange,Spectra-method}
+\alias{filterMzValues,Spectra-method}
 \alias{filterPolarity,Spectra-method}
 \alias{filterPrecursorMz,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
 \alias{reset,Spectra-method}
 \alias{bin,Spectra-method}
-\alias{filterIntensity,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
 \alias{pickPeaks,Spectra-method}
@@ -267,9 +269,25 @@ combineSpectra(
 
 \S4method{filterDataStorage}{Spectra}(object, dataStorage = character())
 
+\S4method{filterIntensity}{Spectra}(
+  object,
+  intensity = c(0, Inf),
+  msLevel. = unique(msLevel(object))
+)
+
 \S4method{filterIsolationWindow}{Spectra}(object, mz = numeric())
 
 \S4method{filterMsLevel}{Spectra}(object, msLevel. = integer())
+
+\S4method{filterMzRange}{Spectra}(object, mz = numeric(), msLevel. = unique(msLevel(object)))
+
+\S4method{filterMzValues}{Spectra}(
+  object,
+  mz = numeric(),
+  tolerance = 0,
+  ppm = 20,
+  msLevel. = unique(msLevel(object))
+)
 
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
 
@@ -282,12 +300,6 @@ combineSpectra(
 \S4method{reset}{Spectra}(object, ...)
 
 \S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
-
-\S4method{filterIntensity}{Spectra}(
-  object,
-  intensity = c(0, Inf),
-  msLevel. = unique(msLevel(object))
-)
 
 \S4method{compareSpectra}{Spectra,Spectra}(
   x,
@@ -391,17 +403,20 @@ of objects, conversion and changing the backend} for more details.}
 method description or expected data type.}
 
 \item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
-filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
-lower and upper m/z boundary.}
+filter the object. For \code{filterPrecursorMz} and \code{filterMzRange}:
+\code{numeric(2)} defining the lower and upper m/z boundary.
+For \code{filterMzValues}: \code{numeric} with the m/z values to match peaks
+against.}
 
 \item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
 define a constant maximal accepted difference between m/z values for
-peaks to be matched. For \code{containsMz} it can also be of length equal \code{mz}
-to specify a different tolerance for each m/z value.}
+peaks to be matched. For \code{containsMz} and \code{filterMzValues} it can also
+be of length equal \code{mz} to specify a different tolerance for each m/z
+value.}
 
-\item{ppm}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} defining a
-relative, m/z-dependent, maximal accepted difference between m/z values
-for peaks to be matched.}
+\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{filterMzValues}: \code{numeric(1)}
+defining a relative, m/z-dependent, maximal accepted difference between
+m/z values for peaks to be matched.}
 
 \item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
 (the default) or all provided \code{mz} have to be present in the spectrum.}
@@ -443,6 +458,11 @@ spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
+\item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
+either the lower or the lower and upper intensity limit for the
+filtering. Defaults to \code{intensity = c(0, Inf)} thus only peaks with \code{NA}
+intensity are removed.}
+
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of \code{object}.
 For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
@@ -461,11 +481,6 @@ be used to subset/filter \code{object}.}
 Defaults to \code{binSize = 1}.}
 
 \item{breaks}{For \code{bin}: \code{numeric} defining the m/z breakpoints between bins.}
-
-\item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
-either the lower or the lower and upper intensity limit for the
-filtering. Defaults to \code{intensity = c(0, Inf)} thus only peaks with \code{NA}
-intensity are removed.}
 
 \item{y}{A \code{Spectra} object.}
 
@@ -766,6 +781,13 @@ object (with spectra in their original order).
 \item \code{filterMsLevel}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
+\item \code{filterMzRange}: filters the object keeping only peaks in each spectrum
+that are within the provided m/z range.
+\item \code{filterMzValues}: filters the object keeping only peaks in each spectrum
+that match the provided m/z value(s) considering also the absolute
+\code{tolerance} and m/z-relative \code{ppm} (\code{tolerance} and \code{ppm} can be either
+of length 1 or equal to the length of \code{mz} to define a different tolerance
+for each m/z).
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
@@ -1062,6 +1084,14 @@ head(data_comb$dataOrigin)
 spd$precursorMz <- c(323.4, 543.2302)
 data_filt <- Spectra(spd)
 filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
+
+## Filter a Spectra keeping only peaks matching certain m/z values
+sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
+mz(sps_sub)
+
+## Filter a Spectra keeping only peaks within a m/z range
+sps_sub <- filterMzRange(data, mz = c(100, 300))
+mz(sps_sub)
 
 ## Remove empty spectra variables
 sciex_noNA <- dropNaSpectraVariables(sciex)

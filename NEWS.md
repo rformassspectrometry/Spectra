@@ -1,5 +1,10 @@
 # Spectra 0.99
 
+## Changes in 0.99.5
+
+- Add `filterMzRange` and `filterMzValues` to filter spectra based on an m/z
+  range or a list of target m/z values, respectively.
+
 ## Changes in 0.99.4
 
 - Add `export,MsBackendMzR` to export spectra data to mzML or mzXML file(s).

@@ -149,3 +149,39 @@ test_that(".peaks_smooth works", {
     expect_equal(.peaks_smooth(x, spectrumMsLevel = 1, coef = cf),
                  cbind(mz = x[, 1L], intensity = rep(3:8, c(3, 1, 1, 1, 1, 3))))
 })
+
+test_that(".peaks_filter_mz_range works", {
+    p <- cbind(mz = c(2, 5.6, 123.2, 422.8, 599.3, 599.4, 599.5, 743.1),
+               intensity = 1:8)
+    expect_warning(res <- .peaks_filter_mz_range(
+                       p, 1L, mz = range(numeric())), "Inf")
+    expect_equal(res, p)
+
+    res <- .peaks_filter_mz_range(p, 1L, msLevel = 2)
+    expect_equal(res, p)
+
+    res <- .peaks_filter_mz_range(p, 1L, mz = c(200, 600))
+    expect_equal(res[, "intensity"], c(4, 5, 6, 7))
+})
+
+test_that(".peaks_match_mz_value works", {
+    p <- cbind(mz = c(2, 5.6, 123.2, 422.8, 599.3, 599.4, 599.5, 743.1),
+               intensity = 1:8)
+    res <- .peaks_filter_mz_value(p, 1L, mz = numeric())
+    expect_true(is.matrix(res))
+    expect_true(nrow(res) == 0)
+    expect_equal(colnames(res), c("mz", "intensity"))
+    res <- .peaks_filter_mz_value(p, 1L, mz = NA)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), c("mz", "intensity"))
+    expect_true(nrow(res) == 0)
+
+    res <- .peaks_filter_mz_value(p, 1L, mz = 5, tolerance = 1)
+    expect_equal(unname(res[, "intensity"]), 2)
+    res <- .peaks_filter_mz_value(p, 1L, mz = c(5.5, 599.41), tolerance = 0.1)
+    expect_equal(unname(res[, "intensity"]), c(2, 6))
+
+    res <- .peaks_filter_mz_value(p, 1L, mz = c(123, 742.2),
+                                  tolerance = c(0.2, 1))
+    expect_equal(unname(res[, "intensity"]), c(3, 8))
+})
