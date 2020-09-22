@@ -969,6 +969,27 @@ test_that("filterIntensity,Spectra works", {
     expect_true(all(ints >= 500 & ints <= 9000))
 
     expect_error(filterIntensity(Spectra(sciex_mzr), c(1, 2, 3)), "limit")
+
+    ## With `intensity` being a function.
+    sps <- Spectra()
+    res <- filterIntensity(sps, intensity = function(x) x > mean(x))
+    expect_true(length(res@processingQueue) == 1)
+    expect_true(length(intensity(res)) == 0)
+
+    expect_error(filterIntensity(sps, intensity = TRUE), "numeric or a fun")
+
+    df <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L)
+    df$mz <- list(1:4, 1:5)
+    df$intensity <- list(1:4, 1:5)
+    sps <- Spectra(df)
+
+    res <- filterIntensity(sps, intensity = function(x) x > max(x)/2)
+    expect_equal(intensity(res)[[1L]], c(3, 4))
+    expect_equal(intensity(res)[[2L]], c(3, 4, 5))
+    res <- filterIntensity(sps, intensity = function(x) x > max(x)/2,
+                           msLevel = 1L)
+    expect_equal(intensity(res)[[1L]], c(3, 4))
+    expect_equal(intensity(res)[[2L]], c(1, 2, 3, 4, 5))
 })
 
 test_that("compareSpectra works", {

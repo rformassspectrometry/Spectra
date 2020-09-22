@@ -417,6 +417,11 @@ sps_rep <- filterIntensity(sps_rep, intensity = c(0.1, Inf))
 intensity(sps_rep)
 ```
 
+The `filterIntensity` supports also a user-provided function to be passed with
+parameter `intensity` which would allow e.g. to remove peaks smaller than the
+median peak intensity of a spectrum. See examples in the `?filterIntensity` help
+page for details.
+
 Note that any data manipulations on `Spectra` objects are not immediately
 applied to the peak data. They are added to a so called *processing queue* which
 is applied each time peak data is accessed (with the `peaksData`, `mz` or

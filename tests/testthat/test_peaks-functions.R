@@ -43,6 +43,30 @@ test_that(".peaks_filter_intensity works", {
     expect_equal(res[, 1], c(1, 3, 4, 5, 6, 14))
 })
 
+test_that(".peaks_filter_intensity_function works", {
+    ints <- c(5, 3, 12, 14.4, 13.3, 9, 3, 0, NA, 21, 89, 55, 33, 5, 2)
+    x <- cbind(mz = seq_along(ints), intensity = ints)
+    res <- .peaks_filter_intensity_function(
+        x, spectrumMsLevel = 1L, intensity = function(x) x > 0)
+    expect_equal(res[, 1], c(1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15))
+
+    res <- .peaks_filter_intensity_function(
+        x, spectrumMsLevel = 1L,
+        intensity = function(z) z > max(z, na.rm = TRUE) / 2)
+    expect_true(all(res[, "intensity"] > 89/2))
+
+    res <- .peaks_filter_intensity_function(x, spectrumMsLevel = 1L,
+                                            msLevel = 2L)
+    expect_equal(res, x)
+
+    expect_error(.peaks_filter_intensity_function(
+        x, spectrumMsLevel = 1L, function(x) FALSE),
+        "does not return a")
+    expect_error(.peaks_filter_intensity_function(
+        x, spectrumMsLevel = 1L, function(x) which(is.na(x))),
+        "does not return a")
+})
+
 test_that(".peaks_bin works", {
     int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
              0, 1, 5, 10, 5, 1)

@@ -460,8 +460,10 @@ only for spectra of selected \code{dataOrigin}.}
 
 \item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
 either the lower or the lower and upper intensity limit for the
-filtering. Defaults to \code{intensity = c(0, Inf)} thus only peaks with \code{NA}
-intensity are removed.}
+filtering, or a \code{function} that takes the intensities as input and
+returns a \code{logical} (same length then peaks in the spectrum) whether the
+peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
+only peaks with \code{NA} intensity are removed.}
 
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of \code{object}.
@@ -886,7 +888,11 @@ equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
 \item \code{filterIntensity}: filters each spectrum keeping only peaks with
-intensities that are within the provided range (parameter \code{intensity}). To
+intensities that are within the provided range or match the criteria of
+the provided function. For the former, parameter \code{intensity} has to be a
+\code{numeric} defining the intensity range, for the latter a \code{function} that
+takes the intensity values of the spectrum and returns a \code{logical} whether
+the peak should be retained or not (see examples below for details). To
 remove only peaks with intensities below a certain threshold, say 100, use
 \code{intensity = c(100, Inf)}. Note: also a single value can be passed with
 the \code{intensity} parameter in which case an upper limit of \code{Inf} is used.
@@ -1124,6 +1130,17 @@ intensity(res)[[2]]
 ## Lengths of spectra is now different
 lengths(mz(res))
 lengths(mz(data))
+
+## In addition it is possible to pass a function to `filterIntensity`: in
+## the example below we want to keep only peaks that have an intensity which
+## is larger than one third of the maximal peak intensity in that spectrum.
+keep_peaks <- function(x) {
+    x > max(x, na.rm = TRUE) / 3
+}
+res2 <- filterIntensity(data, intensity = keep_peaks)
+intensity(res2)[[1L]]
+intensity(data)[[1L]]
+
 
 ## Since data manipulation operations are by default not directly applied to
 ## the data but only added to the internal lazy evaluation queue, it is also
