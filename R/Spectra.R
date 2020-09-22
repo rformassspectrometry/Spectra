@@ -1054,7 +1054,8 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
                   backendInitialize(backend,
                                     data = spectraData(z),
-                                    ...)
+                                    ...,
+                                    BPPARAM = SerialParam())
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
               ## That below ensures the backend is returned in its original
