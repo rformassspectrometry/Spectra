@@ -82,19 +82,13 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/Spectra.html">Get started</a>
 </li>
 <li>
@@ -648,8 +642,10 @@ only for spectra of selected <code>dataOrigin</code>.</p></td>
       <th>intensity</th>
       <td><p>For <code>filterIntensity</code>: <code>numeric</code> of length 1 or 2 defining
 either the lower or the lower and upper intensity limit for the
-filtering. Defaults to <code>intensity = c(0, Inf)</code> thus only peaks with <code>NA</code>
-intensity are removed.</p></td>
+filtering, or a <code>function</code> that takes the intensities as input and
+returns a <code>logical</code> (same length then peaks in the spectrum) whether the
+peak should be retained or not. Defaults to <code>intensity = c(0, Inf)</code> thus
+only peaks with <code>NA</code> intensity are removed.</p></td>
     </tr>
     <tr>
       <th>msLevel.</th>
@@ -1094,7 +1090,11 @@ equal <code><a href='https://rdrr.io/r/base/length.html'>length(y)</a></code> (i
 the comparison of <code>x[2]</code> with <code>y[3]</code>). If <code>SIMPLIFY = TRUE</code> the <code>matrix</code>
 is <em>simplified</em> to a <code>numeric</code> if length of <code>x</code> or <code>y</code> is one.</p></li>
 <li><p><code>filterIntensity</code>: filters each spectrum keeping only peaks with
-intensities that are within the provided range (parameter <code>intensity</code>). To
+intensities that are within the provided range or match the criteria of
+the provided function. For the former, parameter <code>intensity</code> has to be a
+<code>numeric</code> defining the intensity range, for the latter a <code>function</code> that
+takes the intensity values of the spectrum and returns a <code>logical</code> whether
+the peak should be retained or not (see examples below for details). To
 remove only peaks with intensities below a certain threshold, say 100, use
 <code>intensity = c(100, Inf)</code>. Note: also a single value can be passed with
 the <code>intensity</code> parameter in which case an upper limit of <code>Inf</code> is used.
@@ -1224,7 +1224,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Sep 18 13:58:10 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Sep 23 12:08:39 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1444,7 +1444,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Fri Sep 18 13:58:12 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Wed Sep 23 12:08:41 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1469,7 +1469,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Sep 18 13:58:12 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Wed Sep 23 12:08:41 2020] </div><div class='input'>
 <span class='co'>## Filter a Spectra keeping only peaks matching certain m/z values</span>
 <span class='kw'>sps_sub</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterMzValues</a></span>(<span class='kw'>data</span>, mz = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>103</span>, <span class='fl'>104</span>), tolerance = <span class='fl'>0.3</span>)
 <span class='fu'>mz</span>(<span class='kw'>sps_sub</span>)
@@ -1534,7 +1534,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Sep 18 13:58:12 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Sep 23 12:08:41 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]
 </div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]
@@ -1550,6 +1550,17 @@ level(s).</p></li>
 <span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))
 </div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
+<span class='co'>## In addition it is possible to pass a function to `filterIntensity`: in</span>
+<span class='co'>## the example below we want to keep only peaks that have an intensity which</span>
+<span class='co'>## is larger than one third of the maximal peak intensity in that spectrum.</span>
+<span class='kw'>keep_peaks</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>x</span>) {
+    <span class='kw'>x</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='kw'>x</span>, na.rm = <span class='fl'>TRUE</span>) <span class='op'>/</span> <span class='fl'>3</span>
+}
+<span class='kw'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterIntensity</a></span>(<span class='kw'>data</span>, intensity = <span class='kw'>keep_peaks</span>)
+<span class='fu'>intensity</span>(<span class='kw'>res2</span>)[[<span class='fl'>1L</span>]]
+</div><div class='output co'>#&gt; [1] 200 400</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>data</span>)[[<span class='fl'>1L</span>]]
+</div><div class='output co'>#&gt; [1] 200.0 400.0  34.2  17.0</div><div class='input'>
+
 <span class='co'>## Since data manipulation operations are by default not directly applied to</span>
 <span class='co'>## the data but only added to the internal lazy evaluation queue, it is also</span>
 <span class='co'>## possible to remove these data manipulations with the `reset` function:</span>
@@ -1562,9 +1573,9 @@ level(s).</p></li>
 #&gt; 2         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Sep 18 13:58:12 2020]
-#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Sep 18 13:58:12 2020]
-#&gt;  Reset object. [Fri Sep 18 13:58:12 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Sep 23 12:08:41 2020]
+#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Wed Sep 23 12:08:41 2020]
+#&gt;  Reset object. [Wed Sep 23 12:08:41 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))
 </div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
@@ -1675,7 +1686,7 @@ level(s).</p></li>
 <span class='co'>## provide a file name.</span>
 <span class='kw'>fl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
 <span class='fu'><a href='hidden_aliases.html'>export</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), file = <span class='kw'>fl</span>)
-</div><div class='output co'>#&gt; <span class='message'>Writing file filebd249b9cb3...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Writing file file648578cb5031...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## This exported our data in mzML format. Below we read the first 6 lines</span>
 <span class='co'>## from that file.</span>
 <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span>(<span class='kw'>fl</span>, n = <span class='fl'>6</span>)
@@ -1691,7 +1702,7 @@ level(s).</p></li>
 <span class='co'>## Below we export each spectrum to its own file.</span>
 <span class='kw'>fls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(), <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
 <span class='fu'><a href='hidden_aliases.html'>export</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), file = <span class='kw'>fls</span>)
-</div><div class='output co'>#&gt; <span class='message'>Writing file filebd26eb01e10...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file filebd273bd3018...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Writing file file64852370cf7d...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file file64856d27f554...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## Reading the data from the first file</span>
 <span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='fu'><a href='hidden_aliases.html'>backendInitialize</a></span>(<span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), <span class='kw'>fls</span>[<span class='fl'>1</span>]))
 
