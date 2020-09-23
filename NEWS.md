@@ -1,5 +1,11 @@
 # Spectra 0.99
 
+## Changes in 0.99.6
+
+- Support `intensity` in `filterIntensity` method to be a function to enable
+  peak intensity-based filtering of spectra (issue
+  [#126](https://github.com/rformassspectrometry/Spectra/issues/126)).
+
 ## Changes in 0.99.5
 
 - Add `filterMzRange` and `filterMzValues` to filter spectra based on an m/z

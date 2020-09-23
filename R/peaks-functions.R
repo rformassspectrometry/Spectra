@@ -92,6 +92,31 @@ NULL
 
 #' @description
 #'
+#' Filter peaks with an intensity-based function.
+#'
+#' @inheritParam .peaks_remove
+#'
+#' @param intensity function which takes intensities as first parameter and
+#'     returns a `logical` of length equal to the number of peaks in the
+#'     spectrum.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.peaks_filter_intensity_function <- function(x, spectrumMsLevel, intensity,
+                                             msLevel = spectrumMsLevel, ...) {
+    if (!spectrumMsLevel %in% msLevel || !length(x))
+        return(x)
+    keep <- intensity(x[, "intensity"])
+    if (!is.logical(keep) || length(keep) != nrow(x))
+        stop("Error in filterIntensity: the provided function does not return ",
+             "a logical vector of length equal to the number of peaks.",
+             call. = FALSE)
+    x[which(keep), , drop = FALSE]
+}
+
+#' @description
+#'
 #' Filter the spectrum keeping only peaks that match the provided m/z value(s).
 #'
 #' @inheritParams .peaks_remove
