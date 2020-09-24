@@ -240,3 +240,31 @@ combinePeaks <- function(x, intensityFun = base::mean,
         stop("m/z values of combined spectrum are not ordered increasingly")
     cbind(mz = mzs, intensity = vapply1d(ints, FUN = intensityFun))
 }
+
+#' pairwise comparison of peak matrices.
+#'
+#' @param x `list` of peak matrix
+#'
+#' @param y `list` of peak matrix
+#'
+#' @inheritParams .compare_spectra_chunk
+#'
+#' @return `matrix` with similarities.
+#'
+#' @author Sebastian Gibb, Johannes Rainer
+#'
+#' @noRd
+.peaks_compare <- function(x, y, MAPFUN = joinPeaks, tolerance = 0,
+                           ppm = 20, FUN = ndotproduct, ...) {
+    mat <- matrix(NA_real_, nrow = length(x), ncol = length(y),
+                  dimnames = list(names(x), names(y)))
+    for (i in seq_along(x)) {
+        for (j in seq_along(y)) {
+            peak_map <- MAPFUN(x[[i]], y[[j]],
+                               tolerance = tolerance, ppm = ppm,
+                               .check = FALSE, ...)
+            mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]], ...)
+        }
+    }
+    mat
+}

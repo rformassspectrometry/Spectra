@@ -12,8 +12,9 @@
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
+\alias{export,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
-\alias{as.list,MsBackend-method}
+\alias{peaksData,MsBackend-method}
 \alias{centroided,MsBackend-method}
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
@@ -56,15 +57,16 @@
 \alias{precursorCharge,MsBackend-method}
 \alias{precursorIntensity,MsBackend-method}
 \alias{precursorMz,MsBackend-method}
-\alias{replaceList<-,MsBackend-method}
+\alias{peaksData<-,MsBackend-method}
+\alias{reset,MsBackend-method}
 \alias{rtime,MsBackend-method}
 \alias{rtime<-,MsBackend-method}
 \alias{scanIndex,MsBackend-method}
 \alias{selectSpectraVariables,MsBackend-method}
 \alias{smoothed,MsBackend-method}
 \alias{smoothed<-,MsBackend-method}
-\alias{asDataFrame,MsBackend-method}
-\alias{asDataFrame<-,MsBackend-method}
+\alias{spectraData,MsBackend-method}
+\alias{spectraData<-,MsBackend-method}
 \alias{spectraNames,MsBackend-method}
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
@@ -84,9 +86,11 @@
 
 \S4method{backendMerge}{MsBackend}(object, ...)
 
+\S4method{export}{MsBackend}(object, ...)
+
 \S4method{acquisitionNum}{MsBackend}(object)
 
-\S4method{as.list}{MsBackend}(x)
+\S4method{peaksData}{MsBackend}(object)
 
 \S4method{centroided}{MsBackend}(object)
 
@@ -172,7 +176,9 @@
 
 \S4method{precursorMz}{MsBackend}(object)
 
-\S4method{replaceList}{MsBackend}(object) <- value
+\S4method{peaksData}{MsBackend}(object) <- value
+
+\S4method{reset}{MsBackend}(object)
 
 \S4method{rtime}{MsBackend}(object)
 
@@ -186,9 +192,9 @@
 
 \S4method{smoothed}{MsBackend}(object) <- value
 
-\S4method{asDataFrame}{MsBackend}(object, columns = spectraVariables(object))
+\S4method{spectraData}{MsBackend}(object, columns = spectraVariables(object))
 
-\S4method{asDataFrame}{MsBackend}(object) <- value
+\S4method{spectraData}{MsBackend}(object) <- value
 
 \S4method{spectraNames}{MsBackend}(object)
 
@@ -219,8 +225,6 @@ MsBackendMzR()
 
 \item{...}{Additional arguments.}
 
-\item{x}{Object extending \code{MsBackend}.}
-
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
 
@@ -228,7 +232,8 @@ method description or expected data type.}
 to filter for.}
 
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
-should be subsetted.}
+should be subsetted. For \code{export}: \code{character} of length 1 or equal to
+the number of spectra.}
 
 \item{dataOrigin}{For \code{filterDataOrigin}: \code{character} to define which
 spectra to keep.
@@ -258,12 +263,14 @@ subsetted.}
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
 
+\item{x}{Object extending \code{MsBackend}.}
+
 \item{use.names}{For \code{lengths}: whether spectrum names should be used.}
 
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
 
-\item{columns}{For \code{asDataFrame} accessor: optional \code{character} with column
+\item{columns}{For \code{spectraData} accessor: optional \code{character} with column
 names (spectra variables) that should be included in the
 returned \code{DataFrame}. By default, all columns are returned.}
 
@@ -336,7 +343,7 @@ backend.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
-\item \code{as.list} returns a \code{list} with the spectras' peak data. The length of
+\item \code{peaksData} returns a \code{list} with the spectras' peak data. The length of
 the list is equal to the number of spectra in \code{object}. Each element of
 the list is a \code{matrix} with columns \code{"mz"} and \code{"intensity"}. For an empty
 spectrum, a \code{matrix} with 0 rows and two columns (named \code{mz} and
@@ -374,6 +381,17 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \verb{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
+\item \code{export}: exports data from a \code{Spectra} class to a file. This method is
+called by the \verb{export,Spectra} method that passes itself as a second
+argument to the function. The \verb{export,MsBackend} implementation is thus
+expected to take a \code{Spectra} class as second argument from which all data
+is exported. Taking data from a \code{Spectra} class ensures that also all
+eventual data manipulations (cached in the \code{Spectra}'s lazy evaluation
+queue) are applied prior to export - this would not be possible with only a
+\link{MsBackend} class. An example implementation is the \code{export} method
+for the \code{MsBackendMzR} backend that supports export of the data in
+\emph{mzML} or \emph{mzXML} format. See the documentation for the \code{MsBackendMzR}
+class below for more information.
 \item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
@@ -465,11 +483,16 @@ and acquisition number (\code{interger}) of the precursor for MS level
 2 and above spectra from the object. Returns a vector of length equal to
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
-\item \verb{replaceList<-} replaces the peak data (m/z and intensity values) of the
+\item \verb{peaksData<-} replaces the peak data (m/z and intensity values) of the
 backend. This method expects a \code{list} of \code{matrix} objects with columns
 \code{"mz"} and \code{"intensity"} that has the same length as the number of
 spectra in the backend. Note that just writeable backends support this
 method.
+\item \code{reset} a backend (if supported). This method will be called on the backend
+by the \verb{reset,Spectra} method that is supposed to restore the data to its
+original state (see \verb{reset,Spectra} for more details). The function
+returns the \emph{reset} backend. The default implementation for \code{MsBackend}
+returns the backend as-is.
 \item \code{rtime}, \verb{rtime<-}: gets or sets the retention times for each
 spectrum (in seconds). \code{rtime} returns a \code{numeric} vector (length equal to
 the number of spectra) with the retention time for each spectrum.
@@ -486,9 +509,9 @@ the selected spectra variables.
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
-\item \code{asDataFrame}, \verb{asDataFrame<-}: gets or sets general spectrum
-metadata (annotation, also called header).  \code{asDataFrame} returns
-a \code{DataFrame}, \verb{asDataFrame<-} expects a \code{DataFrame} with the same number
+\item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
+metadata (annotation, also called header).  \code{spectraData} returns
+a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame} with the same number
 of rows as there are spectra in \code{object}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
 the spectra in \code{object}.
@@ -578,6 +601,31 @@ memory.
 New objects can be created with the \code{MsBackendMzR()} function which
 can be subsequently filled with data by calling \code{backendInitialize}
 passing the file names of the input data files with argument \code{files}.
+
+This backend provides an \code{export} method to export data from a \code{Spectra} in
+\emph{mzML} or \emph{mzXML} format. The definition of the function is:
+
+\code{export(object, x, file = tempfile(), format = c("mzML", "mzXML"), copy = FALSE)}
+
+The parameters are:
+\itemize{
+\item \code{object}: an instance of the \code{MsBackendMzR} class.
+\item \code{x}: the \linkS4class{Spectra} object to be exported.
+\item \code{file}: \code{character} with the (full) output file name(s). Should be
+of length 1 or equal \code{length(x)}. If a single file is specified, all
+spectra are exported to that file. Alternatively it is possible to specify
+for each spectrum in \code{x} the name of the file to which it should be
+exported (and hence \code{file} has to be of length equal \code{length(x)}).
+\item \code{format}: \code{character(1)}, either \code{"mzML"} or \code{"mzXML"} defining the output
+file format.
+\item \code{copy}: \code{logical(1)} whether general file information should be copied from
+the original MS data files. This only works if \code{x} uses a \code{MsBackendMzR}
+backend and if \code{dataOrigin(x)} contains the original MS data file names.
+\item \code{BPPARAM}: parallel processing settings.
+}
+
+See examples in \linkS4class{Spectra} or the vignette for more details and
+examples.
 }
 
 \section{\code{MsBackendHdf5Peaks}, on-disk MS data backend}{
@@ -624,6 +672,58 @@ of m/z or intensity values.
 }
 }
 
+\examples{
+
+## The MsBackend class is a virtual class and can not be instantiated
+## directly. Below we define a new backend class extending this virtual
+## class
+MsBackendDummy <- setClass("MsBackendDummy", contains = "MsBackend")
+MsBackendDummy()
+
+## This class inherits now all methods from `MsBackend`, all of which
+## however throw an error. These methods would have to be implemented
+## for the new backend class.
+try(mz(MsBackendDummy()))
+
+## See `MsBackendDataFrame` as a reference implementation for a backend
+## class (in the *R/MsBackendDataFrame.R* file).
+
+## MsBackendDataFrame
+##
+## The `MsBackendDataFrame` uses a `S4Vectors::DataFrame` to store all MS
+## data. Below we create such a backend by passing a `DataFrame` with all
+## data to it.
+data <- DataFrame(msLevel = c(1L, 2L, 1L), scanIndex = 1:3)
+data$mz <- list(c(1.1, 1.2, 1.3), c(1.4, 54.2, 56.4, 122.1), c(15.3, 23.2))
+data$intensity <- list(c(3, 2, 3), c(45, 100, 12.2, 1), c(123, 12324.2))
+
+## Backends are supposed to be created with their specific constructor
+## function
+be <- MsBackendDataFrame()
+
+be
+
+## The `backendInitialize` method initializes the backend filling it with
+## data. This method can take any parameters needed for the backend to
+## get loaded with the data (e.g. a file name from which to load the data,
+## a database connection or, in this case, a data frame containing the data).
+be <- backendInitialize(be, data)
+
+be
+
+## Data can be accessed with the accessor methods
+msLevel(be)
+
+mz(be)
+
+## Even if no data was provided for all spectra variables, its accessor
+## methods are supposed to return a value.
+precursorMz(be)
+
+## The `peaksData` method is supposed to return the peaks of the spectra as
+## a `list`.
+peaksData(be)
+}
 \author{
 Johannes Rainer, Sebastian Gibb, Laurent Gatto
 }

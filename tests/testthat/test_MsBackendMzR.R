@@ -16,8 +16,8 @@ test_that("initializeBackend,MsBackendMzR works", {
 
 test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
     splt <- split(sciex_mzr, dataStorage(sciex_mzr))
-    expect_equal(as.list(splt[[1]]), sciex_pks[1:931])
-    expect_equal(as.list(splt[[2]]), sciex_pks[932:1862])
+    expect_equal(peaksData(splt[[1]]), sciex_pks[1:931])
+    expect_equal(peaksData(splt[[2]]), sciex_pks[932:1862])
     res <- backendMerge(splt)
     expect_equal(res, sciex_mzr)
 
@@ -223,24 +223,24 @@ test_that("mz<-,MsBackendMzR works", {
     expect_error(mz(be) <- list(), "does not support replacing")
 })
 
-test_that("as.list,MsBackendMzR works", {
+test_that("peaksData,MsBackendMzR works", {
     be <- MsBackendMzR()
-    expect_equal(as.list(be), list())
+    expect_equal(peaksData(be), list())
 
-    res <- as.list(sciex_mzr)
+    res <- peaksData(sciex_mzr)
     expect_true(is(res, "list"))
     expect_equal(length(res), length(sciex_mzr))
     expect_true(is(res[[1]], "matrix"))
     expect_equal(colnames(res[[1]]), c("mz", "intensity"))
 
     tmp_one <- backendInitialize(MsBackendMzR(), sciex_file[1])
-    res_one <- as.list(tmp_one)
+    res_one <- peaksData(tmp_one)
     expect_equal(res[1:length(res_one)], res_one)
 
     ## Arbitrary ordering.
     idx <- sample(1:length(sciex_mzr))
     be <- sciex_mzr[idx]
-    pks <- as.list(be)
+    pks <- peaksData(be)
     expect_identical(pks, sciex_pks[idx])
 })
 
@@ -408,9 +408,9 @@ test_that("spectraVariables,MsBackendMzR works", {
                                names(.SPECTRA_DATA_COLUMNS))))
 })
 
-test_that("asDataFrame, asDataFrame<-, MsBackendMzR works", {
+test_that("spectraData, spectraData<-, MsBackendMzR works", {
     be <- MsBackendMzR()
-    res <- asDataFrame(be)
+    res <- spectraData(be)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)
     expect_true(all(names(Spectra:::.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
@@ -422,7 +422,7 @@ test_that("asDataFrame, asDataFrame<-, MsBackendMzR works", {
     expect_true(is.logical(res$smoothed))
     expect_equal(nrow(res), length(tmp))
 
-    asDataFrame(tmp)$new_col <- 1
+    spectraData(tmp)$new_col <- 1
     expect_true(any(colnames(tmp@spectraData) == "new_col"))
     expect_true(is(tmp@spectraData$new_col, "numeric"))
     expect_true(any(spectraVariables(tmp) == "new_col"))
@@ -433,18 +433,18 @@ test_that("asDataFrame, asDataFrame<-, MsBackendMzR works", {
     expect_true(is.numeric(res$new_col))
     expect_true(is.numeric(res$rtime))
 
-    res <- asDataFrame(tmp, columns = c("msLevel", "new_col", "smoothed"))
+    res <- spectraData(tmp, columns = c("msLevel", "new_col", "smoothed"))
     expect_equal(colnames(res), c("msLevel", "new_col", "smoothed"))
     expect_true(is.integer(res$msLevel))
     expect_true(is.numeric(res$new_col))
     expect_true(is.logical(res$smoothed))
     expect_true(all(is.na(res$smoothed)))
 
-    spd <- asDataFrame(tmp, columns = c("msLevel", "rtime", "dataStorage"))
-    expect_error(asDataFrame(tmp) <- spd, "scanIndex")
-    spd <- asDataFrame(tmp, columns = c("msLevel", "rtime", "dataStorage",
+    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "dataStorage"))
+    expect_error(spectraData(tmp) <- spd, "scanIndex")
+    spd <- spectraData(tmp, columns = c("msLevel", "rtime", "dataStorage",
                                         "scanIndex"))
-    asDataFrame(tmp) <- spd
+    spectraData(tmp) <- spd
     expect_true(all(is.na(centroided(tmp))))
     expect_true(all(is.na(polarity(tmp))))
     expect_equal(mz(tmp), mz(sciex_mzr))
@@ -465,13 +465,13 @@ test_that("[,MsBackendMzR works", {
     expect_true(all(is.na(smoothed(tmp))))
 
     ints <- intensity(tmp)
-    spd <- asDataFrame(tmp)
+    spd <- spectraData(tmp)
     expect_equal(ints, spd$intensity)
 
     tmp <- sciex_mzr[1000]
     expect_true(validObject(tmp))
     expect_equal(length(tmp), 1)
-    spd <- asDataFrame(tmp)
+    spd <- spectraData(tmp)
     expect_equal(spd$mz, mz(tmp))
 })
 
@@ -498,4 +498,47 @@ test_that("$,$<-,MsBackendMzR works", {
     expect_error(tmp$mz <- NumericList(1:4, 1:6, compress = FALSE),
                  "not support replacing mz")
     expect_error(tmp$new_col <- c(2, 4), "either 1 or")
+})
+
+test_that("export,MsBackendMzR works", {
+    df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
+    df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
+    df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
+    sps <- Spectra(df)
+
+    fl <- tempfile()
+    expect_error(export(sps, file = fl), "is required")
+    expect_error(export(sps, MsBackendDataFrame(), fl), "does not support")
+    export(sps, MsBackendMzR(), file = fl)
+    res <- Spectra(backendInitialize(MsBackendMzR(), fl))
+    expect_equal(mz(res), mz(sps))
+
+    expect_error(export(sps, MsBackendMzR(), file = c(fl, fl)),
+                 "of length 1")
+
+    ## Export to multiple files
+    fls <- c(tempfile(), tempfile())
+    fls <- fls[c(1, 2, 1)]
+    export(sps, MsBackendMzR(), fls)
+
+    a <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+    expect_true(length(a) == 2)
+    expect_equal(mz(a), mz(sps[c(1, 3)]))
+    b <- Spectra(backendInitialize(MsBackendMzR(), fls[2]))
+    expect_true(length(b) == 1)
+    expect_equal(mz(b), mz(sps[2]))
+
+    sps <- Spectra(sciex_mzr)
+    sps <- filterRt(sps, c(100, 150))
+    sps <- setBackend(sps, MsBackendDataFrame())
+    fls <- c(tempfile(), tempfile())
+    names(fls) <- unique(sps$dataOrigin)
+    export(sps, MsBackendMzR(), file = fls[sps$dataOrigin], copy = TRUE)
+    res <- Spectra(backendInitialize(MsBackendMzR(), fls))
+    expect_equal(rtime(res), rtime(sps))
+    expect_equal(mz(res), mz(sps))
+
+    export(sps, MsBackendMzR(), file = fl)
+    res <- Spectra(backendInitialize(MsBackendMzR(), fl))
+    expect_equal(rtime(res), rtime(sps))
 })

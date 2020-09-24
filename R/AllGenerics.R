@@ -2,11 +2,6 @@
 NULL
 
 #' @rdname hidden_aliases
-setGeneric("asDataFrame", function(object, ...) standardGeneric("asDataFrame"))
-#' @rdname hidden_aliases
-setGeneric("asDataFrame<-", function(object, value)
-    standardGeneric("asDataFrame<-"))
-#' @rdname hidden_aliases
 setGeneric("backendInitialize", def = function(object, ...)
     standardGeneric("backendInitialize"),
     valueClass = "MsBackend")
@@ -31,11 +26,25 @@ setGeneric("containsNeutralLoss", function(object, ...)
 setGeneric("dropNaSpectraVariables", function(object, ...)
     standardGeneric("dropNaSpectraVariables"))
 #' @rdname hidden_aliases
+setGeneric("export", function(object, ...)
+    standardGeneric("export"))
+#' @rdname hidden_aliases
 setGeneric("filterIntensity", function(object, ...)
     standardGeneric("filterIntensity"))
 #' @rdname hidden_aliases
+setGeneric("filterMzRange", function(object, ...)
+    standardGeneric("filterMzRange"))
+#' @rdname hidden_aliases
+setGeneric("filterMzValues", function(object, ...)
+    standardGeneric("filterMzValues"))
+#' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
+#' @rdname hidden_aliases
+setGeneric("peaksData", function(object, ...) standardGeneric("peaksData"))
+#' @rdname hidden_aliases
+setGeneric("peaksData<-", function(object, value)
+    standardGeneric("peaksData<-"))
 #' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
@@ -43,8 +52,8 @@ setGeneric("pickPeaks", function(object, ...)
 setGeneric("replaceIntensitiesBelow", function(object, threshold = min, ...)
     standardGeneric("replaceIntensitiesBelow"))
 #' @rdname hidden_aliases
-setGeneric("replaceList<-", function(object, value)
-    standardGeneric("replaceList<-"))
+setGeneric("reset", function(object, ...)
+    standardGeneric("reset"))
 #' @rdname hidden_aliases
 setGeneric("selectSpectraVariables", function(object, ...)
     standardGeneric("selectSpectraVariables"))
@@ -52,3 +61,5 @@ setGeneric("selectSpectraVariables", function(object, ...)
 setGeneric("setBackend", function(object, backend, ...)
     standardGeneric("setBackend"))
 setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
+#' @rdname hidden_aliases
+setGeneric("spectrapply", function(object, ...) standardGeneric("spectrapply"))

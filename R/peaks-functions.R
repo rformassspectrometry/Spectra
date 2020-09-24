@@ -92,6 +92,79 @@ NULL
 
 #' @description
 #'
+#' Filter peaks with an intensity-based function.
+#'
+#' @inheritParam .peaks_remove
+#'
+#' @param intensity function which takes intensities as first parameter and
+#'     returns a `logical` of length equal to the number of peaks in the
+#'     spectrum.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.peaks_filter_intensity_function <- function(x, spectrumMsLevel, intensity,
+                                             msLevel = spectrumMsLevel, ...) {
+    if (!spectrumMsLevel %in% msLevel || !length(x))
+        return(x)
+    keep <- intensity(x[, "intensity"])
+    if (!is.logical(keep) || length(keep) != nrow(x))
+        stop("Error in filterIntensity: the provided function does not return ",
+             "a logical vector of length equal to the number of peaks.",
+             call. = FALSE)
+    x[which(keep), , drop = FALSE]
+}
+
+#' @description
+#'
+#' Filter the spectrum keeping only peaks that match the provided m/z value(s).
+#'
+#' @inheritParams .peaks_remove
+#'
+#' @param mz `numeric` with the m/z values to match against. This needs to be
+#'     a sorted `numeric` (has to be checked upstream).
+#'
+#' @param tolerance `numeric` with the tolerance. Can be of length 1 or equal
+#'     length `mz`.
+#'
+#' @param ppm `numeric` with the ppm. Can be of length 1 or equal length `mz`.
+#'
+#' @author Johannes Rainer
+#'
+#' @importFrom MsCoreUtils closest
+#'
+#' @noRd
+.peaks_filter_mz_value <- function(x, spectrumMsLevel, mz = numeric(),
+                                   tolerance = 0, ppm = 20,
+                                   msLevel = spectrumMsLevel, ...) {
+    if (!spectrumMsLevel %in% msLevel || !length(x))
+        return(x)
+    idx <- closest(mz, x[, "mz"], tolerance = tolerance, ppm = ppm,
+                   duplicates = "closest", .check = FALSE)
+    x[idx[!is.na(idx)], , drop = FALSE]
+}
+
+#' @description
+#'
+#' Filter the spectrum keeping only peaks that are within the provided m/z
+#' range.
+#'
+#' @inheritParams .peaks_remove
+#'
+#' @param mz `numeric(2)` with the lower and upper m/z value.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.peaks_filter_mz_range <- function(x, spectrumMsLevel, mz = numeric(),
+                                   msLevel = spectrumMsLevel, ...) {
+    if (!spectrumMsLevel %in% msLevel || !length(x))
+        return(x)
+    x[between(x[, "mz"], mz), , drop = FALSE]
+}
+
+#' @description
+#'
 #' Bin peaks of a spectrum.
 #'
 #' @inheritParams .peaks_remove

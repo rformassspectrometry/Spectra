@@ -44,7 +44,7 @@
 #'     acquisition number of the spectra to which the object should be
 #'     subsetted.
 #'
-#' @param columns For `asDataFrame` accessor: optional `character` with column
+#' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
 #'
@@ -67,7 +67,8 @@
 #' @param f `factor` defining the grouping to split `x`. See [split()].
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
-#'     should be subsetted.
+#'     should be subsetted. For `export`: `character` of length 1 or equal to
+#'     the number of spectra.
 #'
 #' @param initial For `tic`: `logical(1)` whether the initially
 #'     reported total ion current should be reported, or whether the
@@ -128,7 +129,7 @@
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `as.list` returns a `list` with the spectras' peak data. The length of
+#' - `peaksData` returns a `list` with the spectras' peak data. The length of
 #'   the list is equal to the number of spectra in `object`. Each element of
 #'   the list is a `matrix` with columns `"mz"` and `"intensity"`. For an empty
 #'   spectrum, a `matrix` with 0 rows and two columns (named `mz` and
@@ -173,6 +174,18 @@
 #'   returns a `numeric` with length equal to the number of spectra
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
+#'
+#' - `export`: exports data from a `Spectra` class to a file. This method is
+#'   called by the `export,Spectra` method that passes itself as a second
+#'   argument to the function. The `export,MsBackend` implementation is thus
+#'   expected to take a `Spectra` class as second argument from which all data
+#'   is exported. Taking data from a `Spectra` class ensures that also all
+#'   eventual data manipulations (cached in the `Spectra`'s lazy evaluation
+#'   queue) are applied prior to export - this would not be possible with only a
+#'   [MsBackend] class. An example implementation is the `export` method
+#'   for the `MsBackendMzR` backend that supports export of the data in
+#'   *mzML* or *mzXML* format. See the documentation for the `MsBackendMzR`
+#'   class below for more information.
 #'
 #' - `filterAcquisitionNum`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
@@ -292,11 +305,17 @@
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `replaceList<-` replaces the peak data (m/z and intensity values) of the
+#' - `peaksData<-` replaces the peak data (m/z and intensity values) of the
 #'   backend. This method expects a `list` of `matrix` objects with columns
 #'   `"mz"` and `"intensity"` that has the same length as the number of
 #'   spectra in the backend. Note that just writeable backends support this
 #'   method.
+#'
+#' - `reset` a backend (if supported). This method will be called on the backend
+#'   by the `reset,Spectra` method that is supposed to restore the data to its
+#'   original state (see `reset,Spectra` for more details). The function
+#'   returns the *reset* backend. The default implementation for `MsBackend`
+#'   returns the backend as-is.
 #'
 #' - `rtime`, `rtime<-`: gets or sets the retention times for each
 #'   spectrum (in seconds). `rtime` returns a `numeric` vector (length equal to
@@ -318,9 +337,9 @@
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `asDataFrame`, `asDataFrame<-`: gets or sets general spectrum
-#'   metadata (annotation, also called header).  `asDataFrame` returns
-#'   a `DataFrame`, `asDataFrame<-` expects a `DataFrame` with the same number
+#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
+#'   metadata (annotation, also called header).  `spectraData` returns
+#'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
 #'   of rows as there are spectra in `object`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
@@ -389,6 +408,7 @@
 #'
 #' Additional columns are allowed too.
 #'
+#'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
 #' The `MsBackendMzR` keeps only a limited amount of data in memory,
@@ -405,6 +425,31 @@
 #' New objects can be created with the `MsBackendMzR()` function which
 #' can be subsequently filled with data by calling `backendInitialize`
 #' passing the file names of the input data files with argument `files`.
+#'
+#' This backend provides an `export` method to export data from a `Spectra` in
+#' *mzML* or *mzXML* format. The definition of the function is:
+#'
+#' `export(object, x, file = tempfile(), format = c("mzML", "mzXML"),
+#'         copy = FALSE)`
+#'
+#' The parameters are:
+#' - `object`: an instance of the `MsBackendMzR` class.
+#' - `x`: the [Spectra-class] object to be exported.
+#' - `file`: `character` with the (full) output file name(s). Should be
+#'   of length 1 or equal `length(x)`. If a single file is specified, all
+#'   spectra are exported to that file. Alternatively it is possible to specify
+#'   for each spectrum in `x` the name of the file to which it should be
+#'   exported (and hence `file` has to be of length equal `length(x)`).
+#' - `format`: `character(1)`, either `"mzML"` or `"mzXML"` defining the output
+#'   file format.
+#' - `copy`: `logical(1)` whether general file information should be copied from
+#'   the original MS data files. This only works if `x` uses a `MsBackendMzR`
+#'   backend and if `dataOrigin(x)` contains the original MS data file names.
+#' - `BPPARAM`: parallel processing settings.
+#'
+#' See examples in [Spectra-class] or the vignette for more details and
+#' examples.
+#'
 #'
 #' @section `MsBackendHdf5Peaks`, on-disk MS data backend:
 #'
@@ -454,6 +499,58 @@
 #' @md
 #'
 #' @exportClass MsBackend MsBackendDataFrame MsBackendMzR
+#'
+#' @examples
+#'
+#' ## The MsBackend class is a virtual class and can not be instantiated
+#' ## directly. Below we define a new backend class extending this virtual
+#' ## class
+#' MsBackendDummy <- setClass("MsBackendDummy", contains = "MsBackend")
+#' MsBackendDummy()
+#'
+#' ## This class inherits now all methods from `MsBackend`, all of which
+#' ## however throw an error. These methods would have to be implemented
+#' ## for the new backend class.
+#' try(mz(MsBackendDummy()))
+#'
+#' ## See `MsBackendDataFrame` as a reference implementation for a backend
+#' ## class (in the *R/MsBackendDataFrame.R* file).
+#'
+#' ## MsBackendDataFrame
+#' ##
+#' ## The `MsBackendDataFrame` uses a `S4Vectors::DataFrame` to store all MS
+#' ## data. Below we create such a backend by passing a `DataFrame` with all
+#' ## data to it.
+#' data <- DataFrame(msLevel = c(1L, 2L, 1L), scanIndex = 1:3)
+#' data$mz <- list(c(1.1, 1.2, 1.3), c(1.4, 54.2, 56.4, 122.1), c(15.3, 23.2))
+#' data$intensity <- list(c(3, 2, 3), c(45, 100, 12.2, 1), c(123, 12324.2))
+#'
+#' ## Backends are supposed to be created with their specific constructor
+#' ## function
+#' be <- MsBackendDataFrame()
+#'
+#' be
+#'
+#' ## The `backendInitialize` method initializes the backend filling it with
+#' ## data. This method can take any parameters needed for the backend to
+#' ## get loaded with the data (e.g. a file name from which to load the data,
+#' ## a database connection or, in this case, a data frame containing the data).
+#' be <- backendInitialize(be, data)
+#'
+#' be
+#'
+#' ## Data can be accessed with the accessor methods
+#' msLevel(be)
+#'
+#' mz(be)
+#'
+#' ## Even if no data was provided for all spectra variables, its accessor
+#' ## methods are supposed to return a value.
+#' precursorMz(be)
+#'
+#' ## The `peaksData` method is supposed to return the peaks of the spectra as
+#' ## a `list`.
+#' peaksData(be)
 NULL
 
 setClass(
@@ -495,6 +592,12 @@ setMethod("backendMerge", "MsBackend", function(object, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @rdname MsBackend
+setMethod("export", "MsBackend", function(object, ...) {
+    stop(class(object), " does not support export of data; please provide a ",
+         "backend that supports data export with parameter 'backend'.")
+})
+
 #' @exportMethod acquisitionNum
 #'
 #' @importMethodsFrom ProtGenerics acquisitionNum
@@ -504,13 +607,11 @@ setMethod("acquisitionNum", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod as.list
-#'
-#' @importMethodsFrom BiocGenerics as.list
+#' @exportMethod peaksData
 #'
 #' @rdname MsBackend
-setMethod("as.list", "MsBackend", function(x) {
-    stop("Not implemented for ", class(x), ".")
+setMethod("peaksData", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
 })
 
 #' @exportMethod centroided
@@ -592,9 +693,9 @@ setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
 #' @rdname MsBackend
 setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     svs <- spectraVariables(object)
-    spd <- asDataFrame(object, columns = svs[!(svs %in% c("mz", "intensity"))])
+    spd <- spectraData(object, columns = svs[!(svs %in% c("mz", "intensity"))])
     keep <- !vapply1l(spd, function(z) all(is.na(z)))
-    asDataFrame(object) <- spd[, keep, drop = FALSE]
+    spectraData(object) <- spd[, keep, drop = FALSE]
     object
 })
 
@@ -891,11 +992,18 @@ setMethod("precursorMz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod replaceList<-
+#' @exportMethod peaksData<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("replaceList", "MsBackend", function(object, value) {
+setReplaceMethod("peaksData", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod reset
+#'
+#' @rdname MsBackend
+setMethod("reset", "MsBackend", function(object) {
+    object
 })
 
 #' @exportMethod rtime
@@ -954,19 +1062,19 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
-#' @exportMethod asDataFrame
+#' @exportMethod spectraData
 #'
 #' @rdname MsBackend
 setMethod(
-    "asDataFrame", "MsBackend",
+    "spectraData", "MsBackend",
     function(object, columns = spectraVariables(object)) {
         stop("Not implemented for ", class(object), ".")
     })
 
-#' @exportMethod asDataFrame<-
+#' @exportMethod spectraData<-
 #'
 #' @rdname MsBackend
-setReplaceMethod("asDataFrame", "MsBackend", function(object, value) {
+setReplaceMethod("spectraData", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 

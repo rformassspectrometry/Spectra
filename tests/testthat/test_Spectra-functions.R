@@ -29,7 +29,7 @@ test_that(".apply_processing_queue works", {
     expect_equal(res, list((1:5 + 2), (1:3 + 2), 7))
 
     be <- sciex_mzr
-    pks <- as.list(be)
+    pks <- peaksData(be)
     pq <- list(ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
     res <- .apply_processing_queue(pks, msLevel(be),
                                    rep(TRUE, length(be)), pq)
@@ -96,26 +96,26 @@ test_that("applyProcessing works", {
                          f = rep(1, length(sps_mzr)))
     expect_true(length(sps_mem@processingQueue) == 2)
     expect_true(length(sps_h5@processingQueue) == 2)
-    expect_identical(as.list(sps_mzr), as.list(sps_mem))
-    expect_identical(as.list(sps_h5), as.list(sps_mem))
+    expect_identical(peaksData(sps_mzr), peaksData(sps_mem))
+    expect_identical(peaksData(sps_h5), peaksData(sps_mem))
 
     ## MsBackendDataFrame
     res <- applyProcessing(sps_mem)
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) > length(sps_mem@processing))
     expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(as.list(res), as.list(sps_mem))
+    expect_identical(peaksData(res), peaksData(sps_mem))
 
     ## MsBackendHdf5Peaks
     res <- applyProcessing(sps_h5)
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) > length(sps_h5@processing))
     expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(as.list(res), as.list(sps_mem))
+    expect_identical(peaksData(res), peaksData(sps_mem))
     expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
 
     ## Applying the processing queue invalidated the original object!
-    expect_error(as.list(sps_h5))
+    expect_error(peaksData(sps_h5))
     sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
                          files = c(tempfile(), tempfile()),
                          f = rep(1, length(sps_mzr)))
@@ -129,7 +129,7 @@ test_that("applyProcessing works", {
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) > length(sps_mem@processing))
     expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(as.list(res), as.list(sps_mem))
+    expect_identical(peaksData(res), peaksData(sps_mem))
 
     ## MsBackendHdf5Peaks: throws an error, because the factor f does not
     ## match the dataStorage.
@@ -142,7 +142,7 @@ test_that("applyProcessing works", {
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) > length(sps_h5@processing))
     expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(as.list(res), as.list(sps_mem))
+    expect_identical(peaksData(res), peaksData(sps_mem))
     expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
 
     expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")
@@ -160,37 +160,50 @@ test_that(".check_ms_level works", {
     expect_true(.check_ms_level(tmt_mzr, c(1, 4)))
 })
 
-test_that(".compare_spectra, .compare_spectra_self work", {
+test_that(".compare_spectra_self work", {
     sps <- Spectra(sciex_hd5)[120:126]
     sps <- setBackend(sps, MsBackendDataFrame())
 
-    res <- .compare_spectra(sps, sps)
+    res <- .compare_spectra_chunk(sps, sps)
     expect_true(ncol(res) == length(sps))
     expect_true(nrow(res) == length(sps))
     expect_equal(diag(res), rep(1, length(sps)))
-
-    res_2 <- .compare_spectra(sps, sps[3])
-    expect_true(ncol(res_2) == 1)
-    expect_true(nrow(res_2) == length(sps))
-    expect_identical(res_2[, 1], res[, 3])
-
-    res_2 <- .compare_spectra(sps[5], sps)
-    expect_true(ncol(res_2) == length(sps))
-    expect_true(nrow(res_2) == 1)
-    expect_identical(res_2[1, ], res[5, ])
 
     res_2 <- .compare_spectra_self(sps)
     expect_equal(dim(res), dim(res_2))
     expect_identical(diag(res), diag(res_2))
     expect_identical(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
+})
+
+test_that(".compare_spectra_chunk works", {
+    sps <- Spectra(sciex_hd5)[120:126]
+    sps <- setBackend(sps, MsBackendDataFrame())
+
+    res <- .compare_spectra_chunk(sps, sps)
+    expect_true(ncol(res) == length(sps))
+    expect_true(nrow(res) == length(sps))
+    expect_equal(diag(res), rep(1, length(sps)))
+
+    res_2 <- .compare_spectra_chunk(sps, sps[3])
+    expect_true(ncol(res_2) == 1)
+    expect_true(nrow(res_2) == length(sps))
+    expect_identical(res_2[, 1], res[, 3])
+
+    res_2 <- .compare_spectra_chunk(sps[5], sps)
+    expect_true(ncol(res_2) == length(sps))
+    expect_true(nrow(res_2) == 1)
+    expect_identical(res_2[1, ], res[5, ])
+
+    res_3 <- .compare_spectra_chunk(sps[5], sps, chunkSize = 2)
+    expect_equal(res_2, res_3)
 
     cor_fun <- function(x, y, ...) {
         cor(x[, 2], y[, 2], use = "pairwise.complete.obs")
     }
-    res <- .compare_spectra(sps[1], sps[1], FUN = cor_fun)
+    res <- .compare_spectra_chunk(sps[1], sps[1], FUN = cor_fun)
     expect_true(res[1, 1] == 1)
-    res <- .compare_spectra(sps[1], sps[2], FUN = cor_fun)
-    res_2 <- .compare_spectra(sps[1], sps[2])
+    res <- .compare_spectra_chunk(sps[1], sps[2], FUN = cor_fun)
+    res_2 <- .compare_spectra_chunk(sps[1], sps[2])
     expect_true(res[1, 1] > res_2[1, 1])
 })
 

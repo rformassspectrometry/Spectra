@@ -14,8 +14,9 @@
 \alias{setBackend,Spectra,MsBackend-method}
 \alias{c,Spectra-method}
 \alias{split,Spectra,ANY-method}
+\alias{export,Spectra-method}
 \alias{acquisitionNum,Spectra-method}
-\alias{as.list,Spectra-method}
+\alias{peaksData,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
 \alias{collisionEnergy,Spectra-method}
@@ -36,7 +37,7 @@
 \alias{isolationWindowUpperMz<-,Spectra-method}
 \alias{containsMz,Spectra-method}
 \alias{containsNeutralLoss,Spectra-method}
-\alias{lapply,Spectra-method}
+\alias{spectrapply,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{mz,Spectra-method}
@@ -65,14 +66,17 @@
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterDataOrigin,Spectra-method}
 \alias{filterDataStorage,Spectra-method}
+\alias{filterIntensity,Spectra-method}
 \alias{filterIsolationWindow,Spectra-method}
 \alias{filterMsLevel,Spectra-method}
+\alias{filterMzRange,Spectra-method}
+\alias{filterMzValues,Spectra-method}
 \alias{filterPolarity,Spectra-method}
 \alias{filterPrecursorMz,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
+\alias{reset,Spectra-method}
 \alias{bin,Spectra-method}
-\alias{filterIntensity,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
 \alias{pickPeaks,Spectra-method}
@@ -124,7 +128,7 @@ combineSpectra(
   processingQueue = list(),
   metadata = list(),
   source = MsBackendMzR(),
-  backend = MsBackendDataFrame(),
+  backend = source,
   ...,
   BPPARAM = bpparam()
 )
@@ -135,9 +139,11 @@ combineSpectra(
 
 \S4method{split}{Spectra,ANY}(x, f, drop = FALSE, ...)
 
+\S4method{export}{Spectra}(object, backend, ...)
+
 \S4method{acquisitionNum}{Spectra}(object)
 
-\S4method{as.list}{Spectra}(x, ...)
+\S4method{peaksData}{Spectra}(object, ...)
 
 \S4method{centroided}{Spectra}(object)
 
@@ -192,7 +198,13 @@ combineSpectra(
   BPPARAM = bpparam()
 )
 
-\S4method{lapply}{Spectra}(X, FUN, f = as.factor(seq_along(X)), ..., BPPARAM = SerialParam())
+\S4method{spectrapply}{Spectra}(
+  object,
+  FUN,
+  f = as.factor(seq_along(object)),
+  ...,
+  BPPARAM = SerialParam()
+)
 
 \S4method{length}{Spectra}(x)
 
@@ -257,9 +269,25 @@ combineSpectra(
 
 \S4method{filterDataStorage}{Spectra}(object, dataStorage = character())
 
+\S4method{filterIntensity}{Spectra}(
+  object,
+  intensity = c(0, Inf),
+  msLevel. = unique(msLevel(object))
+)
+
 \S4method{filterIsolationWindow}{Spectra}(object, mz = numeric())
 
 \S4method{filterMsLevel}{Spectra}(object, msLevel. = integer())
+
+\S4method{filterMzRange}{Spectra}(object, mz = numeric(), msLevel. = unique(msLevel(object)))
+
+\S4method{filterMzValues}{Spectra}(
+  object,
+  mz = numeric(),
+  tolerance = 0,
+  ppm = 20,
+  msLevel. = unique(msLevel(object))
+)
 
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
 
@@ -269,13 +297,9 @@ combineSpectra(
 
 \S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
-\S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
+\S4method{reset}{Spectra}(object, ...)
 
-\S4method{filterIntensity}{Spectra}(
-  object,
-  intensity = c(0, Inf),
-  msLevel. = unique(msLevel(object))
-)
+\S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
 
 \S4method{compareSpectra}{Spectra,Spectra}(
   x,
@@ -344,7 +368,8 @@ for details. For \code{setBackend}: factor defining how to split the data for
 parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
-should be combined. For \code{lapply}: \code{factor} how \code{X} should be splitted.}
+should be combined. For \code{spectrapply}: \code{factor} how \code{object} should be
+splitted.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
@@ -365,7 +390,8 @@ performed.}
 \item{backend}{For \code{Spectra}: \linkS4class{MsBackend} to be used as backend. See
 section on creation of \code{Spectra} objects for details. For \code{setBackend}:
 instance of \linkS4class{MsBackend}. See section on creation of \code{Spectra}
-objects for details.}
+objects for details. For \code{export}: \linkS4class{MsBackend} to be used to export
+the data.}
 
 \item{source}{For \code{Spectra}: instance of \linkS4class{MsBackend} that can be used
 to import spectrum data from the provided files. See section \emph{Creation
@@ -377,25 +403,26 @@ of objects, conversion and changing the backend} for more details.}
 method description or expected data type.}
 
 \item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
-filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
-lower and upper m/z boundary.}
+filter the object. For \code{filterPrecursorMz} and \code{filterMzRange}:
+\code{numeric(2)} defining the lower and upper m/z boundary.
+For \code{filterMzValues}: \code{numeric} with the m/z values to match peaks
+against.}
 
 \item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
 define a constant maximal accepted difference between m/z values for
-peaks to be matched. For \code{containsMz} it can also be of length equal \code{mz}
-to specify a different tolerance for each m/z value.}
+peaks to be matched. For \code{containsMz} and \code{filterMzValues} it can also
+be of length equal \code{mz} to specify a different tolerance for each m/z
+value.}
 
-\item{ppm}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} defining a
-relative, m/z-dependent, maximal accepted difference between m/z values
-for peaks to be matched.}
+\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{filterMzValues}: \code{numeric(1)}
+defining a relative, m/z-dependent, maximal accepted difference between
+m/z values for peaks to be matched.}
 
 \item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
 (the default) or all provided \code{mz} have to be present in the spectrum.}
 
 \item{neutralLoss}{for \code{containsNeutralLoss}: \code{numeric(1)} defining the value
 which should be subtracted from the spectrum's precursor m/z.}
-
-\item{X}{A \code{Spectra} object.}
 
 \item{use.names}{For \code{lengths}: ignored.}
 
@@ -431,6 +458,13 @@ spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
+\item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
+either the lower or the lower and upper intensity limit for the
+filtering, or a \code{function} that takes the intensities as input and
+returns a \code{logical} (same length then peaks in the spectrum) whether the
+peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
+only peaks with \code{NA} intensity are removed.}
+
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of \code{object}.
 For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
@@ -449,11 +483,6 @@ be used to subset/filter \code{object}.}
 Defaults to \code{binSize = 1}.}
 
 \item{breaks}{For \code{bin}: \code{numeric} defining the m/z breakpoints between bins.}
-
-\item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
-either the lower or the lower and upper intensity limit for the
-filtering. Defaults to \code{intensity = c(0, Inf)} thus only peaks with \code{NA}
-intensity are removed.}
 
 \item{y}{A \code{Spectra} object.}
 
@@ -524,7 +553,7 @@ methods} section below for more details.
 
 For details on plotting spectra, see \code{\link[=plotSpectra]{plotSpectra()}}.
 }
-\section{Creation of objects, conversion and changing the backend}{
+\section{Creation of objects, conversion, changing the backend and export}{
 
 
 \code{Spectra} classes can be created with the \code{Spectra} constructor function
@@ -573,6 +602,26 @@ are advised to use the default setting.
 \item parameter \code{BPPARAM}: setup for the parallel processing. See \code{\link[=bpparam]{bpparam()}} for
 details.
 }
+
+Data from a \code{Spectra} object can be \strong{exported} to a file with the \code{export}
+function. The actual export of the data has to be performed by the \code{export}
+method of the \link{MsBackend} class defined with the mandatory parameter
+\code{backend}. Note however that not all backend classes support export of data.
+From the \code{MsBackend} classes in the \code{Spectra} package currently only the
+\code{MsBackendMzR} backend supports data export (to mzML/mzXML file(s));
+see the help page of the \linkS4class{MsBackend} for information on its arguments
+or the examples below or the vignette for examples.
+
+The definition of the function is
+\code{export(object, backend,  ...)} and its
+parameters are:
+\itemize{
+\item \code{object}: the \code{Spectra} object to be exported.
+\item \code{backend}: instance of a class extending \link{MsBackend} which supports export
+of the data (i.e. which has a defined \code{export} method).
+\item \code{...}: additional parameters specific for the \code{MsBackend} passed with
+parameter \code{backend}.
+}
 }
 
 \section{Accessing spectra data}{
@@ -583,10 +632,12 @@ See examples for details.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
-\item \code{as.list}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
+\item \code{peaksData}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
 function returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns
 \code{"mz"} and \code{"intensity"} with the m/z and intensity values for all peaks of
-a spectrum.
+a spectrum. Note that it is also possible to extract the peaks matrices
+with \code{as(x, "list")} and \code{as(x, "SimpleList")} as a \code{list} and
+\code{SimpleList}, respectively.
 \item \code{centroided}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -732,6 +783,13 @@ object (with spectra in their original order).
 \item \code{filterMsLevel}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
+\item \code{filterMzRange}: filters the object keeping only peaks in each spectrum
+that are within the provided m/z range.
+\item \code{filterMzValues}: filters the object keeping only peaks in each spectrum
+that match the provided m/z value(s) considering also the absolute
+\code{tolerance} and m/z-relative \code{ppm} (\code{tolerance} and \code{ppm} can be either
+of length 1 or equal to the length of \code{mz} to define a different tolerance
+for each m/z).
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
@@ -745,6 +803,11 @@ MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
 \code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
 original order).
+\item \code{reset}: restores the data to its original state (as much as possible):
+removes any processing steps from the lazy processing queue and calls
+\code{reset} on the backend which, depending on the backend, can also undo e.g.
+data filtering operations. Note that a \code{reset} call after \code{applyProcessing}
+will not have any effect. See examples below for more information.
 \item \code{selectSpectraVariables}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
@@ -825,23 +888,28 @@ equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
 \item \code{filterIntensity}: filters each spectrum keeping only peaks with
-intensities that are within the provided range (parameter \code{intensity}). To
+intensities that are within the provided range or match the criteria of
+the provided function. For the former, parameter \code{intensity} has to be a
+\code{numeric} defining the intensity range, for the latter a \code{function} that
+takes the intensity values of the spectrum and returns a \code{logical} whether
+the peak should be retained or not (see examples below for details). To
 remove only peaks with intensities below a certain threshold, say 100, use
 \code{intensity = c(100, Inf)}. Note: also a single value can be passed with
 the \code{intensity} parameter in which case an upper limit of \code{Inf} is used.
 Note that this function removes also peaks with missing intensities
 (i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
 filtering to spectra of the specified MS level(s).
-\item \code{lapply}: apply a given function to each spectrum in a \code{Spectra} object.
-The \code{Spectra} is splitted into individual spectra and on each of them
-(i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
+\item \code{spectrapply}: apply a given function to each spectrum in a \code{Spectra}
+object. The \code{Spectra} is splitted into individual spectra and on each of
+them (i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
 parameters to \code{FUN} can be passed with the \code{...} argument. Parameter
 \code{BPPARAM} allows to enable parallel processing, which however makes only
-sense if \code{FUN} is computational intense. \code{lapply} returns a \code{list} (same
-length than \code{X}) with the result from \code{FUN}. See examples for more details.
+sense if \code{FUN} is computational intense. \code{spectrapply} returns a \code{list}
+(same length than \code{object}) with the result from \code{FUN}. See examples for
+more details.
 Note that the result and its order depends on the factor \code{f} used for
-splitting \code{X} with \code{split}, i.e. no re-ordering or \code{unsplit} is performed
-on the result.
+splitting \code{object} with \code{split}, i.e. no re-ordering or \code{unsplit} is
+performed on the result.
 \item \code{smooth}: smooth individual spectra using a moving window-based approach
 (window size = \code{2 * halfWindowSize}). Currently, the
 Moving-Average- (\code{method = "MovingAverage"}),
@@ -958,10 +1026,15 @@ intensity(sciex_im)
 mz(data)[[1]]
 
 ## Get the peak data (m/z and intensity values).
-pks <- as.list(data)
+pks <- peaksData(data)
 pks
 pks[[1]]
 pks[[2]]
+
+## Note that we could get the same resulb by coercing the `Spectra` to
+## a `list` or `SimpleList`:
+as(data, "list")
+as(data, "SimpleList")
 
 ## List all available spectra variables (i.e. spectrum data and metadata).
 spectraVariables(data)
@@ -1018,6 +1091,14 @@ spd$precursorMz <- c(323.4, 543.2302)
 data_filt <- Spectra(spd)
 filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 
+## Filter a Spectra keeping only peaks matching certain m/z values
+sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
+mz(sps_sub)
+
+## Filter a Spectra keeping only peaks within a m/z range
+sps_sub <- filterMzRange(data, mz = c(100, 300))
+mz(sps_sub)
+
 ## Remove empty spectra variables
 sciex_noNA <- dropNaSpectraVariables(sciex)
 
@@ -1050,6 +1131,36 @@ intensity(res)[[2]]
 lengths(mz(res))
 lengths(mz(data))
 
+## In addition it is possible to pass a function to `filterIntensity`: in
+## the example below we want to keep only peaks that have an intensity which
+## is larger than one third of the maximal peak intensity in that spectrum.
+keep_peaks <- function(x) {
+    x > max(x, na.rm = TRUE) / 3
+}
+res2 <- filterIntensity(data, intensity = keep_peaks)
+intensity(res2)[[1L]]
+intensity(data)[[1L]]
+
+
+## Since data manipulation operations are by default not directly applied to
+## the data but only added to the internal lazy evaluation queue, it is also
+## possible to remove these data manipulations with the `reset` function:
+res_rest <- reset(res)
+res_rest
+lengths(mz(res_rest))
+lengths(mz(res))
+lengths(mz(data))
+
+## `reset` after a `applyProcessing` can not restore the data, because the
+## data in the backend was changed. Similarly, `reset` after any filter
+## operations can not restore data for a `Spectra` with a
+## `MsBackendDataFrame`.
+res_2 <- applyProcessing(res)
+res_rest <- reset(res_2)
+lengths(mz(res))
+lengths(mz(res_rest))
+
+
 ## Compare spectra: comparing spectra 2 and 3 against spectra 10:20 using
 ## the normalized dotproduct method.
 res <- compareSpectra(sciex_im[2:3], sciex_im[10:20])
@@ -1080,13 +1191,44 @@ compareSpectra(sciex_im[2:3], sciex_im[10:20], ppm = 10, type = "inner",
 ## in a subset of the sciex_im data. Note that we can access all variables
 ## of each individual spectrum either with the `$` operator or the
 ## corresponding method.
-res <- lapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
+res <- spectrapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
 head(res)
 
 ## It is however important to note that dedicated methods to access the
 ## data (such as `intensity`) are much more efficient than using `lapply`:
 res <- lapply(intensity(sciex_im[1:20]), mean)
 head(res)
+
+
+## ---- DATA EXPORT ----
+
+## Some `MsBackend` classes provide an `export` method to export the data to
+## the file format supported by the backend. The `MsBackendMzR` for example
+## allows to export MS data to mzML or mzXML file(s), the `MsBackendMgf`
+## (defined in the MsBackendMgf R package) would allow to export the data
+## in mgf file format. Below we export the MS data in `data`. We
+## call the `export` method on this object, specify the backend that should
+## be used to export the data (and which also defines the output format) and
+## provide a file name.
+fl <- tempfile()
+export(data, MsBackendMzR(), file = fl)
+
+## This exported our data in mzML format. Below we read the first 6 lines
+## from that file.
+readLines(fl, n = 6)
+
+## If only a single file name is provided, all spectra are exported to that
+## file. To export data with the `MsBackendMzR` backend to different files, a
+## file name for each individual spectrum has to be provided.
+## Below we export each spectrum to its own file.
+fls <- c(tempfile(), tempfile())
+export(data, MsBackendMzR(), file = fls)
+
+## Reading the data from the first file
+res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+
+mz(res)
+mz(data)
 }
 \author{
 Sebastian Gibb, Johannes Rainer
