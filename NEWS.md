@@ -1,5 +1,11 @@
 # Spectra 0.99
 
+## Changes in 0.99.7
+
+- Fix problem in `dropNaSpectraVariables` that would also drop m/z and
+  intensity values for most backends (issue
+  [#138](https://github.com/rformassspectrometry/Spectra/issues/138).
+
 ## Changes in 0.99.6
 
 - Support `intensity` in `filterIntensity` method to be a function to enable
