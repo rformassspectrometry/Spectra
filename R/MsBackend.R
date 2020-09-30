@@ -340,14 +340,18 @@
 #' - `spectraData`, `spectraData<-`: gets or sets general spectrum
 #'   metadata (annotation, also called header).  `spectraData` returns
 #'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
-#'   of rows as there are spectra in `object`.
+#'   of rows as there are spectra in `object`. Note that `spectraData` has to
+#'   return the full data, i.e. also the m/z and intensity values (as a `list`
+#'   or `SimpleList` in columns `"mz"` and `"intensity"`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
 #'   the spectra in `object`.
 #'
 #' - `spectraVariables`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)
-#'   available in `object`.
+#'   available in `object`. This should return **all** spectra variables which
+#'   are present in `object`, also `"mz"` and `"intensity"` (which are by
+#'   default not returned by the `spectraVariables,Spectra` method).
 #'
 #' - `split`: splits the backend into a `list` of backends (depending on
 #'   parameter `f`). The default method for `MsBackend` uses [split.default()],
@@ -693,10 +697,10 @@ setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
 #' @rdname MsBackend
 setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     svs <- spectraVariables(object)
-    spd <- spectraData(object, columns = svs[!(svs %in% c("mz", "intensity"))])
+    svs <- svs[!(svs %in% c("mz", "intensity"))]
+    spd <- spectraData(object, columns = svs)
     keep <- !vapply1l(spd, function(z) all(is.na(z)))
-    spectraData(object) <- spd[, keep, drop = FALSE]
-    object
+    selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
 })
 
 #' @exportMethod filterAcquisitionNum

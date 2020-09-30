@@ -542,3 +542,10 @@ test_that("export,MsBackendMzR works", {
     res <- Spectra(backendInitialize(MsBackendMzR(), fl))
     expect_equal(rtime(res), rtime(sps))
 })
+
+test_that("dropNaSpectraVariables works with MsBackendMzR", {
+    res <- dropNaSpectraVariables(sciex_mzr)
+    expect_equal(mz(res[1]), mz(sciex_mzr[1]))
+    expect_true(length(spectraVariables(res)) <
+                length(spectraVariables(sciex_mzr)))
+})

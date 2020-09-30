@@ -1298,3 +1298,31 @@ test_that("filterMzValue,Spectra works", {
     expect_error(filterMzValues(sps, mz = c(56, 12), ppm = c(1, 2, 3)),
                  "length 1 or equal")
 })
+
+test_that("dropNaSpectraVariables works with MsBackendMzR", {
+    sps <- Spectra()
+    res <- dropNaSpectraVariables(sps)
+    expect_equal(spectraVariables(sps), spectraVariables(res))
+
+    sps <- Spectra(sciex_mzr)
+    res <- dropNaSpectraVariables(sps)
+    expect_equal(mz(res[1]), mz(sps[1]))
+    expect_true(length(spectraVariables(res)) <
+                length(spectraVariables(sps)))
+
+    df <- DataFrame(msLevel = c(1L, 1L), rtime = c(1.2, 1.3), centroided = TRUE)
+    df$mz <- list(1:10, 1:10)
+    df$intensity <- list(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
+                         c(9, 6, 0, 0, 3, 0, 0, 0, 3, 2))
+    sps <- Spectra(df)
+
+    res <- dropNaSpectraVariables(sps)
+    expect_equal(mz(res), mz(sps))
+    expect_equal(intensity(res), intensity(sps))
+    expect_equal(spectraVariables(res), spectraVariables(sps))
+
+    sps$other_col <- NA
+    res <- dropNaSpectraVariables(sps)
+    expect_equal(mz(res), mz(sps))
+    expect_true(length(spectraVariables(res)) < length(spectraVariables(sps)))
+})
