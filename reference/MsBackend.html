@@ -104,7 +104,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -691,12 +691,16 @@ of length 1 or equal to the number of spectra in <code>object</code>.</p></li>
 <li><p><code>spectraData</code>, <code>spectraData&lt;-</code>: gets or sets general spectrum
 metadata (annotation, also called header).  <code>spectraData</code> returns
 a <code>DataFrame</code>, <code>spectraData&lt;-</code> expects a <code>DataFrame</code> with the same number
-of rows as there are spectra in <code>object</code>.</p></li>
+of rows as there are spectra in <code>object</code>. Note that <code>spectraData</code> has to
+return the full data, i.e. also the m/z and intensity values (as a <code>list</code>
+or <code>SimpleList</code> in columns <code>"mz"</code> and <code>"intensity"</code>.</p></li>
 <li><p><code>spectraNames</code>: returns a <code>character</code> vector with the names of
 the spectra in <code>object</code>.</p></li>
 <li><p><code>spectraVariables</code>: returns a <code>character</code> vector with the
 available spectra variables (columns, fields or attributes)
-available in <code>object</code>.</p></li>
+available in <code>object</code>. This should return <strong>all</strong> spectra variables which
+are present in <code>object</code>, also <code>"mz"</code> and <code>"intensity"</code> (which are by
+default not returned by the <code>spectraVariables,Spectra</code> method).</p></li>
 <li><p><code>split</code>: splits the backend into a <code>list</code> of backends (depending on
 parameter <code>f</code>). The default method for <code>MsBackend</code> uses <code><a href='https://rdrr.io/r/base/split.html'>split.default()</a></code>,
 thus backends extending <code>MsBackend</code> don't necessarily need to implement
