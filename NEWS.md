@@ -1,5 +1,11 @@
 # Spectra 0.99
 
+## Changes in 0.99.8
+
+- `combineSpectra` applies data processing steps in the processing queue prior
+  combination (issue
+  [#140](https://github.com/rformassspectrometry/Spectra/issues/140)).
+
 ## Changes in 0.99.7
 
 - Fix problem in `dropNaSpectraVariables` that would also drop m/z and

@@ -389,8 +389,11 @@ NULL
 #'   split the input data for parallel processing.
 #'   This defaults to `p = x$dataStorage` and hence a per-file parallel
 #'   processing is applied for `Spectra` with file-based backends (such as the
-#'   [MsBackendMzR()]). The function returns a `Spectra` of length equal to the
-#'   unique levels of `f`.
+#'   [MsBackendMzR()]).
+#'   Prior combination of the spectra any processings queued in the lazy
+#'   evaluation queue are applied.
+#'   The function returns a `Spectra` of length equal to the unique levels
+#'   of `f`.
 #'
 #' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
 #'   using the function provided with `FUN` (defaults to [ndotproduct()]). If

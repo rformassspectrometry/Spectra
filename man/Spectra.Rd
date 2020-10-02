@@ -865,8 +865,11 @@ In addition it is possible to define, with parameter \code{p} if and how to
 split the input data for parallel processing.
 This defaults to \code{p = x$dataStorage} and hence a per-file parallel
 processing is applied for \code{Spectra} with file-based backends (such as the
-\code{\link[=MsBackendMzR]{MsBackendMzR()}}). The function returns a \code{Spectra} of length equal to the
-unique levels of \code{f}.
+\code{\link[=MsBackendMzR]{MsBackendMzR()}}).
+Prior combination of the spectra any processings queued in the lazy
+evaluation queue are applied.
+The function returns a \code{Spectra} of length equal to the unique levels
+of \code{f}.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
 using the function provided with \code{FUN} (defaults to \code{\link[=ndotproduct]{ndotproduct()}}). If
 \code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
