@@ -867,7 +867,9 @@ This defaults to \code{p = x$dataStorage} and hence a per-file parallel
 processing is applied for \code{Spectra} with file-based backends (such as the
 \code{\link[=MsBackendMzR]{MsBackendMzR()}}).
 Prior combination of the spectra any processings queued in the lazy
-evaluation queue are applied.
+evaluation queue are applied. Be aware that calling \code{combineSpectra} on a
+\code{Spectra} object with an \code{MsBackendHdf5Peaks} backend will
+\strong{overwrite} the m/z and intensity values in the original hdf5 file(s).
 The function returns a \code{Spectra} of length equal to the unique levels
 of \code{f}.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}

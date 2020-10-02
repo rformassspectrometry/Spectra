@@ -396,6 +396,7 @@ test_that("combineSpectra works", {
     expect_true(length(res3@processingQueue) == 0)
     expect_true(length(sps2@processingQueue) == 1)
     expect_true(validObject(sps2))
+    expect_error(mz(sps2), "have changed")
 })
 
 test_that("dropNaSpectraVariables works", {
