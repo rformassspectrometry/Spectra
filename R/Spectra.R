@@ -390,7 +390,7 @@ NULL
 #'   This defaults to `p = x$dataStorage` and hence a per-file parallel
 #'   processing is applied for `Spectra` with file-based backends (such as the
 #'   [MsBackendMzR()]).
-#'   Prior combination of the spectra any processings queued in the lazy
+#'   Prior combination of the spectra all processings queued in the lazy
 #'   evaluation queue are applied. Be aware that calling `combineSpectra` on a
 #'   `Spectra` object with an `MsBackendHdf5Peaks` backend will
 #'   **overwrite** the m/z and intensity values in the original hdf5 file(s).
