@@ -82,7 +82,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.8</span>
       </span>
     </div>
 
@@ -1067,8 +1067,15 @@ In addition it is possible to define, with parameter <code>p</code> if and how t
 split the input data for parallel processing.
 This defaults to <code>p = x$dataStorage</code> and hence a per-file parallel
 processing is applied for <code>Spectra</code> with file-based backends (such as the
-<code><a href='MsBackend.html'>MsBackendMzR()</a></code>). The function returns a <code>Spectra</code> of length equal to the
-unique levels of <code>f</code>.</p></li>
+<code><a href='MsBackend.html'>MsBackendMzR()</a></code>).
+Prior combination of the spectra all processings queued in the lazy
+evaluation queue are applied. Be aware that calling <code>combineSpectra</code> on a
+<code>Spectra</code> object with certain backends that allow modifications might
+<strong>overwrite</strong> the original data. This does not happen with a
+<code>MsBackendDataFrame</code> backend, but with a <code>MsBackendHdf5Peaks</code> backend the
+m/z and intensity values in the original hdf5 file(s) will be overwritten.
+The function returns a <code>Spectra</code> of length equal to the unique levels
+of <code>f</code>.</p></li>
 <li><p><code>compareSpectra</code>: compare each spectrum in <code>x</code> with each spectrum in <code>y</code>
 using the function provided with <code>FUN</code> (defaults to <code>ndotproduct()</code>). If
 <code>y</code> is missing, each spectrum in <code>x</code> is compared with each other spectrum
@@ -1224,7 +1231,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Sep 30 09:08:19 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Tue Oct  6 12:07:58 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1444,7 +1451,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Wed Sep 30 09:08:21 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Tue Oct  6 12:07:59 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='kw'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>data</span>, <span class='kw'>sciex_im</span>)
 
@@ -1469,7 +1476,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Wed Sep 30 09:08:21 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Tue Oct  6 12:08:00 2020] </div><div class='input'>
 <span class='co'>## Filter a Spectra keeping only peaks matching certain m/z values</span>
 <span class='kw'>sps_sub</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterMzValues</a></span>(<span class='kw'>data</span>, mz = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>103</span>, <span class='fl'>104</span>), tolerance = <span class='fl'>0.3</span>)
 <span class='fu'>mz</span>(<span class='kw'>sps_sub</span>)
@@ -1534,7 +1541,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Sep 30 09:08:21 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Oct  6 12:08:00 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>1</span>]]
 </div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span>(<span class='kw'>res</span>)[[<span class='fl'>2</span>]]
@@ -1573,9 +1580,9 @@ level(s).</p></li>
 #&gt; 2         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Sep 30 09:08:21 2020]
-#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Wed Sep 30 09:08:21 2020]
-#&gt;  Reset object. [Wed Sep 30 09:08:21 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Oct  6 12:08:00 2020]
+#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Tue Oct  6 12:08:00 2020]
+#&gt;  Reset object. [Tue Oct  6 12:08:00 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res_rest</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>res</span>))
 </div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span>(<span class='fu'>mz</span>(<span class='kw'>data</span>))
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
@@ -1686,7 +1693,7 @@ level(s).</p></li>
 <span class='co'>## provide a file name.</span>
 <span class='kw'>fl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
 <span class='fu'><a href='hidden_aliases.html'>export</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), file = <span class='kw'>fl</span>)
-</div><div class='output co'>#&gt; <span class='message'>Writing file filed9a59773bf8...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Writing file filee5a2337b0f5...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## This exported our data in mzML format. Below we read the first 6 lines</span>
 <span class='co'>## from that file.</span>
 <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span>(<span class='kw'>fl</span>, n = <span class='fl'>6</span>)
@@ -1702,7 +1709,7 @@ level(s).</p></li>
 <span class='co'>## Below we export each spectrum to its own file.</span>
 <span class='kw'>fls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(), <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
 <span class='fu'><a href='hidden_aliases.html'>export</a></span>(<span class='kw'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), file = <span class='kw'>fls</span>)
-</div><div class='output co'>#&gt; <span class='message'>Writing file filed9a76e34b2...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file filed9a687295f4...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Writing file filee5a353f1cd7...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file filee5a6b6b8452...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## Reading the data from the first file</span>
 <span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span>(<span class='fu'><a href='hidden_aliases.html'>backendInitialize</a></span>(<span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span>(), <span class='kw'>fls</span>[<span class='fl'>1</span>]))
 
