@@ -94,7 +94,7 @@ NULL
 #'
 #' Filter peaks with an intensity-based function.
 #'
-#' @inheritParam .peaks_remove
+#' @inheritParams .peaks_remove
 #'
 #' @param intensity function which takes intensities as first parameter and
 #'     returns a `logical` of length equal to the number of peaks in the

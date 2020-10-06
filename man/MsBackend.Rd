@@ -512,12 +512,16 @@ of length 1 or equal to the number of spectra in \code{object}.
 \item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
 metadata (annotation, also called header).  \code{spectraData} returns
 a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame} with the same number
-of rows as there are spectra in \code{object}.
+of rows as there are spectra in \code{object}. Note that \code{spectraData} has to
+return the full data, i.e. also the m/z and intensity values (as a \code{list}
+or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
 the spectra in \code{object}.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
-available in \code{object}.
+available in \code{object}. This should return \strong{all} spectra variables which
+are present in \code{object}, also \code{"mz"} and \code{"intensity"} (which are by
+default not returned by the \verb{spectraVariables,Spectra} method).
 \item \code{split}: splits the backend into a \code{list} of backends (depending on
 parameter \code{f}). The default method for \code{MsBackend} uses \code{\link[=split.default]{split.default()}},
 thus backends extending \code{MsBackend} don't necessarily need to implement

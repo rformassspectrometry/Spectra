@@ -375,3 +375,10 @@ test_that("backendMerge,MsBackendHdf5Peaks works", {
     expect_true(validObject(be3))
     expect_error(mz(res))
 })
+
+test_that("dropNaSpectraVariables works with MsBackendHdf5", {
+    res <- dropNaSpectraVariables(sciex_hd5)
+    expect_equal(mz(res[1]), mz(sciex_hd5[1]))
+    expect_true(length(spectraVariables(res)) <
+                length(spectraVariables(sciex_hd5)))
+})
