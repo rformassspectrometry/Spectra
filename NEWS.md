@@ -2,7 +2,7 @@
 
 ## Changes in 0.99.8
 
-- `combineSpectra` applies data processing steps in the processing queue prior
+- `combineSpectra` applies data processing steps in the processing queue prior to
   combination (issue
   [#140](https://github.com/rformassspectrometry/Spectra/issues/140)).
 
