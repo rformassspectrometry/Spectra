@@ -376,7 +376,8 @@ applyProcessing <- function(object, f = dataStorage(object),
     if (isReadOnly(x_new@backend))
         x_new <- setBackend(x_new, MsBackendDataFrame())
     peaksData(x_new@backend) <- lapply(
-        split(.peaksapply(x), f = f), FUN = FUN, ...)
+        split(.peaksapply(x, BPPARAM = SerialParam()), f = f), FUN = FUN, ...)
+    x_new@processingQueue <- list()
     validObject(x_new)
     x_new
 }
@@ -427,11 +428,14 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
     if (isReadOnly(x@backend))
         message("Backend of the input object is read-only, will change that",
                 " to an 'MsBackendDataFrame'")
-    ## We split the workload by storage file. This ensures memory efficiency
-    ## for file-based backends.
-    res <- bpmapply(FUN = .combine_spectra, split(x, p), split(f, p),
-                    MoreArgs = list(FUN = FUN, ...), BPPARAM = BPPARAM)
-    .concatenate_spectra(res)
+    if (nlevels(p) > 1) {
+        ## We split the workload by storage file. This ensures memory efficiency
+        ## for file-based backends.
+        res <- bpmapply(FUN = .combine_spectra, split(x, p), split(f, p),
+                        MoreArgs = list(FUN = FUN, ...), BPPARAM = BPPARAM)
+        .concatenate_spectra(res)
+    } else
+        .combine_spectra(x, f = f, FUN = FUN, ...)
 }
 
 #' @description

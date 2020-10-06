@@ -1,6 +1,6 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 0.99.7
+Version: 0.99.8
 Description: The Spectra package defines an efficient infrastructure
    for storing and handling mass spectrometry spectra and functionality to
    subset, process, visualize and compare spectra data. It provides different
@@ -35,7 +35,8 @@ Imports:
     grDevices,
     stats,
     tools,
-    utils
+    utils,
+    fs
 Suggests:
     testthat,
     knitr (>= 1.1.0),

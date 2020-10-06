@@ -366,6 +366,37 @@ test_that("combineSpectra works", {
                  unique(sps$crude_rtime[sps$dataOrigin == fls[1]]))
     expect_equal(res$crude_rtime[res$dataOrigin == fls[2]],
                  unique(sps$crude_rtime[sps$dataOrigin == fls[2]]))
+
+    ## With a non-empty processing queue.
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+    sps <- filterIntensity(sps, 30)
+    res <- combineSpectra(sps)
+    expect_true(length(res) == 1)
+    expect_true(all(intensity(res)[[1]] >= 30))
+    expect_true(length(sps@processingQueue) > 0)
+
+    ## Define p do check if parallel processing does the same.
+    sps2 <- c(Spectra(spd), Spectra(spd))
+    sps2 <- filterIntensity(sps2, 30)
+    res2 <- combineSpectra(sps2, f = rep(1:2, each = 3), p = rep(1:2, each = 3))
+    expect_equal(mz(res)[[1]], mz(res2)[[1]])
+    expect_true(all(intensity(res2)[[1]] >= 30))
+
+    ## With a non-empty processing queue and an hdf5 backend.
+    h5p <- tempdir()
+    sps2$scanIndex <- seq_along(sps2)
+    sps2 <- setBackend(sps2, MsBackendHdf5Peaks(), hdf5path = h5p)
+    expect_true(length(sps2@processingQueue) == 1)
+    res3 <- combineSpectra(sps2, f = rep(1:2, each = 3), p = rep(1, 6))
+    expect_equal(unname(intensity(res2)), intensity(res3))
+    expect_equal(unname(mz(res2)), mz(res3))
+    expect_true(length(res3@processingQueue) == 0)
+    expect_true(length(sps2@processingQueue) == 1)
+    expect_true(validObject(sps2))
+    expect_error(mz(sps2), "have changed")
 })
 
 test_that("dropNaSpectraVariables works", {
