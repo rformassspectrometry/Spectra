@@ -392,8 +392,10 @@ NULL
 #'   [MsBackendMzR()]).
 #'   Prior combination of the spectra all processings queued in the lazy
 #'   evaluation queue are applied. Be aware that calling `combineSpectra` on a
-#'   `Spectra` object with an `MsBackendHdf5Peaks` backend will
-#'   **overwrite** the m/z and intensity values in the original hdf5 file(s).
+#'   `Spectra` object with certain backends that allow modifications might
+#'   **overwrite** the original data. This does not happen with a
+#'   `MsBackendDataFrame` backend, but with a `MsBackendHdf5Peaks` backend the
+#'   m/z and intensity values in the original hdf5 file(s) will be overwritten.
 #'   The function returns a `Spectra` of length equal to the unique levels
 #'   of `f`.
 #'

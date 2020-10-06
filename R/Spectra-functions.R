@@ -428,7 +428,7 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
     if (isReadOnly(x@backend))
         message("Backend of the input object is read-only, will change that",
                 " to an 'MsBackendDataFrame'")
-    if (nlevels(p)) > 1) {
+    if (nlevels(p) > 1) {
         ## We split the workload by storage file. This ensures memory efficiency
         ## for file-based backends.
         res <- bpmapply(FUN = .combine_spectra, split(x, p), split(f, p),

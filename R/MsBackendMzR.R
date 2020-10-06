@@ -190,7 +190,7 @@ setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
                                              copy = FALSE,
                                              BPPARAM = bpparam()) {
     l <- length(x)
-    file <- path_sanitize(file)
+    file <- sanitize_file_name(file)
     if (length(file) == 1)
         file <- rep_len(file, l)
     if (length(file) != l)
