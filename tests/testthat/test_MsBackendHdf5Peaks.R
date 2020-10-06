@@ -24,7 +24,8 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
                              hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
     expect_identical(res$msLevel, c(1L, 2L, 2L))
-    expect_equal(unique(res$dataStorage), normalizePath(paste0(dr, "/myfile.h5")))
+    expect_equal(basename(unique(res$dataStorage)), "myfile.h5")
+    expect_equal(normalizePath(dirname(unique(res$dataStorage))), dr)
     expect_true(validObject(res))
     expect_identical(mz(res), as(df$mz, "NumericList"))
     expect_identical(scanIndex(res), 1:3)
@@ -42,8 +43,8 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("a.h5", "b.h5"),
                              data = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
-    expect_equal(unique(res$dataStorage),
-                 normalizePath(paste0(dr, c("/a.h5", "/b.h5"))))
+    expect_equal(basename(unique(res$dataStorage)), c("a.h5", "b.h5"))
+    expect_equal(normalizePath(dirname(unique(res$dataStorage)))[1], dr)
     expect_true(validObject(res))
     expect_identical(scanIndex(res), 1:3)
 
@@ -51,8 +52,8 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     res <- backendInitialize(MsBackendHdf5Peaks(),
                              data = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
-    expect_equal(unique(res$dataStorage),
-                 normalizePath(paste0(dr, c("/2.h5", "/1.h5"))))
+    expect_equal(basename(unique(res$dataStorage)), c("2.h5", "1.h5"))
+    expect_equal(normalizePath(dirname(unique(res$dataStorage)))[1], dr)
     expect_true(validObject(res))
     expect_identical(scanIndex(res), 1:3)
 
@@ -61,8 +62,8 @@ test_that("backendInitialize,MsBackendHdf5Peaks works", {
     res <- backendInitialize(MsBackendHdf5Peaks(), files = c("c", "d"),
                              data = df, hdf5path = dr)
     expect_true(is(res, "MsBackendHdf5Peaks"))
-    expect_equal(unique(res$dataStorage),
-                 normalizePath(paste0(dr, c("/c", "/d"))))
+    expect_equal(basename(unique(res$dataStorage)), c("c", "d"))
+    expect_equal(normalizePath(dirname(unique(res$dataStorage)))[1], dr)
     expect_true(validObject(res))
     expect_identical(scanIndex(res), c(1L, 1L, 2L))
 
