@@ -23,7 +23,7 @@ test_that(".filterSpectraHierarchy works", {
 
 test_that("sanitize_file_name works", {
     a <- c("<memory>", "/other/path")
-    expect_warning(res <- sanitize_file_name(a), "No such file")
+    expect_warning(res <- sanitize_file_name(a), "file")
     expect_equal(basename(res)[1], "memory")
     expect_equal(basename(res)[2], "path")
 })
