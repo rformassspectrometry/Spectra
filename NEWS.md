@@ -1,5 +1,11 @@
 # Spectra 0.99
 
+## Changes in 0.99.9
+
+- Fix in `Spectra,character` constructor to ensure the backend is changed even
+  if `source` inherits from `backend` (issue
+  [#143](https://github.com/rformassspectrometry/Spectra/issues/143)).
+
 ## Changes in 0.99.8
 
 - `combineSpectra` applies data processing steps in the processing queue prior to
