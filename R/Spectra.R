@@ -389,8 +389,15 @@ NULL
 #'   split the input data for parallel processing.
 #'   This defaults to `p = x$dataStorage` and hence a per-file parallel
 #'   processing is applied for `Spectra` with file-based backends (such as the
-#'   [MsBackendMzR()]). The function returns a `Spectra` of length equal to the
-#'   unique levels of `f`.
+#'   [MsBackendMzR()]).
+#'   Prior combination of the spectra all processings queued in the lazy
+#'   evaluation queue are applied. Be aware that calling `combineSpectra` on a
+#'   `Spectra` object with certain backends that allow modifications might
+#'   **overwrite** the original data. This does not happen with a
+#'   `MsBackendDataFrame` backend, but with a `MsBackendHdf5Peaks` backend the
+#'   m/z and intensity values in the original hdf5 file(s) will be overwritten.
+#'   The function returns a `Spectra` of length equal to the unique levels
+#'   of `f`.
 #'
 #' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
 #'   using the function provided with `FUN` (defaults to [ndotproduct()]). If
@@ -1049,7 +1056,7 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
               backend = be)
-    if (!is(source, class(backend)[1]))
+    if (class(source)[1] != class(backend)[1])
         setBackend(sp, backend, ..., BPPARAM = BPPARAM)
     else sp
 })

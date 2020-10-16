@@ -38,6 +38,8 @@ setValidity("MsBackendHdf5Peaks", function(object) {
 
 #' @rdname hidden_aliases
 #'
+#' @importFrom fs path_sanitize
+#'
 #' @importFrom tools file_path_sans_ext
 setMethod("backendInitialize", "MsBackendHdf5Peaks",
           function(object, files = character(), data = DataFrame(),
@@ -63,9 +65,9 @@ setMethod("backendInitialize", "MsBackendHdf5Peaks",
               if (length(hdf5path)) {
                   if (!dir.exists(hdf5path))
                       dir.create(hdf5path, recursive = TRUE)
-                  files <- normalizePath(file.path(hdf5path, basename(files)),
-                                         mustWork = FALSE)
+                  files <- file.path(hdf5path, basename(files))
               }
+              files <- sanitize_file_name(files)
               if (any(file.exists(files)))
                   stop("File(s) ", files[file.exists(files)],
                        " does/do already exist")

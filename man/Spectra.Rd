@@ -865,8 +865,15 @@ In addition it is possible to define, with parameter \code{p} if and how to
 split the input data for parallel processing.
 This defaults to \code{p = x$dataStorage} and hence a per-file parallel
 processing is applied for \code{Spectra} with file-based backends (such as the
-\code{\link[=MsBackendMzR]{MsBackendMzR()}}). The function returns a \code{Spectra} of length equal to the
-unique levels of \code{f}.
+\code{\link[=MsBackendMzR]{MsBackendMzR()}}).
+Prior combination of the spectra all processings queued in the lazy
+evaluation queue are applied. Be aware that calling \code{combineSpectra} on a
+\code{Spectra} object with certain backends that allow modifications might
+\strong{overwrite} the original data. This does not happen with a
+\code{MsBackendDataFrame} backend, but with a \code{MsBackendHdf5Peaks} backend the
+m/z and intensity values in the original hdf5 file(s) will be overwritten.
+The function returns a \code{Spectra} of length equal to the unique levels
+of \code{f}.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
 using the function provided with \code{FUN} (defaults to \code{\link[=ndotproduct]{ndotproduct()}}). If
 \code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
