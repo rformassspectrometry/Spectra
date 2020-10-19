@@ -83,6 +83,8 @@
 #'     function should be applied. For `filterMsLevel`: the MS level to which
 #'     `object` should be subsetted.
 #'
+#' @param msLevel. same as `msLevel` above.
+#'
 #' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
 #'     filter the object. For `filterPrecursorMz`: `numeric(2)` with the lower
 #'     and upper m/z boundary.
@@ -201,6 +203,8 @@
 #'   `dataOrigin` parameter, i.e. if `dataOrigin = c("2", "1")` was provided,
 #'   the spectra in the resulting object should be ordered accordingly (first
 #'   spectra from data origin `"2"` and then from `"1"`).
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `filterDataStorage`: filters the object retaining spectra matching the
 #'   provided `dataStorage`. Parameter `dataStorage` has to be of type
@@ -210,8 +214,12 @@
 #'   `dataStorage` parameter, i.e. if `dataStorage = c("2", "1")` was provided,
 #'   the spectra in the resulting object should be ordered accordingly (first
 #'   spectra from data storage `"2"` and then from `"1"`).
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `filterFile`: retains data of files matching the file index or file name
 #'    provided with parameter `file`.
@@ -219,19 +227,31 @@
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` `<=` `mz`
 #'   and `isolationWindowUpperMz` `>=` `mz`.
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `filterMsLevel`: retains spectra of MS level `msLevel`.
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `filterPolarity`: retains spectra of polarity `polarity`.
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `filterPrecursorMz`: retains spectra with a precursor m/z within the
 #'   provided m/z range.
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'    MS2) of acquisition number `acquisitionNum`.
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `filterRt`: retains spectra of MS level `msLevel` with retention times
 #'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
@@ -717,18 +737,30 @@ setMethod("filterAcquisitionNum", "MsBackend", function(object, n, file, ...) {
 #' @importMethodsFrom ProtGenerics filterDataOrigin
 #'
 #' @rdname MsBackend
-setMethod("filterDataOrigin", "MsBackend", function(object, dataOrigin, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("filterDataOrigin", "MsBackend",
+          function(object, dataOrigin = character()) {
+              if (length(dataOrigin)) {
+                  object <- object[dataOrigin(object) %in% dataOrigin]
+                  if (is.unsorted(dataOrigin))
+                      object[order(match(dataOrigin(object), dataOrigin))]
+                  else object
+              } else object
+          })
 
 #' @exportMethod filterDataStorage
 #'
 #' @importMethodsFrom ProtGenerics filterDataStorage
 #'
 #' @rdname MsBackend
-setMethod("filterDataStorage", "MsBackend", function(object, dataStorage, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("filterDataStorage", "MsBackend",
+          function(object, dataStorage = character()) {
+              if (length(dataStorage)) {
+                  object <- object[dataStorage(object) %in% dataStorage]
+                  if (is.unsorted(dataStorage))
+                      object[order(match(dataStorage(object), dataStorage))]
+                  else object
+              } else object
+          })
 
 #' @exportMethod filterEmptySpectra
 #'
@@ -736,7 +768,8 @@ setMethod("filterDataStorage", "MsBackend", function(object, dataStorage, ...) {
 #'
 #' @rdname MsBackend
 setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
-    stop("Not implemented for ", class(object), ".")
+    if (!length(object)) return(object)
+    object[as.logical(lengths(object))]
 })
 
 #' @exportMethod filterIsolationWindow
@@ -744,55 +777,85 @@ setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
 #' @importMethodsFrom ProtGenerics filterIsolationWindow
 #'
 #' @rdname MsBackend
-setMethod("filterIsolationWindow", "MsBackend", function(object, mz, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("filterIsolationWindow", "MsBackend",
+          function(object, mz = numeric(), ...) {
+              if (length(mz)) {
+                  if (length(mz) > 1)
+                      stop("'mz' is expected to be a single m/z value")
+                  keep <- which(isolationWindowLowerMz(object) <= mz &
+                                isolationWindowUpperMz(object) >= mz)
+                  object[keep]
+              } else object
+          })
 
 #' @exportMethod filterMsLevel
 #'
 #' @importMethodsFrom ProtGenerics filterMsLevel
 #'
 #' @rdname MsBackend
-setMethod("filterMsLevel", "MsBackend", function(object, msLevel) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("filterMsLevel", "MsBackend",
+          function(object, msLevel = integer()) {
+              if (length(msLevel)) {
+                  object[msLevel(object) %in% msLevel]
+              } else object
+          })
 
 #' @exportMethod filterPolarity
 #'
 #' @importMethodsFrom ProtGenerics filterPolarity
 #'
 #' @rdname MsBackend
-setMethod("filterPolarity", "MsBackend", function(object, polarity) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("filterPolarity", "MsBackend",
+          function(object, polarity = integer()) {
+              if (length(polarity))
+                  object[polarity(object) %in% polarity]
+              else object
+          })
 
 #' @exportMethod filterPrecursorMz
 #'
 #' @importMethodsFrom ProtGenerics filterPrecursorMz
 #'
 #' @rdname MsBackend
-setMethod("filterPrecursorMz", "MsBackend", function(object, mz) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("filterPrecursorMz", "MsBackend",
+          function(object, mz = numeric()) {
+              if (length(mz)) {
+                  mz <- range(mz)
+                  keep <- which(precursorMz(object) >= mz[1] &
+                                precursorMz(object) <= mz[2])
+                  object[keep]
+              } else object
+          })
 
 #' @exportMethod filterPrecursorScan
 #'
 #' @importMethodsFrom ProtGenerics filterPrecursorScan
 #'
 #' @rdname MsBackend
-setMethod("filterPrecursorScan", "MsBackend", function(object,
-                                                       acquisitionNum, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("filterPrecursorScan", "MsBackend",
+          function(object, acquisitionNum = integer()) {
+              if (length(acquisitionNum)) {
+                  object[.filterSpectraHierarchy(acquisitionNum(object),
+                                                 precScanNum(object),
+                                                 acquisitionNum)]
+              } else object
+          })
 
 #' @exportMethod filterRt
 #'
 #' @importMethodsFrom ProtGenerics filterRt
 #'
 #' @rdname MsBackend
-setMethod("filterRt", "MsBackend", function(object, rt, msLevel, ...) {
-    stop("Not implemented for ", class(object), ".")
-})
+setMethod("filterRt", "MsBackend",
+          function(object, rt = numeric(), msLevel. = unique(msLevel(object))) {
+              if (length(rt)) {
+                  rt <- range(rt)
+                  sel_ms <- msLevel(object) %in% msLevel.
+                  sel_rt <- rtime(object) >= rt[1] &
+                      rtime(object) <= rt[2] & sel_ms
+                  object[sel_rt | !sel_ms]
+              } else object
+          })
 
 #' @exportMethod intensity
 #'

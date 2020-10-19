@@ -4,6 +4,7 @@
 
 - Fix in `spectraData<-,Spectra` to avoid removing m/z and intensity values
   (issue [#146](https://github.com/rformassspectrometry/Spectra/issues/146)).
+- Add default implementations of filter functions for `MsBackend`.
 
 ## Changes in 0.99.9
 
