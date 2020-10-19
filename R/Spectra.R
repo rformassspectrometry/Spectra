@@ -233,10 +233,17 @@ NULL
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
-#'   metadata (annotation, also called header). `spectraData` returns
-#'   a `DataFrame`, `spectraData<-` expects a `DataFrame`. Note that this
-#'   method does not return m/z or intensity values.
+#' - `spectraData`: gets general spectrum metadata (annotation, also called
+#'   header). `spectraData` returns a `DataFrame`. Note that this
+#'   method does by default **not** return m/z or intensity values.
+#'
+#' - `spectraData<-`: **replaces** the full spectra data of the `Spectra`
+#'   object with the one provided with `value`. The use of this function is
+#'   disencouraged, as replacing spectra data with values that are in a
+#'   different can break the linkage with the associated m/z and intensity
+#'   values. If possible, spectra variables (i.e. *columns* of the `Spectra`)
+#'   should be replaced individually. The `spectraData<-` function expects a
+#'   `DataFrame` to be passed as value.
 #'
 #' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
 #'
@@ -1419,6 +1426,12 @@ setMethod("spectraData", "Spectra", function(object,
 #'
 #' @exportMethod spectraData<-
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
+    if (!inherits(value, "DataFrame"))
+        stop("'spectraData<-' expects a 'DataFrame' as input.", call. = FALSE)
+    if (!any(colnames(value) == "mz"))
+        value$mz <- object$mz
+    if (!any(colnames(value) == "intensity"))
+        value$intensity <- object$intensity
     spectraData(object@backend) <- value
     object
 })

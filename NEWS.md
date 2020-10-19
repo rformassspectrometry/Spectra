@@ -1,5 +1,10 @@
 # Spectra 0.99
 
+## Changes in 0.99.10
+
+- Fix in `spectraData<-,Spectra` to avoid removing m/z and intensity values
+  (issue [#146](https://github.com/rformassspectrometry/Spectra/issues/146)).
+
 ## Changes in 0.99.9
 
 - Fix in `Spectra,character` constructor to ensure the backend is changed even
