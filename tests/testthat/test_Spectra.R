@@ -597,6 +597,8 @@ test_that("spectraData<-,Spectra works", {
     expect_true(any(spectraVariables(sps) == "add_col"))
     expect_equal(spectraData(sps)$add_col, c(3, 3))
 
+    expect_error(spectraData(sps) <- 4, "DataFrame")
+
     df$mz <- list(11:20, 11:20)
     df$precursorMz <- c(0, 0)
 
@@ -604,13 +606,20 @@ test_that("spectraData<-,Spectra works", {
     expect_true(!any(spectraVariables(sps) == "add_col"))
     expect_equal(mz(sps), NumericList(11:20, 11:20, compress = FALSE))
 
-    expect_error(spectraData(sps) <- c(1, 2, 4, 5), "has to be 2")
+    expect_error(spectraData(sps) <- c(1, 2, 4, 5), "DataFrame")
 
     expect_error(spectraData(sps) <- df[c(1, 1, 2), ], "with 2 rows")
 
+    sps_orig <- sps
+    spectraData(sps)$rtime <- c(5, 2)
+    expect_equal(sps$mz, sps_orig$mz)
+    expect_equal(sps$intensity, sps_orig$intensity)
+    expect_equal(sps$msLevel, sps_orig$msLevel)
+
     tmp <- sciex_mzr
     sps <- Spectra(tmp)
-    spectraData(sps)$some_col <- "yes"
+    sps <- sps[570:600]
+    expect_warning(spectraData(sps)$some_col <- "yes", "replacing")
     expect_true(any(spectraVariables(sps) == "some_col"))
     expect_true(all(spectraData(sps, "some_col")[, 1] == "yes"))
     expect_true(is(sps@backend@spectraData$some_col, "character"))
@@ -618,10 +627,14 @@ test_that("spectraData<-,Spectra works", {
     expect_true(any(spectraVariables(sps) == "other_col"))
     expect_identical(sps$other_col, rep("other_value", length(sps)))
 
+    sps_orig <- sps
     spd <- spectraData(sps)
     spd$msLevel <- 2L
-    spectraData(sps) <- spd
+    expect_warning(spectraData(sps) <- spd, "Ignoring")
     expect_true(all(msLevel(sps) == 2L))
+
+    expect_equal(mz(sps), mz(sps_orig))
+    expect_equal(intensity(sps), intensity(sps_orig))
 })
 
 test_that("spectraNames,spectraNames<-,Spectra works", {

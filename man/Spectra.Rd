@@ -727,10 +727,16 @@ spectrum during acquisition/measurement (as reported in the mzML file).
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
-\item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
-metadata (annotation, also called header). \code{spectraData} returns
-a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame}. Note that this
-method does not return m/z or intensity values.
+\item \code{spectraData}: gets general spectrum metadata (annotation, also called
+header). \code{spectraData} returns a \code{DataFrame}. Note that this
+method does by default \strong{not} return m/z or intensity values.
+\item \verb{spectraData<-}: \strong{replaces} the full spectra data of the \code{Spectra}
+object with the one provided with \code{value}. The use of this function is
+disencouraged, as replacing spectra data with values that are in a
+different can break the linkage with the associated m/z and intensity
+values. If possible, spectra variables (i.e. \emph{columns} of the \code{Spectra})
+should be replaced individually. The \verb{spectraData<-} function expects a
+\code{DataFrame} to be passed as value.
 \item \code{spectraNames}, \verb{spectraNames<-}: gets or sets the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
