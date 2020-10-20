@@ -104,7 +104,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.10</span>
       </span>
     </div>
 
@@ -223,31 +223,31 @@ dropNaSpectraVariables(object)
 filterAcquisitionNum(object, n, file, ...)
 
 # S4 method for MsBackend
-filterDataOrigin(object, dataOrigin, ...)
+filterDataOrigin(object, dataOrigin = character())
 
 # S4 method for MsBackend
-filterDataStorage(object, dataStorage, ...)
+filterDataStorage(object, dataStorage = character())
 
 # S4 method for MsBackend
 filterEmptySpectra(object, ...)
 
 # S4 method for MsBackend
-filterIsolationWindow(object, mz, ...)
+filterIsolationWindow(object, mz = numeric(), ...)
 
 # S4 method for MsBackend
-filterMsLevel(object, msLevel)
+filterMsLevel(object, msLevel = integer())
 
 # S4 method for MsBackend
-filterPolarity(object, polarity)
+filterPolarity(object, polarity = integer())
 
 # S4 method for MsBackend
-filterPrecursorMz(object, mz)
+filterPrecursorMz(object, mz = numeric())
 
 # S4 method for MsBackend
-filterPrecursorScan(object, acquisitionNum, ...)
+filterPrecursorScan(object, acquisitionNum = integer())
 
 # S4 method for MsBackend
-filterRt(object, rt, msLevel, ...)
+filterRt(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
 # S4 method for MsBackend
 intensity(object)
@@ -451,6 +451,10 @@ subsetted.</p></td>
 be used to subset/filter <code>object</code>.</p></td>
     </tr>
     <tr>
+      <th>msLevel.</th>
+      <td><p>same as <code>msLevel</code> above.</p></td>
+    </tr>
+    <tr>
       <th>x</th>
       <td><p>Object extending <code>MsBackend</code>.</p></td>
     </tr>
@@ -583,7 +587,9 @@ spectra to subset.
 <code>filterDataOrigin</code> should return the data ordered by the provided
 <code>dataOrigin</code> parameter, i.e. if <code>dataOrigin = c("2", "1")</code> was provided,
 the spectra in the resulting object should be ordered accordingly (first
-spectra from data origin <code>"2"</code> and then from <code>"1"</code>).</p></li>
+spectra from data origin <code>"2"</code> and then from <code>"1"</code>).
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterDataStorage</code>: filters the object retaining spectra matching the
 provided <code>dataStorage</code>. Parameter <code>dataStorage</code> has to be of type
 <code>character</code> and needs to match exactly the data storage value of the
@@ -591,21 +597,37 @@ spectra to subset.
 <code>filterDataStorage</code> should return the data ordered by the provided
 <code>dataStorage</code> parameter, i.e. if <code>dataStorage = c("2", "1")</code> was provided,
 the spectra in the resulting object should be ordered accordingly (first
-spectra from data storage <code>"2"</code> and then from <code>"1"</code>).</p></li>
-<li><p><code>filterEmptySpectra</code>: removes empty spectra (i.e. spectra without peaks).</p></li>
+spectra from data storage <code>"2"</code> and then from <code>"1"</code>).
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
+<li><p><code>filterEmptySpectra</code>: removes empty spectra (i.e. spectra without peaks).
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterFile</code>: retains data of files matching the file index or file name
 provided with parameter <code>file</code>.</p></li>
 <li><p><code>filterIsolationWindow</code>: retains spectra that contain <code>mz</code> in their
 isolation window m/z range (i.e. with an <code>isolationWindowLowerMz</code> <code>&lt;=</code> <code>mz</code>
-and <code>isolationWindowUpperMz</code> <code>&gt;=</code> <code>mz</code>.</p></li>
-<li><p><code>filterMsLevel</code>: retains spectra of MS level <code>msLevel</code>.</p></li>
-<li><p><code>filterPolarity</code>: retains spectra of polarity <code>polarity</code>.</p></li>
+and <code>isolationWindowUpperMz</code> <code>&gt;=</code> <code>mz</code>.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
+<li><p><code>filterMsLevel</code>: retains spectra of MS level <code>msLevel</code>.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
+<li><p><code>filterPolarity</code>: retains spectra of polarity <code>polarity</code>.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterPrecursorMz</code>: retains spectra with a precursor m/z within the
-provided m/z range.</p></li>
+provided m/z range.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterPrecursorScan</code>: retains parent (e.g. MS1) and children scans (e.g.
-MS2) of acquisition number <code>acquisitionNum</code>.</p></li>
+MS2) of acquisition number <code>acquisitionNum</code>.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterRt</code>: retains spectra of MS level <code>msLevel</code> with retention times
-within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>) <code>rt[2]</code>.</p></li>
+within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>) <code>rt[2]</code>.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
 <li><p><code>intensity</code>: gets the intensity values from the spectra. Returns
 a <code>NumericList()</code> of <code>numeric</code> vectors (intensity values for each
 spectrum). The length of the <code>list</code> is equal to the number of
