@@ -79,15 +79,6 @@
 \alias{$<-,MsBackendDataFrame-method}
 \alias{split,MsBackendDataFrame,ANY-method}
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
-\alias{filterDataOrigin,MsBackendDataFrame-method}
-\alias{filterDataStorage,MsBackendDataFrame-method}
-\alias{filterEmptySpectra,MsBackendDataFrame-method}
-\alias{filterIsolationWindow,MsBackendDataFrame-method}
-\alias{filterMsLevel,MsBackendDataFrame-method}
-\alias{filterPolarity,MsBackendDataFrame-method}
-\alias{filterPrecursorMz,MsBackendDataFrame-method}
-\alias{filterPrecursorScan,MsBackendDataFrame-method}
-\alias{filterRt,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendHdf5Peaks-method}
 \alias{show,MsBackendHdf5Peaks-method}
 \alias{peaksData,MsBackendHdf5Peaks-method}
@@ -284,24 +275,6 @@ spectrapply(object, ...)
   dataStorage = character(),
   dataOrigin = character()
 )
-
-\S4method{filterDataOrigin}{MsBackendDataFrame}(object, dataOrigin = character())
-
-\S4method{filterDataStorage}{MsBackendDataFrame}(object, dataStorage = character())
-
-\S4method{filterEmptySpectra}{MsBackendDataFrame}(object)
-
-\S4method{filterIsolationWindow}{MsBackendDataFrame}(object, mz = numeric(), ...)
-
-\S4method{filterMsLevel}{MsBackendDataFrame}(object, msLevel = integer())
-
-\S4method{filterPolarity}{MsBackendDataFrame}(object, polarity = integer())
-
-\S4method{filterPrecursorMz}{MsBackendDataFrame}(object, mz = numeric())
-
-\S4method{filterPrecursorScan}{MsBackendDataFrame}(object, acquisitionNum = integer())
-
-\S4method{filterRt}{MsBackendDataFrame}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
 \S4method{backendInitialize}{MsBackendHdf5Peaks}(
   object,
