@@ -4,7 +4,6 @@
 \alias{addProcessing}
 \alias{applyProcessing}
 \alias{combineSpectra}
-\alias{spectraVariableMapping}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -38,7 +37,7 @@
 \alias{isolationWindowUpperMz<-,Spectra-method}
 \alias{containsMz,Spectra-method}
 \alias{containsNeutralLoss,Spectra-method}
-\alias{lapply,Spectra-method}
+\alias{spectrapply,Spectra-method}
 \alias{length,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{mz,Spectra-method}
@@ -67,15 +66,17 @@
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterDataOrigin,Spectra-method}
 \alias{filterDataStorage,Spectra-method}
+\alias{filterIntensity,Spectra-method}
 \alias{filterIsolationWindow,Spectra-method}
 \alias{filterMsLevel,Spectra-method}
+\alias{filterMzRange,Spectra-method}
+\alias{filterMzValues,Spectra-method}
 \alias{filterPolarity,Spectra-method}
 \alias{filterPrecursorMz,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
 \alias{reset,Spectra-method}
 \alias{bin,Spectra-method}
-\alias{filterIntensity,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
 \alias{pickPeaks,Spectra-method}
@@ -95,8 +96,6 @@ combineSpectra(
   ...,
   BPPARAM = bpparam()
 )
-
-spectraVariableMapping(format = c("mgf"))
 
 \S4method{Spectra}{DataFrame}(
   object,
@@ -128,8 +127,8 @@ spectraVariableMapping(format = c("mgf"))
   object,
   processingQueue = list(),
   metadata = list(),
-  source = backend,
-  backend = MsBackendMzR(),
+  source = MsBackendMzR(),
+  backend = source,
   ...,
   BPPARAM = bpparam()
 )
@@ -140,13 +139,7 @@ spectraVariableMapping(format = c("mgf"))
 
 \S4method{split}{Spectra,ANY}(x, f, drop = FALSE, ...)
 
-\S4method{export}{Spectra}(
-  object,
-  file = tempfile(),
-  format = "mgf",
-  variableMapping = spectraVariableMapping(format),
-  ...
-)
+\S4method{export}{Spectra}(object, backend, ...)
 
 \S4method{acquisitionNum}{Spectra}(object)
 
@@ -205,7 +198,13 @@ spectraVariableMapping(format = c("mgf"))
   BPPARAM = bpparam()
 )
 
-\S4method{lapply}{Spectra}(X, FUN, f = as.factor(seq_along(X)), ..., BPPARAM = SerialParam())
+\S4method{spectrapply}{Spectra}(
+  object,
+  FUN,
+  f = as.factor(seq_along(object)),
+  ...,
+  BPPARAM = SerialParam()
+)
 
 \S4method{length}{Spectra}(x)
 
@@ -270,9 +269,25 @@ spectraVariableMapping(format = c("mgf"))
 
 \S4method{filterDataStorage}{Spectra}(object, dataStorage = character())
 
+\S4method{filterIntensity}{Spectra}(
+  object,
+  intensity = c(0, Inf),
+  msLevel. = unique(msLevel(object))
+)
+
 \S4method{filterIsolationWindow}{Spectra}(object, mz = numeric())
 
 \S4method{filterMsLevel}{Spectra}(object, msLevel. = integer())
+
+\S4method{filterMzRange}{Spectra}(object, mz = numeric(), msLevel. = unique(msLevel(object)))
+
+\S4method{filterMzValues}{Spectra}(
+  object,
+  mz = numeric(),
+  tolerance = 0,
+  ppm = 20,
+  msLevel. = unique(msLevel(object))
+)
 
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
 
@@ -285,12 +300,6 @@ spectraVariableMapping(format = c("mgf"))
 \S4method{reset}{Spectra}(object, ...)
 
 \S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
-
-\S4method{filterIntensity}{Spectra}(
-  object,
-  intensity = c(0, Inf),
-  msLevel. = unique(msLevel(object))
-)
 
 \S4method{compareSpectra}{Spectra,Spectra}(
   x,
@@ -359,7 +368,8 @@ for details. For \code{setBackend}: factor defining how to split the data for
 parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
-should be combined. For \code{lapply}: \code{factor} how \code{X} should be splitted.}
+should be combined. For \code{spectrapply}: \code{factor} how \code{object} should be
+splitted.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
@@ -372,9 +382,6 @@ of the \linkS4class{MsBackend}.}
 depending on the used backend, per-file parallel processing will be
 performed.}
 
-\item{format}{For \code{export}: \code{character(1)} defining the format of the output
-file. Currently only \code{format = "mgf"} is supported.}
-
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
 
@@ -383,7 +390,8 @@ file. Currently only \code{format = "mgf"} is supported.}
 \item{backend}{For \code{Spectra}: \linkS4class{MsBackend} to be used as backend. See
 section on creation of \code{Spectra} objects for details. For \code{setBackend}:
 instance of \linkS4class{MsBackend}. See section on creation of \code{Spectra}
-objects for details.}
+objects for details. For \code{export}: \linkS4class{MsBackend} to be used to export
+the data.}
 
 \item{source}{For \code{Spectra}: instance of \linkS4class{MsBackend} that can be used
 to import spectrum data from the provided files. See section \emph{Creation
@@ -391,38 +399,30 @@ of objects, conversion and changing the backend} for more details.}
 
 \item{drop}{For \code{[}, \code{split}: not considered.}
 
-\item{file}{For \code{export}: \code{character(1)} specifying the of the file to which
-the data should be exported.}
-
-\item{variableMapping}{For \code{export}: a named \code{character} vector with the
-names of the fields in the exported file to which spectra variables
-should be mapped, names being spectra variable names and elements of the
-vector the fields in the output file. See output from
-\code{spectraVariableMapping()} for the default.}
-
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
 
 \item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
-filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} defining the
-lower and upper m/z boundary.}
+filter the object. For \code{filterPrecursorMz} and \code{filterMzRange}:
+\code{numeric(2)} defining the lower and upper m/z boundary.
+For \code{filterMzValues}: \code{numeric} with the m/z values to match peaks
+against.}
 
 \item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
 define a constant maximal accepted difference between m/z values for
-peaks to be matched. For \code{containsMz} it can also be of length equal \code{mz}
-to specify a different tolerance for each m/z value.}
+peaks to be matched. For \code{containsMz} and \code{filterMzValues} it can also
+be of length equal \code{mz} to specify a different tolerance for each m/z
+value.}
 
-\item{ppm}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} defining a
-relative, m/z-dependent, maximal accepted difference between m/z values
-for peaks to be matched.}
+\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{filterMzValues}: \code{numeric(1)}
+defining a relative, m/z-dependent, maximal accepted difference between
+m/z values for peaks to be matched.}
 
 \item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
 (the default) or all provided \code{mz} have to be present in the spectrum.}
 
 \item{neutralLoss}{for \code{containsNeutralLoss}: \code{numeric(1)} defining the value
 which should be subtracted from the spectrum's precursor m/z.}
-
-\item{X}{A \code{Spectra} object.}
 
 \item{use.names}{For \code{lengths}: ignored.}
 
@@ -458,6 +458,13 @@ spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
+\item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
+either the lower or the lower and upper intensity limit for the
+filtering, or a \code{function} that takes the intensities as input and
+returns a \code{logical} (same length then peaks in the spectrum) whether the
+peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
+only peaks with \code{NA} intensity are removed.}
+
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of \code{object}.
 For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
@@ -476,11 +483,6 @@ be used to subset/filter \code{object}.}
 Defaults to \code{binSize = 1}.}
 
 \item{breaks}{For \code{bin}: \code{numeric} defining the m/z breakpoints between bins.}
-
-\item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
-either the lower or the lower and upper intensity limit for the
-filtering. Defaults to \code{intensity = c(0, Inf)} thus only peaks with \code{NA}
-intensity are removed.}
 
 \item{y}{A \code{Spectra} object.}
 
@@ -602,24 +604,23 @@ details.
 }
 
 Data from a \code{Spectra} object can be \strong{exported} to a file with the \code{export}
-function. The file format for the exported data can be specified with the
-parameter \code{format}; currently only \code{format = "mgf"} is supported which
-exports the data in Mascot Generic Format (MGF). By default all non-empty
-spectra variables in \code{Spectra} are exported.
+function. The actual export of the data has to be performed by the \code{export}
+method of the \link{MsBackend} class defined with the mandatory parameter
+\code{backend}. Note however that not all backend classes support export of data.
+From the \code{MsBackend} classes in the \code{Spectra} package currently only the
+\code{MsBackendMzR} backend supports data export (to mzML/mzXML file(s));
+see the help page of the \linkS4class{MsBackend} for information on its arguments
+or the examples below or the vignette for examples.
 
 The definition of the function is
-\code{export(object, file = tempfile(), format = "mgf", variableMapping = spectraVariableMapping(format), ...)} and its
+\code{export(object, backend,  ...)} and its
 parameters are:
 \itemize{
 \item \code{object}: the \code{Spectra} object to be exported.
-\item \code{file}: the name of the file.
-\item \code{format}: \code{character(1)} defining the export file format. Currently only
-\code{format = "mgf"} is supported.
-\item \code{variableMapping}: named \code{character} defining the mapping of spectra
-variables (names of \code{variableMapping}) to fields in the output file
-(elements of \code{variableMapping}). See output of \code{spectraVariableMapping()}
-for the expected format. All spectra variables for which no mapping to a
-field in the output format is provided are exported as they are.
+\item \code{backend}: instance of a class extending \link{MsBackend} which supports export
+of the data (i.e. which has a defined \code{export} method).
+\item \code{...}: additional parameters specific for the \code{MsBackend} passed with
+parameter \code{backend}.
 }
 }
 
@@ -782,6 +783,13 @@ object (with spectra in their original order).
 \item \code{filterMsLevel}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
+\item \code{filterMzRange}: filters the object keeping only peaks in each spectrum
+that are within the provided m/z range.
+\item \code{filterMzValues}: filters the object keeping only peaks in each spectrum
+that match the provided m/z value(s) considering also the absolute
+\code{tolerance} and m/z-relative \code{ppm} (\code{tolerance} and \code{ppm} can be either
+of length 1 or equal to the length of \code{mz} to define a different tolerance
+for each m/z).
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
@@ -857,8 +865,15 @@ In addition it is possible to define, with parameter \code{p} if and how to
 split the input data for parallel processing.
 This defaults to \code{p = x$dataStorage} and hence a per-file parallel
 processing is applied for \code{Spectra} with file-based backends (such as the
-\code{\link[=MsBackendMzR]{MsBackendMzR()}}). The function returns a \code{Spectra} of length equal to the
-unique levels of \code{f}.
+\code{\link[=MsBackendMzR]{MsBackendMzR()}}).
+Prior combination of the spectra all processings queued in the lazy
+evaluation queue are applied. Be aware that calling \code{combineSpectra} on a
+\code{Spectra} object with certain backends that allow modifications might
+\strong{overwrite} the original data. This does not happen with a
+\code{MsBackendDataFrame} backend, but with a \code{MsBackendHdf5Peaks} backend the
+m/z and intensity values in the original hdf5 file(s) will be overwritten.
+The function returns a \code{Spectra} of length equal to the unique levels
+of \code{f}.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
 using the function provided with \code{FUN} (defaults to \code{\link[=ndotproduct]{ndotproduct()}}). If
 \code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
@@ -880,23 +895,28 @@ equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
 \item \code{filterIntensity}: filters each spectrum keeping only peaks with
-intensities that are within the provided range (parameter \code{intensity}). To
+intensities that are within the provided range or match the criteria of
+the provided function. For the former, parameter \code{intensity} has to be a
+\code{numeric} defining the intensity range, for the latter a \code{function} that
+takes the intensity values of the spectrum and returns a \code{logical} whether
+the peak should be retained or not (see examples below for details). To
 remove only peaks with intensities below a certain threshold, say 100, use
 \code{intensity = c(100, Inf)}. Note: also a single value can be passed with
 the \code{intensity} parameter in which case an upper limit of \code{Inf} is used.
 Note that this function removes also peaks with missing intensities
 (i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
 filtering to spectra of the specified MS level(s).
-\item \code{lapply}: apply a given function to each spectrum in a \code{Spectra} object.
-The \code{Spectra} is splitted into individual spectra and on each of them
-(i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
+\item \code{spectrapply}: apply a given function to each spectrum in a \code{Spectra}
+object. The \code{Spectra} is splitted into individual spectra and on each of
+them (i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
 parameters to \code{FUN} can be passed with the \code{...} argument. Parameter
 \code{BPPARAM} allows to enable parallel processing, which however makes only
-sense if \code{FUN} is computational intense. \code{lapply} returns a \code{list} (same
-length than \code{X}) with the result from \code{FUN}. See examples for more details.
+sense if \code{FUN} is computational intense. \code{spectrapply} returns a \code{list}
+(same length than \code{object}) with the result from \code{FUN}. See examples for
+more details.
 Note that the result and its order depends on the factor \code{f} used for
-splitting \code{X} with \code{split}, i.e. no re-ordering or \code{unsplit} is performed
-on the result.
+splitting \code{object} with \code{split}, i.e. no re-ordering or \code{unsplit} is
+performed on the result.
 \item \code{smooth}: smooth individual spectra using a moving window-based approach
 (window size = \code{2 * halfWindowSize}). Currently, the
 Moving-Average- (\code{method = "MovingAverage"}),
@@ -1078,6 +1098,14 @@ spd$precursorMz <- c(323.4, 543.2302)
 data_filt <- Spectra(spd)
 filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 
+## Filter a Spectra keeping only peaks matching certain m/z values
+sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
+mz(sps_sub)
+
+## Filter a Spectra keeping only peaks within a m/z range
+sps_sub <- filterMzRange(data, mz = c(100, 300))
+mz(sps_sub)
+
 ## Remove empty spectra variables
 sciex_noNA <- dropNaSpectraVariables(sciex)
 
@@ -1109,6 +1137,17 @@ intensity(res)[[2]]
 ## Lengths of spectra is now different
 lengths(mz(res))
 lengths(mz(data))
+
+## In addition it is possible to pass a function to `filterIntensity`: in
+## the example below we want to keep only peaks that have an intensity which
+## is larger than one third of the maximal peak intensity in that spectrum.
+keep_peaks <- function(x) {
+    x > max(x, na.rm = TRUE) / 3
+}
+res2 <- filterIntensity(data, intensity = keep_peaks)
+intensity(res2)[[1L]]
+intensity(data)[[1L]]
+
 
 ## Since data manipulation operations are by default not directly applied to
 ## the data but only added to the internal lazy evaluation queue, it is also
@@ -1159,13 +1198,44 @@ compareSpectra(sciex_im[2:3], sciex_im[10:20], ppm = 10, type = "inner",
 ## in a subset of the sciex_im data. Note that we can access all variables
 ## of each individual spectrum either with the `$` operator or the
 ## corresponding method.
-res <- lapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
+res <- spectrapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
 head(res)
 
 ## It is however important to note that dedicated methods to access the
 ## data (such as `intensity`) are much more efficient than using `lapply`:
 res <- lapply(intensity(sciex_im[1:20]), mean)
 head(res)
+
+
+## ---- DATA EXPORT ----
+
+## Some `MsBackend` classes provide an `export` method to export the data to
+## the file format supported by the backend. The `MsBackendMzR` for example
+## allows to export MS data to mzML or mzXML file(s), the `MsBackendMgf`
+## (defined in the MsBackendMgf R package) would allow to export the data
+## in mgf file format. Below we export the MS data in `data`. We
+## call the `export` method on this object, specify the backend that should
+## be used to export the data (and which also defines the output format) and
+## provide a file name.
+fl <- tempfile()
+export(data, MsBackendMzR(), file = fl)
+
+## This exported our data in mzML format. Below we read the first 6 lines
+## from that file.
+readLines(fl, n = 6)
+
+## If only a single file name is provided, all spectra are exported to that
+## file. To export data with the `MsBackendMzR` backend to different files, a
+## file name for each individual spectrum has to be provided.
+## Below we export each spectrum to its own file.
+fls <- c(tempfile(), tempfile())
+export(data, MsBackendMzR(), file = fls)
+
+## Reading the data from the first file
+res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+
+mz(res)
+mz(data)
 }
 \author{
 Sebastian Gibb, Johannes Rainer

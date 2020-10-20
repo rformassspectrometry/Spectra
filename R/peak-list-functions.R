@@ -261,7 +261,8 @@ combinePeaks <- function(x, intensityFun = base::mean,
     for (i in seq_along(x)) {
         for (j in seq_along(y)) {
             peak_map <- MAPFUN(x[[i]], y[[j]],
-                               tolerance = tolerance, ppm = ppm, ...)
+                               tolerance = tolerance, ppm = ppm,
+                               .check = FALSE, ...)
             mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]], ...)
         }
     }

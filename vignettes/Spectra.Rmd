@@ -289,6 +289,10 @@ the `?Spectra` help):
 - `filterDataOrigin`: subset to spectra from specific origins.
 - `filterDataStorage`: subset to spectra from certain data storage files.
 - `filterEmptySpectra`: remove spectra without mass peaks.
+- `filterMzRange`: subset spectra keeping only peaks with an m/z within the
+  provided m/z range.
+- `filterMzValues`: subset spectra keeping only peaks matching provided m/z
+  value(s).
 - `filterIsolationWindow`: keep spectra with the provided `mz` in their
   isolation window (m/z range).
 - `filterMsLevel`: filter by MS level.
@@ -412,6 +416,11 @@ sps_rep <- filterIntensity(sps_rep, intensity = c(0.1, Inf))
 ```{r clean-intensity}
 intensity(sps_rep)
 ```
+
+The `filterIntensity` supports also a user-provided function to be passed with
+parameter `intensity` which would allow e.g. to remove peaks smaller than the
+median peak intensity of a spectrum. See examples in the `?filterIntensity` help
+page for details.
 
 Note that any data manipulations on `Spectra` objects are not immediately
 applied to the peak data. They are added to a so called *processing queue* which
@@ -599,6 +608,59 @@ plotSpectraMirror(sps[3], sps[4], main = "Caffeine", ppm = 50)
 ```
 
 See also `?plotSpectra` for more plotting options and examples.
+
+
+## Exporting spectra
+
+Spectra data can be exported with the `export` method. This method takes the
+`Spectra` that is supposed to be exported and the backend (parameter `backend`)
+which should be used to export the data and additional parameters for the export
+function of this backend. The backend thus defines the format of the exported
+file. Note however that not all `MsBackend` classes might support data export.
+The backend classes currently supporting data export and its format are:
+- `MsBackendMzR` (`Spectra` package): export data in *mzML* and *mzXML*
+  format. Can not export all custom, user specified spectra variables.
+- `MsBackendMgf`
+  ([`MsBackendMgf`](https://github.com/RforMassSpectrometry/MsBackendMgf)
+  package): exports data in *Mascot Generic Format* (mgf). Exports all spectra
+  variables as individual spectrum fields in the mgf file.
+
+In the example below we use the `MsBackendMzR` to export all spectra from the
+variable `sps` to an mzML file. We thus pass the data, the backend that should
+be used for the export and the file name of the result file (a temporary file)
+to the `export` function (see also the help page of the `export,MsBackendMzR`
+function for additional supported parameters).
+
+```{r export}
+fl <- tempfile()
+export(sps, MsBackendMzR(), file = fl)
+```
+
+To evaluate which of the spectra variables were exported, we load the exported
+data again and identify spectra variables in the original file which could not
+be exported (because they are not defined variables in the mzML standard).
+
+```{r export-import}
+sps_im <- Spectra(backendInitialize(MsBackendMzR(), fl))
+spectraVariables(sps)[!spectraVariables(sps) %in% spectraVariables(sps_im)]
+```
+
+These additional variables were thus not exported. How data export is performed
+and handled depends also on the used backend. The `MsBackendMzR` for example
+exports all spectra by default to a single file (specified with the `file`
+parameter), but it allows also to specify for each individual spectrum in the
+`Spectra` to which file it should be exported (parameter `file` has thus to be
+of length equal to the number of spectra). As an example we export below the
+spectrum 1 and 3 to one file and spectra 2 and 4 to another.
+
+```{r export-twofiles}
+fls <- c(tempfile(), tempfile())
+export(sps, MsBackendMzR(), file = fls[c(1, 2, 1, 2)])
+```
+
+A more realistic use case for mzML export would be to export MS data after
+processing, such as smoothing (using the `smooth` function) and centroiding
+(using the `pickPeaks` function) of raw profile-mode MS data.
 
 
 ## Changing backends

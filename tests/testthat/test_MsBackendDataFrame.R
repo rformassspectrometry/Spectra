@@ -858,3 +858,17 @@ test_that("isCentroided,MsBackendDataFrame works", {
     msb <- backendInitialize(msb, test_df)
     expect_true(all(is.na(isCentroided(msb))))
 })
+
+test_that("dropNaSpectraVariables works with MsBackendDataFrame", {
+    b <- MsBackendDataFrame()
+    expect_true(length(dropNaSpectraVariables(b)) == 0)
+    b <- backendInitialize(b, test_df)
+    res <- dropNaSpectraVariables(b)
+    expect_equal(spectraVariables(b), spectraVariables(res))
+    expect_equal(mz(b), mz(res))
+    expect_equal(intensity(b), intensity(res))
+
+    b$other_col <- NA
+    res <- dropNaSpectraVariables(b)
+    expect_true(!any(spectraVariables(res) == "other_col"))
+})

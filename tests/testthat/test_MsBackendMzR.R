@@ -499,3 +499,53 @@ test_that("$,$<-,MsBackendMzR works", {
                  "not support replacing mz")
     expect_error(tmp$new_col <- c(2, 4), "either 1 or")
 })
+
+test_that("export,MsBackendMzR works", {
+    df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
+    df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
+    df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
+    sps <- Spectra(df)
+
+    fl <- tempfile()
+    expect_error(export(sps, file = fl), "is required")
+    expect_error(export(sps, MsBackendDataFrame(), fl), "does not support")
+    export(sps, MsBackendMzR(), file = fl)
+    res <- Spectra(backendInitialize(MsBackendMzR(), fl))
+    expect_equal(mz(res), mz(sps))
+
+    expect_error(export(sps, MsBackendMzR(), file = c(fl, fl)),
+                 "of length 1")
+
+    ## Export to multiple files
+    fls <- c(tempfile(), tempfile())
+    fls <- fls[c(1, 2, 1)]
+    export(sps, MsBackendMzR(), fls)
+
+    a <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+    expect_true(length(a) == 2)
+    expect_equal(mz(a), mz(sps[c(1, 3)]))
+    b <- Spectra(backendInitialize(MsBackendMzR(), fls[2]))
+    expect_true(length(b) == 1)
+    expect_equal(mz(b), mz(sps[2]))
+
+    sps <- Spectra(sciex_mzr)
+    sps <- filterRt(sps, c(100, 150))
+    sps <- setBackend(sps, MsBackendDataFrame())
+    fls <- c(tempfile(), tempfile())
+    names(fls) <- unique(sps$dataOrigin)
+    export(sps, MsBackendMzR(), file = fls[sps$dataOrigin], copy = TRUE)
+    res <- Spectra(backendInitialize(MsBackendMzR(), fls))
+    expect_equal(rtime(res), rtime(sps))
+    expect_equal(mz(res), mz(sps))
+
+    export(sps, MsBackendMzR(), file = fl)
+    res <- Spectra(backendInitialize(MsBackendMzR(), fl))
+    expect_equal(rtime(res), rtime(sps))
+})
+
+test_that("dropNaSpectraVariables works with MsBackendMzR", {
+    res <- dropNaSpectraVariables(sciex_mzr)
+    expect_equal(mz(res[1]), mz(sciex_mzr[1]))
+    expect_true(length(spectraVariables(res)) <
+                length(spectraVariables(sciex_mzr)))
+})

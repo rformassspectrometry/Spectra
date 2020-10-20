@@ -32,6 +32,12 @@ setGeneric("export", function(object, ...)
 setGeneric("filterIntensity", function(object, ...)
     standardGeneric("filterIntensity"))
 #' @rdname hidden_aliases
+setGeneric("filterMzRange", function(object, ...)
+    standardGeneric("filterMzRange"))
+#' @rdname hidden_aliases
+setGeneric("filterMzValues", function(object, ...)
+    standardGeneric("filterMzValues"))
+#' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
 #' @rdname hidden_aliases
@@ -55,3 +61,5 @@ setGeneric("selectSpectraVariables", function(object, ...)
 setGeneric("setBackend", function(object, backend, ...)
     standardGeneric("setBackend"))
 setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
+#' @rdname hidden_aliases
+setGeneric("spectrapply", function(object, ...) standardGeneric("spectrapply"))

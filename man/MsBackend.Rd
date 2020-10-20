@@ -12,6 +12,7 @@
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
+\alias{export,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
 \alias{peaksData,MsBackend-method}
 \alias{centroided,MsBackend-method}
@@ -84,6 +85,8 @@
 \S4method{backendMerge}{list}(object, ...)
 
 \S4method{backendMerge}{MsBackend}(object, ...)
+
+\S4method{export}{MsBackend}(object, ...)
 
 \S4method{acquisitionNum}{MsBackend}(object)
 
@@ -229,7 +232,8 @@ method description or expected data type.}
 to filter for.}
 
 \item{file}{For \code{filterFile}: index or name of the file(s) to which the data
-should be subsetted.}
+should be subsetted. For \code{export}: \code{character} of length 1 or equal to
+the number of spectra.}
 
 \item{dataOrigin}{For \code{filterDataOrigin}: \code{character} to define which
 spectra to keep.
@@ -377,6 +381,17 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \verb{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
+\item \code{export}: exports data from a \code{Spectra} class to a file. This method is
+called by the \verb{export,Spectra} method that passes itself as a second
+argument to the function. The \verb{export,MsBackend} implementation is thus
+expected to take a \code{Spectra} class as second argument from which all data
+is exported. Taking data from a \code{Spectra} class ensures that also all
+eventual data manipulations (cached in the \code{Spectra}'s lazy evaluation
+queue) are applied prior to export - this would not be possible with only a
+\link{MsBackend} class. An example implementation is the \code{export} method
+for the \code{MsBackendMzR} backend that supports export of the data in
+\emph{mzML} or \emph{mzXML} format. See the documentation for the \code{MsBackendMzR}
+class below for more information.
 \item \code{filterAcquisitionNum}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
@@ -497,12 +512,16 @@ of length 1 or equal to the number of spectra in \code{object}.
 \item \code{spectraData}, \verb{spectraData<-}: gets or sets general spectrum
 metadata (annotation, also called header).  \code{spectraData} returns
 a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame} with the same number
-of rows as there are spectra in \code{object}.
+of rows as there are spectra in \code{object}. Note that \code{spectraData} has to
+return the full data, i.e. also the m/z and intensity values (as a \code{list}
+or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
 the spectra in \code{object}.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
-available in \code{object}.
+available in \code{object}. This should return \strong{all} spectra variables which
+are present in \code{object}, also \code{"mz"} and \code{"intensity"} (which are by
+default not returned by the \verb{spectraVariables,Spectra} method).
 \item \code{split}: splits the backend into a \code{list} of backends (depending on
 parameter \code{f}). The default method for \code{MsBackend} uses \code{\link[=split.default]{split.default()}},
 thus backends extending \code{MsBackend} don't necessarily need to implement
@@ -586,6 +605,31 @@ memory.
 New objects can be created with the \code{MsBackendMzR()} function which
 can be subsequently filled with data by calling \code{backendInitialize}
 passing the file names of the input data files with argument \code{files}.
+
+This backend provides an \code{export} method to export data from a \code{Spectra} in
+\emph{mzML} or \emph{mzXML} format. The definition of the function is:
+
+\code{export(object, x, file = tempfile(), format = c("mzML", "mzXML"), copy = FALSE)}
+
+The parameters are:
+\itemize{
+\item \code{object}: an instance of the \code{MsBackendMzR} class.
+\item \code{x}: the \linkS4class{Spectra} object to be exported.
+\item \code{file}: \code{character} with the (full) output file name(s). Should be
+of length 1 or equal \code{length(x)}. If a single file is specified, all
+spectra are exported to that file. Alternatively it is possible to specify
+for each spectrum in \code{x} the name of the file to which it should be
+exported (and hence \code{file} has to be of length equal \code{length(x)}).
+\item \code{format}: \code{character(1)}, either \code{"mzML"} or \code{"mzXML"} defining the output
+file format.
+\item \code{copy}: \code{logical(1)} whether general file information should be copied from
+the original MS data files. This only works if \code{x} uses a \code{MsBackendMzR}
+backend and if \code{dataOrigin(x)} contains the original MS data file names.
+\item \code{BPPARAM}: parallel processing settings.
+}
+
+See examples in \linkS4class{Spectra} or the vignette for more details and
+examples.
 }
 
 \section{\code{MsBackendHdf5Peaks}, on-disk MS data backend}{

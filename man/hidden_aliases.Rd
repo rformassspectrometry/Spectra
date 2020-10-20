@@ -17,6 +17,8 @@
 \alias{dropNaSpectraVariables}
 \alias{export}
 \alias{filterIntensity}
+\alias{filterMzRange}
+\alias{filterMzValues}
 \alias{isReadOnly}
 \alias{peaksData}
 \alias{peaksData<-}
@@ -25,6 +27,7 @@
 \alias{reset}
 \alias{selectSpectraVariables}
 \alias{setBackend}
+\alias{spectrapply}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendMerge,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
@@ -119,6 +122,7 @@
 \alias{spectraNames<-,MsBackendMzR-method}
 \alias{spectraVariables,MsBackendMzR-method}
 \alias{$<-,MsBackendMzR-method}
+\alias{export,MsBackendMzR-method}
 \alias{ProcessingStep-class}
 \alias{show,ProcessingStep-method}
 \alias{show,Spectra-method}
@@ -150,6 +154,10 @@ export(object, ...)
 
 filterIntensity(object, ...)
 
+filterMzRange(object, ...)
+
+filterMzValues(object, ...)
+
 isReadOnly(object, ...)
 
 peaksData(object, ...)
@@ -165,6 +173,8 @@ reset(object, ...)
 selectSpectraVariables(object, ...)
 
 setBackend(object, backend, ...)
+
+spectrapply(object, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 
@@ -367,6 +377,15 @@ setBackend(object, backend, ...)
 \S4method{spectraVariables}{MsBackendMzR}(object)
 
 \S4method{$}{MsBackendMzR}(x, name) <- value
+
+\S4method{export}{MsBackendMzR}(
+  object,
+  x,
+  file = tempfile(),
+  format = c("mzML", "mzXML"),
+  copy = FALSE,
+  BPPARAM = bpparam()
+)
 
 \S4method{show}{ProcessingStep}(object)
 

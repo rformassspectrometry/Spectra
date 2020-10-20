@@ -49,7 +49,7 @@ setMethod("backendInitialize", "MsBackendMzR",
                   stop("Parameter 'files' is expected to be a character vector",
                        " with the files names from where data should be",
                        " imported")
-              files <- normalizePath(files)
+              files <- normalizePath(files, mustWork = FALSE)
               msg <- .valid_ms_backend_files_exist(files)
               if (length(msg))
                   stop(msg)
@@ -182,4 +182,22 @@ setReplaceMethod("$", "MsBackendMzR", function(x, name, value) {
         stop("Length of 'value' has to be either 1 or ", length(x))
     validObject(x)
     x
+})
+
+#' @rdname hidden_aliases
+setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
+                                             format = c("mzML", "mzXML"),
+                                             copy = FALSE,
+                                             BPPARAM = bpparam()) {
+    l <- length(x)
+    file <- sanitize_file_name(file)
+    if (length(file) == 1)
+        file <- rep_len(file, l)
+    if (length(file) != l)
+        stop("Parameter 'file' has to be either of length 1 or ",
+             length(x), ", i.e. 'length(x)'.", call. = FALSE)
+    f <- factor(file, levels = unique(file))
+    tmp <- bpmapply(.write_ms_data_mzR, split(x, f), levels(f),
+                    MoreArgs = list(format = format, copy = copy),
+                    BPPARAM = BPPARAM)
 })

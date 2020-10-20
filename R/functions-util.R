@@ -49,3 +49,24 @@
 }
 
 setAs("logical", "factor", function(from, to) factor(from))
+
+#' @description
+#'
+#' Simple helper function to sanitize the file name. The function uses the
+#' [path_sanitize()] function only on the file name but not on the path.
+#'
+#' @param x `character` with file names/paths.
+#'
+#' @noRd
+#'
+#' @importFrom fs path_sanitize
+#'
+#' @author Johannes Rainer
+#'
+#' @examples
+#'
+#' a <- c(tempfile(), tempfile(), ">hello")
+#' sanitize_file_name(a)
+sanitize_file_name <- function(x) {
+    file.path(normalizePath(dirname(x)), path_sanitize(basename(x)))
+}

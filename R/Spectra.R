@@ -28,6 +28,7 @@ NULL
 #'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
+#'
 #' @section Creation of objects, conversion, changing the backend and export:
 #'
 #' `Spectra` classes can be created with the `Spectra` constructor function
@@ -84,28 +85,25 @@ NULL
 #'   details.
 #'
 #' Data from a `Spectra` object can be **exported** to a file with the `export`
-#' function. The file format for the exported data can be specified with the
-#' parameter `format`; currently only `format = "mgf"` is supported which
-#' exports the data in Mascot Generic Format (MGF). By default all non-empty
-#' spectra variables in `Spectra` are exported.
+#' function. The actual export of the data has to be performed by the `export`
+#' method of the [MsBackend] class defined with the mandatory parameter
+#' `backend`. Note however that not all backend classes support export of data.
+#' From the `MsBackend` classes in the `Spectra` package currently only the
+#' `MsBackendMzR` backend supports data export (to mzML/mzXML file(s));
+#' see the help page of the [MsBackend-class] for information on its arguments
+#' or the examples below or the vignette for examples.
 #'
 #' The definition of the function is
-#' `export(object, file = tempfile(), format = "mgf",
-#'     variableMapping = spectraVariableMapping(format), ...)` and its
+#' `export(object, backend,  ...)` and its
 #' parameters are:
 #'
 #' - `object`: the `Spectra` object to be exported.
 #'
-#' - `file`: the name of the file.
+#' - `backend`: instance of a class extending [MsBackend] which supports export
+#'   of the data (i.e. which has a defined `export` method).
 #'
-#' - `format`: `character(1)` defining the export file format. Currently only
-#'   `format = "mgf"` is supported.
-#'
-#' - `variableMapping`: named `character` defining the mapping of spectra
-#'   variables (names of `variableMapping`) to fields in the output file
-#'   (elements of `variableMapping`). See output of `spectraVariableMapping()`
-#'   for the expected format. All spectra variables for which no mapping to a
-#'   field in the output format is provided are exported as they are.
+#' - `...`: additional parameters specific for the `MsBackend` passed with
+#'   parameter `backend`.
 #'
 #'
 #' @section Accessing spectra data:
@@ -251,6 +249,7 @@ NULL
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `0` is returned.
 #'
+#'
 #' @section Data subsetting, filtering and merging:
 #'
 #' Subsetting and filtering of `Spectra` objects can be performed with the below
@@ -299,6 +298,15 @@ NULL
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra` (with spectra in their original order).
 #'
+#' - `filterMzRange`: filters the object keeping only peaks in each spectrum
+#'   that are within the provided m/z range.
+#'
+#' - `filterMzValues`: filters the object keeping only peaks in each spectrum
+#'   that match the provided m/z value(s) considering also the absolute
+#'   `tolerance` and m/z-relative `ppm` (`tolerance` and `ppm` can be either
+#'   of length 1 or equal to the length of `mz` to define a different tolerance
+#'   for each m/z).
+#'
 #' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
@@ -337,6 +345,7 @@ NULL
 #' `Spectra` objects. The spectra variables of the resulting `Spectra`
 #' object is the union of the spectra variables of the individual `Spectra`
 #' objects.
+#'
 #'
 #' @section Data manipulation and analysis methods:
 #'
@@ -380,8 +389,15 @@ NULL
 #'   split the input data for parallel processing.
 #'   This defaults to `p = x$dataStorage` and hence a per-file parallel
 #'   processing is applied for `Spectra` with file-based backends (such as the
-#'   [MsBackendMzR()]). The function returns a `Spectra` of length equal to the
-#'   unique levels of `f`.
+#'   [MsBackendMzR()]).
+#'   Prior combination of the spectra all processings queued in the lazy
+#'   evaluation queue are applied. Be aware that calling `combineSpectra` on a
+#'   `Spectra` object with certain backends that allow modifications might
+#'   **overwrite** the original data. This does not happen with a
+#'   `MsBackendDataFrame` backend, but with a `MsBackendHdf5Peaks` backend the
+#'   m/z and intensity values in the original hdf5 file(s) will be overwritten.
+#'   The function returns a `Spectra` of length equal to the unique levels
+#'   of `f`.
 #'
 #' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
 #'   using the function provided with `FUN` (defaults to [ndotproduct()]). If
@@ -405,7 +421,11 @@ NULL
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
 #' - `filterIntensity`: filters each spectrum keeping only peaks with
-#'   intensities that are within the provided range (parameter `intensity`). To
+#'   intensities that are within the provided range or match the criteria of
+#'   the provided function. For the former, parameter `intensity` has to be a
+#'   `numeric` defining the intensity range, for the latter a `function` that
+#'   takes the intensity values of the spectrum and returns a `logical` whether
+#'   the peak should be retained or not (see examples below for details). To
 #'   remove only peaks with intensities below a certain threshold, say 100, use
 #'   `intensity = c(100, Inf)`. Note: also a single value can be passed with
 #'   the `intensity` parameter in which case an upper limit of `Inf` is used.
@@ -413,16 +433,17 @@ NULL
 #'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
 #'   filtering to spectra of the specified MS level(s).
 #'
-#' - `lapply`: apply a given function to each spectrum in a `Spectra` object.
-#'   The `Spectra` is splitted into individual spectra and on each of them
-#'   (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
+#' - `spectrapply`: apply a given function to each spectrum in a `Spectra`
+#'   object. The `Spectra` is splitted into individual spectra and on each of
+#'   them (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
 #'   parameters to `FUN` can be passed with the `...` argument. Parameter
 #'   `BPPARAM` allows to enable parallel processing, which however makes only
-#'   sense if `FUN` is computational intense. `lapply` returns a `list` (same
-#'   length than `X`) with the result from `FUN`. See examples for more details.
+#'   sense if `FUN` is computational intense. `spectrapply` returns a `list`
+#'   (same length than `object`) with the result from `FUN`. See examples for
+#'   more details.
 #'   Note that the result and its order depends on the factor `f` used for
-#'   splitting `X` with `split`, i.e. no re-ordering or `unsplit` is performed
-#'   on the result.
+#'   splitting `object` with `split`, i.e. no re-ordering or `unsplit` is
+#'   performed on the result.
 #'
 #' - `smooth`: smooth individual spectra using a moving window-based approach
 #'    (window size = `2 * halfWindowSize`). Currently, the
@@ -474,7 +495,8 @@ NULL
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
 #'     section on creation of `Spectra` objects for details. For `setBackend`:
 #'     instance of [MsBackend-class]. See section on creation of `Spectra`
-#'     objects for details.
+#'     objects for details. For `export`: [MsBackend-class] to be used to export
+#'     the data.
 #'
 #' @param binSize For `bin`: `numeric(1)` defining the size for the m/z bins.
 #'     Defaults to `binSize = 1`.
@@ -509,13 +531,8 @@ NULL
 #'     parallelized copying of the spectra data to the new backend. For some
 #'     backends changing this parameter can lead to errors.
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
-#'     should be combined. For `lapply`: `factor` how `X` should be splitted.
-#'
-#' @param file For `export`: `character(1)` specifying the of the file to which
-#'     the data should be exported.
-#'
-#' @param format For `export`: `character(1)` defining the format of the output
-#'     file. Currently only `format = "mgf"` is supported.
+#'     should be combined. For `spectrapply`: `factor` how `object` should be
+#'     splitted.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
@@ -542,8 +559,10 @@ NULL
 #'
 #' @param intensity For `filterIntensity`: `numeric` of length 1 or 2 defining
 #'     either the lower or the lower and upper intensity limit for the
-#'     filtering. Defaults to `intensity = c(0, Inf)` thus only peaks with `NA`
-#'     intensity are removed.
+#'     filtering, or a `function` that takes the intensities as input and
+#'     returns a `logical` (same length then peaks in the spectrum) whether the
+#'     peak should be retained or not. Defaults to `intensity = c(0, Inf)` thus
+#'     only peaks with `NA` intensity are removed.
 #'
 #' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
@@ -569,8 +588,10 @@ NULL
 #'     For `filterMsLevel`: the MS level to which `object` should be subsetted.
 #'
 #' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
-#'     filter the object. For `filterPrecursorMz`: `numeric(2)` defining the
-#'     lower and upper m/z boundary.
+#'     filter the object. For `filterPrecursorMz` and `filterMzRange`:
+#'     `numeric(2)` defining the lower and upper m/z boundary.
+#'     For `filterMzValues`: `numeric` with the m/z values to match peaks
+#'     against.
 #'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
@@ -593,9 +614,9 @@ NULL
 #' @param polarity for `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
-#' @param ppm For `compareSpectra`, `containsMz`: `numeric(1)` defining a
-#'     relative, m/z-dependent, maximal accepted difference between m/z values
-#'     for peaks to be matched.
+#' @param ppm For `compareSpectra`, `containsMz`, `filterMzValues`: `numeric(1)`
+#'     defining a relative, m/z-dependent, maximal accepted difference between
+#'     m/z values for peaks to be matched.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -617,8 +638,9 @@ NULL
 #'
 #' @param tolerance For `compareSpectra`, `containsMz`: `numeric(1)` allowing to
 #'     define a constant maximal accepted difference between m/z values for
-#'     peaks to be matched. For `containsMz` it can also be of length equal `mz`
-#'     to specify a different tolerance for each m/z value.
+#'     peaks to be matched. For `containsMz` and `filterMzValues` it can also
+#'     be of length equal `mz` to specify a different tolerance for each m/z
+#'     value.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
@@ -635,18 +657,10 @@ NULL
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
-#' @param variableMapping For `export`: a named `character` vector with the
-#'     names of the fields in the exported file to which spectra variables
-#'     should be mapped, names being spectra variable names and elements of the
-#'     vector the fields in the output file. See output from
-#'     `spectraVariableMapping()` for the default.
-#'
 #' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
 #'     (the default) or all provided `mz` have to be present in the spectrum.
 #'
 #' @param x A `Spectra` object.
-#'
-#' @param X A `Spectra` object.
 #'
 #' @param y A `Spectra` object.
 #'
@@ -800,6 +814,14 @@ NULL
 #' data_filt <- Spectra(spd)
 #' filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 #'
+#' ## Filter a Spectra keeping only peaks matching certain m/z values
+#' sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
+#' mz(sps_sub)
+#'
+#' ## Filter a Spectra keeping only peaks within a m/z range
+#' sps_sub <- filterMzRange(data, mz = c(100, 300))
+#' mz(sps_sub)
+#'
 #' ## Remove empty spectra variables
 #' sciex_noNA <- dropNaSpectraVariables(sciex)
 #'
@@ -831,6 +853,17 @@ NULL
 #' ## Lengths of spectra is now different
 #' lengths(mz(res))
 #' lengths(mz(data))
+#'
+#' ## In addition it is possible to pass a function to `filterIntensity`: in
+#' ## the example below we want to keep only peaks that have an intensity which
+#' ## is larger than one third of the maximal peak intensity in that spectrum.
+#' keep_peaks <- function(x) {
+#'     x > max(x, na.rm = TRUE) / 3
+#' }
+#' res2 <- filterIntensity(data, intensity = keep_peaks)
+#' intensity(res2)[[1L]]
+#' intensity(data)[[1L]]
+#'
 #'
 #' ## Since data manipulation operations are by default not directly applied to
 #' ## the data but only added to the internal lazy evaluation queue, it is also
@@ -881,13 +914,44 @@ NULL
 #' ## in a subset of the sciex_im data. Note that we can access all variables
 #' ## of each individual spectrum either with the `$` operator or the
 #' ## corresponding method.
-#' res <- lapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
+#' res <- spectrapply(sciex_im[1:20], FUN = function(x) mean(x$intensity[[1]]))
 #' head(res)
 #'
 #' ## It is however important to note that dedicated methods to access the
 #' ## data (such as `intensity`) are much more efficient than using `lapply`:
 #' res <- lapply(intensity(sciex_im[1:20]), mean)
 #' head(res)
+#'
+#'
+#' ## ---- DATA EXPORT ----
+#'
+#' ## Some `MsBackend` classes provide an `export` method to export the data to
+#' ## the file format supported by the backend. The `MsBackendMzR` for example
+#' ## allows to export MS data to mzML or mzXML file(s), the `MsBackendMgf`
+#' ## (defined in the MsBackendMgf R package) would allow to export the data
+#' ## in mgf file format. Below we export the MS data in `data`. We
+#' ## call the `export` method on this object, specify the backend that should
+#' ## be used to export the data (and which also defines the output format) and
+#' ## provide a file name.
+#' fl <- tempfile()
+#' export(data, MsBackendMzR(), file = fl)
+#'
+#' ## This exported our data in mzML format. Below we read the first 6 lines
+#' ## from that file.
+#' readLines(fl, n = 6)
+#'
+#' ## If only a single file name is provided, all spectra are exported to that
+#' ## file. To export data with the `MsBackendMzR` backend to different files, a
+#' ## file name for each individual spectrum has to be provided.
+#' ## Below we export each spectrum to its own file.
+#' fls <- c(tempfile(), tempfile())
+#' export(data, MsBackendMzR(), file = fls)
+#'
+#' ## Reading the data from the first file
+#' res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
+#'
+#' mz(res)
+#' mz(data)
 NULL
 
 #' The Spectra class
@@ -986,13 +1050,13 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 #' @rdname Spectra
 setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            metadata = list(),
-                                           source = backend,
-                                           backend = MsBackendMzR(),
+                                           source = MsBackendMzR(),
+                                           backend = source,
                                            ..., BPPARAM = bpparam()) {
     be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
               backend = be)
-    if (!is(source, class(backend)[1]))
+    if (class(source)[1] != class(backend)[1])
         setBackend(sp, backend, ..., BPPARAM = BPPARAM)
     else sp
 })
@@ -1014,7 +1078,8 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
                   backendInitialize(backend,
                                     data = spectraData(z),
-                                    ...)
+                                    ...,
+                                    BPPARAM = SerialParam())
               }, ..., BPPARAM = BPPARAM)
               bknds <- backendMerge(bknds)
               ## That below ensures the backend is returned in its original
@@ -1053,12 +1118,10 @@ setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
 #'
 #' @export
 setMethod("export", "Spectra",
-          function(object, file = tempfile(), format = "mgf",
-                   variableMapping = spectraVariableMapping(format), ...) {
-              switch(match.arg(format),
-                     "mgf" = .export_mgf(object, con = file,
-                                         mapping = variableMapping)
-                     )
+          function(object, backend, ...) {
+              if (missing(backend))
+                  stop("Parameter 'backend' is required.")
+              export(backend, object, ...)
           })
 
 #### ---------------------------------------------------------------------------
@@ -1237,12 +1300,13 @@ setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
 
 #' @rdname Spectra
 #'
-#' @exportMethod lapply
-setMethod("lapply", "Spectra", function(X, FUN, f = as.factor(seq_along(X)),
-                                        ..., BPPARAM = SerialParam()) {
+#' @exportMethod spectrapply
+setMethod("spectrapply", "Spectra", function(object, FUN,
+                                             f = as.factor(seq_along(object)),
+                                             ..., BPPARAM = SerialParam()) {
     if (missing(FUN))
         FUN <- identity
-    .lapply(X, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
+    .lapply(object, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
 })
 
 #' @rdname Spectra
@@ -1472,6 +1536,46 @@ setMethod("filterDataStorage", "Spectra", function(object,
 })
 
 #' @rdname Spectra
+#'
+#' @exportMethod filterIntensity
+setMethod("filterIntensity", "Spectra",
+          function(object, intensity = c(0, Inf),
+                   msLevel. = unique(msLevel(object))) {
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              if (is.numeric(intensity)) {
+                  if (length(intensity) == 1)
+                      intensity <- c(intensity, Inf)
+                  if (length(intensity) != 2)
+                      stop("'intensity' should be of length specifying a ",
+                           "lower intensity limit or of length two defining ",
+                           "a lower and upper limit.")
+                  object <- addProcessing(object, .peaks_filter_intensity,
+                                          intensity = intensity,
+                                          msLevel = msLevel.)
+                  object@processing <- .logging(
+                      object@processing, "Remove peaks with intensities ",
+                      "outside [", intensity[1], ", ", intensity[2],
+                      "] in spectra of MS level(s) ",
+                      paste0(msLevel., collapse = ", "), ".")
+              } else {
+                  if (is.function(intensity)) {
+                      object <- addProcessing(
+                          object, .peaks_filter_intensity_function,
+                          intensity = intensity, msLevel = msLevel.)
+                      object@processing <- .logging(
+                          object@processing, "Remove peaks based on their ",
+                          "intensities and a user-provided function ",
+                          "in spectra of MS level(s) ",
+                          paste0(msLevel., collapse = ", "), ".")
+                  }
+                  else stop("'intensity' has to be numeric or a function")
+              }
+              object
+          })
+
+
+#' @rdname Spectra
 setMethod("filterIsolationWindow", "Spectra", function(object, mz = numeric()) {
     object@backend <- filterIsolationWindow(object@backend, mz = mz)
     object@processing <- .logging(object@processing,
@@ -1488,6 +1592,55 @@ setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
                                   paste0(unique(msLevel.), collapse = " "))
     object
 })
+
+#' @rdname Spectra
+#'
+#' @export
+setMethod("filterMzRange", "Spectra",
+          function(object, mz = numeric(), msLevel. = unique(msLevel(object))) {
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              mz <- range(mz)
+              object <- addProcessing(object, .peaks_filter_mz_range,
+                                      mz = mz, msLevel = msLevel.)
+              object@processing <- .logging(
+                  object@processing, "Filter: select peaks with an m/z within ",
+                  "[", mz[1L], ", ", mz[2L], "]")
+              object
+          })
+
+#' @rdname Spectra
+#'
+#' @export
+setMethod("filterMzValues", "Spectra",
+          function(object, mz = numeric(), tolerance = 0, ppm = 20,
+                   msLevel. = unique(msLevel(object))) {
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              l <- length(mz)
+              if (!(length(tolerance) == 1 || length(tolerance) == l))
+                  stop("'tolerance' should be of length 1 or equal 'length(mz)'")
+              if (!(length(ppm) == 1 || length(ppm) == l))
+                  stop("'ppm' should be of length 1 or equal 'length(mz)'")
+              if (is.unsorted(mz)) {
+                  idx <- order(mz)
+                  mz <- mz[idx]
+                  if (length(tolerance) == l)
+                      tolerance <- tolerance[idx]
+                  if (length(ppm) == l)
+                      ppm <- ppm[idx]
+              }
+              object <- addProcessing(object, .peaks_filter_mz_value,
+                                      mz = mz, tolerance = tolerance,
+                                      ppm = ppm, msLevel = msLevel.)
+              if (length(mz) <= 3)
+                  what <- paste0(format(mz, digits = 4), collapse = ", ")
+              else what <- ""
+              object@processing <- .logging(
+                  object@processing, "Filter: select peaks matching provided ",
+                  "m/z values ", what)
+              object
+          })
 
 #' @rdname Spectra
 setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
@@ -1573,31 +1726,6 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
                              " binned.")
     x
 })
-
-#' @rdname Spectra
-#'
-#' @exportMethod filterIntensity
-setMethod("filterIntensity", "Spectra",
-          function(object, intensity = c(0, Inf),
-                   msLevel. = unique(msLevel(object))) {
-              if (!.check_ms_level(object, msLevel.))
-                  return(object)
-              if (length(intensity) == 1)
-                  intensity <- c(intensity, Inf)
-              if (length(intensity) != 2)
-                  stop("'intensity' should be of length specifying a lower ",
-                       "intensity limit or of length two defining a lower and",
-                       " upper limit.")
-              object <- addProcessing(object, .peaks_filter_intensity,
-                                      intensity = intensity,
-                                      msLevel = msLevel.)
-              object@processing <- .logging(
-                  object@processing, "Remove peaks with intensities outside [",
-                  intensity[1], ", ", intensity[2],
-                  "] in spectra of MS level(s) ",
-                  paste0(msLevel., collapse = ", "), ".")
-              object
-          })
 
 #' @rdname Spectra
 #'

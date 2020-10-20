@@ -376,7 +376,8 @@ applyProcessing <- function(object, f = dataStorage(object),
     if (isReadOnly(x_new@backend))
         x_new <- setBackend(x_new, MsBackendDataFrame())
     peaksData(x_new@backend) <- lapply(
-        split(.peaksapply(x), f = f), FUN = FUN, ...)
+        split(.peaksapply(x, BPPARAM = SerialParam()), f = f), FUN = FUN, ...)
+    x_new@processingQueue <- list()
     validObject(x_new)
     x_new
 }
@@ -427,11 +428,14 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
     if (isReadOnly(x@backend))
         message("Backend of the input object is read-only, will change that",
                 " to an 'MsBackendDataFrame'")
-    ## We split the workload by storage file. This ensures memory efficiency
-    ## for file-based backends.
-    res <- bpmapply(FUN = .combine_spectra, split(x, p), split(f, p),
-                    MoreArgs = list(FUN = FUN, ...), BPPARAM = BPPARAM)
-    .concatenate_spectra(res)
+    if (nlevels(p) > 1) {
+        ## We split the workload by storage file. This ensures memory efficiency
+        ## for file-based backends.
+        res <- bpmapply(FUN = .combine_spectra, split(x, p), split(f, p),
+                        MoreArgs = list(FUN = FUN, ...), BPPARAM = BPPARAM)
+        .concatenate_spectra(res)
+    } else
+        .combine_spectra(x, f = f, FUN = FUN, ...)
 }
 
 #' @description
@@ -483,67 +487,4 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
             NA # if m/z is NA is better to return NA instead of FALSE
         else common(y, z, tolerance = tolerance, ppm = ppm)
     })
-}
-
-#' @export
-#'
-#' @rdname Spectra
-spectraVariableMapping <- function(format = c("mgf")) {
-    switch(match.arg(format),
-           "mgf" = c(
-               rtime = "RTINSECONDS",
-               acquisitionNum = "SCANS",
-               precursorMz = "PEPMASS",
-               precursorIntensity = "PEPMASSINT",
-               precursorCharge = "CHARGE"
-           )
-           )
-}
-
-#' @description
-#'
-#' Function to export a `Spectra` object in MGF format to `con`.
-#'
-#' @param x `Spectra`
-#'
-#' @param con output file.
-#'
-#' @param mapping named `character` vector that maps from `spectraVariables`
-#'    (i.e. `names(mapping)`) to the variable name that should be used in the
-#'    MGF file.
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-#'
-#' @examples
-#'
-#' spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
-#' spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
-#' spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
-#'
-#' sps <- Spectra(spd)
-#'
-#' .export_mgf(sps)
-.export_mgf <- function(x, con = stdout(), mapping = spectraVariableMapping()) {
-    spv <- spectraVariables(x)
-    spd <- spectraData(x, spv[!(spv %in% c("dataOrigin", "dataStorage"))])
-    idx <- match(colnames(spd), names(mapping))
-    colnames(spd)[!is.na(idx)] <- mapping[idx[!is.na(idx)]]
-    l <- nrow(spd)
-    tmp <- lapply(colnames(spd), function(z) {
-        paste0(z, "=", spd[, z], "\n")
-    })
-    if (!is.null(spectraNames(x)))
-        title <- paste0("TITLE=", spectraNames(x), "\n")
-    else
-        title <- paste0("TITLE=msLevel ", spd$msLevel, "; retentionTime ",
-                        spd$rtime, "; scanNum ", spd$acquisitionNum, "\n")
-    pks <- vapply(.peaksapply(x), function(z)
-        paste0(paste0(z[, 1], " ", z[, 2], "\n"), collapse = ""),
-        character(1))
-    tmp <- do.call(cbind, c(list(rep_len("BEGIN IONS\n", l)), list(title),
-                            tmp, list(pks), list(rep_len("END IONS\n", l))))
-    tmp[grep("=NA\n", tmp)] <- ""
-    writeLines(apply(tmp, 1, paste0, collapse = ""), con = con)
 }

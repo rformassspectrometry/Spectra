@@ -969,6 +969,27 @@ test_that("filterIntensity,Spectra works", {
     expect_true(all(ints >= 500 & ints <= 9000))
 
     expect_error(filterIntensity(Spectra(sciex_mzr), c(1, 2, 3)), "limit")
+
+    ## With `intensity` being a function.
+    sps <- Spectra()
+    res <- filterIntensity(sps, intensity = function(x) x > mean(x))
+    expect_true(length(res@processingQueue) == 1)
+    expect_true(length(intensity(res)) == 0)
+
+    expect_error(filterIntensity(sps, intensity = TRUE), "numeric or a fun")
+
+    df <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L)
+    df$mz <- list(1:4, 1:5)
+    df$intensity <- list(1:4, 1:5)
+    sps <- Spectra(df)
+
+    res <- filterIntensity(sps, intensity = function(x) x > max(x)/2)
+    expect_equal(intensity(res)[[1L]], c(3, 4))
+    expect_equal(intensity(res)[[2L]], c(3, 4, 5))
+    res <- filterIntensity(sps, intensity = function(x) x > max(x)/2,
+                           msLevel = 1L)
+    expect_equal(intensity(res)[[1L]], c(3, 4))
+    expect_equal(intensity(res)[[2L]], c(1, 2, 3, 4, 5))
 })
 
 test_that("compareSpectra works", {
@@ -1017,6 +1038,18 @@ test_that("compareSpectra works", {
     res <- compareSpectra(sps[1], sps[2])
     res_2 <- compareSpectra(sps[1], sps[2], FUN = cor_fun)
     expect_true(res < res_2)
+
+    ## Empty spectra:
+    sps2 <- Spectra()
+    res <- compareSpectra(sps2)
+    expect_true(is.matrix(res))
+    expect_true(nrow(res) == 0)
+    expect_true(ncol(res) == 0)
+
+    res <- compareSpectra(sps, sps2)
+    expect_true(is.matrix(res))
+    expect_true(ncol(res) == 0)
+    expect_true(nrow(res) == length(sps))
 })
 
 test_that("pickPeaks,Spectra works", {
@@ -1107,18 +1140,18 @@ test_that("replaceIntensitiesBelow,Spectra works", {
     expect_identical(peaksData(res), SimpleList(pks_res))
 })
 
-test_that("lapply,Spectra works", {
+test_that("spectrapply,Spectra works", {
     sps <- Spectra(sciex_mzr)[c(1:3, 1400:1410)]
-    rts <- lapply(sps, rtime)
+    rts <- spectrapply(sps, rtime)
     expect_equal(unlist(rts, use.names = FALSE), rtime(sps))
 
-    expect_equal(unname(split(sps, 1:length(sps))), unname(lapply(sps)))
+    expect_equal(unname(split(sps, 1:length(sps))), unname(spectrapply(sps)))
 
     ## test on a mzR backend using intensities.
     myFun <- function(x, add) {
         mean(intensity(x)[[1]]) + add
     }
-    res <- lapply(sps, FUN = myFun, add = 3)
+    res <- spectrapply(sps, FUN = myFun, add = 3)
     ints <- intensity(sps)
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(ints, mean, numeric(1)) + 3)
@@ -1126,7 +1159,7 @@ test_that("lapply,Spectra works", {
     ## Same after replaceIntensitiesBelow and clean.
     sps <- filterIntensity(replaceIntensitiesBelow(sps, t = 4000),
                            intensity = 0.1)
-    res <- lapply(sps, FUN = function(x) mean(x$intensity[[1]]))
+    res <- spectrapply(sps, FUN = function(x) mean(x$intensity[[1]]))
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(intensity(sps), mean, numeric(1)))
 })
@@ -1209,8 +1242,87 @@ test_that("export,Spectra works", {
     sps <- Spectra(spd)
 
     fl <- tempfile()
-    expect_error(export(sps, file = fl, format = "other"), "'arg' should be")
-    Spectra:::export(sps, file = fl)
-    res <- readLines(fl)
-    expect_equal(length(grep("PEPMASS", res)), 2)
+    expect_error(export(sps, backend = MsBackendDataFrame(),
+                        file = fl), "MsBackendDataFrame does not")
+    expect_warning(
+        export(sps, backend = MsBackendMzR(), file = fl, copy = TRUE),
+        "Original data file not found")
+})
+
+test_that("filterMzRange,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    expect_warning(res <- filterMzRange(sps, msLevel = 1L), "not available")
+    expect_equal(mz(res), mz(sps))
+
+    expect_warning(res <- filterMzRange(sps), "Inf")
+    expect_equal(mz(res), mz(sps))
+
+    res <- filterMzRange(sps, mz = c(200, 400))
+    expect_true(all(lengths(mz(res)) == 0))
+
+    res <- filterMzRange(sps, mz = c(40, 60))
+    expect_equal(mz(res)[[1L]], c(45, 56))
+    expect_equal(unname(mz(res)[[2L]]), 56.1)
+    expect_true(length(mz(res)[[3L]]) == 0)
+})
+
+test_that("filterMzValue,Spectra works", {
+    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3),
+                     precursorMz = c(NA, 38, 16))
+    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
+    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
+    sps <- Spectra(spd)
+
+    res <- filterMzValues(sps, mz = 56)
+    expect_equal(unname(mz(res)[[1L]]), 56)
+    expect_true(length(mz(res)[[2L]]) == 0)
+    expect_true(length(mz(res)[[3L]]) == 0)
+
+    res <- filterMzValues(sps, mz = c(56, 12), tolerance = c(0.2, 0))
+    expect_equal(mz(res)[[1L]], c(12, 56))
+    expect_equal(unname(mz(res)[[2L]]), 56.1)
+    expect_true(length(mz(res)[[3L]]) == 0)
+
+    res <- filterMzValues(sps, mz = c(56, 12), tolerance = c(0.2))
+    expect_equal(mz(res)[[1L]], c(12, 56))
+    expect_equal(unname(mz(res)[[2L]]), 56.1)
+    expect_equal(unname(mz(res)[[3L]]), 12.1)
+
+    expect_error(filterMzValues(sps, mz = c(56, 12), tolerance = c(1, 2, 3)),
+                 "length 1 or equal")
+    expect_error(filterMzValues(sps, mz = c(56, 12), ppm = c(1, 2, 3)),
+                 "length 1 or equal")
+})
+
+test_that("dropNaSpectraVariables works with MsBackendMzR", {
+    sps <- Spectra()
+    res <- dropNaSpectraVariables(sps)
+    expect_equal(spectraVariables(sps), spectraVariables(res))
+
+    sps <- Spectra(sciex_mzr)
+    res <- dropNaSpectraVariables(sps)
+    expect_equal(mz(res[1]), mz(sps[1]))
+    expect_true(length(spectraVariables(res)) <
+                length(spectraVariables(sps)))
+
+    df <- DataFrame(msLevel = c(1L, 1L), rtime = c(1.2, 1.3), centroided = TRUE)
+    df$mz <- list(1:10, 1:10)
+    df$intensity <- list(c(0, 0, 1, 6, 3, 0, 0, 9, 1, 0),
+                         c(9, 6, 0, 0, 3, 0, 0, 0, 3, 2))
+    sps <- Spectra(df)
+
+    res <- dropNaSpectraVariables(sps)
+    expect_equal(mz(res), mz(sps))
+    expect_equal(intensity(res), intensity(sps))
+    expect_equal(spectraVariables(res), spectraVariables(sps))
+
+    sps$other_col <- NA
+    res <- dropNaSpectraVariables(sps)
+    expect_equal(mz(res), mz(sps))
+    expect_true(length(spectraVariables(res)) < length(spectraVariables(sps)))
 })
