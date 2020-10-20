@@ -112,23 +112,23 @@
 
 \S4method{filterAcquisitionNum}{MsBackend}(object, n, file, ...)
 
-\S4method{filterDataOrigin}{MsBackend}(object, dataOrigin, ...)
+\S4method{filterDataOrigin}{MsBackend}(object, dataOrigin = character())
 
-\S4method{filterDataStorage}{MsBackend}(object, dataStorage, ...)
+\S4method{filterDataStorage}{MsBackend}(object, dataStorage = character())
 
 \S4method{filterEmptySpectra}{MsBackend}(object, ...)
 
-\S4method{filterIsolationWindow}{MsBackend}(object, mz, ...)
+\S4method{filterIsolationWindow}{MsBackend}(object, mz = numeric(), ...)
 
-\S4method{filterMsLevel}{MsBackend}(object, msLevel)
+\S4method{filterMsLevel}{MsBackend}(object, msLevel = integer())
 
-\S4method{filterPolarity}{MsBackend}(object, polarity)
+\S4method{filterPolarity}{MsBackend}(object, polarity = integer())
 
-\S4method{filterPrecursorMz}{MsBackend}(object, mz)
+\S4method{filterPrecursorMz}{MsBackend}(object, mz = numeric())
 
-\S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum, ...)
+\S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum = integer())
 
-\S4method{filterRt}{MsBackend}(object, rt, msLevel, ...)
+\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
 \S4method{intensity}{MsBackend}(object)
 
@@ -262,6 +262,8 @@ subsetted.}
 
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
+
+\item{msLevel.}{same as \code{msLevel} above.}
 
 \item{x}{Object extending \code{MsBackend}.}
 
@@ -405,6 +407,8 @@ spectra to subset.
 \code{dataOrigin} parameter, i.e. if \code{dataOrigin = c("2", "1")} was provided,
 the spectra in the resulting object should be ordered accordingly (first
 spectra from data origin \code{"2"} and then from \code{"1"}).
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterDataStorage}: filters the object retaining spectra matching the
 provided \code{dataStorage}. Parameter \code{dataStorage} has to be of type
 \code{character} and needs to match exactly the data storage value of the
@@ -413,20 +417,36 @@ spectra to subset.
 \code{dataStorage} parameter, i.e. if \code{dataStorage = c("2", "1")} was provided,
 the spectra in the resulting object should be ordered accordingly (first
 spectra from data storage \code{"2"} and then from \code{"1"}).
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterFile}: retains data of files matching the file index or file name
 provided with parameter \code{file}.
 \item \code{filterIsolationWindow}: retains spectra that contain \code{mz} in their
 isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} \code{<=} \code{mz}
 and \code{isolationWindowUpperMz} \code{>=} \code{mz}.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterMsLevel}: retains spectra of MS level \code{msLevel}.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterPolarity}: retains spectra of polarity \code{polarity}.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
 provided m/z range.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times
 within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{intensity}: gets the intensity values from the spectra. Returns
 a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
