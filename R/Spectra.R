@@ -28,6 +28,22 @@ NULL
 #'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
+#' Clarifications regarding scan/acquisition numbers and indices:
+#'
+#' - A `spectrumId` (or `spectrumID`) is a vendor specific field in
+#'   the mzML file that contains some information about the
+#'   run/spectrum, e.g.: `controllerType=0 controllerNumber=1
+#'   scan=5281 file=2`
+#'
+#' - `acquisitionNum` is a more a less sanitize spectrum id generated
+#'   from the `spectrumId` field by `mzR` (see
+#'   [here](https://github.com/sneumann/mzR/blob/master/src/pwiz/data/msdata/MSData.cpp#L552-L580)).
+#'
+#' - `scanIndex` is the `mzR` generated sequence number of the
+#'   spectrum in the raw file (which doesn't have to be the same as
+#'   the `acquisitionNum`)
+#'
+#' See also [this issue](https://github.com/lgatto/MSnbase/issues/525).
 #'
 #' @section Creation of objects, conversion, changing the backend and export:
 #'

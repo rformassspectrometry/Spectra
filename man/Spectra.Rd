@@ -552,6 +552,21 @@ to the data storage (such as the \code{\link[=MsBackendDataFrame]{MsBackendDataF
 methods} section below for more details.
 
 For details on plotting spectra, see \code{\link[=plotSpectra]{plotSpectra()}}.
+
+Clarifications regarding scan/acquisition numbers and indices:
+\itemize{
+\item A \code{spectrumId} (or \code{spectrumID}) is a vendor specific field in
+the mzML file that contains some information about the
+run/spectrum, e.g.: \verb{controllerType=0 controllerNumber=1 scan=5281 file=2}
+\item \code{acquisitionNum} is a more a less sanitize spectrum id generated
+from the \code{spectrumId} field by \code{mzR} (see
+\href{https://github.com/sneumann/mzR/blob/master/src/pwiz/data/msdata/MSData.cpp#L552-L580}{here}).
+\item \code{scanIndex} is the \code{mzR} generated sequence number of the
+spectrum in the raw file (which doesn't have to be the same as
+the \code{acquisitionNum})
+}
+
+See also \href{https://github.com/lgatto/MSnbase/issues/525}{this issue}.
 }
 \section{Creation of objects, conversion, changing the backend and export}{
 
