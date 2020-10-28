@@ -1,5 +1,9 @@
 # Spectra 0.99
 
+## Changes in 0.99.11
+
+- Re-add `mz` and `intensity` as core spectra variables.
+
 ## Changes in 0.99.10
 
 - Fix in `spectraData<-,Spectra` to avoid removing m/z and intensity values
