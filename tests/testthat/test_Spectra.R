@@ -1,4 +1,4 @@
-test_that("Spectra,DataFrame works", {
+test_that("Spectra,ANY works", {
     df <- DataFrame()
     res <- Spectra(df)
     expect_true(validObject(res))
@@ -41,8 +41,9 @@ test_that("Spectra,character works", {
     expect_equal(unique(res@backend$dataStorage), sciex_file)
     expect_identical(rtime(res), rtime(sciex_mzr))
 
-    res_2 <- Spectra(sciex_file)
-    expect_true(is(res@backend, "MsBackendDataFrame"))
+    res_2 <- Spectra(sciex_file, source = MsBackendMzR(),
+                     backend = MsBackendDataFrame())
+    expect_true(is(res_2@backend, "MsBackendDataFrame"))
     expect_identical(rtime(res), rtime(res_2))
 
     show(res)

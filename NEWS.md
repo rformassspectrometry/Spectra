@@ -1,10 +1,14 @@
 # Spectra 1.1
 
+## Changes in 1.1.3
+
+- Implement a generic `Spectra,ANY` constructor replacing `Spectra,DataFrame`
+  and `Spectra,character`.
+
 ## Changes in 1.1.2
 
 - Fix problem in export to mzML files that failed for empty spectra (issue
   [#145](https://github.com/rformassspectrometry/Spectra/issues/145))
-
 
 ## Changes in 1.1.1
 
