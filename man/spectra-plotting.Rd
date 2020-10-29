@@ -14,7 +14,7 @@ plotSpectra(
   type = "h",
   xlim = numeric(),
   ylim = numeric(),
-  main = paste("RT", rtime(x)),
+  main = paste("RT", round(rtime(x), 1)),
   col = "#00000080",
   labels = character(),
   labelCex = 1,

@@ -1,3 +1,15 @@
+# Spectra 1.1
+
+## Changes in 1.1.1
+
+- Round retention time in figure titles.
+- Document differences between `spectrumId` (`spectrumID`),
+  `acquitisionNum` and `scanIndex`. 
+
+## Changes in 1.1.0
+
+- New Bioc devel version
+
 # Spectra 0.99
 
 ## Changes in 0.99.11
