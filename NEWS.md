@@ -1,3 +1,12 @@
+# Spectra 1.0
+
+Bioconductor release 3.12 package.
+
+## Changes in 1.0.1
+
+- Fix export of empty spectra with `MsBackendMzR` (see issue
+  [#145](https://github.com/rformassspectrometry/Spectra/issues/145)).
+
 # Spectra 0.99
 
 ## Changes in 0.99.11
