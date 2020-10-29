@@ -14,7 +14,7 @@
 
 - Round retention time in figure titles.
 - Document differences between `spectrumId` (`spectrumID`),
-  `acquitisionNum` and `scanIndex`.
+  `acquisitionNum` and `scanIndex`.
 
 ## Changes in 1.1.0
 
