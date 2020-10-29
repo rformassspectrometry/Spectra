@@ -150,6 +150,10 @@ MsBackendMzR <- function() {
     hdr <- as.data.frame(spectraData(x))
     pks <- as(x, "list")
     updated_values <- t(vapply(pks, function(z) {
+        if (!nrow(z))
+            return(c(peaksCount = 0, totIonCurrent = 0,
+                     basePeakMZ = NA_real_, basePeakIntensity = NA_real_,
+                     lowMZ = NA_real_, highMZ = NA_real_))
         z <- unname(z)
         max_peak <- which.max(z[, 2L])[1L]
         npk <- nrow(z)
