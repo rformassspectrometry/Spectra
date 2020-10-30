@@ -29,6 +29,13 @@ test_that("plotSpectra works", {
                                col = list(1:5, 1:4))
             )
     vdiffr::expect_doppelganger(
+                "plotSpectra-color-peaks-label-labelCol",
+                function() plotSpectra(
+                               s, labels = function(z) unlist(mz(z)),
+                               labelPos = 2, labelOffset = 0.1, labelSrt = -30,
+                               col = list(1:5, 1:4), labelCol = "red")
+            )
+    vdiffr::expect_doppelganger(
                 "plotSpectra-asp05",
                 function() plotSpectra(s, asp = 1/2)
             )
@@ -73,6 +80,15 @@ test_that("plotSpectraMirror works", {
                                              matchCol = "red",
                                              matchLwd = 2, axes = FALSE,
                                              matchPch = 17))
+    vdiffr::expect_doppelganger(
+                "plotSpectraMirror-match-color-labelCol",
+                function() plotSpectraMirror(s[2], s[1], ppm = 0,
+                                             tolerance = 0.1,
+                                             labels = function(z) mz(z)[[1L]],
+                                             matchCol = "red",
+                                             matchLwd = 2, axes = FALSE,
+                                             matchPch = 17,
+                                             labelCol = "blue"))
     expect_error(plotSpectraMirror(s), "have to be of length")
     expect_error(plotSpectraMirror(s[1], s[1], labels = c("a")),
                  "only a function")

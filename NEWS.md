@@ -1,5 +1,10 @@
 # Spectra 1.1
 
+## Changes in 1.1.4
+
+- Fix issue with `labelCol` in `plotSpectra` (issue
+  [#157](https://github.com/rformassspectrometry/Spectra/issues/157)).
+
 ## Changes in 1.1.3
 
 - Implement a generic `Spectra,ANY` constructor replacing `Spectra,DataFrame`
