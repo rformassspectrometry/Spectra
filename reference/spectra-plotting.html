@@ -91,7 +91,7 @@ indicated.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.4</span>
       </span>
     </div>
 
@@ -155,7 +155,7 @@ indicated.</p></li>
   type <span class='op'>=</span> <span class='st'>"h"</span>,
   xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span><span class='op'>(</span><span class='op'>)</span>,
   ylim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span><span class='op'>(</span><span class='op'>)</span>,
-  main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"RT"</span>, <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='fu'>rtime</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,
+  main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span>,
   col <span class='op'>=</span> <span class='st'>"#00000080"</span>,
   labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span>,
   labelCex <span class='op'>=</span> <span class='fl'>1</span>,
@@ -163,6 +163,7 @@ indicated.</p></li>
   labelAdj <span class='op'>=</span> <span class='cn'>NULL</span>,
   labelPos <span class='op'>=</span> <span class='cn'>NULL</span>,
   labelOffset <span class='op'>=</span> <span class='fl'>0.5</span>,
+  labelCol <span class='op'>=</span> <span class='st'>"#00000080"</span>,
   asp <span class='op'>=</span> <span class='fl'>1</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
@@ -182,6 +183,7 @@ indicated.</p></li>
   labelAdj <span class='op'>=</span> <span class='cn'>NULL</span>,
   labelPos <span class='op'>=</span> <span class='cn'>NULL</span>,
   labelOffset <span class='op'>=</span> <span class='fl'>0.5</span>,
+  labelCol <span class='op'>=</span> <span class='st'>"#00000080"</span>,
   axes <span class='op'>=</span> <span class='cn'>TRUE</span>,
   frame.plot <span class='op'>=</span> <span class='va'>axes</span>,
   <span class='va'>...</span>
@@ -203,6 +205,7 @@ indicated.</p></li>
   labelAdj <span class='op'>=</span> <span class='cn'>NULL</span>,
   labelPos <span class='op'>=</span> <span class='cn'>NULL</span>,
   labelOffset <span class='op'>=</span> <span class='fl'>0.5</span>,
+  labelCol <span class='op'>=</span> <span class='st'>"#00000080"</span>,
   axes <span class='op'>=</span> <span class='cn'>TRUE</span>,
   frame.plot <span class='op'>=</span> <span class='va'>axes</span>,
   ppm <span class='op'>=</span> <span class='fl'>20</span>,
@@ -250,7 +253,7 @@ values are used by default.</p></td>
     <tr>
       <th>main</th>
       <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> with the title for the plot. By default the
-spectrum's retention time (in seconds) is used.</p></td>
+spectrum's MS level and retention time (in seconds) is used.</p></td>
     </tr>
     <tr>
       <th>col</th>
@@ -287,6 +290,10 @@ parameter <code>srt</code> in <code><a href='https://rdrr.io/r/graphics/text.htm
     <tr>
       <th>labelOffset</th>
       <td><p>see parameter <code>offset</code> in <code><a href='https://rdrr.io/r/graphics/text.html'>text()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>labelCol</th>
+      <td><p>color for the label(s).</p></td>
     </tr>
     <tr>
       <th>asp</th>
@@ -398,17 +405,17 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
 </div><div class='img'><img src='spectra-plotting-6.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plot a single spectrum specifying the label.</span>
 <span class='fu'>plotSpectra</span><span class='op'>(</span><span class='va'>sp</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>, labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"D"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='spectra-plotting-7.png' alt='' width='700' height='433' /></div><div class='input'>
+
 
 <span class='co'>#### --------------------------------------------- ####</span>
 <span class='co'>##                plotSpectraOverlay                 ##</span>
 
 <span class='co'>## Plot both spectra overlaying.</span>
 <span class='fu'>plotSpectraOverlay</span><span class='op'>(</span><span class='va'>sp</span><span class='op'>)</span>
-</div><div class='img'><img src='spectra-plotting-8.png' alt='' width='700' height='433' /></div><div class='input'>
+</div><div class='img'><img src='spectra-plotting-7.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Use a different color for each spectrum.</span>
 <span class='fu'>plotSpectraOverlay</span><span class='op'>(</span><span class='va'>sp</span>, col <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"#ff000080"</span>, <span class='st'>"#0000ff80"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='spectra-plotting-9.png' alt='' width='700' height='433' /></div><div class='input'>
+
 <span class='co'>## Label also the peaks with their m/z if their intensity is above 15.</span>
 <span class='fu'>plotSpectraOverlay</span><span class='op'>(</span><span class='va'>sp</span>, col <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"#ff000080"</span>, <span class='st'>"#0000ff80"</span><span class='op'>)</span>,
     labels <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>{</span>
@@ -417,11 +424,11 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
         <span class='va'>lbls</span>
     <span class='op'>}</span><span class='op'>)</span>
 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>h <span class='op'>=</span> <span class='fl'>15</span>, lty <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='img'><img src='spectra-plotting-10.png' alt='' width='700' height='433' /></div><div class='input'>
+</div><div class='img'><img src='spectra-plotting-8.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Use different asp values</span>
 <span class='fu'>plotSpectra</span><span class='op'>(</span><span class='va'>sp</span>, asp <span class='op'>=</span> <span class='fl'>1</span><span class='op'>/</span><span class='fl'>2</span><span class='op'>)</span>
 </div><div class='input'><span class='fu'>plotSpectra</span><span class='op'>(</span><span class='va'>sp</span>, asp <span class='op'>=</span> <span class='fl'>2</span><span class='op'>/</span><span class='fl'>1</span><span class='op'>)</span>
-</div><div class='img'><img src='spectra-plotting-11.png' alt='' width='700' height='433' /></div><div class='input'>
+</div><div class='img'><img src='spectra-plotting-9.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>#### --------------------------------------------- ####</span>
 <span class='co'>##                plotSpectraMirror                  ##</span>
 
@@ -433,7 +440,7 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
     labels <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1L</span><span class='op'>]</span><span class='op'>]</span>, digits <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>,
     labelSrt <span class='op'>=</span> <span class='op'>-</span><span class='fl'>30</span>, labelPos <span class='op'>=</span> <span class='fl'>2</span>, labelOffset <span class='op'>=</span> <span class='fl'>0.2</span><span class='op'>)</span>
 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='img'><img src='spectra-plotting-12.png' alt='' width='700' height='433' /></div><div class='input'>
+</div><div class='img'><img src='spectra-plotting-10.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## The same plot with a tolerance of 0.1 and using a different color to</span>
 <span class='co'>## highlight matching peaks</span>
 <span class='fu'>plotSpectraMirror</span><span class='op'>(</span><span class='va'>sp</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>, <span class='va'>sp</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>,
@@ -441,7 +448,7 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
     labelSrt <span class='op'>=</span> <span class='op'>-</span><span class='fl'>30</span>, labelPos <span class='op'>=</span> <span class='fl'>2</span>, labelOffset <span class='op'>=</span> <span class='fl'>0.2</span>, tolerance <span class='op'>=</span> <span class='fl'>0.1</span>,
     matchCol <span class='op'>=</span> <span class='st'>"#ff000080"</span>, matchLwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/grid.html'>grid</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='img'><img src='spectra-plotting-13.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='spectra-plotting-11.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
