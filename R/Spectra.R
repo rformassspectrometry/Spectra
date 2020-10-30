@@ -1029,15 +1029,6 @@ setMethod("show", "Spectra",
     })
 
 #' @rdname Spectra
-setMethod("Spectra", "DataFrame", function(object, processingQueue = list(),
-                                           metadata = list(), ...,
-                                           backend = MsBackendDataFrame(),
-                                           BPPARAM = bpparam()) {
-    new("Spectra", metadata = metadata, processingQueue = processingQueue,
-        backend = backendInitialize(backend, object, ..., BPPARAM = BPPARAM))
-})
-
-#' @rdname Spectra
 setMethod("Spectra", "missing", function(object, processingQueue = list(),
                                          metadata = list(), ...,
                                          backend = MsBackendDataFrame(),
@@ -1055,15 +1046,28 @@ setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
 })
 
 #' @rdname Spectra
+#'
+#' @importFrom methods callNextMethod
 setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            metadata = list(),
                                            source = MsBackendMzR(),
                                            backend = source,
                                            ..., BPPARAM = bpparam()) {
-    be <- backendInitialize(source, object, ..., BPPARAM = BPPARAM)
+    callNextMethod(object = object, processingQueue = processingQueue,
+                   metadata = metadata, source = source, backend = backend,
+                   ..., BPPARAM = BPPARAM)
+})
+
+#' @rdname Spectra
+setMethod("Spectra", "ANY", function(object, processingQueue = list(),
+                                     metadata = list(),
+                                     source = MsBackendDataFrame(),
+                                     backend = source,
+                                     ..., BPPARAM = bpparam()) {
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
-              backend = be)
-    if (class(source)[1] != class(backend)[1])
+              backend = backendInitialize(source, object, ...,
+                                          BPPARAM = BPPARAM))
+    if (class(source)[1L] != class(backend)[1L])
         setBackend(sp, backend, ..., BPPARAM = BPPARAM)
     else sp
 })

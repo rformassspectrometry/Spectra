@@ -2,6 +2,11 @@
 
 Bioconductor release 3.12 package.
 
+## Changes in 1.0.2
+
+- Add a `Spectra,ANY` constructor to replace the `Spectra,DataFrame` and
+  `Spectra,character` constructor methods.
+
 ## Changes in 1.0.1
 
 - Fix export of empty spectra with `MsBackendMzR` (see issue
