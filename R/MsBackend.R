@@ -128,7 +128,7 @@
 #'   backend.
 #'
 #' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
-#'   backend. The default implementation uses `$`, thus this methods don't have
+#'   backend. The default implementation uses `$`, thus these methods don't have
 #'   to be implemented for new classes extending `MsBackend`.
 #'
 #' - `acquisitionNum`: returns the acquisition number of each
@@ -1233,7 +1233,7 @@ setMethod("[[", "MsBackend", function(x, i, j, ...) {
 setReplaceMethod("[[", "MsBackend", function(x, i, j, ..., value) {
     if (!is.character(i))
         stop("'i' is supposed to be a character defining the spectra ",
-             "variable to replace.")
+             "variable to replace or create.")
     if (!missing(j))
         stop("'j' is not supported.")
     do.call("$<-", list(x, i, value))

@@ -349,7 +349,7 @@ allowed
 \item \code{$}, \verb{$<-}: access or set/add a single spectrum variable (column) in the
 backend.
 \item \code{[[}, \verb{[[<-}: access or set/add a single spectrum variable (column) in the
-backend. The default implementation uses \code{$}, thus this methods don't have
+backend. The default implementation uses \code{$}, thus these methods don't have
 to be implemented for new classes extending \code{MsBackend}.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
