@@ -36,7 +36,7 @@
 #'     values are used by default.
 #'
 #' @param main `character(1)` with the title for the plot. By default the
-#'     spectrum's retention time (in seconds) is used.
+#'     spectrum's MS level and retention time (in seconds) is used.
 #'
 #' @param col color to be used to draw the peaks. Should be either of length 1,
 #'     or equal to the number of spectra (to plot each spectrum in a different
@@ -53,6 +53,8 @@
 #'
 #' @param labelSrt `numeric(1)` defining the rotation of the label. See
 #'     parameter `srt` in [text()].
+#'
+#' @param labelCol color for the label(s).
 #'
 #' @param labelAdj see parameter `adj` in [text()].
 #'
@@ -196,13 +198,14 @@ NULL
 #' @importFrom grDevices n2mfrow
 #'
 #' @export plotSpectra
-plotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
-                        type = "h", xlim = numeric(),
-                        ylim = numeric(), main = paste("RT", rtime(x)),
-                        col = "#00000080", labels = character(),
-                        labelCex = 1, labelSrt = 0,
-                        labelAdj = NULL, labelPos = NULL,
-                        labelOffset = 0.5, asp = 1, ...) {
+plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
+                        xlim = numeric(), ylim = numeric(),
+                        main = character(), col = "#00000080",
+                        labels = character(), labelCex = 1, labelSrt = 0,
+                        labelAdj = NULL, labelPos = NULL, labelOffset = 0.5,
+                        labelCol = "#00000080", asp = 1, ...) {
+    if (!length(main))
+        main <- paste0("MS", msLevel(x), " RT", round(rtime(x), 1))
     nsp <- length(x)
     if (nsp == 1)
         col <- list(col)
@@ -210,14 +213,16 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
         col <- rep(col[1], nsp)
     if (length(main) != nsp)
         main <- rep(main[1], nsp)
-    par(mfrow = n2mfrow(nsp, asp = asp))
+    if (nsp > 1)
+        par(mfrow = n2mfrow(nsp, asp = asp))
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], xlab = xlab, ylab = ylab, type = type,
                               xlim = xlim, ylim = ylim, main = main[i],
                               col = col[[i]], labels = labels,
                               labelCex = labelCex, labelSrt = labelSrt,
                               labelAdj = labelAdj, labelPos = labelPos,
-                              labelOffset = labelOffset, ...)
+                              labelOffset = labelOffset, labelCol = labelCol,
+                              ...)
 }
 
 #' @rdname spectra-plotting
@@ -230,8 +235,8 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
                                col = "#00000080", labels = character(),
                                labelCex = 1, labelSrt = 0,
                                labelAdj = NULL, labelPos = NULL,
-                               labelOffset = 0.5, axes = TRUE,
-                               frame.plot = axes, ...) {
+                               labelOffset = 0.5, labelCol = "#00000080",
+                               axes = TRUE, frame.plot = axes, ...) {
     nsp <- length(x)
     if (nsp == 1)
         col <- list(col)
@@ -257,7 +262,7 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
                               labels = labels, labelCex = labelCex,
                               labelSrt = labelSrt, labelAdj = labelAdj,
                               labelPos = labelPos, labelOffset = labelOffset,
-                              ...)
+                              labelCol = labelCol, ...)
 }
 
 #' @rdname spectra-plotting
@@ -269,14 +274,13 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
 #' @export plotSpectraMirror
 plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
                               type = "h", xlim = numeric(),
-                              ylim = numeric(),
-                              main = character(),
+                              ylim = numeric(), main = character(),
                               col = "#00000080", labels = character(),
                               labelCex = 1, labelSrt = 0,
                               labelAdj = NULL, labelPos = NULL,
-                              labelOffset = 0.5, axes = TRUE,
-                              frame.plot = axes, ppm = 20, tolerance = 0,
-                              matchCol = "#80B1D3", matchLwd = 1,
+                              labelOffset = 0.5, labelCol = "#00000080",
+                              axes = TRUE, frame.plot = axes, ppm = 20,
+                              tolerance = 0, matchCol = "#80B1D3", matchLwd = 1,
                               matchLty = 1, matchPch = 16, ...) {
     if (length(x) != 1 || length(y) != 1)
         stop("'x' and 'y' have to be of length 1")
@@ -316,7 +320,8 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
     .plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
                           labels = labels, labelCex = labelCex,
                           labelSrt = labelSrt, labelAdj = labelAdj,
-                          labelPos = labelPos, labelOffset = labelOffset, ...)
+                          labelPos = labelPos, labelOffset = labelOffset,
+                          labelCol = labelCol, ...)
     idx <- which(common(x_data[, "mz"], y_data[, "mz"],
                         tolerance = tolerance, ppm = ppm))
     if (length(idx)) {
@@ -334,7 +339,7 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
                           labels = labels, labelCex = labelCex,
                           labelSrt = labelSrt, labelAdj = labelAdj,
                           labelPos = labelPos, labelOffset = labelOffset,
-                          orientation = -1, ...)
+                          orientation = -1, labelCol = labelCol, ...)
     idx <- which(common(y_data[, "mz"], x_data[, "mz"],
                         tolerance = tolerance, ppm = ppm))
     if (length(idx)) {
@@ -391,7 +396,7 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
 .plot_single_spectrum <- function(x, xlab = "m/z", ylab = "intensity",
                                   type = "h", xlim = numeric(),
                                   ylim = numeric(),
-                                  main = paste("RT", rtime(x)),
+                                  main = paste("RT", round(rtime(x), 1)),
                                   col = "#00000080", labels = character(),
                                   labelCol = col, labelCex = 1, labelSrt = 0,
                                   labelAdj = NULL, labelPos = NULL,

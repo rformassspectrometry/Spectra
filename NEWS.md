@@ -2,6 +2,13 @@
 
 Bioconductor release 3.12 package.
 
+## Changes in 1.0.3
+
+- Fix issue with `labelCol` in `plotSpectra` (issue
+  [#157](https://github.com/rformassspectrometry/Spectra/issues/157)).
+- Avoid calling `par(mfrow = ` in `plotSpectra` if only a single spectrum is
+  plotted.
+
 ## Changes in 1.0.2
 
 - Add a `Spectra,ANY` constructor to replace the `Spectra,DataFrame` and

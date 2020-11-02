@@ -14,7 +14,7 @@ plotSpectra(
   type = "h",
   xlim = numeric(),
   ylim = numeric(),
-  main = paste("RT", rtime(x)),
+  main = character(),
   col = "#00000080",
   labels = character(),
   labelCex = 1,
@@ -22,6 +22,7 @@ plotSpectra(
   labelAdj = NULL,
   labelPos = NULL,
   labelOffset = 0.5,
+  labelCol = "#00000080",
   asp = 1,
   ...
 )
@@ -41,6 +42,7 @@ plotSpectraOverlay(
   labelAdj = NULL,
   labelPos = NULL,
   labelOffset = 0.5,
+  labelCol = "#00000080",
   axes = TRUE,
   frame.plot = axes,
   ...
@@ -62,6 +64,7 @@ plotSpectraMirror(
   labelAdj = NULL,
   labelPos = NULL,
   labelOffset = 0.5,
+  labelCol = "#00000080",
   axes = TRUE,
   frame.plot = axes,
   ppm = 20,
@@ -93,7 +96,7 @@ are used by default.}
 values are used by default.}
 
 \item{main}{\code{character(1)} with the title for the plot. By default the
-spectrum's retention time (in seconds) is used.}
+spectrum's MS level and retention time (in seconds) is used.}
 
 \item{col}{color to be used to draw the peaks. Should be either of length 1,
 or equal to the number of spectra (to plot each spectrum in a different
@@ -116,6 +119,8 @@ parameter \code{srt} in \code{\link[=text]{text()}}.}
 \item{labelPos}{see parameter \code{pos} in \code{\link[=text]{text()}}.}
 
 \item{labelOffset}{see parameter \code{offset} in \code{\link[=text]{text()}}.}
+
+\item{labelCol}{color for the label(s).}
 
 \item{asp}{for \code{plotSpectra}: the target ratio (columns / rows) when plotting
 mutliple spectra (e.g. for 20 spectra use \code{asp = 4/5} for 4 columns and 5 rows
