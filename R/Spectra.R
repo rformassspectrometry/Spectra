@@ -127,6 +127,9 @@ NULL
 #' - `$`, `$<-`: gets (or sets) a spectra variable for all spectra in `object`.
 #'   See examples for details.
 #'
+#' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
+#'   backend.
+#'
 #' - `acquisitionNum`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
@@ -1485,6 +1488,8 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
 #' @rdname Spectra
 #'
 #' @importMethodsFrom S4Vectors $
+#'
+#' @export
 setMethod("$", "Spectra", function(x, name) {
     if (!(name %in% c(spectraVariables(x), "mz", "intensity")))
         stop("No spectra variable '", name, "' available")
@@ -1497,8 +1502,42 @@ setMethod("$", "Spectra", function(x, name) {
 })
 
 #' @rdname Spectra
+#'
+#' @export
 setReplaceMethod("$", "Spectra", function(x, name, value) {
     x@backend <- do.call("$<-", list(x@backend, name, value))
+    x
+})
+
+#' @rdname Spectra
+#'
+#' @export
+setMethod("[[", "Spectra", function(x, i, j, ...) {
+    if (!is.character(i))
+        stop("'i' is supposed to be a character defining the spectra ",
+             "variable to access.")
+    if (!missing(j))
+        stop("'j' is not supported.")
+    if (!(i %in% c(spectraVariables(x), "mz", "intensity")))
+        stop("No spectra variable '", i, "' available")
+    if (i == "mz")
+        mz(x)
+    else if (i == "intensity")
+        intensity(x)
+    else
+        do.call("[[", list(x@backend, i))
+})
+
+#' @rdname Spectra
+#'
+#' @export
+setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
+    if (!is.character(i))
+        stop("'i' is supposed to be a character defining the spectra ",
+             "variable to replace or create.")
+    if (!missing(j))
+        stop("'j' is not supported.")
+    x@backend <- do.call("[[<-", list(x@backend, i = i, value = value))
     x
 })
 

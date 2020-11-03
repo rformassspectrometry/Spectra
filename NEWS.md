@@ -4,6 +4,7 @@
 
 - Add `[[,Msbackend` and `[[<-,MsBackend` methods (issue
   [149](https://github.com/rformassspectrometry/Spectra/issues/149)).
+- Add `[[,Spectra` and `[[<-,Spectra` methods.
 
 ## Changes in 1.1.4
 
