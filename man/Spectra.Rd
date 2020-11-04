@@ -62,6 +62,8 @@
 \alias{tic,Spectra-method}
 \alias{$,Spectra-method}
 \alias{$<-,Spectra-method}
+\alias{[[,Spectra-method}
+\alias{[[<-,Spectra-method}
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterDataOrigin,Spectra-method}
@@ -254,6 +256,10 @@ combineSpectra(
 \S4method{$}{Spectra}(x, name)
 
 \S4method{$}{Spectra}(x, name) <- value
+
+\S4method{[[}{Spectra}(x, i, j, ...)
+
+\S4method{[[}{Spectra}(x, i, j, ...) <- value
 
 \S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
 
@@ -645,6 +651,8 @@ parameter \code{backend}.
 \itemize{
 \item \code{$}, \verb{$<-}: gets (or sets) a spectra variable for all spectra in \code{object}.
 See examples for details.
+\item \code{[[}, \verb{[[<-}: access or set/add a single spectrum variable (column) in the
+backend.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).

@@ -683,15 +683,21 @@ test_that("tic,Spectra works", {
     expect_identical(tic(sps, initial = FALSE), c(7, 9))
 })
 
-test_that("$, $<-,Spectra works", {
+test_that("$, $<-, [[, [[<-,Spectra works", {
     sps <- Spectra()
     expect_identical(sps$msLevel, integer())
+    expect_identical(sps[["msLevel"]], integer())
+    expect_error(sps[[3]], "to be a character")
+    expect_error(sps[["msLevel", j = 3]], "not supported")
 
     expect_error(sps$not_there, "No spectra variable")
+    expect_error(sps[["not_there"]], "No spectra variable")
 
     sps <- Spectra(DataFrame(msLevel = c(1L, 2L), other_column = "a"))
     expect_identical(sps$msLevel, c(1L, 2L))
     expect_identical(sps$other_column, c("a", "a"))
+    expect_identical(sps[["msLevel"]], c(1L, 2L))
+    expect_identical(sps[["other_column"]], c("a", "a"))
 
     sps$second_col <- c(1, 4)
     expect_identical(sps$second_col, c(1, 4))
@@ -704,6 +710,12 @@ test_that("$, $<-,Spectra works", {
 
     sps$intensity <- list(c(4, 4, 4), c(2, 4, 6, 3))
     expect_equal(intensity(sps), NumericList(c(4, 4, 4), c(2, 4, 6, 3),
+                                             compress = FALSE))
+
+    sps[["msLevel"]] <- c(3L, 2L)
+    expect_equal(msLevel(sps), c(3L, 2L))
+    sps[["intensity"]] <- list(c(1, 2, 3), c(1, 2, 3, 4))
+    expect_equal(intensity(sps), NumericList(c(1, 2, 3), c(1, 2, 3, 4),
                                              compress = FALSE))
 
     sps <- Spectra(sciex_mzr)

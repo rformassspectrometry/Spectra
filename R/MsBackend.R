@@ -127,6 +127,10 @@
 #' - `$`, `$<-`: access or set/add a single spectrum variable (column) in the
 #'   backend.
 #'
+#' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
+#'   backend. The default implementation uses `$`, thus these methods don't have
+#'   to be implemented for new classes extending `MsBackend`.
+#'
 #' - `acquisitionNum`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
@@ -1209,4 +1213,28 @@ setMethod("$", "MsBackend", function(x, name) {
 #' @rdname MsBackend
 setReplaceMethod("$", "MsBackend", function(x, name, value) {
     stop("Not implemented for ", class(x), ".")
+})
+
+#' @exportMethod [[
+#'
+#' @rdname MsBackend
+setMethod("[[", "MsBackend", function(x, i, j, ...) {
+    if (!is.character(i))
+        stop("'i' is supposed to be a character defining the spectra ",
+             "variable to access.")
+    if (!missing(j))
+        stop("'j' is not supported.")
+    do.call("$", list(x, i))
+})
+
+#' @exportMethod [[<-
+#'
+#' @rdname MsBackend
+setReplaceMethod("[[", "MsBackend", function(x, i, j, ..., value) {
+    if (!is.character(i))
+        stop("'i' is supposed to be a character defining the spectra ",
+             "variable to replace or create.")
+    if (!missing(j))
+        stop("'j' is not supported.")
+    do.call("$<-", list(x, i, value))
 })

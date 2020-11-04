@@ -74,6 +74,8 @@
 \alias{tic,MsBackend-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
+\alias{[[,MsBackend-method}
+\alias{[[<-,MsBackend-method}
 \alias{MsBackendDataFrame}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{MsBackendHdf5Peaks}
@@ -212,6 +214,10 @@
 
 \S4method{$}{MsBackend}(x, name) <- value
 
+\S4method{[[}{MsBackend}(x, i, j, ...)
+
+\S4method{[[}{MsBackend}(x, i, j, ...) <- value
+
 MsBackendDataFrame()
 
 \S4method{backendInitialize}{MsBackendDataFrame}(object, data, ...)
@@ -342,6 +348,9 @@ New backend classes \strong{must} extend the base \code{MsBackend} class and
 allowed
 \item \code{$}, \verb{$<-}: access or set/add a single spectrum variable (column) in the
 backend.
+\item \code{[[}, \verb{[[<-}: access or set/add a single spectrum variable (column) in the
+backend. The default implementation uses \code{$}, thus these methods don't have
+to be implemented for new classes extending \code{MsBackend}.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).

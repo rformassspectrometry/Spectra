@@ -872,3 +872,19 @@ test_that("dropNaSpectraVariables works with MsBackendDataFrame", {
     res <- dropNaSpectraVariables(b)
     expect_true(!any(spectraVariables(res) == "other_col"))
 })
+
+test_that("[[,[[<-,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be[["msLevel"]], integer())
+    expect_error(be[[3]], "character")
+
+    be <- backendInitialize(MsBackendDataFrame(), test_df)
+    expect_equal(be$msLevel, be[["msLevel"]])
+    expect_equal(be[["msLevel"]], c(1, 2, 2))
+
+    be[["msLevel"]] <- c(3L, 1L, 2L)
+    expect_equal(msLevel(be), c(3L, 1L, 2L))
+
+    be[["new_col"]] <- 43
+    expect_equal(be$new_col, rep(43, 3))
+})
