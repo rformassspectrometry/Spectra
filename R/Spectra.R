@@ -365,11 +365,11 @@ NULL
 #' - `split`: splits the `Spectra` object based on parameter `f` into a `list`
 #'   of `Spectra` objects.
 #'
-#' - `joinSpectraData`: Individual spectra data variable can be
-#'    directly added with the `$<-` or `[[<-` syntax. The
-#'    `joinSpectraData()` function allows to merge a `DataFrame` to
-#'    the existing spectra data. This function diverges from the
-#'    `merge()` method in two main ways:
+#' - `joinSpectraData`: Individual spectra variables can be directly
+#'    added with the `$<-` or `[[<-` syntax. The `joinSpectraData()`
+#'    function allows to merge a `DataFrame` to the existing spectra
+#'    data. This function diverges from the [merge()] method in two
+#'    main ways:
 #'     - The `by.x` and `by.y` column names must be of length 1. 
 #'     - If variable names are shared in `x` and `y`, the spectra
 #'       variables of `x` are not modified. It's only the `y`
@@ -702,10 +702,10 @@ NULL
 #'
 #' @param y A `Spectra` object. A `DataFrame` for `joinSpectraData()`.
 #'
-#' @param by.x A `character(1)` specifying of the spectra variable
-#'     used for merging. Default is `"spectrumId"`.
+#' @param by.x A `character(1)` specifying the spectra variable used
+#'     for merging. Default is `"spectrumId"`.
 #'
-#' @param by.y A `character(1)` specifying of the column used for
+#' @param by.y A `character(1)` specifying the column used for
 #'     merging. Set to `by.x` if missing.
 #'
 #' @param suffix.y A `character(1)` specifying the suffix to be used
@@ -879,8 +879,17 @@ NULL
 #' spectraVariables(sciex_noNA)
 #'
 #'
-#' ## New spectra variables
+#' ## Adding new spectra variables
+#' spv <- DataFrame(spectrumId = sciex$spectrumId[3:12], ## used for merging
+#'                  var1 = rnorm(10),
+#'                  var2 = sample(letters, 10))
+#' spv
 #' 
+#' sciex2 <- joinSpectraData(sciex, spv, by.y = "spectrumId")
+#' 
+#' spectraVariables(sciex2)
+#' spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
+#'
 #'
 #' ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 #'

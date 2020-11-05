@@ -394,10 +394,10 @@ performed.}
 
 \item{y}{A \code{Spectra} object. A \code{DataFrame} for \code{joinSpectraData()}.}
 
-\item{by.x}{A \code{character(1)} specifying of the spectra variable
-used for merging. Default is \code{"spectrumId"}.}
+\item{by.x}{A \code{character(1)} specifying the spectra variable used
+for merging. Default is \code{"spectrumId"}.}
 
-\item{by.y}{A \code{character(1)} specifying of the column used for
+\item{by.y}{A \code{character(1)} specifying the column used for
 merging. Set to \code{by.x} if missing.}
 
 \item{suffix.y}{A \code{character(1)} specifying the suffix to be used
@@ -859,6 +859,19 @@ the values will be dropped, while additional (user defined) spectra
 variables will be completely removed. Returns the filtered \code{Spectra}.
 \item \code{split}: splits the \code{Spectra} object based on parameter \code{f} into a \code{list}
 of \code{Spectra} objects.
+\item \code{joinSpectraData}: Individual spectra variables can be directly
+added with the \verb{$<-} or \verb{[[<-} syntax. The \code{joinSpectraData()}
+function allows to merge a \code{DataFrame} to the existing spectra
+data. This function diverges from the \code{\link[=merge]{merge()}} method in two
+main ways:
+\itemize{
+\item The \code{by.x} and \code{by.y} column names must be of length 1.
+\item If variable names are shared in \code{x} and \code{y}, the spectra
+variables of \code{x} are not modified. It's only the \code{y}
+variables that are appended the suffix defined in
+\code{suffix.y}. This is to avoid modifying any core spectra
+variables that would lead to an invalid object.
+}
 }
 
 Several \code{Spectra} objects can be concatenated into a single object with the
@@ -999,19 +1012,6 @@ will be passed to the function. If the spectrum is in profile mode,
 ranges of successive non-0 peaks <= \code{threshold} are set to 0.
 Parameter \code{msLevel.} allows to apply this to only spectra of certain MS
 level(s).
-\item \code{joinSpectraData}: Individual spectra data variable can be
-directly added with the \verb{$<-} or \verb{[[<-} syntax. The
-\code{joinSpectraData()} function allows to merge a \code{DataFrame} to
-the existing spectra data. This function diverges from the
-\code{merge()} method in two main ways:
-\itemize{
-\item The \code{by.x} and \code{by.y} column names must be of length 1.
-\item If variable names are shared in \code{x} and \code{y}, the spectra
-variables of \code{x} are not modified. It's only the \code{y}
-variables that are appended the suffix defined in
-\code{suffix.y}. This is to avoid modifying any core spectra
-variables that would lead to an invalid object.
-}
 }
 }
 
@@ -1169,6 +1169,18 @@ sciex_noNA <- dropNaSpectraVariables(sciex)
 ## Available spectra variables before and after dropNaSpectraVariables
 spectraVariables(sciex)
 spectraVariables(sciex_noNA)
+
+
+## Adding new spectra variables
+spv <- DataFrame(spectrumId = sciex$spectrumId[3:12], ## used for merging
+                 var1 = rnorm(10),
+                 var2 = sample(letters, 10))
+spv
+
+sciex2 <- joinSpectraData(sciex, spv, by.y = "spectrumId")
+
+spectraVariables(sciex2)
+spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
 
 
 ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
