@@ -490,7 +490,7 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
 }
 
 
-#' @export combineSpectra
+#' @export joinSpectraData
 #'
 #' @rdname Spectra
 joinSpectraData <- function(x, y,
