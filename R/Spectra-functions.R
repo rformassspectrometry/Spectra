@@ -488,3 +488,60 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
         else common(y, z, tolerance = tolerance, ppm = ppm)
     })
 }
+
+
+#' @export joinSpectraData
+#'
+#' @rdname Spectra
+joinSpectraData <- function(x, y,
+                            by.x = "spectrumId",
+                            by.y,
+                            suffix.y = ".y") {
+    stopifnot(inherits(x, "Spectra"))
+    stopifnot(inherits(y, "DataFrame"))
+    if (missing(by.y))
+        by.y <- by.x
+    x_vars <- spectraVariables(x)
+    y_vars <- names(y)
+    if (length(by.x) != 1 | length(by.y) != 1)
+        stop("'by.x' and 'by.y' must be of length 1.")
+    if (!is.character(by.x) | !is.character(by.y))
+        stop("'by.x' and 'by.y' must be characters.")
+    if (any(duplicated(x_vars)))
+        stop("Duplicated spectra variables in 'x'.")
+    if (any(duplicated(y_vars)))
+        stop("Duplicated names in 'y'.")
+    if (!by.x %in% x_vars)
+        stop("'by.x' not found in spectra variables.")
+    if (!by.y %in% y_vars)
+        stop("'by.y' not found.")
+    ## Keep only rows that (1) have a non-NA by.y and (2) that are in
+    ## x[[by.x]] (given that we do a left join here).
+    y <- y[!is.na(y[[by.y]]), ]
+    y <- y[y[[by.y]] %in% spectraData(x)[[by.x]], ]
+    k <- match(y[[by.y]], spectraData(x)[[by.x]])
+    n <- length(x)
+    ## Don't need by.y anymore
+    y_vars <- y_vars[-grep(by.y, y_vars)]
+    y <- y[, y_vars]
+    ## Check if there are any shared x_vars and y_vars. If so, the
+    ## y_vars are appended suffix.y.
+    if (length(xy_vars <- intersect(x_vars, y_vars))) {
+        y_vars[y_vars %in% xy_vars] <- paste0(y_vars[y_vars %in% xy_vars], suffix.y[1])
+        names(y) <- y_vars
+    }
+    for (y_var in y_vars) {
+        ## Initialise the new column as a list, vector or List (in
+        ## that order!)
+        if (is.list(y[[y_var]])) {
+            x[[y_var]] <- vector("list", length = n)
+        } else if (is.vector(y[[y_var]])) {
+            x[[y_var]] <- rep(NA, n)
+        } else if (inherits(y[[y_var]], "List")) {
+            x[[y_var]] <- as(vector("list", length = n), class(y[[y_var]]))
+        }
+        ## Populate the new column
+        x[[y_var]][k] <- y[[y_var]]
+    }
+    x
+}

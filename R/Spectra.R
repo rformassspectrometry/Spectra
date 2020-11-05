@@ -365,6 +365,18 @@ NULL
 #' - `split`: splits the `Spectra` object based on parameter `f` into a `list`
 #'   of `Spectra` objects.
 #'
+#' - `joinSpectraData`: Individual spectra variables can be directly
+#'    added with the `$<-` or `[[<-` syntax. The `joinSpectraData()`
+#'    function allows to merge a `DataFrame` to the existing spectra
+#'    data. This function diverges from the [merge()] method in two
+#'    main ways:
+#'     - The `by.x` and `by.y` column names must be of length 1. 
+#'     - If variable names are shared in `x` and `y`, the spectra
+#'       variables of `x` are not modified. It's only the `y`
+#'       variables that are appended the suffix defined in
+#'       `suffix.y`. This is to avoid modifying any core spectra
+#'       variables that would lead to an invalid object.
+#' 
 #' Several `Spectra` objects can be concatenated into a single object with the
 #' `c` function. Concatenation will fail if the processing queue of any of the
 #' `Spectra` objects is not empty or if different backends are used in the
@@ -688,11 +700,22 @@ NULL
 #'
 #' @param x A `Spectra` object.
 #'
-#' @param y A `Spectra` object.
+#' @param y A `Spectra` object. A `DataFrame` for `joinSpectraData()`.
+#'
+#' @param by.x A `character(1)` specifying the spectra variable used
+#'     for merging. Default is `"spectrumId"`.
+#'
+#' @param by.y A `character(1)` specifying the column used for
+#'     merging. Set to `by.x` if missing.
+#'
+#' @param suffix.y A `character(1)` specifying the suffix to be used
+#'     for making the names of columns in the merged spectra variables
+#'     unique. This suffix will be used to amend `names(y)`, while
+#'     `spectraVariables(x)` will remain unchanged.
 #'
 #' @param ... Additional arguments.
 #'
-#' @author Sebastian Gibb, Johannes Rainer
+#' @author Sebastian Gibb, Johannes Rainer, Laurent Gatto
 #'
 #' @md
 #'
@@ -854,6 +877,18 @@ NULL
 #' ## Available spectra variables before and after dropNaSpectraVariables
 #' spectraVariables(sciex)
 #' spectraVariables(sciex_noNA)
+#'
+#'
+#' ## Adding new spectra variables
+#' spv <- DataFrame(spectrumId = sciex$spectrumId[3:12], ## used for merging
+#'                  var1 = rnorm(10),
+#'                  var2 = sample(letters, 10))
+#' spv
+#' 
+#' sciex2 <- joinSpectraData(sciex, spv, by.y = "spectrumId")
+#' 
+#' spectraVariables(sciex2)
+#' spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
 #'
 #'
 #' ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----

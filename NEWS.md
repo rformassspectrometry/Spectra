@@ -1,5 +1,9 @@
 # Spectra 1.1
 
+## Changes in 1.1.6
+
+- New `joinSpectraData()` function.
+
 ## Changes in 1.1.5
 
 - Add `[[,Msbackend` and `[[<-,MsBackend` methods (issue

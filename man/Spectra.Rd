@@ -4,6 +4,7 @@
 \alias{addProcessing}
 \alias{applyProcessing}
 \alias{combineSpectra}
+\alias{joinSpectraData}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -98,6 +99,8 @@ combineSpectra(
   ...,
   BPPARAM = bpparam()
 )
+
+joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
 
 \S4method{Spectra}{missing}(
   object,
@@ -389,6 +392,19 @@ of the \linkS4class{MsBackend}.}
 depending on the used backend, per-file parallel processing will be
 performed.}
 
+\item{y}{A \code{Spectra} object. A \code{DataFrame} for \code{joinSpectraData()}.}
+
+\item{by.x}{A \code{character(1)} specifying the spectra variable used
+for merging. Default is \code{"spectrumId"}.}
+
+\item{by.y}{A \code{character(1)} specifying the column used for
+merging. Set to \code{by.x} if missing.}
+
+\item{suffix.y}{A \code{character(1)} specifying the suffix to be used
+for making the names of columns in the merged spectra variables
+unique. This suffix will be used to amend \code{names(y)}, while
+\code{spectraVariables(x)} will remain unchanged.}
+
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
 
@@ -490,8 +506,6 @@ be used to subset/filter \code{object}.}
 Defaults to \code{binSize = 1}.}
 
 \item{breaks}{For \code{bin}: \code{numeric} defining the m/z breakpoints between bins.}
-
-\item{y}{A \code{Spectra} object.}
 
 \item{MAPFUN}{For \code{compareSpectra}: function to map/match peaks between the
 two compared spectra. See \code{\link[=joinPeaks]{joinPeaks()}} for more information and possible
@@ -845,6 +859,19 @@ the values will be dropped, while additional (user defined) spectra
 variables will be completely removed. Returns the filtered \code{Spectra}.
 \item \code{split}: splits the \code{Spectra} object based on parameter \code{f} into a \code{list}
 of \code{Spectra} objects.
+\item \code{joinSpectraData}: Individual spectra variables can be directly
+added with the \verb{$<-} or \verb{[[<-} syntax. The \code{joinSpectraData()}
+function allows to merge a \code{DataFrame} to the existing spectra
+data. This function diverges from the \code{\link[=merge]{merge()}} method in two
+main ways:
+\itemize{
+\item The \code{by.x} and \code{by.y} column names must be of length 1.
+\item If variable names are shared in \code{x} and \code{y}, the spectra
+variables of \code{x} are not modified. It's only the \code{y}
+variables that are appended the suffix defined in
+\code{suffix.y}. This is to avoid modifying any core spectra
+variables that would lead to an invalid object.
+}
 }
 
 Several \code{Spectra} objects can be concatenated into a single object with the
@@ -1144,6 +1171,18 @@ spectraVariables(sciex)
 spectraVariables(sciex_noNA)
 
 
+## Adding new spectra variables
+spv <- DataFrame(spectrumId = sciex$spectrumId[3:12], ## used for merging
+                 var1 = rnorm(10),
+                 var2 = sample(letters, 10))
+spv
+
+sciex2 <- joinSpectraData(sciex, spv, by.y = "spectrumId")
+
+spectraVariables(sciex2)
+spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
+
+
 ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 
 ## Set the data to be centroided
@@ -1268,5 +1307,5 @@ mz(res)
 mz(data)
 }
 \author{
-Sebastian Gibb, Johannes Rainer
+Sebastian Gibb, Johannes Rainer, Laurent Gatto
 }
