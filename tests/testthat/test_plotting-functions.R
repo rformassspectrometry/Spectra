@@ -3,6 +3,8 @@
 #' # use `manage_cases()` to add new/verify changed plots
 #' vdiffr::manage_cases(filter = "plotting")
 
+context("test_plotting-functions")
+
 ints <- list(c(4.3412, 12, 8, 34, 23.4),
              c(8, 25, 16, 32))
 mzs <- list(c(13.453421, 43.433122, 46.6653553, 129.111212, 322.24432),
