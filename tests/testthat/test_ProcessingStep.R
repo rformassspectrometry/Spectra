@@ -25,10 +25,11 @@ test_that(".cat_fun works", {
 
 test_that("show,ProcessingStep works", {
     ps <- ProcessingStep(sum, list(1:4))
-    show(ps)
+    expect_output(show(ps), "user-provided function")
 
     ps <- ProcessingStep(function(z) z + 4)
-    show(ps)
-    ps <- ProcessingStep(sum, list(a = sqrt))
-    show(ps)
+    expect_output(show(ps), "user-provided function")
+    ps <- ProcessingStep("sum", list(a = sqrt))
+    expect_output(show(ps), "Function: sum")
+    expect_output(show(ps), "a = user-provided function")
 })

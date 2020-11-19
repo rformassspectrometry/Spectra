@@ -96,7 +96,8 @@ setMethod("show", "ProcessingStep", function(object) {
     if (length(args) > 0) {
         cat(" Arguments:\n")
         for (i in seq_along(args)) {
-            cat("  o ", names(args)[i], " = ", .cat_fun(args[[i]]), sep = "")
+            cat("  o ", names(args)[i], " = ", .cat_fun(args[[i]]),
+                "\n", sep = "")
         }
     }
 })
