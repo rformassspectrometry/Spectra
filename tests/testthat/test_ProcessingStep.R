@@ -15,3 +15,13 @@ test_that("ProcessingStep executeProcessingStep", {
     ## Pass optional arguments to ...
     expect_identical(executeProcessingStep(ps, na.rm = TRUE), 10)
 })
+
+test_that("show,ProcessingStep works", {
+    ps <- ProcessingStep(sum, list(1:4))
+    show(ps)
+
+    ps <- ProcessingStep(function(z) z + 4)
+    show(ps)
+    ps <- ProcessingStep(sum, list(a = sqrt))
+    show(ps)
+})

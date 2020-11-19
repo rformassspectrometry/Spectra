@@ -85,13 +85,14 @@ ProcessingStep <- function(FUN = character(), ARGS = list())  {
 #' @exportMethod show
 setMethod("show", "ProcessingStep", function(object) {
     cat("Object of class \"", class(object), "\"\n", sep = "")
-    cat(" Function: ", object@FUN, "\n", sep = "")
+    cat(" Function: ")
+    print(object@FUN)
     args <- object@ARGS
     if (length(args) > 0) {
         cat(" Arguments:\n")
         for (i in seq_along(args)) {
-            cat("  o ", names(args)[i], " = ",
-                paste(args[[i]], collapse = ", "), "\n", sep = "")
+            cat("  o ", names(args)[i], " = ")
+            print(args[[i]])
         }
     }
 })

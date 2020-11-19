@@ -2,7 +2,8 @@
 
 ## Changes in 1.1.7
 
-- Nothing yet.
+- Fix bug in `show,ProcessingStep` (issue
+  [162](https://github.com/rformassspectrometry/Spectra/issues/162)).
 
 ## Changes in 1.1.6
 
