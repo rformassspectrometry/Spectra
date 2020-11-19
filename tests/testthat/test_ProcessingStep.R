@@ -16,6 +16,13 @@ test_that("ProcessingStep executeProcessingStep", {
     expect_identical(executeProcessingStep(ps, na.rm = TRUE), 10)
 })
 
+test_that(".cat_fun works", {
+    res <- .cat_fun("sum")
+    expect_equal(res, "sum")
+    res <- .cat_fun(sum)
+    expect_equal(res, "user-provided function")
+})
+
 test_that("show,ProcessingStep works", {
     ps <- ProcessingStep(sum, list(1:4))
     show(ps)

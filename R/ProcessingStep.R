@@ -80,19 +80,23 @@ ProcessingStep <- function(FUN = character(), ARGS = list())  {
     new("ProcessingStep", FUN = FUN, ARGS = ARGS)
 }
 
+.cat_fun <- function(x) {
+    if (is.function(x))
+        "user-provided function"
+    else x
+}
+
 #' @rdname hidden_aliases
 #'
 #' @exportMethod show
 setMethod("show", "ProcessingStep", function(object) {
     cat("Object of class \"", class(object), "\"\n", sep = "")
-    cat(" Function: ")
-    print(object@FUN)
+    cat(" Function: ", .cat_fun(object@FUN), "\n", sep = "")
     args <- object@ARGS
     if (length(args) > 0) {
         cat(" Arguments:\n")
         for (i in seq_along(args)) {
-            cat("  o ", names(args)[i], " = ")
-            print(args[[i]])
+            cat("  o ", names(args)[i], " = ", .cat_fun(args[[i]]), sep = "")
         }
     }
 })
