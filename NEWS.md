@@ -1,5 +1,9 @@
 # Spectra 1.1
 
+## Changes in 1.1.8
+
+- Nothing yet
+
 ## Changes in 1.1.7
 
 - Fix bug in `show,ProcessingStep` (issue
