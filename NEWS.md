@@ -2,6 +2,12 @@
 
 Bioconductor release 3.12 package.
 
+## Changes in 1.0.4
+
+- Fix `show,ProcessingStep` (issue
+  [#162](https://github.com/rformassspectrometry/Spectra/issues/162)).
+
+
 ## Changes in 1.0.3
 
 - Fix issue with `labelCol` in `plotSpectra` (issue
