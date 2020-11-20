@@ -102,6 +102,7 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       TZ: UTC
       NOT_CRAN: true
+      CI: true
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
@@ -221,6 +222,7 @@ jobs:
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: false
+          CI: true
         run: |
           rcmdcheck::rcmdcheck(
               args = c("--no-build-vignettes", "--no-manual", "--timings"),
@@ -318,6 +320,7 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CI: true
       RSPM: ${{ matrix.config.rspm }}
       BIOCVERSIONNUM: ${{ needs.define-docker-info.outputs.biocversion }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -426,6 +429,7 @@ jobs:
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: false
+          CI: true
         run: |
           rcmdcheck::rcmdcheck(
               args = c("--no-build-vignettes", "--no-manual", "--timings"),
