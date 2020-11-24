@@ -104,7 +104,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.8</span>
       </span>
     </div>
 
@@ -372,6 +372,12 @@ $(x, name)
 # S4 method for MsBackend
 $(x, name) &lt;- value
 
+# S4 method for MsBackend
+[[(x, i, j, ...)
+
+# S4 method for MsBackend
+[[(x, i, j, ...) &lt;- value
+
 MsBackendDataFrame()
 
 # S4 method for MsBackendDataFrame
@@ -523,6 +529,9 @@ but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></td>
 allowed</p></li>
 <li><p><code><a href='https://rdrr.io/r/base/Extract.html'>$</a></code>, <code>$&lt;-</code>: access or set/add a single spectrum variable (column) in the
 backend.</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/Extract.html'>[[</a></code>, <code>[[&lt;-</code>: access or set/add a single spectrum variable (column) in the
+backend. The default implementation uses <code><a href='https://rdrr.io/r/base/Extract.html'>$</a></code>, thus these methods don't have
+to be implemented for new classes extending <code>MsBackend</code>.</p></li>
 <li><p><code>acquisitionNum</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
 spectra (with <code>NA_integer_</code> if not available).</p></li>

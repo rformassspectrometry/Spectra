@@ -82,7 +82,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.8</span>
       </span>
     </div>
 
@@ -142,6 +142,8 @@ combineSpectra(
   ...,
   BPPARAM = bpparam()
 )
+
+joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
 
 # S4 method for missing
 Spectra(
@@ -357,6 +359,12 @@ $(x, name)
 $(x, name) &lt;- value
 
 # S4 method for Spectra
+[[(x, i, j, ...)
+
+# S4 method for Spectra
+[[(x, i, j, ...) &lt;- value
+
+# S4 method for Spectra
 [(x, i, j, ..., drop = FALSE)
 
 # S4 method for Spectra
@@ -522,6 +530,27 @@ depending on the used backend, per-file parallel processing will be
 performed.</p></td>
     </tr>
     <tr>
+      <th>y</th>
+      <td><p>A <code>Spectra</code> object. A <code>DataFrame</code> for <code>joinSpectraData()</code>.</p></td>
+    </tr>
+    <tr>
+      <th>by.x</th>
+      <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> specifying the spectra variable used
+for merging. Default is <code>"spectrumId"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>by.y</th>
+      <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> specifying the column used for
+merging. Set to <code>by.x</code> if missing.</p></td>
+    </tr>
+    <tr>
+      <th>suffix.y</th>
+      <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> specifying the suffix to be used
+for making the names of columns in the merged spectra variables
+unique. This suffix will be used to amend <code><a href='https://rdrr.io/r/base/names.html'>names(y)</a></code>, while
+<code>spectraVariables(x)</code> will remain unchanged.</p></td>
+    </tr>
+    <tr>
       <th>processingQueue</th>
       <td><p>For <code>Spectra</code>: optional <code>list</code> of
 <a href='hidden_aliases.html'>ProcessingStep</a> objects.</p></td>
@@ -678,10 +707,6 @@ Defaults to <code>binSize = 1</code>.</p></td>
     <tr>
       <th>breaks</th>
       <td><p>For <code>bin</code>: <code>numeric</code> defining the m/z breakpoints between bins.</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
-      <td><p>A <code>Spectra</code> object.</p></td>
     </tr>
     <tr>
       <th>MAPFUN</th>
@@ -846,6 +871,8 @@ parameter <code>backend</code>.</p></li>
 <ul>
 <li><p><code><a href='https://rdrr.io/r/base/Extract.html'>$</a></code>, <code>$&lt;-</code>: gets (or sets) a spectra variable for all spectra in <code>object</code>.
 See examples for details.</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/Extract.html'>[[</a></code>, <code>[[&lt;-</code>: access or set/add a single spectrum variable (column) in the
+backend.</p></li>
 <li><p><code>acquisitionNum</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
 spectra (with <code>NA_integer_</code> if not available).</p></li>
@@ -1038,6 +1065,18 @@ the values will be dropped, while additional (user defined) spectra
 variables will be completely removed. Returns the filtered <code>Spectra</code>.</p></li>
 <li><p><code>split</code>: splits the <code>Spectra</code> object based on parameter <code>f</code> into a <code>list</code>
 of <code>Spectra</code> objects.</p></li>
+<li><p><code>joinSpectraData</code>: Individual spectra variables can be directly
+added with the <code>$&lt;-</code> or <code>[[&lt;-</code> syntax. The <code>joinSpectraData()</code>
+function allows to merge a <code>DataFrame</code> to the existing spectra
+data. This function diverges from the <code><a href='https://rdrr.io/r/base/merge.html'>merge()</a></code> method in two
+main ways:</p><ul>
+<li><p>The <code>by.x</code> and <code>by.y</code> column names must be of length 1.</p></li>
+<li><p>If variable names are shared in <code>x</code> and <code>y</code>, the spectra
+variables of <code>x</code> are not modified. It's only the <code>y</code>
+variables that are appended the suffix defined in
+<code>suffix.y</code>. This is to avoid modifying any core spectra
+variables that would lead to an invalid object.</p></li>
+</ul></li>
 </ul>
 
 <p>Several <code>Spectra</code> objects can be concatenated into a single object with the
@@ -1181,7 +1220,7 @@ level(s).</p></li>
 
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Sebastian Gibb, Johannes Rainer</p>
+    <p>Sebastian Gibb, Johannes Rainer, Laurent Gatto</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -1251,7 +1290,7 @@ level(s).</p></li>
 #&gt; 1862         1   259.752       931
 #&gt;  ... 33 more variables/columns.
 #&gt; Processing:
-#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Oct 30 18:04:06 2020] </div><div class='input'>
+#&gt;  Switch backend from MsBackendMzR to MsBackendDataFrame [Tue Nov 24 18:44:28 2020] </div><div class='input'>
 <span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span>
 <span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span>
 <span class='co'>## data in memory and its size is thus much larger.</span>
@@ -1265,28 +1304,28 @@ level(s).</p></li>
 <span class='co'>## While objects that use an on-disk backend will list the files where the</span>
 <span class='co'>## data is stored.</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>dataStorage</span><span class='op'>(</span><span class='va'>sciex</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [2] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [3] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [4] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [5] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [6] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</div><div class='input'>
 <span class='co'>## The spectra variable `dataOrigin` returns for each spectrum the *origin*</span>
 <span class='co'>## of the data. If the data is read from e.g. mzML files, this will be the</span>
 <span class='co'>## original mzML file name:</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>dataOrigin</span><span class='op'>(</span><span class='va'>sciex</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [2] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [3] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [4] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [5] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [6] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>dataOrigin</span><span class='op'>(</span><span class='va'>sciex_im</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [2] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [3] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [4] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [5] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [6] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>dataOrigin</span><span class='op'>(</span><span class='va'>sciex_im</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</div><div class='input'>
 <span class='co'>## ---- ACCESSING AND ADDING DATA ----</span>
 
 <span class='co'>## Get the MS level for each spectrum.</span>
@@ -1471,7 +1510,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select MS level(s) 2 [Fri Oct 30 18:04:07 2020] </div><div class='input'>
+#&gt;  Filter: select MS level(s) 2 [Tue Nov 24 18:44:29 2020] </div><div class='input'>
 <span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span>
 <span class='va'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>sciex_im</span><span class='op'>)</span>
 
@@ -1480,12 +1519,12 @@ level(s).</p></li>
 </div><div class='output co'>#&gt; [1] "sp_1" "sp_2" NA     NA     NA     NA    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data_comb</span><span class='op'>$</span><span class='va'>rtime</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 1.100 1.200 0.280 0.559 0.838 1.117</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data_comb</span><span class='op'>$</span><span class='va'>dataStorage</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data_comb</span><span class='op'>$</span><span class='va'>dataOrigin</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] NA                                                                                
-#&gt; [2] NA                                                                                
-#&gt; [3] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [4] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [5] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#&gt; [6] "/usr/local/lib/R/host-site-library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] NA                                                                
+#&gt; [2] NA                                                                
+#&gt; [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#&gt; [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</div><div class='input'>
 <span class='co'>## Filter a Spectra for a target precursor m/z with a tolerance of 10ppm</span>
 <span class='va'>spd</span><span class='op'>$</span><span class='va'>precursorMz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>323.4</span>, <span class='fl'>543.2302</span><span class='op'>)</span>
 <span class='va'>data_filt</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span><span class='op'>(</span><span class='va'>spd</span><span class='op'>)</span>
@@ -1496,7 +1535,7 @@ level(s).</p></li>
 #&gt; 1         2       1.2        NA
 #&gt;  ... 16 more variables/columns.
 #&gt; Processing:
-#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Oct 30 18:04:08 2020] </div><div class='input'>
+#&gt;  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Tue Nov 24 18:44:29 2020] </div><div class='input'>
 <span class='co'>## Filter a Spectra keeping only peaks matching certain m/z values</span>
 <span class='va'>sps_sub</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterMzValues</a></span><span class='op'>(</span><span class='va'>data</span>, mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>103</span>, <span class='fl'>104</span><span class='op'>)</span>, tolerance <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span>
 <span class='fu'>mz</span><span class='op'>(</span><span class='va'>sps_sub</span><span class='op'>)</span>
@@ -1545,6 +1584,60 @@ level(s).</p></li>
 #&gt; [23] "lowMZ"                   "highMZ"                 
 #&gt; [25] "injectionTime"           "spectrumId"             </div><div class='input'>
 
+<span class='co'>## Adding new spectra variables</span>
+<span class='va'>spv</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span><span class='op'>(</span>spectrumId <span class='op'>=</span> <span class='va'>sciex</span><span class='op'>$</span><span class='va'>spectrumId</span><span class='op'>[</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>]</span>, <span class='co'>## used for merging</span>
+                 var1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>,
+                 var2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span>, <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>spv</span>
+</div><div class='output co'>#&gt; DataFrame with 10 rows and 3 columns
+#&gt;                spectrumId        var1        var2
+#&gt;               &lt;character&gt;   &lt;numeric&gt; &lt;character&gt;
+#&gt; 1  sample=1 period=1 cy.. -1.40004352           w
+#&gt; 2  sample=1 period=1 cy..  0.25531705           k
+#&gt; 3  sample=1 period=1 cy.. -2.43726361           y
+#&gt; 4  sample=1 period=1 cy.. -0.00557129           e
+#&gt; 5  sample=1 period=1 cy..  0.62155272           u
+#&gt; 6  sample=1 period=1 cy..  1.14841161           l
+#&gt; 7  sample=1 period=1 cy.. -1.82181766           b
+#&gt; 8  sample=1 period=1 cy.. -0.24732530           f
+#&gt; 9  sample=1 period=1 cy.. -0.24419961           d
+#&gt; 10 sample=1 period=1 cy.. -0.28270545           p</div><div class='input'>
+<span class='va'>sciex2</span> <span class='op'>&lt;-</span> <span class='fu'>joinSpectraData</span><span class='op'>(</span><span class='va'>sciex</span>, <span class='va'>spv</span>, by.y <span class='op'>=</span> <span class='st'>"spectrumId"</span><span class='op'>)</span>
+
+<span class='fu'>spectraVariables</span><span class='op'>(</span><span class='va'>sciex2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] "msLevel"                  "rtime"                   
+#&gt;  [3] "acquisitionNum"           "scanIndex"               
+#&gt;  [5] "dataStorage"              "dataOrigin"              
+#&gt;  [7] "centroided"               "smoothed"                
+#&gt;  [9] "polarity"                 "precScanNum"             
+#&gt; [11] "precursorMz"              "precursorIntensity"      
+#&gt; [13] "precursorCharge"          "collisionEnergy"         
+#&gt; [15] "isolationWindowLowerMz"   "isolationWindowTargetMz" 
+#&gt; [17] "isolationWindowUpperMz"   "peaksCount"              
+#&gt; [19] "totIonCurrent"            "basePeakMZ"              
+#&gt; [21] "basePeakIntensity"        "ionisationEnergy"        
+#&gt; [23] "lowMZ"                    "highMZ"                  
+#&gt; [25] "mergedScan"               "mergedResultScanNum"     
+#&gt; [27] "mergedResultStartScanNum" "mergedResultEndScanNum"  
+#&gt; [29] "injectionTime"            "filterString"            
+#&gt; [31] "spectrumId"               "ionMobilityDriftTime"    
+#&gt; [33] "scanWindowLowerLimit"     "scanWindowUpperLimit"    
+#&gt; [35] "var1"                     "var2"                    </div><div class='input'><span class='fu'>spectraData</span><span class='op'>(</span><span class='va'>sciex2</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>13</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"spectrumId"</span>, <span class='st'>"var1"</span>, <span class='st'>"var2"</span><span class='op'>)</span><span class='op'>]</span>
+</div><div class='output co'>#&gt; DataFrame with 13 rows and 3 columns
+#&gt;                 spectrumId      var1        var2
+#&gt;                &lt;character&gt; &lt;numeric&gt; &lt;character&gt;
+#&gt; 1   sample=1 period=1 cy..        NA          NA
+#&gt; 2   sample=1 period=1 cy..        NA          NA
+#&gt; 3   sample=1 period=1 cy.. -1.400044           w
+#&gt; 4   sample=1 period=1 cy..  0.255317           k
+#&gt; 5   sample=1 period=1 cy.. -2.437264           y
+#&gt; ...                    ...       ...         ...
+#&gt; 9   sample=1 period=1 cy.. -1.821818           b
+#&gt; 10  sample=1 period=1 cy.. -0.247325           f
+#&gt; 11  sample=1 period=1 cy.. -0.244200           d
+#&gt; 12  sample=1 period=1 cy.. -0.282705           p
+#&gt; 13  sample=1 period=1 cy..        NA          NA</div><div class='input'>
+
 <span class='co'>## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----</span>
 
 <span class='co'>## Set the data to be centroided</span>
@@ -1561,7 +1654,7 @@ level(s).</p></li>
 #&gt;  ... 17 more variables/columns.
 #&gt; Lazy evaluation queue: 1 processing step(s)
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Oct 30 18:04:08 2020] </div><div class='input'>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Nov 24 18:44:30 2020] </div><div class='input'>
 <span class='co'>## Get the intensities of the first and second spectrum.</span>
 <span class='fu'>intensity</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>
 </div><div class='output co'>#&gt; [1] 200 400   3   3</div><div class='input'><span class='fu'>intensity</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>]</span>
@@ -1600,9 +1693,9 @@ level(s).</p></li>
 #&gt; 2         2       1.2        NA
 #&gt;  ... 17 more variables/columns.
 #&gt; Processing:
-#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Oct 30 18:04:08 2020]
-#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Oct 30 18:04:08 2020]
-#&gt;  Reset object. [Fri Oct 30 18:04:08 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>res_rest</span><span class='op'>)</span><span class='op'>)</span>
+#&gt;  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Nov 24 18:44:30 2020]
+#&gt;  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Tue Nov 24 18:44:30 2020]
+#&gt;  Reset object. [Tue Nov 24 18:44:30 2020] </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>res_rest</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 2 0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 4 3</div><div class='input'>
@@ -1713,7 +1806,7 @@ level(s).</p></li>
 <span class='co'>## provide a file name.</span>
 <span class='va'>fl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='fu'><a href='hidden_aliases.html'>export</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span><span class='op'>(</span><span class='op'>)</span>, file <span class='op'>=</span> <span class='va'>fl</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Writing file file1dc51a0e2f17...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Writing file file636a5745404f...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## This exported our data in mzML format. Below we read the first 6 lines</span>
 <span class='co'>## from that file.</span>
 <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='va'>fl</span>, n <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>
@@ -1729,7 +1822,7 @@ level(s).</p></li>
 <span class='co'>## Below we export each spectrum to its own file.</span>
 <span class='va'>fls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='hidden_aliases.html'>export</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span><span class='op'>(</span><span class='op'>)</span>, file <span class='op'>=</span> <span class='va'>fls</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Writing file file1dc53d03e64d...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file file1dc541a4c1c0...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Writing file file636a2e84df3c...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Writing file file636a6b7aabe3...</span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## Reading the data from the first file</span>
 <span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span><span class='op'>(</span><span class='fu'><a href='hidden_aliases.html'>backendInitialize</a></span><span class='op'>(</span><span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>fls</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span>
 
