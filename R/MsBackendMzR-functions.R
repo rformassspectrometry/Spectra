@@ -7,7 +7,7 @@ NULL
 MsBackendMzR <- function() {
     if (!requireNamespace("mzR", quietly = TRUE))
         stop("The use of 'MsBackendMzR' requires package 'mzR'. Please ",
-             "install with 'Biobase::install(\"mzR\")'")
+             "install with 'BiocInstaller::install(\"mzR\")'")
     new("MsBackendMzR")
 }
 
