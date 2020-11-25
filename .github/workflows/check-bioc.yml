@@ -139,7 +139,7 @@ jobs:
 
           ## required for ncdf4 - can not use the homebrew one because that uses GCC
           curl -O https://mac.r-project.org/libs-4/netcdf-4.7.4-darwin.17-x86_64.tar.gz
-          tar fvxz netcdf-4.7.4-darwin.17-x86_64.tar.gz -C /
+          tar fvxz -m netcdf-4.7.4-darwin.17-x86_64.tar.gz -C /
           rm netcdf-4.7.4-darwin.17-x86_64.tar.gz
 
       - name: Install Windows system dependencies
