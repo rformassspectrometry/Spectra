@@ -282,7 +282,8 @@ joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
 \S4method{filterIntensity}{Spectra}(
   object,
   intensity = c(0, Inf),
-  msLevel. = unique(msLevel(object))
+  msLevel. = unique(msLevel(object)),
+  ...
 )
 
 \S4method{filterIsolationWindow}{Spectra}(object, mz = numeric())
@@ -956,7 +957,8 @@ intensities that are within the provided range or match the criteria of
 the provided function. For the former, parameter \code{intensity} has to be a
 \code{numeric} defining the intensity range, for the latter a \code{function} that
 takes the intensity values of the spectrum and returns a \code{logical} whether
-the peak should be retained or not (see examples below for details). To
+the peak should be retained or not (see examples below for details) -
+additional parameters to the function can be passed with \code{...}. To
 remove only peaks with intensities below a certain threshold, say 100, use
 \code{intensity = c(100, Inf)}. Note: also a single value can be passed with
 the \code{intensity} parameter in which case an upper limit of \code{Inf} is used.
@@ -1210,13 +1212,19 @@ lengths(mz(data))
 ## In addition it is possible to pass a function to `filterIntensity`: in
 ## the example below we want to keep only peaks that have an intensity which
 ## is larger than one third of the maximal peak intensity in that spectrum.
-keep_peaks <- function(x) {
-    x > max(x, na.rm = TRUE) / 3
+keep_peaks <- function(x, prop = 3) {
+    x > max(x, na.rm = TRUE) / prop
 }
 res2 <- filterIntensity(data, intensity = keep_peaks)
 intensity(res2)[[1L]]
 intensity(data)[[1L]]
 
+## We can also change the proportion by simply passing the `prop` parameter
+## to the function. To keep only peaks that have an intensity which is
+## larger than half of the maximum intensity:
+res2 <- filterIntensity(data, intensity = keep_peaks, prop = 2)
+intensity(res2)[[1L]]
+intensity(data)[[1L]]
 
 ## Since data manipulation operations are by default not directly applied to
 ## the data but only added to the internal lazy evaluation queue, it is also
