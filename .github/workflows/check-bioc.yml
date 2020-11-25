@@ -137,8 +137,9 @@ jobs:
           ## Helps compile RCurl from source
           brew uninstall curl
 
-          ## required for ncdf4
-          ## brew install netcdf
+          ## required for ncdf4 - can not use the homebrew one because that uses GCC
+          curl -O http://mac.R-project.org/libs-4/netcdf-4.7.4-darwin.17-x86_64.tar.gz
+          tar fvxz netcdf-4.7.4-darwin.17-x86_64.tar.gz -C /
 
       - name: Install Windows system dependencies
         if: runner.os == 'Windows'
