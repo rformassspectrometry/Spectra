@@ -96,18 +96,19 @@ NULL
 #'
 #' @inheritParams .peaks_remove
 #'
-#' @param intensity function which takes intensities as first parameter and
+#' @param intfun function which takes intensities as first parameter and
 #'     returns a `logical` of length equal to the number of peaks in the
 #'     spectrum.
 #'
 #' @author Johannes Rainer
 #'
 #' @noRd
-.peaks_filter_intensity_function <- function(x, spectrumMsLevel, intensity,
-                                             msLevel = spectrumMsLevel, ...) {
+.peaks_filter_intensity_function <- function(x, spectrumMsLevel, intfun,
+                                             msLevel = spectrumMsLevel,
+                                             args = list(), ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    keep <- intensity(x[, "intensity"])
+    keep <- do.call(intfun, args = c(list(x[, "intensity"]), args))
     if (!is.logical(keep) || length(keep) != nrow(x))
         stop("Error in filterIntensity: the provided function does not return ",
              "a logical vector of length equal to the number of peaks.",

@@ -1003,6 +1003,16 @@ test_that("filterIntensity,Spectra works", {
                            msLevel = 1L)
     expect_equal(intensity(res)[[1L]], c(3, 4))
     expect_equal(intensity(res)[[2L]], c(1, 2, 3, 4, 5))
+
+    ## Passing additional parameters.
+    filt_fun <- function(x, thresh = 1) x > thresh
+    res <- filterIntensity(sps, intensity = filt_fun)
+    expect_equal(intensity(res)[[1L]], c(2:4))
+    expect_equal(intensity(res)[[2L]], c(2:5))
+
+    res <- filterIntensity(sps, intensity = filt_fun, thresh = 2)
+    expect_equal(intensity(res)[[1L]], c(3:4))
+    expect_equal(intensity(res)[[2L]], c(3:5))
 })
 
 test_that("compareSpectra works", {

@@ -47,12 +47,12 @@ test_that(".peaks_filter_intensity_function works", {
     ints <- c(5, 3, 12, 14.4, 13.3, 9, 3, 0, NA, 21, 89, 55, 33, 5, 2)
     x <- cbind(mz = seq_along(ints), intensity = ints)
     res <- .peaks_filter_intensity_function(
-        x, spectrumMsLevel = 1L, intensity = function(x) x > 0)
+        x, spectrumMsLevel = 1L, intfun = function(x) x > 0)
     expect_equal(res[, 1], c(1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15))
 
     res <- .peaks_filter_intensity_function(
         x, spectrumMsLevel = 1L,
-        intensity = function(z) z > max(z, na.rm = TRUE) / 2)
+        intfun = function(z) z > max(z, na.rm = TRUE) / 2)
     expect_true(all(res[, "intensity"] > 89/2))
 
     res <- .peaks_filter_intensity_function(x, spectrumMsLevel = 1L,

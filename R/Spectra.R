@@ -432,7 +432,8 @@ NULL
 #'   the provided function. For the former, parameter `intensity` has to be a
 #'   `numeric` defining the intensity range, for the latter a `function` that
 #'   takes the intensity values of the spectrum and returns a `logical` whether
-#'   the peak should be retained or not (see examples below for details). To
+#'   the peak should be retained or not (see examples below for details) -
+#'   additional parameters to the function can be passed with `...`. To
 #'   remove only peaks with intensities below a certain threshold, say 100, use
 #'   `intensity = c(100, Inf)`. Note: also a single value can be passed with
 #'   the `intensity` parameter in which case an upper limit of `Inf` is used.
@@ -864,13 +865,19 @@ NULL
 #' ## In addition it is possible to pass a function to `filterIntensity`: in
 #' ## the example below we want to keep only peaks that have an intensity which
 #' ## is larger than one third of the maximal peak intensity in that spectrum.
-#' keep_peaks <- function(x) {
-#'     x > max(x, na.rm = TRUE) / 3
+#' keep_peaks <- function(x, prop = 3) {
+#'     x > max(x, na.rm = TRUE) / prop
 #' }
 #' res2 <- filterIntensity(data, intensity = keep_peaks)
 #' intensity(res2)[[1L]]
 #' intensity(data)[[1L]]
 #'
+#' ## We can also change the proportion by simply passing the `prop` parameter
+#' ## to the function. To keep only peaks that have an intensity which is
+#' ## larger than half of the maximum intensity:
+#' res2 <- filterIntensity(data, intensity = keep_peaks, prop = 2)
+#' intensity(res2)[[1L]]
+#' intensity(data)[[1L]]
 #'
 #' ## Since data manipulation operations are by default not directly applied to
 #' ## the data but only added to the internal lazy evaluation queue, it is also
@@ -1557,7 +1564,7 @@ setMethod("filterDataStorage", "Spectra", function(object,
 #' @exportMethod filterIntensity
 setMethod("filterIntensity", "Spectra",
           function(object, intensity = c(0, Inf),
-                   msLevel. = unique(msLevel(object))) {
+                   msLevel. = unique(msLevel(object)), ...) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
               if (is.numeric(intensity)) {
@@ -1579,7 +1586,8 @@ setMethod("filterIntensity", "Spectra",
                   if (is.function(intensity)) {
                       object <- addProcessing(
                           object, .peaks_filter_intensity_function,
-                          intensity = intensity, msLevel = msLevel.)
+                          intfun = intensity, msLevel = msLevel.,
+                          args = list(...))
                       object@processing <- .logging(
                           object@processing, "Remove peaks based on their ",
                           "intensities and a user-provided function ",
