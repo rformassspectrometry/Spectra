@@ -505,9 +505,7 @@ test_that("spectraData, spectraData<-, MsBackendDataFrame works", {
 
 test_that("show,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    show(be)
-    df <- DataFrame(rt = c(1.2, 1.3))
-    be <- backendInitialize(be, df)
+    expect_output(show(be), "MsBackendDataFrame")
 })
 
 test_that("[,MsBackendDataFrame works", {

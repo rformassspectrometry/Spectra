@@ -2,7 +2,9 @@
 
 ## Changes in 1.1.8
 
-- Nothing yet
+- `filterIntensity` supports passing of additional parameters to the used
+  filter function (issue
+  [164](https://github.com/rformassspectrometry/Spectra/issues/164)).
 
 ## Changes in 1.1.7
 
