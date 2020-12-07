@@ -1,8 +1,8 @@
 # Spectra 1.1
 
-## Changes in 1.1.8
+## Changes in 1.1.9
 
-- Nothing yes.
+- Fix label in `plotSpectra`.
 
 ## Changes in 1.1.8
 

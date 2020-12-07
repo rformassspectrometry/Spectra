@@ -205,7 +205,7 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
                         labelAdj = NULL, labelPos = NULL, labelOffset = 0.5,
                         labelCol = "#00000080", asp = 1, ...) {
     if (!length(main))
-        main <- paste0("MS", msLevel(x), " RT", round(rtime(x), 1))
+        main <- paste0("MS", msLevel(x), " RT: ", round(rtime(x), 1))
     nsp <- length(x)
     if (nsp == 1)
         col <- list(col)

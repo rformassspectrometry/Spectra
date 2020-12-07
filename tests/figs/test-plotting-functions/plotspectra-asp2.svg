@@ -48,7 +48,7 @@
     <rect x='0.00' y='0.00' width='360.00' height='576.00' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpMC4wMHwzNjAuMDB8NTc2LjAwfDAuMDA=)'><text x='150.02' y='34.47' style='font-size: 14.40px; font-weight: bold; font-family: Liberation Sans;' textLength='88.77px' lengthAdjust='spacingAndGlyphs'>MS1 RT123.1</text></g>
+<g clip-path='url(#cpMC4wMHwzNjAuMDB8NTc2LjAwfDAuMDA=)'><text x='146.42' y='34.47' style='font-size: 14.40px; font-weight: bold; font-family: Liberation Sans;' textLength='95.97px' lengthAdjust='spacingAndGlyphs'>MS1 RT: 123.1</text></g>
 <g clip-path='url(#cpMC4wMHwzNjAuMDB8NTc2LjAwfDAuMDA=)'><text x='184.74' y='557.28' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='19.33px' lengthAdjust='spacingAndGlyphs'>m/z</text></g>
 <g clip-path='url(#cpMC4wMHwzNjAuMDB8NTc2LjAwfDAuMDA=)'><text transform='translate(12.96,302.81) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='44.02px' lengthAdjust='spacingAndGlyphs'>intensity</text></g>
 <defs>
@@ -105,7 +105,7 @@
     <rect x='360.00' y='0.00' width='360.00' height='576.00' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpMzYwLjAwfDcyMC4wMHw1NzYuMDB8MC4wMA==)'><text x='516.02' y='34.47' style='font-size: 14.40px; font-weight: bold; font-family: Liberation Sans;' textLength='76.77px' lengthAdjust='spacingAndGlyphs'>MS1 RT124</text></g>
+<g clip-path='url(#cpMzYwLjAwfDcyMC4wMHw1NzYuMDB8MC4wMA==)'><text x='512.42' y='34.47' style='font-size: 14.40px; font-weight: bold; font-family: Liberation Sans;' textLength='83.97px' lengthAdjust='spacingAndGlyphs'>MS1 RT: 124</text></g>
 <g clip-path='url(#cpMzYwLjAwfDcyMC4wMHw1NzYuMDB8MC4wMA==)'><text x='544.74' y='557.28' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='19.33px' lengthAdjust='spacingAndGlyphs'>m/z</text></g>
 <g clip-path='url(#cpMzYwLjAwfDcyMC4wMHw1NzYuMDB8MC4wMA==)'><text transform='translate(372.96,302.81) rotate(-90)' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='44.02px' lengthAdjust='spacingAndGlyphs'>intensity</text></g>
 <defs>
