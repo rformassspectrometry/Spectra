@@ -135,7 +135,7 @@ jobs:
           brew install harfbuzz fribidi
 
           ## Helps compile RCurl from source
-          brew uninstall curl
+          ## brew uninstall curl
 
           ## required for ncdf4 - can not use the homebrew one because that uses GCC
           curl -O https://mac.r-project.org/libs-4/netcdf-4.7.4-darwin.17-x86_64.tar.gz
