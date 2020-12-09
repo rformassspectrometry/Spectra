@@ -16,7 +16,6 @@
 \alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
 \alias{export}
-\alias{filterIntensity}
 \alias{filterMzRange}
 \alias{filterMzValues}
 \alias{isReadOnly}
@@ -142,8 +141,6 @@ containsNeutralLoss(object, ...)
 dropNaSpectraVariables(object, ...)
 
 export(object, ...)
-
-filterIntensity(object, ...)
 
 filterMzRange(object, ...)
 

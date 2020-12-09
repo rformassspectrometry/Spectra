@@ -1651,6 +1651,8 @@ setMethod("filterDataStorage", "Spectra", function(object,
 
 #' @rdname Spectra
 #'
+#' @importMethodsFrom ProtGenerics filterIntensity
+#'
 #' @exportMethod filterIntensity
 setMethod("filterIntensity", "Spectra",
           function(object, intensity = c(0, Inf),

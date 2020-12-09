@@ -2,7 +2,7 @@
 
 ## Changes in 1.1.10
 
-- Nothing yet.
+- Import `filterIntensity` from `ProtGenerics`.
 
 ## Changes in 1.1.9
 
