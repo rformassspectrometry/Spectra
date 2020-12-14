@@ -1,5 +1,9 @@
 # Spectra 1.1
 
+## Changes in 1.1.12
+
+- Nothing yet.
+
 ## Changes in 1.1.11
 
 - Add support for `...` to `pickPeaks` and `smooth` (issue
