@@ -1892,7 +1892,7 @@ setMethod("pickPeaks", "Spectra",
           function(object, halfWindowSize = 2L,
                    method = c("MAD", "SuperSmoother"), snr = 0, k = 0L,
                    descending = FALSE, threshold = 0,
-                   msLevel. = unique(msLevel(object))) {
+                   msLevel. = unique(msLevel(object)), ...) {
     if (!.check_ms_level(object, msLevel.))
         return(object)
     if (!is.integer(halfWindowSize) || length(halfWindowSize) != 1L ||
@@ -1916,7 +1916,7 @@ setMethod("pickPeaks", "Spectra",
     object <- addProcessing(object, .peaks_pick,
                             halfWindowSize = halfWindowSize, method = method,
                             snr = snr, k = k, descending = descending,
-                            threshold = threshold, msLevel = msLevel.)
+                            threshold = threshold, msLevel = msLevel., ...)
     object$centroided[msLevel(object) %in% msLevel.] <- TRUE
     object@processing <- .logging(object@processing,
                                   "Peak picking with ", method,
@@ -1965,8 +1965,8 @@ setMethod("replaceIntensitiesBelow", "Spectra",
 setMethod("smooth", "Spectra",
           function(x, halfWindowSize = 2L,
                    method = c("MovingAverage", "WeightedMovingAverage",
-                              "SavitzkyGolay"), ...,
-                   msLevel. = unique(msLevel(x))) {
+                              "SavitzkyGolay"),
+                   msLevel. = unique(msLevel(x)), ...) {
     if (!.check_ms_level(x, msLevel.))
         return(x)
     if (!is.integer(halfWindowSize) || length(halfWindowSize) != 1L ||
@@ -1981,7 +1981,7 @@ setMethod("smooth", "Spectra",
                    SavitzkyGolay = coefSG(halfWindowSize, ...))
 
     x <- addProcessing(x, .peaks_smooth, halfWindowSize = halfWindowSize,
-                       coef = coef, msLevel = msLevel.)
+                       coef = coef, msLevel = msLevel., ...)
     x@processing <- .logging(x@processing, "Spectra smoothing with ", method,
                                            ", hws = ", halfWindowSize)
     x

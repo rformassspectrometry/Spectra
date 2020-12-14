@@ -1122,13 +1122,24 @@ test_that("pickPeaks,Spectra works", {
                         "snr = 0 and centroid refinement \\["))
 
     sps <- Spectra(sciex_mzr)
-    expect_equal(pickPeaks(sps, msLevel. = 3), sps)
+    expect_warning(expect_equal(pickPeaks(sps, msLevel. = 3), sps))
 
     res <- pickPeaks(sps)
     pks_res <- lapply(sciex_pks, .peaks_pick, spectrumMsLevel = 1L,
                       centroided = FALSE)
     expect_identical(peaksData(res), SimpleList(pks_res))
     expect_true(all(centroided(res)))
+
+    ## Check that ... works
+    res2 <- pickPeaks(sps, method = "SuperSmoother", snr = 2, k = 0L,
+                      descending = FALSE, threshold = 0, span = 0.2)
+    expect_true(length(intensity(res2[1L])[[1L]]) <
+                length(intensity(res[1L])[[1L]]))
+    res3 <- pickPeaks(sps, method = "SuperSmoother", snr = 2, k = 0L,
+                      descending = FALSE, threshold = 0)
+    expect_true(length(intensity(res2[1L])[[1L]]) <
+                length(intensity(res3[1L])[[1L]]))
+
 })
 
 test_that("smooth,Spectra works", {
