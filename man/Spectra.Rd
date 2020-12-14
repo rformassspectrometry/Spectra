@@ -342,7 +342,8 @@ joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
   k = 0L,
   descending = FALSE,
   threshold = 0,
-  msLevel. = unique(msLevel(object))
+  msLevel. = unique(msLevel(object)),
+  ...
 )
 
 \S4method{replaceIntensitiesBelow}{Spectra}(
@@ -356,8 +357,8 @@ joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
   x,
   halfWindowSize = 2L,
   method = c("MovingAverage", "WeightedMovingAverage", "SavitzkyGolay"),
-  ...,
-  msLevel. = unique(msLevel(x))
+  msLevel. = unique(msLevel(x)),
+  ...
 )
 }
 \arguments{

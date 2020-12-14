@@ -2,7 +2,8 @@
 
 ## Changes in 1.1.11
 
-- Nothing yet.
+- Add support for `...` to `pickPeaks` and `smooth` (issue
+  [168](https://github.com/rformassspectrometry/Spectra/issues/168)).
 
 ## Changes in 1.1.10
 
