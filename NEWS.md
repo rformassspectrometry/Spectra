@@ -2,7 +2,8 @@
 
 ## Changes in 1.1.12
 
-- Nothing yet.
+- Pass spectras' precursor m/z to the `MAPFUN` in `compareSpectra`; issue
+  [171](https://github.com/rformassspectrometry/Spectra/issues/171).
 
 ## Changes in 1.1.11
 
