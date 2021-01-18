@@ -224,6 +224,17 @@ NULL
 #'   between `x` and `y` are returned by `type = "inner"`, i.e. only
 #'   peaks present in both spectra are reported.
 #'
+#' - `joinPeaksGnps` matches/maps peaks between spectra with an approach
+#'   similar to the one used in GNPS: peaks are considered matching if a) the
+#'   difference in their m/z values is smaller than defined by `tolerance`
+#'   and `ppm` (this is the same as `joinPeaks`) **and** b) the difference of
+#'   their m/z *adjusted* for the difference of the spectras' precursor is
+#'   smaller than defined by `tolerance` and `ppm`. Based on this definition,
+#'   peaks in `x` can match up to two peaks in `y` hence peaks in the returned
+#'   matrices might be reported multiple times. Note that if one of
+#'   `xPrecursorMz` or `yPrecursorMz` are `NA` or if both are the same, the
+#'   results are the same as with [joinPeaks()].
+#'
 #' @section Implementation notes:
 #'
 #' A mapping function must take two numeric matrices `x` and `y` as input and
@@ -238,16 +249,24 @@ NULL
 #' @param tolerance `numeric(1)` defining a constant maximal accepted difference
 #'     between m/z values of peaks from the two spectra to be matched/mapped.
 #'
-#' @param type For `joinPeaks`: `character(1)` specifying the type of join that
-#'     should be performed. See function description for details.
+#' @param type For `joinPeaks` and `joinPeaksGnps`: `character(1)` specifying
+#'     the type of join that should be performed. See function description for
+#'     details.
 #'
 #' @param x `matrix` with two columns `"mz"` and `"intensity"` containing the
 #'     m/z and intensity values of the mass peaks of a spectrum.
 #'
+#' @param xPrecursorMz for `joinPeaksGnps`: `numeric(1)` with the precursor m/z
+#'     of the spectrum `x`.
+#'
 #' @param y `matrix` with two columns `"mz"` and `"intensity"` containing the
 #'     m/z and intensity values of the mass peaks of a spectrum.
 #'
+#' @param yPrecursorMz for `joinPeaksGnps`: `numeric(1)` with the precursor m/z
+#'     of the spectrum `y`.
+#'
 #' @param ... option parameters.
+#'
 #' @return
 #'
 #' All functions return a `list` of elements `"x"` and `"y"` each being a two
@@ -286,9 +305,53 @@ NULL
 #' ## Right join: keep all peaks from y and those from x that match. Using
 #' ## a constant tolerance of 0.01
 #' joinPeaks(x, y, tolerance = 0.01, type = "right")
+#'
+#' ## GNPS-like peak matching
+#'
+#' ## Define spectra
+#' x <- cbind(mz = c(10, 36, 63, 91, 93), intensity = c(14, 15, 999, 650, 1))
+#' y <- cbind(mz = c(10, 12, 50, 63, 105), intensity = c(35, 5, 16, 999, 450))
+#' ## The precursor m/z
+#' pmz_x <- 91
+#' pmz_y <- 105
+#'
+#' ## Plain joinPeaks identifies only 2 matching peaks: 1 and 5
+#' joinPeaks(x, y)
+#'
+#' ## joinPeaksGnps finds 4 matches
+#' joinPeaksGnps(x, y, pmz_x, pmz_y)
+#'
+#' ## with one of the two precursor m/z being NA, the result are the same as
+#' ## with joinPeaks (with type = "left").
+#' joinPeaksGnps(x, y, pmz_x, yPrecursorMz = NA)
 joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
     map <- join(x[, 1], y[, 1], type = type, tolerance = tolerance, ppm = ppm)
     list(x = x[map$x, , drop = FALSE], y = y[map$y, , drop = FALSE])
+}
+
+#' @export
+#'
+#' @rdname joinPeaks
+joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
+                          yPrecursorMz = NA_real_, tolerance = 0,
+                          ppm = 0, type = "left") {
+    pdiff <- yPrecursorMz - xPrecursorMz
+    map <- join(x[, 1L], y[, 1L], tolerance = tolerance, ppm = ppm,
+                type = type, .check = FALSE)
+    if (is.finite(pdiff) && pdiff != 0) {
+        pmap <- join(x[, 1L] + pdiff, y[, 1L], tolerance = tolerance,
+                     ppm = ppm, type = type, .check = FALSE)
+        ## Keep only matches here
+        nona <- !(is.na(pmap[[1L]]) | is.na(pmap[[2L]]))
+        if (any(nona)) {
+            map[[1L]] <- c(map[[1L]], pmap[[1L]][nona])
+            map[[2L]] <- c(map[[2L]], pmap[[2L]][nona])
+            idx <- order(map[[1L]])
+            map[[1L]] <- map[[1L]][idx]
+            map[[2L]] <- map[[2L]][idx]
+        }
+    }
+    list(x = x[map[[1L]], , drop = FALSE], y = y[map[[2L]], , drop = FALSE])
 }
 
 #' @importFrom MsCoreUtils localMaxima noise refineCentroids

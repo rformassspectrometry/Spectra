@@ -209,3 +209,9 @@ test_that(".peaks_match_mz_value works", {
                                   tolerance = c(0.2, 1))
     expect_equal(unname(res[, "intensity"]), c(3, 8))
 })
+
+test_that("joinPeaksGnps works", {
+    stop("add tests")
+    ## with one of the two pmz being NA or not defined.
+    ## example with multi matches.
+})
