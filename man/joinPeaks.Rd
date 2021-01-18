@@ -2,9 +2,20 @@
 % Please edit documentation in R/peaks-functions.R
 \name{joinPeaks}
 \alias{joinPeaks}
+\alias{joinPeaksGnps}
 \title{Join (map) peaks of two spectra}
 \usage{
 joinPeaks(x, y, type = "outer", tolerance = 0, ppm = 10, ...)
+
+joinPeaksGnps(
+  x,
+  y,
+  xPrecursorMz = NA_real_,
+  yPrecursorMz = NA_real_,
+  tolerance = 0,
+  ppm = 0,
+  type = "left"
+)
 }
 \arguments{
 \item{x}{\code{matrix} with two columns \code{"mz"} and \code{"intensity"} containing the
@@ -13,8 +24,9 @@ m/z and intensity values of the mass peaks of a spectrum.}
 \item{y}{\code{matrix} with two columns \code{"mz"} and \code{"intensity"} containing the
 m/z and intensity values of the mass peaks of a spectrum.}
 
-\item{type}{For \code{joinPeaks}: \code{character(1)} specifying the type of join that
-should be performed. See function description for details.}
+\item{type}{For \code{joinPeaks} and \code{joinPeaksGnps}: \code{character(1)} specifying
+the type of join that should be performed. See function description for
+details.}
 
 \item{tolerance}{\code{numeric(1)} defining a constant maximal accepted difference
 between m/z values of peaks from the two spectra to be matched/mapped.}
@@ -24,6 +36,12 @@ difference between m/z values of peaks from the two spectra to be
 matched/mapped.}
 
 \item{...}{option parameters.}
+
+\item{xPrecursorMz}{for \code{joinPeaksGnps}: \code{numeric(1)} with the precursor m/z
+of the spectrum \code{x}.}
+
+\item{yPrecursorMz}{for \code{joinPeaksGnps}: \code{numeric(1)} with the precursor m/z
+of the spectrum \code{y}.}
 }
 \value{
 All functions return a \code{list} of elements \code{"x"} and \code{"y"} each being a two
@@ -47,6 +65,16 @@ from the left spectrum (\code{x}) will be matched with peaks in \code{y}. Peaks 
 same as \code{type = "left"} only for \code{y}. Only peaks that can be matched
 between \code{x} and \code{y} are returned by \code{type = "inner"}, i.e. only
 peaks present in both spectra are reported.
+\item \code{joinPeaksGnps} matches/maps peaks between spectra with an approach
+similar to the one used in GNPS: peaks are considered matching if a) the
+difference in their m/z values is smaller than defined by \code{tolerance}
+and \code{ppm} (this is the same as \code{joinPeaks}) \strong{and} b) the difference of
+their m/z \emph{adjusted} for the difference of the spectras' precursor is
+smaller than defined by \code{tolerance} and \code{ppm}. Based on this definition,
+peaks in \code{x} can match up to two peaks in \code{y} hence peaks in the returned
+matrices might be reported multiple times. Note that if one of
+\code{xPrecursorMz} or \code{yPrecursorMz} are \code{NA} or if both are the same, the
+results are the same as with \code{\link[=joinPeaks]{joinPeaks()}}.
 }
 }
 \section{Implementation notes}{
@@ -81,6 +109,25 @@ joinPeaks(x, y, ppm = 10, type = "left")
 ## Right join: keep all peaks from y and those from x that match. Using
 ## a constant tolerance of 0.01
 joinPeaks(x, y, tolerance = 0.01, type = "right")
+
+## GNPS-like peak matching
+
+## Define spectra
+x <- cbind(mz = c(10, 36, 63, 91, 93), intensity = c(14, 15, 999, 650, 1))
+y <- cbind(mz = c(10, 12, 50, 63, 105), intensity = c(35, 5, 16, 999, 450))
+## The precursor m/z
+pmz_x <- 91
+pmz_y <- 105
+
+## Plain joinPeaks identifies only 2 matching peaks: 1 and 5
+joinPeaks(x, y)
+
+## joinPeaksGnps finds 4 matches
+joinPeaksGnps(x, y, pmz_x, pmz_y)
+
+## with one of the two precursor m/z being NA, the result are the same as
+## with joinPeaks (with type = "left").
+joinPeaksGnps(x, y, pmz_x, yPrecursorMz = NA)
 }
 \author{
 Johannes Rainer
