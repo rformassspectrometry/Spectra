@@ -14,7 +14,7 @@ joinPeaksGnps(
   yPrecursorMz = NA_real_,
   tolerance = 0,
   ppm = 0,
-  type = "left"
+  type = "outer"
 )
 }
 \arguments{
