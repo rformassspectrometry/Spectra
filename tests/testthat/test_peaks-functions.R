@@ -246,4 +246,19 @@ test_that("joinPeaksGnps works", {
     res <- joinPeaksGnps(a, b, xPrecursorMz = a_pmz, yPrecursorMz = b_pmz)
     expect_equal(res$x[, 1], c(10, 10, 26, 36, 36, 63, 91, 91, 93))
     expect_equal(res$y[, 1], c(10, 24, NA, NA, 50, 63, NA, 105, NA))
+
+    ## Example with peaks from a matching multiple peaks in b and vice versa
+    a <- cbind(mz = c(10, 12, 14, 16, 19),
+               intensity = 1:5)
+    a_pmz <- 4
+    b <- cbind(mz = c(10, 14, 16, 17, 19, 22),
+               intensity = 1:6)
+    b_pmz <- 8
+
+    exp_a <- c(10, 10, 12, 12, 14, 16, 19, NA, NA)
+    exp_b <- c(10, 14, NA, 16, 14, 16, 19, 17, 22)
+
+    res <- joinPeaksGnps(a, b, a_pmz, b_pmz, type = "outer")
+    expect_equal(res$x[, 1], exp_a)
+    expect_equal(res$y[, 1], exp_b)
 })
