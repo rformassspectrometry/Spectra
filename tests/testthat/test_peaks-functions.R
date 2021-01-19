@@ -219,11 +219,11 @@ test_that("joinPeaksGnps works", {
                intensity = c(35, 5, 16, 999, 450))
     b_pmz <- 105
 
-    expect_equal(joinPeaksGnps(a, b), joinPeaks(a, b, type = "left"))
+    expect_equal(joinPeaksGnps(a, b), joinPeaks(a, b))
     expect_equal(joinPeaksGnps(a, b, xPrecursorMz = 91),
-                 joinPeaks(a, b, type = "left"))
+                 joinPeaks(a, b))
     expect_equal(joinPeaksGnps(a, b, xPrecursorMz = 3, yPrecursorMz = 3),
-                 joinPeaks(a, b, type = "left"))
+                 joinPeaks(a, b))
 
     res <- joinPeaksGnps(a, b, xPrecursorMz = a_pmz, yPrecursorMz = b_pmz,
                          type = "left")
