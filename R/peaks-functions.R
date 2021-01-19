@@ -334,7 +334,7 @@ joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
 #' @rdname joinPeaks
 joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
                           yPrecursorMz = NA_real_, tolerance = 0,
-                          ppm = 0, type = "left") {
+                          ppm = 0, type = "outer") {
     pdiff <- yPrecursorMz - xPrecursorMz
     map <- join(x[, 1L], y[, 1L], tolerance = tolerance, ppm = ppm,
                 type = type, .check = FALSE)

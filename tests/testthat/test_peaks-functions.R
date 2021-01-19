@@ -225,13 +225,15 @@ test_that("joinPeaksGnps works", {
     expect_equal(joinPeaksGnps(a, b, xPrecursorMz = 3, yPrecursorMz = 3),
                  joinPeaks(a, b, type = "left"))
 
-    res <- joinPeaksGnps(a, b, xPrecursorMz = a_pmz, yPrecursorMz = b_pmz)
+    res <- joinPeaksGnps(a, b, xPrecursorMz = a_pmz, yPrecursorMz = b_pmz,
+                         type = "left")
     expect_true(nrow(res$x) > nrow(a))  # peaks can match multiple
     ## peak 36 matches no peak in b directly, but matches peak 50 in b
     ## considering the precursor difference
     expect_true(sum(res$x[, 1] == 36) == 2)
 
-    res_2 <- joinPeaksGnps(b, a, xPrecursorMz = b_pmz, yPrecursorMz = a_pmz)
+    res_2 <- joinPeaksGnps(b, a, xPrecursorMz = b_pmz, yPrecursorMz = a_pmz,
+                           type = "left")
     expect_equal(res_2$x[, 1], c(10, 12, 50, 50, 63, 105, 105))
 
     ## example with multi matches.
@@ -243,7 +245,8 @@ test_that("joinPeaksGnps works", {
                intensity = c(35, 10, 5, 16, 999, 450))
     b_pmz <- 105
 
-    res <- joinPeaksGnps(a, b, xPrecursorMz = a_pmz, yPrecursorMz = b_pmz)
+    res <- joinPeaksGnps(a, b, xPrecursorMz = a_pmz, yPrecursorMz = b_pmz,
+                         type = "left")
     expect_equal(res$x[, 1], c(10, 10, 26, 36, 36, 63, 91, 91, 93))
     expect_equal(res$y[, 1], c(10, 24, NA, NA, 50, 63, NA, 105, NA))
 
