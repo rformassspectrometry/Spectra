@@ -242,7 +242,7 @@ combinePeaks <- function(x, intensityFun = base::mean,
 }
 
 #' pairwise comparison of peak matrices. Parameters `xPrecursorMz` and
-#' `yPrecursorMz` are passed to the `MAPFUN`.
+#' `yPrecursorMz` are passed to the `MAPFUN` and to `FUN`.
 #'
 #' @param x `list` of peak matrix
 #'
@@ -271,7 +271,9 @@ combinePeaks <- function(x, intensityFun = base::mean,
                                xPrecursorMz = xPrecursorMz[i],
                                yPrecursorMz = yPrecursorMz[j],
                                .check = FALSE, ...)
-            mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]], ...)
+            mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
+                             xPrecursorMz = xPrecursorMz,
+                             yPrecursorMz = yPrecursorMz, ...)
         }
     }
     mat

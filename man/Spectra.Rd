@@ -942,11 +942,16 @@ The matching/mapping of peaks between the compared spectra is done with the
 and allows to keep all peaks from the first spectrum (\code{type = "left"}),
 from the second (\code{type = "right"}), from both (\code{type = "outer"}) and to
 keep only matching peaks (\code{type = "inner"}); see \code{\link[=joinPeaks]{joinPeaks()}} for more
-information and examples).
+information and examples). The \code{MAPFUN} function should have parameters
+\code{x}, \code{y}, \code{xPrecursorMz} and \code{yPrecursorMz} as these values are passed to
+the function.
 \code{FUN} is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
-matrices with columns \code{"mz"} and \code{"intensity"}  as input and is supposed
-to return a single numeric as result. Additional parameters to functions
+matrices with columns \code{"mz"} and \code{"intensity"} as input and is supposed
+to return a single numeric as result. In addition to the two peak matrices
+the spectra's precursor m/z values are passed to the function as parameters
+\code{xPrecursorMz} (precursor m/z of the \code{x} peak matrix) and \code{yPrecursorMz}
+(precursor m/z of the \code{y} peak matrix). Additional parameters to functions
 \code{FUN} and \code{MAPFUN} can be passed with \code{...}.
 The function returns a \code{matrix} with the results of \code{FUN} for each
 comparison, number of rows equal to \code{length(x)} and number of columns
@@ -1257,7 +1262,7 @@ res
 ## that takes the two peak matrices and calculates the correlation for
 ## their second columns (containing the intensity values).
 correlateSpectra <- function(x, y, use = "pairwise.complete.obs", ...) {
-    cor(x[, 2], y[, 2], use = use, ...)
+    cor(x[, 2], y[, 2], use = use)
 }
 res <- compareSpectra(sciex_im[2:3], sciex_im[10:20],
     FUN = correlateSpectra)

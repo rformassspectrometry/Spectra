@@ -1068,7 +1068,7 @@ test_that("compareSpectra works", {
     expect_equal(res, 1)
 
     ## FUN
-    cor_fun <- function(x, y) {
+    cor_fun <- function(x, y, ...) {
         cor(x[, 2], y[, 2], use = "pairwise.complete.obs")
     }
     res <- compareSpectra(sps[1], sps[2])

@@ -193,6 +193,7 @@ jobs:
           BiocManager::install('rhdf5', dependencies = TRUE, ask = FALSE, update = FALSE, INSTALL_opts = '--force-biarch')
           BiocManager::install("mzR", dependencies = TRUE, ask = FALSE, update = FALSE)
           BiocManager::install("msdata")
+          BiocManager::install("matrixStats")
           # BiocManager::install(c("devtools", "usethis", "vdiffr"), dependencies = TRUE, ask = FALSE, update = FALSE)
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
