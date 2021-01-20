@@ -334,7 +334,8 @@ applyProcessing <- function(object, f = dataStorage(object),
         map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm,
                       xPrecursorMz = pmzx, yPrecursorMz = pmzy, ...)
         m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
-            FUN(map[[1L]], map[[2L]], ...)
+            FUN(map[[1L]], map[[2L]], xPrecursorMz = pmzx,
+                yPrecursorMz = pmzy, ...)
     }
     m
 }
