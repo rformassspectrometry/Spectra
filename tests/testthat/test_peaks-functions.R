@@ -265,3 +265,27 @@ test_that("joinPeaksGnps works", {
     expect_equal(res$x[, 1], exp_a)
     expect_equal(res$y[, 1], exp_b)
 })
+
+test_that("gnps works", {
+    x <- cbind(mz = c(10, 12, 14, 16, 19),
+               intensity = 1:5)
+    xpmz <- 4
+    y <- cbind(mz = c(10, 14, 16, 17, 19, 22),
+               intensity = 1:6)
+    ypmz <- 8
+
+    expect_error(gnps(x, y), "aligned")
+    a <- cbind(c(1, 2), c(0, 0))
+    expect_equal(gnps(a, a), 0)
+    a <- rbind(c(NA, NA), a)
+    b <- a
+    b[2:3, 1] <- NA
+    expect_equal(gnps(a, b), 0)
+
+    map <- joinPeaksGnps(x, y, xpmz, ypmz)
+    res <- gnps(map$x, map$y)
+    expect_true(res > 0.5)
+    map <- joinPeaksGnps(y, x, ypmz, xpmz)
+    res_2 <- gnps(map$x, map$y)
+    expect_equal(res, res_2)
+})

@@ -233,7 +233,10 @@ NULL
 #'   peaks in `x` can match up to two peaks in `y` hence peaks in the returned
 #'   matrices might be reported multiple times. Note that if one of
 #'   `xPrecursorMz` or `yPrecursorMz` are `NA` or if both are the same, the
-#'   results are the same as with [joinPeaks()].
+#'   results are the same as with [joinPeaks()]. To calculate GNPS similarity
+#'   scores, [gnps()] should be called on the aligned peak matrices (i.e.
+#'   `compareSpectra` should be called with `MAPFUN = joinPeaksGnps` and
+#'   `FUN = gnps`).
 #'
 #' @section Implementation notes:
 #'
@@ -276,7 +279,9 @@ NULL
 #' `y` input matrix have m/z and intensity values of `NA` in the result matrix
 #' for `y` (and *vice versa*).
 #'
-#' @author Johannes Rainer
+#' @author Johannes Rainer, Michael Witting
+#'
+#' @seealso [gnps()]
 #'
 #' @importFrom MsCoreUtils join ppm
 #'
@@ -352,6 +357,103 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
         }
     }
     list(x = x[map[[1L]], , drop = FALSE], y = y[map[[2L]], , drop = FALSE])
+}
+
+#' @title GNPS spectra similarity score
+#'
+#' @description
+#'
+#' The GNPS approach considers in its similarity score, in addition to directly
+#' matching peaks between two spectra, also matches of peaks which difference in
+#' m/z values matches the difference of the spectra's precursor m/z. For peaks
+#' that match multiple peaks in the other spectrum the matching peak pair with
+#' the higher value/similarity is considered in the final similarity score.
+#'
+#' To calculate GNPS scores, the [joinPeaksGnps()] function should be used first
+#' to match the peaks between the compared spectra and `gnps` should then be
+#' called on the resulting aligned peak matrices. To use the GNPS score on a
+#' [Spectra()] object `compareSpectra` should be used with
+#' `MAPFUN = joinPeaksGnps` and `FUN = gnps`.
+#'
+#' @details
+#'
+#' The implementation bases on the R code from the publication listed in the
+#' references.
+#'
+#' @param x `numeric` peak `matrix` with m/z (first column) and intensity
+#'     values (second column). Rows in `x` and `y` are considered to contain
+#'     matching peaks, i.e. the first row in `x` contains a peak matching the
+#'     first peak (row) of `y` or `NA_real_` if the peak does not match.
+#'
+#' @param y `numeric` peak `matrix` with m/z (first column) and intensity
+#'     values (second column). Rows in `x` and `y` are considered to contain
+#'     matching peaks, i.e. the first row in `x` contains a peak matching the
+#'     first peak (row) of `y` or `NA_real_` if the peak does not match.
+#'
+#' @author Johannes Rainer, Michael Witting, based on the code from the ref
+#'
+#' @importFrom matrixStats rowMaxs
+#'
+#' @importFrom stats complete.cases
+#'
+#' @references
+#'
+#' Xing S, Hu Y, Yin Z, Liu M, Tang X, Fang M, Huan T. Retrieving and Utilizing
+#' Hypothetical Neutral Losses from Tandem Mass Spectra for Spectral Similarity
+#' Analysis and Unknown Metabolite Annotation. *Anal Chem.*
+#' 2020 Nov 3;92(21):14476-14483. doi: 10.1021/acs.analchem.0c02521.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' ## Define spectra
+#' x <- cbind(mz = c(10, 36, 63, 91, 93), intensity = c(14, 15, 999, 650, 1))
+#' y <- cbind(mz = c(10, 12, 50, 63, 105), intensity = c(35, 5, 16, 999, 450))
+#' ## The precursor m/z
+#' pmz_x <- 91
+#' pmz_y <- 105
+#'
+#' ## joinPeaksGnps finds 4 matches
+#' map <- joinPeaksGnps(x, y, pmz_x, pmz_y)
+#' map
+#'
+#' ## Calculate similarity
+#' gnps(map$x, map$y)
+gnps <- function(x, y) {
+    if (nrow(x) != nrow(y))
+        stop("'x' and 'y' are expected to be aligned peak matrices (i.e. ",
+             "having the same number of rows).")
+    ## Scale intensities; !duplicated because we can have duplicated matches.
+    x_sum <- sum(x[!duplicated(x[, 1]), 2], na.rm = TRUE)
+    y_sum <- sum(y[!duplicated(y[, 1]), 2], na.rm = TRUE)
+    ## is 0 if only NAs in input - avoids division through 0
+    if (x_sum == 0 || y_sum == 0)
+        return(0)
+    ## Keep only matches.
+    keep <- which(complete.cases(cbind(x[, 1], y[, 1])))
+    l <- length(keep)
+    if (!l)
+        return(0)
+    x <- x[keep, , drop = FALSE]
+    y <- y[keep, , drop = FALSE]
+    scores <- sqrt(x[, 2]) / sqrt(x_sum) * sqrt(y[, 2]) / sqrt(y_sum)
+
+    fx <- factor(x[, 1])
+    fy <- factor(y[, 1])
+    if (length(levels(fy)) > length(levels(fx))) {
+        row_idx <- as.integer(fx)
+        col_idx <- as.integer(fy)
+    } else {
+        row_idx <- as.integer(fy)
+        col_idx <- as.integer(fx)
+    }
+    score_mat <- matrix(0, nrow = l, ncol = l)
+    seq_l <- seq_len(l)
+    for (i in seq_l) {
+        score_mat[row_idx[i], col_idx[i]] <- scores[i]
+    }
+    sum(rowMaxs(score_mat, na.rm = TRUE), na.rm = TRUE)
 }
 
 #' @importFrom MsCoreUtils localMaxima noise refineCentroids

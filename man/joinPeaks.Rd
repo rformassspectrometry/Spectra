@@ -74,7 +74,10 @@ smaller than defined by \code{tolerance} and \code{ppm}. Based on this definitio
 peaks in \code{x} can match up to two peaks in \code{y} hence peaks in the returned
 matrices might be reported multiple times. Note that if one of
 \code{xPrecursorMz} or \code{yPrecursorMz} are \code{NA} or if both are the same, the
-results are the same as with \code{\link[=joinPeaks]{joinPeaks()}}.
+results are the same as with \code{\link[=joinPeaks]{joinPeaks()}}. To calculate GNPS similarity
+scores, \code{\link[=gnps]{gnps()}} should be called on the aligned peak matrices (i.e.
+\code{compareSpectra} should be called with \code{MAPFUN = joinPeaksGnps} and
+\code{FUN = gnps}).
 }
 }
 \section{Implementation notes}{
@@ -129,6 +132,9 @@ joinPeaksGnps(x, y, pmz_x, pmz_y)
 ## with joinPeaks (with type = "left").
 joinPeaksGnps(x, y, pmz_x, yPrecursorMz = NA)
 }
+\seealso{
+\code{\link[=gnps]{gnps()}}
+}
 \author{
-Johannes Rainer
+Johannes Rainer, Michael Witting
 }
