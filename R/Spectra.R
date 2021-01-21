@@ -1875,8 +1875,9 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
                                         tolerance = tolerance,
                                         ppm = ppm, FUN = FUN, ...,
                                         SIMPLIFY = SIMPLIFY))
-              mat <- .compare_spectra_self(x, FUN = FUN, tolerance = tolerance,
-                                           ppm = ppm, ...)
+              mat <- .compare_spectra_self(x, MAPFUN = MAPFUN, FUN = FUN,
+                                           tolerance = tolerance, ppm = ppm,
+                                           ...)
               if (SIMPLIFY && length(x) == 1)
                   mat <- as.vector(mat)
               mat

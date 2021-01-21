@@ -272,8 +272,8 @@ combinePeaks <- function(x, intensityFun = base::mean,
                                yPrecursorMz = yPrecursorMz[j],
                                .check = FALSE, ...)
             mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
-                             xPrecursorMz = xPrecursorMz,
-                             yPrecursorMz = yPrecursorMz, ...)
+                             xPrecursorMz = xPrecursorMz[i],
+                             yPrecursorMz = yPrecursorMz[j], ...)
         }
     }
     mat

@@ -4,7 +4,7 @@
 \alias{gnps}
 \title{GNPS spectra similarity score}
 \usage{
-gnps(x, y)
+gnps(x, y, ...)
 }
 \arguments{
 \item{x}{\code{numeric} peak \code{matrix} with m/z (first column) and intensity
@@ -16,6 +16,8 @@ first peak (row) of \code{y} or \code{NA_real_} if the peak does not match.}
 values (second column). Rows in \code{x} and \code{y} are considered to contain
 matching peaks, i.e. the first row in \code{x} contains a peak matching the
 first peak (row) of \code{y} or \code{NA_real_} if the peak does not match.}
+
+\item{...}{ignored}
 }
 \description{
 The GNPS approach considers in its similarity score, in addition to directly

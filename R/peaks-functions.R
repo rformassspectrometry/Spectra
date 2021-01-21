@@ -268,7 +268,7 @@ NULL
 #' @param yPrecursorMz for `joinPeaksGnps`: `numeric(1)` with the precursor m/z
 #'     of the spectrum `y`.
 #'
-#' @param ... option parameters.
+#' @param ... optional parameters passed to the [MsCoreUtils::join()] function.
 #'
 #' @return
 #'
@@ -330,7 +330,8 @@ NULL
 #' ## with joinPeaks (with type = "left").
 #' joinPeaksGnps(x, y, pmz_x, yPrecursorMz = NA)
 joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
-    map <- join(x[, 1], y[, 1], type = type, tolerance = tolerance, ppm = ppm)
+    map <- join(x[, 1], y[, 1], type = type, tolerance = tolerance,
+                ppm = ppm, ...)
     list(x = x[map$x, , drop = FALSE], y = y[map$y, , drop = FALSE])
 }
 
@@ -339,13 +340,13 @@ joinPeaks <- function(x, y, type = "outer", tolerance = 0, ppm = 10, ...) {
 #' @rdname joinPeaks
 joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
                           yPrecursorMz = NA_real_, tolerance = 0,
-                          ppm = 0, type = "outer") {
+                          ppm = 0, type = "outer", ...) {
     pdiff <- yPrecursorMz - xPrecursorMz
     map <- join(x[, 1L], y[, 1L], tolerance = tolerance, ppm = ppm,
-                type = type, .check = FALSE)
+                type = type, ...)
     if (is.finite(pdiff) && pdiff != 0) {
         pmap <- join(x[, 1L] + pdiff, y[, 1L], tolerance = tolerance,
-                     ppm = ppm, type = type, .check = FALSE)
+                     ppm = ppm, type = type, ...)
         ## Keep only matches here
         nona <- !(is.na(pmap[[1L]]) | is.na(pmap[[2L]]))
         if (any(nona)) {
@@ -390,6 +391,8 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 #'     matching peaks, i.e. the first row in `x` contains a peak matching the
 #'     first peak (row) of `y` or `NA_real_` if the peak does not match.
 #'
+#' @param ... ignored
+#'
 #' @author Johannes Rainer, Michael Witting, based on the code from the ref
 #'
 #' @importFrom matrixStats rowMaxs
@@ -420,7 +423,7 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 #'
 #' ## Calculate similarity
 #' gnps(map$x, map$y)
-gnps <- function(x, y) {
+gnps <- function(x, y, ...) {
     if (nrow(x) != nrow(y))
         stop("'x' and 'y' are expected to be aligned peak matrices (i.e. ",
              "having the same number of rows).")

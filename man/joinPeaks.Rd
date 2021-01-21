@@ -14,7 +14,8 @@ joinPeaksGnps(
   yPrecursorMz = NA_real_,
   tolerance = 0,
   ppm = 0,
-  type = "outer"
+  type = "outer",
+  ...
 )
 }
 \arguments{
@@ -35,7 +36,7 @@ between m/z values of peaks from the two spectra to be matched/mapped.}
 difference between m/z values of peaks from the two spectra to be
 matched/mapped.}
 
-\item{...}{option parameters.}
+\item{...}{optional parameters passed to the \code{\link[MsCoreUtils:matching]{MsCoreUtils::join()}} function.}
 
 \item{xPrecursorMz}{for \code{joinPeaksGnps}: \code{numeric(1)} with the precursor m/z
 of the spectrum \code{x}.}
