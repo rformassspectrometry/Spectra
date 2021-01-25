@@ -5,6 +5,7 @@
 \alias{applyProcessing}
 \alias{combineSpectra}
 \alias{joinSpectraData}
+\alias{processingLog}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -101,6 +102,8 @@ combineSpectra(
 )
 
 joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
+
+processingLog(x)
 
 \S4method{Spectra}{missing}(
   object,
@@ -966,6 +969,8 @@ the \code{intensity} parameter in which case an upper limit of \code{Inf} is use
 Note that this function removes also peaks with missing intensities
 (i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
 filtering to spectra of the specified MS level(s).
+\item \code{processingLog}: returns a \code{character} vector with the processing log
+messages.
 \item \code{spectrapply}: apply a given function to each spectrum in a \code{Spectra}
 object. The \code{Spectra} is splitted into individual spectra and on each of
 them (i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional

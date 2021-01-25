@@ -472,6 +472,9 @@ NULL
 #'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
 #'   filtering to spectra of the specified MS level(s).
 #'
+#' - `processingLog`: returns a `character` vector with the processing log
+#'   messages.
+#'
 #' - `spectrapply`: apply a given function to each spectrum in a `Spectra`
 #'   object. The `Spectra` is splitted into individual spectra and on each of
 #'   them (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
@@ -1085,8 +1088,16 @@ setMethod("show", "Spectra",
         if (length(object@processingQueue))
             cat("Lazy evaluation queue:", length(object@processingQueue),
                 "processing step(s)\n")
-        if (length(object@processing))
-            cat("Processing:\n", paste(object@processing, collapse="\n "), "\n")
+        lp <- length(object@processing)
+        if (lp) {
+            lps <- object@processing
+            if (lp > 3) {
+                lps <- lps[1:3]
+                lps <- c(lps, paste0("...", lp - 3, " more processings. ",
+                                     "Use 'processingLog' to list all."))
+            }
+            cat("Processing:\n", paste(lps, collapse="\n "), "\n")
+        }
     })
 
 #' @rdname Spectra

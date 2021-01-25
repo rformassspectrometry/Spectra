@@ -2,7 +2,11 @@
 
 ## Changes in 1.1.12
 
-- Nothing yet.
+- Fix `show` method for `Spectra` to list only the 3 most recent processing
+  steps (issue
+  [173](https://github.com/rformassspectrometry/Spectra/issues/173)).
+- Add `processingLog` function to display the log messages of all processing
+  steps of a `Spectra` object.
 
 ## Changes in 1.1.11
 

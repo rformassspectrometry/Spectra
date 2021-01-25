@@ -545,3 +545,11 @@ joinSpectraData <- function(x, y,
     }
     x
 }
+
+
+#' @export
+#'
+#' @rdname Spectra
+processingLog <- function(x) {
+    x@processing
+}
