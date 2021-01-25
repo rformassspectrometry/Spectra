@@ -1,5 +1,9 @@
 # Spectra 1.1
 
+## Changes in 1.1.13
+
+- Nothing yet
+
 ## Changes in 1.1.12
 
 - Fix `show` method for `Spectra` to list only the 3 most recent processing
