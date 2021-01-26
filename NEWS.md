@@ -1,14 +1,16 @@
 # Spectra 1.1
 
+## Changes in 1.1.13
+
+- Nothing yet
+
 ## Changes in 1.1.12
 
-- Pass spectras' precursor m/z to the `MAPFUN` in `compareSpectra`; issue
-  [171](https://github.com/rformassspectrometry/Spectra/issues/171).
-- Add `joinPeaksGnps` to perform a peak matching between spectra similar to the
-  one performed in GNPS (issue
-  [#171](https://github.com/rformassspectrometry/Spectra/issues/171)).
-- Add `gnps` function to calculate a spectra similarity score similar to that
-  used in GNPS.
+- Fix `show` method for `Spectra` to list only the 3 most recent processing
+  steps (issue
+  [173](https://github.com/rformassspectrometry/Spectra/issues/173)).
+- Add `processingLog` function to display the log messages of all processing
+  steps of a `Spectra` object.
 
 ## Changes in 1.1.11
 

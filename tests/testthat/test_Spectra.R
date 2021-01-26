@@ -1373,3 +1373,13 @@ test_that("dropNaSpectraVariables works with MsBackendMzR", {
     expect_equal(mz(res), mz(sps))
     expect_true(length(spectraVariables(res)) < length(spectraVariables(sps)))
 })
+
+test_that("show,Spectra works", {
+    be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
+                                                            fromFile = 1L))
+    sps <- Spectra(backend = be)
+    expect_output(show(sps), "MsBackendDataFrame")
+
+    sps@processing <- c("a", "b", "c", "d", "e")
+    expect_output(show(sps), "2 more processings.")
+})
