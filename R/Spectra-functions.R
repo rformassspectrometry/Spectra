@@ -9,6 +9,10 @@ NULL
 
 #' @export addProcessing
 #'
+#' @importFrom ProtGenerics ProcessingStep
+#'
+#' @importClassesFrom ProtGenerics ProcessingStep
+#'
 #' @rdname Spectra
 addProcessing <- function(object, FUN, ...) {
     if (missing(FUN))
@@ -37,6 +41,8 @@ addProcessing <- function(object, FUN, ...) {
 #' @return `list` of peak `matrix` elements.
 #'
 #' @author Johannes Rainer
+#'
+#' @importFrom ProtGenerics executeProcessingStep
 #'
 #' @noRd
 .apply_processing_queue <- function(x, msLevel, centroided, queue = NULL) {

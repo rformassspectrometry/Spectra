@@ -26,7 +26,7 @@ Depends:
     R (>= 4.0.0),
     S4Vectors,
     BiocParallel,
-    ProtGenerics (>= 1.23.3)
+    ProtGenerics (>= 1.23.7)
 Imports:
     methods,
     IRanges,
@@ -67,7 +67,6 @@ Collate:
     'MsBackendHdf5Peaks.R'
     'MsBackendMzR-functions.R'
     'MsBackendMzR.R'
-    'ProcessingStep.R'
     'Spectra-functions.R'
     'Spectra.R'
     'functions-util.R'
