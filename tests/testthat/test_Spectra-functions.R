@@ -503,3 +503,10 @@ test_that("joinSpectraData works", {
     expect_true(is(ms2$IntList, "IntegerList"))
     expect_true(is(ms2$CharList, "CharacterList"))
 })
+
+test_that("processingLog works", {
+    sps <- Spectra()
+    expect_equal(processingLog(sps), character())
+    sps@processing <- c("a", "b", "c")
+    expect_equal(processingLog(sps), c("a", "b", "c"))
+})
