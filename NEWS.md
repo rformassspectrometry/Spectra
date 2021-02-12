@@ -2,7 +2,7 @@
 
 ## Changes in 1.1.13
 
-- Nothing yet
+- Move `ProcessingStep` to `ProtGenerics`.
 
 ## Changes in 1.1.12
 
