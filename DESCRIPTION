@@ -1,6 +1,6 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 1.1.13
+Version: 1.1.14
 Description: The Spectra package defines an efficient infrastructure
    for storing and handling mass spectrometry spectra and functionality to
    subset, process, visualize and compare spectra data. It provides different
@@ -21,7 +21,11 @@ Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
 	     person(given = "Sebastian", family = "Gibb",
 		    email = "mail@sebastiangibb.de",
 		    role = "aut",
-		    comment = c(ORCID = "0000-0001-7406-4443")))
+		    comment = c(ORCID = "0000-0001-7406-4443")),
+             person(given = "Michael", family = "Witting",
+	            email = "michael.witting@helmholtz-muenchen.de",
+		    role = "ctb",
+		    comment = c(ORCID = "0000-0002-1462-4426")))
 Depends:
     R (>= 4.0.0),
     S4Vectors,
@@ -36,7 +40,7 @@ Imports:
     stats,
     tools,
     utils,
-    matrixStats,
+    clue,
     fs
 Suggests:
     testthat,

@@ -1,14 +1,18 @@
 # Spectra 1.1
 
-## Changes in 1.1.13
+## Changes in 1.1.14
 
 - Pass spectras' precursor m/z to the `MAPFUN` in `compareSpectra`; issue
-  [171](https://github.com/rformassspectrometry/Spectra/issues/171).
+  [#171](https://github.com/rformassspectrometry/Spectra/issues/171).
 - Add `joinPeaksGnps` to perform a peak matching between spectra similar to the
   one performed in GNPS (issue
   [#171](https://github.com/rformassspectrometry/Spectra/issues/171)).
 - Add `gnps` function to calculate a spectra similarity score similar to that
   used in GNPS.
+
+## Changes in 1.1.13
+
+- Move `ProcessingStep` to `ProtGenerics`.
 
 ## Changes in 1.1.12
 

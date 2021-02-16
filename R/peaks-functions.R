@@ -395,7 +395,7 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 #'
 #' @author Johannes Rainer, Michael Witting, based on the code from the ref
 #'
-#' @importFrom matrixStats rowMaxs
+#' @importFrom clue solve_LSAP
 #'
 #' @importFrom stats complete.cases
 #'
@@ -442,22 +442,17 @@ gnps <- function(x, y, ...) {
     y <- y[keep, , drop = FALSE]
     scores <- sqrt(x[, 2]) / sqrt(x_sum) * sqrt(y[, 2]) / sqrt(y_sum)
 
-    fx <- factor(x[, 1])
-    fy <- factor(y[, 1])
-    if (length(levels(fy)) > length(levels(fx))) {
-        row_idx <- as.integer(fx)
-        col_idx <- as.integer(fy)
-    } else {
-        row_idx <- as.integer(fy)
-        col_idx <- as.integer(fx)
-    }
+    x_idx <- as.integer(factor(x[, 1]))
+    y_idx <- as.integer(factor(y[, 1]))
     score_mat <- matrix(0, nrow = l, ncol = l)
     seq_l <- seq_len(l)
     for (i in seq_l) {
-        score_mat[row_idx[i], col_idx[i]] <- scores[i]
+        score_mat[x_idx[i], y_idx[i]] <- scores[i]
     }
-    sum(rowMaxs(score_mat, na.rm = TRUE), na.rm = TRUE)
+    best <- solve_LSAP(score_mat, maximum = TRUE)
+    sum(score_mat[cbind(seq_l, as.integer(best))], na.rm = TRUE)
 }
+
 
 #' @importFrom MsCoreUtils localMaxima noise refineCentroids
 #'
