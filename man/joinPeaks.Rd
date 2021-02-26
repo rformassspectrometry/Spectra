@@ -66,8 +66,8 @@ from the left spectrum (\code{x}) will be matched with peaks in \code{y}. Peaks 
 same as \code{type = "left"} only for \code{y}. Only peaks that can be matched
 between \code{x} and \code{y} are returned by \code{type = "inner"}, i.e. only
 peaks present in both spectra are reported.
-\item \code{joinPeaksGnps} matches/maps peaks between spectra with an approach
-similar to the one used in GNPS: peaks are considered matching if a) the
+\item \code{joinPeaksGnps} matches/maps peaks between spectra with the same approach
+used in GNPS: peaks are considered matching if a) the
 difference in their m/z values is smaller than defined by \code{tolerance}
 and \code{ppm} (this is the same as \code{joinPeaks}) \strong{and} b) the difference of
 their m/z \emph{adjusted} for the difference of the spectras' precursor is

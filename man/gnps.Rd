@@ -59,5 +59,6 @@ Analysis and Unknown Metabolite Annotation. \emph{Anal Chem.}
 2020 Nov 3;92(21):14476-14483. doi: 10.1021/acs.analchem.0c02521.
 }
 \author{
-Johannes Rainer, Michael Witting, based on the code from the ref
+Johannes Rainer, Michael Witting, based on the code from
+Xing et al. (2020).
 }
