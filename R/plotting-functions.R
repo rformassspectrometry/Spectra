@@ -290,10 +290,16 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
     if (length(col) != 2)
         col <- rep(col[1], 2)
     if (!length(xlim))
-        xlim <- range(unlist(mz(x)), unlist(mz(y)), na.rm = TRUE)
+        suppressWarnings(
+            xlim <- range(unlist(mz(x)), unlist(mz(y)), na.rm = TRUE))
     if (!length(ylim))
-        ylim <- c(-1, 1) * max(unlist(intensity(x)), unlist(intensity(y)),
-                               na.rm = TRUE)
+        suppressWarnings(
+            ylim <- c(-1, 1) * max(unlist(intensity(x)), unlist(intensity(y)),
+                                   na.rm = TRUE))
+    if (any(is.infinite(xlim)))
+        xlim <- c(0, 0)
+    if (any(is.infinite(ylim)))
+        ylim <- c(0, 0)
     dev.hold()
     on.exit(dev.flush())
     plot.new()
@@ -407,9 +413,14 @@ plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
     mzs <- v[, "mz"]
     ints <- orientation * v[, "intensity"]
     if (!length(xlim))
-        xlim <- range(mzs, na.rm = TRUE)
+        suppressWarnings(xlim <- range(mzs, na.rm = TRUE))
     if (!length(ylim))
-        ylim <- range(orientation * c(0, max(abs(ints), na.rm = TRUE)))
+        suppressWarnings(
+            ylim <- range(orientation * c(0, max(abs(ints), na.rm = TRUE))))
+    if (any(is.infinite(xlim)))
+        xlim <- c(0, 0)
+    if (any(is.infinite(ylim)))
+        ylim <- c(0, 0)
     if (!add) {
         dev.hold()
         on.exit(dev.flush())
