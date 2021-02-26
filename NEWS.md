@@ -1,5 +1,10 @@
 # Spectra 1.1
 
+## Changes in 1.1.14
+
+- Support plotting of empty spectra (issue
+  [175](https://github.com/rformassspectrometry/Spectra/issues/175)).
+
 ## Changes in 1.1.13
 
 - Move `ProcessingStep` to `ProtGenerics`.
