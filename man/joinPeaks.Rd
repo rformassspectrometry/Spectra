@@ -78,7 +78,7 @@ matrices might be reported multiple times. Note that if one of
 results are the same as with \code{\link[=joinPeaks]{joinPeaks()}}. To calculate GNPS similarity
 scores, \code{\link[=gnps]{gnps()}} should be called on the aligned peak matrices (i.e.
 \code{compareSpectra} should be called with \code{MAPFUN = joinPeaksGnps} and
-\code{FUN = gnps}).
+\code{FUN = MsCoreUtils::gnps}).
 }
 }
 \section{Implementation notes}{
