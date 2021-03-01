@@ -241,11 +241,16 @@ combinePeaks <- function(x, intensityFun = base::mean,
     cbind(mz = mzs, intensity = vapply1d(ints, FUN = intensityFun))
 }
 
-#' pairwise comparison of peak matrices.
+#' pairwise comparison of peak matrices. Parameters `xPrecursorMz` and
+#' `yPrecursorMz` are passed to the `MAPFUN` and to `FUN`.
 #'
 #' @param x `list` of peak matrix
 #'
 #' @param y `list` of peak matrix
+#'
+#' @param xPrecursorMz `numeric` with the precursor m/z of each spectrum in `x`.
+#'
+#' @param yPrecursorMz `numeric` with the precursor m/z of each spectrum in `y`.
 #'
 #' @inheritParams .compare_spectra_chunk
 #'
@@ -255,15 +260,20 @@ combinePeaks <- function(x, intensityFun = base::mean,
 #'
 #' @noRd
 .peaks_compare <- function(x, y, MAPFUN = joinPeaks, tolerance = 0,
-                           ppm = 20, FUN = ndotproduct, ...) {
+                           ppm = 20, FUN = ndotproduct, xPrecursorMz,
+                           yPrecursorMz, ...) {
     mat <- matrix(NA_real_, nrow = length(x), ncol = length(y),
                   dimnames = list(names(x), names(y)))
     for (i in seq_along(x)) {
         for (j in seq_along(y)) {
             peak_map <- MAPFUN(x[[i]], y[[j]],
                                tolerance = tolerance, ppm = ppm,
+                               xPrecursorMz = xPrecursorMz[i],
+                               yPrecursorMz = yPrecursorMz[j],
                                .check = FALSE, ...)
-            mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]], ...)
+            mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
+                             xPrecursorMz = xPrecursorMz[i],
+                             yPrecursorMz = yPrecursorMz[j], ...)
         }
     }
     mat

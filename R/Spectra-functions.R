@@ -99,8 +99,9 @@ addProcessing <- function(object, FUN, ...) {
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
     if (length(levels(f)) > 1 || length(pqueue)) {
         res <- bplapply(split(object@backend, f), function(z, queue) {
-            .apply_processing_queue(peaksData(z), msLevel(z),
-                                    centroided(z), queue = queue)
+            metad <- spectraData(z, columns = c("msLevel", "centroided"))
+            .apply_processing_queue(peaksData(z), metad$msLevel,
+                                    metad$centroided, queue = queue)
         }, queue = pqueue, BPPARAM = BPPARAM)
         unsplit(res, f = f, drop = TRUE)
     } else peaksData(object@backend)
@@ -262,14 +263,16 @@ applyProcessing <- function(object, f = dataStorage(object),
 #'
 #' @noRd
 .compare_spectra_chunk <- function(x, y = NULL, MAPFUN = joinPeaks,
-                                 tolerance = 0, ppm = 20,
-                                 FUN = ndotproduct, chunkSize = 10000, ...) {
+                                   tolerance = 0, ppm = 20,
+                                   FUN = ndotproduct,
+                                   chunkSize = 10000, ...) {
     nx <- length(x)
     ny <- length(y)
     if (nx <= chunkSize && ny <= chunkSize) {
         mat <- .peaks_compare(.peaksapply(x), .peaksapply(y), MAPFUN = MAPFUN,
                               tolerance = tolerance, ppm = ppm,
-                              FUN = FUN, ...)
+                              FUN = FUN, xPrecursorMz = precursorMz(x),
+                              yPrecursorMz = precursorMz(y), ...)
         dimnames(mat) <- list(spectraNames(x), spectraNames(y))
         return(mat)
     }
@@ -285,12 +288,15 @@ applyProcessing <- function(object, f = dataStorage(object),
     mat <- matrix(NA_real_, nrow = nx, ncol = ny,
                   dimnames = list(spectraNames(x), spectraNames(y)))
     for (x_chunk in x_chunks) {
-        x_buff <- .peaksapply(x[x_chunk])
+        x_buff <- x[x_chunk]
+        x_peaks <- .peaksapply(x_buff)
         for (y_chunk in y_chunks) {
+            y_buff <- y[y_chunk]
             mat[x_chunk, y_chunk] <- .peaks_compare(
-                x_buff, .peaksapply(y[y_chunk]),
+                x_peaks, .peaksapply(y_buff),
                 MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
-                FUN = FUN, ...)
+                FUN = FUN, xPrecursorMz = precursorMz(x_buff),
+                yPrecursorMz = precursorMz(y_buff), ...)
         }
     }
     mat
@@ -321,15 +327,22 @@ applyProcessing <- function(object, f = dataStorage(object),
                   dimnames = list(spectraNames(x), spectraNames(x)))
 
     cb <- which(lower.tri(m, diag = TRUE), arr.ind = TRUE)
+    pmz <- precursorMz(x)
     for (i in seq_len(nrow(cb))) {
         cur <- cb[i, 2L]
-        if (i == 1L || cb[i - 1L, 2L] != cur)
+        if (i == 1L || cb[i - 1L, 2L] != cur) {
             py <- px <- peaksData(x[cur])[[1L]]
-        else
+            pmzx <- pmzy <- pmz[cur]
+        } else {
             py <- peaksData(x[cb[i, 1L]])[[1L]]
-        map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm, ...)
+            pmzy <- pmz[cb[i, 1L]]
+        }
+        map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm,
+                      xPrecursorMz = pmzx, yPrecursorMz = pmzy,
+                      .check = FALSE,...)
         m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
-            FUN(map[[1L]], map[[2L]], ...)
+            FUN(map[[1L]], map[[2L]], xPrecursorMz = pmzx,
+                yPrecursorMz = pmzy, ...)
     }
     m
 }

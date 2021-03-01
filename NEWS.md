@@ -1,5 +1,13 @@
 # Spectra 1.1
 
+## Changes in 1.1.15
+
+- Pass spectras' precursor m/z to the `MAPFUN` in `compareSpectra`; issue
+  [#171](https://github.com/rformassspectrometry/Spectra/issues/171).
+- Add `joinPeaksGnps` to perform a peak matching between spectra similar to the
+  one performed in GNPS (issue
+  [#171](https://github.com/rformassspectrometry/Spectra/issues/171)).
+
 ## Changes in 1.1.14
 
 - Support plotting of empty spectra (issue
