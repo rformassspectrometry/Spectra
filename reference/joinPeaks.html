@@ -59,6 +59,19 @@ y that do not match any peak in x are omitted. type = &quot;right&quot; is the
 same as type = &quot;left&quot; only for y. Only peaks that can be matched
 between x and y are returned by type = &quot;inner&quot;, i.e. only
 peaks present in both spectra are reported.
+joinPeaksGnps matches/maps peaks between spectra with the same approach
+used in GNPS: peaks are considered matching if a) the
+difference in their m/z values is smaller than defined by tolerance
+and ppm (this is the same as joinPeaks) and b) the difference of
+their m/z adjusted for the difference of the spectras' precursor is
+smaller than defined by tolerance and ppm. Based on this definition,
+peaks in x can match up to two peaks in y hence peaks in the returned
+matrices might be reported multiple times. Note that if one of
+xPrecursorMz or yPrecursorMz are NA or if both are the same, the
+results are the same as with joinPeaks(). To calculate GNPS similarity
+scores, gnps() should be called on the aligned peak matrices (i.e.
+compareSpectra should be called with MAPFUN = joinPeaksGnps and
+FUN = MsCoreUtils::gnps).
 
 " />
 
@@ -100,7 +113,7 @@ peaks present in both spectra are reported.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.15</span>
       </span>
     </div>
 
@@ -154,11 +167,35 @@ from the left spectrum (<code>x</code>) will be matched with peaks in <code>y</c
 same as <code>type = "left"</code> only for <code>y</code>. Only peaks that can be matched
 between <code>x</code> and <code>y</code> are returned by <code>type = "inner"</code>, i.e. only
 peaks present in both spectra are reported.</p></li>
+<li><p><code>joinPeaksGnps</code> matches/maps peaks between spectra with the same approach
+used in GNPS: peaks are considered matching if a) the
+difference in their m/z values is smaller than defined by <code>tolerance</code>
+and <code>ppm</code> (this is the same as <code>joinPeaks</code>) <strong>and</strong> b) the difference of
+their m/z <em>adjusted</em> for the difference of the spectras' precursor is
+smaller than defined by <code>tolerance</code> and <code>ppm</code>. Based on this definition,
+peaks in <code>x</code> can match up to two peaks in <code>y</code> hence peaks in the returned
+matrices might be reported multiple times. Note that if one of
+<code>xPrecursorMz</code> or <code>yPrecursorMz</code> are <code>NA</code> or if both are the same, the
+results are the same as with <code>joinPeaks()</code>. To calculate GNPS similarity
+scores, <code>gnps()</code> should be called on the aligned peak matrices (i.e.
+<code>compareSpectra</code> should be called with <code>MAPFUN = joinPeaksGnps</code> and
+<code>FUN = MsCoreUtils::gnps</code>).</p></li>
 </ul>
 
     </div>
 
-    <pre class="usage"><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, type <span class='op'>=</span> <span class='st'>"outer"</span>, tolerance <span class='op'>=</span> <span class='fl'>0</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, type <span class='op'>=</span> <span class='st'>"outer"</span>, tolerance <span class='op'>=</span> <span class='fl'>0</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>joinPeaksGnps</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>y</span>,
+  xPrecursorMz <span class='op'>=</span> <span class='cn'>NA_real_</span>,
+  yPrecursorMz <span class='op'>=</span> <span class='cn'>NA_real_</span>,
+  tolerance <span class='op'>=</span> <span class='fl'>0</span>,
+  ppm <span class='op'>=</span> <span class='fl'>0</span>,
+  type <span class='op'>=</span> <span class='st'>"outer"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,8 +212,9 @@ m/z and intensity values of the mass peaks of a spectrum.</p></td>
     </tr>
     <tr>
       <th>type</th>
-      <td><p>For <code>joinPeaks</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> specifying the type of join that
-should be performed. See function description for details.</p></td>
+      <td><p>For <code>joinPeaks</code> and <code>joinPeaksGnps</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> specifying
+the type of join that should be performed. See function description for
+details.</p></td>
     </tr>
     <tr>
       <th>tolerance</th>
@@ -191,7 +229,17 @@ matched/mapped.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>option parameters.</p></td>
+      <td><p>optional parameters passed to the <code><a href='https://rdrr.io/pkg/MsCoreUtils/man/matching.html'>MsCoreUtils::join()</a></code> function.</p></td>
+    </tr>
+    <tr>
+      <th>xPrecursorMz</th>
+      <td><p>for <code>joinPeaksGnps</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the precursor m/z
+of the spectrum <code>x</code>.</p></td>
+    </tr>
+    <tr>
+      <th>yPrecursorMz</th>
+      <td><p>for <code>joinPeaksGnps</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the precursor m/z
+of the spectrum <code>y</code>.</p></td>
     </tr>
     </table>
 
@@ -212,9 +260,12 @@ for <code>y</code> (and <em>vice versa</em>).</p>
 must return <code>list</code> with two elements named <code>"x"</code> and <code>"y"</code> that represent
 the aligned input matrices. The function should also have <code>...</code> in its
 definition. Parameters <code>ppm</code> and <code>tolerance</code> are suggested but not required.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code>gnps()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Johannes Rainer</p>
+    <p>Johannes Rainer, Michael Witting</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -328,6 +379,92 @@ definition. Parameters <code>ppm</code> and <code>tolerance</code> are suggested
 #&gt;  [7,]  514.1400    7
 #&gt;  [8,]  901.0000    8
 #&gt;  [9,] 1202.0000    9
+#&gt; </div><div class='input'>
+<span class='co'>## GNPS-like peak matching</span>
+
+<span class='co'>## Define spectra</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span>mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>36</span>, <span class='fl'>63</span>, <span class='fl'>91</span>, <span class='fl'>93</span><span class='op'>)</span>, intensity <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>14</span>, <span class='fl'>15</span>, <span class='fl'>999</span>, <span class='fl'>650</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span>mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>12</span>, <span class='fl'>50</span>, <span class='fl'>63</span>, <span class='fl'>105</span><span class='op'>)</span>, intensity <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>35</span>, <span class='fl'>5</span>, <span class='fl'>16</span>, <span class='fl'>999</span>, <span class='fl'>450</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'>## The precursor m/z</span>
+<span class='va'>pmz_x</span> <span class='op'>&lt;-</span> <span class='fl'>91</span>
+<span class='va'>pmz_y</span> <span class='op'>&lt;-</span> <span class='fl'>105</span>
+
+<span class='co'>## Plain joinPeaks identifies only 2 matching peaks: 1 and 5</span>
+<span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $x
+#&gt;      mz intensity
+#&gt; [1,] 10        14
+#&gt; [2,] NA        NA
+#&gt; [3,] 36        15
+#&gt; [4,] NA        NA
+#&gt; [5,] 63       999
+#&gt; [6,] 91       650
+#&gt; [7,] 93         1
+#&gt; [8,] NA        NA
+#&gt; 
+#&gt; $y
+#&gt;       mz intensity
+#&gt; [1,]  10        35
+#&gt; [2,]  12         5
+#&gt; [3,]  NA        NA
+#&gt; [4,]  50        16
+#&gt; [5,]  63       999
+#&gt; [6,]  NA        NA
+#&gt; [7,]  NA        NA
+#&gt; [8,] 105       450
+#&gt; </div><div class='input'>
+<span class='co'>## joinPeaksGnps finds 4 matches</span>
+<span class='fu'>joinPeaksGnps</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>pmz_x</span>, <span class='va'>pmz_y</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $x
+#&gt;       mz intensity
+#&gt;  [1,] 10        14
+#&gt;  [2,] 36        15
+#&gt;  [3,] 36        15
+#&gt;  [4,] 63       999
+#&gt;  [5,] 91       650
+#&gt;  [6,] 91       650
+#&gt;  [7,] 93         1
+#&gt;  [8,] NA        NA
+#&gt;  [9,] NA        NA
+#&gt; [10,] NA        NA
+#&gt; 
+#&gt; $y
+#&gt;        mz intensity
+#&gt;  [1,]  10        35
+#&gt;  [2,]  NA        NA
+#&gt;  [3,]  50        16
+#&gt;  [4,]  63       999
+#&gt;  [5,]  NA        NA
+#&gt;  [6,] 105       450
+#&gt;  [7,]  NA        NA
+#&gt;  [8,]  12         5
+#&gt;  [9,]  50        16
+#&gt; [10,] 105       450
+#&gt; </div><div class='input'>
+<span class='co'>## with one of the two precursor m/z being NA, the result are the same as</span>
+<span class='co'>## with joinPeaks (with type = "left").</span>
+<span class='fu'>joinPeaksGnps</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>pmz_x</span>, yPrecursorMz <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $x
+#&gt;      mz intensity
+#&gt; [1,] 10        14
+#&gt; [2,] NA        NA
+#&gt; [3,] 36        15
+#&gt; [4,] NA        NA
+#&gt; [5,] 63       999
+#&gt; [6,] 91       650
+#&gt; [7,] 93         1
+#&gt; [8,] NA        NA
+#&gt; 
+#&gt; $y
+#&gt;       mz intensity
+#&gt; [1,]  10        35
+#&gt; [2,]  12         5
+#&gt; [3,]  NA        NA
+#&gt; [4,]  50        16
+#&gt; [5,]  63       999
+#&gt; [6,]  NA        NA
+#&gt; [7,]  NA        NA
+#&gt; [8,] 105       450
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
