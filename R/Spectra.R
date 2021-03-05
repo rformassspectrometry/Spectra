@@ -404,7 +404,9 @@ NULL
 #'   return a peaks matrix. A peaks matrix is a numeric matrix with two columns,
 #'   the first containing the m/z values of the peaks and the second the
 #'   corresponding intensities. The function has to have `...` in its
-#'   definition. Additional arguments can be passed with `...`. Examples are
+#'   definition. Additional arguments can be passed with `...`. With parameter
+#'   `spectraVariables` it is possible to define additional spectra variables
+#'   from `object` that should be passed to the function `FUN`. Examples are
 #'   provided in the package vignette.
 #'
 #' - `applyProcessing`: for `Spectra` objects that use a **writeable** backend
@@ -682,6 +684,9 @@ NULL
 #'
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
+#'     For `addProcessing`: `character` with additional spectra variables that
+#'     should be passed along to the function defined with `FUN`. See function
+#'     description for details.
 #'
 #' @param tolerance For `compareSpectra`, `containsMz`: `numeric(1)` allowing to
 #'     define a constant maximal accepted difference between m/z values for
@@ -1687,7 +1692,8 @@ setMethod("filterIntensity", "Spectra",
                            "a lower and upper limit.")
                   object <- addProcessing(object, .peaks_filter_intensity,
                                           intensity = intensity,
-                                          msLevel = msLevel.)
+                                          msLevel = msLevel.,
+                                          spectraVariables = "msLevel")
                   object@processing <- .logging(
                       object@processing, "Remove peaks with intensities ",
                       "outside [", intensity[1], ", ", intensity[2],
@@ -1698,7 +1704,7 @@ setMethod("filterIntensity", "Spectra",
                       object <- addProcessing(
                           object, .peaks_filter_intensity_function,
                           intfun = intensity, msLevel = msLevel.,
-                          args = list(...))
+                          args = list(...), spectraVariables = "msLevel")
                       object@processing <- .logging(
                           object@processing, "Remove peaks based on their ",
                           "intensities and a user-provided function ",
@@ -1738,7 +1744,8 @@ setMethod("filterMzRange", "Spectra",
                   return(object)
               mz <- range(mz)
               object <- addProcessing(object, .peaks_filter_mz_range,
-                                      mz = mz, msLevel = msLevel.)
+                                      mz = mz, msLevel = msLevel.,
+                                      spectraVariables = "msLevel")
               object@processing <- .logging(
                   object@processing, "Filter: select peaks with an m/z within ",
                   "[", mz[1L], ", ", mz[2L], "]")
@@ -1768,7 +1775,8 @@ setMethod("filterMzValues", "Spectra",
               }
               object <- addProcessing(object, .peaks_filter_mz_value,
                                       mz = mz, tolerance = tolerance,
-                                      ppm = ppm, msLevel = msLevel.)
+                                      ppm = ppm, msLevel = msLevel.,
+                                      spectraVariables = "msLevel")
               if (length(mz) <= 3)
                   what <- paste0(format(mz, digits = 4), collapse = ", ")
               else what <- ""
@@ -1855,7 +1863,7 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
         breaks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = binSize)
     }
     x <- addProcessing(x, .peaks_bin, breaks = breaks,
-                       msLevel = msLevel.)
+                       msLevel = msLevel., spectraVariables = "msLevel")
     x@processing <- .logging(x@processing,
                              "Spectra of MS level(s) ",
                              paste0(msLevel., collapse = ", "),
@@ -1936,7 +1944,8 @@ setMethod("pickPeaks", "Spectra",
     object <- addProcessing(object, .peaks_pick,
                             halfWindowSize = halfWindowSize, method = method,
                             snr = snr, k = k, descending = descending,
-                            threshold = threshold, msLevel = msLevel., ...)
+                            threshold = threshold, msLevel = msLevel., ...,
+                            spectraVariables = c("msLevel", "centroided"))
     object$centroided[msLevel(object) %in% msLevel.] <- TRUE
     object@processing <- .logging(object@processing,
                                   "Peak picking with ", method,
@@ -1961,9 +1970,10 @@ setMethod("replaceIntensitiesBelow", "Spectra",
                        "a function.")
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              object <- addProcessing(object, .peaks_replace_intensity,
-                                      threshold = threshold, value = value,
-                                      msLevel = msLevel.)
+              object <- addProcessing(
+                  object, .peaks_replace_intensity, threshold = threshold,
+                  value = value, msLevel = msLevel.,
+                  spectraVariables = c("msLevel", "centroided"))
               msg <- ifelse(
                   is.function(threshold),
                   yes = "a threshold defined by a provided function",
@@ -2001,7 +2011,8 @@ setMethod("smooth", "Spectra",
                    SavitzkyGolay = coefSG(halfWindowSize, ...))
 
     x <- addProcessing(x, .peaks_smooth, halfWindowSize = halfWindowSize,
-                       coef = coef, msLevel = msLevel., ...)
+                       coef = coef, msLevel = msLevel., ...,
+                       spectraVariables = "msLevel")
     x@processing <- .logging(x@processing, "Spectra smoothing with ", method,
                                            ", hws = ", halfWindowSize)
     x

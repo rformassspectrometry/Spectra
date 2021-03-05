@@ -1,5 +1,10 @@
 # Spectra 1.1
 
+## Changes in 1.1.16
+
+- Support arbitrary spectra variables to be passed to the functions
+  provided/added with `addProcessing`.
+
 ## Changes in 1.1.15
 
 - Pass spectras' precursor m/z to the `MAPFUN` in `compareSpectra`; issue
