@@ -14,11 +14,18 @@ NULL
 #' @importClassesFrom ProtGenerics ProcessingStep
 #'
 #' @rdname Spectra
-addProcessing <- function(object, FUN, ...) {
+#'
+#' UPDATE: with `spectraVariables` we allow the user to pass the names of the
+#' spectraVariables he/she wishes to pass along to the function.
+addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
     if (missing(FUN))
         return(object)
     object@processingQueue <- c(object@processingQueue,
                                 list(ProcessingStep(FUN, ARGS = list(...))))
+    if (!any(slotNames(object) == "processingQueueVariables"))
+        stop("Please call 'updateObject' on the Spectra object")
+    object@processingQueueVariables <- union(object@processingQueueVariables,
+                                             spectraVariables)
     validObject(object)
     object
 }
@@ -57,6 +64,30 @@ addProcessing <- function(object, FUN, ...) {
     }
     x
 }
+
+#' @param spectraData `data.frame` with additional spectra variables as
+#'     requested with `addProcessing`.
+#'
+#' @noRd
+.apply_processing_queue2 <- function(x, spectraData = data.frame(),
+                                     queue = NULL) {
+    if (length(queue)) {
+        args <- list()
+        ls <- length(spectraData)
+        if (ls)
+            colnames(spectraData) <- sub("^msLevel$", "spectrumMsLevel",
+                                         colnames(spectraData))
+        for (i in seq_along(x)) {
+            if (ls)
+                args <- as.list(spectraData[i, ])
+            for (pStep in queue) {
+                x[[i]] <- do.call(pStep@FUN, args = c(x[i], args, pStep@ARGS))
+            }
+        }
+    }
+    x
+}
+
 
 #' @title Apply arbitrary functions and processing queue to peaks matrices
 #'
@@ -107,6 +138,41 @@ addProcessing <- function(object, FUN, ...) {
     } else peaksData(object@backend)
 }
 
+.processingQueueVariables <- function(x) {
+    if (any(slotNames(x) == "processingQueueVariables"))
+        x@processingQueueVariables
+    else c("msLevel", "centroided")
+}
+
+#' Updated version that supports arbitrary spectra variables.
+#'
+#' @param spectraVariables `character` defining spectra variables that should
+#'     be passed to the function.
+#'
+#' @noRd
+.peaksapply2 <- function(object, FUN = NULL, ...,
+                         spectraVariables = .processingQueueVariables(object),
+                         f = dataStorage(object), BPPARAM = bpparam()) {
+    len <- length(object)
+    if (!len)
+        return(list())
+    if (length(f) != len)
+        stop("Length of 'f' has to match 'length(object)' (", len, ")")
+    if (!is.factor(f))
+        f <- factor(f)
+    pqueue <- object@processingQueue
+    if (!is.null(FUN))
+        pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
+    if (length(levels(f)) > 1 || length(pqueue)) {
+        res <- bplapply(split(object@backend, f), function(z, queue, svars) {
+            if (length(svars))
+                spd <- as.data.frame(spectraData(z, columns = svars))
+            else spd <- NULL
+            .apply_processing_queue2(peaksData(z), spd, queue = queue)
+        }, queue = pqueue, svars = spectraVariables, BPPARAM = BPPARAM)
+        unsplit(res, f = f, drop = TRUE)
+    } else peaksData(object@backend)
+}
 
 #' @title Apply a function to subsets of Spectra
 #'

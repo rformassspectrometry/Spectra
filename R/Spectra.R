@@ -1039,6 +1039,8 @@ NULL
 #' @slot backend A derivate of [MsBackend-class] holding/controlling the spectra
 #' data.
 #' @slot processingQueue `list` of `ProcessingStep` objects.
+#' @slot processingQueueVariables `character` of spectraVariables that should
+#'     be passed to the processing step function.
 #' @slot processing A `character` storing logging information.
 #' @slot metadata A `list` storing experiment metadata.
 #' @slot version A `characher(1)` containing the class version.
@@ -1059,6 +1061,7 @@ setClass(
     slots = c(
         backend = "MsBackend",
         processingQueue = "list",
+        processingQueueVariables = "character",
         ## logging
         processing = "character",
         ## metadata
