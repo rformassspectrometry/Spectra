@@ -1073,7 +1073,7 @@ setClass(
         metadata = "list",
         version = "character"
     ),
-    prototype = prototype(version = "0.1")
+    prototype = prototype(version = "0.2")
 )
 
 setValidity("Spectra", function(object) {
@@ -1839,6 +1839,9 @@ setMethod("filterRt", "Spectra",
 setMethod("reset", "Spectra", function(object, ...) {
     object@backend <- reset(object@backend)
     object@processingQueue <- list()
+    if (!.hasSlot(object, "processingQueueVariables"))
+        object <- updateObject(object, check = FALSE)
+    object@processingQueueVariables <- character()
     object@processing <- .logging(object@processing, "Reset object.")
     object
 })

@@ -13,7 +13,9 @@ NULL
 #'
 #' @importClassesFrom ProtGenerics ProcessingStep
 #'
-#' @importFrom methods slotNames
+#' @importFrom methods .slotNames
+#'
+#' @importFrom BiocGenerics updateObject
 #'
 #' @rdname Spectra
 addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
@@ -21,8 +23,8 @@ addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
         return(object)
     object@processingQueue <- c(object@processingQueue,
                                 list(ProcessingStep(FUN, ARGS = list(...))))
-    if (!any(slotNames(object) == "processingQueueVariables"))
-        stop("Please call 'updateObject' on the Spectra object")
+    if (!.hasSlot(object, "processingQueueVariables"))
+        object <- updateObject(object)
     object@processingQueueVariables <- union(object@processingQueueVariables,
                                              spectraVariables)
     validObject(object)
@@ -109,7 +111,7 @@ addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
 ## }
 
 .processingQueueVariables <- function(x) {
-    if (any(slotNames(x) == "processingQueueVariables"))
+    if (.hasSlot(x, "processingQueueVariables"))
         x@processingQueueVariables
     else c("msLevel", "centroided")
 }
@@ -242,6 +244,9 @@ applyProcessing <- function(object, f = dataStorage(object),
                                   length(object@processingQueue),
                                   " steps")
     object@processingQueue <- list()
+    if (!.hasSlot(object, "processingQueueVariables"))
+        object <- updateObject(object, check = FALSE)
+    object@processingQueueVariables <- character()
     object
 }
 

@@ -36,7 +36,8 @@ Imports:
     stats,
     tools,
     utils,
-    fs
+    fs,
+    BiocGenerics
 Suggests:
     testthat,
     knitr (>= 1.1.0),

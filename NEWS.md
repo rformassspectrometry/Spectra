@@ -3,7 +3,8 @@
 ## Changes in 1.1.16
 
 - Support arbitrary spectra variables to be passed to the functions
-  provided/added with `addProcessing`.
+  provided/added with `addProcessing`; issue
+  [#182](https://github.com/rformassspectrometry/Spectra/issues/182).
 
 ## Changes in 1.1.15
 
