@@ -13,7 +13,7 @@ NULL
 #'
 #' @importClassesFrom ProtGenerics ProcessingStep
 #'
-#' @importFrom methods .slotNames
+#' @importFrom methods .hasSlot
 #'
 #' @importFrom BiocGenerics updateObject
 #'
