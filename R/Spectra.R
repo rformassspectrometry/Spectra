@@ -406,8 +406,14 @@ NULL
 #'   corresponding intensities. The function has to have `...` in its
 #'   definition. Additional arguments can be passed with `...`. With parameter
 #'   `spectraVariables` it is possible to define additional spectra variables
-#'   from `object` that should be passed to the function `FUN`. Examples are
-#'   provided in the package vignette.
+#'   from `object` that should be passed to the function `FUN`. These will be
+#'   passed by their name (e.g. specifying `spectraVariables = "precursorMz"`
+#'   will pass the spectra's precursor m/z as a parameter named `precursorMz`
+#'   to the function. The only exception is the spectra's MS level, these will
+#'   be passed to the function as a parameter called `spectrumMsLevel` (i.e.
+#'   with `spectraVariables = "msLevel"` the MS levels of each spectrum will be
+#'   submitted to the function as a parameter called `spectrumMsLevel`).
+#'   Examples are provided in the package vignette.
 #'
 #' - `applyProcessing`: for `Spectra` objects that use a **writeable** backend
 #'   only: apply all steps from the lazy processing queue to the peak data and

@@ -912,8 +912,14 @@ the first containing the m/z values of the peaks and the second the
 corresponding intensities. The function has to have \code{...} in its
 definition. Additional arguments can be passed with \code{...}. With parameter
 \code{spectraVariables} it is possible to define additional spectra variables
-from \code{object} that should be passed to the function \code{FUN}. Examples are
-provided in the package vignette.
+from \code{object} that should be passed to the function \code{FUN}. These will be
+passed by their name (e.g. specifying \code{spectraVariables = "precursorMz"}
+will pass the spectra's precursor m/z as a parameter named \code{precursorMz}
+to the function. The only exception is the spectra's MS level, these will
+be passed to the function as a parameter called \code{spectrumMsLevel} (i.e.
+with \code{spectraVariables = "msLevel"} the MS levels of each spectrum will be
+submitted to the function as a parameter called \code{spectrumMsLevel}).
+Examples are provided in the package vignette.
 \item \code{applyProcessing}: for \code{Spectra} objects that use a \strong{writeable} backend
 only: apply all steps from the lazy processing queue to the peak data and
 write it back to the data storage. Parameter \code{f} allows to specify how
