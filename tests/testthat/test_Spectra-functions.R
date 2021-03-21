@@ -14,69 +14,69 @@ test_that("addProcessing works", {
     show(tst)
 })
 
-test_that(".apply_processing_queue works", {
-    inp <- list(1:5, 1:3, 5)
-    expect_equal(.apply_processing_queue(inp), inp)
-    res <- .apply_processing_queue(inp, msLevel = rep(0, 3),
-                                   centroided = rep(FALSE, 3),
-                                   list(ProcessingStep("sum")))
-    expect_equal(res, list(sum(1:5), sum(1:3), 5))
+## test_that(".apply_processing_queue works", {
+##     inp <- list(1:5, 1:3, 5)
+##     expect_equal(.apply_processing_queue(inp), inp)
+##     res <- .apply_processing_queue(inp, msLevel = rep(0, 3),
+##                                    centroided = rep(FALSE, 3),
+##                                    list(ProcessingStep("sum")))
+##     expect_equal(res, list(sum(1:5), sum(1:3), 5))
 
-    q <- list(ProcessingStep(function(x, y, ...) x + y, ARGS = list(y = 3)),
-              ProcessingStep(function(x, y, ...) x - y, ARGS = list(y = 1)))
-    res <- .apply_processing_queue(inp, msLevel = rep(0, 3),
-                                   centroided = rep(FALSE, 3), q)
-    expect_equal(res, list((1:5 + 2), (1:3 + 2), 7))
+##     q <- list(ProcessingStep(function(x, y, ...) x + y, ARGS = list(y = 3)),
+##               ProcessingStep(function(x, y, ...) x - y, ARGS = list(y = 1)))
+##     res <- .apply_processing_queue(inp, msLevel = rep(0, 3),
+##                                    centroided = rep(FALSE, 3), q)
+##     expect_equal(res, list((1:5 + 2), (1:3 + 2), 7))
 
-    be <- sciex_mzr
-    pks <- peaksData(be)
-    pq <- list(ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
-    res <- .apply_processing_queue(pks, msLevel(be),
-                                   rep(TRUE, length(be)), pq)
-    expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
-                           logical(1))))
-    expect_equal(vapply(res, nrow, integer(1)), vapply(pks, nrow, integer(1)))
+##     be <- sciex_mzr
+##     pks <- peaksData(be)
+##     pq <- list(ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
+##     res <- .apply_processing_queue(pks, msLevel(be),
+##                                    rep(TRUE, length(be)), pq)
+##     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
+##                            logical(1))))
+##     expect_equal(vapply(res, nrow, integer(1)), vapply(pks, nrow, integer(1)))
 
-    ## Length 2
-    pq <- c(pq, list(ProcessingStep(.peaks_filter_intensity,
-                                    list(intensity = c(0.1, Inf)))))
-    res <- .apply_processing_queue(pks, msLevel(be),
-                                   rep(TRUE, length(be)), pq)
-    expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
-                           logical(1))))
-    expect_true(all(vapply(res, nrow, integer(1)) <
-                    vapply(pks, nrow, integer(1))))
-})
+##     ## Length 2
+##     pq <- c(pq, list(ProcessingStep(.peaks_filter_intensity,
+##                                     list(intensity = c(0.1, Inf)))))
+##     res <- .apply_processing_queue(pks, msLevel(be),
+##                                    rep(TRUE, length(be)), pq)
+##     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
+##                            logical(1))))
+##     expect_true(all(vapply(res, nrow, integer(1)) <
+##                     vapply(pks, nrow, integer(1))))
+## })
 
-test_that(".peaksapply works", {
-    sps <- Spectra(backend = sciex_mzr)
-    res <- .peaksapply(sps, FUN = .peaks_replace_intensity, t = 50000)
-    expect_true(is.list(res))
-    expect_equal(length(res), length(sps))
-    expect_true(all(vapply(res, is.matrix, logical(1))))
+## test_that(".peaksapply works", {
+##     sps <- Spectra(backend = sciex_mzr)
+##     res <- .peaksapply(sps, FUN = .peaks_replace_intensity, t = 50000)
+##     expect_true(is.list(res))
+##     expect_equal(length(res), length(sps))
+##     expect_true(all(vapply(res, is.matrix, logical(1))))
 
-    ## Ensure that this works with arbitrary ordering of the factor f
-    res2 <- .peaksapply(sps, FUN = .peaks_replace_intensity, t = 50000,
-                        f = rep(1:2, length(sps)/2))
-    expect_identical(res, res2)
+##     ## Ensure that this works with arbitrary ordering of the factor f
+##     res2 <- .peaksapply(sps, FUN = .peaks_replace_intensity, t = 50000,
+##                         f = rep(1:2, length(sps)/2))
+##     expect_identical(res, res2)
 
-    sps@processingQueue <- list(
-        ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
-    res_2 <- .peaksapply(sps)
-    expect_equal(res, res_2)
+##     sps@processingQueue <- list(
+##         ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
+##     res_2 <- .peaksapply(sps)
+##     expect_equal(res, res_2)
 
-    res_3 <- .peaksapply(sps, FUN = .peaks_filter_intensity,
-                         intensity = c(0.1, Inf))
-    expect_true(all(vapply(res_3, nrow, integer(1)) <
-                    vapply(res_2, nrow, integer(1))))
-    expect_true(!any(vapply(res_3, function(z) any(z[, 2] == 0), logical(1))))
+##     res_3 <- .peaksapply(sps, FUN = .peaks_filter_intensity,
+##                          intensity = c(0.1, Inf))
+##     expect_true(all(vapply(res_3, nrow, integer(1)) <
+##                     vapply(res_2, nrow, integer(1))))
+##     expect_true(!any(vapply(res_3, function(z) any(z[, 2] == 0), logical(1))))
 
-    sps@processingQueue <- c(sps@processingQueue,
-                             list(ProcessingStep(.peaks_filter_intensity,
-                                                 list(intensity = c(0.1, Inf)))))
-    res_4 <- .peaksapply(sps)
-    expect_equal(res_3, res_4)
-})
+##     sps@processingQueue <- c(sps@processingQueue,
+##                              list(ProcessingStep(.peaks_filter_intensity,
+##                                                  list(intensity = c(0.1, Inf)))))
+##     res_4 <- .peaksapply(sps)
+##     expect_equal(res_3, res_4)
+## })
 
 test_that("applyProcessing works", {
     ## Initialize required objects.
@@ -509,4 +509,95 @@ test_that("processingLog works", {
     expect_equal(processingLog(sps), character())
     sps@processing <- c("a", "b", "c")
     expect_equal(processingLog(sps), c("a", "b", "c"))
+})
+
+test_that(".processingQueueVariables works", {
+    sps <- Spectra()
+    expect_equal(.processingQueueVariables(sps), character())
+})
+
+test_that(".peaksapply works", {
+    ## Use a processing with precursorMz and msLevel
+    fl <- dir(system.file("TripleTOF-SWATH", package = "msdata"),
+              full.names = TRUE)[1]
+    sps <- Spectra(backendInitialize(MsBackendMzR(), files = fl))
+
+    loss <- function(x, spectrumMsLevel, precursorMz, ...) {
+        if (spectrumMsLevel == 2L)
+            x[, "mz"] <- x[, "mz"] - precursorMz
+        x
+    }
+    sps_2 <- addProcessing(sps, loss,
+                           spectraVariables = c("msLevel", "precursorMz"))
+    res_2 <- .peaksapply(sps_2)
+    mzs_2 <- IRanges::NumericList(lapply(res_2, function(z) z[, "mz"]),
+                                  compress = FALSE)
+    mzs <- mz(sps)
+    ms2 <- sps$msLevel == 2L
+    mzs[ms2] <- mzs[ms2] - precursorMz(sps[ms2])
+    expect_equal(mzs, mzs_2)
+
+    sps <- Spectra(backend = sciex_mzr)
+    sps$centroided <- TRUE
+    res <- .peaksapply(sps, FUN = .peaks_replace_intensity, t = 50000,
+                       spectraVariables = c("msLevel", "centroided"))
+    expect_true(is.list(res))
+    expect_equal(length(res), length(sps))
+    expect_true(all(vapply(res, is.matrix, logical(1))))
+
+    ## Ensure that this works with arbitrary ordering of the factor f
+    res2 <- .peaksapply(sps, FUN = .peaks_replace_intensity, t = 50000,
+                        f = rep(1:2, length(sps)/2),
+                        spectraVariables = c("msLevel", "centroided"))
+    expect_identical(res, res2)
+
+    sps@processingQueue <- list(
+        ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
+    res_2 <- .peaksapply(sps, spectraVariables = c("msLevel", "centroided"))
+    expect_equal(res, res_2)
+
+    res_3 <- .peaksapply(sps, FUN = .peaks_filter_intensity,
+                         intensity = c(0.1, Inf),
+                         spectraVariables = c("msLevel", "centroided"))
+    expect_true(all(vapply(res_3, nrow, integer(1)) <
+                    vapply(res_2, nrow, integer(1))))
+    expect_true(!any(vapply(res_3, function(z) any(z[, 2] == 0), logical(1))))
+
+    sps@processingQueue <- c(sps@processingQueue,
+                             list(ProcessingStep(.peaks_filter_intensity,
+                                                 list(intensity = c(0.1, Inf)))))
+    res_4 <- .peaksapply(sps, spectraVariables = c("msLevel", "centroided"))
+    expect_equal(res_3, res_4)
+})
+
+test_that(".apply_processing_queue works", {
+    inp <- list(1:5, 1:3, 5)
+    expect_equal(.apply_processing_queue(inp), inp)
+    res <- .apply_processing_queue(inp, queue = list(ProcessingStep("sum")))
+    expect_equal(res, list(sum(1:5), sum(1:3), 5))
+
+    q <- list(ProcessingStep(function(x, y, ...) x + y, ARGS = list(y = 3)),
+              ProcessingStep(function(x, y, ...) x - y, ARGS = list(y = 1)))
+    res <- .apply_processing_queue(inp, queue = q)
+    expect_equal(res, list((1:5 + 2), (1:3 + 2), 7))
+
+    be <- sciex_mzr
+    pks <- peaksData(be)
+    pq <- list(ProcessingStep(.peaks_replace_intensity, list(t = 50000)))
+    spd <- spectraData(be, columns = c("msLevel", "centroided"))
+    spd$centroided <- TRUE
+    res <- .apply_processing_queue(
+        pks, spectraData = as.data.frame(spd), queue = pq)
+    expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
+                           logical(1))))
+    expect_equal(vapply(res, nrow, integer(1)), vapply(pks, nrow, integer(1)))
+
+    ## Length 2
+    pq <- c(pq, list(ProcessingStep(.peaks_filter_intensity,
+                                    list(intensity = c(0.1, Inf)))))
+    res <- .apply_processing_queue(pks, spd, queue = pq)
+    expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
+                           logical(1))))
+    expect_true(all(vapply(res, nrow, integer(1)) <
+                    vapply(pks, nrow, integer(1))))
 })

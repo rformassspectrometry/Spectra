@@ -478,11 +478,68 @@ lengths(sps_2)
 intensity(sps_2)
 ```
 
-Each spectrum in `sps_2` thus contains only a single peak. The
-original data can be *restored* with the `reset` function which will empty the
-lazy evaluation queue and call the `reset` method on the storage backend. Below
-we call `reset` on the `sps_2` object and hence restore the data to its original
-state.
+Each spectrum in `sps_2` thus contains only a single peak. The parameter
+`spectraVariables` of the `addProcessing` function allows in addition to define
+spectra variables that should be passed (in addition to the peaks matrix) to the
+user-provided function. This would enable for example to calculate *neutral
+loss* spectra from a `Spectra` by subtracting the precursor m/z from each m/z of
+a spectrum. Our tool example does not have precursor m/z values defined, thus we
+first set them to arbitrary values. Then we define a function `neutral_loss`
+that subtracts the precursor m/z from each peak m/z. Note that, in order to be
+able to access the precursor m/z of the spectrum within our function, we have to
+add a parameter to the function that has the same name as the spectrum variable
+we want to access (in our case `precursorMz`).
+
+```{r set-precursor-mz}
+sps_rep$precursorMz <- c(10, 20, 30, 40)
+
+neutral_loss <- function(x, precursorMz, ...) {
+    x[, "mz"] <- x[, "mz"] - precursorMz
+    x
+}
+```
+
+We have then to call `addProcessing` with `spectraVariables = "precursorMz"` to
+specify that this spectra variable is passed along to our function.
+
+```{r neutral-loss}
+sps_3 <- addProcessing(sps_rep, neutral_loss, spectraVariables = "precursorMz")
+mz(sps_rep)
+mz(sps_3)
+```
+
+As we can see, the precursor m/z was subtracted from each m/z of the respective
+spectrum. A better version of the function, that only calculates neutral loss
+spectra for MS level 2 spectra would be the `neutral_loss` function below. Since
+we are accessing also the spectrum's MS level we have to call `addProcessing`
+adding also the spectra variable `msLevel` to the `spectraVariables`
+parameter. Note however that the `msLevel` spectra variable **is by default
+renamed** to `spectrumMsLevel` prior passing it to the function. We have thus to
+use a parameter called `spectrumMsLevel` in the `neutral_loss` function instead
+of `msLevel`.
+
+```{r neutral-loss2}
+neutral_loss <- function(x, spectrumMsLevel, precursorMz, ...) {
+    if (spectrumMsLevel == 2L)
+        x[, "mz"] <- x[, "mz"] - precursorMz
+    x
+}
+sps_3 <- addProcessing(sps_rep, neutral_loss,
+                       spectraVariables = c("msLevel", "precursorMz"))
+mz(sps_3)
+```
+
+Using the same concept it would also be possible to provide any
+spectrum-specific user-defined value to the processing function. This variable
+could simply be added first as a new spectra variable to the `Spectra` object
+and then this variable could be passed along to the function in the same way we
+passed the precursor m/z to our function above.
+
+Since all data manipulations above did not change the original intensity or m/z
+values, it is possible to *restore* the original data. This can be done with the
+`reset` function which will empty the lazy evaluation queue and call the `reset`
+method on the storage backend. Below we call `reset` on the `sps_2` object and
+hence restore the data to its original state.
 
 ```{r reset}
 sps_2_rest <- reset(sps_2)

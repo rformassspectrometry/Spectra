@@ -13,15 +13,36 @@ NULL
 #'
 #' @importClassesFrom ProtGenerics ProcessingStep
 #'
+#' @importFrom methods .hasSlot
+#'
+#' @importFrom BiocGenerics updateObject
+#'
 #' @rdname Spectra
-addProcessing <- function(object, FUN, ...) {
+addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
     if (missing(FUN))
         return(object)
     object@processingQueue <- c(object@processingQueue,
                                 list(ProcessingStep(FUN, ARGS = list(...))))
+    if (!.hasSlot(object, "processingQueueVariables"))
+        object <- updateObject(object)
+    object@processingQueueVariables <- union(object@processingQueueVariables,
+                                             spectraVariables)
     validObject(object)
     object
 }
+
+## .apply_processing_queue <- function(x, msLevel, centroided, queue = NULL) {
+##     if (length(queue)) {
+##         for (i in seq_along(x)) {
+##             for (pStep in queue) {
+##                 x[[i]] <- executeProcessingStep(pStep, x[[i]],
+##                                                 spectrumMsLevel = msLevel[i],
+##                                                 centroided = centroided[i])
+##             }
+##         }
+##     }
+##     x
+## }
 
 #' @description
 #'
@@ -38,6 +59,9 @@ addProcessing <- function(object, FUN, ...) {
 #'
 #' @param queue `list` of `ProcessStep` elements.
 #'
+#' @param spectraData `data.frame` with additional spectra variables as
+#'     requested with `addProcessing`.
+#'
 #' @return `list` of peak `matrix` elements.
 #'
 #' @author Johannes Rainer
@@ -45,17 +69,51 @@ addProcessing <- function(object, FUN, ...) {
 #' @importFrom ProtGenerics executeProcessingStep
 #'
 #' @noRd
-.apply_processing_queue <- function(x, msLevel, centroided, queue = NULL) {
+.apply_processing_queue <- function(x, spectraData = data.frame(),
+                                     queue = NULL) {
     if (length(queue)) {
+        args <- list()
+        ls <- length(spectraData)
+        if (ls)
+            colnames(spectraData) <- sub("^msLevel$", "spectrumMsLevel",
+                                         colnames(spectraData))
         for (i in seq_along(x)) {
+            if (ls)
+                args <- as.list(spectraData[i, ])
             for (pStep in queue) {
-                x[[i]] <- executeProcessingStep(pStep, x[[i]],
-                                                spectrumMsLevel = msLevel[i],
-                                                centroided = centroided[i])
+                x[[i]] <- do.call(pStep@FUN, args = c(x[i], args, pStep@ARGS))
             }
         }
     }
     x
+}
+
+## .peaksapply <- function(object, FUN = NULL, ..., f = dataStorage(object),
+##                         BPPARAM = bpparam()) {
+##     len <- length(object)
+##     if (!len)
+##         return(list())
+##     if (length(f) != len)
+##         stop("Length of 'f' has to match 'length(object)' (", len, ")")
+##     if (!is.factor(f))
+##         f <- factor(f)
+##     pqueue <- object@processingQueue
+##     if (!is.null(FUN))
+##         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
+##     if (length(levels(f)) > 1 || length(pqueue)) {
+##         res <- bplapply(split(object@backend, f), function(z, queue) {
+##             metad <- spectraData(z, columns = c("msLevel", "centroided"))
+##             .apply_processing_queue(peaksData(z), metad$msLevel,
+##                                     metad$centroided, queue = queue)
+##         }, queue = pqueue, BPPARAM = BPPARAM)
+##         unsplit(res, f = f, drop = TRUE)
+##     } else peaksData(object@backend)
+## }
+
+.processingQueueVariables <- function(x) {
+    if (.hasSlot(x, "processingQueueVariables"))
+        x@processingQueueVariables
+    else c("msLevel", "centroided")
 }
 
 #' @title Apply arbitrary functions and processing queue to peaks matrices
@@ -71,6 +129,9 @@ addProcessing <- function(object, FUN, ...) {
 #'     matrix will be passed to the first argument of the function. The function
 #'     should also have arguments `...`.
 #'
+#' @param spectraVariables `character` defining spectra variables that should
+#'     be passed to the function.
+#'
 #' @param ... optional additional arguments to `FUN`.
 #'
 #' @param f `factor` or `vector` that can be coerced to one defining how the
@@ -85,8 +146,9 @@ addProcessing <- function(object, FUN, ...) {
 #' @importMethodsFrom BiocParallel bplapply
 #'
 #' @noRd
-.peaksapply <- function(object, FUN = NULL, ..., f = dataStorage(object),
-                        BPPARAM = bpparam()) {
+.peaksapply <- function(object, FUN = NULL, ...,
+                        spectraVariables = .processingQueueVariables(object),
+                        f = dataStorage(object), BPPARAM = bpparam()) {
     len <- length(object)
     if (!len)
         return(list())
@@ -98,15 +160,15 @@ addProcessing <- function(object, FUN, ...) {
     if (!is.null(FUN))
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
     if (length(levels(f)) > 1 || length(pqueue)) {
-        res <- bplapply(split(object@backend, f), function(z, queue) {
-            metad <- spectraData(z, columns = c("msLevel", "centroided"))
-            .apply_processing_queue(peaksData(z), metad$msLevel,
-                                    metad$centroided, queue = queue)
-        }, queue = pqueue, BPPARAM = BPPARAM)
+        res <- bplapply(split(object@backend, f), function(z, queue, svars) {
+            if (length(svars))
+                spd <- as.data.frame(spectraData(z, columns = svars))
+            else spd <- NULL
+            .apply_processing_queue(peaksData(z), spd, queue = queue)
+        }, queue = pqueue, svars = spectraVariables, BPPARAM = BPPARAM)
         unsplit(res, f = f, drop = TRUE)
     } else peaksData(object@backend)
 }
-
 
 #' @title Apply a function to subsets of Spectra
 #'
@@ -164,11 +226,14 @@ applyProcessing <- function(object, f = dataStorage(object),
     if (length(f) != length(object))
         stop("length 'f' has to be equal to the length of 'object' (",
              length(object), ")")
-    bknds <- bplapply(split(object@backend, f = f), function(z, queue) {
-        peaksData(z) <- .apply_processing_queue(peaksData(z), msLevel(z),
-                                                centroided(z), queue)
+    bknds <- bplapply(split(object@backend, f = f), function(z, queue, svars) {
+        if (length(svars))
+            spd <- as.data.frame(spectraData(z, columns = svars))
+        else spd <- NULL
+        peaksData(z) <- .apply_processing_queue(peaksData(z), spd, queue)
         z
-    }, queue = object@processingQueue, BPPARAM = BPPARAM)
+    }, queue = object@processingQueue,
+    svars = .processingQueueVariables(object), BPPARAM = BPPARAM)
     bknds <- backendMerge(bknds)
     if (is.unsorted(f))
         bknds <- bknds[order(unlist(split(seq_along(bknds), f),
@@ -179,6 +244,9 @@ applyProcessing <- function(object, f = dataStorage(object),
                                   length(object@processingQueue),
                                   " steps")
     object@processingQueue <- list()
+    if (!.hasSlot(object, "processingQueueVariables"))
+        object <- updateObject(object, check = FALSE)
+    object@processingQueueVariables <- character()
     object
 }
 
