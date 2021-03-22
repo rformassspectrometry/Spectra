@@ -485,7 +485,8 @@ user-provided function. This would enable for example to calculate *neutral
 loss* spectra from a `Spectra` by subtracting the precursor m/z from each m/z of
 a spectrum. Our tool example does not have precursor m/z values defined, thus we
 first set them to arbitrary values. Then we define a function `neutral_loss`
-that subtracts the precursor m/z from each peak m/z. Note that, in order to be
+that subtracts the precursor m/z from each peak m/z removing also peaks with an
+m/z that is larger or equal to the precursor m/z. Note that, in order to be
 able to access the precursor m/z of the spectrum within our function, we have to
 add a parameter to the function that has the same name as the spectrum variable
 we want to access (in our case `precursorMz`).
@@ -494,7 +495,8 @@ we want to access (in our case `precursorMz`).
 sps_rep$precursorMz <- c(10, 20, 30, 40)
 
 neutral_loss <- function(x, precursorMz, ...) {
-    x[, "mz"] <- x[, "mz"] - precursorMz
+    x <- x[x[, "mz"] < precursorMz, , drop = FALSE]
+    x[, "mz"] <- abs(x[, "mz"] - precursorMz)
     x
 }
 ```
