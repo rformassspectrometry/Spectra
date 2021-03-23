@@ -341,10 +341,10 @@ backends could *translate* the filter function into a SQL condition to
 perform the subsetting already within the database).
 
 Multiple `Spectra` objects can also be combined into a single `Spectra` with the
-`c` function. The resulting `Spectra` object will contain an union of the
-spectra variables of the individual objects. Below we combine the `Spectra`
-object `sps` with an additional object containing another MS2 spectrum for
-Caffeine.
+`c` or the `concatenateSpectra` function. The resulting `Spectra` object will
+contain an union of the spectra variables of the individual objects. Below we
+combine the `Spectra` object `sps` with an additional object containing another
+MS2 spectrum for Caffeine.
 
 ```{r caf}
 caf_df <- DataFrame(msLevel = 2L, name = "Caffeine",
@@ -361,7 +361,7 @@ caf <- Spectra(caf_df)
 Next we combine the two objects.
 
 ```{r combine}
-sps <- c(sps, caf)
+sps <- concatenateSpectra(sps, caf)
 sps
 ```
 

@@ -501,6 +501,13 @@ applyProcessing <- function(object, f = dataStorage(object),
     object
 }
 
+#' @export concatenateSpectra
+#'
+#' @rdname Spectra
+concatenateSpectra <- function(x, ...) {
+    .concatenate_spectra(unlist(unname(list(unname(x), ...))))
+}
+
 #' @export combineSpectra
 #'
 #' @rdname Spectra

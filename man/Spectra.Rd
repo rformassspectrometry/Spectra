@@ -3,6 +3,7 @@
 \name{addProcessing}
 \alias{addProcessing}
 \alias{applyProcessing}
+\alias{concatenateSpectra}
 \alias{combineSpectra}
 \alias{joinSpectraData}
 \alias{processingLog}
@@ -91,6 +92,8 @@
 addProcessing(object, FUN, ..., spectraVariables = character())
 
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
+
+concatenateSpectra(x, ...)
 
 combineSpectra(
   x,
@@ -883,11 +886,11 @@ variables that would lead to an invalid object.
 }
 
 Several \code{Spectra} objects can be concatenated into a single object with the
-\code{c} function. Concatenation will fail if the processing queue of any of the
-\code{Spectra} objects is not empty or if different backends are used in the
-\code{Spectra} objects. The spectra variables of the resulting \code{Spectra}
-object is the union of the spectra variables of the individual \code{Spectra}
-objects.
+\code{c} or the \code{concatenateSpectra} function. Concatenation will fail if the
+processing queue of any of the \code{Spectra} objects is not empty or if
+different backends are used in the \code{Spectra} objects. The spectra variables
+of the resulting \code{Spectra} object is the union of the spectra variables of
+the individual \code{Spectra} objects.
 }
 
 \section{Data manipulation and analysis methods}{

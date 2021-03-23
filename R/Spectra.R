@@ -378,11 +378,11 @@ NULL
 #'       variables that would lead to an invalid object.
 #'
 #' Several `Spectra` objects can be concatenated into a single object with the
-#' `c` function. Concatenation will fail if the processing queue of any of the
-#' `Spectra` objects is not empty or if different backends are used in the
-#' `Spectra` objects. The spectra variables of the resulting `Spectra`
-#' object is the union of the spectra variables of the individual `Spectra`
-#' objects.
+#' `c` or the `concatenateSpectra` function. Concatenation will fail if the
+#' processing queue of any of the `Spectra` objects is not empty or if
+#' different backends are used in the `Spectra` objects. The spectra variables
+#' of the resulting `Spectra` object is the union of the spectra variables of
+#' the individual `Spectra` objects.
 #'
 #'
 #' @section Data manipulation and analysis methods:
@@ -1204,7 +1204,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
 #'
 #' @exportMethod c
 setMethod("c", "Spectra", function(x, ...) {
-    .concatenate_spectra(unname(c(list(x), list(...))))
+    .concatenate_spectra(unname(list(unname(x), ...)))
 })
 
 #' @rdname Spectra

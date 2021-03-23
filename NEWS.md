@@ -1,5 +1,10 @@
 # Spectra 1.1
 
+## Changes in 1.1.17
+
+- Add function `concatenateSpectra` to allow concatenating `Spectra` objects and
+  list of `Spectra` objects.
+
 ## Changes in 1.1.16
 
 - Support arbitrary spectra variables to be passed to the functions
