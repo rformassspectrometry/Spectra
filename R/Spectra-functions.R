@@ -70,7 +70,8 @@ addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
 #'
 #' @noRd
 .apply_processing_queue <- function(x, spectraData = data.frame(),
-                                     queue = NULL) {
+                                    queue = NULL) {
+    x <- unname(x)
     if (length(queue)) {
         args <- list()
         ls <- length(spectraData)

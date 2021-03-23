@@ -2,6 +2,7 @@
 
 ## Changes in 1.1.17
 
+- Fix issue [#187](https://github.com/rformassspectrometry/Spectra/issues/187).
 - Add function `concatenateSpectra` to allow concatenating `Spectra` objects and
   list of `Spectra` objects.
 
