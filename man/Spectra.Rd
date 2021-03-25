@@ -3,6 +3,7 @@
 \name{addProcessing}
 \alias{addProcessing}
 \alias{applyProcessing}
+\alias{concatenateSpectra}
 \alias{combineSpectra}
 \alias{joinSpectraData}
 \alias{processingLog}
@@ -88,9 +89,11 @@
 \alias{smooth,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
-addProcessing(object, FUN, ...)
+addProcessing(object, FUN, ..., spectraVariables = character())
 
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
+
+concatenateSpectra(x, ...)
 
 combineSpectra(
   x,
@@ -378,6 +381,12 @@ details.}
 
 \item{...}{Additional arguments.}
 
+\item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
+names of the spectra variables to which the backend should be subsetted.
+For \code{addProcessing}: \code{character} with additional spectra variables that
+should be passed along to the function defined with \code{FUN}. See function
+description for details.}
+
 \item{f}{For \code{split}: factor defining how to split \code{x}. See \code{\link[base:split]{base::split()}}
 for details. For \code{setBackend}: factor defining how to split the data for
 parallelized copying of the spectra data to the new backend. For some
@@ -453,9 +462,6 @@ m/z values for peaks to be matched.}
 which should be subtracted from the spectrum's precursor m/z.}
 
 \item{use.names}{For \code{lengths}: ignored.}
-
-\item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
-names of the spectra variables to which the backend should be subsetted.}
 
 \item{columns}{For \code{spectraData} accessor: optional \code{character} with column
 names (spectra variables) that should be included in the
@@ -880,11 +886,11 @@ variables that would lead to an invalid object.
 }
 
 Several \code{Spectra} objects can be concatenated into a single object with the
-\code{c} function. Concatenation will fail if the processing queue of any of the
-\code{Spectra} objects is not empty or if different backends are used in the
-\code{Spectra} objects. The spectra variables of the resulting \code{Spectra}
-object is the union of the spectra variables of the individual \code{Spectra}
-objects.
+\code{c} or the \code{concatenateSpectra} function. Concatenation will fail if the
+processing queue of any of the \code{Spectra} objects is not empty or if
+different backends are used in the \code{Spectra} objects. The spectra variables
+of the resulting \code{Spectra} object is the union of the spectra variables of
+the individual \code{Spectra} objects.
 }
 
 \section{Data manipulation and analysis methods}{
@@ -907,8 +913,16 @@ with parameter \code{FUN}) is expected to take a peaks matrix as input and to
 return a peaks matrix. A peaks matrix is a numeric matrix with two columns,
 the first containing the m/z values of the peaks and the second the
 corresponding intensities. The function has to have \code{...} in its
-definition. Additional arguments can be passed with \code{...}. Examples are
-provided in the package vignette.
+definition. Additional arguments can be passed with \code{...}. With parameter
+\code{spectraVariables} it is possible to define additional spectra variables
+from \code{object} that should be passed to the function \code{FUN}. These will be
+passed by their name (e.g. specifying \code{spectraVariables = "precursorMz"}
+will pass the spectra's precursor m/z as a parameter named \code{precursorMz}
+to the function. The only exception is the spectra's MS level, these will
+be passed to the function as a parameter called \code{spectrumMsLevel} (i.e.
+with \code{spectraVariables = "msLevel"} the MS levels of each spectrum will be
+submitted to the function as a parameter called \code{spectrumMsLevel}).
+Examples are provided in the package vignette.
 \item \code{applyProcessing}: for \code{Spectra} objects that use a \strong{writeable} backend
 only: apply all steps from the lazy processing queue to the peak data and
 write it back to the data storage. Parameter \code{f} allows to specify how

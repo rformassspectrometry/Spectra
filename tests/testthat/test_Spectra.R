@@ -126,6 +126,23 @@ test_that("c,Spectra works", {
     expect_identical(res$other_col, c(NA, NA, NA, NA, NA, "a", "a"))
     expect_true(length(res@processingQueue) == 0)
     expect_true(length(res@processing) == 1)
+
+    res <- c(a = sp1, b = sp2, sp3)
+    expect_true(is(res, "Spectra"))
+
+    tmp <- vector("list", 3)
+    tmp[[1L]] <- sp1
+    tmp[[2L]] <- sp2
+    tmp[[3L]] <- sp3
+
+    res <- concatenateSpectra(tmp)
+    expect_true(is(res, "Spectra"))
+    res_c <- do.call(c, tmp)
+    expect_equal(res, res_c)
+
+    names(tmp) <- c("a", "b", "c")
+    res <- concatenateSpectra(tmp)
+    expect_true(is(res, "Spectra"))
 })
 
 test_that("acquisitionNum,Spectra works", {

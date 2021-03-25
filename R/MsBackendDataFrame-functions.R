@@ -198,7 +198,7 @@ MsBackendDataFrame <- function() {
         return(objects[[1]])
     if (!all(vapply1c(objects, class) == class(objects[[1]])))
         stop("Can only merge backends of the same type: ", class(objects[[1]]))
-    res <- new(class(objects[[1]]))
+    res <- objects[[1]]
     suppressWarnings(
         res@spectraData <- do.call(
             rbindFill, lapply(objects, function(z) z@spectraData))
