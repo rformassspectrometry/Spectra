@@ -50,10 +50,9 @@
 
   lst <- list()
   idxs_o <- which(x[, 2] > 0)
-  x_o <- x
-  x <- x[idxs_o, ]
-  if (is.null(seed_mz)) idxs <- 1:nrow(x)
-  else idxs <- na.omit(MsCoreUtils::closest(seed_mz, x[, 1], tolerance = 0,
+  xred <- x[idxs_o, ]
+  if (is.null(seed_mz)) idxs <- 1:nrow(xred)
+  else idxs <- na.omit(MsCoreUtils::closest(seed_mz, xred[, 1], tolerance = 0,
                                             ppm = ppm, duplicates = "closest"))
   sgd <- NULL
   for (i in idxs)
@@ -61,21 +60,21 @@
     append_to_current <- FALSE
     for (j in 1:nrow(isotopeDefinition))
     {
-      tmp <- x[i, 1] + isotopeDefinition[j, 1]
-      cls <- MsCoreUtils::closest(tmp, x[-(1:i), 1], tolerance = 0, ppm = ppm)
-      if(!is.na(cls) &  x[, 2][cls + i] < isotopeDefinition[j, 2]*x[i, 2])
+      tmp <- xred[i, 1] + isotopeDefinition[j, 1]
+      cls <- MsCoreUtils::closest(tmp, xred[-(1:i), 1], tolerance = 0, ppm = ppm)
+      if(!is.na(cls) &  xred[, 2][cls + i] < isotopeDefinition[j, 2]*xred[i, 2])
       {
         len <- length(lst)
         if(!append_to_current)
         {
           lst[[len + 1]] <- c(idxs_o[i], idxs_o[cls + i])
-          sgd[len + 1] <- tmp - x[cls + i, 1]
+          sgd[len + 1] <- tmp - xred[cls + i, 1]
           append_to_current <- TRUE
         }
         else
         {
           lst[[len]] <- c(lst[[len]], idxs_o[cls + i])
-          sgd[len] <- sgd[len] + tmp - x[cls + i, 1]
+          sgd[len] <- sgd[len] + tmp - xred[cls + i, 1]
         }
       }
     }
@@ -90,7 +89,7 @@
       kk <- k+1
       k_removed <- FALSE
       while(kk<=length(lst) && !k_removed &&
-            x_o[max(lst[[k]]), 1] + maxmzd > x_o[lst[[kk]][1], 1]*(1 - ppm*10^(-6)))
+            x[max(lst[[k]]), 1] + maxmzd > x[lst[[kk]][1], 1]*(1 - ppm*10^(-6)))
       {
         if(length(intersect(lst[[k]], lst[[kk]])) > 0)
         {
