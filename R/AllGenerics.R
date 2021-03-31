@@ -2,6 +2,9 @@
 NULL
 
 #' @rdname hidden_aliases
+setGeneric("addProcessing", function(object, ...)
+    standardGeneric("addProcessing"))
+#' @rdname hidden_aliases
 setGeneric("backendInitialize", def = function(object, ...)
     standardGeneric("backendInitialize"),
     valueClass = "MsBackend")
@@ -45,6 +48,8 @@ setGeneric("peaksData<-", function(object, value)
 #' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
+setGeneric("plotSpectraMirror", function(x, y, ...)
+    standardGeneric("plotSpectraMirror"))
 #' @rdname hidden_aliases
 setGeneric("replaceIntensitiesBelow", function(object, threshold = min, ...)
     standardGeneric("replaceIntensitiesBelow"))

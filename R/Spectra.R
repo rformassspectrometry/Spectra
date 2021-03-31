@@ -2026,3 +2026,28 @@ setMethod("smooth", "Spectra",
                                            ", hws = ", halfWindowSize)
     x
 })
+
+#' @exportMethod addProcessing
+#'
+#' @importFrom ProtGenerics ProcessingStep
+#'
+#' @importClassesFrom ProtGenerics ProcessingStep
+#'
+#' @importFrom methods .hasSlot
+#'
+#' @importFrom BiocGenerics updateObject
+#'
+#' @rdname Spectra
+setMethod("addProcessing", "Spectra", function(object, FUN, ...,
+                                               spectraVariables = character()) {
+    if (missing(FUN))
+        return(object)
+    object@processingQueue <- c(object@processingQueue,
+                                list(ProcessingStep(FUN, ARGS = list(...))))
+    if (!.hasSlot(object, "processingQueueVariables"))
+        object <- updateObject(object)
+    object@processingQueueVariables <- union(object@processingQueueVariables,
+                                             spectraVariables)
+    validObject(object)
+    object
+})

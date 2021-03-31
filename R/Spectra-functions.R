@@ -7,30 +7,6 @@ NULL
     NULL
 }
 
-#' @export addProcessing
-#'
-#' @importFrom ProtGenerics ProcessingStep
-#'
-#' @importClassesFrom ProtGenerics ProcessingStep
-#'
-#' @importFrom methods .hasSlot
-#'
-#' @importFrom BiocGenerics updateObject
-#'
-#' @rdname Spectra
-addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
-    if (missing(FUN))
-        return(object)
-    object@processingQueue <- c(object@processingQueue,
-                                list(ProcessingStep(FUN, ARGS = list(...))))
-    if (!.hasSlot(object, "processingQueueVariables"))
-        object <- updateObject(object)
-    object@processingQueueVariables <- union(object@processingQueueVariables,
-                                             spectraVariables)
-    validObject(object)
-    object
-}
-
 ## .apply_processing_queue <- function(x, msLevel, centroided, queue = NULL) {
 ##     if (length(queue)) {
 ##         for (i in seq_along(x)) {

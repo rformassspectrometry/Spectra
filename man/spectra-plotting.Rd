@@ -2,9 +2,10 @@
 % Please edit documentation in R/plotting-functions.R
 \name{spectra-plotting}
 \alias{spectra-plotting}
+\alias{plotSpectraMirror}
 \alias{plotSpectra}
 \alias{plotSpectraOverlay}
-\alias{plotSpectraMirror}
+\alias{plotSpectraMirror,Spectra-method}
 \title{Plotting Spectra}
 \usage{
 plotSpectra(
@@ -48,7 +49,7 @@ plotSpectraOverlay(
   ...
 )
 
-plotSpectraMirror(
+\S4method{plotSpectraMirror}{Spectra}(
   x,
   y,
   xlab = "m/z",

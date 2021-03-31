@@ -1,5 +1,7 @@
 #' @title Plotting Spectra
 #'
+#' @aliases plotSpectraMirror
+#'
 #' @description
 #'
 #' [Spectra()] can be plotted with one of the following functions
@@ -271,91 +273,94 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
 #'
 #' @importFrom graphics abline
 #'
-#' @export plotSpectraMirror
-plotSpectraMirror <- function(x, y, xlab = "m/z", ylab = "intensity",
-                              type = "h", xlim = numeric(),
-                              ylim = numeric(), main = character(),
-                              col = "#00000080", labels = character(),
-                              labelCex = 1, labelSrt = 0,
-                              labelAdj = NULL, labelPos = NULL,
-                              labelOffset = 0.5, labelCol = "#00000080",
-                              axes = TRUE, frame.plot = axes, ppm = 20,
-                              tolerance = 0, matchCol = "#80B1D3", matchLwd = 1,
-                              matchLty = 1, matchPch = 16, ...) {
-    if (length(x) != 1 || length(y) != 1)
-        stop("'x' and 'y' have to be of length 1")
-    if (length(labels) & !is.function(labels))
-        stop("'plotSpectraMirror' supports only a function with ",
-             "parameter 'labels'")
-    if (length(col) != 2)
-        col <- rep(col[1], 2)
-    if (!length(xlim))
-        suppressWarnings(
-            xlim <- range(unlist(mz(x)), unlist(mz(y)), na.rm = TRUE))
-    if (!length(ylim))
-        suppressWarnings(
-            ylim <- c(-1, 1) * max(unlist(intensity(x)), unlist(intensity(y)),
-                                   na.rm = TRUE))
-    if (any(is.infinite(xlim)))
-        xlim <- c(0, 0)
-    if (any(is.infinite(ylim)))
-        ylim <- c(0, 0)
-    dev.hold()
-    on.exit(dev.flush())
-    plot.new()
-    plot.window(xlim = xlim, ylim = ylim)
-    if (length(labels)) {
-        l <- c(labels(x), labels(y))
-        wdths <- max(strwidth(l, cex = labelCex)) / 2
-        ylim[1L] <- ylim[1L] - wdths * diff(ylim) / diff(xlim)
-        ylim[2L] <- - ylim[1L]
-        xlim[1L] <- xlim[1L] - wdths
-        xlim[2L] <- xlim[2L] + wdths
-        plot.window(xlim = xlim, ylim = ylim, ...)
-    }
-    if (axes) {
-        axis(side = 1, ...)
-        axis(side = 2, ...)
-    }
-    if (frame.plot)
-        box(...)
-    title(main = main, xlab = xlab, ylab = ylab, ...)
-    ## Find common peaks
-    x_data <- peaksData(x)[[1L]]
-    y_data <- peaksData(y)[[1L]]
-    .plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
-                          labels = labels, labelCex = labelCex,
-                          labelSrt = labelSrt, labelAdj = labelAdj,
-                          labelPos = labelPos, labelOffset = labelOffset,
-                          labelCol = labelCol, ...)
-    idx <- which(common(x_data[, "mz"], y_data[, "mz"],
-                        tolerance = tolerance, ppm = ppm))
-    if (length(idx)) {
-        plot.xy(xy.coords(x_data[idx, "mz"], x_data[idx, "intensity"]),
-                type = "h", col = matchCol, lwd = matchLwd, ...)
-        plot.xy(xy.coords(x_data[idx, "mz"], x_data[idx, "intensity"]),
-                type = "p", col = matchCol, pch = matchPch, ...)
-    }
-    if (length(labelPos) && labelPos == 1)
-        labelPos <- 3
-    if (length(labelPos) && labelPos == 3)
-        labelPos <- 1
-    labelSrt <- -1 * labelSrt
-    .plot_single_spectrum(y, add = TRUE, type = type, col = col[[1L]],
-                          labels = labels, labelCex = labelCex,
-                          labelSrt = labelSrt, labelAdj = labelAdj,
-                          labelPos = labelPos, labelOffset = labelOffset,
-                          orientation = -1, labelCol = labelCol, ...)
-    idx <- which(common(y_data[, "mz"], x_data[, "mz"],
-                        tolerance = tolerance, ppm = ppm))
-    if (length(idx)) {
-        plot.xy(xy.coords(y_data[idx, "mz"], -y_data[idx, "intensity"]),
-                type = "h", col = matchCol, lwd = matchLwd, ...)
-        plot.xy(xy.coords(y_data[idx, "mz"], -y_data[idx, "intensity"]),
-                type = "p", col = matchCol, pch = matchPch, ...)
-    }
-    abline(h = 0)
-}
+#' @exportMethod plotSpectraMirror
+setMethod(
+    "plotSpectraMirror", "Spectra",
+    function(x, y, xlab = "m/z", ylab = "intensity",
+             type = "h", xlim = numeric(),
+             ylim = numeric(), main = character(),
+             col = "#00000080", labels = character(),
+             labelCex = 1, labelSrt = 0,
+             labelAdj = NULL, labelPos = NULL,
+             labelOffset = 0.5, labelCol = "#00000080",
+             axes = TRUE, frame.plot = axes, ppm = 20,
+             tolerance = 0, matchCol = "#80B1D3", matchLwd = 1,
+             matchLty = 1, matchPch = 16, ...) {
+        if (length(x) != 1 || length(y) != 1)
+            stop("'x' and 'y' have to be of length 1")
+        if (length(labels) & !is.function(labels))
+            stop("'plotSpectraMirror' supports only a function with ",
+                 "parameter 'labels'")
+        if (length(col) != 2)
+            col <- rep(col[1], 2)
+        if (!length(xlim))
+            suppressWarnings(
+                xlim <- range(unlist(mz(x)), unlist(mz(y)), na.rm = TRUE))
+        if (!length(ylim))
+            suppressWarnings(
+                ylim <- c(-1, 1) * max(unlist(intensity(x)),
+                                       unlist(intensity(y)),
+                                       na.rm = TRUE))
+        if (any(is.infinite(xlim)))
+            xlim <- c(0, 0)
+        if (any(is.infinite(ylim)))
+            ylim <- c(0, 0)
+        dev.hold()
+        on.exit(dev.flush())
+        plot.new()
+        plot.window(xlim = xlim, ylim = ylim)
+        if (length(labels)) {
+            l <- c(labels(x), labels(y))
+            wdths <- max(strwidth(l, cex = labelCex)) / 2
+            ylim[1L] <- ylim[1L] - wdths * diff(ylim) / diff(xlim)
+            ylim[2L] <- - ylim[1L]
+            xlim[1L] <- xlim[1L] - wdths
+            xlim[2L] <- xlim[2L] + wdths
+            plot.window(xlim = xlim, ylim = ylim, ...)
+        }
+        if (axes) {
+            axis(side = 1, ...)
+            axis(side = 2, ...)
+        }
+        if (frame.plot)
+            box(...)
+        title(main = main, xlab = xlab, ylab = ylab, ...)
+        ## Find common peaks
+        x_data <- peaksData(x)[[1L]]
+        y_data <- peaksData(y)[[1L]]
+        .plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
+                              labels = labels, labelCex = labelCex,
+                              labelSrt = labelSrt, labelAdj = labelAdj,
+                              labelPos = labelPos, labelOffset = labelOffset,
+                              labelCol = labelCol, ...)
+        idx <- which(common(x_data[, "mz"], y_data[, "mz"],
+                            tolerance = tolerance, ppm = ppm))
+        if (length(idx)) {
+            plot.xy(xy.coords(x_data[idx, "mz"], x_data[idx, "intensity"]),
+                    type = "h", col = matchCol, lwd = matchLwd, ...)
+            plot.xy(xy.coords(x_data[idx, "mz"], x_data[idx, "intensity"]),
+                    type = "p", col = matchCol, pch = matchPch, ...)
+        }
+        if (length(labelPos) && labelPos == 1)
+            labelPos <- 3
+        if (length(labelPos) && labelPos == 3)
+            labelPos <- 1
+        labelSrt <- -1 * labelSrt
+        .plot_single_spectrum(y, add = TRUE, type = type, col = col[[1L]],
+                              labels = labels, labelCex = labelCex,
+                              labelSrt = labelSrt, labelAdj = labelAdj,
+                              labelPos = labelPos, labelOffset = labelOffset,
+                              orientation = -1, labelCol = labelCol, ...)
+        idx <- which(common(y_data[, "mz"], x_data[, "mz"],
+                            tolerance = tolerance, ppm = ppm))
+        if (length(idx)) {
+            plot.xy(xy.coords(y_data[idx, "mz"], -y_data[idx, "intensity"]),
+                    type = "h", col = matchCol, lwd = matchLwd, ...)
+            plot.xy(xy.coords(y_data[idx, "mz"], -y_data[idx, "intensity"]),
+                    type = "p", col = matchCol, pch = matchPch, ...)
+        }
+        abline(h = 0)
+    })
 
 #' @description
 #'
