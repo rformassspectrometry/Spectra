@@ -77,6 +77,9 @@ indicated.
 
 
 
+<!-- dependencies from examples -->
+
+
   
 
   
@@ -99,7 +102,7 @@ indicated.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.18</span>
       </span>
     </div>
 
@@ -141,7 +144,7 @@ indicated.
     </div>
 
     <div class="ref-description">
-    <p><code><a href='addProcessing.html'>Spectra()</a></code> can be plotted with one of the following functions</p><ul>
+    <p><code><a href='Spectra.html'>Spectra()</a></code> can be plotted with one of the following functions</p><ul>
 <li><p><code>plotSpectra</code>: plots each spectrum in its separate plot by splitting
 the plot area into as many panels as there are spectra.</p></li>
 <li><p><code>plotSpectraOverlay</code>: plots all spectra in <code>x</code> <strong>into the same</strong> plot (as
@@ -197,6 +200,7 @@ indicated.</p></li>
   <span class='va'>...</span>
 <span class='op'>)</span>
 
+<span class='co'># S4 method for Spectra</span>
 <span class='fu'>plotSpectraMirror</span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>y</span>,
@@ -230,7 +234,7 @@ indicated.</p></li>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>a <code><a href='addProcessing.html'>Spectra()</a></code> object. For <code>plotSpectraMirror</code> it has to be an
+      <td><p>a <code><a href='Spectra.html'>Spectra()</a></code> object. For <code>plotSpectraMirror</code> it has to be an
 object of length 2.</p></td>
     </tr>
     <tr>
@@ -380,7 +384,7 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
 <span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span><span class='op'>(</span>msLevel <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>, <span class='fl'>1L</span><span class='op'>)</span>, rtime <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>123.12</span>, <span class='fl'>124</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>df</span><span class='op'>$</span><span class='va'>mz</span> <span class='op'>&lt;-</span> <span class='va'>mzs</span>
 <span class='va'>df</span><span class='op'>$</span><span class='va'>intensity</span> <span class='op'>&lt;-</span> <span class='va'>ints</span>
-<span class='va'>sp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='addProcessing.html'>Spectra</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+<span class='va'>sp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Spectra.html'>Spectra</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
 
 <span class='co'>#### --------------------------------------------- ####</span>
 <span class='co'>##                   plotSpectra                     ##</span>
@@ -472,7 +476,7 @@ disable. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>

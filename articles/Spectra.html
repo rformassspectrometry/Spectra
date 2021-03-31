@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.18</span>
       </span>
     </div>
 
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.13/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Last modified:</strong> 2021-03-23 13:01:28<br><strong>Compiled</strong>: Tue Mar 23 13:21:19 2021</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.13/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Last modified:</strong> 2021-03-31 15:02:19<br><strong>Compiled</strong>: Wed Mar 31 15:53:32 2021</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <li>
 <em>smoothed</em> <code><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical(1)</a></code>: whether the spectrum was smoothed.</li>
 </ul>
-<p>For details on the individual variables and their getter/setter function see the help for <code>Spectra</code> (<code><a href="../reference/addProcessing.html">?Spectra</a></code>). Also note that these variables are suggested, but not required to characterize a spectrum. Also, some only make sense for MSn, but not for MS1 spectra.</p>
+<p>For details on the individual variables and their getter/setter function see the help for <code>Spectra</code> (<code><a href="../reference/Spectra.html">?Spectra</a></code>). Also note that these variables are suggested, but not required to characterize a spectrum. Also, some only make sense for MSn, but not for MS1 spectra.</p>
 <div id="creating-spectra-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#creating-spectra-objects" class="anchor"></a>Creating <code>Spectra</code> objects</h2>
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6.685</span>, <span class="fl">4.381</span>, <span class="fl">3.022</span>, <span class="fl">16.708</span>, <span class="fl">100.0</span>, <span class="fl">4.565</span>, <span class="fl">40.643</span><span class="op">)</span>,
     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.459</span>, <span class="fl">2.585</span>, <span class="fl">2.446</span>, <span class="fl">0.508</span>, <span class="fl">8.968</span>, <span class="fl">0.524</span>, <span class="fl">0.974</span>, <span class="fl">100.0</span>, <span class="fl">40.994</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">sps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">Spectra</a></span><span class="op">(</span><span class="va">spd</span><span class="op">)</span>
+<span class="va">sps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">spd</span><span class="op">)</span>
 <span class="va">sps</span></code></pre></div>
 <pre><code>## MSn data (Spectra) with 3 spectra in a MsBackendDataFrame backend:
 ##     msLevel     rtime scanIndex
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>Alternatively, it is possible to import spectra data from mass spectrometry raw files in mzML/mzXML or CDF format. Below we create a <code>Spectra</code> object from two mzML files and define to use a <code>MsBackendMzR</code> backend to <em>store</em> the data (note that this requires the <em><a href="https://bioconductor.org/packages/3.13/mzR" class="external-link">mzR</a></em> package to be installed). This backend, specifically designed for raw MS data, keeps only a subset of spectra variables in memory while reading the m/z and intensity values from the original data files only on demand. See section <a href="#backends">Backends</a> for more details on backends and their properties.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"sciex"</span>, package <span class="op">=</span> <span class="st">"msdata"</span><span class="op">)</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">sps_sciex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">Spectra</a></span><span class="op">(</span><span class="va">fls</span>, backend <span class="op">=</span> <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="va">sps_sciex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">fls</span>, backend <span class="op">=</span> <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="va">sps_sciex</span></code></pre></div>
 <pre><code>## MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
 ##        msLevel     rtime scanIndex
@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="filtering-subsetting-and-merging" class="section level2">
 <h2 class="hasAnchor">
 <a href="#filtering-subsetting-and-merging" class="anchor"></a>Filtering, subsetting and merging</h2>
-<p>Apart from <em>classical</em> subsetting operations such as <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">[</a></code> and <code>split</code>, a set of filter functions are defined for <code>Spectra</code> objects (for detailed help please see the <code><a href="../reference/addProcessing.html">?Spectra</a></code> help):</p>
+<p>Apart from <em>classical</em> subsetting operations such as <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">[</a></code> and <code>split</code>, a set of filter functions are defined for <code>Spectra</code> objects (for detailed help please see the <code><a href="../reference/Spectra.html">?Spectra</a></code> help):</p>
 <ul>
 <li>
 <code>filterAcquisitionNum</code>: retain spectra with certain acquisition numbers.</li>
@@ -421,8 +421,8 @@ document.addEventListener("DOMContentLoaded", function() {
 ## file(s):
 ## 20171016_POOL_POS_3_105-134.mzML
 ## Processing:
-##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Tue Mar 23 13:21:23 2021]
-##  Filter: select retention time [175..189] on MS level(s) 1 [Tue Mar 23 13:21:23 2021]</code></pre>
+##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Mar 31 15:53:36 2021]
+##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Mar 31 15:53:36 2021]</code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> or the <code>concatenateSpectra</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
@@ -434,10 +434,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="va">caf_df</span><span class="op">$</span><span class="va">mz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">110.0710</span>, <span class="fl">138.0655</span>, <span class="fl">138.1057</span>, <span class="fl">138.1742</span>, <span class="fl">195.9864</span><span class="op">)</span><span class="op">)</span>
 <span class="va">caf_df</span><span class="op">$</span><span class="va">intensity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.837</span>, <span class="fl">32.341</span>, <span class="fl">0.84</span>, <span class="fl">0.534</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">caf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">Spectra</a></span><span class="op">(</span><span class="va">caf_df</span><span class="op">)</span></code></pre></div>
+<span class="va">caf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">caf_df</span><span class="op">)</span></code></pre></div>
 <p>Next we combine the two objects.</p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">concatenateSpectra</a></span><span class="op">(</span><span class="va">sps</span>, <span class="va">caf</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">sps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">concatenateSpectra</a></span><span class="op">(</span><span class="va">sps</span>, <span class="va">caf</span><span class="op">)</span>
 <span class="va">sps</span></code></pre></div>
 <pre><code>## MSn data (Spectra) with 4 spectra in a MsBackendDataFrame backend:
 ##     msLevel     rtime scanIndex
@@ -448,7 +448,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Tue Mar 23 13:21:23 2021]</code></pre>
+##  Merge 2 Spectra into one [Wed Mar 31 15:53:36 2021]</code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">spectraVariables</span><span class="op">(</span><span class="va">sps</span><span class="op">)</span></code></pre></div>
@@ -510,9 +510,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 2 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Tue Mar 23 13:21:23 2021]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Mar 23 13:21:23 2021]
-##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Mar 23 13:21:23 2021]</code></pre>
+##  Merge 2 Spectra into one [Wed Mar 31 15:53:36 2021]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar 31 15:53:37 2021]
+##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar 31 15:53:37 2021]</code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Define a function that takes a matrix as input, divides the second</span>
@@ -524,7 +524,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="op">}</span>
 
 <span class="co">## Add the function to the procesing queue</span>
-<span class="va">sps_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">divide_intensities</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">sps_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">divide_intensities</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="va">sps_2</span></code></pre></div>
 <pre><code>## MSn data (Spectra) with 4 spectra in a MsBackendDataFrame backend:
 ##     msLevel     rtime scanIndex
@@ -536,9 +536,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  ... 20 more variables/columns.
 ## Lazy evaluation queue: 3 processing step(s)
 ## Processing:
-##  Merge 2 Spectra into one [Tue Mar 23 13:21:23 2021]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Mar 23 13:21:23 2021]
-##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Mar 23 13:21:23 2021]</code></pre>
+##  Merge 2 Spectra into one [Wed Mar 31 15:53:36 2021]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar 31 15:53:37 2021]
+##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar 31 15:53:37 2021]</code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">intensity</span><span class="op">(</span><span class="va">sps_2</span><span class="op">)</span></code></pre></div>
@@ -560,7 +560,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
 <span class="op">}</span>
 
-<span class="va">sps_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">max_peak</span><span class="op">)</span>
+<span class="va">sps_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">max_peak</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="va">sps_2</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 1 1 1 1</code></pre>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
@@ -581,7 +581,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="op">}</span></code></pre></div>
 <p>We have then to call <code>addProcessing</code> with <code>spectraVariables = "precursorMz"</code> to specify that this spectra variable is passed along to our function.</p>
 <div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sps_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">neutral_loss</span>, spectraVariables <span class="op">=</span> <span class="st">"precursorMz"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">sps_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">neutral_loss</span>, spectraVariables <span class="op">=</span> <span class="st">"precursorMz"</span><span class="op">)</span>
 <span class="fu">mz</span><span class="op">(</span><span class="va">sps_rep</span><span class="op">)</span></code></pre></div>
 <pre><code>## NumericList of length 4
 ## [[1]] 124.2 170.16 170.52
@@ -602,7 +602,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <span class="va">x</span><span class="op">[</span>, <span class="st">"mz"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="st">"mz"</span><span class="op">]</span> <span class="op">-</span> <span class="va">precursorMz</span>
     <span class="va">x</span>
 <span class="op">}</span>
-<span class="va">sps_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">neutral_loss</span>,
+<span class="va">sps_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">neutral_loss</span>,
                        spectraVariables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"msLevel"</span>, <span class="st">"precursorMz"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">mz</span><span class="op">(</span><span class="va">sps_3</span><span class="op">)</span></code></pre></div>
 <pre><code>## NumericList of length 4
@@ -633,7 +633,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sps_rep</span><span class="op">@</span><span class="va">processingQueue</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 2</code></pre>
 <div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sps_rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">applyProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">sps_rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">applyProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sps_rep</span><span class="op">@</span><span class="va">processingQueue</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
@@ -647,9 +647,9 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4         2        NA        NA
 ##  ... 20 more variables/columns.
 ## Processing:
-##  Merge 2 Spectra into one [Tue Mar 23 13:21:23 2021]
-##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Mar 23 13:21:23 2021]
-##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Mar 23 13:21:23 2021]
+##  Merge 2 Spectra into one [Wed Mar 31 15:53:36 2021]
+##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar 31 15:53:37 2021]
+##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar 31 15:53:37 2021]
 ##  ...1 more processings. Use 'processingLog' to list all.</code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage. Note that calling <code>reset</code> <strong>after</strong> <code>applyProcessing</code> can no longer <em>restore</em> the data.</p>
 </div>
@@ -718,18 +718,18 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></code></pre></div>
-<pre><code>## Writing file filec877a6c8df0...OK</code></pre>
+<pre><code>## Writing file fileea3365bc57cb...OK</code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the exported data again and identify spectra variables in the original file which could not be exported (because they are not defined variables in the mzML standard).</p>
 <div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sps_im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">Spectra</a></span><span class="op">(</span><span class="fu"><a href="../reference/hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">fl</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">sps_im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="fu"><a href="../reference/hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">fl</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">spectraVariables</span><span class="op">(</span><span class="va">sps</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="fu">spectraVariables</span><span class="op">(</span><span class="va">sps</span><span class="op">)</span> <span class="op">%in%</span> <span class="fu">spectraVariables</span><span class="op">(</span><span class="va">sps_im</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <pre><code>## [1] "id"         "name"       "splash"     "instrument"</code></pre>
 <p>These additional variables were thus not exported. How data export is performed and handled depends also on the used backend. The <code>MsBackendMzR</code> for example exports all spectra by default to a single file (specified with the <code>file</code> parameter), but it allows also to specify for each individual spectrum in the <code>Spectra</code> to which file it should be exported (parameter <code>file</code> has thus to be of length equal to the number of spectra). As an example we export below the spectrum 1 and 3 to one file and spectra 2 and 4 to another.</p>
 <div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>## Writing file filec874bbbabdc...OK
-## Writing file filec87423f3eb3...OK</code></pre>
+<pre><code>## Writing file fileea333458cf88...OK
+## Writing file fileea33798b205e...OK</code></pre>
 <p>A more realistic use case for mzML export would be to export MS data after processing, such as smoothing (using the <code>smooth</code> function) and centroiding (using the <code>pickPeaks</code> function) of raw profile-mode MS data.</p>
 </div>
 <div id="changing-backends" class="section level2">
@@ -758,7 +758,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 1862         1   259.752       931
 ##  ... 33 more variables/columns.
 ## Processing:
-##  Switch backend from MsBackendMzR to MsBackendDataFrame [Tue Mar 23 13:21:28 2021]</code></pre>
+##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Mar 31 15:53:42 2021]</code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
 <div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Mb"</span><span class="op">)</span></code></pre></div>
@@ -794,7 +794,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">msdata</span><span class="op">)</span>
 <span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msdata/man/proteomics.html" class="external-link">proteomics</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span>
 
-<span class="va">sps_tmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addProcessing.html">Spectra</a></span><span class="op">(</span><span class="va">fl</span>, backend <span class="op">=</span> <span class="fu"><a href="../reference/MsBackend.html">MsBackendHdf5Peaks</a></span><span class="op">(</span><span class="op">)</span>, hdf5path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="va">sps_tmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">fl</span>, backend <span class="op">=</span> <span class="fu"><a href="../reference/MsBackend.html">MsBackendHdf5Peaks</a></span><span class="op">(</span><span class="op">)</span>, hdf5path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu">dataStorage</span><span class="op">(</span><span class="va">sps_tmt</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.h5"
 ## [2] "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.h5"
@@ -828,17 +828,17 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [8] methods   base     
 ## 
 ## other attached packages:
-## [1] msdata_0.31.1       magrittr_2.0.1      Spectra_1.1.17     
+## [1] msdata_0.31.1       magrittr_2.0.1      Spectra_1.1.18     
 ## [4] ProtGenerics_1.23.7 BiocParallel_1.25.5 S4Vectors_0.29.9   
-## [7] BiocGenerics_0.37.1 BiocStyle_2.19.1   
+## [7] BiocGenerics_0.37.1 BiocStyle_2.19.2   
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.6          highr_0.8           bslib_0.2.4        
-##  [4] compiler_4.1.0      BiocManager_1.30.10 jquerylib_0.1.3    
+##  [4] compiler_4.1.0      BiocManager_1.30.12 jquerylib_0.1.3    
 ##  [7] rhdf5filters_1.3.4  tools_4.1.0         ncdf4_1.17         
 ## [10] digest_0.6.27       rhdf5_2.35.2        jsonlite_1.7.2     
 ## [13] evaluate_0.14       memoise_2.0.0       clue_0.3-58        
-## [16] rlang_0.4.10        yaml_2.2.1          pkgdown_1.6.1.9000 
+## [16] rlang_0.4.10        yaml_2.2.1          pkgdown_1.6.1.9001 
 ## [19] xfun_0.22           fastmap_1.1.0       stringr_1.4.0      
 ## [22] knitr_1.31          cluster_2.1.1       desc_1.3.0         
 ## [25] fs_1.5.0            sass_0.3.1          systemfonts_1.0.1  
@@ -872,7 +872,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
