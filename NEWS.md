@@ -2,6 +2,10 @@
 
 ## Changes in 1.1.18
 
+- New `filterPrecursorCharge()` method.
+
+## Changes in 1.1.18
+
 - Define `plotSpectraMirror` as a method.
 
 ## Changes in 1.1.17

@@ -299,6 +299,8 @@ the `?Spectra` help):
 - `filterPolarity`: filter by polarity.
 - `filterPrecursorMz`: retain (MSn) spectra with a precursor m/z within the
   provided m/z range.
+- `filterPrecursorCharge`: retain (MSn) spectra with speified
+  precursor charge(s).
 - `filterPrecursorScan`: retain (parent and children) scans of an acquisition
   number.
 - `filterRt`: filter based on retention time ranges.
