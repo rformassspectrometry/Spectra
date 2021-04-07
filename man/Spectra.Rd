@@ -77,6 +77,7 @@
 \alias{filterMzValues,Spectra-method}
 \alias{filterPolarity,Spectra-method}
 \alias{filterPrecursorMz,Spectra-method}
+\alias{filterPrecursorCharge,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
 \alias{reset,Spectra-method}
@@ -308,6 +309,8 @@ processingLog(x)
 
 \S4method{filterPrecursorMz}{Spectra}(object, mz = numeric())
 
+\S4method{filterPrecursorCharge}{Spectra}(object, z = integer())
+
 \S4method{filterPrecursorScan}{Spectra}(object, acquisitionNum = integer())
 
 \S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
@@ -505,6 +508,9 @@ For \code{filterMsLevel}: the MS level to which \code{object} should be subsette
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
+
+\item{z}{For \code{filterPrecursorCharge}: \code{integer()} with the precursor charges
+to be used as filter.}
 
 \item{acquisitionNum}{for \code{filterPrecursorScan}: \code{integer} with the
 acquisition number of the spectra to which the object should be
@@ -851,6 +857,8 @@ original order).
 \item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
 provided m/z range. See examples for details on selecting spectra with
 a precursor m/z for a target m/z accepting a small difference in \emph{ppm}.
+\item \code{filterPrecursorCharge}: retains spectra with the defined precursor
+charge(s).
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra} (with spectra in their original order).

@@ -341,6 +341,9 @@ NULL
 #'   provided m/z range. See examples for details on selecting spectra with
 #'   a precursor m/z for a target m/z accepting a small difference in *ppm*.
 #'
+#' - `filterPrecursorCharge`: retains spectra with the defined precursor
+#'   charge(s).
+#'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'   `Spectra` (with spectra in their original order).
@@ -647,6 +650,9 @@ NULL
 #'     `numeric(2)` defining the lower and upper m/z boundary.
 #'     For `filterMzValues`: `numeric` with the m/z values to match peaks
 #'     against.
+#'
+#' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
+#'     to be used as filter.
 #'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
@@ -1809,6 +1815,18 @@ setMethod("filterPrecursorMz", "Spectra",
                   object@processing,
                   "Filter: select spectra with a precursor m/z within [",
                   paste0(mz, collapse = ", "), "]")
+              object
+          })
+
+#' @rdname Spectra
+setMethod("filterPrecursorCharge", "Spectra",
+          function(object, z = integer()) {
+              z <- unique(z)
+              object@backend <- filterPrecursorCharge(object@backend, z)
+              object@processing <- .logging(
+                  object@processing,
+                  "Filter: select spectra with a precursor charge ",
+                  paste0(z, collapse = ", "))
               object
           })
 

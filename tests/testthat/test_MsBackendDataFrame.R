@@ -776,6 +776,28 @@ test_that("filterPrecursorMz,MsBackendDataFrame works", {
     expect_equal(rtime(res), 3)
 })
 
+test_that("filterPrecursorCharge,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterPrecursorCharge(be))
+
+    df <- DataFrame(msLevel = c(1L, 2L, 2L, 2L),
+                    precursorCharge = c(NA, 2L, 3L, 4L),
+                    rtime = as.numeric(1:4))
+    be <- backendInitialize(MsBackendDataFrame(), df)
+
+    res <- filterPrecursorCharge(be, 0)
+    expect_true(length(res) == 0)
+
+    res <- filterPrecursorCharge(be, 2)
+    expect_equal(rtime(res), 2)
+
+    res <- filterPrecursorCharge(be, 2:3)
+    expect_equal(rtime(res), 2:3)
+
+    res <- filterPrecursorCharge(be, z = c(2, 4))
+    expect_equal(rtime(res), c(2, 4))
+})
+
 test_that("filterPrecursorScan,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_equal(be, filterPrecursorScan(be))

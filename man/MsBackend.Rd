@@ -32,6 +32,7 @@
 \alias{filterMsLevel,MsBackend-method}
 \alias{filterPolarity,MsBackend-method}
 \alias{filterPrecursorMz,MsBackend-method}
+\alias{filterPrecursorCharge,MsBackend-method}
 \alias{filterPrecursorScan,MsBackend-method}
 \alias{filterRt,MsBackend-method}
 \alias{intensity,MsBackend-method}
@@ -127,6 +128,8 @@
 \S4method{filterPolarity}{MsBackend}(object, polarity = integer())
 
 \S4method{filterPrecursorMz}{MsBackend}(object, mz = numeric())
+
+\S4method{filterPrecursorCharge}{MsBackend}(object, z = integer())
 
 \S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum = integer())
 
@@ -261,6 +264,9 @@ function should be applied. For \code{filterMsLevel}: the MS level to which
 
 \item{polarity}{For \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
+
+\item{z}{For \code{filterPrecursorCharge}: \code{integer()} with the precursor charges
+to be used as filter.}
 
 \item{acquisitionNum}{for \code{filterPrecursorScan}: \code{integer} with the
 acquisition number of the spectra to which the object should be
@@ -446,6 +452,10 @@ Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
 provided m/z range.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
+\item \code{filterPrecursorCharge}: retains spectra with the defined precursor
+charge(s).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.

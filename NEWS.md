@@ -1,5 +1,9 @@
 # Spectra 1.1
 
+## Changes in 1.1.19
+
+- New `filterPrecursorCharge()` method.
+
 ## Changes in 1.1.18
 
 - Define `plotSpectraMirror` as a method.
