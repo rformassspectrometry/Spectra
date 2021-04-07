@@ -1,6 +1,6 @@
 # Spectra 1.1
 
-## Changes in 1.1.18
+## Changes in 1.1.19
 
 - New `filterPrecursorCharge()` method.
 
