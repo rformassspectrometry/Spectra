@@ -18,9 +18,6 @@
 #' the function checks if there are peaks in x whose m/z match them. If so,
 #' it looks for isotope groups on this subsets of peaks.
 #'
-#' @param duplicates character(1), how to handle duplicated matches. Has to be
-#' one of c("keep", "closest", "remove"). No abbreviations allowed.
-#'
 #' @return list of vectors. Each vector in the returned list contains the
 #' indexes of the rows in `x` that match a isotope.
 #'
@@ -29,95 +26,36 @@
 #' in `isotopeDefinition`. Possible matches of those with the other m/z values
 #' in `x` are then searched. If any is found and the ratio between the
 #' intensities of the corresponding peaks and the `i`-th peak is smaller than a
-#' threshold (specified in the `maxint` column of
-#' `isotopeDefinition`), their indexes are grouped together.
-#'
-#' It can happen that some index is present in more than one group. The user can
-#' decide what to do in this case by choosing the parameter `duplicates`.
-#' `duplicates = "keep"` leaves the groups as they are.
-#' `duplicates = "closest"` removes from the list groups for which another group
-#'  which shares some indexes with it exists and constitutes a better match.
-#' `duplicates = "remove"` removes from the list groups for which another group
-#'  which shares some indexes with it exists
+#' threshold (specified in the `maxint` column of isotopeDefinition`), 
+#' their indexes are grouped together. Those indexes are excluded from the set 
+#' of indexes that are searched for further groups.
 #'
 #' @examples
 #'
 .isotope_peaks <- function(x, isotopeDefinition = isotopeDefinition(), ppm = 20,
-                           seed_mz = NULL, duplicates = "keep") {
-
-  if(duplicates != "keep" && duplicates != "closest" && duplicates != "remove")
-    stop("'duplicates' has to be one of \"keep\", \"closest\" or \"remove\".")
-
+                           seed_mz = NULL) {
   lst <- list()
-  idxs_o <- which(x[, 2] > 0)
-  xred <- x[idxs_o, ]
-  if (is.null(seed_mz)) idxs <- seq_along(xred[, 1])
-  else idxs <- na.omit(MsCoreUtils::closest(seed_mz, xred[, 1], tolerance = 0,
-                                            ppm = ppm, duplicates = "closest"))
-  sgd <- NULL
+  to_test <- rep(TRUE, nrow(x))
+  to_test[which(x[, 2] <= 0)] <- FALSE
+  if (is.null(seed_mz)) idxs <- which(to_test)
+  else idxs <- na.omit(MsCoreUtils::closest(seed_mz, x[which(to_test), 1], 
+                                            tolerance = 0, ppm = ppm, 
+                                            duplicates = "closest"))
   for (i in idxs)
   {
-    tmp <- xred[i, 1] + isotopeDefinition[, 1]
-    cls <- MsCoreUtils::closest(tmp, xred[-(1:i), 1], tolerance = 0, ppm = ppm)
-    int_ok <- which(xred[, 2][cls + i] < isotopeDefinition[, 2]*xred[i, 2])
-    if (length(int_ok) > 0)
+    if(to_test[i])
     {
-      len <- length(lst)
-      lst[[len + 1]] <- c(idxs_o[i], idxs_o[cls[int_ok] + i])
-      sgd[len + 1] <- sum(tmp[int_ok] - xred[cls[int_ok] + i, 1])
-    }
-  }
-
-  if(length(lst) > 1 && duplicates == "closest")
-  {
-    maxmzd <- max(isotopeDefinition[,1])
-    k <- 1
-    while (k < length(lst))
-    {
-      kk <- k+1
-      k_removed <- FALSE
-      while(kk<=length(lst) && !k_removed &&
-            x[max(lst[[k]]), 1] + maxmzd > x[lst[[kk]][1], 1]*(1 - ppm*10^(-6)))
+      to_test[i] <- FALSE
+      tmp <- x[i, 1] + isotopeDefinition[, 1]
+      wtt <- which(to_test)
+      cls <- MsCoreUtils::closest(tmp, x[wtt, 1], tolerance = 0, ppm = ppm)
+      int_ok <- which(x[, 2][wtt[cls]] < isotopeDefinition[, 2] * x[i, 2])
+      if (length(int_ok) > 0)
       {
-        if(length(intersect(lst[[k]], lst[[kk]])) > 0)
-        {
-          if(sgd[[k]]/length(lst[[k]]) > sgd[[kk]]/length(lst[[kk]]))
-          {
-            lst[[k]] <- NULL
-            k_removed <- TRUE
-          }
-          else if(sgd[[k]]/length(lst[[k]]) < sgd[[kk]]/length(lst[[kk]]))
-          {
-            lst[[kk]] <- NULL
-          }
-          else if(length(lst[[kk]]) > length(lst[[k]]))
-          {
-            lst[[k]] <- NULL
-            k_removed <- TRUE
-          }
-          else
-          {
-            lst[[kk]] <- NULL
-          }
-        }
-        else kk <- kk + 1
+        lst[[length(lst) + 1]] <- c(i, wtt[cls][int_ok])
+        to_test[wtt[cls][int_ok]] <- FALSE
       }
-      if(k_removed == FALSE)
-        k <- k + 1
     }
-  }
-
-  if (length(lst) > 1 && duplicates == "remove")
-  {
-    tabunlst <- table(unlist(lst))
-    dupl <- as.numeric(names(tabunlst[which(tabunlst > 1)]))
-    rem <- NULL
-    for(k in seq_along(lst))
-    {
-      if (length(intersect(lst[[k]], dupl)) > 0)
-        rem <- c(rem, k)
-    }
-    lst[rem] <- NULL
   }
   lst
 }
