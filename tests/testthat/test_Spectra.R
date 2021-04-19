@@ -930,6 +930,25 @@ test_that("filterPrecursorMz,Spectra works", {
     expect_true(length(res) == 2)
 })
 
+test_that("filterPrecursorCharge,Spectra works", {
+    sps <- Spectra()
+    res <- filterPrecursorCharge(sps)
+    expect_true(is(res, "Spectra"))
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(tmt_mzr)
+    res <- filterPrecursorCharge(sps, z = 0L)
+    expect_true(length(res) == 0)
+
+    res2 <- filterPrecursorCharge(sps, z = 2)
+    res3 <- filterPrecursorCharge(sps, z = 3)
+    res23 <- filterPrecursorCharge(sps, z = 2:3)
+    expect_true(length(res2) == 300)
+    expect_true(length(res3) == 128)
+    expect_true(length(res23) == (length(res2) + length(res3)))
+})
+
+
 test_that("filterPrecursorScan,Spectra works", {
     sps <- Spectra()
     res <- filterPrecursorScan(sps, 3)

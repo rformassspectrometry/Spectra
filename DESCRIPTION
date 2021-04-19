@@ -8,25 +8,25 @@ Description: The Spectra package defines an efficient infrastructure
    backends tuned for fast data access and processing and backends for very
    large data sets ensuring a small memory footprint.
 Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
-		    email = "maintainer@rformassspectrometry.org",
-		    role = "cre"),
-	     person(given = "Laurent", family = "Gatto",
-		    email = "laurent.gatto@uclouvain.be",
-		    role = "aut",
-		    comment = c(ORCID = "0000-0002-1520-2268")),
-	     person(given = "Johannes", family = "Rainer",
-		    email = "Johannes.Rainer@eurac.edu",
-		    role = "aut",
-		    comment = c(ORCID = "0000-0002-6977-7147")),
-	     person(given = "Sebastian", family = "Gibb",
-		    email = "mail@sebastiangibb.de",
-		    role = "aut",
-		    comment = c(ORCID = "0000-0001-7406-4443")))
+                    email = "maintainer@rformassspectrometry.org",
+                    role = "cre"),
+             person(given = "Laurent", family = "Gatto",
+                    email = "laurent.gatto@uclouvain.be",
+                    role = "aut",
+                    comment = c(ORCID = "0000-0002-1520-2268")),
+             person(given = "Johannes", family = "Rainer",
+                    email = "Johannes.Rainer@eurac.edu",
+                    role = "aut",
+                    comment = c(ORCID = "0000-0002-6977-7147")),
+             person(given = "Sebastian", family = "Gibb",
+                    email = "mail@sebastiangibb.de",
+                    role = "aut",
+                    comment = c(ORCID = "0000-0001-7406-4443")))
 Depends:
     R (>= 4.0.0),
     S4Vectors,
     BiocParallel,
-    ProtGenerics (>= 1.23.7)
+    ProtGenerics (>= 1.23.8)
 Imports:
     methods,
     IRanges,

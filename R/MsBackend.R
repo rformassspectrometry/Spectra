@@ -89,6 +89,9 @@
 #'     filter the object. For `filterPrecursorMz`: `numeric(2)` with the lower
 #'     and upper m/z boundary.
 #'
+#' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
+#'     to be used as filter.
+#'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
 #'
@@ -244,6 +247,11 @@
 #'
 #' - `filterPrecursorMz`: retains spectra with a precursor m/z within the
 #'   provided m/z range.
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
+#'
+#' - `filterPrecursorCharge`: retains spectra with the defined precursor
+#'   charge(s).
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
@@ -830,6 +838,21 @@ setMethod("filterPrecursorMz", "MsBackend",
                   object[keep]
               } else object
           })
+
+#' @exportMethod filterPrecursorCharge
+#'
+#' @importMethodsFrom ProtGenerics filterPrecursorCharge
+#'
+#' @rdname MsBackend
+setMethod("filterPrecursorCharge", "MsBackend",
+          function(object, z = integer()) {
+              if (length(z)) {
+                  keep <- which(precursorCharge(object) %in% z)
+                  object[keep]
+              } else object
+          })
+
+
 
 #' @exportMethod filterPrecursorScan
 #'

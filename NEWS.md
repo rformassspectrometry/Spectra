@@ -2,8 +2,7 @@
 
 ## Changes in 1.1.19
 
-- Fix concatenating empty spectra (issue
-  [#200](https://github.com/rformassspectrometry/Spectra/issues/200)).
+- New `filterPrecursorCharge()` method.
 
 ## Changes in 1.1.18
 
