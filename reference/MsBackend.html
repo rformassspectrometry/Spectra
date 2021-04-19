@@ -115,7 +115,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.20</span>
       </span>
     </div>
 
@@ -253,6 +253,9 @@ filterPolarity(object, polarity = integer())
 
 # S4 method for MsBackend
 filterPrecursorMz(object, mz = numeric())
+
+# S4 method for MsBackend
+filterPrecursorCharge(object, z = integer())
 
 # S4 method for MsBackend
 filterPrecursorScan(object, acquisitionNum = integer())
@@ -457,6 +460,11 @@ function should be applied. For <code>filterMsLevel</code>: the MS level to whic
 to subset <code>object</code>.</p></td>
     </tr>
     <tr>
+      <th>z</th>
+      <td><p>For <code>filterPrecursorCharge</code>: <code><a href='https://rdrr.io/r/base/integer.html'>integer()</a></code> with the precursor charges
+to be used as filter.</p></td>
+    </tr>
+    <tr>
       <th>acquisitionNum</th>
       <td><p>for <code>filterPrecursorScan</code>: <code>integer</code> with the
 acquisition number of the spectra to which the object should be
@@ -638,6 +646,10 @@ Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterPrecursorMz</code>: retains spectra with a precursor m/z within the
 provided m/z range.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
+<li><p><code>filterPrecursorCharge</code>: retains spectra with the defined precursor
+charge(s).
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterPrecursorScan</code>: retains parent (e.g. MS1) and children scans (e.g.
