@@ -294,6 +294,11 @@ test_that(".concatenate_spectra works", {
     sp1@processingQueue <- list(ProcessingStep(sum))
     expect_error(c(sp1, sp2), "with non-empty processing")
 
+    ## Empty Spectra
+    sp1 <- Spectra()
+    sp2 <- Spectra()
+    res <- c(sp1, sp2)
+
     ## Different backends
     s1 <- Spectra(sciex_mzr)
     s2 <- Spectra(sciex_hd5)

@@ -345,6 +345,11 @@ test_that("backendMerge,MsBackendHdf5Peaks works", {
     expect_true(be2@modCount == 2)
     expect_true(be3@modCount == 1)
 
+    ## Empty backends
+    be_e <- be1[integer()]
+    res <- backendMerge(be_e, be_e)
+    expect_equal(spectraData(res), spectraData(be_e))
+
     ## Error if duplicated dataStorage
     expect_error(backendMerge(be1, be1), "same 'dataStorage' is not supported")
 

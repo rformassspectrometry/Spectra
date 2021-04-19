@@ -53,6 +53,11 @@ test_that("backendMerge,MsBackendDataFrame works", {
     expect_equal(backendMerge(be), be)
     expect_error(backendMerge(be, 4), "backends of the same type")
 
+    ## only empty backends
+    be_e <- be[integer()]
+    res <- backendMerge(be_e, be_e)
+    expect_equal(spectraData(res), spectraData(be_e))
+
     res <- backendMerge(be, be2, be3)
     expect_true(is(res, "MsBackendDataFrame"))
     expect_identical(res@spectraData$dataStorage, rep("<memory>", 7))
