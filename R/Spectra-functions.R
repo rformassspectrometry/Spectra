@@ -465,7 +465,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     ## we could even test if they are similar, and if so, merge.
     if (any(lengths(pqs)))
         stop("Can not concatenate 'Spectra' objects with non-empty ",
-             "processing queue")
+             "processing queue. Consider calling 'applyProcessing' before.")
     metad <- do.call(c, lapply(x, function(z) z@metadata))
     procs <- unique(unlist(lapply(x, function(z) z@processing)))
     object <- new(

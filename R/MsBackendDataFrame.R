@@ -74,8 +74,10 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
 #' @rdname hidden_aliases
 setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
     object <- unname(c(object, ...))
-    object <- object[lengths(object) > 0]
-    res <- .combine_backend_data_frame(object)
+    not_empty <- lengths(object) > 0
+    if (any(not_empty))
+        res <- .combine_backend_data_frame(object[not_empty])
+    else res <- object[[1L]]
     validObject(res)
     res
 })

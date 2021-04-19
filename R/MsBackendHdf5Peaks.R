@@ -291,7 +291,10 @@ setMethod("backendMerge", "MsBackendHdf5Peaks", function(object, ...) {
     fls <- lapply(object, function(z) unique(z@spectraData$dataStorage))
     if (anyDuplicated(unlist(fls, use.names = FALSE)))
         stop("Combining backends with the same 'dataStorage' is not supported")
-    res <- .combine_backend_data_frame(object)
+    not_empty <- lengths(object) > 0
+    if (any(not_empty))
+        res <- .combine_backend_data_frame(object[not_empty])
+    else res <- object[[1L]]
     res@modCount <- unlist(lapply(object, function(z) z@modCount),
                            use.names = FALSE)
     validObject(res)
