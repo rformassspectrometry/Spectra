@@ -1,5 +1,10 @@
 # Spectra 1.1
 
+## Changes in 1.1.20
+
+- Fix concatenating empty spectra (issue
+  [#200](https://github.com/rformassspectrometry/Spectra/issues/200)).
+
 ## Changes in 1.1.19
 
 - New `filterPrecursorCharge()` method.
