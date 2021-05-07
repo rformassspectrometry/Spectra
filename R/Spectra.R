@@ -474,6 +474,14 @@ NULL
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
+#' - `estimatePrecursorIntensity`: define the precursor intensities for MS2
+#'   spectra using the intensity of the matching MS1 peak from the
+#'   closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
+#'   respective MS2 spectrum). With `method = "interpolation"` it is also
+#'   possible to calculate the precursor intensity based on an interpolation of
+#'   intensity values (and retention times) of the matching MS1 peaks from the
+#'   previous and next MS1 spectrum. See below for an example.
+#'
 #' - `filterIntensity`: filters each spectrum keeping only peaks with
 #'   intensities that are within the provided range or match the criteria of
 #'   the provided function. For the former, parameter `intensity` has to be a
@@ -590,7 +598,8 @@ NULL
 #'     backends changing this parameter can lead to errors.
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
 #'     should be combined. For `spectrapply`: `factor` how `object` should be
-#'     splitted.
+#'     splitted. For `estimatePrecursorIntensity`: defining which spectra belong
+#'     to the same original data file (sample). Defaults to `f = dataOrigin(x)`.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
@@ -638,6 +647,10 @@ NULL
 #'   currently, the Moving-Average- (`method = "MovingAverage"`),
 #'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
 #'   Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
+#' - For `estimatePrecursorIntensity`: `character(1)` defining whether the
+#'   precursor intensity should be estimated on the previous MS1 spectrum
+#'   (`method = "previous"`, the default) or based on an interpolation on the
+#'   previous and next MS1 spectrum (`method = "interpolation"`).
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
@@ -1015,6 +1028,21 @@ NULL
 #' res <- lapply(intensity(sciex_im[1:20]), mean)
 #' head(res)
 #'
+#' ## Calculating the precursor intensity for MS2 spectra:
+#' ##
+#' ## Some MS instrument manufacturer don't report the precursor intensities
+#' ## for MS@ spectra. The `estimatePrecursorIntensity` function can be used
+#' ## in these cases to calculate the precursor intensity on MS1 data. Below
+#' ## we load an mzML file from a vendor providing precursor intensities and
+#' ## compare the estimated and reported precursor intensities.
+#' tmt <- Spectra(msdata::proteomics(full.names = TRUE)[5],
+#'     backend = MsBackendMzR())
+#' pmi <- estimatePrecursorIntensity(tmt)
+#' plot(pmi, precursorIntensity(tmt))
+#'
+#' ## We can also replace the original precursor intensity values with the
+#' ## newly calculated ones
+#' tmt$precursorIntensity <- pmi
 #'
 #' ## ---- DATA EXPORT ----
 #'

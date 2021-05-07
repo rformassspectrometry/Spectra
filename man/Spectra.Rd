@@ -6,6 +6,7 @@
 \alias{combineSpectra}
 \alias{joinSpectraData}
 \alias{processingLog}
+\alias{estimatePrecursorIntensity}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -106,6 +107,16 @@ combineSpectra(
 joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
 
 processingLog(x)
+
+estimatePrecursorIntensity(
+  x,
+  ppm = 10,
+  tolerance = 0,
+  method = c("previous", "interpolation"),
+  msLevel. = 2L,
+  f = dataOrigin(x),
+  BPPARAM = bpparam()
+)
 
 \S4method{Spectra}{missing}(
   object,
@@ -381,7 +392,8 @@ parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
 should be combined. For \code{spectrapply}: \code{factor} how \code{object} should be
-splitted.}
+splitted. For \code{estimatePrecursorIntensity}: defining which spectra belong
+to the same original data file (sample). Defaults to \code{f = dataOrigin(x)}.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
@@ -416,6 +428,35 @@ for making the names of columns in the merged spectra variables
 unique. This suffix will be used to amend \code{names(y)}, while
 \code{spectraVariables(x)} will remain unchanged.}
 
+\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{filterMzValues}: \code{numeric(1)}
+defining a relative, m/z-dependent, maximal accepted difference between
+m/z values for peaks to be matched.}
+
+\item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
+define a constant maximal accepted difference between m/z values for
+peaks to be matched. For \code{containsMz} and \code{filterMzValues} it can also
+be of length equal \code{mz} to specify a different tolerance for each m/z
+value.}
+
+\item{method}{\itemize{
+\item For \code{pickPeaks}: \code{character(1)}, the noise estimators that
+should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
+(\code{method = "MAD"}) and Friedman's Super Smoother
+(\code{method = "SuperSmoother"}) are supported.
+\item For \code{smooth}: \code{character(1)}, the smoothing function that should be used,
+currently, the Moving-Average- (\code{method = "MovingAverage"}),
+Weighted-Moving-Average- (\verb{method = "WeightedMovingAverage")},
+Savitzky-Golay-Smoothing (\code{method = "SavitzkyGolay"}) are supported.
+\item For \code{estimatePrecursorIntensity}: \code{character(1)} defining whether the
+precursor intensity should be estimated on the previous MS1 spectrum
+(\code{method = "previous"}, the default) or based on an interpolation on the
+previous and next MS1 spectrum (\code{method = "interpolation"}).
+}}
+
+\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
+the function should be applied (defaults to all MS levels of \code{object}.
+For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
+
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
 
@@ -441,16 +482,6 @@ filter the object. For \code{filterPrecursorMz} and \code{filterMzRange}:
 \code{numeric(2)} defining the lower and upper m/z boundary.
 For \code{filterMzValues}: \code{numeric} with the m/z values to match peaks
 against.}
-
-\item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
-define a constant maximal accepted difference between m/z values for
-peaks to be matched. For \code{containsMz} and \code{filterMzValues} it can also
-be of length equal \code{mz} to specify a different tolerance for each m/z
-value.}
-
-\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{filterMzValues}: \code{numeric(1)}
-defining a relative, m/z-dependent, maximal accepted difference between
-m/z values for peaks to be matched.}
 
 \item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
 (the default) or all provided \code{mz} have to be present in the spectrum.}
@@ -502,10 +533,6 @@ returns a \code{logical} (same length then peaks in the spectrum) whether the
 peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
 only peaks with \code{NA} intensity are removed.}
 
-\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
-the function should be applied (defaults to all MS levels of \code{object}.
-For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
-
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
 
@@ -538,17 +565,6 @@ identification of the mass peaks: a local maximum has to be the maximum
 in the window from \code{(i - halfWindowSize):(i + halfWindowSize)}.
 \item For \code{smooth}: \code{integer(1)}, used in the smoothing algorithm, the window
 reaches from \code{(i - halfWindowSize):(i + halfWindowSize)}.
-}}
-
-\item{method}{\itemize{
-\item For \code{pickPeaks}: \code{character(1)}, the noise estimators that
-should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
-(\code{method = "MAD"}) and Friedman's Super Smoother
-(\code{method = "SuperSmoother"}) are supported.
-\item For \code{smooth}: \code{character(1)}, the smoothing function that should be used,
-currently, the Moving-Average- (\code{method = "MovingAverage"}),
-Weighted-Moving-Average- (\verb{method = "WeightedMovingAverage")},
-Savitzky-Golay-Smoothing (\code{method = "SavitzkyGolay"}) are supported.
 }}
 
 \item{snr}{For \code{pickPeaks}: \code{double(1)} defining the
@@ -983,6 +999,13 @@ comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+\item \code{estimatePrecursorIntensity}: define the precursor intensities for MS2
+spectra using the intensity of the matching MS1 peak from the
+closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
+respective MS2 spectrum). With \code{method = "interpolation"} it is also
+possible to calculate the precursor intensity based on an interpolation of
+intensity values (and retention times) of the matching MS1 peaks from the
+previous and next MS1 spectrum. See below for an example.
 \item \code{filterIntensity}: filters each spectrum keeping only peaks with
 intensities that are within the provided range or match the criteria of
 the provided function. For the former, parameter \code{intensity} has to be a
@@ -1316,6 +1339,21 @@ head(res)
 res <- lapply(intensity(sciex_im[1:20]), mean)
 head(res)
 
+## Calculating the precursor intensity for MS2 spectra:
+##
+## Some MS instrument manufacturer don't report the precursor intensities
+## for MS@ spectra. The `estimatePrecursorIntensity` function can be used
+## in these cases to calculate the precursor intensity on MS1 data. Below
+## we load an mzML file from a vendor providing precursor intensities and
+## compare the estimated and reported precursor intensities.
+tmt <- Spectra(msdata::proteomics(full.names = TRUE)[5],
+    backend = MsBackendMzR())
+pmi <- estimatePrecursorIntensity(tmt)
+plot(pmi, precursorIntensity(tmt))
+
+## We can also replace the original precursor intensity values with the
+## newly calculated ones
+tmt$precursorIntensity <- pmi
 
 ## ---- DATA EXPORT ----
 

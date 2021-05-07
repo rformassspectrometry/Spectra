@@ -1,5 +1,10 @@
 # Spectra 1.1
 
+## Changes in 1.1.21
+
+- Add `estimatePrecursorIntensity` function (issue
+  [#202](https://github.com/rformassspectrometry/Spectra/issues/202)).
+
 ## Changes in 1.1.20
 
 - Fix concatenating empty spectra (issue
