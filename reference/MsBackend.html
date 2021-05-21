@@ -90,8 +90,6 @@ See below for more details about individual backends." />
 
 
 
-<!-- dependencies from examples -->
-
 
   
 
@@ -115,7 +113,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.20</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -185,7 +183,7 @@ data files and the remaining spectra variables in memory (in a
 <p>See below for more details about individual backends.</p>
     </div>
 
-    <pre class="usage"># S4 method for MsBackend
+    <div class="ref-usage sourceCode"><pre><code># S4 method for MsBackend
 backendInitialize(object, ...)
 
 # S4 method for list
@@ -399,7 +397,7 @@ backendInitialize(object, data, ...)
 
 MsBackendHdf5Peaks()
 
-MsBackendMzR()</pre>
+MsBackendMzR()</code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -444,8 +442,8 @@ only for spectra of selected <code>dataStorage</code>.</p></td>
     </tr>
     <tr>
       <th>mz</th>
-      <td><p>For <code>filterIsolationWindow</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the m/z value to
-filter the object. For <code>filterPrecursorMz</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> with the lower
+      <td><p>For <code>filterIsolationWindow</code>: <code>numeric(1)</code> with the m/z value to
+filter the object. For <code>filterPrecursorMz</code>: <code>numeric(2)</code> with the lower
 and upper m/z boundary.</p></td>
     </tr>
     <tr>
@@ -472,7 +470,7 @@ subsetted.</p></td>
     </tr>
     <tr>
       <th>rt</th>
-      <td><p>for <code>filterRt</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> defining the retention time range to
+      <td><p>for <code>filterRt</code>: <code>numeric(2)</code> defining the retention time range to
 be used to subset/filter <code>object</code>.</p></td>
     </tr>
     <tr>
@@ -504,26 +502,26 @@ returned <code>DataFrame</code>. By default, all columns are returned.</p></td>
     </tr>
     <tr>
       <th>drop</th>
-      <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>: not considered.</p></td>
+      <td><p>For <code>[</code>: not considered.</p></td>
     </tr>
     <tr>
       <th>initial</th>
-      <td><p>For <code>tic</code>: <code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether the initially
+      <td><p>For <code>tic</code>: <code>logical(1)</code> whether the initially
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (<code>initial = FALSE</code>).</p></td>
     </tr>
     <tr>
       <th>i</th>
-      <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></td>
+      <td><p>For <code>[</code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></td>
     </tr>
     <tr>
       <th>j</th>
-      <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>: not supported.</p></td>
+      <td><p>For <code>[</code>: not supported.</p></td>
     </tr>
     <tr>
       <th>name</th>
-      <td><p>For <code><a href='https://rdrr.io/r/base/Extract.html'>$</a></code> and <code>$&lt;-</code>: the name of the spectra variable to return
+      <td><p>For <code>$</code> and <code>$&lt;-</code>: the name of the spectra variable to return
 or set.</p></td>
     </tr>
     <tr>
@@ -544,12 +542,12 @@ but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></td>
 
 <p>New backend classes <strong>must</strong> extend the base <code>MsBackend</code> class and
 <strong>have</strong> to implement the following methods:</p><ul>
-<li><p><code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code>: subset the backend. Only subsetting by element (<em>row</em>/<code>i</code>) is
+<li><p><code>[</code>: subset the backend. Only subsetting by element (<em>row</em>/<code>i</code>) is
 allowed</p></li>
-<li><p><code><a href='https://rdrr.io/r/base/Extract.html'>$</a></code>, <code>$&lt;-</code>: access or set/add a single spectrum variable (column) in the
+<li><p><code>$</code>, <code>$&lt;-</code>: access or set/add a single spectrum variable (column) in the
 backend.</p></li>
-<li><p><code><a href='https://rdrr.io/r/base/Extract.html'>[[</a></code>, <code>[[&lt;-</code>: access or set/add a single spectrum variable (column) in the
-backend. The default implementation uses <code><a href='https://rdrr.io/r/base/Extract.html'>$</a></code>, thus these methods don't have
+<li><p><code>[[</code>, <code>[[&lt;-</code>: access or set/add a single spectrum variable (column) in the
+backend. The default implementation uses <code>$</code>, thus these methods don't have
 to be implemented for new classes extending <code>MsBackend</code>.</p></li>
 <li><p><code>acquisitionNum</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
@@ -667,7 +665,7 @@ spectrum). The length of the <code>list</code> is equal to the number of
 <li><p><code>intensity&lt;-</code>: replaces the intensity values. <code>value</code> has to be a <code>list</code>
 (or <code>NumericList()</code>) of length equal to the number of spectra and the
 number of values within each list element identical to the number of
-peaks in each spectrum (i.e. the <code><a href='https://rdrr.io/r/base/lengths.html'>lengths(x)</a></code>). Note that just
+peaks in each spectrum (i.e. the <code>lengths(x)</code>). Note that just
 writeable backends support this method.</p></li>
 <li><p><code>ionCount</code>: returns a <code>numeric</code> with the sum of intensities for
 each spectrum. If the spectrum is empty (see <code>isEmpty</code>),
@@ -687,7 +685,7 @@ lower m/z boundary of the isolation window.</p></li>
 target m/z of the isolation window.</p></li>
 <li><p><code>isolationWindowUpperMz</code>, <code>isolationWindowUpperMz&lt;-</code>: gets or sets the
 upper m/z boundary of the isolation window.</p></li>
-<li><p><code>isReadOnly</code>: returns a <code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether the backend is <em>read
+<li><p><code>isReadOnly</code>: returns a <code>logical(1)</code> whether the backend is <em>read
 only</em> or does allow also to write/update data.</p></li>
 <li><p><code>length</code>: returns the number of spectra in the object.</p></li>
 <li><p><code>lengths</code>: gets the number of peaks (m/z-intensity values) per
@@ -703,7 +701,7 @@ one spectrum.</p></li>
 <li><p><code>mz&lt;-</code>: replaces the m/z values. <code>value</code> has to be a <code>list</code> of length equal
 to the number of spectra and the number of values within each list element
 identical to the number of peaks in each spectrum (i.e. the
-<code><a href='https://rdrr.io/r/base/lengths.html'>lengths(x)</a></code>). Note that just writeable backends support this method.</p></li>
+<code>lengths(x)</code>). Note that just writeable backends support this method.</p></li>
 <li><p><code>polarity</code>, <code>polarity&lt;-</code>: gets or sets the polarity for each
 spectrum.  <code>polarity</code> returns an <code>integer</code> vector (length equal
 to the number of spectra), with <code>0</code> and <code>1</code> representing negative
@@ -770,7 +768,7 @@ spectrum, <code>NA_real_</code> is returned.</p></li>
     
 
 
-<p>Backend classes must support (implement) the <code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code> method to subset the object.
+<p>Backend classes must support (implement) the <code>[</code> method to subset the object.
 This method should only support subsetting by spectra (rows, <code>i</code>) and has
 to return a <code>MsBackend</code> class.</p>
 <p>Backends extending <code>MsBackend</code> should also implement the <code>backendMerge</code>
@@ -836,18 +834,18 @@ can be subsequently filled with data by calling <code>backendInitialize</code>
 passing the file names of the input data files with argument <code>files</code>.</p>
 <p>This backend provides an <code>export</code> method to export data from a <code>Spectra</code> in
 <em>mzML</em> or <em>mzXML</em> format. The definition of the function is:</p>
-<p><code><a href='hidden_aliases.html'>export(object, x, file = tempfile(), format = c("mzML", "mzXML"), copy = FALSE)</a></code></p>
+<p><code>export(object, x, file = tempfile(), format = c("mzML", "mzXML"), copy = FALSE)</code></p>
 <p>The parameters are:</p><ul>
 <li><p><code>object</code>: an instance of the <code>MsBackendMzR</code> class.</p></li>
 <li><p><code>x</code>: the <a href='Spectra.html'>Spectra</a> object to be exported.</p></li>
 <li><p><code>file</code>: <code>character</code> with the (full) output file name(s). Should be
-of length 1 or equal <code><a href='https://rdrr.io/r/base/length.html'>length(x)</a></code>. If a single file is specified, all
+of length 1 or equal <code>length(x)</code>. If a single file is specified, all
 spectra are exported to that file. Alternatively it is possible to specify
 for each spectrum in <code>x</code> the name of the file to which it should be
-exported (and hence <code>file</code> has to be of length equal <code><a href='https://rdrr.io/r/base/length.html'>length(x)</a></code>).</p></li>
-<li><p><code>format</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>, either <code>"mzML"</code> or <code>"mzXML"</code> defining the output
+exported (and hence <code>file</code> has to be of length equal <code>length(x)</code>).</p></li>
+<li><p><code>format</code>: <code>character(1)</code>, either <code>"mzML"</code> or <code>"mzXML"</code> defining the output
 file format.</p></li>
-<li><p><code>copy</code>: <code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether general file information should be copied from
+<li><p><code>copy</code>: <code>logical(1)</code> whether general file information should be copied from
 the original MS data files. This only works if <code>x</code> uses a <code>MsBackendMzR</code>
 backend and if <code>dataOrigin(x)</code> contains the original MS data file names.</p></li>
 <li><p><code>BPPARAM</code>: parallel processing settings.</p></li>
@@ -891,7 +889,7 @@ file names, <code>files</code>' length has to match the number of unique element
 above). Developers of new <code>MsBackend</code>s should follow the
 <code>MsBackendDataFrame</code> implementation.</p>
 <p>The <code>MsBackend</code> defines the following slots:</p><ul>
-<li><p><code>@readonly</code>: <code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether the backend supports writing/replacing
+<li><p><code>@readonly</code>: <code>logical(1)</code> whether the backend supports writing/replacing
 of m/z or intensity values.</p></li>
 </ul>
 
@@ -900,89 +898,97 @@ of m/z or intensity values.</p></li>
     <p>Johannes Rainer, Sebastian Gibb, Laurent Gatto</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'>## The MsBackend class is a virtual class and can not be instantiated</span>
-<span class='co'>## directly. Below we define a new backend class extending this virtual</span>
-<span class='co'>## class</span>
-<span class='va'>MsBackendDummy</span> <span class='op'>&lt;-</span> <span class='kw'>setClass</span><span class='op'>(</span><span class='st'>"MsBackendDummy"</span>, contains <span class='op'>=</span> <span class='st'>"MsBackend"</span><span class='op'>)</span>
-<span class='fu'>MsBackendDummy</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; An object of class "MsBackendDummy"
-#&gt; Slot "readonly":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "version":
-#&gt; [1] "0.1"
-#&gt; </div><div class='input'>
-<span class='co'>## This class inherits now all methods from `MsBackend`, all of which</span>
-<span class='co'>## however throw an error. These methods would have to be implemented</span>
-<span class='co'>## for the new backend class.</span>
-<span class='kw'><a href='https://rdrr.io/r/base/try.html'>try</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='fu'>MsBackendDummy</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Error in .local(object, ...) : Not implemented for MsBackendDummy.</div><div class='input'>
-<span class='co'>## See `MsBackendDataFrame` as a reference implementation for a backend</span>
-<span class='co'>## class (in the *R/MsBackendDataFrame.R* file).</span>
-
-<span class='co'>## MsBackendDataFrame</span>
-<span class='co'>##</span>
-<span class='co'>## The `MsBackendDataFrame` uses a `S4Vectors::DataFrame` to store all MS</span>
-<span class='co'>## data. Below we create such a backend by passing a `DataFrame` with all</span>
-<span class='co'>## data to it.</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span><span class='op'>(</span>msLevel <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>, <span class='fl'>2L</span>, <span class='fl'>1L</span><span class='op'>)</span>, scanIndex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>data</span><span class='op'>$</span><span class='va'>mz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.1</span>, <span class='fl'>1.2</span>, <span class='fl'>1.3</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.4</span>, <span class='fl'>54.2</span>, <span class='fl'>56.4</span>, <span class='fl'>122.1</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>15.3</span>, <span class='fl'>23.2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>data</span><span class='op'>$</span><span class='va'>intensity</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>45</span>, <span class='fl'>100</span>, <span class='fl'>12.2</span>, <span class='fl'>1</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>123</span>, <span class='fl'>12324.2</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>## Backends are supposed to be created with their specific constructor</span>
-<span class='co'>## function</span>
-<span class='va'>be</span> <span class='op'>&lt;-</span> <span class='fu'>MsBackendDataFrame</span><span class='op'>(</span><span class='op'>)</span>
-
-<span class='va'>be</span>
-</div><div class='output co'>#&gt; MsBackendDataFrame with 0 spectra</div><div class='input'>
-<span class='co'>## The `backendInitialize` method initializes the backend filling it with</span>
-<span class='co'>## data. This method can take any parameters needed for the backend to</span>
-<span class='co'>## get loaded with the data (e.g. a file name from which to load the data,</span>
-<span class='co'>## a database connection or, in this case, a data frame containing the data).</span>
-<span class='va'>be</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>backendInitialize</a></span><span class='op'>(</span><span class='va'>be</span>, <span class='va'>data</span><span class='op'>)</span>
-
-<span class='va'>be</span>
-</div><div class='output co'>#&gt; MsBackendDataFrame with 3 spectra
-#&gt;     msLevel     rtime scanIndex
-#&gt;   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
-#&gt; 1         1        NA         1
-#&gt; 2         2        NA         2
-#&gt; 3         1        NA         3
-#&gt;  ... 16 more variables/columns.</div><div class='input'>
-<span class='co'>## Data can be accessed with the accessor methods</span>
-<span class='fu'>msLevel</span><span class='op'>(</span><span class='va'>be</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 1 2 1</div><div class='input'>
-<span class='fu'>mz</span><span class='op'>(</span><span class='va'>be</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NumericList of length 3
-#&gt; [[1]] 1.1 1.2 1.3
-#&gt; [[2]] 1.4 54.2 56.4 122.1
-#&gt; [[3]] 15.3 23.2</div><div class='input'>
-<span class='co'>## Even if no data was provided for all spectra variables, its accessor</span>
-<span class='co'>## methods are supposed to return a value.</span>
-<span class='fu'>precursorMz</span><span class='op'>(</span><span class='va'>be</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] NA NA NA</div><div class='input'>
-<span class='co'>## The `peaksData` method is supposed to return the peaks of the spectra as</span>
-<span class='co'>## a `list`.</span>
-<span class='fu'><a href='hidden_aliases.html'>peaksData</a></span><span class='op'>(</span><span class='va'>be</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [[1]]
-#&gt;       mz intensity
-#&gt; [1,] 1.1         3
-#&gt; [2,] 1.2         2
-#&gt; [3,] 1.3         3
-#&gt; 
-#&gt; [[2]]
-#&gt;         mz intensity
-#&gt; [1,]   1.4      45.0
-#&gt; [2,]  54.2     100.0
-#&gt; [3,]  56.4      12.2
-#&gt; [4,] 122.1       1.0
-#&gt; 
-#&gt; [[3]]
-#&gt;        mz intensity
-#&gt; [1,] 15.3     123.0
-#&gt; [2,] 23.2   12324.2
-#&gt; </div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'></span>
+<span class='r-in'><span class='co'>## The MsBackend class is a virtual class and can not be instantiated</span></span>
+<span class='r-in'><span class='co'>## directly. Below we define a new backend class extending this virtual</span></span>
+<span class='r-in'><span class='co'>## class</span></span>
+<span class='r-in'><span class='va'>MsBackendDummy</span> <span class='op'>&lt;-</span> <span class='kw'>setClass</span><span class='op'>(</span><span class='st'>"MsBackendDummy"</span>, contains <span class='op'>=</span> <span class='st'>"MsBackend"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>MsBackendDummy</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> An object of class "MsBackendDummy"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Slot "readonly":</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Slot "version":</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "0.1"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## This class inherits now all methods from `MsBackend`, all of which</span></span>
+<span class='r-in'><span class='co'>## however throw an error. These methods would have to be implemented</span></span>
+<span class='r-in'><span class='co'>## for the new backend class.</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/try.html'>try</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='fu'>MsBackendDummy</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Error in .local(object, ...) : Not implemented for MsBackendDummy.</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## See `MsBackendDataFrame` as a reference implementation for a backend</span></span>
+<span class='r-in'><span class='co'>## class (in the *R/MsBackendDataFrame.R* file).</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## MsBackendDataFrame</span></span>
+<span class='r-in'><span class='co'>##</span></span>
+<span class='r-in'><span class='co'>## The `MsBackendDataFrame` uses a `S4Vectors::DataFrame` to store all MS</span></span>
+<span class='r-in'><span class='co'>## data. Below we create such a backend by passing a `DataFrame` with all</span></span>
+<span class='r-in'><span class='co'>## data to it.</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span><span class='op'>(</span>msLevel <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>, <span class='fl'>2L</span>, <span class='fl'>1L</span><span class='op'>)</span>, scanIndex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>$</span><span class='va'>mz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.1</span>, <span class='fl'>1.2</span>, <span class='fl'>1.3</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.4</span>, <span class='fl'>54.2</span>, <span class='fl'>56.4</span>, <span class='fl'>122.1</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>15.3</span>, <span class='fl'>23.2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>$</span><span class='va'>intensity</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>45</span>, <span class='fl'>100</span>, <span class='fl'>12.2</span>, <span class='fl'>1</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>123</span>, <span class='fl'>12324.2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Backends are supposed to be created with their specific constructor</span></span>
+<span class='r-in'><span class='co'>## function</span></span>
+<span class='r-in'><span class='va'>be</span> <span class='op'>&lt;-</span> <span class='fu'>MsBackendDataFrame</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>be</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MsBackendDataFrame with 0 spectra</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## The `backendInitialize` method initializes the backend filling it with</span></span>
+<span class='r-in'><span class='co'>## data. This method can take any parameters needed for the backend to</span></span>
+<span class='r-in'><span class='co'>## get loaded with the data (e.g. a file name from which to load the data,</span></span>
+<span class='r-in'><span class='co'>## a database connection or, in this case, a data frame containing the data).</span></span>
+<span class='r-in'><span class='va'>be</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>backendInitialize</a></span><span class='op'>(</span><span class='va'>be</span>, <span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>be</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MsBackendDataFrame with 3 spectra</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     msLevel     rtime scanIndex</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1         1        NA         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2         2        NA         2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3         1        NA         3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 16 more variables/columns.</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Data can be accessed with the accessor methods</span></span>
+<span class='r-in'><span class='fu'>msLevel</span><span class='op'>(</span><span class='va'>be</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1 2 1</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>mz</span><span class='op'>(</span><span class='va'>be</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NumericList of length 3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]] 1.1 1.2 1.3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[2]] 1.4 54.2 56.4 122.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[3]] 15.3 23.2</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Even if no data was provided for all spectra variables, its accessor</span></span>
+<span class='r-in'><span class='co'>## methods are supposed to return a value.</span></span>
+<span class='r-in'><span class='fu'>precursorMz</span><span class='op'>(</span><span class='va'>be</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] NA NA NA</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## The `peaksData` method is supposed to return the peaks of the spectra as</span></span>
+<span class='r-in'><span class='co'>## a `list`.</span></span>
+<span class='r-in'><span class='fu'><a href='hidden_aliases.html'>peaksData</a></span><span class='op'>(</span><span class='va'>be</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] 1.1         3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] 1.2         2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] 1.3         3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[2]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]   1.4      45.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  54.2     100.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,]  56.4      12.2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,] 122.1       1.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[3]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] 15.3     123.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] 23.2   12324.2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

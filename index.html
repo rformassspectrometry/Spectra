@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.20</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -82,14 +82,14 @@
 
 <div id="low-level-infrastructure-to-handle-ms-spectra" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#low-level-infrastructure-to-handle-ms-spectra" class="anchor"></a>Low level infrastructure to handle MS spectra</h1></div>
+<a href="#low-level-infrastructure-to-handle-ms-spectra" class="anchor" aria-hidden="true"></a>Low level infrastructure to handle MS spectra</h1></div>
 
 <p><img src="https://raw.githubusercontent.com/rformassspectrometry/stickers/master/Spectra/Spectra.png" height="150"></p>
 <p>Externalising the new MS spectra backend-supporting infrastructure from <code>MSnbase</code>. Could either survive as its own package or be phagocyted back into by <code>MSnbase</code>.</p>
 </div>
 <div id="basic-ideas-and-concepts" class="section level1">
 <h1 class="hasAnchor">
-<a href="#basic-ideas-and-concepts" class="anchor"></a>Basic ideas and concepts</h1>
+<a href="#basic-ideas-and-concepts" class="anchor" aria-hidden="true"></a>Basic ideas and concepts</h1>
 <ul>
 <li><p><code>Spectra</code> should become the main object to represent MS data.</p></li>
 <li><p>No explicit <code>Spectrum</code> objects, <em>spectrum</em> data (m/z - intensity pairs) will be represented as a <code>matrix</code> stored/provided by the <code>Backend</code> class.</p></li>

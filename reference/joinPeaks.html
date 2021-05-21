@@ -91,8 +91,6 @@ FUN = MsCoreUtils::gnps).
 
 
 
-<!-- dependencies from examples -->
-
 
   
 
@@ -116,7 +114,7 @@ FUN = MsCoreUtils::gnps).
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.20</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -187,7 +185,7 @@ scores, <code>gnps()</code> should be called on the aligned peak matrices (i.e.
 
     </div>
 
-    <pre class="usage"><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, type <span class='op'>=</span> <span class='st'>"outer"</span>, tolerance <span class='op'>=</span> <span class='fl'>0</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, <span class='va'>...</span><span class='op'>)</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, type <span class='op'>=</span> <span class='st'>"outer"</span>, tolerance <span class='op'>=</span> <span class='fl'>0</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='fu'>joinPeaksGnps</span><span class='op'>(</span>
   <span class='va'>x</span>,
@@ -198,7 +196,7 @@ scores, <code>gnps()</code> should be called on the aligned peak matrices (i.e.
   ppm <span class='op'>=</span> <span class='fl'>0</span>,
   type <span class='op'>=</span> <span class='st'>"outer"</span>,
   <span class='va'>...</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -215,18 +213,18 @@ m/z and intensity values of the mass peaks of a spectrum.</p></td>
     </tr>
     <tr>
       <th>type</th>
-      <td><p>For <code>joinPeaks</code> and <code>joinPeaksGnps</code>: <code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> specifying
+      <td><p>For <code>joinPeaks</code> and <code>joinPeaksGnps</code>: <code>character(1)</code> specifying
 the type of join that should be performed. See function description for
 details.</p></td>
     </tr>
     <tr>
       <th>tolerance</th>
-      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining a constant maximal accepted difference
+      <td><p><code>numeric(1)</code> defining a constant maximal accepted difference
 between m/z values of peaks from the two spectra to be matched/mapped.</p></td>
     </tr>
     <tr>
       <th>ppm</th>
-      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> defining a relative, m/z-dependent, maximal accepted
+      <td><p><code>numeric(1)</code> defining a relative, m/z-dependent, maximal accepted
 difference between m/z values of peaks from the two spectra to be
 matched/mapped.</p></td>
     </tr>
@@ -236,12 +234,12 @@ matched/mapped.</p></td>
     </tr>
     <tr>
       <th>xPrecursorMz</th>
-      <td><p>for <code>joinPeaksGnps</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the precursor m/z
+      <td><p>for <code>joinPeaksGnps</code>: <code>numeric(1)</code> with the precursor m/z
 of the spectrum <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>yPrecursorMz</th>
-      <td><p>for <code>joinPeaksGnps</code>: <code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the precursor m/z
+      <td><p>for <code>joinPeaksGnps</code>: <code>numeric(1)</code> with the precursor m/z
 of the spectrum <code>y</code>.</p></td>
     </tr>
     </table>
@@ -271,204 +269,212 @@ definition. Parameters <code>ppm</code> and <code>tolerance</code> are suggested
     <p>Johannes Rainer, Michael Witting</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>31.34</span>, <span class='fl'>50.14</span>, <span class='fl'>60.3</span>, <span class='fl'>120.9</span>, <span class='fl'>230</span>, <span class='fl'>514.13</span>, <span class='fl'>874.1</span><span class='op'>)</span>,
-    <span class='fl'>1</span><span class='op'>:</span><span class='fl'>7</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>12</span>, <span class='fl'>31.35</span>, <span class='fl'>70.3</span>, <span class='fl'>120.9</span> <span class='op'>+</span> <span class='fu'><a href='hidden_aliases.html'>ppm</a></span><span class='op'>(</span><span class='fl'>120.9</span>, <span class='fl'>5</span><span class='op'>)</span>,
-    <span class='fl'>230</span> <span class='op'>+</span> <span class='fu'><a href='hidden_aliases.html'>ppm</a></span><span class='op'>(</span><span class='fl'>230</span>, <span class='fl'>10</span><span class='op'>)</span>, <span class='fl'>315</span>, <span class='fl'>514.14</span>, <span class='fl'>901</span>, <span class='fl'>1202</span><span class='op'>)</span>,
-    <span class='fl'>1</span><span class='op'>:</span><span class='fl'>9</span><span class='op'>)</span>
-
-<span class='co'>## No peaks with identical m/z</span>
-<span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, ppm <span class='op'>=</span> <span class='fl'>0</span>, type <span class='op'>=</span> <span class='st'>"inner"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $x
-#&gt;      [,1] [,2]
-#&gt; 
-#&gt; $y
-#&gt;      [,1] [,2]
-#&gt; </div><div class='input'>
-<span class='co'>## With ppm 10 two peaks are overlapping</span>
-<span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, type <span class='op'>=</span> <span class='st'>"inner"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $x
-#&gt;       [,1] [,2]
-#&gt; [1,] 120.9    4
-#&gt; [2,] 230.0    5
-#&gt; 
-#&gt; $y
-#&gt;          [,1] [,2]
-#&gt; [1,] 120.9006    4
-#&gt; [2,] 230.0023    5
-#&gt; </div><div class='input'>
-<span class='co'>## Outer join: contain all peaks from x and y</span>
-<span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, type <span class='op'>=</span> <span class='st'>"outer"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $x
-#&gt;         [,1] [,2]
-#&gt;  [1,]     NA   NA
-#&gt;  [2,]  31.34    1
-#&gt;  [3,]     NA   NA
-#&gt;  [4,]  50.14    2
-#&gt;  [5,]  60.30    3
-#&gt;  [6,]     NA   NA
-#&gt;  [7,] 120.90    4
-#&gt;  [8,] 230.00    5
-#&gt;  [9,]     NA   NA
-#&gt; [10,] 514.13    6
-#&gt; [11,]     NA   NA
-#&gt; [12,] 874.10    7
-#&gt; [13,]     NA   NA
-#&gt; [14,]     NA   NA
-#&gt; 
-#&gt; $y
-#&gt;            [,1] [,2]
-#&gt;  [1,]   12.0000    1
-#&gt;  [2,]        NA   NA
-#&gt;  [3,]   31.3500    2
-#&gt;  [4,]        NA   NA
-#&gt;  [5,]        NA   NA
-#&gt;  [6,]   70.3000    3
-#&gt;  [7,]  120.9006    4
-#&gt;  [8,]  230.0023    5
-#&gt;  [9,]  315.0000    6
-#&gt; [10,]        NA   NA
-#&gt; [11,]  514.1400    7
-#&gt; [12,]        NA   NA
-#&gt; [13,]  901.0000    8
-#&gt; [14,] 1202.0000    9
-#&gt; </div><div class='input'>
-<span class='co'>## Left join: keep all peaks from x and those from y that match</span>
-<span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, type <span class='op'>=</span> <span class='st'>"left"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $x
-#&gt;        [,1] [,2]
-#&gt; [1,]  31.34    1
-#&gt; [2,]  50.14    2
-#&gt; [3,]  60.30    3
-#&gt; [4,] 120.90    4
-#&gt; [5,] 230.00    5
-#&gt; [6,] 514.13    6
-#&gt; [7,] 874.10    7
-#&gt; 
-#&gt; $y
-#&gt;          [,1] [,2]
-#&gt; [1,]       NA   NA
-#&gt; [2,]       NA   NA
-#&gt; [3,]       NA   NA
-#&gt; [4,] 120.9006    4
-#&gt; [5,] 230.0023    5
-#&gt; [6,]       NA   NA
-#&gt; [7,]       NA   NA
-#&gt; </div><div class='input'>
-<span class='co'>## Right join: keep all peaks from y and those from x that match. Using</span>
-<span class='co'>## a constant tolerance of 0.01</span>
-<span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, tolerance <span class='op'>=</span> <span class='fl'>0.01</span>, type <span class='op'>=</span> <span class='st'>"right"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $x
-#&gt;         [,1] [,2]
-#&gt;  [1,]     NA   NA
-#&gt;  [2,]  31.34    1
-#&gt;  [3,]     NA   NA
-#&gt;  [4,] 120.90    4
-#&gt;  [5,] 230.00    5
-#&gt;  [6,]     NA   NA
-#&gt;  [7,] 514.13    6
-#&gt;  [8,]     NA   NA
-#&gt;  [9,]     NA   NA
-#&gt; 
-#&gt; $y
-#&gt;            [,1] [,2]
-#&gt;  [1,]   12.0000    1
-#&gt;  [2,]   31.3500    2
-#&gt;  [3,]   70.3000    3
-#&gt;  [4,]  120.9006    4
-#&gt;  [5,]  230.0023    5
-#&gt;  [6,]  315.0000    6
-#&gt;  [7,]  514.1400    7
-#&gt;  [8,]  901.0000    8
-#&gt;  [9,] 1202.0000    9
-#&gt; </div><div class='input'>
-<span class='co'>## GNPS-like peak matching</span>
-
-<span class='co'>## Define spectra</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span>mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>36</span>, <span class='fl'>63</span>, <span class='fl'>91</span>, <span class='fl'>93</span><span class='op'>)</span>, intensity <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>14</span>, <span class='fl'>15</span>, <span class='fl'>999</span>, <span class='fl'>650</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span>mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>12</span>, <span class='fl'>50</span>, <span class='fl'>63</span>, <span class='fl'>105</span><span class='op'>)</span>, intensity <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>35</span>, <span class='fl'>5</span>, <span class='fl'>16</span>, <span class='fl'>999</span>, <span class='fl'>450</span><span class='op'>)</span><span class='op'>)</span>
-<span class='co'>## The precursor m/z</span>
-<span class='va'>pmz_x</span> <span class='op'>&lt;-</span> <span class='fl'>91</span>
-<span class='va'>pmz_y</span> <span class='op'>&lt;-</span> <span class='fl'>105</span>
-
-<span class='co'>## Plain joinPeaks identifies only 2 matching peaks: 1 and 5</span>
-<span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $x
-#&gt;      mz intensity
-#&gt; [1,] 10        14
-#&gt; [2,] NA        NA
-#&gt; [3,] 36        15
-#&gt; [4,] NA        NA
-#&gt; [5,] 63       999
-#&gt; [6,] 91       650
-#&gt; [7,] 93         1
-#&gt; [8,] NA        NA
-#&gt; 
-#&gt; $y
-#&gt;       mz intensity
-#&gt; [1,]  10        35
-#&gt; [2,]  12         5
-#&gt; [3,]  NA        NA
-#&gt; [4,]  50        16
-#&gt; [5,]  63       999
-#&gt; [6,]  NA        NA
-#&gt; [7,]  NA        NA
-#&gt; [8,] 105       450
-#&gt; </div><div class='input'>
-<span class='co'>## joinPeaksGnps finds 4 matches</span>
-<span class='fu'>joinPeaksGnps</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>pmz_x</span>, <span class='va'>pmz_y</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $x
-#&gt;       mz intensity
-#&gt;  [1,] 10        14
-#&gt;  [2,] 36        15
-#&gt;  [3,] 36        15
-#&gt;  [4,] 63       999
-#&gt;  [5,] 91       650
-#&gt;  [6,] 91       650
-#&gt;  [7,] 93         1
-#&gt;  [8,] NA        NA
-#&gt;  [9,] NA        NA
-#&gt; [10,] NA        NA
-#&gt; 
-#&gt; $y
-#&gt;        mz intensity
-#&gt;  [1,]  10        35
-#&gt;  [2,]  NA        NA
-#&gt;  [3,]  50        16
-#&gt;  [4,]  63       999
-#&gt;  [5,]  NA        NA
-#&gt;  [6,] 105       450
-#&gt;  [7,]  NA        NA
-#&gt;  [8,]  12         5
-#&gt;  [9,]  50        16
-#&gt; [10,] 105       450
-#&gt; </div><div class='input'>
-<span class='co'>## with one of the two precursor m/z being NA, the result are the same as</span>
-<span class='co'>## with joinPeaks (with type = "left").</span>
-<span class='fu'>joinPeaksGnps</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>pmz_x</span>, yPrecursorMz <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $x
-#&gt;      mz intensity
-#&gt; [1,] 10        14
-#&gt; [2,] NA        NA
-#&gt; [3,] 36        15
-#&gt; [4,] NA        NA
-#&gt; [5,] 63       999
-#&gt; [6,] 91       650
-#&gt; [7,] 93         1
-#&gt; [8,] NA        NA
-#&gt; 
-#&gt; $y
-#&gt;       mz intensity
-#&gt; [1,]  10        35
-#&gt; [2,]  12         5
-#&gt; [3,]  NA        NA
-#&gt; [4,]  50        16
-#&gt; [5,]  63       999
-#&gt; [6,]  NA        NA
-#&gt; [7,]  NA        NA
-#&gt; [8,] 105       450
-#&gt; </div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>31.34</span>, <span class='fl'>50.14</span>, <span class='fl'>60.3</span>, <span class='fl'>120.9</span>, <span class='fl'>230</span>, <span class='fl'>514.13</span>, <span class='fl'>874.1</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fl'>1</span><span class='op'>:</span><span class='fl'>7</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>12</span>, <span class='fl'>31.35</span>, <span class='fl'>70.3</span>, <span class='fl'>120.9</span> <span class='op'>+</span> <span class='fu'><a href='hidden_aliases.html'>ppm</a></span><span class='op'>(</span><span class='fl'>120.9</span>, <span class='fl'>5</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fl'>230</span> <span class='op'>+</span> <span class='fu'><a href='hidden_aliases.html'>ppm</a></span><span class='op'>(</span><span class='fl'>230</span>, <span class='fl'>10</span><span class='op'>)</span>, <span class='fl'>315</span>, <span class='fl'>514.14</span>, <span class='fl'>901</span>, <span class='fl'>1202</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fl'>1</span><span class='op'>:</span><span class='fl'>9</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## No peaks with identical m/z</span></span>
+<span class='r-in'><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, ppm <span class='op'>=</span> <span class='fl'>0</span>, type <span class='op'>=</span> <span class='st'>"inner"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## With ppm 10 two peaks are overlapping</span></span>
+<span class='r-in'><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, type <span class='op'>=</span> <span class='st'>"inner"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] 120.9    4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] 230.0    5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] 120.9006    4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] 230.0023    5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Outer join: contain all peaks from x and y</span></span>
+<span class='r-in'><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, type <span class='op'>=</span> <span class='st'>"outer"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,]  31.34    1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,]  50.14    2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,]  60.30    3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,] 120.90    4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,] 230.00    5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10,] 514.13    6</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [11,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [12,] 874.10    7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [14,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,]   12.0000    1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,]        NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,]   31.3500    2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,]        NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,]        NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,]   70.3000    3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,]  120.9006    4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,]  230.0023    5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,]  315.0000    6</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10,]        NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [11,]  514.1400    7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [12,]        NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13,]  901.0000    8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [14,] 1202.0000    9</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Left join: keep all peaks from x and those from y that match</span></span>
+<span class='r-in'><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, ppm <span class='op'>=</span> <span class='fl'>10</span>, type <span class='op'>=</span> <span class='st'>"left"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]  31.34    1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  50.14    2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,]  60.30    3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,] 120.90    4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,] 230.00    5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,] 514.13    6</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [7,] 874.10    7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]       NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]       NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,]       NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,] 120.9006    4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,] 230.0023    5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,]       NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [7,]       NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Right join: keep all peaks from y and those from x that match. Using</span></span>
+<span class='r-in'><span class='co'>## a constant tolerance of 0.01</span></span>
+<span class='r-in'><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, tolerance <span class='op'>=</span> <span class='fl'>0.01</span>, type <span class='op'>=</span> <span class='st'>"right"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,]  31.34    1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,] 120.90    4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,] 230.00    5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,] 514.13    6</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,]     NA   NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            [,1] [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,]   12.0000    1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,]   31.3500    2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,]   70.3000    3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,]  120.9006    4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,]  230.0023    5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,]  315.0000    6</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,]  514.1400    7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,]  901.0000    8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,] 1202.0000    9</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## GNPS-like peak matching</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Define spectra</span></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span>mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>36</span>, <span class='fl'>63</span>, <span class='fl'>91</span>, <span class='fl'>93</span><span class='op'>)</span>, intensity <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>14</span>, <span class='fl'>15</span>, <span class='fl'>999</span>, <span class='fl'>650</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span>mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>12</span>, <span class='fl'>50</span>, <span class='fl'>63</span>, <span class='fl'>105</span><span class='op'>)</span>, intensity <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>35</span>, <span class='fl'>5</span>, <span class='fl'>16</span>, <span class='fl'>999</span>, <span class='fl'>450</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## The precursor m/z</span></span>
+<span class='r-in'><span class='va'>pmz_x</span> <span class='op'>&lt;-</span> <span class='fl'>91</span></span>
+<span class='r-in'><span class='va'>pmz_y</span> <span class='op'>&lt;-</span> <span class='fl'>105</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Plain joinPeaks identifies only 2 matching peaks: 1 and 5</span></span>
+<span class='r-in'><span class='fu'>joinPeaks</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] 10        14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] 36        15</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,] 63       999</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,] 91       650</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [7,] 93         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [8,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]  10        35</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  12         5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  50        16</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,]  63       999</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [7,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [8,] 105       450</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## joinPeaksGnps finds 4 matches</span></span>
+<span class='r-in'><span class='fu'>joinPeaksGnps</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>pmz_x</span>, <span class='va'>pmz_y</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,] 10        14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,] 36        15</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,] 36        15</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,] 63       999</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,] 91       650</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,] 91       650</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,] 93         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,]  10        35</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,]  50        16</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,]  63       999</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,] 105       450</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,]  12         5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,]  50        16</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10,] 105       450</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## with one of the two precursor m/z being NA, the result are the same as</span></span>
+<span class='r-in'><span class='co'>## with joinPeaks (with type = "left").</span></span>
+<span class='r-in'><span class='fu'>joinPeaksGnps</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>pmz_x</span>, yPrecursorMz <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] 10        14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] 36        15</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,] 63       999</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,] 91       650</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [7,] 93         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [8,] NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       mz intensity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]  10        35</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  12         5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  50        16</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,]  63       999</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [7,]  NA        NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [8,] 105       450</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
