@@ -69,7 +69,6 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
 
 
 
-
   
 
   
@@ -156,6 +155,16 @@ combineSpectra(
 joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
 
 processingLog(x)
+
+estimatePrecursorIntensity(
+  x,
+  ppm = 10,
+  tolerance = 0,
+  method = c("previous", "interpolation"),
+  msLevel. = 2L,
+  f = dataOrigin(x),
+  BPPARAM = bpparam()
+)
 
 # S4 method for missing
 Spectra(
@@ -517,7 +526,8 @@ parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For <code>combineSpectra</code>: <code>factor</code> defining the grouping of the spectra that
 should be combined. For <code>spectrapply</code>: <code>factor</code> how <code>object</code> should be
-splitted.</p></td>
+splitted. For <code>estimatePrecursorIntensity</code>: defining which spectra belong
+to the same original data file (sample). Defaults to <code>f = dataOrigin(x)</code>.</p></td>
     </tr>
     <tr>
       <th>BPPARAM</th>
@@ -571,6 +581,43 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <code>spectraVariables(x)</code> will remain unchanged.</p></td>
     </tr>
     <tr>
+      <th>ppm</th>
+      <td><p>For <code>compareSpectra</code>, <code>containsMz</code>, <code>filterMzValues</code>: <code>numeric(1)</code>
+defining a relative, m/z-dependent, maximal accepted difference between
+m/z values for peaks to be matched.</p></td>
+    </tr>
+    <tr>
+      <th>tolerance</th>
+      <td><p>For <code>compareSpectra</code>, <code>containsMz</code>: <code>numeric(1)</code> allowing to
+define a constant maximal accepted difference between m/z values for
+peaks to be matched. For <code>containsMz</code> and <code>filterMzValues</code> it can also
+be of length equal <code>mz</code> to specify a different tolerance for each m/z
+value.</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><ul>
+<li><p>For <code>pickPeaks</code>: <code>character(1)</code>, the noise estimators that
+should be used, currently the the <em>M</em>edian <em>A</em>bsolute <em>D</em>eviation
+(<code>method = "MAD"</code>) and Friedman's Super Smoother
+(<code>method = "SuperSmoother"</code>) are supported.</p></li>
+<li><p>For <code>smooth</code>: <code>character(1)</code>, the smoothing function that should be used,
+currently, the Moving-Average- (<code>method = "MovingAverage"</code>),
+Weighted-Moving-Average- (<code>method = "WeightedMovingAverage")</code>,
+Savitzky-Golay-Smoothing (<code>method = "SavitzkyGolay"</code>) are supported.</p></li>
+<li><p>For <code>estimatePrecursorIntensity</code>: <code>character(1)</code> defining whether the
+precursor intensity should be estimated on the previous MS1 spectrum
+(<code>method = "previous"</code>, the default) or based on an interpolation on the
+previous and next MS1 spectrum (<code>method = "interpolation"</code>).</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>msLevel.</th>
+      <td><p><code>integer</code> defining the MS level(s) of the spectra to which
+the function should be applied (defaults to all MS levels of <code>object</code>.
+For <code>filterMsLevel</code>: the MS level to which <code>object</code> should be subsetted.</p></td>
+    </tr>
+    <tr>
       <th>processingQueue</th>
       <td><p>For <code>Spectra</code>: optional <code>list</code> of
 ProcessingStep objects.</p></td>
@@ -609,20 +656,6 @@ filter the object. For <code>filterPrecursorMz</code> and <code>filterMzRange</c
 <code>numeric(2)</code> defining the lower and upper m/z boundary.
 For <code>filterMzValues</code>: <code>numeric</code> with the m/z values to match peaks
 against.</p></td>
-    </tr>
-    <tr>
-      <th>tolerance</th>
-      <td><p>For <code>compareSpectra</code>, <code>containsMz</code>: <code>numeric(1)</code> allowing to
-define a constant maximal accepted difference between m/z values for
-peaks to be matched. For <code>containsMz</code> and <code>filterMzValues</code> it can also
-be of length equal <code>mz</code> to specify a different tolerance for each m/z
-value.</p></td>
-    </tr>
-    <tr>
-      <th>ppm</th>
-      <td><p>For <code>compareSpectra</code>, <code>containsMz</code>, <code>filterMzValues</code>: <code>numeric(1)</code>
-defining a relative, m/z-dependent, maximal accepted difference between
-m/z values for peaks to be matched.</p></td>
     </tr>
     <tr>
       <th>which</th>
@@ -701,12 +734,6 @@ peak should be retained or not. Defaults to <code>intensity = c(0, Inf)</code> t
 only peaks with <code>NA</code> intensity are removed.</p></td>
     </tr>
     <tr>
-      <th>msLevel.</th>
-      <td><p><code>integer</code> defining the MS level(s) of the spectra to which
-the function should be applied (defaults to all MS levels of <code>object</code>.
-For <code>filterMsLevel</code>: the MS level to which <code>object</code> should be subsetted.</p></td>
-    </tr>
-    <tr>
       <th>polarity</th>
       <td><p>for <code>filterPolarity</code>: <code>integer</code> specifying the polarity to
 to subset <code>object</code>.</p></td>
@@ -756,19 +783,6 @@ identification of the mass peaks: a local maximum has to be the maximum
 in the window from <code>(i - halfWindowSize):(i + halfWindowSize)</code>.</p></li>
 <li><p>For <code>smooth</code>: <code>integer(1)</code>, used in the smoothing algorithm, the window
 reaches from <code>(i - halfWindowSize):(i + halfWindowSize)</code>.</p></li>
-</ul></td>
-    </tr>
-    <tr>
-      <th>method</th>
-      <td><ul>
-<li><p>For <code>pickPeaks</code>: <code>character(1)</code>, the noise estimators that
-should be used, currently the the <em>M</em>edian <em>A</em>bsolute <em>D</em>eviation
-(<code>method = "MAD"</code>) and Friedman's Super Smoother
-(<code>method = "SuperSmoother"</code>) are supported.</p></li>
-<li><p>For <code>smooth</code>: <code>character(1)</code>, the smoothing function that should be used,
-currently, the Moving-Average- (<code>method = "MovingAverage"</code>),
-Weighted-Moving-Average- (<code>method = "WeightedMovingAverage")</code>,
-Savitzky-Golay-Smoothing (<code>method = "SavitzkyGolay"</code>) are supported.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -1198,6 +1212,13 @@ comparison, number of rows equal to <code>length(x)</code> and number of columns
 equal <code>length(y)</code> (i.e. element in row 2 and column 3 is the result from
 the comparison of <code>x[2]</code> with <code>y[3]</code>). If <code>SIMPLIFY = TRUE</code> the <code>matrix</code>
 is <em>simplified</em> to a <code>numeric</code> if length of <code>x</code> or <code>y</code> is one.</p></li>
+<li><p><code>estimatePrecursorIntensity</code>: define the precursor intensities for MS2
+spectra using the intensity of the matching MS1 peak from the
+closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
+respective MS2 spectrum). With <code>method = "interpolation"</code> it is also
+possible to calculate the precursor intensity based on an interpolation of
+intensity values (and retention times) of the matching MS1 peaks from the
+previous and next MS1 spectrum. See below for an example.</p></li>
 <li><p><code>filterIntensity</code>: filters each spectrum keeping only peaks with
 intensities that are within the provided range or match the criteria of
 the provided function. For the former, parameter <code>intensity</code> has to be a
@@ -1340,7 +1361,7 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 1862         1   259.752       931</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 33 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri May 28 06:21:07 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Jun  7 07:52:34 2021] </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span></span>
 <span class='r-in'><span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span></span>
@@ -1591,7 +1612,7 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 1         2       1.2        NA</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 17 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Filter: select MS level(s) 2 [Fri May 28 06:21:08 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Filter: select MS level(s) 2 [Mon Jun  7 07:52:35 2021] </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span></span>
 <span class='r-in'><span class='va'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>sciex_im</span><span class='op'>)</span></span>
@@ -1621,7 +1642,7 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 1         2       1.2        NA</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 16 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri May 28 06:21:09 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Mon Jun  7 07:52:35 2021] </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## Filter a Spectra keeping only peaks matching certain m/z values</span></span>
 <span class='r-in'><span class='va'>sps_sub</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterMzValues</a></span><span class='op'>(</span><span class='va'>data</span>, mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>103</span>, <span class='fl'>104</span><span class='op'>)</span>, tolerance <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span></span>
@@ -1748,7 +1769,7 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 17 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri May 28 06:21:09 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Jun  7 07:52:36 2021] </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## Get the intensities of the first and second spectrum.</span></span>
 <span class='r-in'><span class='fu'>intensity</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
@@ -1805,9 +1826,9 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 2         2       1.2        NA</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 17 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri May 28 06:21:09 2021]</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri May 28 06:21:09 2021]</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Reset object. [Fri May 28 06:21:09 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Jun  7 07:52:36 2021]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Mon Jun  7 07:52:36 2021]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Reset object. [Mon Jun  7 07:52:36 2021] </span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>res_rest</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 4 3</span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span><span class='op'>)</span></span>
@@ -1916,6 +1937,22 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 737.5087</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'></span>
+<span class='r-in'><span class='co'>## Calculating the precursor intensity for MS2 spectra:</span></span>
+<span class='r-in'><span class='co'>##</span></span>
+<span class='r-in'><span class='co'>## Some MS instrument manufacturer don't report the precursor intensities</span></span>
+<span class='r-in'><span class='co'>## for MS@ spectra. The `estimatePrecursorIntensity` function can be used</span></span>
+<span class='r-in'><span class='co'>## in these cases to calculate the precursor intensity on MS1 data. Below</span></span>
+<span class='r-in'><span class='co'>## we load an mzML file from a vendor providing precursor intensities and</span></span>
+<span class='r-in'><span class='co'>## compare the estimated and reported precursor intensities.</span></span>
+<span class='r-in'><span class='va'>tmt</span> <span class='op'>&lt;-</span> <span class='fu'>Spectra</span><span class='op'>(</span><span class='fu'>msdata</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/msdata/man/proteomics.html'>proteomics</a></span><span class='op'>(</span>full.names <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>5</span><span class='op'>]</span>,</span>
+<span class='r-in'>    backend <span class='op'>=</span> <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pmi</span> <span class='op'>&lt;-</span> <span class='fu'>estimatePrecursorIntensity</span><span class='op'>(</span><span class='va'>tmt</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pmi</span>, <span class='fu'>precursorIntensity</span><span class='op'>(</span><span class='va'>tmt</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-plt'><img src='Spectra-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## We can also replace the original precursor intensity values with the</span></span>
+<span class='r-in'><span class='co'>## newly calculated ones</span></span>
+<span class='r-in'><span class='va'>tmt</span><span class='op'>$</span><span class='va'>precursorIntensity</span> <span class='op'>&lt;-</span> <span class='va'>pmi</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## ---- DATA EXPORT ----</span></span>
 <span class='r-in'></span>
@@ -1929,7 +1966,7 @@ level(s).</p></li>
 <span class='r-in'><span class='co'>## provide a file name.</span></span>
 <span class='r-in'><span class='va'>fl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='hidden_aliases.html'>export</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span><span class='op'>(</span><span class='op'>)</span>, file <span class='op'>=</span> <span class='va'>fl</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file5fb87ed1b83f...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file647820573fd7...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> OK</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## This exported our data in mzML format. Below we read the first 6 lines</span></span>
@@ -1948,9 +1985,9 @@ level(s).</p></li>
 <span class='r-in'><span class='co'>## Below we export each spectrum to its own file.</span></span>
 <span class='r-in'><span class='va'>fls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='hidden_aliases.html'>export</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span><span class='op'>(</span><span class='op'>)</span>, file <span class='op'>=</span> <span class='va'>fls</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file5fb878edd335...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file64783c5517b4...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> OK</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file5fb8743ff6ac...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file64784a2a89fa...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> OK</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## Reading the data from the first file</span></span>
