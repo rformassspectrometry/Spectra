@@ -1031,7 +1031,7 @@ NULL
 #' ## Calculating the precursor intensity for MS2 spectra:
 #' ##
 #' ## Some MS instrument manufacturer don't report the precursor intensities
-#' ## for MS@ spectra. The `estimatePrecursorIntensity` function can be used
+#' ## for MS2 spectra. The `estimatePrecursorIntensity` function can be used
 #' ## in these cases to calculate the precursor intensity on MS1 data. Below
 #' ## we load an mzML file from a vendor providing precursor intensities and
 #' ## compare the estimated and reported precursor intensities.
