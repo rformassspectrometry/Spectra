@@ -138,6 +138,8 @@ test_that("c,Spectra works", {
     res <- concatenateSpectra(tmp)
     expect_true(is(res, "Spectra"))
     res_c <- do.call(c, tmp)
+    res_c@processing <- ""
+    res@processing <- ""
     expect_equal(res, res_c)
 
     names(tmp) <- c("a", "b", "c")
