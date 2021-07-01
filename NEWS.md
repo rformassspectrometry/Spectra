@@ -1,5 +1,10 @@
 # Spectra 1.3
 
+## Changes in 1.3.2
+
+- Add parameter `f` to `filterPrecursorScan` to fix issue
+  [#194](https://github.com/rformassspectrometry/Spectra/issues/194).
+
 ## Changes in 1.3.1
 
 - Add `estimatePrecursorIntensity` function (issue
