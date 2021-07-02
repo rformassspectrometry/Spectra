@@ -113,7 +113,7 @@ See below for more details about individual backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.2</span>
       </span>
     </div>
 
@@ -256,7 +256,7 @@ filterPrecursorMz(object, mz = numeric())
 filterPrecursorCharge(object, z = integer())
 
 # S4 method for MsBackend
-filterPrecursorScan(object, acquisitionNum = integer())
+filterPrecursorScan(object, acquisitionNum = integer(), f = dataOrigin(object))
 
 # S4 method for MsBackend
 filterRt(object, rt = numeric(), msLevel. = unique(msLevel(object)))
@@ -469,6 +469,13 @@ acquisition number of the spectra to which the object should be
 subsetted.</p></td>
     </tr>
     <tr>
+      <th>f</th>
+      <td><p><code>factor</code> defining the grouping to split <code>x</code>. See <code><a href='https://rdrr.io/r/base/split.html'>split()</a></code>. For
+<code>filterPrecursorScan</code>: factor defining from which original data files
+the spectra derive to avoid selecting spectra from different
+samples/files. Defaults to <code>f = dataOrigin(object)</code>.</p></td>
+    </tr>
+    <tr>
       <th>rt</th>
       <td><p>for <code>filterRt</code>: <code>numeric(2)</code> defining the retention time range to
 be used to subset/filter <code>object</code>.</p></td>
@@ -495,10 +502,6 @@ names of the spectra variables to which the backend should be subsetted.</p></td
       <td><p>For <code>spectraData</code> accessor: optional <code>character</code> with column
 names (spectra variables) that should be included in the
 returned <code>DataFrame</code>. By default, all columns are returned.</p></td>
-    </tr>
-    <tr>
-      <th>f</th>
-      <td><p><code>factor</code> defining the grouping to split <code>x</code>. See <code><a href='https://rdrr.io/r/base/split.html'>split()</a></code>.</p></td>
     </tr>
     <tr>
       <th>drop</th>
@@ -651,7 +654,9 @@ charge(s).
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterPrecursorScan</code>: retains parent (e.g. MS1) and children scans (e.g.
-MS2) of acquisition number <code>acquisitionNum</code>.
+MS2) of acquisition number <code>acquisitionNum</code>. Parameter <code>f</code> is supposed to
+define the origin of the spectra (i.e. the original data file) to ensure
+related spectra from the same file/sample are selected and retained.
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterRt</code>: retains spectra of MS level <code>msLevel</code> with retention times

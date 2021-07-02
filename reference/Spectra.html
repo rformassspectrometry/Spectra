@@ -91,7 +91,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.2</span>
       </span>
     </div>
 
@@ -441,7 +441,7 @@ filterPrecursorMz(object, mz = numeric())
 filterPrecursorCharge(object, z = integer())
 
 # S4 method for Spectra
-filterPrecursorScan(object, acquisitionNum = integer())
+filterPrecursorScan(object, acquisitionNum = integer(), f = dataOrigin(object))
 
 # S4 method for Spectra
 filterRt(object, rt = numeric(), msLevel. = unique(msLevel(object)))
@@ -526,8 +526,9 @@ parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For <code>combineSpectra</code>: <code>factor</code> defining the grouping of the spectra that
 should be combined. For <code>spectrapply</code>: <code>factor</code> how <code>object</code> should be
-splitted. For <code>estimatePrecursorIntensity</code>: defining which spectra belong
-to the same original data file (sample). Defaults to <code>f = dataOrigin(x)</code>.</p></td>
+splitted. For <code>estimatePrecursorIntensity</code> and <code>filterPrecursorScan</code>:
+defining which spectra belong to the same original data file (sample).
+Defaults to <code>f = dataOrigin(x)</code>.</p></td>
     </tr>
     <tr>
       <th>BPPARAM</th>
@@ -1092,7 +1093,9 @@ a precursor m/z for a target m/z accepting a small difference in <em>ppm</em>.</
 charge(s).</p></li>
 <li><p><code>filterPrecursorScan</code>: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number <code>acquisitionNum</code>. Returns the filtered
-<code>Spectra</code> (with spectra in their original order).</p></li>
+<code>Spectra</code> (with spectra in their original order). Parameter <code>f</code> allows to
+define which spectra belong to the same sample or original data file (
+defaults to <code>f = dataOrigin(object)</code>).</p></li>
 <li><p><code>filterRt</code>: retains spectra of MS level <code>msLevel</code> with retention
 times (in seconds) within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>)
 <code>rt[2]</code>. Returns the filtered <code>Spectra</code> (with spectra in their
@@ -1361,7 +1364,7 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 1862         1   259.752       931</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 33 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Jun  9 13:04:42 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Jul  2 08:34:21 2021] </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## The on-disk object `sciex` is light-weight, because it does not keep the</span></span>
 <span class='r-in'><span class='co'>## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span></span>
@@ -1612,7 +1615,7 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 1         2       1.2        NA</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 17 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Filter: select MS level(s) 2 [Wed Jun  9 13:04:43 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Filter: select MS level(s) 2 [Fri Jul  2 08:34:22 2021] </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## Below we combine the `data` and `sciex_im` objects into a single one.</span></span>
 <span class='r-in'><span class='va'>data_comb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>sciex_im</span><span class='op'>)</span></span>
@@ -1642,7 +1645,7 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 1         2       1.2        NA</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 16 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Wed Jun  9 13:04:43 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2245677, 543.2354323] [Fri Jul  2 08:34:23 2021] </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## Filter a Spectra keeping only peaks matching certain m/z values</span></span>
 <span class='r-in'><span class='va'>sps_sub</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>filterMzValues</a></span><span class='op'>(</span><span class='va'>data</span>, mz <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>103</span>, <span class='fl'>104</span><span class='op'>)</span>, tolerance <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span></span>
@@ -1769,7 +1772,7 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 17 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Jun  9 13:04:43 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Jul  2 08:34:23 2021] </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## Get the intensities of the first and second spectrum.</span></span>
 <span class='r-in'><span class='fu'>intensity</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
@@ -1826,9 +1829,9 @@ level(s).</p></li>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 2         2       1.2        NA</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  ... 17 more variables/columns.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Processing:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Jun  9 13:04:43 2021]</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Wed Jun  9 13:04:44 2021]</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  Reset object. [Wed Jun  9 13:04:44 2021] </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Jul  2 08:34:23 2021]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Jul  2 08:34:23 2021]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Reset object. [Fri Jul  2 08:34:23 2021] </span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>res_rest</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 4 3</span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/lengths.html'>lengths</a></span><span class='op'>(</span><span class='fu'>mz</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span><span class='op'>)</span></span>
@@ -1966,7 +1969,7 @@ level(s).</p></li>
 <span class='r-in'><span class='co'>## provide a file name.</span></span>
 <span class='r-in'><span class='va'>fl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='hidden_aliases.html'>export</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span><span class='op'>(</span><span class='op'>)</span>, file <span class='op'>=</span> <span class='va'>fl</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file83f1f933361...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file63a83749ce33...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> OK</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## This exported our data in mzML format. Below we read the first 6 lines</span></span>
@@ -1985,9 +1988,9 @@ level(s).</p></li>
 <span class='r-in'><span class='co'>## Below we export each spectrum to its own file.</span></span>
 <span class='r-in'><span class='va'>fls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='hidden_aliases.html'>export</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='MsBackend.html'>MsBackendMzR</a></span><span class='op'>(</span><span class='op'>)</span>, file <span class='op'>=</span> <span class='va'>fls</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file83f5bad4af8...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file63a8346e2114...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> OK</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file83f36e6415a...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing file file63a84f55968c...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> OK</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## Reading the data from the first file</span></span>
