@@ -26,7 +26,7 @@ Depends:
     R (>= 4.0.0),
     S4Vectors,
     BiocParallel,
-    ProtGenerics (>= 1.25.1)
+    ProtGenerics (>= 1.25.2)
 Imports:
     methods,
     IRanges,
