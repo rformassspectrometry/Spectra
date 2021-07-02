@@ -346,7 +346,9 @@ NULL
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
-#'   `Spectra` (with spectra in their original order).
+#'   `Spectra` (with spectra in their original order). Parameter `f` allows to
+#'   define which spectra belong to the same sample or original data file (
+#'   defaults to `f = dataOrigin(object)`).
 #'
 #' - `filterRt`: retains spectra of MS level `msLevel` with retention
 #'   times (in seconds) within (`>=`) `rt[1]` and (`<=`)
@@ -598,8 +600,9 @@ NULL
 #'     backends changing this parameter can lead to errors.
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
 #'     should be combined. For `spectrapply`: `factor` how `object` should be
-#'     splitted. For `estimatePrecursorIntensity`: defining which spectra belong
-#'     to the same original data file (sample). Defaults to `f = dataOrigin(x)`.
+#'     splitted. For `estimatePrecursorIntensity` and `filterPrecursorScan`:
+#'     defining which spectra belong to the same original data file (sample).
+#'     Defaults to `f = dataOrigin(x)`.
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
@@ -1860,9 +1863,10 @@ setMethod("filterPrecursorCharge", "Spectra",
 
 #' @rdname Spectra
 setMethod("filterPrecursorScan", "Spectra",
-          function(object, acquisitionNum= integer()) {
+          function(object, acquisitionNum= integer(), f = dataOrigin(object)) {
               object@backend <- filterPrecursorScan(object@backend,
-                                                    acquisitionNum)
+                                                    acquisitionNum,
+                                                    f = dataOrigin(object))
               object@processing <- .logging(
                   object@processing,
                   "Filter: select parent/children scans for ",

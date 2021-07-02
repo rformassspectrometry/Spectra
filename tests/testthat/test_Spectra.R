@@ -962,6 +962,10 @@ test_that("filterPrecursorScan,Spectra works", {
     res <- filterPrecursorScan(sps, c(1087L, 1214L))
     expect_true(sum(msLevel(res) == 1) == 2)
     expect_true(all(c(1087L, 1214L) %in% acquisitionNum(res)))
+
+    sps <- c(sps, Spectra(sciex_mzr))
+    res <- filterPrecursorScan(sps, 1057)
+    expect_equal(acquisitionNum(res), c(1054L, 1057L))
 })
 
 test_that("filterRt,Spectra works", {

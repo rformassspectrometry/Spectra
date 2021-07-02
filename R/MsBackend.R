@@ -64,7 +64,10 @@
 #'
 #' @param drop For `[`: not considered.
 #'
-#' @param f `factor` defining the grouping to split `x`. See [split()].
+#' @param f `factor` defining the grouping to split `x`. See [split()]. For
+#'     `filterPrecursorScan`: factor defining from which original data files
+#'     the spectra derive to avoid selecting spectra from different
+#'     samples/files. Defaults to `f = dataOrigin(object)`.
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
 #'     should be subsetted. For `export`: `character` of length 1 or equal to
@@ -256,7 +259,9 @@
 #'   for `MsBackend` is available.
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
-#'    MS2) of acquisition number `acquisitionNum`.
+#'    MS2) of acquisition number `acquisitionNum`. Parameter `f` is supposed to
+#'   define the origin of the spectra (i.e. the original data file) to ensure
+#'   related spectra from the same file/sample are selected and retained.
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
@@ -860,11 +865,16 @@ setMethod("filterPrecursorCharge", "MsBackend",
 #'
 #' @rdname MsBackend
 setMethod("filterPrecursorScan", "MsBackend",
-          function(object, acquisitionNum = integer()) {
-              if (length(acquisitionNum)) {
-                  object[.filterSpectraHierarchy(acquisitionNum(object),
-                                                 precScanNum(object),
-                                                 acquisitionNum)]
+          function(object, acquisitionNum = integer(), f = dataOrigin(object)) {
+              if (length(acquisitionNum) && length(f)) {
+                  if (!is.factor(f))
+                      f <- factor(f, exclude = character())
+                  keep <- unsplit(lapply(split(object, f = f), function(z, an) {
+                      .filterSpectraHierarchy(acquisitionNum(z),
+                                              precScanNum(z),
+                                              an)
+                  }, an = acquisitionNum), f = f)
+                  object[keep]
               } else object
           })
 

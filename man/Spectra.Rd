@@ -322,7 +322,7 @@ estimatePrecursorIntensity(
 
 \S4method{filterPrecursorCharge}{Spectra}(object, z = integer())
 
-\S4method{filterPrecursorScan}{Spectra}(object, acquisitionNum = integer())
+\S4method{filterPrecursorScan}{Spectra}(object, acquisitionNum = integer(), f = dataOrigin(object))
 
 \S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
@@ -392,8 +392,9 @@ parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
 should be combined. For \code{spectrapply}: \code{factor} how \code{object} should be
-splitted. For \code{estimatePrecursorIntensity}: defining which spectra belong
-to the same original data file (sample). Defaults to \code{f = dataOrigin(x)}.}
+splitted. For \code{estimatePrecursorIntensity} and \code{filterPrecursorScan}:
+defining which spectra belong to the same original data file (sample).
+Defaults to \code{f = dataOrigin(x)}.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
@@ -877,7 +878,9 @@ a precursor m/z for a target m/z accepting a small difference in \emph{ppm}.
 charge(s).
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
-\code{Spectra} (with spectra in their original order).
+\code{Spectra} (with spectra in their original order). Parameter \code{f} allows to
+define which spectra belong to the same sample or original data file (
+defaults to \code{f = dataOrigin(object)}).
 \item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention
 times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
 \code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
