@@ -10,9 +10,7 @@
 \alias{addProcessing}
 \alias{backendInitialize}
 \alias{backendMerge}
-\alias{bin}
 \alias{bin,numeric-method}
-\alias{compareSpectra}
 \alias{containsMz}
 \alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
@@ -123,8 +121,6 @@ backendInitialize(object, ...)
 
 backendMerge(object, ...)
 
-bin(x, ...)
-
 \S4method{bin}{numeric}(
   x,
   y,
@@ -132,8 +128,6 @@ bin(x, ...)
   breaks = seq(floor(min(y)), ceiling(max(y)), by = size),
   FUN = max
 )
-
-compareSpectra(x, y, ...)
 
 containsMz(object, ...)
 

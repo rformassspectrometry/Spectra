@@ -13,12 +13,7 @@ setGeneric("backendMerge", def = function(object, ...)
     standardGeneric("backendMerge"),
     valueClass = "MsBackend")
 #' @rdname hidden_aliases
-setGeneric("bin", function(x, ...) standardGeneric("bin"))
-#' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
-#' @rdname hidden_aliases
-setGeneric("compareSpectra", function(x, y, ...)
-    standardGeneric("compareSpectra"))
 #' @rdname hidden_aliases
 setGeneric("containsMz", function(object, ...)
     standardGeneric("containsMz"))

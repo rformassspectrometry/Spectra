@@ -1,5 +1,9 @@
 # Spectra 1.3
 
+## Changes in 1.3.3
+
+- Move generics for `bin` and `compareSpectra` to `ProtGenerics`.
+
 ## Changes in 1.3.2
 
 - Add parameter `f` to `filterPrecursorScan` to fix issue
