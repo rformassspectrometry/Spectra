@@ -1910,6 +1910,8 @@ setMethod("reset", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 #'
+#' @importMethodsFrom ProtGenerics bin
+#'
 #' @exportMethod bin
 setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
                                      msLevel. = unique(msLevel(x))) {
@@ -1936,7 +1938,9 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
 #'
 #' @importFrom MsCoreUtils ndotproduct
 #'
-#' @export ppm
+#' @importMethodsFrom ProtGenerics compareSpectra
+#'
+#' @exportMethod compareSpectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
           function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
                    FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
