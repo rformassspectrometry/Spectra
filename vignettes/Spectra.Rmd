@@ -35,6 +35,10 @@ large variety of different ways to store and retrieve mass spectrometry
 data. Such backends range from mzML/mzXML/CDF files, simple flat files, or
 database systems.
 
+This vignette provides general examples and descriptions for the `Spectra`
+package. Additional information and tutorials can be found
+[here](https://jorainer.github.io/SpectraTutorials/).
+
 
 # Installation
 
@@ -802,6 +806,18 @@ sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
 head(basename(dataStorage(sps_tmt)))
 ```
 
+A (possibly incomplete) list of R packages providing additional backends that
+add support for additional data types or storage options is provided below:
+
+- `r BiocStyle::Biocpkg("MsBackendMgf")`: support for import/export of mass
+  spectrometry files in mascot generic format (MGF).
+- `r BiocStyle::Biocpkg("MsBackendMassbank")`: support for import/export and
+  access of MassBank files/databases.
+- [MsBackendHmdb](https://github.com/rformassspectrometry/MsBackendHmdb):
+  support for import of MS2 spectra from files in the xml-file format of the
+  Human Metabolome Database (HMDB).
+- [MsBackendMsp](https://github.com/rformassspectrometry/MsBackendMsp): import
+  MS2 spectra from files in MSP format.
 
 
 # Session information

@@ -1,5 +1,10 @@
 # Spectra 1.3
 
+## Changes in 1.3.4
+
+- Add list of additional R packages and repositories providing `MsBackend`
+  backends to the vignette.
+
 ## Changes in 1.3.3
 
 - Move generics for `bin` and `compareSpectra` to `ProtGenerics`.
