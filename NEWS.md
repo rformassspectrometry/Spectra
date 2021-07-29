@@ -1,5 +1,10 @@
 # Spectra 1.3
 
+## Changes in 1.3.5
+
+- `filterMzValues` supports also removing peaks matching specified m/z values
+  (issue [#209](https://github.com/rformassspectrometry/Spectra/issues/209)).
+
 ## Changes in 1.3.4
 
 - Add list of additional R packages and repositories providing `MsBackend`

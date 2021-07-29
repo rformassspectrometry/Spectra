@@ -130,6 +130,9 @@ NULL
 #'
 #' @param ppm `numeric` with the ppm. Can be of length 1 or equal length `mz`.
 #'
+#' @param remove `logical(1)` whether the matching peaks should be retained
+#'     (`remove = FALSE`, the default`) or dropped (`remove = TRUE`).
+#'
 #' @author Johannes Rainer
 #'
 #' @importFrom MsCoreUtils closest
@@ -137,12 +140,19 @@ NULL
 #' @noRd
 .peaks_filter_mz_value <- function(x, spectrumMsLevel, mz = numeric(),
                                    tolerance = 0, ppm = 20,
-                                   msLevel = spectrumMsLevel, ...) {
+                                   msLevel = spectrumMsLevel,
+                                   remove = FALSE, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
     idx <- closest(mz, x[, "mz"], tolerance = tolerance, ppm = ppm,
                    duplicates = "closest", .check = FALSE)
-    x[idx[!is.na(idx)], , drop = FALSE]
+    idx <- idx[!is.na(idx)]
+    if (remove) {
+        if (length(idx))
+            x[-idx, , drop = FALSE]
+        else x
+    } else
+        x[idx, , drop = FALSE]
 }
 
 #' @description

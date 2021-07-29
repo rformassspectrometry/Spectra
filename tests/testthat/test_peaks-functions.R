@@ -208,6 +208,18 @@ test_that(".peaks_match_mz_value works", {
     res <- .peaks_filter_mz_value(p, 1L, mz = c(123, 742.2),
                                   tolerance = c(0.2, 1))
     expect_equal(unname(res[, "intensity"]), c(3, 8))
+
+    ## remove
+    res <- .peaks_filter_mz_value(p, 1L, mz = 5, tolerance = 1,
+                                  remove = TRUE)
+    expect_equal(res, p[-2, ])
+    res <- .peaks_filter_mz_value(p, 1L, mz = c(5, 6, 20),
+                                  tolerance = 0, remove = TRUE)
+    expect_equal(res, p)
+    res <- .peaks_filter_mz_value(p, 1L, mz = c(123, 742.2),
+                                  tolerance = c(0.2, 1),
+                                  remove = TRUE)
+    expect_equal(res, p[-c(3, 8), ])
 })
 
 test_that("joinPeaksGnps works", {
