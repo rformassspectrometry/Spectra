@@ -314,7 +314,7 @@ estimatePrecursorIntensity(
   tolerance = 0,
   ppm = 20,
   msLevel. = unique(msLevel(object)),
-  remove = FALSE
+  keep = TRUE
 )
 
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
@@ -535,8 +535,8 @@ returns a \code{logical} (same length then peaks in the spectrum) whether the
 peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
 only peaks with \code{NA} intensity are removed.}
 
-\item{remove}{For \code{filterMzValues}: \code{logical(1)} whether the matching peaks
-should be retained (\code{remove = FALSE}, the default\verb{) or dropped (}remove = TRUE`).}
+\item{keep}{For \code{filterMzValues}: \code{logical(1)} whether the matching peaks
+should be retained (\code{keep = TRUE}, the default\verb{) or dropped (}keep = FALSE`).}
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
@@ -1226,9 +1226,9 @@ sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
 mz(sps_sub)
 
 ## This function can also be used to remove specific peaks from a spectrum
-## by setting `remove = TRUE`.
+## by setting `keep = FALSE`.
 sps_sub <- filterMzValues(data, mz = c(103, 104),
-    tolerance = 0.3, remove = TRUE)
+    tolerance = 0.3, keep = FALSE)
 mz(sps_sub)
 
 ## Filter a Spectra keeping only peaks within a m/z range

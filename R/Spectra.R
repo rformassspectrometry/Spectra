@@ -638,6 +638,10 @@ NULL
 #' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
 #'
+#' @param keep For `filterMzValues`: `logical(1)` whether the matching peaks
+#'     should be retained (`keep = TRUE`, the default`) or dropped
+#'     (`keep = FALSE`).
+#'
 #' @param MAPFUN For `compareSpectra`: function to map/match peaks between the
 #'     two compared spectra. See [joinPeaks()] for more information and possible
 #'     functions.
@@ -698,10 +702,6 @@ NULL
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
-#'
-#' @param remove For `filterMzValues`: `logical(1)` whether the matching peaks
-#'     should be retained (`remove = FALSE`, the default`) or dropped
-#'     (`remove = TRUE`).
 #'
 #' @param SIMPLIFY For `compareSpectra` whether the result matrix should be
 #'     *simplified* to a `numeric` if possible (i.e. if either `x` or `y` is
@@ -915,9 +915,9 @@ NULL
 #' mz(sps_sub)
 #'
 #' ## This function can also be used to remove specific peaks from a spectrum
-#' ## by setting `remove = TRUE`.
+#' ## by setting `keep = FALSE`.
 #' sps_sub <- filterMzValues(data, mz = c(103, 104),
-#'     tolerance = 0.3, remove = TRUE)
+#'     tolerance = 0.3, keep = FALSE)
 #' mz(sps_sub)
 #'
 #' ## Filter a Spectra keeping only peaks within a m/z range
@@ -1811,7 +1811,7 @@ setMethod("filterMzRange", "Spectra",
 #' @export
 setMethod("filterMzValues", "Spectra",
           function(object, mz = numeric(), tolerance = 0, ppm = 20,
-                   msLevel. = unique(msLevel(object)), remove = FALSE) {
+                   msLevel. = unique(msLevel(object)), keep = TRUE) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
               l <- length(mz)
@@ -1830,14 +1830,16 @@ setMethod("filterMzValues", "Spectra",
               object <- addProcessing(object, .peaks_filter_mz_value,
                                       mz = mz, tolerance = tolerance,
                                       ppm = ppm, msLevel = msLevel.,
-                                      remove = remove,
-                                      spectraVariables = "msLevel")
+                                      keep = keep, spectraVariables = "msLevel")
               if (length(mz) <= 3)
                   what <- paste0(format(mz, digits = 4), collapse = ", ")
               else what <- ""
+              if (keep)
+                  keep_or_remove <- "select"
+              else keep_or_remove <- "remove"
               object@processing <- .logging(
-                  object@processing, "Filter: select peaks matching provided ",
-                  "m/z values ", what)
+                  object@processing, "Filter: ", keep_or_remove,
+                  " peaks matching provided m/z values ", what)
               object
           })
 
