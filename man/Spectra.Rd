@@ -313,7 +313,8 @@ estimatePrecursorIntensity(
   mz = numeric(),
   tolerance = 0,
   ppm = 20,
-  msLevel. = unique(msLevel(object))
+  msLevel. = unique(msLevel(object)),
+  keep = TRUE
 )
 
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
@@ -533,6 +534,9 @@ filtering, or a \code{function} that takes the intensities as input and
 returns a \code{logical} (same length then peaks in the spectrum) whether the
 peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
 only peaks with \code{NA} intensity are removed.}
+
+\item{keep}{For \code{filterMzValues}: \code{logical(1)} whether the matching peaks
+should be retained (\code{keep = TRUE}, the default\verb{) or dropped (}keep = FALSE`).}
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
@@ -864,10 +868,11 @@ the MS level specified with argument \code{msLevel}. Returns the filtered
 \item \code{filterMzRange}: filters the object keeping only peaks in each spectrum
 that are within the provided m/z range.
 \item \code{filterMzValues}: filters the object keeping only peaks in each spectrum
-that match the provided m/z value(s) considering also the absolute
-\code{tolerance} and m/z-relative \code{ppm} (\code{tolerance} and \code{ppm} can be either
-of length 1 or equal to the length of \code{mz} to define a different tolerance
-for each m/z).
+that match the provided m/z value(s) (if parameter \code{remove = FALSE}, the
+default) or removing them (if parameter \code{remove = TRUE}). The m/z matching
+considers also the absolute \code{tolerance} and m/z-relative \code{ppm} values.
+\code{tolerance} and \code{ppm} can be either of length 1 or equal to the length of
+\code{mz} to define a different matching tolerance for each provided m/z.
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
@@ -1218,6 +1223,12 @@ filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 
 ## Filter a Spectra keeping only peaks matching certain m/z values
 sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
+mz(sps_sub)
+
+## This function can also be used to remove specific peaks from a spectrum
+## by setting `keep = FALSE`.
+sps_sub <- filterMzValues(data, mz = c(103, 104),
+    tolerance = 0.3, keep = FALSE)
 mz(sps_sub)
 
 ## Filter a Spectra keeping only peaks within a m/z range
