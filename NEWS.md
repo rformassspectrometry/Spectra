@@ -1,5 +1,9 @@
 # Spectra 1.3
 
+## Changes in 1.3.6
+
+- Documentation updates for `combineSpectra` and `combinePeaks`.
+
 ## Changes in 1.3.5
 
 - `filterMzValues` supports also removing peaks matching specified m/z values
