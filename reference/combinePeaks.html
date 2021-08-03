@@ -55,6 +55,9 @@ ordered by their m/z and consecutively grouped into one group if the
 tolerance and ppm (see group() for grouping details and examples).
 The m/z and intensity values for the resulting peak matrix are calculated
 using the mzFun and intensityFun on the grouped m/z and intensity values.
+Note that only the grouped m/z and intensity values are used in the
+aggregation functions (mzFun and intensityFun) but not the number of
+spectra.
 The function supports also different strategies for peak combinations which
 can be specified with the peaks parameter:
 peaks = &quot;union&quot; (default): report all peaks from all input spectra.
@@ -112,7 +115,7 @@ data)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.6</span>
       </span>
     </div>
 
@@ -162,6 +165,9 @@ ordered by their m/z and consecutively grouped into one group if the
 <code>tolerance</code> and <code>ppm</code> (see <code><a href='https://rdrr.io/r/grDevices/plotmath.html'>group()</a></code> for grouping details and examples).</p>
 <p>The m/z and intensity values for the resulting peak matrix are calculated
 using the <code>mzFun</code> and <code>intensityFun</code> on the grouped m/z and intensity values.</p>
+<p>Note that only the grouped m/z and intensity values are used in the
+aggregation functions (<code>mzFun</code> and <code>intensityFun</code>) but not the number of
+spectra.</p>
 <p>The function supports also different strategies for peak combinations which
 can be specified with the <code>peaks</code> parameter:</p><ul>
 <li><p><code>peaks = "union"</code> (default): report all peaks from all input spectra.</p></li>
