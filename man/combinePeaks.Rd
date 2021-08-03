@@ -71,6 +71,10 @@ ordered by their m/z and consecutively grouped into one group if the
 The m/z and intensity values for the resulting peak matrix are calculated
 using the \code{mzFun} and \code{intensityFun} on the grouped m/z and intensity values.
 
+Note that only the grouped m/z and intensity values are used in the
+aggregation functions (\code{mzFun} and \code{intensityFun}) but not the number of
+spectra.
+
 The function supports also different strategies for peak combinations which
 can be specified with the \code{peaks} parameter:
 \itemize{
