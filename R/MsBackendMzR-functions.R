@@ -58,12 +58,15 @@ MsBackendMzR <- function() {
 #' @return list of `matrix`
 #'
 #' @noRd
-.mzR_peaks <- function(x = character(), scanIndex = integer()) {
+.mzR_peaks <- function(x = character(), scanIndex = integer(),
+                       readHeader = FALSE) {
     if (length(x) != 1)
         stop("'x' should have length 1")
     msd <- mzR::openMSfile(x)
     on.exit(mzR::close(msd))
-    ## hd_spectra <- mzR::header(msd, max(scanIndex))
+    ## That below is required on macOS - otherwise we get random errors
+    if (readHeader && length(scanIndex))
+        hd_spectra <- mzR::header(msd, max(scanIndex))
     pks <- mzR::peaks(msd, scanIndex)
     if (is.matrix(pks))
         pks <- list(pks)
