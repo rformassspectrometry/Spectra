@@ -1,5 +1,11 @@
 # Spectra 1.3
 
+## Changes in 1.3.7
+
+- Add fix from `MSnbase` (issue
+  [#170](https://github.com/lgatto/MSnbase/issues/170)) to `Spectra`: on macOS
+  require reading also the spectrum header before reading the peaks data.
+
 ## Changes in 1.3.6
 
 - Documentation updates for `combineSpectra` and `combinePeaks`.
