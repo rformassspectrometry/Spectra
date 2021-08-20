@@ -868,8 +868,8 @@ the MS level specified with argument \code{msLevel}. Returns the filtered
 \item \code{filterMzRange}: filters the object keeping only peaks in each spectrum
 that are within the provided m/z range.
 \item \code{filterMzValues}: filters the object keeping only peaks in each spectrum
-that match the provided m/z value(s) (if parameter \code{remove = FALSE}, the
-default) or removing them (if parameter \code{remove = TRUE}). The m/z matching
+that match the provided m/z value(s) (if parameter \code{keep = TRUE}, the
+default) or removing them (if parameter \code{keep = FALSE}). The m/z matching
 considers also the absolute \code{tolerance} and m/z-relative \code{ppm} values.
 \code{tolerance} and \code{ppm} can be either of length 1 or equal to the length of
 \code{mz} to define a different matching tolerance for each provided m/z.

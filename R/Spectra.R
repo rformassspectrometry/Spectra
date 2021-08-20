@@ -328,8 +328,8 @@ NULL
 #'   that are within the provided m/z range.
 #'
 #' - `filterMzValues`: filters the object keeping only peaks in each spectrum
-#'   that match the provided m/z value(s) (if parameter `remove = FALSE`, the
-#'   default) or removing them (if parameter `remove = TRUE`). The m/z matching
+#'   that match the provided m/z value(s) (if parameter `keep = TRUE`, the
+#'   default) or removing them (if parameter `keep = FALSE`). The m/z matching
 #'   considers also the absolute `tolerance` and m/z-relative `ppm` values.
 #'   `tolerance` and `ppm` can be either of length 1 or equal to the length of
 #'   `mz` to define a different matching tolerance for each provided m/z.
