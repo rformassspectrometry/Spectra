@@ -70,7 +70,7 @@
 #' f <- proteomics(pattern = "TMT.+20141210.mzML.gz", full.names = TRUE)
 #' sp <- Spectra(f)
 #'
-#' d <- computeMzDeltas(sp)
+#' d <- computeMzDeltas(sp[1:1000])
 #' plotMzDelta(d)
 NULL
 
