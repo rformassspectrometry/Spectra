@@ -1,88 +1,88 @@
-##' @title Compute the MZ deltas
-##'
-##' @description
-##'
-##' The M/Z delta plot illustrates the suitability of MS2 spectra for
-##' identification by plotting the M/Z differences of the most intense
-##' peaks. The resulting histogram should optimally show modes at
-##' amino acid residu masses. The plots have been described in Foster
-##' et al. 2011.
-##'
-##' Only a certain percentage of most intense MS2 peaks are taken into
-##' account to use the most significant signal. Default value is 20%
-##' (see `percentage` argument). The difference between peaks is then
-##' computed for all individual spectra and their distribution is
-##' plotted as a histogram. Delta M/Z between 40 and 200 are plotted
-##' by default, to encompass the residue masses of all amino acids and
-##' several common contaminants, although this can be changes with the
-##' `xlim` argument.
-##'
-##' In addition to the processing described above, isobaric reporter
-##' tag peaks and the precursor peak can also be removed from the MS2
-##' spectrum, to avoid interence with the fragment peaks.
-##'
-##' Note that figures in Foster et al. 2011 have been produced and
-##' optimised for centroided data. It is recommended to use centroided
-##' data.
-##'
-##' @references
-##'
-##' Foster JM, Degroeve S, Gatto L, Visser M, Wang R, Griss
-##' J, et al. A posteriori quality control for the curation and reuse
-##' of public proteomics data. Proteomics. 2011;11:
-##' 2182–2194. http://dx.doi.org/10.1002/pmic.201000602
-##'
-##' @param object An instance of class `Spectra()`.
-##'
-##' @param BPPARAM An optional `BiocParallelParam` instance
-##'     determining the parallel back-end to be used during
-##'     evaluation. Default is to use `BiocParallel::bpparam()`. See
-##'     `?BiocParallel::bpparam` for details.
-##'
-##' @param ... Parameters `percentage` and `xlim` passed to the
-##'     internal function.
-##'
-##' @param pks A `matrix` with two columns, named `mz` and
-##'     `intensity`, containing MS2 peaks.
-##'
-##' @param percentage `numeric(1)` between 0 and 1 indicating the
-##'     percentage of the most intense peaks in each MS2 spectrum to
-##'     include in the calculation. Default is 0.2.
-##'
-##' @param xlim `numeric(2)` with the upper and lower M/Z to be used
-##'     to the MZ deltas. Default is `c(40, 200)`.
-##'
-##' @param aaLabels `logical(1)` defining whether the amino acids
-##'     should be labelled on the histogram. Default is `TRUE`.
-##'
-##' @return `computeMzDeltas()` returns a `list` of numeric
-##'     vectors. `plotMzDelta()` is used to visualise of M/Z delta
-##'     distributions and returns the M/Z deltas histogram.
-##'
-##' @author Laurent Gatto with contributions of Guangchuang Yu.
-##'
-##' @rdname plotMzDelta
-##'
-##' @examples
-##' library(Spectra)
-##' library(rpx)
-##'
-##' px <- PXDataset("PXD000001")
-##' f <- pxget(px, "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzXML")
-##' sp <- Spectra(f)
-##'
-##' d <- computeMzDeltas(sp)
-##' plotMzDelta(d)
+#' @title MZ delta Quality Control
+#'
+#' @aliases computeMzDeltas plotMzDelta
+#'
+#' @description
+#'
+#' The M/Z delta plot illustrates the suitability of MS2 spectra for
+#' identification by plotting the M/Z differences of the most intense
+#' peaks. The resulting histogram should optimally show modes at
+#' amino acid residu masses. The plots have been described in Foster
+#' et al. 2011.
+#'
+#' Only a certain percentage of most intense MS2 peaks are taken into
+#' account to use the most significant signal. Default value is 20%
+#' (see `percentage` argument). The difference between peaks is then
+#' computed for all individual spectra and their distribution is
+#' plotted as a histogram. Delta M/Z between 40 and 200 are plotted
+#' by default, to encompass the residue masses of all amino acids and
+#' several common contaminants, although this can be changes with the
+#' `xlim` argument.
+#'
+#' In addition to the processing described above, isobaric reporter
+#' tag peaks and the precursor peak can also be removed from the MS2
+#' spectrum, to avoid interence with the fragment peaks.
+#'
+#' Note that figures in Foster et al. 2011 have been produced and
+#' optimised for centroided data. While running the function on
+#' profile mode is likely fine, it is recommended to use centroided
+#' data.
+#'
+#' @references
+#'
+#' Foster JM, Degroeve S, Gatto L, Visser M, Wang R, Griss J, et al. A
+#' posteriori quality control for the curation and reuse of public
+#' proteomics data. Proteomics. 2011;11:
+#' 2182-2194. http://dx.doi.org/10.1002/pmic.201000602
+#'
+#' @param object An instance of class `Spectra()`.
+#'
+#' @param percentage `numeric(1)` between 0 and 1 indicating the
+#'     percentage of the most intense peaks in each MS2 spectrum to
+#'     include in the calculation. Default is 0.2.
+#'
+#' @param xlim `numeric(2)` with the upper and lower M/Z to be used to
+#'     the MZ deltas. Default is `c(40, 200)`.
+#'
+#' @param BPPARAM An optional `BiocParallelParam` instance determining
+#'     the parallel back-end to be used during evaluation. Default is
+#'     to use `BiocParallel::bpparam()`. See `?BiocParallel::bpparam`
+#'     for details.
+#'
+#' @param x A list of M/Z delta values, as returned by
+#'     `computeMzDeltas()`.
+#'
+#' @param aaLabels `logical(1)` defining whether the amino acids
+#'     should be labelled on the histogram. Default is `TRUE`.
+#'
+#' @return `computeMzDeltas()` returns a `list` of numeric
+#'     vectors. `plotMzDelta()` is used to visualise of M/Z delta
+#'     distributions.
+#'
+#' @author Laurent Gatto with contributions (to MSnbase) of
+#'     Guangchuang Yu.
+#'
+#' @name plotMzDelta
+#'
+#' @examples
+#'
+#' library(msdata)
+#' f <- proteomics(pattern = "TMT.+20141210.mzML.gz", full.names = TRUE)
+#' sp <- Spectra(f)
+#'
+#' d <- computeMzDeltas(sp)
+#' plotMzDelta(d)
 NULL
 
-##' @rdname plotMzDelta
-##'
-##' @importFrom stats quantile
+
+#' @importFrom stats quantile
+#'
+#' @noRd
 compute_mz_deltas <- function(pks,
-                              percentage = 0.2,
-                              xlim = c(40, 200)) {
+                              percentage,
+                              xlim) {
     ## only keep top intensity peaks
-    sel <- pks[, "intensity"] > quantile(pks[, "intensity"], 1 - percentage)
+    sel <- pks[, "intensity"] >= quantile(pks[, "intensity"], 1 - percentage)
     ## keep mz values of these top peaks
     mzs <- pks[sel, "mz"]
     ## prepare list for all delta mzs
@@ -100,21 +100,29 @@ compute_mz_deltas <- function(pks,
     delta[delta > xlim[1] & delta < xlim[2]]
 }
 
-##' @rdname plotMzDelta
-##'
-##' @import BiocParallel
+#' @rdname plotMzDelta
+#'
+#' @import BiocParallel
+#'
+#' @export
 computeMzDeltas <- function(object,
-                            BPPARAM = BiocParallel::bpparam(),
-                            ...) {
-    stopifnot(require("BiocParallel"))
+                            percentage = 0.2,
+                            xlim = c(40, 200),
+                            BPPARAM = BiocParallel::bpparam()) {
     BiocParallel::bplapply(peaksData(filterMsLevel(object, 2)),
                            compute_mz_deltas,
-                           ...,
+                           percentage = percentage,
+                           xlim = xlim,
                            BPPARAM = BPPARAM)
 }
 
-##' @rdname plotMzDelta
-plotMzDelta <- function(delta, aaLabels = TRUE) {
+
+#' @rdname plotMzDelta
+#'
+#' @importFrom graphics hist segments
+#'
+#' @export
+plotMzDelta <- function(x, aaLabels = TRUE) {
     ## from PSM::getAminoAcids()
     amino_acids <-
         structure(list(AA = c("peg", "A", "R", "N", "D", "C", "E", "Q",
@@ -170,7 +178,7 @@ plotMzDelta <- function(delta, aaLabels = TRUE) {
                   class = "data.frame",
                   row.names = c(NA, -21L))
     col <- "grey30"
-    hist(unlist(d), breaks = 200, col = col, border = col,
+    hist(unlist(x), breaks = 200, col = col, border = col,
          ylab = "Frequency", xlab = "M/Z delta",
          main = "Histrogram of Mass Delta Distributions")
     if (aaLabels) {
