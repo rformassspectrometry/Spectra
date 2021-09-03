@@ -1,5 +1,10 @@
 # Spectra 1.3
 
+## Changes in 1.3.8
+
+- New features: `plotMzDelta()` function to M/Z delta QC (ported from
+  MSnbase).
+
 ## Changes in 1.3.7
 
 - Add fix from `MSnbase` (issue
