@@ -17,7 +17,7 @@
 #' plotted as a histogram. Delta M/Z between 40 and 200 are plotted
 #' by default, to encompass the residue masses of all amino acids and
 #' several common contaminants, although this can be changes with the
-#' `xlim` argument.
+#' `mzRange` argument.
 #'
 #' In addition to the processing described above, isobaric reporter
 #' tag peaks and the precursor peak can also be removed from the MS2
@@ -45,7 +45,7 @@
 #'     percentage of the most intense peaks in each MS2 spectrum to
 #'     include in the calculation. Default is 0.2.
 #'
-#' @param xlim `numeric(2)` with the upper and lower M/Z to be used to
+#' @param mzRange `numeric(2)` with the upper and lower M/Z to be used to
 #'     the MZ deltas. Default is `c(40, 200)`.
 #'
 #' @param BPPARAM An optional `BiocParallelParam` instance determining
@@ -84,7 +84,7 @@ NULL
 #' @noRd
 compute_mz_deltas <- function(pks,
                               percentage,
-                              xlim) {
+                              mzRange) {
     ## only keep top intensity peaks
     sel <- pks[, "intensity"] >= quantile(pks[, "intensity"], 1 - percentage)
     ## keep mz values of these top peaks
@@ -101,22 +101,22 @@ compute_mz_deltas <- function(pks,
     }
     delta <- unlist(delta)
     ## only keep deltas that are relevant for aa masses
-    delta[delta > xlim[1] & delta < xlim[2]]
+    delta[delta > mzRange[1] & delta < mzRange[2]]
 }
 
 #' @rdname plotMzDelta
 #'
-#' @import BiocParallel
+#' @importFrom BiocParallel bpparam bplapply
 #'
 #' @export
 computeMzDeltas <- function(object,
                             percentage = 0.2,
-                            xlim = c(40, 200),
+                            mzRange = c(40, 200),
                             BPPARAM = BiocParallel::bpparam()) {
     BiocParallel::bplapply(peaksData(filterMsLevel(object, 2)),
                            compute_mz_deltas,
                            percentage = percentage,
-                           xlim = xlim,
+                           mzRange = mzRange,
                            BPPARAM = BPPARAM)
 }
 

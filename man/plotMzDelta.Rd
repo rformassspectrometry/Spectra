@@ -8,7 +8,7 @@
 computeMzDeltas(
   object,
   percentage = 0.2,
-  xlim = c(40, 200),
+  mzRange = c(40, 200),
   BPPARAM = BiocParallel::bpparam()
 )
 
@@ -21,7 +21,7 @@ plotMzDelta(x, aaLabels = TRUE)
 percentage of the most intense peaks in each MS2 spectrum to
 include in the calculation. Default is 0.2.}
 
-\item{xlim}{\code{numeric(2)} with the upper and lower M/Z to be used to
+\item{mzRange}{\code{numeric(2)} with the upper and lower M/Z to be used to
 the MZ deltas. Default is \code{c(40, 200)}.}
 
 \item{BPPARAM}{An optional \code{BiocParallelParam} instance determining
@@ -54,7 +54,7 @@ computed for all individual spectra and their distribution is
 plotted as a histogram. Delta M/Z between 40 and 200 are plotted
 by default, to encompass the residue masses of all amino acids and
 several common contaminants, although this can be changes with the
-\code{xlim} argument.
+\code{mzRange} argument.
 
 In addition to the processing described above, isobaric reporter
 tag peaks and the precursor peak can also be removed from the MS2

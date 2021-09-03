@@ -6,17 +6,17 @@ spd$intensity <- list(c(100, 101, 102), c(100, 101, 102))
 sp <- Spectra(spd)
 
 test_that("computeMzDeltas works", {
-    res <- computeMzDeltas(sp, percentage = 1, xlim = c(20, 1000))
+    res <- computeMzDeltas(sp, percentage = 1, mzRange = c(20, 1000))
     expect_identical(length(res), length(sp))
     expect_identical(res[[1]], res[[2]])
     expect_identical(res[[1]], c(100, 200, 100))
 
-    res <- computeMzDeltas(sp, percentage = 1, xlim = c(20, 150))
+    res <- computeMzDeltas(sp, percentage = 1, mzRange = c(20, 150))
     expect_identical(length(res), length(sp))
     expect_identical(res[[1]], res[[2]])
     expect_identical(res[[1]], c(100, 100))
 
-    res <- computeMzDeltas(sp, percentage = 0.6, xlim = c(20, 1000))
+    res <- computeMzDeltas(sp, percentage = 0.6, mzRange = c(20, 1000))
     expect_identical(length(res), length(sp))
     expect_identical(res[[1]], res[[2]])
     expect_identical(res[[1]], 100)
