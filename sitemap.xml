@@ -37,6 +37,9 @@
     <loc>/reference/joinPeaks.html</loc>
   </url>
   <url>
+    <loc>/reference/plotMzDelta.html</loc>
+  </url>
+  <url>
     <loc>/reference/spectra-plotting.html</loc>
   </url>
 </urlset>
