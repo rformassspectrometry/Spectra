@@ -28,6 +28,10 @@
 #' profile mode is likely fine, it is recommended to use centroided
 #' data.
 #'
+#' A `ggplot2` based function called `ggMzDeltaPlot()` to visualise
+#' the M/Z delta distributions is available at
+#' <https://gist.github.com/lgatto/c72b1ff5a4116118dbb34d9d2bc3470a>.
+#'
 #' @references
 #'
 #' Foster JM, Degroeve S, Gatto L, Visser M, Wang R, Griss J, et al. A

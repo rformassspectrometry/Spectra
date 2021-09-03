@@ -64,6 +64,10 @@ Note that figures in Foster et al. 2011 have been produced and
 optimised for centroided data. While running the function on
 profile mode is likely fine, it is recommended to use centroided
 data.
+
+A \code{ggplot2} based function called \code{ggMzDeltaPlot()} to visualise
+the M/Z delta distributions is available at
+\url{https://gist.github.com/lgatto/c72b1ff5a4116118dbb34d9d2bc3470a}.
 }
 \examples{
 
