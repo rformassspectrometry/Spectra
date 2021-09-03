@@ -9,14 +9,9 @@
 src="https://raw.githubusercontent.com/rformassspectrometry/stickers/master/Spectra/Spectra.png"
 height="150">
 
-Externalising the new MS spectra backend-supporting infrastructure
-from `MSnbase`. Could either survive as its own package or be
-phagocyted back into by `MSnbase`.
-
-# Basic ideas and concepts
-
-- `Spectra` should become the main object to represent MS data.
-
-- No explicit `Spectrum` objects, *spectrum* data (m/z - intensity
-  pairs) will be represented as a `matrix` stored/provided by the
-  `Backend` class.
+The Spectra package defines an efficient infrastructure
+for storing and handling mass spectrometry spectra and functionality to
+subset, process, visualize and compare spectra data. It provides different
+implementations (backends) to store mass spectrometry data. These comprise
+backends tuned for fast data access and processing and backends for very
+large data sets ensuring a small memory footprint.
