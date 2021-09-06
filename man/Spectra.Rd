@@ -917,8 +917,9 @@ variables that would lead to an invalid object.
 \item Duplicated Spectra keys (i.e. \code{x[[by.x]]}) are not
 allowed. Duplicated keys in the \code{DataFrame} (i.e \code{y[[by.y]]})
 throw a warning and only the last occurrence is kept. These
-should be explored and ideally be removed using for example
-the \code{QFeatures::reduceDataFrame()} function.
+should be explored and ideally be removed using for
+\code{QFeatures::reduceDataFrame()}, \code{PMS::reducePSMs()} or similar
+functions.
 }
 }
 

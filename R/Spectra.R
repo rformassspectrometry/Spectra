@@ -386,8 +386,9 @@ NULL
 #'    - Duplicated Spectra keys (i.e. `x[[by.x]]`) are not
 #'      allowed. Duplicated keys in the `DataFrame` (i.e `y[[by.y]]`)
 #'      throw a warning and only the last occurrence is kept. These
-#'      should be explored and ideally be removed using for example
-#'      the `QFeatures::reduceDataFrame()` function.
+#'      should be explored and ideally be removed using for
+#'      `QFeatures::reduceDataFrame()`, `PMS::reducePSMs()` or similar
+#'      functions.
 #'
 #' Several `Spectra` objects can be concatenated into a single object with the
 #' `c` or the `concatenateSpectra` function. Concatenation will fail if the
