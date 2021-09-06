@@ -942,7 +942,7 @@ NULL
 #'
 #' ## Adding new spectra variables
 #' sciex1 <- filterDataOrigin(sciex, dataOrigin(sciex)[1])
-#' spv <- DataFrame(spectrumId = sciex2=1$spectrumId[3:12], ## used for merging
+#' spv <- DataFrame(spectrumId = sciex1$spectrumId[3:12], ## used for merging
 #'                  var1 = rnorm(10),
 #'                  var2 = sample(letters, 10))
 #' spv
