@@ -465,7 +465,7 @@ test_that("joinSpectraData key checks work", {
     ## Duplicates in `y` key throw a warning
     sp$key <- paste0("sp", 1:3)
     expect_warning(res <- joinSpectraData(sp, df, by.x = "key"))
-    expect_identical(res$var1, c(20, NA, 30))n
+    expect_identical(res$var1, c(20, NA, 30))
 
     ## No duplicates in any key
     df$key <- paste0("sp", 1:3)
