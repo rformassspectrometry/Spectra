@@ -565,7 +565,7 @@ joinSpectraData <- function(x, y,
         warning("Duplicates found in the 'y' key. Only last instance will be kept!")
     ## Don't need by.y anymore
     y_vars <- y_vars[-grep(by.y, y_vars)]
-    y <- y[, y_vars]
+    y <- y[, y_vars, drop = FALSE]
     ## Check if there are any shared x_vars and y_vars. If so, the
     ## y_vars are appended suffix.y.
     if (length(xy_vars <- intersect(x_vars, y_vars))) {
