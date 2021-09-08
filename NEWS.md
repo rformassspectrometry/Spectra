@@ -1,5 +1,9 @@
 # Spectra 1.3
 
+## Changes in 1.3.10
+
+- Nothing yet
+
 ## Changes in 1.3.9
 
 - New features: `joinSpectraData()` now check for duplicated keys in
