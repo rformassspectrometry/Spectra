@@ -445,6 +445,35 @@ test_that("joinSpectraData works", {
     expect_true(is(ms2$CharList, "CharacterList"))
 })
 
+test_that("joinSpectraData key checks work", {
+    spd <- DataFrame(msLevel = rep(2L, 3),
+                     rtime = c(1.1, 1.2, 1.3),
+                     key = paste0("sp", c(1, 1, 3)))
+    spd$mz <- list(c(100, 103.2, 104.3, 106.5),
+                   c(45.6, 120.4, 190.2),
+                   c(45.6, 120.4, 190.2))
+    spd$intensity <- list(c(200, 400, 34.2, 17),
+                          c(12.3, 15.2, 6.8),
+                          c(12.3, 15.2, 6.8))
+    sp <- Spectra(spd)
+    df <- DataFrame(key = paste0("sp", c(1, 1, 3)),
+                    var1 = c(10, 20, 30))
+
+    ## Duplicates in `x` key aren't allowed
+    expect_error(joinSpectraData(sp, df, by.x = "key"))
+
+    ## Duplicates in `y` key throw a warning
+    sp$key <- paste0("sp", 1:3)
+    expect_warning(res <- joinSpectraData(sp, df, by.x = "key"))
+    expect_identical(res$var1, c(20, NA, 30))
+
+    ## No duplicates in any key
+    df$key <- paste0("sp", 1:3)
+    res <- joinSpectraData(sp, df, by.x = "key")
+    expect_identical(res$var1, c(10, 20, 30))
+})
+
+
 test_that("processingLog works", {
     sps <- Spectra()
     expect_equal(processingLog(sps), character())

@@ -533,6 +533,7 @@ joinSpectraData <- function(x, y,
                             by.x = "spectrumId",
                             by.y,
                             suffix.y = ".y") {
+
     stopifnot(inherits(x, "Spectra"))
     stopifnot(inherits(y, "DataFrame"))
     if (missing(by.y))
@@ -557,9 +558,14 @@ joinSpectraData <- function(x, y,
     y <- y[y[[by.y]] %in% spectraData(x)[[by.x]], ]
     k <- match(y[[by.y]], spectraData(x)[[by.x]])
     n <- length(x)
+    ## check for by.x and by.y keys duplicates
+    if (anyDuplicated(spectraData(x)[[by.x]]))
+        stop("Duplicates found in the 'x' key!")
+    if (anyDuplicated(y[[by.y]]))
+        warning("Duplicates found in the 'y' key. Only last instance will be kept!")
     ## Don't need by.y anymore
     y_vars <- y_vars[-grep(by.y, y_vars)]
-    y <- y[, y_vars]
+    y <- y[, y_vars, drop = FALSE]
     ## Check if there are any shared x_vars and y_vars. If so, the
     ## y_vars are appended suffix.y.
     if (length(xy_vars <- intersect(x_vars, y_vars))) {

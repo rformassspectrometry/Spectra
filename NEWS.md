@@ -2,7 +2,8 @@
 
 ## Changes in 1.3.9
 
-- Nothing yet.
+- New features: `joinSpectraData()` now check for duplicated keys in
+  `x` (throws an error) and `y` (thows a warning).
 
 ## Changes in 1.3.8
 
