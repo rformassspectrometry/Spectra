@@ -192,7 +192,8 @@ jobs:
 
           ## Manually install required packages
           BiocManager::install('rhdf5', dependencies = TRUE, ask = FALSE, update = FALSE, INSTALL_opts = '--force-biarch')
-          BiocManager::install("mzR", dependencies = TRUE, ask = FALSE, update = FALSE)
+          BiocManager::install("mzR", dependencies = TRUE, ask = FALSE, update=FALSE)
+          BiocManager::install("SummarizedExperiment", ask = FALSE, update = FALSE)
           BiocManager::install("msdata")
           ## temporarily install from github, as latest version not yet available from Bioc
           BiocManager::install("lgatto/ProtGenerics")
