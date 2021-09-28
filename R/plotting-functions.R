@@ -312,8 +312,10 @@ setMethod(
         if (length(labels)) {
             l <- c(labels(x), labels(y))
             wdths <- max(strwidth(l, cex = labelCex)) / 2
-            ylim[1L] <- ylim[1L] - wdths * diff(ylim) / diff(xlim)
-            ylim[2L] <- - ylim[1L]
+            usr_lim <- par("usr")
+            ylim[1L] <- ylim[1L] - wdths *
+                diff(usr_lim[3:4]) / diff(usr_lim[1:2])
+            ylim[2L] <- -ylim[1L]
             xlim[1L] <- xlim[1L] - wdths
             xlim[2L] <- xlim[2L] + wdths
             plot.window(xlim = xlim, ylim = ylim, ...)
@@ -436,7 +438,8 @@ setMethod(
         if (is.function(labels))
             labels <- labels(x)
         wdths <- max(strwidth(labels, cex = labelCex)) / 2
-        ylim[2L] <- ylim[2L] + wdths * diff(ylim) / diff(xlim)
+        usr_lim <- par("usr")
+        ylim[2L] <- ylim[2L] + wdths * diff(usr_lim[3:4]) / diff(usr_lim[1:2])
         xlim[1L] <- xlim[1L] - wdths
         xlim[2L] <- xlim[2L] + wdths
         if (!add)

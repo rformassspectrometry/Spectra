@@ -1,3 +1,10 @@
+# Spectra 1.2
+
+## Changes in 1.2.1
+
+- Fix bug in `plotSpectra` and `plotSpectraMirror` causing an error if a
+  spectrum contains a single peak and labels are provided.
+
 # Spectra 1.1
 
 ## Changes in 1.1.20
