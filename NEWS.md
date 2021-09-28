@@ -2,7 +2,8 @@
 
 ## Changes in 1.3.10
 
-- Nothing yet
+- Fix bug in `plotSpectra` and `plotSpectraMirror` that would cause an error if
+  the number of peaks in a spectrum was 1 and labels were provided.
 
 ## Changes in 1.3.9
 

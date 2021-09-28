@@ -1,9 +1,8 @@
 #' # each base::graphics plot function must be wrapped by an anonymous function
 #' # that could be called by `vdiffr::expect_doppelganger()`
-#' # use `manage_cases()` to add new/verify changed plots
-#' vdiffr::manage_cases(filter = "plotting")
+#' Run test_active_file(file = "tests/testthat/test_plotting-functions.R")
 
-context("test_plotting-functions")
+## context("test_plotting-functions")
 
 ints <- list(c(4.3412, 12, 8, 34, 23.4),
              c(8, 25, 16, 32))
@@ -135,4 +134,16 @@ test_that(".plot_single_spectrum works", {
         main = "Spectrum with labels",
         labelSrt = -30, labelPos = 2, add = TRUE)
 
+})
+
+test_that("plotSpectra works with single peak spectrum", {
+    df <- DataFrame(rtime = 132.2, msLevel = 1L)
+    df$mz <- list(123)
+    df$intensity <- list(4000)
+    s <- Spectra(df)
+    vdiffr::expect_doppelganger(
+                "spectrum_single_peak_with_label",
+                plotSpectra(s, labels = "long label",
+                            labelSrt = 30, labelPos = 4)
+            )
 })
