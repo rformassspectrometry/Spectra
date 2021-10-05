@@ -1,5 +1,10 @@
 # Spectra 1.3
 
+## Changes in 1.3.11
+
+- Fix error message in `setBackend` (issue
+  [#217](https://github.com/rformassspectrometry/Spectra/issues/217)).
+
 ## Changes in 1.3.10
 
 - Fix bug in `plotSpectra` and `plotSpectraMirror` that would cause an error if

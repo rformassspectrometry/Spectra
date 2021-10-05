@@ -96,6 +96,7 @@ test_that("setBackend,Spectra works", {
 
     ## errors:
     expect_error(setBackend(sps, MsBackendMzR()), "is read-only")
+    expect_error(setBackend(sps, MsBackendMzR()), "MsBackendMzR")
 })
 
 test_that("c,Spectra works", {

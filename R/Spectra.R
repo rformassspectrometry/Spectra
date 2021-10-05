@@ -1229,7 +1229,7 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
                    BPPARAM = bpparam()) {
               backend_class <- class(object@backend)
               if (isReadOnly(backend))
-                  stop(backend_class, " is read-only. Changing backend to a ",
+                  stop(class(backend), " is read-only. Changing backend to a ",
                        "read-only backend is not supported.")
               f <- force(factor(f, levels = unique(f)))
               if (length(f) != length(object))
