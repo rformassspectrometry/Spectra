@@ -1,7 +1,7 @@
-pandoc: 2.11.4
-pkgdown: 1.6.1.9001
-pkgdown_sha: 632889250b23aae88d6b3adcc0afd48160cb17ca
+pandoc: 2.14.0.3
+pkgdown: 1.9000.9000.9000
+pkgdown_sha: 2720abc02fbddbb761104d44d30ce7a3d0c26812
 articles:
   Spectra: Spectra.html
-last_built: 2021-09-28T14:26Z
+last_built: 2021-10-05T06:25Z
 
