@@ -1,5 +1,10 @@
 # Spectra 1.2
 
+## Changes in 1.2.2
+
+- Fix error message in `setBackend` displaying the wrong class name (issue
+  [#217](https://github.com/rformassspectrometry/Spectra/issues/217)).
+
 ## Changes in 1.2.1
 
 - Fix bug in `plotSpectra` and `plotSpectraMirror` causing an error if a
