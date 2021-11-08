@@ -1,3 +1,9 @@
+# Spectra 1.5
+
+## Changes in 1.5.1
+
+- Don't read header information when importing peaks matrix on macOS.
+
 # Spectra 1.3
 
 ## Changes in 1.3.11
