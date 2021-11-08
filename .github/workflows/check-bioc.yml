@@ -195,8 +195,6 @@ jobs:
           BiocManager::install("mzR", dependencies = TRUE, ask = FALSE, update=FALSE)
           BiocManager::install("SummarizedExperiment", ask = FALSE, update = FALSE)
           BiocManager::install("msdata")
-          ## temporarily install from github, as latest version not yet available from Bioc
-          BiocManager::install("lgatto/ProtGenerics")
           # BiocManager::install(c("devtools", "usethis", "vdiffr"), dependencies = TRUE, ask = FALSE, update = FALSE)
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
