@@ -471,7 +471,8 @@ NULL
 #'   keep only matching peaks (`type = "inner"`); see [joinPeaks()] for more
 #'   information and examples). The `MAPFUN` function should have parameters
 #'   `x`, `y`, `xPrecursorMz` and `yPrecursorMz` as these values are passed to
-#'   the function.
+#'   the function. In addition to `joinPeaks()` also [joinPeaksGnps()] is
+#'   supported for GNPS-like similarity score calculations.
 #'   `FUN` is supposed to be a function to compare intensities of (matched)
 #'   peaks of the two spectra that are compared. The function needs to take two
 #'   matrices with columns `"mz"` and `"intensity"` as input and is supposed

@@ -1001,7 +1001,8 @@ from the second (\code{type = "right"}), from both (\code{type = "outer"}) and t
 keep only matching peaks (\code{type = "inner"}); see \code{\link[=joinPeaks]{joinPeaks()}} for more
 information and examples). The \code{MAPFUN} function should have parameters
 \code{x}, \code{y}, \code{xPrecursorMz} and \code{yPrecursorMz} as these values are passed to
-the function.
+the function. In addition to \code{joinPeaks()} also \code{\link[=joinPeaksGnps]{joinPeaksGnps()}} is
+supported for GNPS-like similarity score calculations.
 \code{FUN} is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
 matrices with columns \code{"mz"} and \code{"intensity"} as input and is supposed

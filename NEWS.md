@@ -1,5 +1,10 @@
 # Spectra 1.5
 
+## Changes in 1.5.2
+
+- Small documentation update (related to `MsCoreUtils` issue
+  [#87](https://github.com/rformassspectrometry/MsCoreUtils/issues/87)).
+
 ## Changes in 1.5.1
 
 - Don't read header information when importing peaks matrix on macOS.
