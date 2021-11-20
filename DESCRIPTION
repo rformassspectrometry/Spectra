@@ -72,6 +72,7 @@ Collate:
     'Spectra.R'
     'functions-util.R'
     'mz-delta-functions.R'
+    'nSequences.R'
     'peak-list-functions.R'
     'peaks-functions.R'
     'plotting-functions.R'
