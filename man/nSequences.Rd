@@ -90,7 +90,17 @@ spdf <- new("DFrame", rownames = NULL, nrows = 86L,
 
 sp <- Spectra(spdf)
 
-## Count number of sequences/identifications
+## We have in this data 5 MS1 and 81 MS2 scans
+table(msLevel(sp))
+
+## The acquisition number of the MS1 scans
+acquisitionNum(filterMsLevel(sp, 1))
+
+## And the number of MS2 scans with precursor ions selected
+## from MS1 scans (those in the data and others)
+table(precScanNum(sp))
+
+## Count number of sequences/identifications per scan
 sp <- nSequences(sp)
 
 ## MS2 scans either lead to an identification (5 instances) or none
