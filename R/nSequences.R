@@ -9,8 +9,9 @@
 #' MS2 scans originating from any MS1 peak that lead to an
 #' identification.
 #'
-#' This function can be used to generate annotated total ion
-#' chromatograms, as can be show XXX.
+#' This function can be used to generate id-annotated total ion
+#' chromatograms, as can illustrated
+#' [here](https://rformassspectrometry.github.io/docs/sec-id.html#an-identification-annotated-chromatogram).
 #'
 #' @details
 #'

@@ -41,8 +41,9 @@ is either 0 or 1 for MS2 scans, or, for MS1 scans, the number of
 MS2 scans originating from any MS1 peak that lead to an
 identification.
 
-This function can be used to generate annotated total ion
-chromatograms, as can be show XXX.
+This function can be used to generate id-annotated total ion
+chromatograms, as can illustrated
+\href{https://rformassspectrometry.github.io/docs/sec-id.html#an-identification-annotated-chromatogram}{here}.
 }
 \details{
 The computer number of identifications is stored in a new spectra
