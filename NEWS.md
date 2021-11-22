@@ -1,5 +1,9 @@
 # Spectra 1.1
 
+## Changes in 1.1.18
+
+- Install test suite for backend packages
+
 ## Changes in 1.1.17
 
 - Fix issue [#187](https://github.com/rformassspectrometry/Spectra/issues/187).
