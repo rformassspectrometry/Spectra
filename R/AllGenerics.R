@@ -2,6 +2,9 @@
 NULL
 
 #' @rdname hidden_aliases
+setGeneric("addProcessing", function(object, ...)
+    standardGeneric("addProcessing"))
+#' @rdname hidden_aliases
 setGeneric("backendInitialize", def = function(object, ...)
     standardGeneric("backendInitialize"),
     valueClass = "MsBackend")
@@ -10,12 +13,7 @@ setGeneric("backendMerge", def = function(object, ...)
     standardGeneric("backendMerge"),
     valueClass = "MsBackend")
 #' @rdname hidden_aliases
-setGeneric("bin", function(x, ...) standardGeneric("bin"))
-#' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
-#' @rdname hidden_aliases
-setGeneric("compareSpectra", function(x, y, ...)
-    standardGeneric("compareSpectra"))
 #' @rdname hidden_aliases
 setGeneric("containsMz", function(object, ...)
     standardGeneric("containsMz"))
@@ -45,6 +43,8 @@ setGeneric("peaksData<-", function(object, value)
 #' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
+setGeneric("plotSpectraMirror", function(x, y, ...)
+    standardGeneric("plotSpectraMirror"))
 #' @rdname hidden_aliases
 setGeneric("replaceIntensitiesBelow", function(object, threshold = min, ...)
     standardGeneric("replaceIntensitiesBelow"))

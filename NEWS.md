@@ -1,8 +1,87 @@
+# Spectra 1.5
+
+## Changes in 1.5.2
+
+- Install test suite for backend packages
+
+## Changes in 1.5.1
+
+- Don't read header information when importing peaks matrix on macOS.
+
+# Spectra 1.3
+
+## Changes in 1.3.11
+
+- Fix error message in `setBackend` (issue
+  [#217](https://github.com/rformassspectrometry/Spectra/issues/217)).
+
+## Changes in 1.3.10
+
+- Fix bug in `plotSpectra` and `plotSpectraMirror` that would cause an error if
+  the number of peaks in a spectrum was 1 and labels were provided.
+
+## Changes in 1.3.9
+
+- New features: `joinSpectraData()` now check for duplicated keys in
+  `x` (throws an error) and `y` (thows a warning).
+
+## Changes in 1.3.8
+
+- New features: `plotMzDelta()` function to M/Z delta QC (ported from
+  MSnbase).
+
+## Changes in 1.3.7
+
+- Add fix from `MSnbase` (issue
+  [#170](https://github.com/lgatto/MSnbase/issues/170)) to `Spectra`: on macOS
+  require reading also the spectrum header before reading the peaks data.
+
+## Changes in 1.3.6
+
+- Documentation updates for `combineSpectra` and `combinePeaks`.
+
+## Changes in 1.3.5
+
+- `filterMzValues` supports also removing peaks matching specified m/z values
+  (issue [#209](https://github.com/rformassspectrometry/Spectra/issues/209)).
+
+## Changes in 1.3.4
+
+- Add list of additional R packages and repositories providing `MsBackend`
+  backends to the vignette.
+
+## Changes in 1.3.3
+
+- Move generics for `bin` and `compareSpectra` to `ProtGenerics`.
+
+## Changes in 1.3.2
+
+- Add parameter `f` to `filterPrecursorScan` to fix issue
+  [#194](https://github.com/rformassspectrometry/Spectra/issues/194).
+
+## Changes in 1.3.1
+
+- Add `estimatePrecursorIntensity` function (issue
+  [#202](https://github.com/rformassspectrometry/Spectra/issues/202)).
+
+
 # Spectra 1.1
+
+<<<<<<< HEAD
+=======
+## Changes in 1.1.20
+
+- Fix concatenating empty spectra (issue
+  [#200](https://github.com/rformassspectrometry/Spectra/issues/200)).
+
+## Changes in 1.1.19
+
+- New `filterPrecursorCharge()` method.
 
 ## Changes in 1.1.18
 
-- Install test suite for backend packages
+- Define `plotSpectraMirror` as a method.
+>>>>>>> master
 
 ## Changes in 1.1.17
 

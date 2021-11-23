@@ -7,43 +7,6 @@ NULL
     NULL
 }
 
-#' @export addProcessing
-#'
-#' @importFrom ProtGenerics ProcessingStep
-#'
-#' @importClassesFrom ProtGenerics ProcessingStep
-#'
-#' @importFrom methods .hasSlot
-#'
-#' @importFrom BiocGenerics updateObject
-#'
-#' @rdname Spectra
-addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
-    if (missing(FUN))
-        return(object)
-    object@processingQueue <- c(object@processingQueue,
-                                list(ProcessingStep(FUN, ARGS = list(...))))
-    if (!.hasSlot(object, "processingQueueVariables"))
-        object <- updateObject(object)
-    object@processingQueueVariables <- union(object@processingQueueVariables,
-                                             spectraVariables)
-    validObject(object)
-    object
-}
-
-## .apply_processing_queue <- function(x, msLevel, centroided, queue = NULL) {
-##     if (length(queue)) {
-##         for (i in seq_along(x)) {
-##             for (pStep in queue) {
-##                 x[[i]] <- executeProcessingStep(pStep, x[[i]],
-##                                                 spectrumMsLevel = msLevel[i],
-##                                                 centroided = centroided[i])
-##             }
-##         }
-##     }
-##     x
-## }
-
 #' @description
 #'
 #' Apply the lazy evaluation processing queue to the peaks (i.e. m/z, intensity
@@ -88,28 +51,6 @@ addProcessing <- function(object, FUN, ..., spectraVariables = character()) {
     }
     x
 }
-
-## .peaksapply <- function(object, FUN = NULL, ..., f = dataStorage(object),
-##                         BPPARAM = bpparam()) {
-##     len <- length(object)
-##     if (!len)
-##         return(list())
-##     if (length(f) != len)
-##         stop("Length of 'f' has to match 'length(object)' (", len, ")")
-##     if (!is.factor(f))
-##         f <- factor(f)
-##     pqueue <- object@processingQueue
-##     if (!is.null(FUN))
-##         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
-##     if (length(levels(f)) > 1 || length(pqueue)) {
-##         res <- bplapply(split(object@backend, f), function(z, queue) {
-##             metad <- spectraData(z, columns = c("msLevel", "centroided"))
-##             .apply_processing_queue(peaksData(z), metad$msLevel,
-##                                     metad$centroided, queue = queue)
-##         }, queue = pqueue, BPPARAM = BPPARAM)
-##         unsplit(res, f = f, drop = TRUE)
-##     } else peaksData(object@backend)
-## }
 
 .processingQueueVariables <- function(x) {
     if (.hasSlot(x, "processingQueueVariables"))
@@ -489,7 +430,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     ## we could even test if they are similar, and if so, merge.
     if (any(lengths(pqs)))
         stop("Can not concatenate 'Spectra' objects with non-empty ",
-             "processing queue")
+             "processing queue. Consider calling 'applyProcessing' before.")
     metad <- do.call(c, lapply(x, function(z) z@metadata))
     procs <- unique(unlist(lapply(x, function(z) z@processing)))
     object <- new(
@@ -592,6 +533,7 @@ joinSpectraData <- function(x, y,
                             by.x = "spectrumId",
                             by.y,
                             suffix.y = ".y") {
+
     stopifnot(inherits(x, "Spectra"))
     stopifnot(inherits(y, "DataFrame"))
     if (missing(by.y))
@@ -616,9 +558,14 @@ joinSpectraData <- function(x, y,
     y <- y[y[[by.y]] %in% spectraData(x)[[by.x]], ]
     k <- match(y[[by.y]], spectraData(x)[[by.x]])
     n <- length(x)
+    ## check for by.x and by.y keys duplicates
+    if (anyDuplicated(spectraData(x)[[by.x]]))
+        stop("Duplicates found in the 'x' key!")
+    if (anyDuplicated(y[[by.y]]))
+        warning("Duplicates found in the 'y' key. Only last instance will be kept!")
     ## Don't need by.y anymore
     y_vars <- y_vars[-grep(by.y, y_vars)]
-    y <- y[, y_vars]
+    y <- y[, y_vars, drop = FALSE]
     ## Check if there are any shared x_vars and y_vars. If so, the
     ## y_vars are appended suffix.y.
     if (length(xy_vars <- intersect(x_vars, y_vars))) {
@@ -647,4 +594,91 @@ joinSpectraData <- function(x, y,
 #' @rdname Spectra
 processingLog <- function(x) {
     x@processing
+}
+
+#' @export
+#'
+#' @rdname Spectra
+estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
+                                       method = c("previous", "interpolation"),
+                                       msLevel. = 2L, f = dataOrigin(x),
+                                       BPPARAM = bpparam()) {
+    if (is.factor(f))
+        f <- as.character(f)
+    f <- factor(f, levels = unique(f))
+    unlist(bplapply(split(x, f), FUN = .estimate_precursor_intensity, ppm = ppm,
+                    tolerance = tolerance, method = method, msLevel = msLevel.,
+                    BPPARAM = BPPARAM), use.names = FALSE)
+}
+
+#' estimate precursor intensities based on MS1 peak intensity. This function
+#' assumes that `x` is a `Spectra` with data **from a single file/sample**.
+#'
+#' @author Johannes Rainer
+#'
+#' @importFrom stats approx
+#'
+#' @noRd
+.estimate_precursor_intensity <- function(x, ppm = 10, tolerance = 0,
+                                          method = c("previous",
+                                                     "interpolation"),
+                                          msLevel = 2L) {
+    method <- match.arg(method)
+    if (any(msLevel > 2))
+        warning("Estimation of precursor intensities for MS levels > 2 is ",
+                "not yet validated")
+    if (!length(x))
+        return(numeric())
+    if (is.unsorted(rtime(x))) {
+        idx <- order(rtime(x))
+        x <- x[idx]
+    } else idx <- integer()
+    pmz <- precursorMz(x)
+    pmi <- rep(NA_real_, length(pmz))
+    idx_ms2 <- which(!is.na(pmz) & msLevel(x) == msLevel)
+    x_ms1 <- filterMsLevel(x, msLevel = msLevel - 1L)
+    pks <- .peaksapply(x_ms1)
+    for (i in idx_ms2) {
+        rt_i <- rtime(x[i])
+        before_idx <- which(rtime(x_ms1) < rt_i)
+        before_int <- NA_real_
+        before_rt <- NA_real_
+        if (length(before_idx)) {
+            before_idx <- before_idx[length(before_idx)]
+            before_rt <- rtime(x_ms1)[before_idx]
+            peaks <- pks[[before_idx]]
+            peak_idx <- closest(pmz[i], peaks[, "mz"],
+                                tolerance = tolerance,
+                                ppm = ppm, duplicates = "closest",
+                                .check = FALSE)
+            before_int <- unname(peaks[peak_idx, "intensity"])
+        }
+        if (method == "interpolation") {
+            after_idx <- which(rtime(x_ms1) > rt_i)
+            after_int <- NA_real_
+            after_rt <- NA_real_
+            if (length(after_idx)) {
+                after_idx <- after_idx[1L]
+                after_rt <- rtime(x_ms1)[after_idx]
+                peaks <- pks[[after_idx]]
+                peak_idx <- closest(pmz[i], peaks[, "mz"],
+                                    tolerance = tolerance,
+                                    ppm = ppm, duplicates = "closest",
+                                    .check = FALSE)
+                after_int <- unname(peaks[peak_idx, "intensity"])
+            }
+            if (is.na(before_int)) {
+                before_int <- after_int
+            } else {
+                if (!is.na(after_int))
+                    before_int <- approx(c(before_rt, after_rt),
+                                         c(before_int, after_int),
+                                         xout = rt_i)$y
+            }
+        }
+        pmi[i] <- before_int
+    }
+    if (length(idx))
+        pmi <- pmi[order(idx)]
+    pmi
 }

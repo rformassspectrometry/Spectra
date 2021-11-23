@@ -7,11 +7,10 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
+\alias{addProcessing}
 \alias{backendInitialize}
 \alias{backendMerge}
-\alias{bin}
 \alias{bin,numeric-method}
-\alias{compareSpectra}
 \alias{containsMz}
 \alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
@@ -116,11 +115,11 @@
 \alias{show,Spectra-method}
 \title{Internal page for hidden aliases}
 \usage{
+addProcessing(object, ...)
+
 backendInitialize(object, ...)
 
 backendMerge(object, ...)
-
-bin(x, ...)
 
 \S4method{bin}{numeric}(
   x,
@@ -129,8 +128,6 @@ bin(x, ...)
   breaks = seq(floor(min(y)), ceiling(max(y)), by = size),
   FUN = max
 )
-
-compareSpectra(x, y, ...)
 
 containsMz(object, ...)
 

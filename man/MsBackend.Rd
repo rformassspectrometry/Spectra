@@ -32,6 +32,7 @@
 \alias{filterMsLevel,MsBackend-method}
 \alias{filterPolarity,MsBackend-method}
 \alias{filterPrecursorMz,MsBackend-method}
+\alias{filterPrecursorCharge,MsBackend-method}
 \alias{filterPrecursorScan,MsBackend-method}
 \alias{filterRt,MsBackend-method}
 \alias{intensity,MsBackend-method}
@@ -128,7 +129,9 @@
 
 \S4method{filterPrecursorMz}{MsBackend}(object, mz = numeric())
 
-\S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum = integer())
+\S4method{filterPrecursorCharge}{MsBackend}(object, z = integer())
+
+\S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum = integer(), f = dataOrigin(object))
 
 \S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
 
@@ -262,9 +265,17 @@ function should be applied. For \code{filterMsLevel}: the MS level to which
 \item{polarity}{For \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
 
+\item{z}{For \code{filterPrecursorCharge}: \code{integer()} with the precursor charges
+to be used as filter.}
+
 \item{acquisitionNum}{for \code{filterPrecursorScan}: \code{integer} with the
 acquisition number of the spectra to which the object should be
 subsetted.}
+
+\item{f}{\code{factor} defining the grouping to split \code{x}. See \code{\link[=split]{split()}}. For
+\code{filterPrecursorScan}: factor defining from which original data files
+the spectra derive to avoid selecting spectra from different
+samples/files. Defaults to \code{f = dataOrigin(object)}.}
 
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
@@ -281,8 +292,6 @@ names of the spectra variables to which the backend should be subsetted.}
 \item{columns}{For \code{spectraData} accessor: optional \code{character} with column
 names (spectra variables) that should be included in the
 returned \code{DataFrame}. By default, all columns are returned.}
-
-\item{f}{\code{factor} defining the grouping to split \code{x}. See \code{\link[=split]{split()}}.}
 
 \item{drop}{For \code{[}: not considered.}
 
@@ -448,8 +457,14 @@ for \code{MsBackend} is available.
 provided m/z range.
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
+\item \code{filterPrecursorCharge}: retains spectra with the defined precursor
+charge(s).
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
-MS2) of acquisition number \code{acquisitionNum}.
+MS2) of acquisition number \code{acquisitionNum}. Parameter \code{f} is supposed to
+define the origin of the spectra (i.e. the original data file) to ensure
+related spectra from the same file/sample are selected and retained.
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times

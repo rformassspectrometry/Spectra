@@ -35,6 +35,10 @@ large variety of different ways to store and retrieve mass spectrometry
 data. Such backends range from mzML/mzXML/CDF files, simple flat files, or
 database systems.
 
+This vignette provides general examples and descriptions for the `Spectra`
+package. Additional information and tutorials can be found
+[here](https://jorainer.github.io/SpectraTutorials/).
+
 
 # Installation
 
@@ -291,14 +295,16 @@ the `?Spectra` help):
 - `filterEmptySpectra`: remove spectra without mass peaks.
 - `filterMzRange`: subset spectra keeping only peaks with an m/z within the
   provided m/z range.
-- `filterMzValues`: subset spectra keeping only peaks matching provided m/z
-  value(s).
+- `filterMzValues`: subset spectra keeping or removing peaks matching provided
+  m/z value(s).
 - `filterIsolationWindow`: keep spectra with the provided `mz` in their
   isolation window (m/z range).
 - `filterMsLevel`: filter by MS level.
 - `filterPolarity`: filter by polarity.
 - `filterPrecursorMz`: retain (MSn) spectra with a precursor m/z within the
   provided m/z range.
+- `filterPrecursorCharge`: retain (MSn) spectra with speified
+  precursor charge(s).
 - `filterPrecursorScan`: retain (parent and children) scans of an acquisition
   number.
 - `filterRt`: filter based on retention time ranges.
@@ -800,6 +806,18 @@ sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
 head(basename(dataStorage(sps_tmt)))
 ```
 
+A (possibly incomplete) list of R packages providing additional backends that
+add support for additional data types or storage options is provided below:
+
+- `r BiocStyle::Biocpkg("MsBackendMgf")`: support for import/export of mass
+  spectrometry files in mascot generic format (MGF).
+- `r BiocStyle::Biocpkg("MsBackendMassbank")`: support for import/export and
+  access of MassBank files/databases.
+- [MsBackendHmdb](https://github.com/rformassspectrometry/MsBackendHmdb):
+  support for import of MS2 spectra from files in the xml-file format of the
+  Human Metabolome Database (HMDB).
+- [MsBackendMsp](https://github.com/rformassspectrometry/MsBackendMsp): import
+  MS2 spectra from files in MSP format.
 
 
 # Session information

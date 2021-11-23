@@ -64,7 +64,10 @@
 #'
 #' @param drop For `[`: not considered.
 #'
-#' @param f `factor` defining the grouping to split `x`. See [split()].
+#' @param f `factor` defining the grouping to split `x`. See [split()]. For
+#'     `filterPrecursorScan`: factor defining from which original data files
+#'     the spectra derive to avoid selecting spectra from different
+#'     samples/files. Defaults to `f = dataOrigin(object)`.
 #'
 #' @param file For `filterFile`: index or name of the file(s) to which the data
 #'     should be subsetted. For `export`: `character` of length 1 or equal to
@@ -88,6 +91,9 @@
 #' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
 #'     filter the object. For `filterPrecursorMz`: `numeric(2)` with the lower
 #'     and upper m/z boundary.
+#'
+#' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
+#'     to be used as filter.
 #'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
@@ -247,8 +253,15 @@
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
+#' - `filterPrecursorCharge`: retains spectra with the defined precursor
+#'   charge(s).
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
+#'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
-#'    MS2) of acquisition number `acquisitionNum`.
+#'    MS2) of acquisition number `acquisitionNum`. Parameter `f` is supposed to
+#'   define the origin of the spectra (i.e. the original data file) to ensure
+#'   related spectra from the same file/sample are selected and retained.
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
@@ -831,17 +844,37 @@ setMethod("filterPrecursorMz", "MsBackend",
               } else object
           })
 
+#' @exportMethod filterPrecursorCharge
+#'
+#' @importMethodsFrom ProtGenerics filterPrecursorCharge
+#'
+#' @rdname MsBackend
+setMethod("filterPrecursorCharge", "MsBackend",
+          function(object, z = integer()) {
+              if (length(z)) {
+                  keep <- which(precursorCharge(object) %in% z)
+                  object[keep]
+              } else object
+          })
+
+
+
 #' @exportMethod filterPrecursorScan
 #'
 #' @importMethodsFrom ProtGenerics filterPrecursorScan
 #'
 #' @rdname MsBackend
 setMethod("filterPrecursorScan", "MsBackend",
-          function(object, acquisitionNum = integer()) {
-              if (length(acquisitionNum)) {
-                  object[.filterSpectraHierarchy(acquisitionNum(object),
-                                                 precScanNum(object),
-                                                 acquisitionNum)]
+          function(object, acquisitionNum = integer(), f = dataOrigin(object)) {
+              if (length(acquisitionNum) && length(f)) {
+                  if (!is.factor(f))
+                      f <- factor(f, exclude = character())
+                  keep <- unsplit(lapply(split(object, f = f), function(z, an) {
+                      .filterSpectraHierarchy(acquisitionNum(z),
+                                              precScanNum(z),
+                                              an)
+                  }, an = acquisitionNum), f = f)
+                  object[keep]
               } else object
           })
 

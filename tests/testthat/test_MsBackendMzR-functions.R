@@ -36,6 +36,9 @@ test_that(".mzR_peaks work", {
     expect_equal(res_13[[1]], res_all[[13]])
 
     expect_error(.mzR_peaks(fls, 13), "length 1")
+
+    expect_equal(.mzR_peaks(fls[1L], hdr$scanIndex),
+                 .mzR_peaks(fls[1L], hdr$scanIndex, readHeader = TRUE))
 })
 
 test_that(".pattern_to_cv works", {

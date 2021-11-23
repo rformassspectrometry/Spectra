@@ -96,6 +96,7 @@ test_that("setBackend,Spectra works", {
 
     ## errors:
     expect_error(setBackend(sps, MsBackendMzR()), "is read-only")
+    expect_error(setBackend(sps, MsBackendMzR()), "MsBackendMzR")
 })
 
 test_that("c,Spectra works", {
@@ -138,6 +139,8 @@ test_that("c,Spectra works", {
     res <- concatenateSpectra(tmp)
     expect_true(is(res, "Spectra"))
     res_c <- do.call(c, tmp)
+    res_c@processing <- ""
+    res@processing <- ""
     expect_equal(res, res_c)
 
     names(tmp) <- c("a", "b", "c")
@@ -930,6 +933,25 @@ test_that("filterPrecursorMz,Spectra works", {
     expect_true(length(res) == 2)
 })
 
+test_that("filterPrecursorCharge,Spectra works", {
+    sps <- Spectra()
+    res <- filterPrecursorCharge(sps)
+    expect_true(is(res, "Spectra"))
+    expect_true(length(res@processing) == 1)
+
+    sps <- Spectra(tmt_mzr)
+    res <- filterPrecursorCharge(sps, z = 0L)
+    expect_true(length(res) == 0)
+
+    res2 <- filterPrecursorCharge(sps, z = 2)
+    res3 <- filterPrecursorCharge(sps, z = 3)
+    res23 <- filterPrecursorCharge(sps, z = 2:3)
+    expect_true(length(res2) == 300)
+    expect_true(length(res3) == 128)
+    expect_true(length(res23) == (length(res2) + length(res3)))
+})
+
+
 test_that("filterPrecursorScan,Spectra works", {
     sps <- Spectra()
     res <- filterPrecursorScan(sps, 3)
@@ -941,6 +963,10 @@ test_that("filterPrecursorScan,Spectra works", {
     res <- filterPrecursorScan(sps, c(1087L, 1214L))
     expect_true(sum(msLevel(res) == 1) == 2)
     expect_true(all(c(1087L, 1214L) %in% acquisitionNum(res)))
+
+    sps <- c(sps, Spectra(sciex_mzr))
+    res <- filterPrecursorScan(sps, 1057)
+    expect_equal(acquisitionNum(res), c(1054L, 1057L))
 })
 
 test_that("filterRt,Spectra works", {
@@ -1399,6 +1425,16 @@ test_that("filterMzValue,Spectra works", {
                  "length 1 or equal")
     expect_error(filterMzValues(sps, mz = c(56, 12), ppm = c(1, 2, 3)),
                  "length 1 or equal")
+
+    ## remove
+    res <- filterMzValues(sps, mz = 56, keep = FALSE)
+    expect_equal(mz(res)[[1L]], mz(sps)[[1L]][-4])
+    res <- filterMzValues(sps, mz = 56, keep = FALSE, tolerance = 0.1)
+    expect_equal(mz(res)[[1L]], mz(sps)[[1L]][-4])
+    expect_equal(mz(res)[[2L]], mz(sps)[[2L]][-3])
+
+    res <- filterMzValues(sps, mz = c(1243, 244), keep = FALSE)
+    expect_equal(mz(res), mz(sps))
 })
 
 test_that("dropNaSpectraVariables works with MsBackendMzR", {

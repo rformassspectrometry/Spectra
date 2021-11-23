@@ -23,6 +23,10 @@ NULL
 #' The m/z and intensity values for the resulting peak matrix are calculated
 #' using the `mzFun` and `intensityFun` on the grouped m/z and intensity values.
 #'
+#' Note that only the grouped m/z and intensity values are used in the
+#' aggregation functions (`mzFun` and `intensityFun`) but not the number of
+#' spectra.
+#'
 #' The function supports also different strategies for peak combinations which
 #' can be specified with the `peaks` parameter:
 #'

@@ -53,6 +53,11 @@ test_that("backendMerge,MsBackendDataFrame works", {
     expect_equal(backendMerge(be), be)
     expect_error(backendMerge(be, 4), "backends of the same type")
 
+    ## only empty backends
+    be_e <- be[integer()]
+    res <- backendMerge(be_e, be_e)
+    expect_equal(spectraData(res), spectraData(be_e))
+
     res <- backendMerge(be, be2, be3)
     expect_true(is(res, "MsBackendDataFrame"))
     expect_identical(res@spectraData$dataStorage, rep("<memory>", 7))
@@ -774,6 +779,28 @@ test_that("filterPrecursorMz,MsBackendDataFrame works", {
 
     res <- filterPrecursorMz(be, mz = 4.4311 + ppm(c(-4.4311, 4.4311), 40))
     expect_equal(rtime(res), 3)
+})
+
+test_that("filterPrecursorCharge,MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    expect_equal(be, filterPrecursorCharge(be))
+
+    df <- DataFrame(msLevel = c(1L, 2L, 2L, 2L),
+                    precursorCharge = c(NA, 2L, 3L, 4L),
+                    rtime = as.numeric(1:4))
+    be <- backendInitialize(MsBackendDataFrame(), df)
+
+    res <- filterPrecursorCharge(be, 0)
+    expect_true(length(res) == 0)
+
+    res <- filterPrecursorCharge(be, 2)
+    expect_equal(rtime(res), 2)
+
+    res <- filterPrecursorCharge(be, 2:3)
+    expect_equal(rtime(res), 2:3)
+
+    res <- filterPrecursorCharge(be, z = c(2, 4))
+    expect_equal(rtime(res), c(2, 4))
 })
 
 test_that("filterPrecursorScan,MsBackendDataFrame works", {
