@@ -429,3 +429,69 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
     x[, 2L] <- MsCoreUtils::smooth(x[, 2L], cf = coef)
     x
 }
+
+#' @description
+#'
+#' Removes (Orbitrap) FFT artefacts (peaks) from a spectrum keeping peaks
+#' potentially representing [13]C isotopes.
+#'
+#' @param x peaks matrix
+#'
+#' @param halfWindowSize `numeric(1)` defining the (m/z) window left and right
+#'     of a peak to look for artefacts.
+#'
+#' @param threshold `numeric(1)` defining the relative intensity to the actual
+#'     peak below which peaks are considered artefacts. Defaults to
+#'     `threshold = 0.2` hence removing all peaks with an intensity below 0.2 *
+#'     the peak intensity.
+#'
+#' @param keepIsotopes `logical(1)` whether it should be screened for potential
+#'     isotope peaks. Defaults to `keepIsotopes = TRUE` thus candidate artefact
+#'     peaks potentially being isotopes will **not** be removed.
+#'
+#' @param maxCharge `integer(1)`
+#'
+#' @param isotopeTolerance `numeric(1)`
+#'
+#' @author Jan Stanstrup
+#'
+#' @importFrom MsCoreUtils between
+#'
+#' @noRd
+.peaks_remove_fft_artifact <- function(x, halfWindowSize = 0.05,
+                                       threshold = 0.2,
+                                       keepIsotopes = TRUE,
+                                       maxCharge = 5,
+                                       isotopeTolerance = 0.005) {
+    neutron   <- 1.0033548378 # really C12, C13 difference
+    iso_dist  <- neutron / seq(from = 1, by = 1, to = maxCharge)
+    nr <- nrow(x)
+    to_rem <- done <- rep(FALSE, nr)
+    int_order <- order(x[, "intensity"], decreasing = TRUE)
+    ## To save time in the loop. Cuts about 20%
+    find_isotopes <- keepIsotopes & any(iso_dist < halfWindowSize)
+    mz <- x[, "mz"]
+    int <- x[, "intensity"]
+    while (!all(done | to_rem)) {
+        target <- int_order[!(int_order %in% which(done | to_rem))][1]
+        rem_candidate <- which(between(
+            mz, mz[target] + c(-halfWindowSize, halfWindowSize)))
+        rem_candidate <- rem_candidate[int[rem_candidate] / int[target] <
+                                       threshold]
+        if (find_isotopes) {
+            target_dist <- abs(mz[rem_candidate] - mz[target])
+            dist_matrix <- outer(target_dist, iso_dist, "-")
+            dist_matrix <- abs(dist_matrix)
+            dist_to_iso_hypo <- apply(dist_matrix, 1, min)
+            rem_candidate <- rem_candidate[dist_to_iso_hypo > isotopeTolerance]
+        }
+        to_rem[rem_candidate] <- TRUE
+        done[target] <- TRUE
+    }
+    x[!to_rem, , drop = FALSE]
+}
+
+#' Maybe speed improvement: have an integer vector? order index by intensity,
+#' remove once either used or removed
+#' any instead of all?
+#' in each loop, consider only not removed data.

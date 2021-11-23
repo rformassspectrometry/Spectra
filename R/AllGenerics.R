@@ -27,6 +27,9 @@ setGeneric("dropNaSpectraVariables", function(object, ...)
 setGeneric("export", function(object, ...)
     standardGeneric("export"))
 #' @rdname hidden_aliases
+setGeneric("filterFourierTransformArtefacts", function(object, ...)
+    standardGeneric("filterFourierTransformArtefacts"))
+#' @rdname hidden_aliases
 setGeneric("filterMzRange", function(object, ...)
     standardGeneric("filterMzRange"))
 #' @rdname hidden_aliases

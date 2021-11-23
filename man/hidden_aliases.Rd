@@ -15,6 +15,7 @@
 \alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
 \alias{export}
+\alias{filterFourierTransformArtefacts}
 \alias{filterMzRange}
 \alias{filterMzValues}
 \alias{isReadOnly}
@@ -136,6 +137,8 @@ containsNeutralLoss(object, ...)
 dropNaSpectraVariables(object, ...)
 
 export(object, ...)
+
+filterFourierTransformArtefacts(object, ...)
 
 filterMzRange(object, ...)
 
