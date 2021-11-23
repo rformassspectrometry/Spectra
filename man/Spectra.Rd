@@ -1305,10 +1305,24 @@ spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
 ## Loading an Orbitrap spectrum with artefacts.
 data(fft_spectrum)
 plotSpectra(fft_spectrum, xlim = c(264.5, 265.5))
+plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
 fft_spectrum <- filterFourierTransformArtefacts(fft_spectrum)
 fft_spectrum
-plotSpectra(fft_spectrum, xlim = c(264.5, 265.5))
+plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+
+## Using a few examples peaks in your data you can optimize the parameters
+fft_spectrum_filtered <- filterFourierTransformArtefacts(fft_spectrum,
+                                               halfWindowSize = 0.2,
+                                               threshold = 0.005,
+                                               keepIsotopes = TRUE,
+                                               maxCharge = 5,
+                                               isotopeTolerance = 0.005
+                                               )
+
+fft_spectrum_filtered
+length(mz(fft_spectrum_filtered)[[1]])
+plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
 ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 
