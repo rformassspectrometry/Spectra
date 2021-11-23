@@ -67,8 +67,6 @@
 
 # Spectra 1.1
 
-<<<<<<< HEAD
-=======
 ## Changes in 1.1.20
 
 - Fix concatenating empty spectra (issue
@@ -81,7 +79,6 @@
 ## Changes in 1.1.18
 
 - Define `plotSpectraMirror` as a method.
->>>>>>> master
 
 ## Changes in 1.1.17
 
