@@ -465,33 +465,29 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
                                        isotopeTolerance = 0.005) {
     neutron   <- 1.0033548378 # really C12, C13 difference
     iso_dist  <- neutron / seq(from = 1, by = 1, to = maxCharge)
-    nr <- nrow(x)
-    to_rem <- done <- rep(FALSE, nr)
-    int_order <- order(x[, "intensity"], decreasing = TRUE)
-    ## To save time in the loop. Cuts about 20%
     find_isotopes <- keepIsotopes & any(iso_dist < halfWindowSize)
     mz <- x[, "mz"]
     int <- x[, "intensity"]
-    while (!all(done | to_rem)) {
-        target <- int_order[!(int_order %in% which(done | to_rem))][1]
-        rem_candidate <- which(between(
-            mz, mz[target] + c(-halfWindowSize, halfWindowSize)))
-        rem_candidate <- rem_candidate[int[rem_candidate] / int[target] <
+    idx <- order(int, decreasing = TRUE)
+    keep <- rep(TRUE, length(idx))
+    while (!is.na(i <- idx[1L])) {
+        idx <- idx[-1L]
+        rem_candidate <- which(
+            between(mz[idx], mz[i] + c(-halfWindowSize, halfWindowSize)))
+        rem_candidate <- rem_candidate[int[idx][rem_candidate] / int[i] <
                                        threshold]
+        ## That part might be improved later.
         if (find_isotopes) {
-            target_dist <- abs(mz[rem_candidate] - mz[target])
+            target_dist <- abs(mz[idx][rem_candidate] - mz[i])
             dist_matrix <- outer(target_dist, iso_dist, "-")
             dist_matrix <- abs(dist_matrix)
             dist_to_iso_hypo <- apply(dist_matrix, 1, min)
             rem_candidate <- rem_candidate[dist_to_iso_hypo > isotopeTolerance]
         }
-        to_rem[rem_candidate] <- TRUE
-        done[target] <- TRUE
+        if (length(rem_candidate)) {
+            keep[idx[rem_candidate]] <- FALSE
+            idx <- idx[-rem_candidate]
+        }
     }
-    x[!to_rem, , drop = FALSE]
+    x[keep, , drop = FALSE]
 }
-
-#' Maybe speed improvement: have an integer vector? order index by intensity,
-#' remove once either used or removed
-#' any instead of all?
-#' in each loop, consider only not removed data.
