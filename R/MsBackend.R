@@ -382,7 +382,8 @@
 #'   or `SimpleList` in columns `"mz"` and `"intensity"`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
-#'   the spectra in `object`.
+#'   the spectra in `object` or `NULL` if not set. `spectraNames<-` allows to
+#'   set spectra names (if the object is not read-only).
 #'
 #' - `spectraVariables`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)

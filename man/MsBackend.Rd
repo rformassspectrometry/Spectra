@@ -560,7 +560,8 @@ of rows as there are spectra in \code{object}. Note that \code{spectraData} has 
 return the full data, i.e. also the m/z and intensity values (as a \code{list}
 or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
-the spectra in \code{object}.
+the spectra in \code{object} or \code{NULL} if not set. \verb{spectraNames<-} allows to
+set spectra names (if the object is not read-only).
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
 available in \code{object}. This should return \strong{all} spectra variables which
