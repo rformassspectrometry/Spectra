@@ -314,7 +314,7 @@
 #'   `object` are in profile or centroided mode. The function takes
 #'   the `qtl` th quantile top peaks, then calculates the difference
 #'   between adjacent m/z value and returns `TRUE` if the first
-#'   quartile is greater than `k`. (See `Spectra:::.isCentroided` for
+#'   quartile is greater than `k`. (See `Spectra:::.peaks_is_centroided` for
 #'   the code.)
 #'
 #' - `isEmpty`: checks whether a spectrum in `object` is empty
@@ -939,10 +939,11 @@ setMethod("ionCount", "MsBackend", function(object) {
 #' @exportMethod isCentroided
 #'
 #' @importMethodsFrom ProtGenerics isCentroided
+#' @importFrom MsCoreUtils vapply1l
 #'
 #' @rdname MsBackend
 setMethod("isCentroided", "MsBackend", function(object, ...) {
-    stop("Not implemented for ", class(object), ".")
+    vapply1l(peaksData(object), .peaks_is_centroided)
 })
 
 #' @exportMethod isEmpty
