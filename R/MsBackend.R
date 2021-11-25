@@ -122,6 +122,29 @@
 #' @param ... Additional arguments.
 #'
 #'
+#' @section Implementation notes:
+#'
+#' Backends extending `MsBackend` **must** implement all of its methods (listed
+#' above). Developers of new `MsBackend`s should follow the
+#' `MsBackendDataFrame` implementation. To ensure a new implementation being
+#' conform with the `MsBackend` definition, developers should included test
+#' suites provided by this package in their unit test setup. For that a variable
+#' `be` should be created in the package's `"testthat.R"` file that represents
+#' a (initialized) instance of the developed backend. Then the path to the
+#' test suites should be defined with
+#' `test_suite <- system.file("test_backends", "test_MsBackend",
+#' package = "Spectra")` followed by `test_dir(test_suite)` to run all test
+#' files in that directory. Individual unit test files could be run with
+#' `test_file(paste0(test_suite, "/test_spectra_variables.R"))`. Adding this
+#' code to the packages `"testthat.R"` file ensures that all tests checking
+#' the validity of an `MsBackend` instance defined in the `Spectra` package
+#' are also run on the newly develped backend class.
+#'
+#' The `MsBackend` defines the following slots:
+#'
+#' - `@readonly`: `logical(1)` whether the backend supports writing/replacing
+#'   of m/z or intensity values.
+#'
 #' @section Backend functions:
 #'
 #' New backend classes **must** extend the base `MsBackend` class and
@@ -520,17 +543,6 @@
 #' `"dataStorage"`.
 #'
 #' For details see examples on the [Spectra()] help page.
-#'
-#' @section Implementation notes:
-#'
-#' Backends extending `MsBackend` **must** implement all of its methods (listed
-#' above). Developers of new `MsBackend`s should follow the
-#' `MsBackendDataFrame` implementation.
-#'
-#' The `MsBackend` defines the following slots:
-#'
-#' - `@readonly`: `logical(1)` whether the backend supports writing/replacing
-#'   of m/z or intensity values.
 #'
 #' @name MsBackend
 #'

@@ -347,6 +347,31 @@ data files and the remaining spectra variables in memory (in a
 
 See below for more details about individual backends.
 }
+\section{Implementation notes}{
+
+
+Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
+above). Developers of new \code{MsBackend}s should follow the
+\code{MsBackendDataFrame} implementation. To ensure a new implementation being
+conform with the \code{MsBackend} definition, developers should included test
+suites provided by this package in their unit test setup. For that a variable
+\code{be} should be created in the package's \code{"testthat.R"} file that represents
+a (initialized) instance of the developed backend. Then the path to the
+test suites should be defined with
+\code{test_suite <- system.file("test_backends", "test_MsBackend", package = "Spectra")} followed by \code{test_dir(test_suite)} to run all test
+files in that directory. Individual unit test files could be run with
+\code{test_file(paste0(test_suite, "/test_spectra_variables.R"))}. Adding this
+code to the packages \code{"testthat.R"} file ensures that all tests checking
+the validity of an \code{MsBackend} instance defined in the \code{Spectra} package
+are also run on the newly develped backend class.
+
+The \code{MsBackend} defines the following slots:
+\itemize{
+\item \verb{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
+of m/z or intensity values.
+}
+}
+
 \section{Backend functions}{
 
 
@@ -705,20 +730,6 @@ file names, \code{files}' length has to match the number of unique elements in
 \code{"dataStorage"}.
 
 For details see examples on the \code{\link[=Spectra]{Spectra()}} help page.
-}
-
-\section{Implementation notes}{
-
-
-Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
-above). Developers of new \code{MsBackend}s should follow the
-\code{MsBackendDataFrame} implementation.
-
-The \code{MsBackend} defines the following slots:
-\itemize{
-\item \verb{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
-of m/z or intensity values.
-}
 }
 
 \examples{
