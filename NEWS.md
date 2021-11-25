@@ -2,6 +2,7 @@
 
 ## Changes in 1.5.2
 
+- Add unit test suite to check all spectra variables (issue #186).
 - Small documentation update (related to `MsCoreUtils` issue
   [#87](https://github.com/rformassspectrometry/MsCoreUtils/issues/87)).
 

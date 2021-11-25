@@ -268,6 +268,17 @@ setMethod("msLevel", "MsBackendDataFrame", function(object, ...) {
 })
 
 #' @rdname hidden_aliases
+setReplaceMethod("msLevel", "MsBackendDataFrame", function(object, value) {
+    if (!is.integer(value) && is.numeric(value))
+        value <- as.integer(value)
+    if (!is.integer(value) || length(value) != length(object))
+        stop("'value' has to be an 'integer' of length ", length(object))
+    object@spectraData$msLevel <- value
+    validObject(object)
+    object
+})
+
+#' @rdname hidden_aliases
 setMethod("mz", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "mz"))
         object@spectraData$mz

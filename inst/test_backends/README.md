@@ -11,13 +11,20 @@ of the unit tests and which variables need to be defined by the calling package
 is provided within these.
 
 The unit tests from one test suite can be called from within another package (in
-their `testthat.R` file) like shown in the example below that will call the unit
+their `testthat.R` file) like shown in the example below that will call all unit
 tests from the *test_MsBackend* test suite/directory:
 
 ```
 test_suite <- system.file("test_backends", "test_MsBackend",
     package = "Spectra")
 test_dir(test_suite)
+```
+
+Alternatively, it is also possible to run single test files, e.g. the test file
+that checks that all spectra variables can be correctly accessed or set:
+
+```
+test_file(paste0(test_suite, "/test_spectra_variables.R"))
 ```
 
 ## Authors/contributors
