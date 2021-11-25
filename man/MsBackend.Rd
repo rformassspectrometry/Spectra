@@ -360,10 +360,11 @@ a (initialized) instance of the developed backend. Then the path to the
 test suites should be defined with
 \code{test_suite <- system.file("test_backends", "test_MsBackend", package = "Spectra")} followed by \code{test_dir(test_suite)} to run all test
 files in that directory. Individual unit test files could be run with
-\code{test_file(paste0(test_suite, "/test_spectra_variables.R"))}. Adding this
-code to the packages \code{"testthat.R"} file ensures that all tests checking
-the validity of an \code{MsBackend} instance defined in the \code{Spectra} package
-are also run on the newly develped backend class.
+\code{test_file(paste0(test_suite, "/test_spectra_variables.R"), stop_on_failure = TRUE)} (note that without \code{stop_on_failure = TRUE} tests
+would fail silently) . Adding this code to the packages \code{"testthat.R"} file
+ensures that all tests checking the validity of an \code{MsBackend} instance
+defined in the \code{Spectra} package are also run on the newly develped backend
+class.
 
 The \code{MsBackend} defines the following slots:
 \itemize{

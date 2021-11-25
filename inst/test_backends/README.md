@@ -17,14 +17,17 @@ tests from the *test_MsBackend* test suite/directory:
 ```
 test_suite <- system.file("test_backends", "test_MsBackend",
     package = "Spectra")
-test_dir(test_suite)
+test_dir(test_suite, stop_on_failure = TRUE)
 ```
 
-Alternatively, it is also possible to run single test files, e.g. the test file
-that checks that all spectra variables can be correctly accessed or set:
+Note that setting `stop_on_failure = TRUE` is required since the tests would
+otherwise silently fail.  Alternatively, it is also possible to run single test
+files, e.g. the test file that checks that all spectra variables can be
+correctly accessed or set:
 
 ```
-test_file(paste0(test_suite, "/test_spectra_variables.R"))
+test_file(paste0(test_suite, "/test_spectra_variables.R"),
+    stop_on_failure = TRUE)
 ```
 
 ## Authors/contributors

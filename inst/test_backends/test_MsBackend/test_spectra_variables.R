@@ -9,7 +9,7 @@
 #' be <- <code to create and initialize the backend>
 #' test_suite <- system.file("test_backends", "test_MsBackend",
 #'     package = "Spectra")
-#' test_dir(test_suite)
+#' test_dir(test_suite, stop_on_failure = TRUE)
 #'
 #' The unit tests in this suite expect a variable `be` to be defined, which
 #' has to represent an **already initialized** backend instance.
