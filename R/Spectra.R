@@ -319,11 +319,12 @@ NULL
 #'   artefact peaks from spectra (see examples below). The function iterates
 #'   through all intensity ordered peaks in a spectrum and removes all peaks
 #'   with an m/z within +/- `halfWindowSize` of the current peak if their
-#'   intensity is lower than `threshold` times of the current peak's intensity.
+#'   intensity is lower than `threshold` times the current peak's intensity.
 #'   Additional parameters `keepIsotopes`, `maxCharge` and `isotopeTolerance`
 #'   allow to avoid removing of potential `[13]C` isotope peaks (`maxCharge`
 #'   being the maximum charge that should be considered and `isotopeTolerance`
 #'   the absolute acceptable tolerance for matching their m/z).
+#'   See [filterFourierTransformArtefacts()] for details and background.
 #'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`

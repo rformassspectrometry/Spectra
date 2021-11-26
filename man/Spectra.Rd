@@ -889,11 +889,12 @@ original order).
 artefact peaks from spectra (see examples below). The function iterates
 through all intensity ordered peaks in a spectrum and removes all peaks
 with an m/z within +/- \code{halfWindowSize} of the current peak if their
-intensity is lower than \code{threshold} times of the current peak's intensity.
+intensity is lower than \code{threshold} times the current peak's intensity.
 Additional parameters \code{keepIsotopes}, \code{maxCharge} and \code{isotopeTolerance}
 allow to avoid removing of potential \verb{[13]C} isotope peaks (\code{maxCharge}
 being the maximum charge that should be considered and \code{isotopeTolerance}
 the absolute acceptable tolerance for matching their m/z).
+See \code{\link[=filterFourierTransformArtefacts]{filterFourierTransformArtefacts()}} for details and background.
 \item \code{filterIsolationWindow}: retains spectra that contain \code{mz} in their
 isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} <= \code{mz}
 and \code{isolationWindowUpperMz} >= \code{mz}. Returns the filtered \code{Spectra}
