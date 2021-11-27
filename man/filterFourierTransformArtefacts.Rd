@@ -2,6 +2,7 @@
 % Please edit documentation in R/fft_spectrum.R
 \name{filterFourierTransformArtefacts}
 \alias{filterFourierTransformArtefacts}
+\alias{fft_spectrum}
 \title{Fast fourier transform artefact filter}
 \description{
 The \code{filterFourierTransformArtefacts} function removes (Orbitrap) fast
@@ -11,7 +12,9 @@ fourier artefact peaks from spectra. Such artefacts (also referred to as
 are frequently seen in Orbitrap data as small random mass peaks ~ 0.01 Da
 from a main peak with a very large intensity. See also
 \href{https://www.shimadzu.com/an/service-support/technical-support/analysis-basics/tips-ftir/apodization.html}{here}
-for more details and information.
+for more details and information. The data set \code{fft_spectrum} represents a
+\code{\link[=Spectra]{Spectra()}} object with a single Orbitrap spectrum with such artefacts (see
+examples below).
 
 See also \code{\link[=Spectra]{Spectra()}} (section *Data subsetting, filtering and merging) for
 the definition of the function.
@@ -25,6 +28,30 @@ and \code{isotopeTolerance} allow to avoid removing of potential \verb{[13]C} is
 peaks (\code{maxCharge} being the maximum charge that should be considered
 and \code{isotopeTolerance} the absolute acceptable tolerance for matching
 their m/z).
+}
+\examples{
+library(Spectra)
+data(fft_spectrum)
+
+plotSpectra(fft_spectrum)
+
+## Focus on an artefact
+plotSpectra(fft_spectrum, xlim = c(264.5, 265.5))
+plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+
+fft_spectrum <- filterFourierTransformArtefacts(fft_spectrum)
+fft_spectrum
+plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+
+## R code to download/extract the data.
+
+\dontrun{
+library(Spectra)
+# get orbitrap data
+download.file("https://www.ebi.ac.uk/metabolights/ws/studies/MTBLS469/download/4cc5d820-dc5d-4766-8112-7a05f74acef4?file=AV_01_v2_male_arm1_juice.mzXML", "AV_01_v2_male_arm1_juice.mzXML")
+data <- Spectra("AV_01_v2_male_arm1_juice.mzXML")
+extracted_spectrum <- data[195]
+}
 }
 \author{
 Jan Stanstrup, Johannes Rainer

@@ -1,35 +1,8 @@
-#' @title Oribtrap spectrum
-#'
-#' @description
-#'
-#' The `fft_spectrum` variable is a [Spectra()] with a single spectrum
-#' measured on an Orbitrap.
-#'
-#' The code to create/extract the spectrum is shown in the exampleship
-#'
-#' @name fft_spectrum
-#'
-#' @examples
-#'
-#' library(Spectra)
-#' data(fft_spectrum)
-#'
-#' plotSpectra(fft_spectrum)
-#'
-#' ## R code to download/extract the data.
-#'
-#' \dontrun{
-#' library(Spectra)
-#' # get orbitrap data
-#' download.file("https://www.ebi.ac.uk/metabolights/ws/studies/MTBLS469/download/4cc5d820-dc5d-4766-8112-7a05f74acef4?file=AV_01_v2_male_arm1_juice.mzXML", "AV_01_v2_male_arm1_juice.mzXML")
-#' data <- Spectra("AV_01_v2_male_arm1_juice.mzXML")
-#' extracted_spectrum <- data[195]
-#' }
-NULL
-
 #' @title Fast fourier transform artefact filter
 #'
 #' @aliases filterFourierTransformArtefacts
+#'
+#' @aliases fft_spectrum
 #'
 #' @description
 #'
@@ -40,7 +13,9 @@ NULL
 #' are frequently seen in Orbitrap data as small random mass peaks ~ 0.01 Da
 #' from a main peak with a very large intensity. See also
 #' [here](https://www.shimadzu.com/an/service-support/technical-support/analysis-basics/tips-ftir/apodization.html)
-#' for more details and information.
+#' for more details and information. The data set `fft_spectrum` represents a
+#' [Spectra()] object with a single Orbitrap spectrum with such artefacts (see
+#' examples below).
 #'
 #' See also [Spectra()] (section *Data subsetting, filtering and merging) for
 #' the definition of the function.
@@ -59,4 +34,28 @@ NULL
 #' @author Jan Stanstrup, Johannes Rainer
 #'
 #' @name filterFourierTransformArtefacts
+#'
+#' @examples
+#' library(Spectra)
+#' data(fft_spectrum)
+#'
+#' plotSpectra(fft_spectrum)
+#'
+#' ## Focus on an artefact
+#' plotSpectra(fft_spectrum, xlim = c(264.5, 265.5))
+#' plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+#'
+#' fft_spectrum <- filterFourierTransformArtefacts(fft_spectrum)
+#' fft_spectrum
+#' plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+#'
+#' ## R code to download/extract the data.
+#'
+#' \dontrun{
+#' library(Spectra)
+#' # get orbitrap data
+#' download.file("https://www.ebi.ac.uk/metabolights/ws/studies/MTBLS469/download/4cc5d820-dc5d-4766-8112-7a05f74acef4?file=AV_01_v2_male_arm1_juice.mzXML", "AV_01_v2_male_arm1_juice.mzXML")
+#' data <- Spectra("AV_01_v2_male_arm1_juice.mzXML")
+#' extracted_spectrum <- data[195]
+#' }
 NULL
