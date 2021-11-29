@@ -15,7 +15,7 @@
 #'
 #' @details
 #'
-#' The computer number of identifications is stored in a new spectra
+#' The computed number of identifications is stored in a new spectra
 #' variables named `"nSequences"`. If it already exists, the function
 #' throws a message and returns the object unchanged. To force the
 #' recomputation of the `"nSequences"` variables, users should either

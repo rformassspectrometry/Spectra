@@ -46,7 +46,7 @@ chromatograms, as can illustrated
 \href{https://rformassspectrometry.github.io/docs/sec-id.html#an-identification-annotated-chromatogram}{here}.
 }
 \details{
-The computer number of identifications is stored in a new spectra
+The computed number of identifications is stored in a new spectra
 variables named \code{"nSequences"}. If it already exists, the function
 throws a message and returns the object unchanged. To force the
 recomputation of the \code{"nSequences"} variables, users should either
