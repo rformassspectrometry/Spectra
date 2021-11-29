@@ -2,12 +2,11 @@
 #'
 #' @description
 #'
-#' The function takes a proteomics `Spectra` object containing
-#' identification results as input. It then counts the number of
-#' identifications each scan (or their descendants) has lead to - this
-#' is either 0 or 1 for MS2 scans, or, for MS1 scans, the number of
-#' MS2 scans originating from any MS1 peak that lead to an
-#' identification.
+#' The function takes a `Spectra` object containing identification
+#' results as input. It then counts the number of identifications each
+#' scan (or their descendants) has lead to - this is either 0 or 1 for
+#' MS2 scans, or, for MS1 scans, the number of MS2 scans originating
+#' from any MS1 peak that lead to an identification.
 #'
 #' This function can be used to generate id-annotated total ion
 #' chromatograms, as can illustrated
@@ -16,19 +15,19 @@
 #' @details
 #'
 #' The computed number of identifications is stored in a new spectra
-#' variables named `"nSequences"`. If it already exists, the function
-#' throws a message and returns the object unchanged. To force the
-#' recomputation of the `"nSequences"` variables, users should either
-#' delete or rename name.
+#' variables named `"countIdentifications"`. If it already exists, the
+#' function throws a message and returns the object unchanged. To
+#' force the recomputation of the `"countIdentifications"` variable,
+#' users should either delete or rename it.
 #'
 #' @param object An instance of class `Spectra()` that contains
 #'     identification data, as defined by the `sequence` argument.
 #'
-#' @param sequence `character(1)` with the name of the spectra
-#'     variable that defines wheather a scan lead to an
-#'     identification, typically containing the idenfified peptides
-#'     sequence. The absence of sequence or identification is encode
-#'     by an `NA`. Default is `"sequence"`.
+#' @param identification `character(1)` with the name of the spectra
+#'     variable that defines whether a scan lead to an identification
+#'     (typically containing the idenfified peptides sequence in
+#'     proteomics). The absence of identification is encode by an
+#'     `NA`. Default is `"sequence"`.
 #'
 #' @param f A `factor` defining how to split `object` for parallelized
 #'     processing. Default is `dataOrigin(x)`, i.e. each raw data
@@ -38,8 +37,8 @@
 #'     [BiocParallel::bpparam()] for details.
 #'
 #' @return An updated [Spectra()] object that now contains an integer
-#'     spectra variable `nSequence` with the number of identification
-#'     for each scan.
+#'     spectra variable `countIdentifications` with the number of
+#'     identification for each scan.
 #'
 #' @author Laurent Gatto
 #'
@@ -95,37 +94,37 @@
 #' table(precScanNum(sp))
 #'
 #' ## Count number of sequences/identifications per scan
-#' sp <- nSequences(sp)
+#' sp <- countIdentifications(sp)
 #'
 #' ## MS2 scans either lead to an identification (5 instances) or none
 #' ## (76). Among the five MS1 scans in the experiment, 3 lead to MS2
 #' ## scans being matched to no peptides and two MS1 scans produced two
 #' ## and three PSMs respectively.
-#' table(sp$nSequences, sp$msLevel)
-nSequences <- function(object,
-                       sequence = "sequence",
-                       f = dataStorage(object),
-                       BPPARAM = bpparam()) {
+#' table(sp$countIdentifications, sp$msLevel)
+countIdentifications <- function(object,
+                                 identification = "sequence",
+                                 f = dataStorage(object),
+                                 BPPARAM = bpparam()) {
     stopifnot(is(object, "Spectra"))
-    if ("nSequences" %in% spectraVariables(object)) {
-        message("Spectra variable 'nSequences' already present.")
+    if ("countIdentifications" %in% spectraVariables(object)) {
+        message("Spectra variable 'countIdentifications' already present.")
         return(object)
     }
-    sequence <- sequence[1]
+    identification <- identification[1]
     res <- .lapply(object,
-                   FUN = .nSequences,
-                   sequence = "sequence",
+                   FUN = .countIdentifications,
+                   identification = identification,
                    f = f,
                    BPPARAM = BPPARAM)
-    object$nSequences <- unsplit(res, f)
+    object$countIdentifications <- unsplit(res, f)
     object
 }
 
-.nSequences <- function(object, sequence) {
+.countIdentifications <- function(object, identification) {
     if (length(unique(dataOrigin(object))) != 1)
-        stop(".nSequences must be called on data from a single dataOrigin.")
+        stop(".countIdentifications must be called on data from a single dataOrigin.")
     ## Count 0 is sequence is NA, 1 if otherwise
-    res <- as.integer(!is.na(object[[sequence]]))
+    res <- as.integer(!is.na(object[[identification]]))
     names(res) <- acquisitionNum(object)
     ## Iterate over MS1 acquition numbers
     N <- acquisitionNum(filterMsLevel(object, 1))
@@ -136,7 +135,7 @@ nSequences <- function(object,
         ## get logical with all descendant acquisitions
         j <- .filterSpectraHierarchy(object$acquisitionNum,
                                      object$precScanNum, an)
-        res[an_char] <- sum(!is.na(object[[sequence]][j]))
+        res[an_char] <- sum(!is.na(object[[identification]][j]))
     }
     unname(res)
 }
