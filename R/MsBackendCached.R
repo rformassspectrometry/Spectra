@@ -565,7 +565,8 @@ setMethod("polarity", "MsBackendCached", function(object) {
 
 #' @rdname MsBackendCached
 setReplaceMethod("polarity", "MsBackendCached", function(object, value) {
-    object$polarity <- as.integer(value)
+    if (is.numeric(value)) value <- as.integer(value)
+    object$polarity <- value
     validObject(object)
     object
 })
