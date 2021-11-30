@@ -95,6 +95,17 @@ test_that("[,MsBackendCached works", {
     expect_equal(res@localData$b, c(6, 1, 3))
 })
 
+test_that("$,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+
+    expect_equal(be$msLevel, rep(NA_integer_, 5))
+
+    be <- backendInitialize(be, data = data.frame(msLevel = 1:3))
+    expect_equal(be$msLevel, 1:3)
+
+    expect_error(be$not, "not available")
+})
+
 test_that("$<-,MsBackendCached works", {
     be <- MsBackendCached()
 
@@ -118,4 +129,164 @@ test_that("selectSpectraVariables,MsBackendCached works", {
 
     res <- selectSpectraVariables(be, spectraVariables = c("b", "dataOrigin"))
     expect_equal(colnames(res@localData), c("b"))
+})
+
+test_that("acquisitionNum,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(acquisitionNum(be), rep(NA_integer_, length(be)))
+
+    be <- backendInitialize(
+        MsBackendCached(), data = data.frame(acquisitionNum = 1:3))
+    expect_equal(acquisitionNum(be), 1:3)
+})
+
+test_that("centroided,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(centroided(be), rep(NA, length(be)))
+
+    centroided(be) <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+    expect_equal(centroided(be), c(TRUE, FALSE, TRUE, FALSE, FALSE))
+})
+
+test_that("collisionEnergy,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(collisionEnergy(be), rep(NA_real_, length(be)))
+
+    collisionEnergy(be) <- c(1.2, 2, 4, 2, 5)
+    expect_equal(collisionEnergy(be), c(1.2, 2, 4, 2, 5))
+})
+
+test_that("dataOrigin,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(dataOrigin(be), rep(NA_character_, length(be)))
+
+    dataOrigin(be) <- "unknown"
+    expect_equal(dataOrigin(be), rep("unknown", length(be)))
+})
+
+test_that("msLevel,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(msLevel(be), rep(NA_integer_, length(be)))
+
+    be <- backendInitialize(be, data = data.frame(msLevel = 1:4))
+    expect_equal(msLevel(be), 1:4)
+})
+
+test_that("isolationWindowLowerMz,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(isolationWindowLowerMz(be), rep(NA_real_, length(be)))
+
+    vals <- c(1.3, 4.2, 4.2, 4.5, 6.3)
+    isolationWindowLowerMz(be) <- vals
+    expect_equal(isolationWindowLowerMz(be), vals)
+})
+
+test_that("isolationWindowTargetMz,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(isolationWindowTargetMz(be), rep(NA_real_, length(be)))
+
+    vals <- c(1.3, 4.2, 4.2, 4.5, 6.3)
+    isolationWindowTargetMz(be) <- vals
+    expect_equal(isolationWindowTargetMz(be), vals)
+})
+
+test_that("isolationWindowUpperMz,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(isolationWindowUpperMz(be), rep(NA_real_, length(be)))
+
+    vals <- c(1.3, 4.2, 4.2, 4.5, 6.3)
+    isolationWindowUpperMz(be) <- vals
+    expect_equal(isolationWindowUpperMz(be), vals)
+})
+
+test_that("polarity,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(polarity(be), rep(NA_integer_, length(be)))
+
+    vals <- c(1L, 1L, 0L, 1L, 0L)
+    polarity(be) <- vals
+    expect_equal(polarity(be), vals)
+})
+
+test_that("precursorCharge,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(precursorCharge(be), rep(NA_integer_, length(be)))
+
+    be <- backendInitialize(be, data = data.frame(precursorCharge = 1:3))
+    expect_equal(precursorCharge(be), 1:3)
+})
+
+test_that("precursorIntensity,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(precursorIntensity(be), rep(NA_real_, length(be)))
+
+    be <- backendInitialize(be, data = data.frame(
+                                    precursorIntensity = c(1.2, 1.5)))
+    expect_equal(precursorIntensity(be), c(1.2, 1.5))
+})
+
+test_that("precursorMz,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(precursorMz(be), rep(NA_real_, length(be)))
+
+    be <- backendInitialize(be, data = data.frame(
+                                    precursorMz = c(1.2, 1.5)))
+    expect_equal(precursorMz(be), c(1.2, 1.5))
+})
+
+test_that("rtime,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(rtime(be), rep(NA_real_, length(be)))
+
+    vals <- c(1.4, 1.6, 1.8, 3.1, 5.2)
+    rtime(be) <- vals
+    expect_equal(rtime(be), vals)
+})
+
+test_that("scanIndex,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(scanIndex(be), rep(NA_integer_, length(be)))
+
+    be <- backendInitialize(be, data = data.frame(scanIndex = 4:6))
+    expect_equal(scanIndex(be), 4:6)
+})
+
+test_that("smoothed,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 5)
+    expect_equal(smoothed(be), rep(NA, length(be)))
+
+    smoothed(be) <- c(FALSE, TRUE, FALSE, TRUE, FALSE)
+    expect_equal(smoothed(be), c(FALSE, TRUE, FALSE, TRUE, FALSE))
+})
+
+test_that("intensity,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 3)
+    res <- intensity(be)
+    expect_true(is(res, "NumericList"))
+    expect_true(all(lengths(res) == 0))
+})
+
+test_that("mz,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 3)
+    res <- mz(be)
+    expect_true(is(res, "NumericList"))
+    expect_true(all(lengths(res) == 0))
+})
+
+test_that("ionCount,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 4)
+    res <- ionCount(be)
+    expect_true(all(res == 0))
+})
+
+test_that("isEmpty,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 4)
+    res <- isEmpty(be)
+    expect_true(all(res))
+})
+
+test_that("lengths,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 4)
+    res <- lengths(be)
+    expect_true(all(res == 0))
 })
