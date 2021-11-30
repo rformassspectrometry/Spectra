@@ -45,6 +45,12 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   backend can then proceed to retrieve the respective values from its own
 #'   backend/data storage.
 #'
+#' Spectra variables can be modified or added using the `$<-` method of the
+#' `MsBackendCached`. Replacing or adding multiple variables using the
+#' `spectraData<-` is not supported by `MsBackendCached`. The extending backend
+#' might however implement such a method that internally uses `$<-` to
+#' add/replace single variables.
+#'
 #' The `MsBackendCached` has the following slots"
 #'
 #' - `nspectra`: `integer(1)` defining the number of spectra of the backend.
@@ -72,6 +78,11 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   spectra variables defined in the `@spectraVariables` slot (i.e. spectra
 #'   variables thought to be provided by the extending `MsBackend` instance).
 #'
+#' - `selectSpectraVariables`: subset the object to specified spectra variables.
+#'   This will eventually remove spectra variables listed in `@spectraVariables`
+#'   and will also drop columns from the local cache if not among
+#'   `spectraVariables`.
+#'
 #' - `spectraData`: returns a `DataFrame` with cached spectra variablers or
 #'   initialized *core spectra variables*. Parameter `spectraVariables` allows
 #'   to specify the variables to retrieve. The function returns `NULL` if the
@@ -80,12 +91,23 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   or core spectra variables **not** provided by the extending backend. It is
 #'   the responsibility of the extending backend to add/provide these.
 #'
+#' - `[`: subsets the cached data. Parameter `i` needs to be an `integer`
+#'   vector.
+#'
 #' @param columns For `spectraData`: `character` with the names of the spectra
 #'     variables to retrieve.
 #'
 #' @param data For `backendInitialize`: (optional) `data.frame` with cached
 #'     values. The number of rows (and their order) has to match the number of
 #'     spectra.
+#'
+#' @param drop For `[`: not considered.
+#'
+#' @param i For `[`: `integer` with the indices to subset the object.
+#'
+#' @param j For `[`: ignored.
+#'
+#' @param name For `$<-`: the name of the spectra variable to set.
 #'
 #' @param nspectra For `backendInitialize`: `integer` with the number of
 #'     spectra.
@@ -94,6 +116,13 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'
 #' @param spectraVariables For `backendInitialize`: `character` with the names
 #'     of the spectra variables that are provided by the extending backend.
+#'     For `selectSpectraVariables`: `character` specifying the spectra
+#'     variables to keep.
+#'
+#' @param value replacement value for `<-` methods. See individual
+#'     method description or expected data type.
+#'
+#' @param x A `MsBackendCached` object.
 #'
 #' @param ... ignored
 #'
@@ -137,7 +166,7 @@ MsBackendCached <- function() {
 setValidity("MsBackendCached", function(object) {
     msg <- c(.valid_local_data(object@localData, object@nspectra))
     ## For local data that are core spectra variables, check for valid data type
-    msg <- c(msg, Spectra:::.valid_column_datatype(object@localData))
+    msg <- c(msg, .valid_column_datatype(object@localData))
     if (is.null(msg)) TRUE
     else msg
 })
@@ -168,7 +197,7 @@ setMethod("length", "MsBackendCached", function(x) {
 
 #' @rdname MsBackendCached
 setMethod("spectraVariables", "MsBackendCached", function(object) {
-    unique(c(names(Spectra:::.SPECTRA_DATA_COLUMNS), colnames(object@localData),
+    unique(c(names(.SPECTRA_DATA_COLUMNS), colnames(object@localData),
              object@spectraVariables))
 })
 
@@ -177,7 +206,9 @@ setMethod("spectraVariables", "MsBackendCached", function(object) {
 #' @noRd
 .spectra_data <- function(x, columns = spectraVariables(x)) {
     local_cols <- intersect(columns, colnames(x@localData))
-    core_cols <- intersect(columns, names(Spectra:::.SPECTRA_DATA_COLUMNS))
+    ## @spectraVariables are supposed to be added by the extending backend
+    columns <- columns[!columns %in% x@spectraVariables]
+    core_cols <- intersect(columns, names(.SPECTRA_DATA_COLUMNS))
     core_cols <- core_cols[!core_cols %in% c(local_cols, x@spectraVariables)]
     res <- NULL
     if (length(local_cols))
@@ -195,7 +226,7 @@ setMethod("spectraVariables", "MsBackendCached", function(object) {
             intvals <- lst[rep(1, times = length(x))]
         }
         if (length(core_cols))
-            tmp <- DataFrame(lapply(Spectra:::.SPECTRA_DATA_COLUMNS[core_cols],
+            tmp <- DataFrame(lapply(.SPECTRA_DATA_COLUMNS[core_cols],
                                     function(z, n) rep(as(NA, z), n), length(x)))
         else tmp <- make_zero_col_DFrame(x@nspectra)
         tmp$mz <- mzvals
@@ -222,84 +253,78 @@ setMethod(
         .spectra_data(object, columns = columns)
     })
 
+#' @rdname MsBackendCached
+setReplaceMethod("spectraData", "MsBackendCached",function(object, value) {
+    stop(class(object)[1], " does not support replacing the full spectra data.")
+})
 
+#' @rdname MsBackendCached
+setMethod("[", "MsBackendCached", function(x, i, j, ..., drop = FALSE) {
+    if (missing(i))
+        return(x)
+    slot(x, "localData", check = FALSE) <- x@localData[i, , drop = FALSE]
+    x@nspectra <- nrow(x@localData)
+    x
+})
 
-## #' Subsetting simply subsets the `spectraIds`
-## #'
-## #' @importFrom MsCoreUtils i2index
-## #'
-## #' @importFrom methods slot<-
-## #'
-## #' @noRd
-## setMethod("[", "MsBackendCached", function(x, i, j, ..., drop = FALSE) {
-##     if (missing(i))
-##         return(x)
-##     if (length(x@localData))
-##         slot(x, "localData", check = FALSE) <- x@localData[i, , drop = FALSE]
-##     x
-## })
+#' @rdname MsBackendCached
+setReplaceMethod("$", "MsBackendCached", function(x, name, value) {
+    if (name %in% c("mz", "intensity"))
+        stop("Replacing m/z and intensity values is not supported.",
+             call. = FALSE)
+    if (length(value) == 1)
+        value <- rep(value, length(x))
+    if (length(value) != length(x))
+        stop("value has to be either of length 1 or length equal to the ",
+             "number of spectra")
+    if (length(x@localData)) {
+        cn <- colnames(x@localData) == name
+        if (any(cn))
+            x@localData[, cn] <- value
+        else {
+            cn <- colnames(x@localData)
+            x@localData <- cbind(x@localData, value)
+            colnames(x@localData) <- c(cn, name)
+        }
+    } else {
+        x@localData <- data.frame(value)
+        colnames(x@localData) <- name
+    }
+    validObject(x)
+    x
+})
 
-## #' Adding/replacing a spectra variable will put it's values into the local
-## #' cached `data.frame`.
-## #'
-## #' @noRd
-## setReplaceMethod("$", "MsBackendCached", function(x, name, value) {
-##     if (name %in% c("mz", "intensity"))
-##         stop("Replacing m/z and intensity values is not supported.",
-##              call. = FALSE)
-##     if (length(value) == 1)
-##         value <- rep(value, length(x))
-##     if (length(value) != length(x))
-##         stop("value has to be either of length 1 or length equal to the ",
-##              "number of spectra")
-##     if (length(x@localData)) {
-##         cn <- colnames(x@localData) == name
-##         if (any(cn))
-##             x@localData[, cn] <- value
-##         else {
-##             cn <- colnames(x@localData)
-##             x@localData <- cbind(x@localData, value)
-##             colnames(x@localData) <- c(cn, name)
-##         }
-##     } else {
-##         x@localData <- data.frame(value)
-##         colnames(x@localData) <- name
-##     }
-##     validObject(x)
-##     x
-## })
+#' @rdname MsBackendCached
+setMethod(
+    "selectSpectraVariables", "MsBackendCached",
+    function(object, spectraVariables = spectraVariables(object)) {
+        if (any(!spectraVariables %in% spectraVariables(object)))
+            stop("spectra variable(s) ",
+                 paste(spectraVariables[!spectraVariables %in%
+                                        spectraVariables(object)],
+                       collapse = ", "), " not available")
+        object@spectraVariables <- intersect(object@spectraVariables,
+                                             spectraVariables)
+        object@localData <- object@localData[, colnames(object@localData) %in%
+                                               spectraVariables, drop = FALSE]
+        validObject(object)
+        object
+    })
 
-## setMethod(
-##     "selectSpectraVariables", "MsBackendCached",
-##     function(object, spectraVariables = spectraVariables(object)) {
-##         if (any(!spectraVariables %in% spectraVariables(object)))
-##             stop("spectra variable(s) ",
-##                  paste(spectraVariables[!spectraVariables %in%
-##                                         spectraVariables(object)],
-##                        collapse = ", "), " not available")
-##         object@spectraVariables <- intersect(object@spectraVariables,
-##                                              spectraVariables)
-##         object@coreSpectraVariables <- intersect(object@coreSpectraVariables,
-##                                                  spectraVariables)
-##         object@localData <- object@localData[, colnames(object@localData) %in%
-##                                                spectraVariables, drop = FALSE]
-##         validObject(object)
-##         object
-##     })
-
-## setMethod("show", "MsBackendCached", function(object) {
-##     n <- length(object@spectraIds)
-##     cat(class(object), "with", n, "spectra\n")
-##     if (n) {
-##         idx <- union(1:min(6, n), max(1, n-5):n)
-##         spd <- spectraData(object[idx, ],
-##                            c("msLevel", "precursorMz", "polarity"))
-##         if (!length(rownames(spd)))
-##             rownames(spd) <- idx
-##         txt <- capture.output(print(spd))
-##         cat(txt[-1], sep = "\n")
-##         sp_cols <- spectraVariables(object)
-##         cat(" ...", length(sp_cols) - 3, "more variables/columns.\n", "Use ",
-##             "'spectraVariables' to list all of them.\n")
-##     }
-## })
+#' @rdname MsBackendCached
+setMethod("show", "MsBackendCached", function(object) {
+    n <- object@nspectra
+    cat(class(object), "with", n, "spectra\n")
+    if (n) {
+        idx <- union(1:min(6, n), max(1, n-5):n)
+        spd <- spectraData(object[idx, ],
+                           c("msLevel", "precursorMz", "polarity"))
+        if (!length(rownames(spd)))
+            rownames(spd) <- idx
+        txt <- capture.output(print(spd))
+        cat(txt[-1], sep = "\n")
+        sp_cols <- spectraVariables(object)
+        cat(" ...", length(sp_cols) - 3, "more variables/columns.\n", "Use ",
+            "'spectraVariables' to list all of them.\n")
+    }
+})

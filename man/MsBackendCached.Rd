@@ -8,6 +8,11 @@
 \alias{length,MsBackendCached-method}
 \alias{spectraVariables,MsBackendCached-method}
 \alias{spectraData,MsBackendCached-method}
+\alias{spectraData<-,MsBackendCached-method}
+\alias{[,MsBackendCached-method}
+\alias{$<-,MsBackendCached-method}
+\alias{selectSpectraVariables,MsBackendCached-method}
+\alias{show,MsBackendCached-method}
 \title{Base MsBackend class providing data caching mechanism}
 \usage{
 MsBackendCached()
@@ -27,6 +32,16 @@ MsBackendCached()
 \S4method{spectraVariables}{MsBackendCached}(object)
 
 \S4method{spectraData}{MsBackendCached}(object, columns = spectraVariables(object))
+
+\S4method{spectraData}{MsBackendCached}(object) <- value
+
+\S4method{[}{MsBackendCached}(x, i, j, ..., drop = FALSE)
+
+\S4method{$}{MsBackendCached}(x, name) <- value
+
+\S4method{selectSpectraVariables}{MsBackendCached}(object, spectraVariables = spectraVariables(object))
+
+\S4method{show}{MsBackendCached}(object)
 }
 \arguments{
 \item{object}{A \code{MsBackendCached} object.}
@@ -39,10 +54,27 @@ spectra.}
 spectra.}
 
 \item{spectraVariables}{For \code{backendInitialize}: \code{character} with the names
-of the spectra variables that are provided by the extending backend.}
+of the spectra variables that are provided by the extending backend.
+For \code{selectSpectraVariables}: \code{character} specifying the spectra
+variables to keep.}
+
+\item{...}{ignored}
+
+\item{x}{A \code{MsBackendCached} object.}
 
 \item{columns}{For \code{spectraData}: \code{character} with the names of the spectra
 variables to retrieve.}
+
+\item{value}{replacement value for \verb{<-} methods. See individual
+method description or expected data type.}
+
+\item{i}{For \code{[}: \code{integer} with the indices to subset the object.}
+
+\item{j}{For \code{[}: ignored.}
+
+\item{drop}{For \code{[}: not considered.}
+
+\item{name}{For \verb{$<-}: the name of the spectra variable to set.}
 }
 \value{
 See documentation of respective function.
@@ -88,6 +120,12 @@ backend can then proceed to retrieve the respective values from its own
 backend/data storage.
 }
 
+Spectra variables can be modified or added using the \verb{$<-} method of the
+\code{MsBackendCached}. Replacing or adding multiple variables using the
+\verb{spectraData<-} is not supported by \code{MsBackendCached}. The extending backend
+might however implement such a method that internally uses \verb{$<-} to
+add/replace single variables.
+
 The \code{MsBackendCached} has the following slots"
 \itemize{
 \item \code{nspectra}: \code{integer(1)} defining the number of spectra of the backend.
@@ -113,6 +151,10 @@ variables that are provided by the extending backend.
 unique set of \emph{core spectra variables}, cached spectra variables and
 spectra variables defined in the \verb{@spectraVariables} slot (i.e. spectra
 variables thought to be provided by the extending \code{MsBackend} instance).
+\item \code{selectSpectraVariables}: subset the object to specified spectra variables.
+This will eventually remove spectra variables listed in \verb{@spectraVariables}
+and will also drop columns from the local cache if not among
+\code{spectraVariables}.
 \item \code{spectraData}: returns a \code{DataFrame} with cached spectra variablers or
 initialized \emph{core spectra variables}. Parameter \code{spectraVariables} allows
 to specify the variables to retrieve. The function returns \code{NULL} if the
@@ -120,6 +162,8 @@ requested variables are not cached and are not provided by the extending
 backend. Note that this method \strong{only} returns cached spectra variables
 or core spectra variables \strong{not} provided by the extending backend. It is
 the responsibility of the extending backend to add/provide these.
+\item \code{[}: subsets the cached data. Parameter \code{i} needs to be an \code{integer}
+vector.
 }
 }
 
