@@ -465,28 +465,46 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
                                        isotopeTolerance = 0.005) {
     neutron   <- 1.0033548378 # really C12, C13 difference
     iso_dist  <- neutron / seq(from = 1, by = 1, to = maxCharge)
-    find_isotopes <- keepIsotopes & any(iso_dist < halfWindowSize)
+    ## just calculate isotopes that are in the halfWindowSize
+    iso_dist <- iso_dist[iso_dist < halfWindowSize]
+    find_isotopes <- keepIsotopes & length(iso_dist)
+    if (find_isotopes)
+        iso_dist <- c(-iso_dist, rev(iso_dist))
+
     mz <- x[, "mz"]
     int <- x[, "intensity"]
-    idx <- order(int, decreasing = TRUE)
-    keep <- rep(TRUE, length(idx))
-    while (!is.na(i <- idx[1L])) {
-        idx <- idx[-1L]
-        rem_candidate <- which(
-            between(mz[idx], mz[i] + c(-halfWindowSize, halfWindowSize)))
-        rem_candidate <- rem_candidate[int[idx][rem_candidate] / int[i] <
-                                       threshold]
-        ## That part might be improved later.
-        if (find_isotopes) {
-            target_dist <- abs(mz[idx][rem_candidate] - mz[i])
-            dist_matrix <- outer(target_dist, iso_dist, "-")
-            dist_matrix <- abs(dist_matrix)
-            dist_to_iso_hypo <- apply(dist_matrix, 1, min)
-            rem_candidate <- rem_candidate[dist_to_iso_hypo > isotopeTolerance]
-        }
-        if (length(rem_candidate)) {
-            keep[idx[rem_candidate]] <- FALSE
-            idx <- idx[-rem_candidate]
+
+    ## left boundary
+    lb <- findInterval(mz - halfWindowSize, mz) + 1L
+    ## right boundary
+    rb <- findInterval(mz + halfWindowSize, mz)
+
+    ## region of interest (we just need to test if the window spans more than 1
+    ## index)
+    roi <- rb > lb
+
+    ## test from the largest intensity
+    idx <- seq_along(int)[roi][order(int[roi], decreasing = TRUE)]
+    keep <- rep(TRUE, length(mz))
+
+    for (i in idx) {
+        if (keep[i]) {
+            rem_candidate <- seq.int(lb[i], rb[i], by = 1L)
+            rem_candidate <-
+                rem_candidate[int[rem_candidate] / int[i] < threshold]
+
+            if (find_isotopes) {
+                cmm <- common(
+                    mz[rem_candidate],
+                    mz[i] + iso_dist,
+                    tolerance = isotopeTolerance,
+                    duplicates = "closest",
+                    .check = FALSE
+                )
+                rem_candidate <- rem_candidate[!cmm]
+            }
+
+            keep[rem_candidate] <- FALSE
         }
     }
     x[keep, , drop = FALSE]
