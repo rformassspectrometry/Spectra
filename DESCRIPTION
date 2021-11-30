@@ -62,6 +62,7 @@ Collate:
     'AllGenerics.R'
     'MsBackend-functions.R'
     'MsBackend.R'
+    'MsBackendCached.R'
     'MsBackendDataFrame-functions.R'
     'MsBackendDataFrame.R'
     'MsBackendHdf5Peaks-functions.R'
