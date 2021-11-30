@@ -498,7 +498,7 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
                     mz[rem_candidate],
                     mz[i] + iso_dist,
                     tolerance = isotopeTolerance,
-                    duplicates = "closest",
+                    duplicates = "keep",
                     .check = FALSE
                 )
                 rem_candidate <- rem_candidate[!cmm]
