@@ -132,6 +132,8 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'
 #' @return See documentation of respective function.
 #'
+#' @seealso [MsBackend] for the documentation of MS backends.
+#'
 #' @md
 #'
 #' @exportClass MsBackendCached

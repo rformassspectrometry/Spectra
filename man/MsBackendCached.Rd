@@ -167,6 +167,9 @@ vector.
 }
 }
 
+\seealso{
+\link{MsBackend} for the documentation of MS backends.
+}
 \author{
 Johannes Rainer
 }
