@@ -429,3 +429,83 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
     x[, 2L] <- MsCoreUtils::smooth(x[, 2L], cf = coef)
     x
 }
+
+#' @description
+#'
+#' Removes (Orbitrap) FFT artefacts (peaks) from a spectrum keeping peaks
+#' potentially representing [13]C isotopes.
+#'
+#' @param x peaks matrix
+#'
+#' @param halfWindowSize `numeric(1)` defining the (m/z) window left and right
+#'     of a peak to look for artefacts.
+#'
+#' @param threshold `numeric(1)` defining the relative intensity to the actual
+#'     peak below which peaks are considered artefacts. Defaults to
+#'     `threshold = 0.2` hence removing all peaks with an intensity below 0.2 *
+#'     the peak intensity.
+#'
+#' @param keepIsotopes `logical(1)` whether it should be screened for potential
+#'     isotope peaks. Defaults to `keepIsotopes = TRUE` thus candidate artefact
+#'     peaks potentially being isotopes will **not** be removed.
+#'
+#' @param maxCharge `integer(1)`
+#'
+#' @param isotopeTolerance `numeric(1)`
+#'
+#' @author Jan Stanstrup
+#'
+#' @importFrom MsCoreUtils common
+#'
+#' @noRd
+.peaks_remove_fft_artifact <- function(x, halfWindowSize = 0.05,
+                                       threshold = 0.2,
+                                       keepIsotopes = TRUE,
+                                       maxCharge = 5,
+                                       isotopeTolerance = 0.005) {
+    neutron   <- 1.0033548378 # really C12, C13 difference
+    iso_dist  <- neutron / seq(from = 1, by = 1, to = maxCharge)
+    ## just calculate isotopes that are in the halfWindowSize
+    iso_dist <- iso_dist[iso_dist < halfWindowSize]
+    find_isotopes <- keepIsotopes & length(iso_dist)
+    if (find_isotopes)
+        iso_dist <- c(-iso_dist, rev(iso_dist))
+
+    mz <- x[, "mz"]
+    int <- x[, "intensity"]
+
+    ## left boundary
+    lb <- findInterval(mz - halfWindowSize, mz) + 1L
+    ## right boundary
+    rb <- findInterval(mz + halfWindowSize, mz)
+
+    ## region of interest (we just need to test if the window spans more than 1
+    ## index)
+    roi <- rb > lb
+
+    ## test from the largest intensity
+    idx <- seq_along(int)[roi][order(int[roi], decreasing = TRUE)]
+    keep <- rep(TRUE, length(mz))
+
+    for (i in idx) {
+        if (keep[i]) {
+            rem_candidate <- seq.int(lb[i], rb[i], by = 1L)
+            rem_candidate <-
+                rem_candidate[int[rem_candidate] / int[i] < threshold]
+
+            if (find_isotopes) {
+                cmm <- common(
+                    mz[rem_candidate],
+                    mz[i] + iso_dist,
+                    tolerance = isotopeTolerance,
+                    duplicates = "keep",
+                    .check = FALSE
+                )
+                rem_candidate <- rem_candidate[!cmm]
+            }
+
+            keep[rem_candidate] <- FALSE
+        }
+    }
+    x[keep, , drop = FALSE]
+}

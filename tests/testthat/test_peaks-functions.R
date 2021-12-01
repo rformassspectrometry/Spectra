@@ -277,3 +277,10 @@ test_that("joinPeaksGnps works", {
     expect_equal(res$x[, 1], exp_a)
     expect_equal(res$y[, 1], exp_b)
 })
+
+test_that(".peaks_remove_fft_artifact works", {
+    data(fft_spectrum)
+    pks <- peaksData(fft_spectrum)[[1L]]
+    res <- .peaks_remove_fft_artifact(pks)
+    expect_true(nrow(pks) > nrow(res))
+})

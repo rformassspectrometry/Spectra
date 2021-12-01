@@ -1474,3 +1474,12 @@ test_that("show,Spectra works", {
     sps@processing <- c("a", "b", "c", "d", "e")
     expect_output(show(sps), "2 more processings.")
 })
+
+test_that("filterFourierTransformArtefacts,Spectra", {
+    data(fft_spectrum)
+    a <- filterFourierTransformArtefacts(fft_spectrum)
+    expect_true(is(a, "Spectra"))
+    expect_true(lengths(a)[[1L]] < lengths(fft_spectrum)[[1L]])
+    b <- filterFourierTransformArtefacts(fft_spectrum, halfWindowSize = 0.2)
+    expect_true(lengths(b)[[1L]] < lengths(a)[[1L]])
+})

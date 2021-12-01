@@ -5,6 +5,9 @@
 - Add unit test suite to check all spectra variables (issue #186).
 - Small documentation update (related to `MsCoreUtils` issue
   [#87](https://github.com/rformassspectrometry/MsCoreUtils/issues/87)).
+- New `countIdentifications()` function.
+- Add `filterFourierTransformArtefacts` function to remove fast fourier artefact
+  peaks seen on e.g. Orbitrap instruments (issue #223).
 
 ## Changes in 1.5.1
 

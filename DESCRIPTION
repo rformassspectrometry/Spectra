@@ -21,7 +21,11 @@ Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
              person(given = "Sebastian", family = "Gibb",
                     email = "mail@sebastiangibb.de",
                     role = "aut",
-                    comment = c(ORCID = "0000-0001-7406-4443")))
+                    comment = c(ORCID = "0000-0001-7406-4443")),
+             person(given = "Jan", family = "Stanstrup",
+		    email = "stanstrup@gmail.com",
+		    role = "ctb",
+		    comment = c(ORCID = "0000-0003-0541-7369")))
 Depends:
     R (>= 4.0.0),
     S4Vectors,
@@ -70,6 +74,8 @@ Collate:
     'MsBackendMzR.R'
     'Spectra-functions.R'
     'Spectra.R'
+    'countIdentifications.R'
+    'fft_spectrum.R'
     'functions-util.R'
     'mz-delta-functions.R'
     'peak-list-functions.R'
