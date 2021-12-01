@@ -27,6 +27,8 @@ MsBackendMzR <- function() {
     msd <- mzR::openMSfile(x)
     on.exit(mzR::close(msd))
     hdr <- mzR::header(msd)
+    if (!is.data.frame(hdr))            # remove this after mzR update
+        hdr <- as.data.frame(hdr)
     colnames(hdr)[colnames(hdr) == "seqNum"] <- "scanIndex"
     colnames(hdr)[colnames(hdr) == "precursorScanNum"] <- "precScanNum"
     colnames(hdr)[colnames(hdr) == "precursorMZ"] <- "precursorMz"
