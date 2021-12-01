@@ -74,7 +74,7 @@ Collate:
     'MsBackendMzR.R'
     'Spectra-functions.R'
     'Spectra.R'
-    'fft_spectrum.R'
+    'countIdentifications.R'
     'functions-util.R'
     'mz-delta-functions.R'
     'peak-list-functions.R'
