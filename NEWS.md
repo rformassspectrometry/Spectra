@@ -4,6 +4,7 @@
 
 - Small documentation update (related to `MsCoreUtils` issue
   [#87](https://github.com/rformassspectrometry/MsCoreUtils/issues/87)).
+- new `countIdentifications()` function.
 
 ## Changes in 1.5.1
 

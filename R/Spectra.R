@@ -1425,7 +1425,7 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
     cond_fun <- match.fun(match.arg(which))
     if (all(is.na(mz)))
         return(rep(NA, length(object)))
-    if(is(BPPARAM, "SerialParam"))
+    if (is(BPPARAM, "SerialParam"))
         .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
                 condFun = cond_fun, parallel = BPPARAM)
     else {
@@ -1691,7 +1691,7 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
 #' @rdname Spectra
 setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
                                                       dataStorage = character(),
-                                                      dataOrigin = character()){
+                                                      dataOrigin = character()) {
     if (length(dataStorage) && !is.character(dataStorage))
         stop("'dataStorage' is expected to be of type character")
     if (length(dataOrigin) && !is.character(dataOrigin))
