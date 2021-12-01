@@ -1,8 +1,11 @@
 # Spectra 1.5
 
-## Changes in 1.5.2
+## Changes in 1.5.3
 
 - Add unit test suite to check all spectra variables (issue #186).
+
+## Changes in 1.5.2
+
 - Small documentation update (related to `MsCoreUtils` issue
   [#87](https://github.com/rformassspectrometry/MsCoreUtils/issues/87)).
 - New `countIdentifications()` function.

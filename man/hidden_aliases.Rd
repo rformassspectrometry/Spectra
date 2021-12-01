@@ -41,7 +41,6 @@
 \alias{intensity,MsBackendDataFrame-method}
 \alias{intensity<-,MsBackendDataFrame-method}
 \alias{ionCount,MsBackendDataFrame-method}
-\alias{isCentroided,MsBackendDataFrame-method}
 \alias{isEmpty,MsBackendDataFrame-method}
 \alias{isolationWindowLowerMz,MsBackendDataFrame-method}
 \alias{isolationWindowLowerMz<-,MsBackendDataFrame-method}
@@ -189,8 +188,6 @@ spectrapply(object, ...)
 \S4method{intensity}{MsBackendDataFrame}(object) <- value
 
 \S4method{ionCount}{MsBackendDataFrame}(object)
-
-\S4method{isCentroided}{MsBackendDataFrame}(object, ...)
 
 \S4method{isEmpty}{MsBackendDataFrame}(x)
 
