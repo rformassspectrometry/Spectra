@@ -455,7 +455,7 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 #'
 #' @author Jan Stanstrup
 #'
-#' @importFrom MsCoreUtils between
+#' @importFrom MsCoreUtils common
 #'
 #' @noRd
 .peaks_remove_fft_artifact <- function(x, halfWindowSize = 0.05,
