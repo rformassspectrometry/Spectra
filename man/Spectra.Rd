@@ -71,6 +71,7 @@
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterDataOrigin,Spectra-method}
 \alias{filterDataStorage,Spectra-method}
+\alias{filterFourierTransformArtefacts,Spectra-method}
 \alias{filterIntensity,Spectra-method}
 \alias{filterIsolationWindow,Spectra-method}
 \alias{filterMsLevel,Spectra-method}
@@ -294,6 +295,15 @@ estimatePrecursorIntensity(
 \S4method{filterDataOrigin}{Spectra}(object, dataOrigin = character())
 
 \S4method{filterDataStorage}{Spectra}(object, dataStorage = character())
+
+\S4method{filterFourierTransformArtefacts}{Spectra}(
+  object,
+  halfWindowSize = 0.05,
+  threshold = 0.2,
+  keepIsotopes = TRUE,
+  maxCharge = 5,
+  isotopeTolerance = 0.005
+)
 
 \S4method{filterIntensity}{Spectra}(
   object,
@@ -528,6 +538,39 @@ spectra to keep.
 For \code{filterAcquisitionNum}: optionally specify if filtering should occurr
 only for spectra of selected \code{dataOrigin}.}
 
+\item{halfWindowSize}{\itemize{
+\item For \code{pickPeaks}: \code{integer(1)}, used in the
+identification of the mass peaks: a local maximum has to be the maximum
+in the window from \code{(i - halfWindowSize):(i + halfWindowSize)}.
+\item For \code{smooth}: \code{integer(1)}, used in the smoothing algorithm, the window
+reaches from \code{(i - halfWindowSize):(i + halfWindowSize)}.
+\item For \code{filterFourierTransformArtefacts}: \code{numeric(1)} defining the m/z window
+left and right of a peak where to remove fourier transform artefacts.
+}}
+
+\item{threshold}{\itemize{
+\item For \code{pickPeaks}: a \code{double(1)} defining the proportion of the maximal peak
+intensity. Just values above are used for the weighted mean calculation.
+\item For \code{replaceIntensitiesBelow}: a \code{numeric(1)} defining the threshold or
+a \code{function} to calculate the threshold for each spectrum on its intensity
+values. Defaults to \code{threshold = min}.
+\item For \code{filterFourierTransformArtefacts}: the relative intensity (to a peak)
+below which peaks are considered fourier artefacts. Defaults to
+\code{threshold = 0.2} hence removing peaks that have an intensity below 0.2
+times the intensity of the tested peak (within the selected
+\code{halfWindowSize}).
+}}
+
+\item{keepIsotopes}{For \code{filterFourierTransformArtefacts}: whether isotope
+peaks should not be removed as fourier artefacts.}
+
+\item{maxCharge}{For \code{filterFourierTransformArtefacts}: the maximum charge
+to be considered for isotopes.}
+
+\item{isotopeTolerance}{For \code{filterFourierTransformArtefacts}: the m/z
+\code{tolerance} to be used to define whether peaks might be isotopes of
+the current tested peak.}
+
 \item{intensity}{For \code{filterIntensity}: \code{numeric} of length 1 or 2 defining
 either the lower or the lower and upper intensity limit for the
 filtering, or a \code{function} that takes the intensities as input and
@@ -564,14 +607,6 @@ functions.}
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
 of length 1).}
 
-\item{halfWindowSize}{\itemize{
-\item For \code{pickPeaks}: \code{integer(1)}, used in the
-identification of the mass peaks: a local maximum has to be the maximum
-in the window from \code{(i - halfWindowSize):(i + halfWindowSize)}.
-\item For \code{smooth}: \code{integer(1)}, used in the smoothing algorithm, the window
-reaches from \code{(i - halfWindowSize):(i + halfWindowSize)}.
-}}
-
 \item{snr}{For \code{pickPeaks}: \code{double(1)} defining the
 \emph{S}ignal-to-\emph{N}oise-\emph{R}atio. The intensity of a local maximum has to be
 higher than \code{snr * noise} to be considered as peak.}
@@ -581,14 +616,6 @@ the peak that should be considered in the weighted mean calculation.}
 
 \item{descending}{For \code{pickPeaks}: \code{logical}, if \code{TRUE} just values between
 the nearest valleys around the peak centroids are used.}
-
-\item{threshold}{\itemize{
-\item For \code{pickPeaks}: a \code{double(1)} defining the proportion of the maximal peak
-intensity. Just values above are used for the weighted mean calculation.
-\item For \code{replaceIntensitiesBelow}: a \code{numeric(1)} defining the threshold or
-a \code{function} to calculate the threshold for each spectrum on its intensity
-values. Defaults to \code{threshold = min}.
-}}
 }
 \value{
 See individual method description for the return value.
@@ -858,6 +885,16 @@ the provided \code{dataStorage} parameter).
 \item \code{filterEmptySpectra}: removes empty spectra (i.e. spectra without peaks).
 Returns the filtered \code{Spectra} object (with spectra in their
 original order).
+\item \code{filterFourierTransformArtefacts}: remove (Orbitrap) fast fourier
+artefact peaks from spectra (see examples below). The function iterates
+through all intensity ordered peaks in a spectrum and removes all peaks
+with an m/z within +/- \code{halfWindowSize} of the current peak if their
+intensity is lower than \code{threshold} times the current peak's intensity.
+Additional parameters \code{keepIsotopes}, \code{maxCharge} and \code{isotopeTolerance}
+allow to avoid removing of potential \verb{[13]C} isotope peaks (\code{maxCharge}
+being the maximum charge that should be considered and \code{isotopeTolerance}
+the absolute acceptable tolerance for matching their m/z).
+See \code{\link[=filterFourierTransformArtefacts]{filterFourierTransformArtefacts()}} for details and background.
 \item \code{filterIsolationWindow}: retains spectra that contain \code{mz} in their
 isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} <= \code{mz}
 and \code{isolationWindowUpperMz} >= \code{mz}. Returns the filtered \code{Spectra}
@@ -1264,6 +1301,29 @@ sciex2 <- joinSpectraData(sciex1, spv, by.y = "spectrumId")
 spectraVariables(sciex2)
 spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
 
+## Removing fourier transform artefacts seen in Orbitra data.
+
+## Loading an Orbitrap spectrum with artefacts.
+data(fft_spectrum)
+plotSpectra(fft_spectrum, xlim = c(264.5, 265.5))
+plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+
+fft_spectrum <- filterFourierTransformArtefacts(fft_spectrum)
+fft_spectrum
+plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+
+## Using a few examples peaks in your data you can optimize the parameters
+fft_spectrum_filtered <- filterFourierTransformArtefacts(fft_spectrum,
+                                               halfWindowSize = 0.2,
+                                               threshold = 0.005,
+                                               keepIsotopes = TRUE,
+                                               maxCharge = 5,
+                                               isotopeTolerance = 0.005
+                                               )
+
+fft_spectrum_filtered
+length(mz(fft_spectrum_filtered)[[1]])
+plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
 ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 

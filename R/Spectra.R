@@ -315,6 +315,17 @@ NULL
 #'   Returns the filtered `Spectra` object (with spectra in their
 #'   original order).
 #'
+#' - `filterFourierTransformArtefacts`: remove (Orbitrap) fast fourier
+#'   artefact peaks from spectra (see examples below). The function iterates
+#'   through all intensity ordered peaks in a spectrum and removes all peaks
+#'   with an m/z within +/- `halfWindowSize` of the current peak if their
+#'   intensity is lower than `threshold` times the current peak's intensity.
+#'   Additional parameters `keepIsotopes`, `maxCharge` and `isotopeTolerance`
+#'   allow to avoid removing of potential `[13]C` isotope peaks (`maxCharge`
+#'   being the maximum charge that should be considered and `isotopeTolerance`
+#'   the absolute acceptable tolerance for matching their m/z).
+#'   See [filterFourierTransformArtefacts()] for details and background.
+#'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
 #'   and `isolationWindowUpperMz` >= `mz`. Returns the filtered `Spectra`
@@ -628,6 +639,8 @@ NULL
 #'   in the window from `(i - halfWindowSize):(i + halfWindowSize)`.
 #' - For `smooth`: `integer(1)`, used in the smoothing algorithm, the window
 #'   reaches from `(i - halfWindowSize):(i + halfWindowSize)`.
+#' - For `filterFourierTransformArtefacts`: `numeric(1)` defining the m/z window
+#'   left and right of a peak where to remove fourier transform artefacts.
 #'
 #' @param i For `[`: `integer`, `logical` or `character` to subset the object.
 #'
@@ -645,12 +658,22 @@ NULL
 #'     peak should be retained or not. Defaults to `intensity = c(0, Inf)` thus
 #'     only peaks with `NA` intensity are removed.
 #'
+#' @param isotopeTolerance For `filterFourierTransformArtefacts`: the m/z
+#'     `tolerance` to be used to define whether peaks might be isotopes of
+#'     the current tested peak.
+#'
 #' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
 #'
 #' @param keep For `filterMzValues`: `logical(1)` whether the matching peaks
 #'     should be retained (`keep = TRUE`, the default`) or dropped
 #'     (`keep = FALSE`).
+#'
+#' @param keepIsotopes For `filterFourierTransformArtefacts`: whether isotope
+#'     peaks should not be removed as fourier artefacts.
+#'
+#' @param maxCharge For `filterFourierTransformArtefacts`: the maximum charge
+#'     to be considered for isotopes.
 #'
 #' @param MAPFUN For `compareSpectra`: function to map/match peaks between the
 #'     two compared spectra. See [joinPeaks()] for more information and possible
@@ -746,6 +769,11 @@ NULL
 #' - For `replaceIntensitiesBelow`: a `numeric(1)` defining the threshold or
 #'   a `function` to calculate the threshold for each spectrum on its intensity
 #'   values. Defaults to `threshold = min`.
+#' - For `filterFourierTransformArtefacts`: the relative intensity (to a peak)
+#'   below which peaks are considered fourier artefacts. Defaults to
+#'   `threshold = 0.2` hence removing peaks that have an intensity below 0.2
+#'   times the intensity of the tested peak (within the selected
+#'   `halfWindowSize`).
 #'
 #' @param use.names For `lengths`: ignored.
 #'
@@ -954,6 +982,29 @@ NULL
 #' spectraVariables(sciex2)
 #' spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
 #'
+#' ## Removing fourier transform artefacts seen in Orbitra data.
+#'
+#' ## Loading an Orbitrap spectrum with artefacts.
+#' data(fft_spectrum)
+#' plotSpectra(fft_spectrum, xlim = c(264.5, 265.5))
+#' plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+#'
+#' fft_spectrum <- filterFourierTransformArtefacts(fft_spectrum)
+#' fft_spectrum
+#' plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+#'
+#' ## Using a few examples peaks in your data you can optimize the parameters
+#' fft_spectrum_filtered <- filterFourierTransformArtefacts(fft_spectrum,
+#'                                                halfWindowSize = 0.2,
+#'                                                threshold = 0.005,
+#'                                                keepIsotopes = TRUE,
+#'                                                maxCharge = 5,
+#'                                                isotopeTolerance = 0.005
+#'                                                )
+#'
+#' fft_spectrum_filtered
+#' length(mz(fft_spectrum_filtered)[[1]])
+#' plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 #'
 #' ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 #'
@@ -1737,6 +1788,24 @@ setMethod("filterDataStorage", "Spectra", function(object,
                                   paste0(dataStorage, collapse = ", "))
     object
 })
+
+#' @rdname Spectra
+#'
+#' @exportMethod filterFourierTransformArtefacts
+setMethod("filterFourierTransformArtefacts", "Spectra",
+          function(object, halfWindowSize = 0.05, threshold = 0.2,
+                   keepIsotopes = TRUE, maxCharge = 5,
+                   isotopeTolerance = 0.005) {
+              object <- addProcessing(object, .peaks_remove_fft_artifact,
+                                      halfWindowSize = halfWindowSize,
+                                      threshold = threshold,
+                                      keepIsotopes = keepIsotopes,
+                                      maxCharge = maxCharge,
+                                      isotopeTolerance = isotopeTolerance)
+              object@processing <- .logging(
+                  object@processing, "Remove fast fourier artefacts.")
+              object
+          })
 
 #' @rdname Spectra
 #'
