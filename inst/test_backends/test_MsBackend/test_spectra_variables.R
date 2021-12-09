@@ -143,7 +143,7 @@ test_that("mz", {
         tmp <- be
         vals <- lapply(lengths(res), function(z) abs(rnorm(z)))
         ## m/z needs to be sorted
-        expect_error(mz(be) <- vals)
+        expect_error(mz(be) <- vals, "mz values have to be sorted increasingly")
         vals <- lapply(lengths(res), function(z) sort(abs(rnorm(z))))
         mz(tmp) <- vals
         res <- mz(tmp)
