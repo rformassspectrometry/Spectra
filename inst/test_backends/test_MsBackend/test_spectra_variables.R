@@ -57,8 +57,8 @@ test_that("dataOrigin", {
 
 test_that("dataStorage", {
     res <- dataStorage(be)
-    expect_true(length(res) == length(be))
-    expect_true(is.character(res))
+    expect_type(res, "character")
+    expect_identical(length(res), length(be))
 })
 
 test_that("intensity", {
