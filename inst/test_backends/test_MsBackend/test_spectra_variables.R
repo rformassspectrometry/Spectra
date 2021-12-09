@@ -162,7 +162,7 @@ test_that("polarity", {
     ## values 0 (negative), 1 (positive), -1 (missing) NA (missing)
     res <- polarity(be)
     expect_true(is.integer(res))
-    expect_true(length(res) == length(be))
+    expect_identical(length(res), length(be))
     expect_true(all(res %in% c(0L, 1L, -1L, NA_integer_)))
     if (!isReadOnly(be)) {
         tmp <- be
