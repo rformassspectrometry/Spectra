@@ -64,7 +64,7 @@ test_that("dataStorage", {
 test_that("intensity", {
     res <- intensity(be)
     expect_true(is.list(res) || is(res, "NumericList"))
-    expect_true(length(res) == length(be))
+    expect_identical(length(res), length(be))
     if (!isReadOnly(be)) {
         tmp <- be
         vals <- lapply(lengths(res), function(z) abs(rnorm(z)))
