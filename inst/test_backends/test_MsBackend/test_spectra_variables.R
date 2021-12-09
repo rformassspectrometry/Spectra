@@ -181,7 +181,7 @@ test_that("precScanNum", {
 test_that("precursorCharge", {
     res <- precursorCharge(be)
     expect_true(is.integer(res))
-    expect_equal(length(res), length(be))
+    expect_identical(length(res), length(be))
 })
 
 test_that("precursorIntensity", {
