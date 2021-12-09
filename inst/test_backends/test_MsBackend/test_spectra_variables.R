@@ -31,7 +31,7 @@ test_that("centroided", {
     if (!isReadOnly(be)) {
         tmp <- be
         centroided(tmp) <- rep(FALSE, length(be))
-        expect_true(all(centroided(tmp) == FALSE))
+        expect_false(any(centroided(tmp)))
         centroided(tmp) <- rep(TRUE, length(be))
         expect_true(all(centroided(tmp)))
     }
