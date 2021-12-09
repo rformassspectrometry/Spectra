@@ -155,7 +155,7 @@ test_that("lengths", {
     res <- lengths(be)
     expect_true(is.integer(res))
     expect_identical(length(res), length(be))
-    expect_equal(res, lengths(mz(be)))
+    expect_identical(res, lengths(mz(be)))
 })
 
 test_that("polarity", {
