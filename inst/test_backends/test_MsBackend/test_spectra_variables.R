@@ -76,8 +76,8 @@ test_that("intensity", {
 
 test_that("isCentroided", {
     res <- isCentroided(be)
-    expect_true(length(res) == length(be))
-    expect_true(is.logical(res))
+    expect_type(res, "logical")
+    expect_identical(length(res), length(be))
 })
 
 test_that("isEmpty", {
