@@ -135,7 +135,7 @@
 #' `test_suite <- system.file("test_backends", "test_MsBackend",
 #' package = "Spectra")` followed by `test_dir(test_suite)` to run all test
 #' files in that directory. Individual unit test files could be run with
-#' `test_file(paste0(test_suite, "/test_spectra_variables.R"),
+#' `test_file(file.path(test_suite, "test_spectra_variables.R"),
 #' stop_on_failure = TRUE)` (note that without `stop_on_failure = TRUE` tests
 #' would fail silently) . Adding this code to the packages `"testthat.R"` file
 #' ensures that all tests checking the validity of an `MsBackend` instance
