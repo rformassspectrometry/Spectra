@@ -26,7 +26,7 @@ test_that("acquisitionNum", {
 
 test_that("centroided", {
     res <- centroided(be)
-    expect_true(length(res) == length(be))
+    expect_identical(length(res), length(be))
     expect_true(is.logical(res))
     if (!isReadOnly(be)) {
         tmp <- be
