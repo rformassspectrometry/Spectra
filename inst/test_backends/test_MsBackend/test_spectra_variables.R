@@ -101,7 +101,7 @@ test_that("isolationWindowLowerMz", {
 
 test_that("isolationWindowTargetMz", {
     res <- isolationWindowTargetMz(be)
-    expect_true(is.numeric(res))
+    expect_type(res, "numeric")
     expect_true(length(res) == length(res))
     if (!isReadOnly(be)) {
         tmp <- be
