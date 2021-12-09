@@ -84,7 +84,7 @@ test_that("isEmpty", {
     res <- isEmpty(be)
     expect_type(res, "logical")
     expect_identical(length(res), length(be))
-    expect_equal(lengths(res) == 0, res)
+    expect_identical(lengths(res) == 0, res)
 })
 
 test_that("isolationWindowLowerMz", {
