@@ -82,8 +82,8 @@ test_that("isCentroided", {
 
 test_that("isEmpty", {
     res <- isEmpty(be)
-    expect_true(length(res) == length(be))
-    expect_true(is.logical(res))
+    expect_type(res, "logical")
+    expect_identical(length(res), length(be))
     expect_equal(lengths(res) == 0, res)
 })
 
