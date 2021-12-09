@@ -21,7 +21,7 @@ test_that("backend is valid", {
 test_that("acquisitionNum", {
     res <- acquisitionNum(be)
     expect_true(is.integer(res))
-    expect_true(length(res) == length(be))
+    expect_identical(length(res), length(be))
 })
 
 test_that("centroided", {
