@@ -20,7 +20,7 @@ test_that("backend is valid", {
 
 test_that("acquisitionNum", {
     res <- acquisitionNum(be)
-    expect_true(is.integer(res))
+    expect_type(res, "integer")
     expect_identical(length(res), length(be))
 })
 
