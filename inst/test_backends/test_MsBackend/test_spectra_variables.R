@@ -153,7 +153,7 @@ test_that("mz", {
 
 test_that("lengths", {
     res <- lengths(be)
-    expect_true(is.integer(res))
+    expect_type(res, "integer")
     expect_identical(length(res), length(be))
     expect_identical(res, lengths(mz(be)))
 })
@@ -161,7 +161,7 @@ test_that("lengths", {
 test_that("polarity", {
     ## values 0 (negative), 1 (positive), -1 (missing) NA (missing)
     res <- polarity(be)
-    expect_true(is.integer(res))
+    expect_type(res, "integer")
     expect_identical(length(res), length(be))
     expect_true(all(res %in% c(0L, 1L, -1L, NA_integer_)))
     if (!isReadOnly(be)) {
@@ -174,34 +174,34 @@ test_that("polarity", {
 
 test_that("precScanNum", {
     res <- precScanNum(be)
-    expect_true(is.integer(res))
+    expect_type(res, "integer")
     expect_identical(length(res), length(be))
 })
 
 test_that("precursorCharge", {
     res <- precursorCharge(be)
-    expect_true(is.integer(res))
+    expect_type(res, "integer")
     expect_identical(length(res), length(be))
 })
 
 test_that("precursorIntensity", {
     res <- precursorCharge(be)
-    expect_true(is.numeric(res))
+    expect_type(res, "numeric")
     expect_identical(length(res), length(be))
 })
 
 test_that("precursorMz", {
     res <- precursorCharge(be)
-    expect_true(is.numeric(res))
-    expect_equal(length(res), length(be))
+    expect_type(res, "numeric")
+    expect_identical(length(res), length(be))
 })
 
 test_that("peaksData", {
     res <- peaksData(be)
     expect_true(is.list(res))
-    expect_true(length(res) == length(be))
+    expect_identical(length(res), length(be))
     m <- res[[length(res)]]
-    expect_true(is.matrix(m))
+    expect_s3_class(m, "matrix")
     expect_equal(colnames(m), c("mz", "intensity"))
     ## m/z values need to be ordered!
     expect_false(is.unsorted(m[, "mz"]))
@@ -217,8 +217,8 @@ test_that("peaksData", {
 
 test_that("rtime", {
     res <- rtime(be)
-    expect_true(length(res) == length(be))
-    expect_true(is.numeric(res))
+    expect_type(res, "numeric")
+    expect_identical(length(res), length(be))
     if (!isReadOnly(be)) {
         tmp <- be
         vals <- rnorm(length(be))
@@ -229,14 +229,14 @@ test_that("rtime", {
 
 test_that("scanIndex", {
     res <- scanIndex(be)
-    expect_true(is.integer(res))
-    expect_true(length(res) == length(be))
+    expect_type(res, "integer")
+    expect_identical(length(res), length(be))
 })
 
 test_that("smoothed", {
     res <- smoothed(be)
-    expect_true(length(res) == length(be))
-    expect_true(is.logical(res))
+    expect_type(res, "logical")
+    expect_identical(length(res), length(be))
     ## set data, if not readonly
     if (!isReadOnly(be)) {
         tmp <- be
@@ -249,7 +249,7 @@ test_that("smoothed", {
 test_that("spectraData", {
     res <- spectraData(be)
     ## mz and intensity are required columns
-    expect_true(is(res, "DataFrame"))
+    expect_s4_class(res, "DataFrame")
     expect_true(all(c("mz", "intensity") %in% colnames(res)))
     if (!isReadOnly(be)) {
         tmp <- be
@@ -262,8 +262,8 @@ test_that("spectraData", {
 test_that("spectraNames", {
     res <- spectraNames(be)
     if (!is.null(res)) {
-        expect_true(is.character(res))
-        expect_true(length(res) == length(be))
+    expect_type(res, "numeric")
+    expect_identical(length(res), length(be))
     }
     if (!isReadOnly(be)) {
         tmp <- be
@@ -275,12 +275,12 @@ test_that("spectraNames", {
 
 test_that("spectraVariables", {
     res <- spectraVariables(be)
-    expect_true(is.character(res))
+    expect_type(res, "character")
     expect_true(all(c("mz", "intensity") %in% res))
 })
 
 test_that("tic", {
     res <- tic(be)
-    expect_true(is.numeric(res))
-    expect_true(length(res) == length(be))
+    expect_type(res, "numeric")
+    expect_identical(length(res), length(be))
 })
