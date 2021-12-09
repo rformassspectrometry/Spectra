@@ -51,8 +51,8 @@ test_that("collisionEnergy", {
 
 test_that("dataOrigin", {
     res <- dataOrigin(be)
-    expect_true(length(res) == length(be))
-    expect_true(is.character(res))
+    expect_type(res, "character")
+    expect_identical(length(res), length(be))
 })
 
 test_that("dataStorage", {
