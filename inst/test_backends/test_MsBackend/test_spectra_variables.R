@@ -175,7 +175,7 @@ test_that("polarity", {
 test_that("precScanNum", {
     res <- precScanNum(be)
     expect_true(is.integer(res))
-    expect_equal(length(res), length(be))
+    expect_identical(length(res), length(be))
 })
 
 test_that("precursorCharge", {
