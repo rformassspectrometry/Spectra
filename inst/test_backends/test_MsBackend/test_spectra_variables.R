@@ -125,7 +125,7 @@ test_that("isolationWindowUpperMz", {
 
 test_that("msLevel", {
     res <- msLevel(be)
-    expect_true(is.integer(res))
+    expect_type(res, "integer")
     expect_true(length(res) == length(res))
     if (!isReadOnly(be)) {
         tmp <- be
