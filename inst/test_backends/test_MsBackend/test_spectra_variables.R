@@ -154,7 +154,7 @@ test_that("mz", {
 test_that("lengths", {
     res <- lengths(be)
     expect_true(is.integer(res))
-    expect_equal(length(res), length(be))
+    expect_identical(length(res), length(be))
     expect_equal(res, lengths(mz(be)))
 })
 
