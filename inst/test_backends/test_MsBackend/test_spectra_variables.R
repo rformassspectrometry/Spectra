@@ -39,8 +39,8 @@ test_that("centroided", {
 
 test_that("collisionEnergy", {
     res <- collisionEnergy(be)
-    expect_true(length(res) == length(be))
-    expect_true(is.numeric(res))
+    expect_type(res, "numeric")
+    expect_identical(length(res), length(be))
     if (!isReadOnly(be)) {
         tmp <- be
         vals <- abs(rnorm(length(be)))
