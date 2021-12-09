@@ -187,7 +187,7 @@ test_that("precursorCharge", {
 test_that("precursorIntensity", {
     res <- precursorCharge(be)
     expect_true(is.numeric(res))
-    expect_equal(length(res), length(be))
+    expect_identical(length(res), length(be))
 })
 
 test_that("precursorMz", {
