@@ -32,6 +32,7 @@
 \alias{filterMsLevel,MsBackend-method}
 \alias{filterPolarity,MsBackend-method}
 \alias{filterPrecursorMz,MsBackend-method}
+\alias{filterPrecursorMzValues,MsBackend-method}
 \alias{filterPrecursorCharge,MsBackend-method}
 \alias{filterPrecursorScan,MsBackend-method}
 \alias{filterRt,MsBackend-method}
@@ -128,6 +129,8 @@
 \S4method{filterPolarity}{MsBackend}(object, polarity = integer())
 
 \S4method{filterPrecursorMz}{MsBackend}(object, mz = numeric())
+
+\S4method{filterPrecursorMzValues}{MsBackend}(object, mz = numeric(), ppm = 20, tolerance = 0)
 
 \S4method{filterPrecursorCharge}{MsBackend}(object, z = integer())
 
@@ -256,7 +259,8 @@ only for spectra of selected \code{dataStorage}.}
 
 \item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
 filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} with the lower
-and upper m/z boundary.}
+and upper m/z boundary. For \code{filterPrecursorMzValues}: \code{numeric} with the
+m/z value(s) to filter the object.}
 
 \item{msLevel}{\code{integer} defining the MS level of the spectra to which the
 function should be applied. For \code{filterMsLevel}: the MS level to which
@@ -264,6 +268,14 @@ function should be applied. For \code{filterMsLevel}: the MS level to which
 
 \item{polarity}{For \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
+
+\item{ppm}{For \code{filterPrecursorMzValues}: \code{numeric(1)} with the m/z-relative
+maximal acceptable difference for a m/z to be considered matching. See
+\code{\link[=closest]{closest()}} for details.}
+
+\item{tolerance}{For \code{filterPrecursorMzValues}: \code{numeric(1)} with the
+maximal absolute acceptable difference for an m/z value to be considered
+matching. See \code{\link[=closest]{closest()}} for details.}
 
 \item{z}{For \code{filterPrecursorCharge}: \code{integer()} with the precursor charges
 to be used as filter.}
@@ -455,6 +467,10 @@ Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
 provided m/z range.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
+\item \code{filterPrecursorMzValues}: retains spectra with a precursor m/z matching
+any of the provided m/z values (given \code{ppm} and \code{tolerance}).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterPrecursorCharge}: retains spectra with the defined precursor

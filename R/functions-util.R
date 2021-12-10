@@ -70,3 +70,22 @@ setAs("logical", "factor", function(from, to) factor(from))
 sanitize_file_name <- function(x) {
     file.path(normalizePath(dirname(x)), path_sanitize(basename(x)))
 }
+
+#' Helper function that matches `x` against `mz` (using the `closest` function)
+#' and returns the indices of `x` that match any of the values in `mz`. The
+#' function takes care of sorting `x` and `mz` and deals also with missing
+#' values.
+#'
+#' @return `integer` with the indices of values in `x` that are not `NA` and
+#'     are matching any of the values in `mz` given `ppm` and `tolerance`.
+#'
+#' @noRd
+#'
+#' @author Johannes Rainer
+.values_match_mz <- function(x, mz, ppm = 20, tolerance = 0) {
+    keep <- which(!is.na(x))
+    idx <- order(x[keep])
+    mtch <- closest(x[keep][idx], sort(mz), tolerance = tolerance, ppm = ppm,
+                    duplicates = "keep", .check = FALSE)
+    keep[!is.na(mtch[order(idx)])]
+}

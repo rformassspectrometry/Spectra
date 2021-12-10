@@ -79,6 +79,7 @@
 \alias{filterMzValues,Spectra-method}
 \alias{filterPolarity,Spectra-method}
 \alias{filterPrecursorMz,Spectra-method}
+\alias{filterPrecursorMzValues,Spectra-method}
 \alias{filterPrecursorCharge,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
@@ -331,6 +332,8 @@ estimatePrecursorIntensity(
 
 \S4method{filterPrecursorMz}{Spectra}(object, mz = numeric())
 
+\S4method{filterPrecursorMzValues}{Spectra}(object, mz = numeric(), ppm = 20, tolerance = 0)
+
 \S4method{filterPrecursorCharge}{Spectra}(object, z = integer())
 
 \S4method{filterPrecursorScan}{Spectra}(object, acquisitionNum = integer(), f = dataOrigin(object))
@@ -492,8 +495,8 @@ method description or expected data type.}
 \item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
 filter the object. For \code{filterPrecursorMz} and \code{filterMzRange}:
 \code{numeric(2)} defining the lower and upper m/z boundary.
-For \code{filterMzValues}: \code{numeric} with the m/z values to match peaks
-against.}
+For \code{filterMzValues} and \code{filterPrecursorMzValues}: \code{numeric} with the
+m/z values to match peaks or precursor m/z against.}
 
 \item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
 (the default) or all provided \code{mz} have to be present in the spectrum.}
@@ -916,6 +919,9 @@ original order).
 \item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
 provided m/z range. See examples for details on selecting spectra with
 a precursor m/z for a target m/z accepting a small difference in \emph{ppm}.
+\item \code{filterPrecursorMzValues}: retains spectra with precursor m/z matching any
+of the provided m/z values (given \code{ppm} and \code{tolerance}). Spectra with
+missing precursor m/z value (e.g. MS1 spectra) are dropped.
 \item \code{filterPrecursorCharge}: retains spectra with the defined precursor
 charge(s).
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.

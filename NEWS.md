@@ -1,5 +1,10 @@
 # Spectra 1.5
 
+## Changes in 1.5.3
+
+- Add `filterPrecursorMzValues` method to filter `Spectra` keeping all spectra
+  with matching precursor m/z (supports multiple target precursor m/z values).
+
 ## Changes in 1.5.2
 
 - Small documentation update (related to `MsCoreUtils` issue
