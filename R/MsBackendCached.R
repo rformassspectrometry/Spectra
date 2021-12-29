@@ -360,7 +360,7 @@ setMethod(
     })
 
 #' @rdname MsBackendCached
-setReplaceMethod("spectraData", "MsBackendCached",function(object, value) {
+setReplaceMethod("spectraData", "MsBackendCached", function(object, value) {
     stop(class(object)[1], " does not support replacing the full spectra data.")
 })
 
