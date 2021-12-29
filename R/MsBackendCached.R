@@ -238,8 +238,6 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'
 #' @seealso [MsBackend] for the documentation of MS backends.
 #'
-#' @md
-#'
 #' @exportClass MsBackendCached
 NULL
 
@@ -282,7 +280,7 @@ setMethod("backendInitialize", "MsBackendCached",
           function(object, data = data.frame(), nspectra = 0L,
                    spectraVariables = character(), ...) {
               if (nrow(data) == 0L)
-                  data <- data.frame(matrix(ncol = 0, nrow = nspectra))
+                  data <- data.frame(row.names = seq_len(nspectra))
               else nspectra <- nrow(data)
               object@nspectra <- as.integer(nspectra)
               object@localData <- data
