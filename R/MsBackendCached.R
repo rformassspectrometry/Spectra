@@ -429,7 +429,7 @@ setMethod("show", "MsBackendCached", function(object) {
     n <- object@nspectra
     cat(class(object), "with", n, "spectra\n")
     if (n) {
-        idx <- union(1:min(6, n), max(1, n-5):n)
+        idx <- unique(c(1L:min(6L, n), max(1L, n-5L):n))
         spd <- spectraData(object[idx, ],
                            c("msLevel", "precursorMz", "polarity"))
         if (!length(rownames(spd)))
