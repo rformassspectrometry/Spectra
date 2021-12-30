@@ -1,5 +1,9 @@
 # Spectra 1.5
 
+## Changes in 1.5.4
+
+- Add the `MsBackendCached` backend.
+
 ## Changes in 1.5.3
 
 - Only calculate number of peaks per spectra if the processing queue of the
