@@ -526,6 +526,11 @@
 #' above). Developers of new `MsBackend`s should follow the
 #' `MsBackendDataFrame` implementation.
 #'
+#' The [MsBackendCached()] backend provides a caching mechanism to allow
+#' *read only* backends to add or change spectra variables. This
+#' backend shouldn't be used on its own, but is meant to be extended. See
+#' [MsBackendCached()] for details.
+#'
 #' The `MsBackend` defines the following slots:
 #'
 #' - `@readonly`: `logical(1)` whether the backend supports writing/replacing
