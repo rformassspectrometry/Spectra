@@ -13,7 +13,7 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #' re-implement commonly used methods. This class is thus not thought to be
 #' used directly by a user.
 #'
-#' The provided caching mechanism by this class allows `MsBackend` instances
+#' The `MsBackendCached` caching mechanism allows `MsBackend` instances
 #' to add or replace spectra variables even if the backend used by them does
 #' not allow to alter values (e.g. if a SQL database is used as a backend). Any
 #' replacement operation with `$<-` will add the specified values to a local
@@ -24,7 +24,7 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #' or `msLevel` or `spectraData`) should first use `callNextMethod` to call the
 #' respective accessor of `MsBackendCached` that will evaluate if the
 #' requested spectra variable(s) are in the local cache and return these. If
-#' the requested spectra variables are not in the local cache, are also not in
+#' the requested spectra variables are neither in the local cache, nor
 #' listed in the `@spectraVariables` slot (which defines all spectra variables
 #' that can be requested from the extending `MsBackend` class) but are *core
 #' spectra variables* then missing values of the correct data type are returned.
@@ -34,11 +34,11 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #' Classes extending the `MsBackendCached` need to
 #'
 #' - call the `backendInitialize` method of this class in their own
-#'   `backendInitialize` method and to set at least the number of spectra with
+#'   `backendInitialize` method and set at least the number of spectra with
 #'   the `nspectra` parameter and the `spectraVariables` that are available to
 #'   the (extending) backend class.
 #'
-#' - implement the `spectraData` method that calls also the `spectraData`
+#' - implement the `spectraData` method that also calls the `spectraData`
 #'   method from `MsBackendCached` to also retrieve cached values (e.g. using
 #'   `res <- callNextMethod()` at the beginning of the `spectraData` function).
 #'   The `spectraData,MsBackendCached` method will return `NULL` if the
@@ -60,7 +60,7 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #' might however implement such a method that internally uses `$<-` to
 #' add/replace single variables.
 #'
-#' The `MsBackendCached` has the following slots"
+#' The `MsBackendCached` has the following slots:
 #'
 #' - `nspectra`: `integer(1)` defining the number of spectra of the backend.
 #'   This variable needs to be set and must match the number of rows of

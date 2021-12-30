@@ -179,7 +179,7 @@ implementations to reuse its caching mechanism and avoid having to
 re-implement commonly used methods. This class is thus not thought to be
 used directly by a user.
 
-The provided caching mechanism by this class allows \code{MsBackend} instances
+The \code{MsBackendCached} caching mechanism allows \code{MsBackend} instances
 to add or replace spectra variables even if the backend used by them does
 not allow to alter values (e.g. if a SQL database is used as a backend). Any
 replacement operation with \verb{$<-} will add the specified values to a local
@@ -190,7 +190,7 @@ Any data accessor functions of the extending \code{MsBackend} class (such as \co
 or \code{msLevel} or \code{spectraData}) should first use \code{callNextMethod} to call the
 respective accessor of \code{MsBackendCached} that will evaluate if the
 requested spectra variable(s) are in the local cache and return these. If
-the requested spectra variables are not in the local cache, are also not in
+the requested spectra variables are neither in the local cache, nor
 listed in the \verb{@spectraVariables} slot (which defines all spectra variables
 that can be requested from the extending \code{MsBackend} class) but are \emph{core
 spectra variables} then missing values of the correct data type are returned.
@@ -201,10 +201,10 @@ spectra variables} then missing values of the correct data type are returned.
 Classes extending the \code{MsBackendCached} need to
 \itemize{
 \item call the \code{backendInitialize} method of this class in their own
-\code{backendInitialize} method and to set at least the number of spectra with
+\code{backendInitialize} method and set at least the number of spectra with
 the \code{nspectra} parameter and the \code{spectraVariables} that are available to
 the (extending) backend class.
-\item implement the \code{spectraData} method that calls also the \code{spectraData}
+\item implement the \code{spectraData} method that also calls the \code{spectraData}
 method from \code{MsBackendCached} to also retrieve cached values (e.g. using
 \code{res <- callNextMethod()} at the beginning of the \code{spectraData} function).
 The \verb{spectraData,MsBackendCached} method will return \code{NULL} if the
@@ -226,7 +226,7 @@ Spectra variables can be modified or added using the \verb{$<-} method of the
 might however implement such a method that internally uses \verb{$<-} to
 add/replace single variables.
 
-The \code{MsBackendCached} has the following slots"
+The \code{MsBackendCached} has the following slots:
 \itemize{
 \item \code{nspectra}: \code{integer(1)} defining the number of spectra of the backend.
 This variable needs to be set and must match the number of rows of

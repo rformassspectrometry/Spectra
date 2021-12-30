@@ -713,10 +713,10 @@ Backends extending \code{MsBackend} \strong{must} implement all of its methods (
 above). Developers of new \code{MsBackend}s should follow the
 \code{MsBackendDataFrame} implementation.
 
-A backend providing a caching mechanism to allow \emph{read only} backends to
-add or change spectra variables is the \code{\link[=MsBackendCached]{MsBackendCached()}} backend. This
-backend is not thought to be used on its own, but backends extending this
-backend might be implemented.
+The \code{\link[=MsBackendCached]{MsBackendCached()}} backend provides a caching mechanism to allow
+\emph{read only} backends to add or change spectra variables. This
+backend shouldn't be used on its own, but is meant to be extended. See
+\code{\link[=MsBackendCached]{MsBackendCached()}} for details.
 
 The \code{MsBackend} defines the following slots:
 \itemize{
