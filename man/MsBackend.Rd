@@ -360,11 +360,28 @@ a (initialized) instance of the developed backend. Then the path to the
 test suites should be defined with
 \code{test_suite <- system.file("test_backends", "test_MsBackend", package = "Spectra")} followed by \code{test_dir(test_suite)} to run all test
 files in that directory. Individual unit test files could be run with
-\code{test_file(paste0(test_suite, "/test_spectra_variables.R"), stop_on_failure = TRUE)} (note that without \code{stop_on_failure = TRUE} tests
+\code{test_file(file.path(test_suite, "test_spectra_variables.R"), stop_on_failure = TRUE)} (note that without \code{stop_on_failure = TRUE} tests
 would fail silently) . Adding this code to the packages \code{"testthat.R"} file
 ensures that all tests checking the validity of an \code{MsBackend} instance
 defined in the \code{Spectra} package are also run on the newly develped backend
 class.
+
+The \code{MsBackend} defines the following slots:
+\itemize{
+\item \verb{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
+of m/z or intensity values.
+}
+
+
+
+Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
+above). Developers of new \code{MsBackend}s should follow the
+\code{MsBackendDataFrame} implementation.
+
+The \code{\link[=MsBackendCached]{MsBackendCached()}} backend provides a caching mechanism to allow
+\emph{read only} backends to add or change spectra variables. This
+backend shouldn't be used on its own, but is meant to be extended. See
+\code{\link[=MsBackendCached]{MsBackendCached()}} for details.
 
 The \code{MsBackend} defines the following slots:
 \itemize{
@@ -731,25 +748,6 @@ file names, \code{files}' length has to match the number of unique elements in
 \code{"dataStorage"}.
 
 For details see examples on the \code{\link[=Spectra]{Spectra()}} help page.
-}
-
-\section{Implementation notes}{
-
-
-Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
-above). Developers of new \code{MsBackend}s should follow the
-\code{MsBackendDataFrame} implementation.
-
-The \code{\link[=MsBackendCached]{MsBackendCached()}} backend provides a caching mechanism to allow
-\emph{read only} backends to add or change spectra variables. This
-backend shouldn't be used on its own, but is meant to be extended. See
-\code{\link[=MsBackendCached]{MsBackendCached()}} for details.
-
-The \code{MsBackend} defines the following slots:
-\itemize{
-\item \verb{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
-of m/z or intensity values.
-}
 }
 
 \examples{
