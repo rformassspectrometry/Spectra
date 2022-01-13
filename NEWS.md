@@ -1,5 +1,11 @@
 # Spectra 1.5
 
+## Changes in 1.5.6
+
+- Add `filterPrecursorMzValue` method which allows to filter using multiple
+  precursor m/z values (issue
+  [#230](https://github.com/rformassspectrometry/Spectra/issues/230)).
+
 ## Changes in 1.5.5
 
 - Add a testing framework allowing to run standardized unit tests for new
