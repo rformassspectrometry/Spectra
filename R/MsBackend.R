@@ -131,6 +131,31 @@
 #' @param ... Additional arguments.
 #'
 #'
+#' @section Implementation notes:
+#'
+#' Backends extending `MsBackend` **must** implement all of its methods (listed
+#' above). Developers of new `MsBackend`s should follow the
+#' `MsBackendDataFrame` implementation. To ensure a new implementation being
+#' conform with the `MsBackend` definition, developers should included test
+#' suites provided by this package in their unit test setup. For that a variable
+#' `be` should be created in the package's `"testthat.R"` file that represents
+#' a (initialized) instance of the developed backend. Then the path to the
+#' test suites should be defined with
+#' `test_suite <- system.file("test_backends", "test_MsBackend",
+#' package = "Spectra")` followed by `test_dir(test_suite)` to run all test
+#' files in that directory. Individual unit test files could be run with
+#' `test_file(file.path(test_suite, "test_spectra_variables.R"),
+#' stop_on_failure = TRUE)` (note that without `stop_on_failure = TRUE` tests
+#' would fail silently) . Adding this code to the packages `"testthat.R"` file
+#' ensures that all tests checking the validity of an `MsBackend` instance
+#' defined in the `Spectra` package are also run on the newly develped backend
+#' class.
+#'
+#' The `MsBackend` defines the following slots:
+#'
+#' - `@readonly`: `logical(1)` whether the backend supports writing/replacing
+#'   of m/z or intensity values.
+#'
 #' @section Backend functions:
 #'
 #' New backend classes **must** extend the base `MsBackend` class and
@@ -303,7 +328,7 @@
 #'   `object` are in profile or centroided mode. The function takes
 #'   the `qtl` th quantile top peaks, then calculates the difference
 #'   between adjacent m/z value and returns `TRUE` if the first
-#'   quartile is greater than `k`. (See `Spectra:::.isCentroided` for
+#'   quartile is greater than `k`. (See `Spectra:::.peaks_is_centroided` for
 #'   the code.)
 #'
 #' - `isEmpty`: checks whether a spectrum in `object` is empty
@@ -396,7 +421,8 @@
 #'   or `SimpleList` in columns `"mz"` and `"intensity"`.
 #'
 #' - `spectraNames`: returns a `character` vector with the names of
-#'   the spectra in `object`.
+#'   the spectra in `object` or `NULL` if not set. `spectraNames<-` allows to
+#'   set spectra names (if the object is not read-only).
 #'
 #' - `spectraVariables`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)
@@ -539,6 +565,11 @@
 #' Backends extending `MsBackend` **must** implement all of its methods (listed
 #' above). Developers of new `MsBackend`s should follow the
 #' `MsBackendDataFrame` implementation.
+#'
+#' The [MsBackendCached()] backend provides a caching mechanism to allow
+#' *read only* backends to add or change spectra variables. This
+#' backend shouldn't be used on its own, but is meant to be extended. See
+#' [MsBackendCached()] for details.
 #'
 #' The `MsBackend` defines the following slots:
 #'
@@ -947,10 +978,11 @@ setMethod("ionCount", "MsBackend", function(object) {
 #' @exportMethod isCentroided
 #'
 #' @importMethodsFrom ProtGenerics isCentroided
+#' @importFrom MsCoreUtils vapply1l
 #'
 #' @rdname MsBackend
 setMethod("isCentroided", "MsBackend", function(object, ...) {
-    stop("Not implemented for ", class(object), ".")
+    vapply1l(peaksData(object), .peaks_is_centroided)
 })
 
 #' @exportMethod isEmpty

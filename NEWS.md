@@ -1,9 +1,20 @@
 # Spectra 1.5
 
+## Changes in 1.5.5
+
+- Add a testing framework allowing to run standardized unit tests for new
+  `MsBackend` implementations (issue
+  [#186](https://github.com/rformassspectrometry/Spectra/issues/186)).
+
+## Changes in 1.5.4
+
+- Add the `MsBackendCached` backend.
+
 ## Changes in 1.5.3
 
-- Add `filterPrecursorMzValues` method to filter `Spectra` keeping all spectra
-  with matching precursor m/z (supports multiple target precursor m/z values).
+- Only calculate number of peaks per spectra if the processing queue of the
+  `Spectra` is not empty. Otherwise call the backend's implementation (issue
+  [MsBackendSql #31](https://github.com/rformassspectrometry/MsBackendSql/issues/31)).
 
 ## Changes in 1.5.2
 

@@ -359,6 +359,49 @@ data files and the remaining spectra variables in memory (in a
 
 See below for more details about individual backends.
 }
+\section{Implementation notes}{
+
+
+Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
+above). Developers of new \code{MsBackend}s should follow the
+\code{MsBackendDataFrame} implementation. To ensure a new implementation being
+conform with the \code{MsBackend} definition, developers should included test
+suites provided by this package in their unit test setup. For that a variable
+\code{be} should be created in the package's \code{"testthat.R"} file that represents
+a (initialized) instance of the developed backend. Then the path to the
+test suites should be defined with
+\code{test_suite <- system.file("test_backends", "test_MsBackend", package = "Spectra")} followed by \code{test_dir(test_suite)} to run all test
+files in that directory. Individual unit test files could be run with
+\code{test_file(file.path(test_suite, "test_spectra_variables.R"), stop_on_failure = TRUE)} (note that without \code{stop_on_failure = TRUE} tests
+would fail silently) . Adding this code to the packages \code{"testthat.R"} file
+ensures that all tests checking the validity of an \code{MsBackend} instance
+defined in the \code{Spectra} package are also run on the newly develped backend
+class.
+
+The \code{MsBackend} defines the following slots:
+\itemize{
+\item \verb{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
+of m/z or intensity values.
+}
+
+
+
+Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
+above). Developers of new \code{MsBackend}s should follow the
+\code{MsBackendDataFrame} implementation.
+
+The \code{\link[=MsBackendCached]{MsBackendCached()}} backend provides a caching mechanism to allow
+\emph{read only} backends to add or change spectra variables. This
+backend shouldn't be used on its own, but is meant to be extended. See
+\code{\link[=MsBackendCached]{MsBackendCached()}} for details.
+
+The \code{MsBackend} defines the following slots:
+\itemize{
+\item \verb{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
+of m/z or intensity values.
+}
+}
+
 \section{Backend functions}{
 
 
@@ -503,7 +546,7 @@ each spectrum. If the spectrum is empty (see \code{isEmpty}),
 \code{object} are in profile or centroided mode. The function takes
 the \code{qtl} th quantile top peaks, then calculates the difference
 between adjacent m/z value and returns \code{TRUE} if the first
-quartile is greater than \code{k}. (See \code{Spectra:::.isCentroided} for
+quartile is greater than \code{k}. (See \code{Spectra:::.peaks_is_centroided} for
 the code.)
 \item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
@@ -576,7 +619,8 @@ of rows as there are spectra in \code{object}. Note that \code{spectraData} has 
 return the full data, i.e. also the m/z and intensity values (as a \code{list}
 or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}.
 \item \code{spectraNames}: returns a \code{character} vector with the names of
-the spectra in \code{object}.
+the spectra in \code{object} or \code{NULL} if not set. \verb{spectraNames<-} allows to
+set spectra names (if the object is not read-only).
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes)
 available in \code{object}. This should return \strong{all} spectra variables which
@@ -720,20 +764,6 @@ file names, \code{files}' length has to match the number of unique elements in
 \code{"dataStorage"}.
 
 For details see examples on the \code{\link[=Spectra]{Spectra()}} help page.
-}
-
-\section{Implementation notes}{
-
-
-Backends extending \code{MsBackend} \strong{must} implement all of its methods (listed
-above). Developers of new \code{MsBackend}s should follow the
-\code{MsBackendDataFrame} implementation.
-
-The \code{MsBackend} defines the following slots:
-\itemize{
-\item \verb{@readonly}: \code{logical(1)} whether the backend supports writing/replacing
-of m/z or intensity values.
-}
 }
 
 \examples{

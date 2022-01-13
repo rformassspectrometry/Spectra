@@ -1545,10 +1545,12 @@ setMethod("mz", "Spectra", function(object, ...) {
 #'
 #' @exportMethod lengths
 setMethod("lengths", "Spectra", function(x, use.names = FALSE) {
-    if (length(x))
-        unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks)),
-               use.names = use.names)
-    else integer()
+    if (length(x)) {
+        if (length(x@processingQueue))
+            unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks)),
+                   use.names = use.names)
+        else lengths(x@backend, use.names = use.names)
+    } else integer()
 })
 
 #' @rdname Spectra
