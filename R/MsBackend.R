@@ -546,6 +546,22 @@
 #'
 #' For details see examples on the [Spectra()] help page.
 #'
+#' @section Implementation notes:
+#'
+#' Backends extending `MsBackend` **must** implement all of its methods (listed
+#' above). Developers of new `MsBackend`s should follow the
+#' `MsBackendDataFrame` implementation.
+#'
+#' The [MsBackendCached()] backend provides a caching mechanism to allow
+#' *read only* backends to add or change spectra variables. This
+#' backend shouldn't be used on its own, but is meant to be extended. See
+#' [MsBackendCached()] for details.
+#'
+#' The `MsBackend` defines the following slots:
+#'
+#' - `@readonly`: `logical(1)` whether the backend supports writing/replacing
+#'   of m/z or intensity values.
+#'
 #' @name MsBackend
 #'
 #' @return See documentation of respective function.

@@ -1,8 +1,14 @@
 # Spectra 1.5
 
+## Changes in 1.5.4
+
+- Add the `MsBackendCached` backend.
+
 ## Changes in 1.5.3
 
-- Add unit test suite to check all spectra variables (issue #186).
+- Only calculate number of peaks per spectra if the processing queue of the
+  `Spectra` is not empty. Otherwise call the backend's implementation (issue
+  [MsBackendSql #31](https://github.com/rformassspectrometry/MsBackendSql/issues/31)).
 
 ## Changes in 1.5.2
 
