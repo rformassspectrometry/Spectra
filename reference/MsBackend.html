@@ -42,7 +42,7 @@ See below for more details about individual backends."><meta property="og:image"
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
       </span>
     </div>
 
@@ -408,6 +408,38 @@ but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></dd>
     <h2>Value</h2>
     <p>See documentation of respective function.</p>
     </div>
+    <div id="implementation-notes">
+    <h2>Implementation notes</h2>
+    
+
+
+<p>Backends extending <code>MsBackend</code> <strong>must</strong> implement all of its methods (listed
+above). Developers of new <code>MsBackend</code>s should follow the
+<code>MsBackendDataFrame</code> implementation. To ensure a new implementation being
+conform with the <code>MsBackend</code> definition, developers should included test
+suites provided by this package in their unit test setup. For that a variable
+<code>be</code> should be created in the package's <code>"testthat.R"</code> file that represents
+a (initialized) instance of the developed backend. Then the path to the
+test suites should be defined with
+<code>test_suite &lt;- system.file("test_backends", "test_MsBackend", package = "Spectra")</code> followed by <code>test_dir(test_suite)</code> to run all test
+files in that directory. Individual unit test files could be run with
+<code>test_file(file.path(test_suite, "test_spectra_variables.R"), stop_on_failure = TRUE)</code> (note that without <code>stop_on_failure = TRUE</code> tests
+would fail silently) . Adding this code to the packages <code>"testthat.R"</code> file
+ensures that all tests checking the validity of an <code>MsBackend</code> instance
+defined in the <code>Spectra</code> package are also run on the newly develped backend
+class.</p>
+<p>The <code>MsBackend</code> defines the following slots:</p><ul><li><p><code>@readonly</code>: <code>logical(1)</code> whether the backend supports writing/replacing
+of m/z or intensity values.</p></li>
+</ul><p>Backends extending <code>MsBackend</code> <strong>must</strong> implement all of its methods (listed
+above). Developers of new <code>MsBackend</code>s should follow the
+<code>MsBackendDataFrame</code> implementation.</p>
+<p>The <code><a href="MsBackendCached.html">MsBackendCached()</a></code> backend provides a caching mechanism to allow
+<em>read only</em> backends to add or change spectra variables. This
+backend shouldn't be used on its own, but is meant to be extended. See
+<code><a href="MsBackendCached.html">MsBackendCached()</a></code> for details.</p>
+<p>The <code>MsBackend</code> defines the following slots:</p><ul><li><p><code>@readonly</code>: <code>logical(1)</code> whether the backend supports writing/replacing
+of m/z or intensity values.</p></li>
+</ul></div>
     <div id="backend-functions">
     <h2>Backend functions</h2>
     
@@ -548,7 +580,7 @@ each spectrum. If the spectrum is empty (see <code>isEmpty</code>),
 <code>object</code> are in profile or centroided mode. The function takes
 the <code>qtl</code> th quantile top peaks, then calculates the difference
 between adjacent m/z value and returns <code>TRUE</code> if the first
-quartile is greater than <code>k</code>. (See <code>Spectra:::.isCentroided</code> for
+quartile is greater than <code>k</code>. (See <code>Spectra:::.peaks_is_centroided</code> for
 the code.)</p></li>
 <li><p><code>isEmpty</code>: checks whether a spectrum in <code>object</code> is empty
 (i.e. does not contain any peaks). Returns a <code>logical</code> vector of
@@ -621,7 +653,8 @@ of rows as there are spectra in <code>object</code>. Note that <code>spectraData
 return the full data, i.e. also the m/z and intensity values (as a <code>list</code>
 or <code>SimpleList</code> in columns <code>"mz"</code> and <code>"intensity"</code>.</p></li>
 <li><p><code>spectraNames</code>: returns a <code>character</code> vector with the names of
-the spectra in <code>object</code>.</p></li>
+the spectra in <code>object</code> or <code>NULL</code> if not set. <code>spectraNames&lt;-</code> allows to
+set spectra names (if the object is not read-only).</p></li>
 <li><p><code>spectraVariables</code>: returns a <code>character</code> vector with the
 available spectra variables (columns, fields or attributes)
 available in <code>object</code>. This should return <strong>all</strong> spectra variables which
@@ -748,21 +781,6 @@ file names, <code>files</code>' length has to match the number of unique element
 <code>"dataStorage"</code>.</p>
 <p>For details see examples on the <code><a href="Spectra.html">Spectra()</a></code> help page.</p>
     </div>
-    <div id="implementation-notes">
-    <h2>Implementation notes</h2>
-    
-
-
-<p>Backends extending <code>MsBackend</code> <strong>must</strong> implement all of its methods (listed
-above). Developers of new <code>MsBackend</code>s should follow the
-<code>MsBackendDataFrame</code> implementation.</p>
-<p>The <code><a href="MsBackendCached.html">MsBackendCached()</a></code> backend provides a caching mechanism to allow
-<em>read only</em> backends to add or change spectra variables. This
-backend shouldn't be used on its own, but is meant to be extended. See
-<code><a href="MsBackendCached.html">MsBackendCached()</a></code> for details.</p>
-<p>The <code>MsBackend</code> defines the following slots:</p><ul><li><p><code>@readonly</code>: <code>logical(1)</code> whether the backend supports writing/replacing
-of m/z or intensity values.</p></li>
-</ul></div>
     <div id="author">
     <h2>Author</h2>
     <p>Johannes Rainer, Sebastian Gibb, Laurent Gatto</p>
