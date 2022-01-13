@@ -41,7 +41,6 @@
 \alias{intensity,MsBackendDataFrame-method}
 \alias{intensity<-,MsBackendDataFrame-method}
 \alias{ionCount,MsBackendDataFrame-method}
-\alias{isCentroided,MsBackendDataFrame-method}
 \alias{isEmpty,MsBackendDataFrame-method}
 \alias{isolationWindowLowerMz,MsBackendDataFrame-method}
 \alias{isolationWindowLowerMz<-,MsBackendDataFrame-method}
@@ -52,6 +51,7 @@
 \alias{length,MsBackendDataFrame-method}
 \alias{lengths,MsBackendDataFrame-method}
 \alias{msLevel,MsBackendDataFrame-method}
+\alias{msLevel<-,MsBackendDataFrame-method}
 \alias{mz,MsBackendDataFrame-method}
 \alias{mz<-,MsBackendDataFrame-method}
 \alias{polarity,MsBackendDataFrame-method}
@@ -189,8 +189,6 @@ spectrapply(object, ...)
 
 \S4method{ionCount}{MsBackendDataFrame}(object)
 
-\S4method{isCentroided}{MsBackendDataFrame}(object, ...)
-
 \S4method{isEmpty}{MsBackendDataFrame}(x)
 
 \S4method{isolationWindowLowerMz}{MsBackendDataFrame}(object)
@@ -210,6 +208,8 @@ spectrapply(object, ...)
 \S4method{lengths}{MsBackendDataFrame}(x, use.names = FALSE)
 
 \S4method{msLevel}{MsBackendDataFrame}(object, ...)
+
+\S4method{msLevel}{MsBackendDataFrame}(object) <- value
 
 \S4method{mz}{MsBackendDataFrame}(object)
 

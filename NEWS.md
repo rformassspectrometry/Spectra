@@ -1,5 +1,11 @@
 # Spectra 1.5
 
+## Changes in 1.5.5
+
+- Add a testing framework allowing to run standardized unit tests for new
+  `MsBackend` implementations (issue
+  [#186](https://github.com/rformassspectrometry/Spectra/issues/186)).
+
 ## Changes in 1.5.4
 
 - Add the `MsBackendCached` backend.

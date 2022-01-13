@@ -191,12 +191,6 @@ setMethod("ionCount", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-#' @importFrom MsCoreUtils vapply1l
-setMethod("isCentroided", "MsBackendDataFrame", function(object, ...) {
-    vapply1l(peaksData(object), .peaks_is_centroided)
-})
-
-#' @rdname hidden_aliases
 setMethod("isEmpty", "MsBackendDataFrame", function(x) {
     lengths(intensity(x)) == 0
 })
@@ -265,6 +259,17 @@ setMethod("lengths", "MsBackendDataFrame", function(x, use.names = FALSE) {
 #' @rdname hidden_aliases
 setMethod("msLevel", "MsBackendDataFrame", function(object, ...) {
     .get_column(object@spectraData, "msLevel")
+})
+
+#' @rdname hidden_aliases
+setReplaceMethod("msLevel", "MsBackendDataFrame", function(object, value) {
+    if (!is.integer(value) && is.numeric(value))
+        value <- as.integer(value)
+    if (!is.integer(value) || length(value) != length(object))
+        stop("'value' has to be an 'integer' of length ", length(object))
+    object@spectraData$msLevel <- value
+    validObject(object)
+    object
 })
 
 #' @rdname hidden_aliases
