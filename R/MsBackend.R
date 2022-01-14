@@ -118,7 +118,7 @@
 #'     names of the spectra variables to which the backend should be subsetted.
 #'
 #' @param tolerance For `filterPrecursorMzValues`: `numeric(1)` with the
-#'     maximal absolute acceptable difference for an m/z value to be considered
+#'     maximal absolute acceptable difference for a m/z value to be considered
 #'     matching. See [closest()] for details.
 #'
 #' @param use.names For `lengths`: whether spectrum names should be used.
