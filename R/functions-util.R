@@ -81,11 +81,11 @@ sanitize_file_name <- function(x) {
 #'
 #' @noRd
 #'
-#' @author Johannes Rainer
+#' @author Sebastian Gibb, Johannes Rainer
 .values_match_mz <- function(x, mz, ppm = 20, tolerance = 0) {
     keep <- which(!is.na(x))
     idx <- order(x[keep])
-    mtch <- closest(x[keep][idx], sort(mz), tolerance = tolerance, ppm = ppm,
-                    duplicates = "keep", .check = FALSE)
-    keep[!is.na(mtch[order(idx)])]
+    cmn <- common(x[keep][idx], sort(mz), tolerance = tolerance, ppm = ppm,
+                  duplicates = "keep", .check = FALSE)
+    sort(keep[idx][cmn])
 }
