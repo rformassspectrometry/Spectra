@@ -274,7 +274,7 @@ maximal acceptable difference for a m/z to be considered matching. See
 \code{\link[=closest]{closest()}} for details.}
 
 \item{tolerance}{For \code{filterPrecursorMzValues}: \code{numeric(1)} with the
-maximal absolute acceptable difference for an m/z value to be considered
+maximal absolute acceptable difference for a m/z value to be considered
 matching. See \code{\link[=closest]{closest()}} for details.}
 
 \item{z}{For \code{filterPrecursorCharge}: \code{integer()} with the precursor charges

@@ -83,9 +83,8 @@ sanitize_file_name <- function(x) {
 #'
 #' @author Sebastian Gibb, Johannes Rainer
 .values_match_mz <- function(x, mz, ppm = 20, tolerance = 0) {
-    keep <- which(!is.na(x))
-    idx <- order(x[keep])
-    cmn <- common(x[keep][idx], sort(mz), tolerance = tolerance, ppm = ppm,
+    o <- order(x, na.last = NA)
+    cmn <- common(x[o], sort(mz), tolerance = tolerance, ppm = ppm,
                   duplicates = "keep", .check = FALSE)
-    sort(keep[idx][cmn])
+    sort(o[cmn])
 }
