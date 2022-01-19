@@ -17,6 +17,8 @@
 \alias{export}
 \alias{filterMzRange}
 \alias{filterMzValues}
+\alias{filterPrecursorMzValues}
+\alias{filterPrecursorMzRange}
 \alias{isReadOnly}
 \alias{peaksData}
 \alias{peaksData<-}
@@ -140,6 +142,10 @@ export(object, ...)
 filterMzRange(object, ...)
 
 filterMzValues(object, ...)
+
+filterPrecursorMzValues(object, ...)
+
+filterPrecursorMzRange(object, ...)
 
 isReadOnly(object, ...)
 

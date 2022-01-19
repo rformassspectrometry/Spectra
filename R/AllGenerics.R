@@ -35,6 +35,12 @@ setGeneric("filterMzRange", function(object, ...)
 setGeneric("filterMzValues", function(object, ...)
     standardGeneric("filterMzValues"))
 #' @rdname hidden_aliases
+setGeneric("filterPrecursorMzValues", function(object, ...)
+    standardGeneric("filterPrecursorMzValues"))
+#' @rdname hidden_aliases
+setGeneric("filterPrecursorMzRange", function(object, ...)
+    standardGeneric("filterPrecursorMzRange"))
+#' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
 #' @rdname hidden_aliases

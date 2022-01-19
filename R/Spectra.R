@@ -349,9 +349,14 @@ NULL
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
-#' - `filterPrecursorMz`: retains spectra with a precursor m/z within the
+#' - `filterPrecursorMzRange` (previously `filterPrecursorMz` which is now
+#'   deprecated): retains spectra with a precursor m/z within the
 #'   provided m/z range. See examples for details on selecting spectra with
 #'   a precursor m/z for a target m/z accepting a small difference in *ppm*.
+#'
+#' - `filterPrecursorMzValues`: retains spectra with precursor m/z matching any
+#'   of the provided m/z values (given `ppm` and `tolerance`). Spectra with
+#'   missing precursor m/z value (e.g. MS1 spectra) are dropped.
 #'
 #' - `filterPrecursorCharge`: retains spectra with the defined precursor
 #'   charge(s).
@@ -702,8 +707,8 @@ NULL
 #' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
 #'     filter the object. For `filterPrecursorMz` and `filterMzRange`:
 #'     `numeric(2)` defining the lower and upper m/z boundary.
-#'     For `filterMzValues`: `numeric` with the m/z values to match peaks
-#'     against.
+#'     For `filterMzValues` and `filterPrecursorMzValues`: `numeric` with the
+#'     m/z values to match peaks or precursor m/z against.
 #'
 #' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
 #'     to be used as filter.
@@ -946,7 +951,7 @@ NULL
 #' ## Filter a Spectra for a target precursor m/z with a tolerance of 10ppm
 #' spd$precursorMz <- c(323.4, 543.2302)
 #' data_filt <- Spectra(spd)
-#' filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
+#' filterPrecursorMzRange(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 #'
 #' ## Filter a Spectra keeping only peaks matching certain m/z values
 #' sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
@@ -1937,11 +1942,37 @@ setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
 #' @rdname Spectra
 setMethod("filterPrecursorMz", "Spectra",
           function(object, mz = numeric()) {
-              object@backend <- filterPrecursorMz(object@backend, mz)
+              .Deprecated(
+                  msg = paste0("'filterPrecursorMz' is deprecated. Please use",
+                               " 'filterPrecursorMzRange' instead."))
+              object@backend <- filterPrecursorMzRange(object@backend, mz)
               object@processing <- .logging(
                   object@processing,
                   "Filter: select spectra with a precursor m/z within [",
                   paste0(mz, collapse = ", "), "]")
+              object
+          })
+
+#' @rdname Spectra
+setMethod("filterPrecursorMzRange", "Spectra",
+          function(object, mz = numeric()) {
+              object@backend <- filterPrecursorMzRange(object@backend, mz)
+              object@processing <- .logging(
+                  object@processing,
+                  "Filter: select spectra with a precursor m/z within [",
+                  paste0(mz, collapse = ", "), "]")
+              object
+          })
+
+#' @rdname Spectra
+setMethod("filterPrecursorMzValues", "Spectra",
+          function(object, mz = numeric(), ppm = 20, tolerance = 0) {
+              object@backend <- filterPrecursorMzValues(
+                  object@backend, mz, ppm = ppm, tolerance = tolerance)
+              object@processing <- .logging(
+                  object@processing,
+                  "Filter: select spectra with precursor m/z matching ",
+                  paste0(mz, collapse = ", "), "")
               object
           })
 

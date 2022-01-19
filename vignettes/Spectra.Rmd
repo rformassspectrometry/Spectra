@@ -301,8 +301,10 @@ the `?Spectra` help):
   isolation window (m/z range).
 - `filterMsLevel`: filter by MS level.
 - `filterPolarity`: filter by polarity.
-- `filterPrecursorMz`: retain (MSn) spectra with a precursor m/z within the
+- `filterPrecursorMzRange`: retain (MSn) spectra with a precursor m/z within the
   provided m/z range.
+- `filterPrecursorMzValues`: retain (MSn) spectra with precursor m/z value
+  matching the provided value(s) considering also a `tolerance` and `ppm`.
 - `filterPrecursorCharge`: retain (MSn) spectra with speified
   precursor charge(s).
 - `filterPrecursorScan`: retain (parent and children) scans of an acquisition

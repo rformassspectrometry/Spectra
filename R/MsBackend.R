@@ -89,8 +89,13 @@
 #' @param msLevel. same as `msLevel` above.
 #'
 #' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
-#'     filter the object. For `filterPrecursorMz`: `numeric(2)` with the lower
-#'     and upper m/z boundary.
+#'     filter the object. For `filterPrecursorMzRange`: `numeric(2)` with the
+#'     lower and upper m/z boundary. For `filterPrecursorMzValues`: `numeric`
+#'     with the m/z value(s) to filter the object.
+#'
+#' @param ppm For `filterPrecursorMzValues`: `numeric(1)` with the m/z-relative
+#'     maximal acceptable difference for a m/z to be considered matching. See
+#'     [closest()] for details.
 #'
 #' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
 #'     to be used as filter.
@@ -111,6 +116,10 @@
 #'
 #' @param spectraVariables For `selectSpectraVariables`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
+#'
+#' @param tolerance For `filterPrecursorMzValues`: `numeric(1)` with the
+#'     maximal absolute acceptable difference for a m/z value to be considered
+#'     matching. See [closest()] for details.
 #'
 #' @param use.names For `lengths`: whether spectrum names should be used.
 #'
@@ -273,8 +282,13 @@
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterPrecursorMz`: retains spectra with a precursor m/z within the
-#'   provided m/z range.
+#' - `filterPrecursorMzRange` (previously `filterPrecursorMz`): retains spectra
+#'   with a precursor m/z within the provided m/z range.
+#'   Implementation of this method is optional since a default implementation
+#'   for `MsBackend` is available.
+#'
+#' - `filterPrecursorMzValues`: retains spectra with a precursor m/z matching
+#'   any of the provided m/z values (given `ppm` and `tolerance`).
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
@@ -860,18 +874,35 @@ setMethod("filterPolarity", "MsBackend",
               else object
           })
 
-#' @exportMethod filterPrecursorMz
-#'
-#' @importMethodsFrom ProtGenerics filterPrecursorMz
+#' @exportMethod filterPrecursorMzRange
 #'
 #' @rdname MsBackend
-setMethod("filterPrecursorMz", "MsBackend",
+setMethod("filterPrecursorMzRange", "MsBackend",
           function(object, mz = numeric()) {
               if (length(mz)) {
                   mz <- range(mz)
                   keep <- which(precursorMz(object) >= mz[1] &
                                 precursorMz(object) <= mz[2])
                   object[keep]
+              } else object
+          })
+
+#' @importMethodsFrom ProtGenerics filterPrecursorMz
+#'
+#' @rdname MsBackend
+setMethod("filterPrecursorMz", "MsBackend",
+          function(object, mz = numeric()) {
+              filterPrecursorMzRange(object, mz)
+          })
+
+#' @exportMethod filterPrecursorMzValues
+#'
+#' @rdname MsBackend
+setMethod("filterPrecursorMzValues", "MsBackend",
+          function(object, mz = numeric(), ppm = 20, tolerance = 0) {
+              if (length(mz)) {
+                  object[.values_match_mz(precursorMz(object), mz = mz,
+                                          ppm = ppm, tolerance = tolerance)]
               } else object
           })
 
@@ -887,8 +918,6 @@ setMethod("filterPrecursorCharge", "MsBackend",
                   object[keep]
               } else object
           })
-
-
 
 #' @exportMethod filterPrecursorScan
 #'
