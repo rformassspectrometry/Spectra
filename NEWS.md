@@ -5,6 +5,7 @@
 - Add `filterPrecursorMzValue` method which allows to filter using multiple
   precursor m/z values (issue
   [#230](https://github.com/rformassspectrometry/Spectra/issues/230)).
+- Fix unit test suite.
 
 ## Changes in 1.5.5
 

@@ -39,7 +39,7 @@ test_that("centroided", {
 
 test_that("collisionEnergy", {
     res <- collisionEnergy(be)
-    expect_type(res, "numeric")
+    expect_type(res, "double")
     expect_identical(length(res), length(be))
     if (!isReadOnly(be)) {
         tmp <- be
@@ -89,7 +89,7 @@ test_that("isEmpty", {
 
 test_that("isolationWindowLowerMz", {
     res <- isolationWindowLowerMz(be)
-    expect_type(res, "numeric")
+    expect_type(res, "double")
     expect_identical(length(res), length(be))
     if (!isReadOnly(be)) {
         tmp <- be
@@ -101,7 +101,7 @@ test_that("isolationWindowLowerMz", {
 
 test_that("isolationWindowTargetMz", {
     res <- isolationWindowTargetMz(be)
-    expect_type(res, "numeric")
+    expect_type(res, "double")
     expect_identical(length(res), length(be))
     if (!isReadOnly(be)) {
         tmp <- be
@@ -113,7 +113,7 @@ test_that("isolationWindowTargetMz", {
 
 test_that("isolationWindowUpperMz", {
     res <- isolationWindowUpperMz(be)
-    expect_type(res, "numeric")
+    expect_type(res, "double")
     expect_identical(length(res), length(be))
     if (!isReadOnly(be)) {
         tmp <- be
@@ -185,14 +185,14 @@ test_that("precursorCharge", {
 })
 
 test_that("precursorIntensity", {
-    res <- precursorCharge(be)
-    expect_type(res, "numeric")
+    res <- precursorIntensity(be)
+    expect_type(res, "double")
     expect_identical(length(res), length(be))
 })
 
 test_that("precursorMz", {
-    res <- precursorCharge(be)
-    expect_type(res, "numeric")
+    res <- precursorMz(be)
+    expect_type(res, "double")
     expect_identical(length(res), length(be))
 })
 
@@ -201,7 +201,7 @@ test_that("peaksData", {
     expect_true(is.list(res))
     expect_identical(length(res), length(be))
     m <- res[[length(res)]]
-    expect_s3_class(m, "matrix")
+    expect_true(is.matrix(m))
     expect_equal(colnames(m), c("mz", "intensity"))
     ## m/z values need to be ordered!
     expect_false(is.unsorted(m[, "mz"]))
@@ -217,7 +217,7 @@ test_that("peaksData", {
 
 test_that("rtime", {
     res <- rtime(be)
-    expect_type(res, "numeric")
+    expect_type(res, "double")
     expect_identical(length(res), length(be))
     if (!isReadOnly(be)) {
         tmp <- be
@@ -262,8 +262,8 @@ test_that("spectraData", {
 test_that("spectraNames", {
     res <- spectraNames(be)
     if (!is.null(res)) {
-    expect_type(res, "numeric")
-    expect_identical(length(res), length(be))
+        expect_type(res, "character")
+        expect_identical(length(res), length(be))
     }
     if (!isReadOnly(be)) {
         tmp <- be
@@ -281,6 +281,6 @@ test_that("spectraVariables", {
 
 test_that("tic", {
     res <- tic(be)
-    expect_type(res, "numeric")
+    expect_type(res, "double")
     expect_identical(length(res), length(be))
 })

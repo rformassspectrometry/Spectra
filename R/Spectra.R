@@ -1944,7 +1944,7 @@ setMethod("filterPrecursorMz", "Spectra",
           function(object, mz = numeric()) {
               .Deprecated(
                   msg = paste0("'filterPrecursorMz' is deprecated. Please use",
-                               " 'filterPrecursorMzRange' instead.")
+                               " 'filterPrecursorMzRange' instead."))
               object@backend <- filterPrecursorMzRange(object@backend, mz)
               object@processing <- .logging(
                   object@processing,
