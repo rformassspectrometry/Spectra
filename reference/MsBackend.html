@@ -42,7 +42,7 @@ See below for more details about individual backends."><meta property="og:image"
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
       </span>
     </div>
 
@@ -170,7 +170,13 @@ filterMsLevel(object, msLevel = integer())
 filterPolarity(object, polarity = integer())
 
 # S4 method for MsBackend
+filterPrecursorMzRange(object, mz = numeric())
+
+# S4 method for MsBackend
 filterPrecursorMz(object, mz = numeric())
+
+# S4 method for MsBackend
+filterPrecursorMzValues(object, mz = numeric(), ppm = 20, tolerance = 0)
 
 # S4 method for MsBackend
 filterPrecursorCharge(object, z = integer())
@@ -348,8 +354,9 @@ For <code>filterAcquisitionNum</code>: optionally specify if filtering should oc
 only for spectra of selected <code>dataStorage</code>.</p></dd>
 <dt>mz</dt>
 <dd><p>For <code>filterIsolationWindow</code>: <code>numeric(1)</code> with the m/z value to
-filter the object. For <code>filterPrecursorMz</code>: <code>numeric(2)</code> with the lower
-and upper m/z boundary.</p></dd>
+filter the object. For <code>filterPrecursorMzRange</code>: <code>numeric(2)</code> with the
+lower and upper m/z boundary. For <code>filterPrecursorMzValues</code>: <code>numeric</code>
+with the m/z value(s) to filter the object.</p></dd>
 <dt>msLevel</dt>
 <dd><p><code>integer</code> defining the MS level of the spectra to which the
 function should be applied. For <code>filterMsLevel</code>: the MS level to which
@@ -357,6 +364,14 @@ function should be applied. For <code>filterMsLevel</code>: the MS level to whic
 <dt>polarity</dt>
 <dd><p>For <code>filterPolarity</code>: <code>integer</code> specifying the polarity to
 to subset <code>object</code>.</p></dd>
+<dt>ppm</dt>
+<dd><p>For <code>filterPrecursorMzValues</code>: <code>numeric(1)</code> with the m/z-relative
+maximal acceptable difference for a m/z to be considered matching. See
+<code>closest()</code> for details.</p></dd>
+<dt>tolerance</dt>
+<dd><p>For <code>filterPrecursorMzValues</code>: <code>numeric(1)</code> with the
+maximal absolute acceptable difference for a m/z value to be considered
+matching. See <code>closest()</code> for details.</p></dd>
 <dt>z</dt>
 <dd><p>For <code>filterPrecursorCharge</code>: <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer()</a></code> with the precursor charges
 to be used as filter.</p></dd>
@@ -546,8 +561,12 @@ for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterPolarity</code>: retains spectra of polarity <code>polarity</code>.
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
-<li><p><code>filterPrecursorMz</code>: retains spectra with a precursor m/z within the
-provided m/z range.
+<li><p><code>filterPrecursorMzRange</code> (previously <code>filterPrecursorMz</code>): retains spectra
+with a precursor m/z within the provided m/z range.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
+<li><p><code>filterPrecursorMzValues</code>: retains spectra with a precursor m/z matching
+any of the provided m/z values (given <code>ppm</code> and <code>tolerance</code>).
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterPrecursorCharge</code>: retains spectra with the defined precursor
@@ -892,7 +911,7 @@ file names, <code>files</code>' length has to match the number of unique element
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.9000.</p>
 </div>
 
       </footer></div>
