@@ -758,20 +758,20 @@ test_that("filterPolarity,MsBackendDataFrame works", {
     expect_equal(rtime(res), c(3, 4, 6))
 })
 
-test_that("filterPrecursorMz,MsBackendDataFrame works", {
+test_that("filterPrecursorMzRange,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
-    expect_equal(be, filterPrecursorMz(be))
+    expect_equal(be, filterPrecursorMzRange(be))
 
     df <- DataFrame(msLevel = c(1L, 2L, 2L, 2L),
                     rtime = as.numeric(1:4))
     be <- backendInitialize(MsBackendDataFrame(), df)
-    res <- filterPrecursorMz(be, 1.4)
+    res <- filterPrecursorMzRange(be, 1.4)
     expect_true(length(res) == 0)
 
     df$precursorMz <- c(NA_real_, 4.43, 4.4312, 5.4)
     be <- backendInitialize(MsBackendDataFrame(), df)
 
-    res <- filterPrecursorMz(be, 5.4)
+    res <- filterPrecursorMzRange(be, 5.4)
     expect_equal(rtime(res), 4)
 
     res <- filterPrecursorMz(be, 4.4311)

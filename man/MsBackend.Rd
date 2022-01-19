@@ -31,6 +31,7 @@
 \alias{filterIsolationWindow,MsBackend-method}
 \alias{filterMsLevel,MsBackend-method}
 \alias{filterPolarity,MsBackend-method}
+\alias{filterPrecursorMzRange,MsBackend-method}
 \alias{filterPrecursorMz,MsBackend-method}
 \alias{filterPrecursorMzValues,MsBackend-method}
 \alias{filterPrecursorCharge,MsBackend-method}
@@ -127,6 +128,8 @@
 \S4method{filterMsLevel}{MsBackend}(object, msLevel = integer())
 
 \S4method{filterPolarity}{MsBackend}(object, polarity = integer())
+
+\S4method{filterPrecursorMzRange}{MsBackend}(object, mz = numeric())
 
 \S4method{filterPrecursorMz}{MsBackend}(object, mz = numeric())
 
@@ -258,9 +261,9 @@ For \code{filterAcquisitionNum}: optionally specify if filtering should occur
 only for spectra of selected \code{dataStorage}.}
 
 \item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
-filter the object. For \code{filterPrecursorMz}: \code{numeric(2)} with the lower
-and upper m/z boundary. For \code{filterPrecursorMzValues}: \code{numeric} with the
-m/z value(s) to filter the object.}
+filter the object. For \code{filterPrecursorMzRange}: \code{numeric(2)} with the
+lower and upper m/z boundary. For \code{filterPrecursorMzValues}: \code{numeric}
+with the m/z value(s) to filter the object.}
 
 \item{msLevel}{\code{integer} defining the MS level of the spectra to which the
 function should be applied. For \code{filterMsLevel}: the MS level to which
@@ -508,8 +511,8 @@ for \code{MsBackend} is available.
 \item \code{filterPolarity}: retains spectra of polarity \code{polarity}.
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
-\item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
-provided m/z range.
+\item \code{filterPrecursorMzRange} (previously \code{filterPrecursorMz}): retains spectra
+with a precursor m/z within the provided m/z range.
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterPrecursorMzValues}: retains spectra with a precursor m/z matching

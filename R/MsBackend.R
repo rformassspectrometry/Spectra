@@ -89,9 +89,9 @@
 #' @param msLevel. same as `msLevel` above.
 #'
 #' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
-#'     filter the object. For `filterPrecursorMz`: `numeric(2)` with the lower
-#'     and upper m/z boundary. For `filterPrecursorMzValues`: `numeric` with the
-#'     m/z value(s) to filter the object.
+#'     filter the object. For `filterPrecursorMzRange`: `numeric(2)` with the
+#'     lower and upper m/z boundary. For `filterPrecursorMzValues`: `numeric`
+#'     with the m/z value(s) to filter the object.
 #'
 #' @param ppm For `filterPrecursorMzValues`: `numeric(1)` with the m/z-relative
 #'     maximal acceptable difference for a m/z to be considered matching. See
@@ -282,8 +282,8 @@
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterPrecursorMz`: retains spectra with a precursor m/z within the
-#'   provided m/z range.
+#' - `filterPrecursorMzRange` (previously `filterPrecursorMz`): retains spectra
+#'   with a precursor m/z within the provided m/z range.
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
@@ -874,12 +874,10 @@ setMethod("filterPolarity", "MsBackend",
               else object
           })
 
-#' @exportMethod filterPrecursorMz
-#'
-#' @importMethodsFrom ProtGenerics filterPrecursorMz
+#' @exportMethod filterPrecursorMzRange
 #'
 #' @rdname MsBackend
-setMethod("filterPrecursorMz", "MsBackend",
+setMethod("filterPrecursorMzRange", "MsBackend",
           function(object, mz = numeric()) {
               if (length(mz)) {
                   mz <- range(mz)
@@ -887,6 +885,14 @@ setMethod("filterPrecursorMz", "MsBackend",
                                 precursorMz(object) <= mz[2])
                   object[keep]
               } else object
+          })
+
+#' @importMethodsFrom ProtGenerics filterPrecursorMz
+#'
+#' @rdname MsBackend
+setMethod("filterPrecursorMz", "MsBackend",
+          function(object, mz = numeric()) {
+              filterPrecursorMzRange(object, mz)
           })
 
 #' @exportMethod filterPrecursorMzValues

@@ -920,16 +920,16 @@ test_that("filterPolarity,Spectra works", {
     expect_true(length(res@processing) == 1)
 })
 
-test_that("filterPrecursorMz,Spectra works", {
+test_that("filterPrecursorMzRange,Spectra works", {
     sps <- Spectra()
-    res <- filterPrecursorMz(sps)
+    res <- filterPrecursorMzRange(sps)
     expect_true(is(res, "Spectra"))
     expect_true(length(res@processing) == 1)
 
     sps <- Spectra(tmt_mzr)
-    res <- filterPrecursorMz(sps, mz = 544.75)
+    res <- filterPrecursorMzRange(sps, mz = 544.75)
     expect_true(length(res) == 0)
-    res <- filterPrecursorMz(sps, mz = 544.75 + ppm(c(-544.75, 544.75), 40))
+    res <- filterPrecursorMzRange(sps, mz = 544.75 + ppm(c(-544.75, 544.75), 40))
     expect_true(length(res) == 2)
 })
 

@@ -79,6 +79,7 @@
 \alias{filterMzValues,Spectra-method}
 \alias{filterPolarity,Spectra-method}
 \alias{filterPrecursorMz,Spectra-method}
+\alias{filterPrecursorMzRange,Spectra-method}
 \alias{filterPrecursorMzValues,Spectra-method}
 \alias{filterPrecursorCharge,Spectra-method}
 \alias{filterPrecursorScan,Spectra-method}
@@ -331,6 +332,8 @@ estimatePrecursorIntensity(
 \S4method{filterPolarity}{Spectra}(object, polarity = integer())
 
 \S4method{filterPrecursorMz}{Spectra}(object, mz = numeric())
+
+\S4method{filterPrecursorMzRange}{Spectra}(object, mz = numeric())
 
 \S4method{filterPrecursorMzValues}{Spectra}(object, mz = numeric(), ppm = 20, tolerance = 0)
 
@@ -916,7 +919,8 @@ considers also the absolute \code{tolerance} and m/z-relative \code{ppm} values.
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
-\item \code{filterPrecursorMz}: retains spectra with a precursor m/z within the
+\item \code{filterPrecursorMzRange} (previously \code{filterPrecursorMz} which is now
+deprecated): retains spectra with a precursor m/z within the
 provided m/z range. See examples for details on selecting spectra with
 a precursor m/z for a target m/z accepting a small difference in \emph{ppm}.
 \item \code{filterPrecursorMzValues}: retains spectra with precursor m/z matching any
@@ -1271,7 +1275,7 @@ head(data_comb$dataOrigin)
 ## Filter a Spectra for a target precursor m/z with a tolerance of 10ppm
 spd$precursorMz <- c(323.4, 543.2302)
 data_filt <- Spectra(spd)
-filterPrecursorMz(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
+filterPrecursorMzRange(data_filt, mz = 543.23 + ppm(c(-543.23, 543.23), 10))
 
 ## Filter a Spectra keeping only peaks matching certain m/z values
 sps_sub <- filterMzValues(data, mz = c(103, 104), tolerance = 0.3)
