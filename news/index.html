@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Spectra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.7</span>
       </span>
     </div>
 
@@ -53,30 +53,34 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5" id="spectra-15">Spectra 1.5<a class="anchor" aria-label="anchor" href="#spectra-15"></a></h2>
 <div class="section level3">
-<h3 id="changes-in-1-5">Changes in 1.5.6<a class="anchor" aria-label="anchor" href="#changes-in-1-5"></a></h3>
+<h3 id="changes-in-1-5">Changes in 1.5.7<a class="anchor" aria-label="anchor" href="#changes-in-1-5"></a></h3>
+<ul><li>Add missing export of the <code>filterPrecursorMz</code> method.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-in-1-5-1">Changes in 1.5.6<a class="anchor" aria-label="anchor" href="#changes-in-1-5-1"></a></h3>
 <ul><li>Add <code>filterPrecursorMzValue</code> method which allows to filter using multiple precursor m/z values (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/230" class="external-link">#230</a>).</li>
 <li>Fix unit test suite.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-1">Changes in 1.5.5<a class="anchor" aria-label="anchor" href="#changes-in-1-5-1"></a></h3>
+<h3 id="changes-in-1-5-2">Changes in 1.5.5<a class="anchor" aria-label="anchor" href="#changes-in-1-5-2"></a></h3>
 <ul><li>Add a testing framework allowing to run standardized unit tests for new <code>MsBackend</code> implementations (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/186" class="external-link">#186</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-2">Changes in 1.5.4<a class="anchor" aria-label="anchor" href="#changes-in-1-5-2"></a></h3>
+<h3 id="changes-in-1-5-3">Changes in 1.5.4<a class="anchor" aria-label="anchor" href="#changes-in-1-5-3"></a></h3>
 <ul><li>Add the <code>MsBackendCached</code> backend.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-3">Changes in 1.5.3<a class="anchor" aria-label="anchor" href="#changes-in-1-5-3"></a></h3>
+<h3 id="changes-in-1-5-4">Changes in 1.5.3<a class="anchor" aria-label="anchor" href="#changes-in-1-5-4"></a></h3>
 <ul><li>Only calculate number of peaks per spectra if the processing queue of the <code>Spectra</code> is not empty. Otherwise call the backend’s implementation (issue <a href="https://github.com/rformassspectrometry/MsBackendSql/issues/31" class="external-link">MsBackendSql </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/31" class="external-link">#31</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-4">Changes in 1.5.2<a class="anchor" aria-label="anchor" href="#changes-in-1-5-4"></a></h3>
+<h3 id="changes-in-1-5-5">Changes in 1.5.2<a class="anchor" aria-label="anchor" href="#changes-in-1-5-5"></a></h3>
 <ul><li>Small documentation update (related to <code>MsCoreUtils</code> issue <a href="https://github.com/rformassspectrometry/MsCoreUtils/issues/87" class="external-link">#87</a>).</li>
 <li>New <code><a href="../reference/countIdentifications.html">countIdentifications()</a></code> function.</li>
 <li>Add <code>filterFourierTransformArtefacts</code> function to remove fast fourier artefact peaks seen on e.g. Orbitrap instruments (issue <a href="https://github.com/RforMassSpectrometry/Spectra/issues/223" class="external-link">#223</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-5">Changes in 1.5.1<a class="anchor" aria-label="anchor" href="#changes-in-1-5-5"></a></h3>
+<h3 id="changes-in-1-5-6">Changes in 1.5.1<a class="anchor" aria-label="anchor" href="#changes-in-1-5-6"></a></h3>
 <ul><li>Don’t read header information when importing peaks matrix on macOS.</li>
 </ul></div>
 </div>
