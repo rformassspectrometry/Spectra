@@ -1940,6 +1940,8 @@ setMethod("filterPolarity", "Spectra", function(object, polarity = integer()) {
 })
 
 #' @rdname Spectra
+#'
+#' @export
 setMethod("filterPrecursorMz", "Spectra",
           function(object, mz = numeric()) {
               .Deprecated(

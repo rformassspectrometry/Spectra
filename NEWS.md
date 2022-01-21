@@ -1,5 +1,9 @@
 # Spectra 1.5
 
+## Changes in 1.5.7
+
+- Add missing export of the `filterPrecursorMz` method.
+
 ## Changes in 1.5.6
 
 - Add `filterPrecursorMzValue` method which allows to filter using multiple
