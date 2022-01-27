@@ -68,3 +68,31 @@ setGeneric("setBackend", function(object, backend, ...)
 setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
 #' @rdname hidden_aliases
 setGeneric("spectrapply", function(object, ...) standardGeneric("spectrapply"))
+
+#' @title Mapping between spectra variables and data file fields
+#'
+#' @description
+#'
+#' The `spectraVariableMapping` function is thought to provide the mapping
+#' between *spectra variables* of a [Spectra()] object with data fields from a
+#' data file. Such name mapping is expected to enable an easier import of data
+#' files with specific *dialects*, e.g. files in MGF format that use a
+#' different naming convention for core spectra variables.
+#'
+#' [MsBackend()] implementations are expected to implement this function
+#' (if needed) to enable import of data from file formats with non-standardized
+#' data fields.
+#'
+#' @param object An instance of an object extending [MsBackend()].
+#'
+#' @param ... Optional parameters.
+#'
+#' @return A named `character` with names being spectra variable names (use
+#'     [spectraVariables()] for a list of supported names) and values being the
+#'     data field names.
+#'
+#' @author Johannes Rainer
+#'
+#' @export
+setGeneric("spectraVariableMapping", function(object, ...)
+    standardGeneric("spectraVariableMapping"))
