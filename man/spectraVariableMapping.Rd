@@ -8,6 +8,8 @@ spectraVariableMapping(object, ...)
 }
 \arguments{
 \item{object}{An instance of an object extending \code{\link[=MsBackend]{MsBackend()}}.}
+
+\item{...}{Optional parameters.}
 }
 \value{
 A named \code{character} with names being spectra variable names (use
