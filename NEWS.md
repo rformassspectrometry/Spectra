@@ -1,5 +1,9 @@
 # Spectra 1.5
 
+## Changes in 1.5.8
+
+- Add `spectraVariableMapping` generic.
+
 ## Changes in 1.5.7
 
 - Add missing export of the `filterPrecursorMz` method.
