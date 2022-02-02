@@ -73,7 +73,7 @@ setGeneric("spectrapply", function(object, ...) standardGeneric("spectrapply"))
 #'
 #' @description
 #'
-#' The `spectraVariableMapping` function is thought to provide the mapping
+#' The `spectraVariableMapping` function provides the mapping
 #' between *spectra variables* of a [Spectra()] object with data fields from a
 #' data file. Such name mapping is expected to enable an easier import of data
 #' files with specific *dialects*, e.g. files in MGF format that use a

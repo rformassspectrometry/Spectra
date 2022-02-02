@@ -17,7 +17,7 @@ A named \code{character} with names being spectra variable names (use
 data field names.
 }
 \description{
-The \code{spectraVariableMapping} function is thought to provide the mapping
+The \code{spectraVariableMapping} function provides the mapping
 between \emph{spectra variables} of a \code{\link[=Spectra]{Spectra()}} object with data fields from a
 data file. Such name mapping is expected to enable an easier import of data
 files with specific \emph{dialects}, e.g. files in MGF format that use a
