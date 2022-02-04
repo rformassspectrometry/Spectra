@@ -5,10 +5,6 @@
 [![codecov.io](http://codecov.io/github/rformassspectrometry/Spectra/coverage.svg?branch=master)](http://codecov.io/github/rformassspectrometry/Spectra?branch=master)
 [![license](https://img.shields.io/badge/license-Artistic--2.0-brightgreen.svg)](https://opensource.org/licenses/Artistic-2.0)
 
-<img
-src="https://raw.githubusercontent.com/rformassspectrometry/stickers/master/Spectra/Spectra.png"
-height="150">
-
 The Spectra package defines an efficient infrastructure
 for storing and handling mass spectrometry spectra and functionality to
 subset, process, visualize and compare spectra data. It provides different
