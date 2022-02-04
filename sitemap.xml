@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/404.html</loc>
   </url>
   <url>
-    <loc>/articles/Spectra.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/articles/Spectra.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/articles/index.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/MsBackend.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/MsBackend.html</loc>
   </url>
   <url>
-    <loc>/reference/MsBackendCached.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/MsBackendCached.html</loc>
   </url>
   <url>
-    <loc>/reference/Spectra.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/Spectra.html</loc>
   </url>
   <url>
-    <loc>/reference/combinePeaks.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/combinePeaks.html</loc>
   </url>
   <url>
-    <loc>/reference/countIdentifications.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/countIdentifications.html</loc>
   </url>
   <url>
-    <loc>/reference/filterFourierTransformArtefacts.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/filterFourierTransformArtefacts.html</loc>
   </url>
   <url>
-    <loc>/reference/hidden_aliases.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/hidden_aliases.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/joinPeaks.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/joinPeaks.html</loc>
   </url>
   <url>
-    <loc>/reference/plotMzDelta.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/plotMzDelta.html</loc>
   </url>
   <url>
-    <loc>/reference/spectra-plotting.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.html</loc>
   </url>
   <url>
-    <loc>/reference/spectraVariableMapping.html</loc>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/spectraVariableMapping.html</loc>
   </url>
 </urlset>
