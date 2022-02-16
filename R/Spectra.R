@@ -460,7 +460,8 @@ NULL
 #'   are used and the peak matrices are combined using the function specified
 #'   with `FUN`, which defaults to [combinePeaks()]. Please refer to the
 #'   [combinePeaks()] help page for details and options of the actual
-#'   combination of peaks across the sets of spectra.
+#'   combination of peaks across the sets of spectra and to the package vignette
+#'   for examples and alternative ways to aggregate spectra.
 #'   The sets of spectra can be specified with parameter `f`.
 #'   In addition it is possible to define, with parameter `p` if and how to
 #'   split the input data for parallel processing.
