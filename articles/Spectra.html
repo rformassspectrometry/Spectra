@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,12 +95,12 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.15/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2022-02-04 10:08:33<br><strong>Compiled</strong>: Fri Feb 4 10:20:01 2022</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.15/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2022-02-16 10:48:11<br><strong>Compiled</strong>: Wed Feb 16 11:31:52 2022</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>The <code>Spectra</code> package provides a scalable and flexible infrastructure to represent, retrieve and handle mass spectrometry (MS) data. The <code>Spectra</code> object provides the user with a single standardized interface to access and manipulate MS data while supporting, through the concept of exchangeable <em>backends</em>, a large variety of different ways to store and retrieve mass spectrometry data. Such backends range from mzML/mzXML/CDF files, simple flat files, or database systems.</p>
-<p>This vignette provides general examples and descriptions for the <code>Spectra</code> package. Additional information and tutorials can be found <a href="https://jorainer.github.io/SpectraTutorials/" class="external-link">here</a>.</p>
+<p>This vignette provides general examples and descriptions for the <code>Spectra</code> package. Additional information and tutorials are available, such as <a href="https://jorainer.github.io/SpectraTutorials/" class="external-link">SpectraTutorials</a>, <a href="https://jorainer.github.io/MetaboAnnotationTutorials" class="external-link">MetaboAnnotationTutorials</a>, or also in <span class="citation">(Rainer et al. 2022)</span>.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -402,9 +402,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></code></pre>
 <p>The equivalent using filter function is shown below, with the added benefit that the filtering is recorded in the processing slot.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://magrittr.tidyverse.org" class="external-link">"magrittr"</a></span><span class="op">)</span>
-<span class="va">sps_sciex</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterDataOrigin</a></span><span class="op">(</span><span class="va">fls</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+<code class="sourceCode R"><span class="va">sps_sciex</span> |&gt;
+    <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterDataOrigin</a></span><span class="op">(</span><span class="va">fls</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> |&gt;
     <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">175</span>, <span class="fl">189</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## MSn data (Spectra) with 50 spectra in a MsBackendMzR backend:</span>
 <span class="co">##       msLevel     rtime scanIndex</span>
@@ -425,8 +424,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## file(s):</span>
 <span class="co">## 20171016_POOL_POS_3_105-134.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Feb  4 10:20:07 2022]</span>
-<span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Feb  4 10:20:07 2022]</span></code></pre>
+<span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Feb 16 11:31:56 2022]</span>
+<span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Feb 16 11:31:56 2022]</span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> or the <code>concatenateSpectra</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
@@ -452,7 +451,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## 4         2        NA        NA</span>
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Fri Feb  4 10:20:07 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Wed Feb 16 11:31:56 2022]</span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span></code></pre></div>
@@ -514,9 +513,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Lazy evaluation queue: 2 processing step(s)</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Fri Feb  4 10:20:07 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb  4 10:20:07 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb  4 10:20:07 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Wed Feb 16 11:31:56 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Feb 16 11:31:56 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Feb 16 11:31:56 2022]</span></code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Define a function that takes a matrix as input, divides the second</span>
@@ -540,9 +539,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Lazy evaluation queue: 3 processing step(s)</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Fri Feb  4 10:20:07 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb  4 10:20:07 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb  4 10:20:07 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Wed Feb 16 11:31:56 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Feb 16 11:31:56 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Feb 16 11:31:56 2022]</span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity</a></span><span class="op">(</span><span class="va">sps_2</span><span class="op">)</span></code></pre></div>
@@ -558,10 +557,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## [[2]] 16.708 100 40.643</span>
 <span class="co">## [[3]] 100 40.994</span>
 <span class="co">## [[4]] 32.341 100</span></code></pre>
-<p>Alternatively we could define a function that returns the maximum peak from each spectrum:</p>
+<p>Alternatively we could define a function that returns the maximum peak from each spectrum (note: we use the <code>unname</code> function to remove any names from the results):</p>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">max_peak</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span>
 <span class="op">}</span>
 
 <span class="va">sps_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">addProcessing</a></span><span class="op">(</span><span class="va">sps_rep</span>, <span class="va">max_peak</span><span class="op">)</span>
@@ -570,10 +569,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity</a></span><span class="op">(</span><span class="va">sps_2</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## NumericList of length 4</span>
-<span class="co">## [[1]] intensity=100</span>
-<span class="co">## [[2]] intensity=100</span>
-<span class="co">## [[3]] intensity=100</span>
-<span class="co">## [[4]] intensity=100</span></code></pre>
+<span class="co">## [[1]] 100</span>
+<span class="co">## [[2]] 100</span>
+<span class="co">## [[3]] 100</span>
+<span class="co">## [[4]] 100</span></code></pre>
 <p>Each spectrum in <code>sps_2</code> thus contains only a single peak. The parameter <code>spectraVariables</code> of the <code>addProcessing</code> function allows in addition to define spectra variables that should be passed (in addition to the peaks matrix) to the user-provided function. This would enable for example to calculate <em>neutral loss</em> spectra from a <code>Spectra</code> by subtracting the precursor m/z from each m/z of a spectrum. Our tool example does not have precursor m/z values defined, thus we first set them to arbitrary values. Then we define a function <code>neutral_loss</code> that subtracts the precursor m/z from each peak m/z removing also peaks with an m/z that is larger or equal to the precursor m/z. Note that, in order to be able to access the precursor m/z of the spectrum within our function, we have to add a parameter to the function that has the same name as the spectrum variable we want to access (in our case <code>precursorMz</code>).</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sps_rep</span><span class="op">$</span><span class="va">precursorMz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span>
@@ -651,41 +650,28 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## 4         2        NA        NA</span>
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Fri Feb  4 10:20:07 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb  4 10:20:07 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb  4 10:20:07 2022]</span>
+<span class="co">##  Merge 2 Spectra into one [Wed Feb 16 11:31:56 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Feb 16 11:31:56 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Feb 16 11:31:56 2022]</span>
 <span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage. Note that calling <code>reset</code> <strong>after</strong> <code>applyProcessing</code> can no longer <em>restore</em> the data.</p>
 </div>
 <div class="section level3">
-<h3 id="comparing-spectra-and-other-functions">Comparing spectra and other functions<a class="anchor" aria-label="anchor" href="#comparing-spectra-and-other-functions"></a>
-</h3>
-<p>Spectra can be compared with the <code>compareSpectra</code> function, that allows to calculate similarities between spectra using a variety of methods. However, peaks from the compared spectra have to be first matched before similarities can be calculated. <code>compareSpectra</code> uses by default the [joinPeaks()] function from the <em><a href="https://bioconductor.org/packages/3.15/MsCoreUtils" class="external-link">MsCoreUtils</a></em> package but supports also other mapping functions to be passed with the <code>MAPFUN</code> parameter (see <code><a href="../reference/joinPeaks.html">?joinPeaks</a></code> man page in <code>MsCoreUtils</code> for more details). The similarity calculation function can be specified with the <code>FUN</code> parameter and defaults to [ndotproduct()], the normalized dot-product. Below we calculate pairwise similarities between all spectra in <code>sps</code> accepting a 50 ppm difference of peaks’ m/z values for being considered matching.</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">compareSpectra</a></span><span class="op">(</span><span class="va">sps</span>, ppm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##           [,1]      [,2]      [,3]      [,4]</span>
-<span class="co">## [1,] 1.0000000 0.1380817 0.0000000 0.0000000</span>
-<span class="co">## [2,] 0.1380817 1.0000000 0.0000000 0.0000000</span>
-<span class="co">## [3,] 0.0000000 0.0000000 1.0000000 0.1817149</span>
-<span class="co">## [4,] 0.0000000 0.0000000 0.1817149 1.0000000</span></code></pre>
-<p>The resulting matrix represents the result from the pairwise comparison. As expected, the first two and the last two spectra are similar, albeit only moderately while the spectra from 1-Methylhistidine don’t share any similarity with those of Caffeine.</p>
-</div>
-<div class="section level3">
-<h3 id="plotting-spectra">Plotting <code>Spectra</code><a class="anchor" aria-label="anchor" href="#plotting-spectra"></a>
+<h3 id="visualizing-spectra">Visualizing <code>Spectra</code><a class="anchor" aria-label="anchor" href="#visualizing-spectra"></a>
 </h3>
 <p>The <code>Spectra</code> package provides the following functions to visualize spectra data: - <code>plotSpectra</code>: plot each spectrum in <code>Spectra</code> in its own panel. - <code>plotSpectraOverlay</code>: plot multiple spectra into the <strong>same</strong> plot.</p>
 <p>Below we use <code>plotSpectra</code> to plot the 4 spectra from the <code>sps</code> object using their names (as provided in spectra variable <code>"name"</code>) as plot titles.</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps</span>, main <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></code></pre></div>
 <p><img src="Spectra_files/figure-html/plotspectra-1.png" width="768"></p>
 <p>It is also possible to label individual peaks in each plot. Below we use the m/z value of each peak as its label. In the example we define a function that accesses information from each spectrum (<code>z</code>) and returns a <code>character</code> for each peak with the text that should be used as label. Parameters <code>labelSrt</code>, <code>labelPos</code> and <code>labelOffset</code> define the rotation of the label text and its position relative to the x and y coordinates of the peak.</p>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps</span>, main <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>,
             labels <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span>, digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,
             labelSrt <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, labelPos <span class="op">=</span> <span class="fl">2</span>, labelOffset <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></code></pre></div>
 <p><img src="Spectra_files/figure-html/plotspectra-label-1.png" width="768"></p>
 <p>These plots are rather busy and for some peaks the m/z values are overplotted. Below we define a <em>label function</em> that will only indicate the m/z of peaks with an intensity higher than 30.</p>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mzLabel</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">peaksData</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span>
     <span class="va">lbls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="va">z</span><span class="op">[</span>, <span class="st">"mz"</span><span class="op">]</span>, digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
@@ -696,17 +682,17 @@ document.addEventListener("DOMContentLoaded", function() {
             labelSrt <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, labelPos <span class="op">=</span> <span class="fl">2</span>, labelOffset <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></code></pre></div>
 <p><img src="Spectra_files/figure-html/plotspectra-label-int-1.png" width="768"></p>
 <p>Sometimes it might be of interest to plot multiple spectra into the <strong>same</strong> plot (e.g. to directly compare peaks from multiple spectra). This can be done with <code>plotSpectraOverlay</code> which we use below to create an <em>overlay-plot</em> of our 4 example spectra, using a different color for each spectrum.</p>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#E41A1C80"</span>, <span class="st">"#377EB880"</span>, <span class="st">"#4DAF4A80"</span>, <span class="st">"#984EA380"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraOverlay</a></span><span class="op">(</span><span class="va">sps</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>, col <span class="op">=</span> <span class="va">cols</span>, legend <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, pch <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></code></pre></div>
 <p><img src="Spectra_files/figure-html/plotspectraoverlay-1.png" width="576"></p>
 <p>Lastly, <code>plotSpectraMirror</code> allows to plot two spectra against each other as a <em>mirror plot</em> which is ideal to visualize spectra comparison results. Below we plot a spectrum of 1-Methylhistidine against one of Caffeine.</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraMirror</a></span><span class="op">(</span><span class="va">sps</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">sps</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <p><img src="Spectra_files/figure-html/plotspectramirror-1.png" width="576"></p>
 <p>The upper panel shows the spectrum from 1-Methylhistidine, the lower the one of Caffeine. None of the peaks of the two spectra match. Below we plot the two spectra of 1-Methylhistidine and the two of Caffeine against each other matching peaks with a <code>ppm</code> of 50.</p>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraMirror</a></span><span class="op">(</span><span class="va">sps</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">sps</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"1-Methylhistidine"</span>, ppm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
 <span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraMirror</a></span><span class="op">(</span><span class="va">sps</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">sps</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"Caffeine"</span>, ppm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></code></pre></div>
@@ -714,35 +700,86 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>See also <code><a href="../reference/spectra-plotting.html">?plotSpectra</a></code> for more plotting options and examples.</p>
 </div>
 <div class="section level3">
+<h3 id="aggregating-spectra-data">Aggregating spectra data<a class="anchor" aria-label="anchor" href="#aggregating-spectra-data"></a>
+</h3>
+<p>The <code>Spectra</code> package provides the <code>combineSpectra</code> function that allows to <em>aggregate</em> multiple spectra into a single one. The main parameters of this function are <code>f</code>, which defines the grouping of the spectra, and <code>FUN</code> which allows to define the function that performs the actual aggregation. The default aggregation function is <code>combinePeaks</code> (see <code><a href="../reference/combinePeaks.html">?combinePeaks</a></code> for details) that combines multiple spectra into a single spectrum with all peaks from all input spectra (with additional paramter <code>peaks = "union"</code>), or peaks that are present in a certain proportion of input spectra (with parameter <code>peaks = "intersect"</code>; parameter <code>minProp</code> allows to define the minimum required proportion of spectra in which a peak needs to be present. Below we use this function to combine the spectra for 1-methylhistidine and caffeine into a single spectrum for each compound. We use the spectra variable <code>$name</code>, that contains the names of the compounds, to define which spectra should be grouped together.</p>
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sps_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">combineSpectra</a></span><span class="op">(</span><span class="va">sps</span>, f <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></code></pre></div>
+<p>As a result, the 4 spectra got aggregated into two.</p>
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps_agg</span>, main <span class="op">=</span> <span class="va">sps_agg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></code></pre></div>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p>By default, all peaks present in all spectra are reported. As an alternative, by specifying <code>peaks = "intersect"</code> and <code>minProp = 1</code>, we could combine the spectra keeping only peaks that are present in <strong>both</strong> input spectra.</p>
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sps_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">combineSpectra</a></span><span class="op">(</span><span class="va">sps</span>, f <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, peaks <span class="op">=</span> <span class="st">"intersect"</span>, minProp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps_agg</span>, main <span class="op">=</span> <span class="va">sps_agg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></code></pre></div>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p>This results thus in a single peak for 1-methylhistidine and none for caffeine - why? The reason for that is that the difference of the peaks’ m/z values is larger than the default tolerance used for the peak grouping (the defaults for <code>combinePeaks</code> is <code>tolerance = 0</code> and <code>ppm = 0</code>). We could however already see in the previous section that the reported peaks’ m/z values have a larger measurement error (most likely because the fragment spectra were measured on different instruments with different precision). Thus, we next increase the <code>tolerance</code> and <code>ppm</code> parameters to group also peaks with a larger difference in their m/z values.</p>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sps_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">combineSpectra</a></span><span class="op">(</span><span class="va">sps</span>, f <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, peaks <span class="op">=</span> <span class="st">"intersect"</span>,
+                          minProp <span class="op">=</span> <span class="fl">1</span>, tolerance <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>
+<span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps_agg</span>, main <span class="op">=</span> <span class="va">sps_agg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></code></pre></div>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p>Whether in a real analysis we would be OK with such a large tolerance is however questionable. Note: which m/z and intensity is reported for the aggregated spectra can be defined with the parameters <code>intensityFun</code> and <code>mzFun</code> of <code>combinePeaks</code> (see <code><a href="../reference/combinePeaks.html">?combinePeaks</a></code> for more information).</p>
+<p>While the <code>combinePeaks</code> function is indeed helpful to combine peaks from different spectra, the <code>combineSpectra</code> function would in addition also allow us to provide our own, custom, peak aggregation function. As a simple example, instead of combining the spectra, we would like to select one of the input spectra as <em>representative</em> spectrum for grouped input spectra. <code>combineSpectra</code> supports any function that takes a list of peak matrices as input and returns a single peak matrix as output. We thus define below a function that calculates the total signal (TIC) for each input peak matrix, and returns the one peak matrix with the largest TIC.</p>
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#' function to select and return the peak matrix with the largest tic from</span>
+<span class="co">#' the provided list of peak matrices.</span>
+<span class="va">maxTic</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">tic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">x</span>, <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">z</span><span class="op">[</span>, <span class="st">"intensity"</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+                  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">x</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">tic</span><span class="op">)</span><span class="op">]</span><span class="op">]</span>
+<span class="op">}</span></code></pre></div>
+<p>We can now use this function with <code>combineSpectra</code> to select for each compound the spectrum with the largest TIC.</p>
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sps_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">combineSpectra</a></span><span class="op">(</span><span class="va">sps</span>, f <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, FUN <span class="op">=</span> <span class="va">maxTic</span><span class="op">)</span>
+<span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps_agg</span>, main <span class="op">=</span> <span class="va">sps_agg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></code></pre></div>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="comparing-spectra">Comparing spectra<a class="anchor" aria-label="anchor" href="#comparing-spectra"></a>
+</h3>
+<p>Spectra can be compared with the <code>compareSpectra</code> function, that allows to calculate similarities between spectra using a variety of methods. However, peaks from the compared spectra have to be first matched before similarities can be calculated. <code>compareSpectra</code> uses by default the [joinPeaks()] function from the <em><a href="https://bioconductor.org/packages/3.15/MsCoreUtils" class="external-link">MsCoreUtils</a></em> package but supports also other mapping functions to be passed with the <code>MAPFUN</code> parameter (see <code><a href="../reference/joinPeaks.html">?joinPeaks</a></code> man page in <code>MsCoreUtils</code> for more details). The similarity calculation function can be specified with the <code>FUN</code> parameter and defaults to [ndotproduct()], the normalized dot-product. For more details, see also <span class="citation">(Rainer et al. 2022)</span> or the <a href="https://jorainer.github.io/SpectraTutorials" class="external-link">SpectraTutorials</a> tutorial.</p>
+<p>Below we calculate pairwise similarities between all spectra in <code>sps</code> accepting a 50 ppm difference of peaks’ m/z values for being considered matching.</p>
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">compareSpectra</a></span><span class="op">(</span><span class="va">sps</span>, ppm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##           [,1]      [,2]      [,3]      [,4]</span>
+<span class="co">## [1,] 1.0000000 0.1380817 0.0000000 0.0000000</span>
+<span class="co">## [2,] 0.1380817 1.0000000 0.0000000 0.0000000</span>
+<span class="co">## [3,] 0.0000000 0.0000000 1.0000000 0.1817149</span>
+<span class="co">## [4,] 0.0000000 0.0000000 0.1817149 1.0000000</span></code></pre>
+<p>The resulting matrix represents the result from the pairwise comparison. As expected, the first two and the last two spectra are similar, albeit only moderately while the spectra from 1-Methylhistidine don’t share any similarity with those of Caffeine.</p>
+</div>
+<div class="section level3">
 <h3 id="exporting-spectra">Exporting spectra<a class="anchor" aria-label="anchor" href="#exporting-spectra"></a>
 </h3>
-<p>Spectra data can be exported with the <code>export</code> method. This method takes the <code>Spectra</code> that is supposed to be exported and the backend (parameter <code>backend</code>) which should be used to export the data and additional parameters for the export function of this backend. The backend thus defines the format of the exported file. Note however that not all <code>MsBackend</code> classes might support data export. The backend classes currently supporting data export and its format are: - <code>MsBackendMzR</code> (<code>Spectra</code> package): export data in <em>mzML</em> and <em>mzXML</em> format. Can not export all custom, user specified spectra variables. - <code>MsBackendMgf</code> (<a href="https://github.com/RforMassSpectrometry/MsBackendMgf" class="external-link"><code>MsBackendMgf</code></a> package): exports data in <em>Mascot Generic Format</em> (mgf). Exports all spectra variables as individual spectrum fields in the mgf file.</p>
+<p>Spectra data can be exported with the <code>export</code> method. This method takes the <code>Spectra</code> that is supposed to be exported and the backend (parameter <code>backend</code>) which should be used to export the data and additional parameters for the export function of this backend. The backend thus defines the format of the exported file. Note however that not all <code>MsBackend</code> classes might support data export. The backend classes currently supporting data export and its format are: - <code>MsBackendMzR</code> (<code>Spectra</code> package): export data in <em>mzML</em> and <em>mzXML</em> format. Can not export all custom, user specified spectra variables. - <code>MsBackendMgf</code> (<a href="https://RforMassSpectrometry.github.io/MsBackendMgf" class="external-link"><code>MsBackendMgf</code></a> package): exports data in <em>Mascot Generic Format</em> (mgf). Exports all spectra variables as individual spectrum fields in the mgf file. - <code>MsBackendMsp</code> (<a href="https://RforMassSpectrometry.github.io/MsBackendMsp" class="external-link"><code>MsBackendMsp</code></a>): exports data in NIST MSP format. - <code>MsBackendMassbank</code> (<a href="https://RforMassSpectrometry.github.io/MsBackendMassbank" class="external-link"><code>MsBackendMassbank</code></a>) exports data in Massbank text file format.</p>
 <p>In the example below we use the <code>MsBackendMzR</code> to export all spectra from the variable <code>sps</code> to an mzML file. We thus pass the data, the backend that should be used for the export and the file name of the result file (a temporary file) to the <code>export</code> function (see also the help page of the <code>export,MsBackendMzR</code> function for additional supported parameters).</p>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Writing file file9681da5e744...OK</span></code></pre>
+<pre><code><span class="co">## Writing file file702b686ba2be...OK</span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the exported data again and identify spectra variables in the original file which could not be exported (because they are not defined variables in the mzML standard).</p>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sps_im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="fu"><a href="../reference/hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">fl</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables</a></span><span class="op">(</span><span class="va">sps_im</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <pre><code><span class="co">## [1] "id"         "name"       "splash"     "instrument"</span></code></pre>
 <p>These additional variables were thus not exported. How data export is performed and handled depends also on the used backend. The <code>MsBackendMzR</code> for example exports all spectra by default to a single file (specified with the <code>file</code> parameter), but it allows also to specify for each individual spectrum in the <code>Spectra</code> to which file it should be exported (parameter <code>file</code> has thus to be of length equal to the number of spectra). As an example we export below the spectrum 1 and 3 to one file and spectra 2 and 4 to another.</p>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Writing file file9687af24320...OK</span>
-<span class="co">## Writing file file9681338196d...OK</span></code></pre>
+<pre><code><span class="co">## Writing file file702b756b1ed6...OK</span>
+<span class="co">## Writing file file702b8781213...OK</span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data after processing, such as smoothing (using the <code>smooth</code> function) and centroiding (using the <code>pickPeaks</code> function) of raw profile-mode MS data.</p>
 </div>
 <div class="section level3">
 <h3 id="changing-backends">Changing backends<a class="anchor" aria-label="anchor" href="#changing-backends"></a>
 </h3>
 <p>In the previous sections we learned already that a <code>Spectra</code> object can use different backends for the actual data handling. It is also possible to change the backend of a <code>Spectra</code> to a different one with the <code>setBackend</code> function. We could for example change the (<code>MsBackendMzR</code>) backend of the <code>sps_sciex</code> object to a <code>MsBackendDataFrame</code> backend to enable use of the data even without the need to keep the original mzML files. Below we change the backend of <code>sps_sciex</code> to the in-memory <code>MsBackendDataFrame</code> backend.</p>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Mb"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## 0.4 Mb</span></code></pre>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sps_sciex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hidden_aliases.html">setBackend</a></span><span class="op">(</span><span class="va">sps_sciex</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendDataFrame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="va">sps_sciex</span></code></pre></div>
 <pre><code><span class="co">## MSn data (Spectra) with 1862 spectra in a MsBackendDataFrame backend:</span>
@@ -761,16 +798,16 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## 1862         1   259.752       931</span>
 <span class="co">##  ... 33 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Feb  4 10:20:13 2022]</span></code></pre>
+<span class="co">##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Feb 16 11:32:03 2022]</span></code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
-<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Mb"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## 52.4 Mb</span></code></pre>
 <p>The <code>dataStorage</code> spectrum variable has now changed, while <code>dataOrigin</code> still keeps the information about the originating files:</p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">dataStorage</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</span></code></pre>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">dataOrigin</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"</span>
 <span class="co">## [3] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"</span>
@@ -785,7 +822,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="section level2">
 <h2 id="backends">Backends<a class="anchor" aria-label="anchor" href="#backends"></a>
 </h2>
-<p>Backends allow to use different <em>backends</em> to store mass spectrometry data while providing <em>via</em> the <code>Spectra</code> class a unified interface to use that data. The <code>Spectra</code> package defines a set of example backends but any object extending the base <code>MsBackend</code> class could be used instead. The default backends are:</p>
+<p>Backends allow to use different <em>backends</em> to store mass spectrometry data while providing <em>via</em> the <code>Spectra</code> class a unified interface to use that data. This is a further abstraction to the <em>on-disk</em> and <em>in-memory</em> data modes from <code>MSnbase</code> <span class="citation">(Gatto, Gibb, and Rainer 2020)</span>. The <code>Spectra</code> package defines a set of example backends but any object extending the base <code>MsBackend</code> class could be used instead. The default backends are:</p>
 <ul>
 <li><p><code>MsBackendDataFrame</code>: the mass spectrometry data is stored (in-memory) in a <code>DataFrame</code>. Keeping the data in memory guarantees high performance but has also, depending on the number of mass peaks in each spectrum, a much higher memory footprint.</p></li>
 <li><p><code>MsBackendMzR</code>: this backend keeps only general spectra variables in memory and relies on the <em><a href="https://bioconductor.org/packages/3.15/mzR" class="external-link">mzR</a></em> package to read mass peaks (m/z and intensity values) from the original MS files on-demand.</p></li>
@@ -793,7 +830,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </ul>
 <p>All of the above mentioned backends support changing all of their their spectra variables, <strong>except</strong> the <code>MsBackendMzR</code> that does not support changing m/z or intensity values for the mass peaks.</p>
 <p>With the example below we load the data from a single mzML file and use a <code>MsBackendHdf5Peaks</code> backend for data storage. The <code>hdf5path</code> parameter allows us to specify the storage location of the HDF5 file.</p>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">msdata</span><span class="op">)</span>
 <span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msdata/man/proteomics.html" class="external-link">proteomics</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span>
 
@@ -812,17 +849,17 @@ document.addEventListener("DOMContentLoaded", function() {
 <li>
 <em><a href="https://bioconductor.org/packages/3.15/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>: support for import/export and access of MassBank files/databases.</li>
 <li>
-<a href="https://github.com/rformassspectrometry/MsBackendHmdb" class="external-link">MsBackendHmdb</a>: support for import of MS2 spectra from files in the xml-file format of the Human Metabolome Database (HMDB).</li>
+<a href="https://rformassspectrometry.github.io/MsBackendHmdb" class="external-link">MsBackendHmdb</a>: support for import of MS2 spectra from files in the xml-file format of the Human Metabolome Database (HMDB).</li>
 <li>
-<a href="https://github.com/rformassspectrometry/MsBackendMsp" class="external-link">MsBackendMsp</a>: import MS2 spectra from files in MSP format.</li>
+<a href="https://rformassspectrometry.github.io/MsBackendMsp" class="external-link">MsBackendMsp</a>: import MS2 spectra from files in MSP format.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## R Under development (unstable) (2022-01-29 r81593)</span>
+<pre><code><span class="co">## R Under development (unstable) (2022-02-14 r81736)</span>
 <span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span>
 <span class="co">## Running under: Ubuntu 20.04.3 LTS</span>
 <span class="co">## </span>
@@ -842,9 +879,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## [8] base     </span>
 <span class="co">## </span>
 <span class="co">## other attached packages:</span>
-<span class="co">## [1] msdata_0.35.2        magrittr_2.0.2       Spectra_1.5.8       </span>
-<span class="co">## [4] ProtGenerics_1.27.2  BiocParallel_1.29.12 S4Vectors_0.33.10   </span>
-<span class="co">## [7] BiocGenerics_0.41.2  BiocStyle_2.23.1    </span>
+<span class="co">## [1] msdata_0.35.2        Spectra_1.5.9        ProtGenerics_1.27.2 </span>
+<span class="co">## [4] BiocParallel_1.29.12 S4Vectors_0.33.10    BiocGenerics_0.41.2 </span>
+<span class="co">## [7] BiocStyle_2.23.1    </span>
 <span class="co">## </span>
 <span class="co">## loaded via a namespace (and not attached):</span>
 <span class="co">##  [1] Rcpp_1.0.8          highr_0.9           bslib_0.3.1        </span>
@@ -852,21 +889,29 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">##  [7] rhdf5filters_1.7.0  tools_4.2.0         ncdf4_1.19         </span>
 <span class="co">## [10] digest_0.6.29       rhdf5_2.39.5        clue_0.3-60        </span>
 <span class="co">## [13] jsonlite_1.7.3      evaluate_0.14       memoise_2.0.1      </span>
-<span class="co">## [16] rlang_1.0.1         cli_3.1.1           yaml_2.2.2         </span>
+<span class="co">## [16] rlang_1.0.1         cli_3.2.0           yaml_2.2.2         </span>
 <span class="co">## [19] parallel_4.2.0      pkgdown_2.0.2.9000  xfun_0.29          </span>
 <span class="co">## [22] fastmap_1.1.0       cluster_2.1.2       stringr_1.4.0      </span>
 <span class="co">## [25] knitr_1.37          desc_1.4.0          fs_1.5.2           </span>
-<span class="co">## [28] sass_0.4.0          systemfonts_1.0.3   IRanges_2.29.1     </span>
+<span class="co">## [28] sass_0.4.0          systemfonts_1.0.4   IRanges_2.29.1     </span>
 <span class="co">## [31] MsCoreUtils_1.7.1   rprojroot_2.0.2     Biobase_2.55.0     </span>
 <span class="co">## [34] R6_2.5.1            textshaping_0.3.6   rmarkdown_2.11     </span>
 <span class="co">## [37] bookdown_0.24       Rhdf5lib_1.17.3     mzR_2.29.3         </span>
-<span class="co">## [40] purrr_0.3.4         codetools_0.2-18    htmltools_0.5.2    </span>
-<span class="co">## [43] MASS_7.3-55         ragg_1.2.1          stringi_1.7.6      </span>
-<span class="co">## [46] cachem_1.0.6        crayon_1.4.2</span></code></pre>
+<span class="co">## [40] purrr_0.3.4         magrittr_2.0.2      codetools_0.2-18   </span>
+<span class="co">## [43] htmltools_0.5.2     MASS_7.3-55         ragg_1.2.1         </span>
+<span class="co">## [46] stringi_1.7.6       cachem_1.0.6        crayon_1.5.0</span></code></pre>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-gattoMSnbaseEfficientElegant2020a" class="csl-entry">
+Gatto, Laurent, Sebastian Gibb, and Johannes Rainer. 2020. <span>“<span>MSnbase</span>, <span>Efficient</span> and <span>Elegant R</span>-<span>Based Processing</span> and <span>Visualization</span> of <span>Raw Mass Spectrometry Data</span>.”</span> <em>Journal of Proteome Research</em>, September. <a href="https://doi.org/10.1021/acs.jproteome.0c00313" class="external-link">https://doi.org/10.1021/acs.jproteome.0c00313</a>.
+</div>
+<div id="ref-rainer_modular_2022" class="csl-entry">
+Rainer, Johannes, Andrea Vicini, Liesa Salzer, Jan Stanstrup, Josep M. Badia, Steffen Neumann, Michael A. Stravs, et al. 2022. <span>“A <span>Modular</span> and <span>Expandable</span> <span>Ecosystem</span> for <span>Metabolomics</span> <span>Data</span> <span>Annotation</span> in <span>R</span>.”</span> <em>Metabolites</em> 12 (2): 173. <a href="https://doi.org/10.3390/metabo12020173" class="external-link">https://doi.org/10.3390/metabo12020173</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
