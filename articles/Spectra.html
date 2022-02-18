@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.10</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.15/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2022-02-16 10:48:11<br><strong>Compiled</strong>: Wed Feb 16 11:31:52 2022</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.15/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2022-02-18 06:58:58<br><strong>Compiled</strong>: Fri Feb 18 07:10:56 2022</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -424,8 +424,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## file(s):</span>
 <span class="co">## 20171016_POOL_POS_3_105-134.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Feb 16 11:31:56 2022]</span>
-<span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Feb 16 11:31:56 2022]</span></code></pre>
+<span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Feb 18 07:11:00 2022]</span>
+<span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Feb 18 07:11:00 2022]</span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for some backends, depending on their implementation, (e.g. database-based backends could <em>translate</em> the filter function into a SQL condition to perform the subsetting already within the database).</p>
 <p>Multiple <code>Spectra</code> objects can also be combined into a single <code>Spectra</code> with the <code>c</code> or the <code>concatenateSpectra</code> function. The resulting <code>Spectra</code> object will contain an union of the spectra variables of the individual objects. Below we combine the <code>Spectra</code> object <code>sps</code> with an additional object containing another MS2 spectrum for Caffeine.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
@@ -451,7 +451,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## 4         2        NA        NA</span>
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Wed Feb 16 11:31:56 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Fri Feb 18 07:11:00 2022]</span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span></code></pre></div>
@@ -513,9 +513,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Lazy evaluation queue: 2 processing step(s)</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Wed Feb 16 11:31:56 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Feb 16 11:31:56 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Feb 16 11:31:56 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Fri Feb 18 07:11:00 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb 18 07:11:01 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb 18 07:11:01 2022]</span></code></pre>
 <p>It is possible to add also custom functions to the processing queue of a <code>Spectra</code> object. Such a function must take a peaks matrix as its first argument, have <code>...</code> in the function definition and must return a peaks matrix (a peaks matrix is a numeric two-column matrix with the first column containing the peaks’ m/z values and the second the corresponding intensities). Below we define a function that divides the intensities of each peak by a value which can be passed with argument <code>y</code>.</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Define a function that takes a matrix as input, divides the second</span>
@@ -539,9 +539,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Lazy evaluation queue: 3 processing step(s)</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Wed Feb 16 11:31:56 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Feb 16 11:31:56 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Feb 16 11:31:56 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Fri Feb 18 07:11:00 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb 18 07:11:01 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb 18 07:11:01 2022]</span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy evaluation queue. Calling <code>intensity</code> on this object will now return intensities that are half of the intensities of the original objects <code>sps</code>.</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity</a></span><span class="op">(</span><span class="va">sps_2</span><span class="op">)</span></code></pre></div>
@@ -650,9 +650,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## 4         2        NA        NA</span>
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Wed Feb 16 11:31:56 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Feb 16 11:31:56 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Feb 16 11:31:56 2022]</span>
+<span class="co">##  Merge 2 Spectra into one [Fri Feb 18 07:11:00 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb 18 07:11:01 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb 18 07:11:01 2022]</span>
 <span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue contained 2 processing steps, which were then applied to the peak data and <em>written</em> to the data storage. Note that calling <code>reset</code> <strong>after</strong> <code>applyProcessing</code> can no longer <em>restore</em> the data.</p>
 </div>
@@ -758,7 +758,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Writing file file702b686ba2be...OK</span></code></pre>
+<pre><code><span class="co">## Writing file filea8419ba3aba...OK</span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the exported data again and identify spectra variables in the original file which could not be exported (because they are not defined variables in the mzML standard).</p>
 <div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sps_im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="fu"><a href="../reference/hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">fl</span><span class="op">)</span><span class="op">)</span>
@@ -768,8 +768,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Writing file file702b756b1ed6...OK</span>
-<span class="co">## Writing file file702b8781213...OK</span></code></pre>
+<pre><code><span class="co">## Writing file filea84470f1f23...OK</span>
+<span class="co">## Writing file filea841a76af65...OK</span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data after processing, such as smoothing (using the <code>smooth</code> function) and centroiding (using the <code>pickPeaks</code> function) of raw profile-mode MS data.</p>
 </div>
 <div class="section level3">
@@ -798,7 +798,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## 1862         1   259.752       931</span>
 <span class="co">##  ... 33 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Feb 16 11:32:03 2022]</span></code></pre>
+<span class="co">##  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Feb 18 07:11:07 2022]</span></code></pre>
 <p>With the call the full peak data was imported from the original mzML files into the object. This has obviously an impact on the object’s size, which is now much larger than before.</p>
 <div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Mb"</span><span class="op">)</span></code></pre></div>
@@ -879,7 +879,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## [8] base     </span>
 <span class="co">## </span>
 <span class="co">## other attached packages:</span>
-<span class="co">## [1] msdata_0.35.2        Spectra_1.5.9        ProtGenerics_1.27.2 </span>
+<span class="co">## [1] msdata_0.35.2        Spectra_1.5.10       ProtGenerics_1.27.2 </span>
 <span class="co">## [4] BiocParallel_1.29.12 S4Vectors_0.33.10    BiocGenerics_0.41.2 </span>
 <span class="co">## [7] BiocStyle_2.23.1    </span>
 <span class="co">## </span>
@@ -889,7 +889,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">##  [7] rhdf5filters_1.7.0  tools_4.2.0         ncdf4_1.19         </span>
 <span class="co">## [10] digest_0.6.29       rhdf5_2.39.5        clue_0.3-60        </span>
 <span class="co">## [13] jsonlite_1.7.3      evaluate_0.14       memoise_2.0.1      </span>
-<span class="co">## [16] rlang_1.0.1         cli_3.2.0           yaml_2.2.2         </span>
+<span class="co">## [16] rlang_1.0.1         cli_3.2.0           yaml_2.3.4         </span>
 <span class="co">## [19] parallel_4.2.0      pkgdown_2.0.2.9000  xfun_0.29          </span>
 <span class="co">## [22] fastmap_1.1.0       cluster_2.1.2       stringr_1.4.0      </span>
 <span class="co">## [25] knitr_1.37          desc_1.4.0          fs_1.5.2           </span>
