@@ -1,0 +1,27 @@
+citHeader("To cite the Spectra package in publications use:")
+
+citEntry(entry = "article",
+         title  = "A Modular and Expandable Ecosystem for Metabolomics Data Annotation in R",
+         author = personList(
+           person(given = "Johannes", family = "Rainer"),
+           person(given = "Andrea", family = "Vicini"),
+           person(given = "Liesa", family = "Salzer"),
+           person(given = "Jan", family = "Stanstrup"),
+           person(given = "Josep M.", family = "Badia"),
+           person(given = "Steffen", family = "Neumann"),
+           person(given = "Michael A.", family = "Stravs"),
+           person(given = "Vinicius", family = "Verri Hernandes"),
+           person(given = "Laurent", family = "Gatto"),
+           person(given = "Sebastian", family = "Gibb"),
+           person(given = "Michael", family = "Witting")
+         ),
+         journal = "Metabolites",
+         year = "2022",
+         doi = "10.3390/metabo12020173",
+         url = "https://www.mdpi.com/2218-1989/12/2/173",
+         volume = "12",
+         pages = "173",
+         textVersion = paste("Rainer J, Vicini A, Salzer L, Stanstrup J, Badia JM, Neumann S, Stravs MA, Verri Hernandes V, Gatto L, Gibb S and Wittin M.",
+                             "A Modular and Expandable Ecosystem for Metabolomics Data Annotation in R",
+                             "Metabolites 2022, 12, 173. https://doi.org/10.3390/metabo12020173")
+         )

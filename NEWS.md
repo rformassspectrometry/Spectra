@@ -1,5 +1,9 @@
 # Spectra 1.5
 
+## Changes in 1.5.10
+
+- Add citation.
+
 ## Changes in 1.5.9
 
 - Add examples for `combineSpectra` to the vignette.
