@@ -1,5 +1,9 @@
 # Spectra 1.4
 
+## Changes in 1.4.2
+
+- Add citation.
+
 ## Changes in 1.4.1
 
 - Disable reading header information when importing peaks data from spectra on macOS.

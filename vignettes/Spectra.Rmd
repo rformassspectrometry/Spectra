@@ -9,6 +9,7 @@ vignette: >
     %\VignetteEncoding{UTF-8}
     %\VignettePackage{Spectra}
     %\VignetteDepends{Spectra,mzR,BiocStyle,msdata,magrittr}
+bibliography: references.bib
 ---
 
 ```{r style, echo = FALSE, results = 'asis', message=FALSE}
@@ -31,9 +32,9 @@ The `Spectra` package provides a scalable and flexible infrastructure to
 represent, retrieve and handle mass spectrometry (MS) data. The `Spectra` object
 provides the user with a single standardized interface to access and manipulate
 MS data while supporting, through the concept of exchangeable *backends*, a
-large variety of different ways to store and retrieve mass spectrometry
-data. Such backends range from mzML/mzXML/CDF files, simple flat files, or
-database systems.
+large variety of different ways to store and retrieve mass spectrometry data
+[@rainer_modular_2022]. Such backends range from mzML/mzXML/CDF files, simple
+flat files, or database systems.
 
 This vignette provides general examples and descriptions for the `Spectra`
 package. Additional information and tutorials can be found
