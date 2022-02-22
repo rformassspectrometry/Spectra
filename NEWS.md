@@ -1,5 +1,9 @@
 # Spectra 1.4
 
+## Changes in 1.4.3
+
+- Fix example on neutral loss calculation in the vignette.
+
 ## Changes in 1.4.2
 
 - Add citation.
