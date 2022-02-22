@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.11</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,47 +50,61 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.5" id="spectra-15">Spectra 1.5<a class="anchor" aria-label="anchor" href="#spectra-15"></a></h2>
 <div class="section level3">
-<h3 id="changes-in-1-5">Changes in 1.5.10<a class="anchor" aria-label="anchor" href="#changes-in-1-5"></a></h3>
+<h3 id="changes-in-1-5">Changes in 1.5.11<a class="anchor" aria-label="anchor" href="#changes-in-1-5"></a></h3>
+<ul><li>Fix neutral loss example in the vignette.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-in-1-5-1">Changes in 1.5.10<a class="anchor" aria-label="anchor" href="#changes-in-1-5-1"></a></h3>
 <ul><li>Add citation.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-1">Changes in 1.5.9<a class="anchor" aria-label="anchor" href="#changes-in-1-5-1"></a></h3>
+<h3 id="changes-in-1-5-2">Changes in 1.5.9<a class="anchor" aria-label="anchor" href="#changes-in-1-5-2"></a></h3>
 <ul><li>Add examples for <code>combineSpectra</code> to the vignette.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-2">Changes in 1.5.8<a class="anchor" aria-label="anchor" href="#changes-in-1-5-2"></a></h3>
+<h3 id="changes-in-1-5-3">Changes in 1.5.8<a class="anchor" aria-label="anchor" href="#changes-in-1-5-3"></a></h3>
 <ul><li>Add <code>spectraVariableMapping</code> generic.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-3">Changes in 1.5.7<a class="anchor" aria-label="anchor" href="#changes-in-1-5-3"></a></h3>
-<ul><li>Add missing export of the <code>filterPrecursorMz</code> method.</li>
+<h3 id="changes-in-1-5-4">Changes in 1.5.7<a class="anchor" aria-label="anchor" href="#changes-in-1-5-4"></a></h3>
+<ul><li>Add missing export of the <code>filterPrecursorMz</code>
+method.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-4">Changes in 1.5.6<a class="anchor" aria-label="anchor" href="#changes-in-1-5-4"></a></h3>
-<ul><li>Add <code>filterPrecursorMzValue</code> method which allows to filter using multiple precursor m/z values (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/230" class="external-link">#230</a>).</li>
+<h3 id="changes-in-1-5-5">Changes in 1.5.6<a class="anchor" aria-label="anchor" href="#changes-in-1-5-5"></a></h3>
+<ul><li>Add <code>filterPrecursorMzValue</code> method which allows to
+filter using multiple precursor m/z values (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/230" class="external-link">#230</a>).</li>
 <li>Fix unit test suite.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-5">Changes in 1.5.5<a class="anchor" aria-label="anchor" href="#changes-in-1-5-5"></a></h3>
-<ul><li>Add a testing framework allowing to run standardized unit tests for new <code>MsBackend</code> implementations (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/186" class="external-link">#186</a>).</li>
+<h3 id="changes-in-1-5-6">Changes in 1.5.5<a class="anchor" aria-label="anchor" href="#changes-in-1-5-6"></a></h3>
+<ul><li>Add a testing framework allowing to run standardized unit tests for
+new <code>MsBackend</code> implementations (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/186" class="external-link">#186</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-6">Changes in 1.5.4<a class="anchor" aria-label="anchor" href="#changes-in-1-5-6"></a></h3>
+<h3 id="changes-in-1-5-7">Changes in 1.5.4<a class="anchor" aria-label="anchor" href="#changes-in-1-5-7"></a></h3>
 <ul><li>Add the <code>MsBackendCached</code> backend.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-7">Changes in 1.5.3<a class="anchor" aria-label="anchor" href="#changes-in-1-5-7"></a></h3>
-<ul><li>Only calculate number of peaks per spectra if the processing queue of the <code>Spectra</code> is not empty. Otherwise call the backend’s implementation (issue <a href="https://github.com/rformassspectrometry/MsBackendSql/issues/31" class="external-link">MsBackendSql </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/31" class="external-link">#31</a>).</li>
+<h3 id="changes-in-1-5-8">Changes in 1.5.3<a class="anchor" aria-label="anchor" href="#changes-in-1-5-8"></a></h3>
+<ul><li>Only calculate number of peaks per spectra if the processing queue
+of the <code>Spectra</code> is not empty. Otherwise call the backend’s
+implementation (issue <a href="https://github.com/rformassspectrometry/MsBackendSql/issues/31" class="external-link">MsBackendSql
+</a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/31" class="external-link">#31</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-8">Changes in 1.5.2<a class="anchor" aria-label="anchor" href="#changes-in-1-5-8"></a></h3>
-<ul><li>Small documentation update (related to <code>MsCoreUtils</code> issue <a href="https://github.com/rformassspectrometry/MsCoreUtils/issues/87" class="external-link">#87</a>).</li>
+<h3 id="changes-in-1-5-9">Changes in 1.5.2<a class="anchor" aria-label="anchor" href="#changes-in-1-5-9"></a></h3>
+<ul><li>Small documentation update (related to <code>MsCoreUtils</code>
+issue <a href="https://github.com/rformassspectrometry/MsCoreUtils/issues/87" class="external-link">#87</a>).</li>
 <li>New <code><a href="../reference/countIdentifications.html">countIdentifications()</a></code> function.</li>
-<li>Add <code>filterFourierTransformArtefacts</code> function to remove fast fourier artefact peaks seen on e.g. Orbitrap instruments (issue <a href="https://github.com/RforMassSpectrometry/Spectra/issues/223" class="external-link">#223</a>).</li>
+<li>Add <code>filterFourierTransformArtefacts</code> function to remove
+fast fourier artefact peaks seen on e.g. Orbitrap instruments (issue
+<a href="https://github.com/RforMassSpectrometry/Spectra/issues/223" class="external-link">#223</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-5-9">Changes in 1.5.1<a class="anchor" aria-label="anchor" href="#changes-in-1-5-9"></a></h3>
-<ul><li>Don’t read header information when importing peaks matrix on macOS.</li>
+<h3 id="changes-in-1-5-10">Changes in 1.5.1<a class="anchor" aria-label="anchor" href="#changes-in-1-5-10"></a></h3>
+<ul><li>Don’t read header information when importing peaks matrix on
+macOS.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -101,40 +115,52 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-1">Changes in 1.3.10<a class="anchor" aria-label="anchor" href="#changes-in-1-3-1"></a></h3>
-<ul><li>Fix bug in <code>plotSpectra</code> and <code>plotSpectraMirror</code> that would cause an error if the number of peaks in a spectrum was 1 and labels were provided.</li>
+<ul><li>Fix bug in <code>plotSpectra</code> and
+<code>plotSpectraMirror</code> that would cause an error if the number
+of peaks in a spectrum was 1 and labels were provided.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-2">Changes in 1.3.9<a class="anchor" aria-label="anchor" href="#changes-in-1-3-2"></a></h3>
-<ul><li>New features: <code><a href="../reference/Spectra.html">joinSpectraData()</a></code> now check for duplicated keys in <code>x</code> (throws an error) and <code>y</code> (thows a warning).</li>
+<ul><li>New features: <code><a href="../reference/Spectra.html">joinSpectraData()</a></code> now check for
+duplicated keys in <code>x</code> (throws an error) and <code>y</code>
+(thows a warning).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-3">Changes in 1.3.8<a class="anchor" aria-label="anchor" href="#changes-in-1-3-3"></a></h3>
-<ul><li>New features: <code><a href="../reference/plotMzDelta.html">plotMzDelta()</a></code> function to M/Z delta QC (ported from MSnbase).</li>
+<ul><li>New features: <code><a href="../reference/plotMzDelta.html">plotMzDelta()</a></code> function to M/Z delta QC
+(ported from MSnbase).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-4">Changes in 1.3.7<a class="anchor" aria-label="anchor" href="#changes-in-1-3-4"></a></h3>
-<ul><li>Add fix from <code>MSnbase</code> (issue <a href="https://github.com/lgatto/MSnbase/issues/170" class="external-link">#170</a>) to <code>Spectra</code>: on macOS require reading also the spectrum header before reading the peaks data.</li>
+<ul><li>Add fix from <code>MSnbase</code> (issue <a href="https://github.com/lgatto/MSnbase/issues/170" class="external-link">#170</a>) to
+<code>Spectra</code>: on macOS require reading also the spectrum header
+before reading the peaks data.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-5">Changes in 1.3.6<a class="anchor" aria-label="anchor" href="#changes-in-1-3-5"></a></h3>
-<ul><li>Documentation updates for <code>combineSpectra</code> and <code>combinePeaks</code>.</li>
+<ul><li>Documentation updates for <code>combineSpectra</code> and
+<code>combinePeaks</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-6">Changes in 1.3.5<a class="anchor" aria-label="anchor" href="#changes-in-1-3-6"></a></h3>
 <ul><li>
-<code>filterMzValues</code> supports also removing peaks matching specified m/z values (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/209" class="external-link">#209</a>).</li>
+<code>filterMzValues</code> supports also removing peaks matching
+specified m/z values (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/209" class="external-link">#209</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-7">Changes in 1.3.4<a class="anchor" aria-label="anchor" href="#changes-in-1-3-7"></a></h3>
-<ul><li>Add list of additional R packages and repositories providing <code>MsBackend</code> backends to the vignette.</li>
+<ul><li>Add list of additional R packages and repositories providing
+<code>MsBackend</code> backends to the vignette.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-8">Changes in 1.3.3<a class="anchor" aria-label="anchor" href="#changes-in-1-3-8"></a></h3>
-<ul><li>Move generics for <code>bin</code> and <code>compareSpectra</code> to <code>ProtGenerics</code>.</li>
+<ul><li>Move generics for <code>bin</code> and <code>compareSpectra</code>
+to <code>ProtGenerics</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-9">Changes in 1.3.2<a class="anchor" aria-label="anchor" href="#changes-in-1-3-9"></a></h3>
-<ul><li>Add parameter <code>f</code> to <code>filterPrecursorScan</code> to fix issue <a href="https://github.com/rformassspectrometry/Spectra/issues/194" class="external-link">#194</a>.</li>
+<ul><li>Add parameter <code>f</code> to <code>filterPrecursorScan</code> to
+fix issue <a href="https://github.com/rformassspectrometry/Spectra/issues/194" class="external-link">#194</a>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-10">Changes in 1.3.1<a class="anchor" aria-label="anchor" href="#changes-in-1-3-10"></a></h3>
@@ -158,16 +184,21 @@
 <div class="section level3">
 <h3 id="changes-in-1-1-3">Changes in 1.1.17<a class="anchor" aria-label="anchor" href="#changes-in-1-1-3"></a></h3>
 <ul><li>Fix issue <a href="https://github.com/rformassspectrometry/Spectra/issues/187" class="external-link">#187</a>.</li>
-<li>Add function <code>concatenateSpectra</code> to allow concatenating <code>Spectra</code> objects and list of <code>Spectra</code> objects.</li>
+<li>Add function <code>concatenateSpectra</code> to allow concatenating
+<code>Spectra</code> objects and list of <code>Spectra</code>
+objects.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-4">Changes in 1.1.16<a class="anchor" aria-label="anchor" href="#changes-in-1-1-4"></a></h3>
-<ul><li>Support arbitrary spectra variables to be passed to the functions provided/added with <code>addProcessing</code>; issue <a href="https://github.com/rformassspectrometry/Spectra/issues/182" class="external-link">#182</a>.</li>
+<ul><li>Support arbitrary spectra variables to be passed to the functions
+provided/added with <code>addProcessing</code>; issue <a href="https://github.com/rformassspectrometry/Spectra/issues/182" class="external-link">#182</a>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-5">Changes in 1.1.15<a class="anchor" aria-label="anchor" href="#changes-in-1-1-5"></a></h3>
-<ul><li>Pass spectras’ precursor m/z to the <code>MAPFUN</code> in <code>compareSpectra</code>; issue <a href="https://github.com/rformassspectrometry/Spectra/issues/171" class="external-link">#171</a>.</li>
-<li>Add <code>joinPeaksGnps</code> to perform a peak matching between spectra similar to the one performed in GNPS (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/171" class="external-link">#171</a>).</li>
+<ul><li>Pass spectras’ precursor m/z to the <code>MAPFUN</code> in
+<code>compareSpectra</code>; issue <a href="https://github.com/rformassspectrometry/Spectra/issues/171" class="external-link">#171</a>.</li>
+<li>Add <code>joinPeaksGnps</code> to perform a peak matching between
+spectra similar to the one performed in GNPS (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/171" class="external-link">#171</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-6">Changes in 1.1.14<a class="anchor" aria-label="anchor" href="#changes-in-1-1-6"></a></h3>
@@ -179,16 +210,20 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-8">Changes in 1.1.12<a class="anchor" aria-label="anchor" href="#changes-in-1-1-8"></a></h3>
-<ul><li>Fix <code>show</code> method for <code>Spectra</code> to list only the 3 most recent processing steps (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/173" class="external-link">173</a>).</li>
-<li>Add <code>processingLog</code> function to display the log messages of all processing steps of a <code>Spectra</code> object.</li>
+<ul><li>Fix <code>show</code> method for <code>Spectra</code> to list only
+the 3 most recent processing steps (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/173" class="external-link">173</a>).</li>
+<li>Add <code>processingLog</code> function to display the log messages
+of all processing steps of a <code>Spectra</code> object.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-9">Changes in 1.1.11<a class="anchor" aria-label="anchor" href="#changes-in-1-1-9"></a></h3>
-<ul><li>Add support for <code>...</code> to <code>pickPeaks</code> and <code>smooth</code> (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/168" class="external-link">168</a>).</li>
+<ul><li>Add support for <code>...</code> to <code>pickPeaks</code> and
+<code>smooth</code> (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/168" class="external-link">168</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-10">Changes in 1.1.10<a class="anchor" aria-label="anchor" href="#changes-in-1-1-10"></a></h3>
-<ul><li>Import <code>filterIntensity</code> from <code>ProtGenerics</code>.</li>
+<ul><li>Import <code>filterIntensity</code> from
+<code>ProtGenerics</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-11">Changes in 1.1.9<a class="anchor" aria-label="anchor" href="#changes-in-1-1-11"></a></h3>
@@ -197,7 +232,8 @@
 <div class="section level3">
 <h3 id="changes-in-1-1-12">Changes in 1.1.8<a class="anchor" aria-label="anchor" href="#changes-in-1-1-12"></a></h3>
 <ul><li>
-<code>filterIntensity</code> supports passing of additional parameters to the used filter function (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/164" class="external-link">164</a>).</li>
+<code>filterIntensity</code> supports passing of additional
+parameters to the used filter function (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/164" class="external-link">164</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-13">Changes in 1.1.7<a class="anchor" aria-label="anchor" href="#changes-in-1-1-13"></a></h3>
@@ -209,25 +245,32 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-15">Changes in 1.1.5<a class="anchor" aria-label="anchor" href="#changes-in-1-1-15"></a></h3>
-<ul><li>Add <code>[[,Msbackend</code> and <code>[[&lt;-,MsBackend</code> methods (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/149" class="external-link">149</a>).</li>
-<li>Add <code>[[,Spectra</code> and <code>[[&lt;-,Spectra</code> methods.</li>
+<ul><li>Add <code>[[,Msbackend</code> and <code>[[&lt;-,MsBackend</code>
+methods (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/149" class="external-link">149</a>).</li>
+<li>Add <code>[[,Spectra</code> and <code>[[&lt;-,Spectra</code>
+methods.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-16">Changes in 1.1.4<a class="anchor" aria-label="anchor" href="#changes-in-1-1-16"></a></h3>
-<ul><li>Fix issue with <code>labelCol</code> in <code>plotSpectra</code> (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/157" class="external-link">#157</a>).</li>
+<ul><li>Fix issue with <code>labelCol</code> in <code>plotSpectra</code>
+(issue <a href="https://github.com/rformassspectrometry/Spectra/issues/157" class="external-link">#157</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-17">Changes in 1.1.3<a class="anchor" aria-label="anchor" href="#changes-in-1-1-17"></a></h3>
-<ul><li>Implement a generic <code>Spectra,ANY</code> constructor replacing <code>Spectra,DataFrame</code> and <code>Spectra,character</code>.</li>
+<ul><li>Implement a generic <code>Spectra,ANY</code> constructor replacing
+<code>Spectra,DataFrame</code> and <code>Spectra,character</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-18">Changes in 1.1.2<a class="anchor" aria-label="anchor" href="#changes-in-1-1-18"></a></h3>
-<ul><li>Fix problem in export to mzML files that failed for empty spectra (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/145" class="external-link">#145</a>)</li>
+<ul><li>Fix problem in export to mzML files that failed for empty spectra
+(issue <a href="https://github.com/rformassspectrometry/Spectra/issues/145" class="external-link">#145</a>)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-19">Changes in 1.1.1<a class="anchor" aria-label="anchor" href="#changes-in-1-1-19"></a></h3>
 <ul><li>Round retention time in figure titles.</li>
-<li>Document differences between <code>spectrumId</code> (<code>spectrumID</code>), <code>acquisitionNum</code> and <code>scanIndex</code>.</li>
+<li>Document differences between <code>spectrumId</code>
+(<code>spectrumID</code>), <code>acquisitionNum</code> and
+<code>scanIndex</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-20">Changes in 1.1.0<a class="anchor" aria-label="anchor" href="#changes-in-1-1-20"></a></h3>
@@ -238,52 +281,77 @@
 <h2 class="pkg-version" data-toc-text="0.99" id="spectra-099">Spectra 0.99<a class="anchor" aria-label="anchor" href="#spectra-099"></a></h2>
 <div class="section level3">
 <h3 id="changes-in-0-99">Changes in 0.99.11<a class="anchor" aria-label="anchor" href="#changes-in-0-99"></a></h3>
-<ul><li>Re-add <code>mz</code> and <code>intensity</code> as core spectra variables.</li>
+<ul><li>Re-add <code>mz</code> and <code>intensity</code> as core spectra
+variables.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-1">Changes in 0.99.10<a class="anchor" aria-label="anchor" href="#changes-in-0-99-1"></a></h3>
-<ul><li>Fix in <code>spectraData&lt;-,Spectra</code> to avoid removing m/z and intensity values (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/146" class="external-link">#146</a>).</li>
-<li>Add default implementations of filter functions for <code>MsBackend</code>.</li>
+<ul><li>Fix in <code>spectraData&lt;-,Spectra</code> to avoid removing m/z
+and intensity values (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/146" class="external-link">#146</a>).</li>
+<li>Add default implementations of filter functions for
+<code>MsBackend</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-2">Changes in 0.99.9<a class="anchor" aria-label="anchor" href="#changes-in-0-99-2"></a></h3>
-<ul><li>Fix in <code>Spectra,character</code> constructor to ensure the backend is changed even if <code>source</code> inherits from <code>backend</code> (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/143" class="external-link">#143</a>).</li>
+<ul><li>Fix in <code>Spectra,character</code> constructor to ensure the
+backend is changed even if <code>source</code> inherits from
+<code>backend</code> (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/143" class="external-link">#143</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-3">Changes in 0.99.8<a class="anchor" aria-label="anchor" href="#changes-in-0-99-3"></a></h3>
 <ul><li>
-<code>combineSpectra</code> applies data processing steps in the processing queue prior to combination (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/140" class="external-link">#140</a>).</li>
+<code>combineSpectra</code> applies data processing steps in the
+processing queue prior to combination (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/140" class="external-link">#140</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-4">Changes in 0.99.7<a class="anchor" aria-label="anchor" href="#changes-in-0-99-4"></a></h3>
-<ul><li>Fix problem in <code>dropNaSpectraVariables</code> that would also drop m/z and intensity values for most backends (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/138" class="external-link">#138</a>.</li>
+<ul><li>Fix problem in <code>dropNaSpectraVariables</code> that would also
+drop m/z and intensity values for most backends (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/138" class="external-link">#138</a>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-5">Changes in 0.99.6<a class="anchor" aria-label="anchor" href="#changes-in-0-99-5"></a></h3>
-<ul><li>Support <code>intensity</code> in <code>filterIntensity</code> method to be a function to enable peak intensity-based filtering of spectra (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/126" class="external-link">#126</a>).</li>
+<ul><li>Support <code>intensity</code> in <code>filterIntensity</code>
+method to be a function to enable peak intensity-based filtering of
+spectra (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/126" class="external-link">#126</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-6">Changes in 0.99.5<a class="anchor" aria-label="anchor" href="#changes-in-0-99-6"></a></h3>
-<ul><li>Add <code>filterMzRange</code> and <code>filterMzValues</code> to filter spectra based on an m/z range or a list of target m/z values, respectively.</li>
+<ul><li>Add <code>filterMzRange</code> and <code>filterMzValues</code> to
+filter spectra based on an m/z range or a list of target m/z values,
+respectively.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-7">Changes in 0.99.4<a class="anchor" aria-label="anchor" href="#changes-in-0-99-7"></a></h3>
-<ul><li>Add <code>export,MsBackendMzR</code> to export spectra data to mzML or mzXML file(s).</li>
-<li>Add an <code>export,MsBackend</code> method to allow backends to take care of data export.</li>
-<li>Refactor <code>export,Spectra</code> to use the <code>MsBackend</code> class to export the data.</li>
-<li>Change parameter <code>source</code> in <code>Spectra,character</code> to <code>MsBackendMzR</code> and set parameter <code>backend = source</code>. Thus by default, the import backend will also be used to store the data.</li>
+<ul><li>Add <code>export,MsBackendMzR</code> to export spectra data to mzML
+or mzXML file(s).</li>
+<li>Add an <code>export,MsBackend</code> method to allow backends to
+take care of data export.</li>
+<li>Refactor <code>export,Spectra</code> to use the
+<code>MsBackend</code> class to export the data.</li>
+<li>Change parameter <code>source</code> in
+<code>Spectra,character</code> to <code>MsBackendMzR</code> and set
+parameter <code>backend = source</code>. Thus by default, the import
+backend will also be used to store the data.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-8">Changes in 0.99.3<a class="anchor" aria-label="anchor" href="#changes-in-0-99-8"></a></h3>
-<ul><li>Replace <code>lapply,Spectra</code> with <code>spectrapply,Spectra</code>.</li>
+<ul><li>Replace <code>lapply,Spectra</code> with
+<code>spectrapply,Spectra</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-9">Changes in 0.99.2<a class="anchor" aria-label="anchor" href="#changes-in-0-99-9"></a></h3>
-<ul><li>Replace <code>asDataFrame,MsBackend</code> with <code>spectraData,MsBackend</code>.</li>
-<li>Replace <code>asDataFrame&lt;-,MsBackend</code> with <code>spectraData&lt;-,MsBackend</code>.</li>
-<li>Replace <code>as.list,MsBackend</code> with <code>peaksData,MsBackend</code>.</li>
-<li>Replace <code>replaceList&lt;-,MsBackend</code> with <code>peaksData&lt;-,MsBackend</code>.</li>
-<li>Replace <code>as.list,Spectra</code> with <code>peaksData,Spectra</code> and add methods to coerce a <code>Spectra</code> to a <code>list</code> or <code>SimpleList</code>.</li>
+<ul><li>Replace <code>asDataFrame,MsBackend</code> with
+<code>spectraData,MsBackend</code>.</li>
+<li>Replace <code>asDataFrame&lt;-,MsBackend</code> with
+<code>spectraData&lt;-,MsBackend</code>.</li>
+<li>Replace <code>as.list,MsBackend</code> with
+<code>peaksData,MsBackend</code>.</li>
+<li>Replace <code>replaceList&lt;-,MsBackend</code> with
+<code>peaksData&lt;-,MsBackend</code>.</li>
+<li>Replace <code>as.list,Spectra</code> with
+<code>peaksData,Spectra</code> and add methods to coerce a
+<code>Spectra</code> to a <code>list</code> or
+<code>SimpleList</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-0-99-10">Changes in 0.99.0<a class="anchor" aria-label="anchor" href="#changes-in-0-99-10"></a></h3>
@@ -296,11 +364,13 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto, Johannes Rainer, Sebastian Gibb.</p>
+  <p></p><p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto,
+Johannes Rainer, Sebastian Gibb.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.9000.</p>
 </div>
 
     </footer></div>
