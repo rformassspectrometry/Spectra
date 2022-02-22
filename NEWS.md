@@ -1,5 +1,9 @@
 # Spectra 1.5
 
+## Changes in 1.5.11
+
+- Fix neutral loss example in the vignette.
+
 ## Changes in 1.5.10
 
 - Add citation.
