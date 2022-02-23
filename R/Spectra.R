@@ -526,6 +526,9 @@ NULL
 #'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
 #'   filtering to spectra of the specified MS level(s).
 #'
+#' - `neutralLoss`: calculate neutral loss spectra for fragment spectra. See
+#'   [neutralLoss()] for detailed documentation.
+#'
 #' - `processingLog`: returns a `character` vector with the processing log
 #'   messages.
 #'
