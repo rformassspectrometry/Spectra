@@ -1,3 +1,6 @@
+#' @include Spectra.R
+NULL
+
 setClassUnion("functionOrNull", c("function", "NULL"))
 
 #' @title Calculate Neutral Loss Spectra
@@ -6,21 +9,22 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #'
 #' @description
 #'
-#' This help page lists functions to convert MS/MS spectra to neutral loss
+#' This help page lists functions that convert MS/MS spectra to neutral loss
 #' spectra. The main function for this is `neutralLoss` and the specific
 #' algorithm to be used is defined (and configured) with dedicated *parameter*
-#' objects (paramer `param` of the `neutralLoss` function.
+#' objects (paramer `param` of the `neutralLoss` function).
 #'
 #' The parameter objects for the different algorithms are:
 #'
-#' - `PrecursorMzParam`: calculates neutral loss spectra as in Aisporna 2022 by
-#'   subtracting the (fragment's) peak m/z value from the precursor m/z value
-#'   of each spectrum (precursor m/z - fragment m/z). Parameter `msLevel`
-#'   allows to restrict calculation of neutral loss spectra to specified MS
-#'   level(s). Spectra from other MS level(s) are returned as-is. Parameter
-#'   `filterPeaks` allows in addition to filter fragment peaks e.g. if their
-#'   m/z value is larger than the precursor's (`filterPeaks = "abovePrecursor"`)
-#'   or below (`filterPeaks = "belowPrecursor")`. By default, no peak filtering
+#' - `PrecursorMzParam`: calculates neutral loss spectra as in Aisporna
+#'   *et al.* 2022 by subtracting the (fragment's) peak m/z value from the
+#'   precursor m/z value of each spectrum (precursor m/z - fragment m/z).
+#'   Parameter `msLevel` allows to restrict calculation of neutral loss
+#'   spectra to specified MS level(s). Spectra from other MS level(s) are
+#'   returned as-is. Parameter `filterPeaks` allows to filter fragment peaks
+#'   e.g. if their m/z value is larger than the precursor's
+#'   (`filterPeaks = "abovePrecursor"`) or below
+#'   (`filterPeaks = "belowPrecursor")`. By default, no peak filtering
 #'   is performed. See also parameter `filterPeaks` below for details.
 #'
 #' @note
