@@ -3,7 +3,7 @@ pkgdown: 2.0.2.9000
 pkgdown_sha: ae7363faac9040a473a54fb3d770decdfb8dfec1
 articles:
   Spectra: Spectra.html
-last_built: 2022-02-22T14:23Z
+last_built: 2022-02-28T07:11Z
 urls:
   reference: https://rformassspectrometry.github.io/Spectra/reference
   article: https://rformassspectrometry.github.io/Spectra/articles
