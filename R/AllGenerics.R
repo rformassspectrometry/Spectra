@@ -43,6 +43,9 @@ setGeneric("filterPrecursorMzRange", function(object, ...)
 #' @rdname hidden_aliases
 setGeneric("isReadOnly", function(object, ...)
     standardGeneric("isReadOnly"))
+#' @rdname neutralLoss
+setGeneric("neutralLoss", function(object, param, ...)
+    standardGeneric("neutralLoss"))
 #' @rdname hidden_aliases
 setGeneric("peaksData", function(object, ...) standardGeneric("peaksData"))
 #' @rdname hidden_aliases

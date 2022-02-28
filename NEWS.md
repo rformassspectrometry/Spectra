@@ -1,5 +1,10 @@
 # Spectra 1.5
 
+## Changes in 1.5.12
+
+- Add `neutralLoss` method and first algorithm to calculate neutral loss
+  spectra.
+
 ## Changes in 1.5.11
 
 - Fix neutral loss example in the vignette.
