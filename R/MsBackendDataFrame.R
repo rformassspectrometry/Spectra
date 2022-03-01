@@ -90,10 +90,11 @@ setMethod("acquisitionNum", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksData", "MsBackendDataFrame", function(object) {
-    mapply(cbind, mz = mz(object), intensity = intensity(object),
-           SIMPLIFY = FALSE, USE.NAMES = FALSE)
-})
+setMethod("peaksData", "MsBackendDataFrame",
+          function(object, ...) {
+              mapply(cbind, mz = mz(object), intensity = intensity(object),
+                     SIMPLIFY = FALSE, USE.NAMES = FALSE)
+          })
 
 #' @rdname hidden_aliases
 setMethod("centroided", "MsBackendDataFrame", function(object) {

@@ -15,6 +15,7 @@
 \alias{export,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
 \alias{peaksData,MsBackend-method}
+\alias{peaksVariables,MsBackend-method}
 \alias{centroided,MsBackend-method}
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
@@ -95,7 +96,9 @@
 
 \S4method{acquisitionNum}{MsBackend}(object)
 
-\S4method{peaksData}{MsBackend}(object)
+\S4method{peaksData}{MsBackend}(object, columns = peaksVariables(object))
+
+\S4method{peaksVariables}{MsBackend}(object)
 
 \S4method{centroided}{MsBackend}(object)
 
@@ -240,6 +243,10 @@ MsBackendMzR()
 
 \item{...}{Additional arguments.}
 
+\item{columns}{For \code{spectraData} accessor: optional \code{character} with column
+names (spectra variables) that should be included in the
+returned \code{DataFrame}. By default, all columns are returned.}
+
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
 
@@ -303,10 +310,6 @@ be used to subset/filter \code{object}.}
 
 \item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.}
-
-\item{columns}{For \code{spectraData} accessor: optional \code{character} with column
-names (spectra variables) that should be included in the
-returned \code{DataFrame}. By default, all columns are returned.}
 
 \item{drop}{For \code{[}: not considered.}
 
@@ -425,7 +428,9 @@ spectra (with \code{NA_integer_} if not available).
 the list is equal to the number of spectra in \code{object}. Each element of
 the list is a \code{matrix} with columns \code{"mz"} and \code{"intensity"}. For an empty
 spectrum, a \code{matrix} with 0 rows and two columns (named \code{mz} and
-\code{intensity}) is returned.
+\code{intensity}) is returned. Optional parameter \code{columns}, if supported by
+the backend, allows to define which peak variables should be returned in
+the \code{numeric} peak \code{matrix}.
 \item \code{backendInitialize}: initialises the backend. This method is
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
@@ -594,6 +599,12 @@ backend. This method expects a \code{list} of \code{matrix} objects with columns
 \code{"mz"} and \code{"intensity"} that has the same length as the number of
 spectra in the backend. Note that just writeable backends support this
 method.
+\item \code{peaksVariables}: lists the available variables for mass peaks. Default
+peak variables are \code{"mz"} and \code{"intensity"} (which all backends need to
+support and provide), but some backends might provide additional variables.
+These variables correspond to the column names of the \code{numeric} \code{matrix}
+representing the peak data (returned by \code{peaksData}) for backend that
+support parameter \code{columns} of the \code{peaksData} function.
 \item \code{reset} a backend (if supported). This method will be called on the backend
 by the \verb{reset,Spectra} method that is supposed to restore the data to its
 original state (see \verb{reset,Spectra} for more details). The function
@@ -693,6 +704,9 @@ intensity values for each spectrum.
 }
 
 Additional columns are allowed too.
+
+The \code{MsBackendDataFrame} ignores parameter \code{columns} of the \code{peaksData}
+function and returns \strong{always} m/z and intensity values.
 }
 
 \section{\code{MsBackendMzR}, on-disk MS data backend}{
@@ -737,6 +751,9 @@ backend and if \code{dataOrigin(x)} contains the original MS data file names.
 
 See examples in \linkS4class{Spectra} or the vignette for more details and
 examples.
+
+The \code{MsBackendMzR} ignores parameter \code{columns} of the \code{peaksData}
+function and returns \strong{always} m/z and intensity values.
 }
 
 \section{\code{MsBackendHdf5Peaks}, on-disk MS data backend}{
@@ -767,6 +784,9 @@ file names, \code{files}' length has to match the number of unique elements in
 \code{"dataStorage"}.
 
 For details see examples on the \code{\link[=Spectra]{Spectra()}} help page.
+
+The \code{MsBackendHdf5Peaks} ignores parameter \code{columns} of the \code{peaksData}
+function and returns \strong{always} m/z and intensity values.
 }
 
 \examples{

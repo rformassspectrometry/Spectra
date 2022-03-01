@@ -1,5 +1,10 @@
 # Spectra 1.5
 
+## Changes in 1.5.13
+
+- Add `peaksVariables` method and add parameter `columns` (or `...`) to
+  `peaksData`.
+
 ## Changes in 1.5.12
 
 - Add `neutralLoss` method and first algorithm to calculate neutral loss

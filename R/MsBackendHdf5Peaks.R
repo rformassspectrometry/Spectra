@@ -122,7 +122,7 @@ setMethod("show", "MsBackendHdf5Peaks", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksData", "MsBackendHdf5Peaks", function(object) {
+setMethod("peaksData", "MsBackendHdf5Peaks", function(object, ...) {
     if (!length(object))
         return(list())
     fls <- unique(object@spectraData$dataStorage)

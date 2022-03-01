@@ -79,7 +79,7 @@ setMethod("show", "MsBackendMzR", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksData", "MsBackendMzR", function(object) {
+setMethod("peaksData", "MsBackendMzR", function(object, ...) {
     if (!length(object))
         return(list())
     fls <- unique(object@spectraData$dataStorage)

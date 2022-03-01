@@ -170,12 +170,12 @@ setMethod(
         object
     })
 
-.hypothetical_loss <- function() {
-    ## pairwise differences of m/z values. intensity is mean.
-    ## start with largest m/z, difference to all others with smaller m/z.
-    ## peaks matrix: nrow: (n-1) * n/2
-    for (i in seq_len(nrow(pks))) {
-        for(j in (i+1):nrow(pks)) {
-        }
-    }
-}
+## .hypothetical_loss <- function() {
+##     ## pairwise differences of m/z values. intensity is mean.
+##     ## start with largest m/z, difference to all others with smaller m/z.
+##     ## peaks matrix: nrow: (n-1) * n/2
+##     for (i in seq_len(nrow(pks))) {
+##         for(j in (i+1):nrow(pks)) {
+##         }
+##     }
+## }

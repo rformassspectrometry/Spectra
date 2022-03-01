@@ -179,7 +179,9 @@
 #'   the list is equal to the number of spectra in `object`. Each element of
 #'   the list is a `matrix` with columns `"mz"` and `"intensity"`. For an empty
 #'   spectrum, a `matrix` with 0 rows and two columns (named `mz` and
-#'   `intensity`) is returned.
+#'   `intensity`) is returned. Optional parameter `columns`, if supported by
+#'   the backend, allows to define which peak variables should be returned in
+#'   the `numeric` peak `matrix`.
 #'
 #' - `backendInitialize`: initialises the backend. This method is
 #'   supposed to be called rights after creating an instance of the
@@ -387,6 +389,13 @@
 #'   spectra in the backend. Note that just writeable backends support this
 #'   method.
 #'
+#' - `peaksVariables`: lists the available variables for mass peaks. Default
+#'   peak variables are `"mz"` and `"intensity"` (which all backends need to
+#'   support and provide), but some backends might provide additional variables.
+#'   These variables correspond to the column names of the `numeric` `matrix`
+#'   representing the peak data (returned by `peaksData`) for backend that
+#'   support parameter `columns` of the `peaksData` function.
+#'
 #' - `reset` a backend (if supported). This method will be called on the backend
 #'   by the `reset,Spectra` method that is supposed to restore the data to its
 #'   original state (see `reset,Spectra` for more details). The function
@@ -489,6 +498,8 @@
 #'
 #' Additional columns are allowed too.
 #'
+#' The `MsBackendDataFrame` ignores parameter `columns` of the `peaksData`
+#' function and returns **always** m/z and intensity values.
 #'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
@@ -531,6 +542,8 @@
 #' See examples in [Spectra-class] or the vignette for more details and
 #' examples.
 #'
+#' The `MsBackendMzR` ignores parameter `columns` of the `peaksData`
+#' function and returns **always** m/z and intensity values.
 #'
 #' @section `MsBackendHdf5Peaks`, on-disk MS data backend:
 #'
@@ -559,6 +572,9 @@
 #' `"dataStorage"`.
 #'
 #' For details see examples on the [Spectra()] help page.
+#'
+#' The `MsBackendHdf5Peaks` ignores parameter `columns` of the `peaksData`
+#' function and returns **always** m/z and intensity values.
 #'
 #' @section Implementation notes:
 #'
@@ -696,8 +712,16 @@ setMethod("acquisitionNum", "MsBackend", function(object) {
 #' @exportMethod peaksData
 #'
 #' @rdname MsBackend
-setMethod("peaksData", "MsBackend", function(object) {
+setMethod("peaksData", "MsBackend", function(object,
+                                             columns = peaksVariables(object)) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod peaksVariables
+#'
+#' @rdname MsBackend
+setMethod("peaksVariables", "MsBackend", function(object) {
+    c("mz", "intensity")
 })
 
 #' @exportMethod centroided
