@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
 Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
 [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup
-[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2022-03-09 08:24:17<br><strong>Compiled</strong>: Wed Mar 9 08:34:05 2022</p>
+[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2022-03-09 11:29:54<br><strong>Compiled</strong>: Wed Mar 9 11:39:26 2022</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -571,8 +571,8 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span class="co">## file(s):</span>
 <span class="co">## 20171016_POOL_POS_3_105-134.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Mar  9 08:34:09 2022]</span>
-<span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Mar  9 08:34:09 2022]</span></code></pre>
+<span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Mar  9 11:39:30 2022]</span>
+<span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Mar  9 11:39:30 2022]</span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -607,7 +607,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span class="co">## 4         2        NA        NA</span>
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Wed Mar  9 08:34:09 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Wed Mar  9 11:39:30 2022]</span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
@@ -699,9 +699,9 @@ information about the number of such processing steps can be seen below
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Lazy evaluation queue: 2 processing step(s)</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Wed Mar  9 08:34:09 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar  9 08:34:09 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar  9 08:34:10 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Wed Mar  9 11:39:30 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar  9 11:39:30 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar  9 11:39:31 2022]</span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -732,9 +732,9 @@ be passed with argument <code>y</code>.</p>
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Lazy evaluation queue: 3 processing step(s)</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Wed Mar  9 08:34:09 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar  9 08:34:09 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar  9 08:34:10 2022]</span></code></pre>
+<span class="co">##  Merge 2 Spectra into one [Wed Mar  9 11:39:30 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar  9 11:39:30 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar  9 11:39:31 2022]</span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code>intensity</code> on this object will now
 return intensities that are half of the intensities of the original
@@ -894,9 +894,9 @@ persistent.</p>
 <span class="co">## 4         2        NA        NA</span>
 <span class="co">##  ... 20 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Merge 2 Spectra into one [Wed Mar  9 08:34:09 2022]</span>
-<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar  9 08:34:09 2022]</span>
-<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar  9 08:34:10 2022]</span>
+<span class="co">##  Merge 2 Spectra into one [Wed Mar  9 11:39:30 2022]</span>
+<span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Mar  9 11:39:30 2022]</span>
+<span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Mar  9 11:39:31 2022]</span>
 <span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1117,7 +1117,7 @@ parameters).</p>
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Writing file file9284a14a376...OK</span></code></pre>
+<pre><code><span class="co">## Writing file file9276f0f2a6c...OK</span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
@@ -1138,8 +1138,8 @@ and spectra 2 and 4 to another.</p>
 <div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Writing file file92822520bf2...OK</span>
-<span class="co">## Writing file file9284c939552...OK</span></code></pre>
+<pre><code><span class="co">## Writing file file92766288f...OK</span>
+<span class="co">## Writing file file9272aea6d11...OK</span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the <code>smooth</code>
 function) and centroiding (using the <code>pickPeaks</code> function) of
@@ -1180,7 +1180,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span class="co">## 1862         1   259.752       931</span>
 <span class="co">##  ... 33 more variables/columns.</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Mar  9 08:34:15 2022]</span></code></pre>
+<span class="co">##  Switch backend from MsBackendMzR to MsBackendDataFrame [Wed Mar  9 11:39:36 2022]</span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
