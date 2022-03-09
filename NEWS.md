@@ -1,9 +1,13 @@
 # Spectra 1.5
 
-## Changes in 1.5.13
+## Changes in 1.5.14
 
 - Add `peaksVariables` method and add parameter `columns` (or `...`) to
   `peaksData`.
+
+## Changes in 1.5.13
+
+- Fix figure sizes in vignette.
 
 ## Changes in 1.5.12
 
