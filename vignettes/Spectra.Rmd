@@ -680,7 +680,7 @@ sps_agg <- combineSpectra(sps, f = sps$name)
 
 As a result, the 4 spectra got aggregated into two.
 
-```{r, fig.width = 8, fig.height = 5}
+```{r, fig.width = 4, fig.height = 8}
 plotSpectra(sps_agg, main = sps_agg$name)
 ```
 
@@ -703,7 +703,7 @@ different instruments with different precision). Thus, we next increase the
 `tolerance` and `ppm` parameters to group also peaks with a larger difference in
 their m/z values.
 
-```{r}
+```{r, fig.width = 4, fig.height = 8}
 sps_agg <- combineSpectra(sps, f = sps$name, peaks = "intersect",
                           minProp = 1, tolerance = 0.2)
 plotSpectra(sps_agg, main = sps_agg$name)
@@ -737,7 +737,7 @@ maxTic <- function(x, ...) {
 We can now use this function with `combineSpectra` to select for each compound
 the spectrum with the largest TIC.
 
-```{r}
+```{r, fig.width = 4, fig.height = 8}
 sps_agg <- combineSpectra(sps, f = sps$name, FUN = maxTic)
 plotSpectra(sps_agg, main = sps_agg$name)
 ```
