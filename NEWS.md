@@ -1,5 +1,9 @@
 # Spectra 1.5
 
+## Changes in 1.5.13
+
+- Fix figure sizes in vignette.
+
 ## Changes in 1.5.12
 
 - Add `neutralLoss` method and first algorithm to calculate neutral loss
