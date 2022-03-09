@@ -680,7 +680,7 @@ sps_agg <- combineSpectra(sps, f = sps$name)
 
 As a result, the 4 spectra got aggregated into two.
 
-```{r}
+```{r, fig.width = 8, fig.height = 5}
 plotSpectra(sps_agg, main = sps_agg$name)
 ```
 
@@ -688,7 +688,7 @@ By default, all peaks present in all spectra are reported. As an alternative, by
 specifying `peaks = "intersect"` and `minProp = 1`, we could combine the spectra
 keeping only peaks that are present in **both** input spectra.
 
-```{r}
+```{r, fig.width = 4, fig.height = 8}
 sps_agg <- combineSpectra(sps, f = sps$name, peaks = "intersect", minProp = 1)
 plotSpectra(sps_agg, main = sps_agg$name)
 ```
