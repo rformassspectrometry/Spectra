@@ -245,7 +245,11 @@ MsBackendMzR()
 
 \item{columns}{For \code{spectraData} accessor: optional \code{character} with column
 names (spectra variables) that should be included in the
-returned \code{DataFrame}. By default, all columns are returned.}
+returned \code{DataFrame}. By default, all columns are returned.
+For \code{peaksData} accessor: optional \code{character} with requested columns in
+the individual \code{matrix} of the returned \code{list}. Defaults to
+\code{peaksVariables(object)} and depends on what \emph{peaks variables} the
+backend provides.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
@@ -424,13 +428,6 @@ to be implemented for new classes extending \code{MsBackend}.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
-\item \code{peaksData} returns a \code{list} with the spectras' peak data. The length of
-the list is equal to the number of spectra in \code{object}. Each element of
-the list is a \code{matrix} with columns \code{"mz"} and \code{"intensity"}. For an empty
-spectrum, a \code{matrix} with 0 rows and two columns (named \code{mz} and
-\code{intensity}) is returned. Optional parameter \code{columns}, if supported by
-the backend, allows to define which peak variables should be returned in
-the \code{numeric} peak \code{matrix}.
 \item \code{backendInitialize}: initialises the backend. This method is
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
@@ -594,6 +591,16 @@ and acquisition number (\code{interger}) of the precursor for MS level
 2 and above spectra from the object. Returns a vector of length equal to
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
+\item \code{peaksData} returns a \code{list} with the spectras' peak data, i.e. numeric
+\code{matrix} with peak values. The length of the list is equal to the number
+of spectra in \code{object}. Each element of the list is a \code{numeric} \code{matrix}
+with columns depending on the provided \code{columns} parameter (by default
+\code{"mz"} and \code{"intensity"}, but depends on the backend's available
+\code{peaksVariables}). For an empty spectrum, a \code{matrix} with 0 rows and
+columns according to \code{columns} is returned. The optional parameter
+\code{columns}, if supported by the backend, allows to define which peak
+variables should be returned in the \code{numeric} peak \code{matrix}. As a default
+\code{peaksVariables} should be used.
 \item \verb{peaksData<-} replaces the peak data (m/z and intensity values) of the
 backend. This method expects a \code{list} of \code{matrix} objects with columns
 \code{"mz"} and \code{"intensity"} that has the same length as the number of
@@ -603,8 +610,7 @@ method.
 peak variables are \code{"mz"} and \code{"intensity"} (which all backends need to
 support and provide), but some backends might provide additional variables.
 These variables correspond to the column names of the \code{numeric} \code{matrix}
-representing the peak data (returned by \code{peaksData}) for backend that
-support parameter \code{columns} of the \code{peaksData} function.
+representing the peak data (returned by \code{peaksData}).
 \item \code{reset} a backend (if supported). This method will be called on the backend
 by the \verb{reset,Spectra} method that is supposed to restore the data to its
 original state (see \verb{reset,Spectra} for more details). The function
@@ -840,6 +846,20 @@ precursorMz(be)
 ## The `peaksData` method is supposed to return the peaks of the spectra as
 ## a `list`.
 peaksData(be)
+
+## List available peaks variables
+peaksVariables(be)
+
+
+## Use columns to extract specific peaks variables. Below we extract m/z and
+## intensity values, but in reversed order to the default.
+peaksData(be, columns = c("intensity", "mz"))
+
+## List available spectra variables (i.e. spectrum metadata)
+spectraVariables(be)
+
+## Extract precursor m/z, rtime, MS level spectra variables
+spectraData(be, c("precursorMz", "rtime", "msLevel"))
 }
 \author{
 Johannes Rainer, Sebastian Gibb, Laurent Gatto

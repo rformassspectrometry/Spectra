@@ -174,7 +174,7 @@ spectrapply(object, ...)
 
 \S4method{acquisitionNum}{MsBackendDataFrame}(object)
 
-\S4method{peaksData}{MsBackendDataFrame}(object, ...)
+\S4method{peaksData}{MsBackendDataFrame}(object, columns = peaksVariables(object), ...)
 
 \S4method{centroided}{MsBackendDataFrame}(object)
 

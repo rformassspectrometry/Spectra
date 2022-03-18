@@ -137,9 +137,14 @@ NULL
 #' - `peaksData`: gets the *peaks* matrices for all spectra in `object`. The
 #'   function returns a [SimpleList()] of matrices, each `matrix` with columns
 #'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
-#'   a spectrum. Note that it is also possible to extract the peaks matrices
-#'   with `as(x, "list")` and `as(x, "SimpleList")` as a `list` and
-#'   `SimpleList`, respectively.
+#'   a spectrum. Optional parameter `columns` is passed to the backend's
+#'   `peaksData` function to allow selection of specific (or additional) peaks
+#'   variables (columns) that should be extracted (if available). Importantly,
+#'   it is **not** guaranteed that each backend supports this parameter (while
+#'   each backend must support extraction of `"mz"` and `"intensity"` columns).
+#'   Note also that it is possible to extract the peaks matrices with
+#'   `as(x, "list")` and `as(x, "SimpleList")` as a `list` and `SimpleList`,
+#'   respectively.
 #'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`

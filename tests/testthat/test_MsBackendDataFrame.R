@@ -298,6 +298,14 @@ test_that("peaksData,MsBackendDataFrame works", {
     be <- backendInitialize(be, data = df)
     expect_equal(peaksData(be), list(cbind(mz = 1:3, intensity = 1:3),
                                      cbind(mz = 2.1, intensity = 4)))
+
+    ## columns parameter
+    expect_error(peaksData(be, columns = c("not there")), "does only support")
+    res <- peaksData(be, columns = c("intensity", "mz", "mz"))
+    expect_equal(colnames(res[[1L]]), c("intensity", "mz", "mz"))
+    expect_equal(res[[1L]][, 1L], df$intensity[[1L]])
+    expect_equal(res[[1L]][, 2L], df$mz[[1L]])
+    expect_equal(res[[1L]][, 3L], df$mz[[1L]])
 })
 
 test_that("peaksData<-,MsBackendDataFrame works", {

@@ -4,6 +4,8 @@
 
 - Add `peaksVariables` method and add parameter `columns` (or `...`) to
   `peaksData`.
+- Add `columns` parameter to the `peaksData` method of `MsBackendDataFrame`,
+  `MsBackendMzR` and `MsBackendHdf5peaks`.
 
 ## Changes in 1.5.13
 
