@@ -74,7 +74,7 @@ MsBackendMzR <- function() {
         pks <- list(pks)
     cn <- c("mz", "intensity")
     if (length(columns) == 2L && all(columns == c("mz", "intensity"))) {
-        peaks_fun <- function(z, cn, ...) {
+        peaks_fun <- function(z, cn, columns) {
             colnames(z) <- cn
             z
         }

@@ -155,7 +155,7 @@ MsBackendHdf5Peaks <- function() {
              "for more information.")
     cn <- c("mz", "intensity")
     if (length(columns) == 2L && all(columns == c("mz", "intensity"))) {
-        read_fun <- function(z, file, cn, ...) {
+        read_fun <- function(z, file, cn, columns, ...) {
             res <- .h5_read_bare(name = z, file = file)
             colnames(res) <- c("mz", "intensity")
             res
