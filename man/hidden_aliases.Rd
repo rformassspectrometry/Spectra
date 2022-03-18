@@ -322,7 +322,7 @@ spectrapply(object, ...)
 
 \S4method{show}{MsBackendMzR}(object)
 
-\S4method{peaksData}{MsBackendMzR}(object, ...)
+\S4method{peaksData}{MsBackendMzR}(object, columns = peaksVariables(object))
 
 \S4method{intensity}{MsBackendMzR}(object)
 

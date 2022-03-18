@@ -79,19 +79,26 @@ setMethod("show", "MsBackendMzR", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksData", "MsBackendMzR", function(object, ...) {
-    if (!length(object))
-        return(list())
-    fls <- unique(object@spectraData$dataStorage)
-    read_header <- getOption("READ_HEADER", FALSE)
-    if (length(fls) > 1) {
-        f <- factor(dataStorage(object), levels = fls)
-        unsplit(mapply(FUN = .mzR_peaks, fls, split(scanIndex(object), f),
-                       MoreArgs = list(readHeader = read_header),
-                       SIMPLIFY = FALSE, USE.NAMES = FALSE), f)
-    } else
-        .mzR_peaks(fls, scanIndex(object), readHeader = read_header)
-})
+setMethod(
+    "peaksData", "MsBackendMzR",
+    function(object, columns = peaksVariables(object)) {
+        if (!length(object))
+            return(list())
+        if (!all(columns %in% c("mz", "intensity")))
+            stop("'peaksData' for 'MsBackendMzR' does only support",
+                 " columns \"mz\" and \"intensity\"", .call = FALSE)
+        fls <- unique(object@spectraData$dataStorage)
+        read_header <- getOption("READ_HEADER", FALSE)
+        if (length(fls) > 1) {
+            f <- factor(dataStorage(object), levels = fls)
+            unsplit(mapply(FUN = .mzR_peaks, fls, split(scanIndex(object), f),
+                           MoreArgs = list(readHeader = read_header,
+                                           columns = columns),
+                           SIMPLIFY = FALSE, USE.NAMES = FALSE), f)
+        } else
+            .mzR_peaks(fls, scanIndex(object), readHeader = read_header,
+                       columns = columns)
+    })
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMzR", function(object) {

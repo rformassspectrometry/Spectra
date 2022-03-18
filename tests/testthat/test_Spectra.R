@@ -409,7 +409,7 @@ test_that("mz,Spectra works", {
 test_that("peaksData,Spectra works", {
     df <- DataFrame(msLevel = c(1L, 2L), fromFile = 1L)
     df$mz <- list(1:4, 1:5)
-    df$intensity <- list(1:4, 1:5)
+    df$intensity <- list(2:5, 1:5)
     be <- backendInitialize(MsBackendDataFrame(), file = NA_character_, df)
     sps <- Spectra(backend = be)
     res <- peaksData(sps)
@@ -433,6 +433,31 @@ test_that("peaksData,Spectra works", {
     res <- as(sps, "list")
     expect_true(is(res, "list"))
     expect_true(length(res) == 0)
+
+    ## With columns
+    ## MsBackendMzR
+    sps <- Spectra(sciex_mzr)
+    expect_error(peaksData(sps, columns = c("mz", "intensity", "other")),
+                 "only support")
+    res <- peaksData(sps, columns = c("intensity", "mz", "intensity"))
+    expect_equal(res[[1L]][, 1L], res[[1L]][, 3L])
+    expect_equal(res[[1L]][, 1L], intensity(sps)[[1L]])
+
+    ## MsBackendDataFrame
+    sps <- Spectra(be)
+    expect_error(peaksData(sps, columns = c("mz", "intensity", "other")),
+                 "only support")
+    res <- peaksData(sps, columns = c("intensity", "mz", "intensity"))
+    expect_equal(res[[1L]][, 1L], res[[1L]][, 3L])
+    expect_equal(res[[1L]][, 1L], intensity(sps)[[1L]])
+
+    ## MsBackendHdf5peaks
+    sps <- Spectra(sciex_hd5)
+    expect_error(peaksData(sps, columns = c("mz", "intensity", "other")),
+                 "only support")
+    res <- peaksData(sps, columns = c("intensity", "mz", "intensity"))
+    expect_equal(res[[1L]][, 1L], res[[1L]][, 3L])
+    expect_equal(res[[1L]][, 1L], intensity(sps)[[1L]])
 })
 
 test_that("lengths,Spectra works", {
@@ -1482,4 +1507,9 @@ test_that("filterFourierTransformArtefacts,Spectra", {
     expect_true(lengths(a)[[1L]] < lengths(fft_spectrum)[[1L]])
     b <- filterFourierTransformArtefacts(fft_spectrum, halfWindowSize = 0.2)
     expect_true(lengths(b)[[1L]] < lengths(a)[[1L]])
+})
+
+test_that("peaksVariables,Spectra works", {
+    sps <- Spectra(sciex_mzr)
+    expect_equal(peaksVariables(sps), c("mz", "intensity"))
 })
