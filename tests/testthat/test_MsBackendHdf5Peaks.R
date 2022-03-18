@@ -206,6 +206,21 @@ test_that("peaksData,MsBackendHdf5Peaks works", {
     expect_identical(peaksData(be), matl)
 
     expect_identical(peaksData(sciex_mzr), peaksData(sciex_hd5))
+
+    ## columns
+    expect_error(peaksData(sciex_mzr, columns = c("mz", "other")),
+                 "only support columns")
+    res <- peaksData(sciex_mzr, columns = c("intensity"))
+    expect_true(is.matrix(res[[1L]]))
+    expect_equal(colnames(res[[1L]]), "intensity")
+    expect_equal(res[[1L]][, 1L], sciex_pks[[1L]][, 2L])
+
+    res <- peaksData(sciex_mzr, columns = c("intensity", "mz", "mz"))
+    expect_true(is.matrix(res[[1L]]))
+    expect_equal(colnames(res[[1L]]), c("intensity", "mz", "mz"))
+    expect_equal(res[[1L]][, 1L], sciex_pks[[1L]][, 2L])
+    expect_equal(res[[1L]][, 2L], sciex_pks[[1L]][, 1L])
+    expect_equal(res[[1L]][, 3L], sciex_pks[[1L]][, 1L])
 })
 
 test_that("peaksData<-,MsBackendHdf5Peaks works", {

@@ -94,7 +94,7 @@ NULL
 .peaksapply <- function(object, FUN = NULL, ...,
                         spectraVariables = .processingQueueVariables(object),
                         f = dataStorage(object),
-                        columns = peaksVariables(object), BPPARAM = bpparam()) {
+                        columns = c("mz", "intensity"), BPPARAM = bpparam()) {
     len <- length(object)
     if (!len)
         return(list())

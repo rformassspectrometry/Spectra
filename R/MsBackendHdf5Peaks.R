@@ -122,22 +122,28 @@ setMethod("show", "MsBackendHdf5Peaks", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksData", "MsBackendHdf5Peaks", function(object, ...) {
-    if (!length(object))
-        return(list())
-    fls <- unique(object@spectraData$dataStorage)
-    if (length(fls) > 1) {
-        f <- factor(dataStorage(object), levels = fls)
-        unsplit(bpmapply(
-            FUN = .h5_read_peaks,
-            fls,
-            split(scanIndex(object), f),
-            object@modCount,
-            SIMPLIFY = FALSE, USE.NAMES = FALSE, BPPARAM = bpparam()),
-            f)
-    } else
-        .h5_read_peaks(fls, scanIndex(object), object@modCount)
-})
+setMethod("peaksData", "MsBackendHdf5Peaks",
+          function(object, columns = peaksVariables(object)) {
+              if (!length(object))
+                  return(list())
+              if (!all(columns %in% c("mz", "intensity")))
+                  stop("'peaksData' for 'MsBackendHdf5Peaks' does only support",
+                       " columns \"mz\" and \"intensity\"", call. = FALSE)
+              fls <- unique(object@spectraData$dataStorage)
+              if (length(fls) > 1) {
+                  f <- factor(dataStorage(object), levels = fls)
+                  unsplit(bpmapply(
+                      FUN = .h5_read_peaks,
+                      fls,
+                      split(scanIndex(object), f),
+                      object@modCount,
+                      MoreArgs = list(columns = columns), SIMPLIFY = FALSE,
+                      USE.NAMES = FALSE, BPPARAM = bpparam()),
+                      f)
+              } else
+                  .h5_read_peaks(fls, scanIndex(object),
+                                 object@modCount, columns = columns)
+          })
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendHdf5Peaks", function(object) {

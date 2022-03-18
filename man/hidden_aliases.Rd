@@ -174,7 +174,7 @@ spectrapply(object, ...)
 
 \S4method{acquisitionNum}{MsBackendDataFrame}(object)
 
-\S4method{peaksData}{MsBackendDataFrame}(object, columns = peaksVariables(object), ...)
+\S4method{peaksData}{MsBackendDataFrame}(object, columns = peaksVariables(object))
 
 \S4method{centroided}{MsBackendDataFrame}(object)
 
@@ -288,7 +288,7 @@ spectrapply(object, ...)
 
 \S4method{show}{MsBackendHdf5Peaks}(object)
 
-\S4method{peaksData}{MsBackendHdf5Peaks}(object, ...)
+\S4method{peaksData}{MsBackendHdf5Peaks}(object, columns = peaksVariables(object))
 
 \S4method{intensity}{MsBackendHdf5Peaks}(object)
 

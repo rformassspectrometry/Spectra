@@ -86,7 +86,7 @@ setMethod(
             return(list())
         if (!all(columns %in% c("mz", "intensity")))
             stop("'peaksData' for 'MsBackendMzR' does only support",
-                 " columns \"mz\" and \"intensity\"", .call = FALSE)
+                 " columns \"mz\" and \"intensity\"", call. = FALSE)
         fls <- unique(object@spectraData$dataStorage)
         read_header <- getOption("READ_HEADER", FALSE)
         if (length(fls) > 1) {
