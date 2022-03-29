@@ -92,6 +92,7 @@
 \alias{replaceIntensitiesBelow,Spectra-method}
 \alias{smooth,Spectra-method}
 \alias{addProcessing,Spectra-method}
+\alias{coreSpectraVariables}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
@@ -397,6 +398,8 @@ estimatePrecursorIntensity(
 )
 
 \S4method{addProcessing}{Spectra}(object, FUN, ..., spectraVariables = character())
+
+coreSpectraVariables()
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -760,6 +763,8 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \verb{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
+\item \code{coreSpectraVariables}: returns the \emph{core} spectra variables along with
+their expected data type.
 \item \code{dataOrigin}, \verb{dataOrigin<-}: gets or sets the \emph{data origin} for each
 spectrum. \code{dataOrigin} returns a \code{character} vector (same length than
 \code{object}) with the origin of the spectra. \verb{dataOrigin<-} expects a
@@ -1234,6 +1239,9 @@ centroided(data)
 dataStorage(data)
 rtime(data)
 precursorMz(data)
+
+## The core spectra variables are:
+coreSpectraVariables()
 
 ## Add an additional metadata column.
 data$spectrum_id <- c("sp_1", "sp_2")

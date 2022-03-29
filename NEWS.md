@@ -1,5 +1,10 @@
 # Spectra 1.5
 
+## Changes in 1.5.14
+
+- Add `coreSpectraVariables` function to export the *core* spectra variables and
+  their expected data types.
+
 ## Changes in 1.5.13
 
 - Fix figure sizes in vignette.

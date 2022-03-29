@@ -1483,3 +1483,7 @@ test_that("filterFourierTransformArtefacts,Spectra", {
     b <- filterFourierTransformArtefacts(fft_spectrum, halfWindowSize = 0.2)
     expect_true(lengths(b)[[1L]] < lengths(a)[[1L]])
 })
+
+test_that("coreSpectraVariables works", {
+    expect_equal(coreSpectraVariables(), .SPECTRA_DATA_COLUMNS)
+})
