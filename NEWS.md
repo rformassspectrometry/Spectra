@@ -1,5 +1,9 @@
 # Spectra 1.5
 
+## Changes in 1.5.15
+
+- Fix typo in MZ delta plot title.
+
 ## Changes in 1.5.14
 
 - Add `coreSpectraVariables` function to export the *core* spectra variables and
