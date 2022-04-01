@@ -149,6 +149,9 @@ NULL
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
+#' - `coreSpectraVariables`: returns the *core* spectra variables along with
+#'   their expected data type.
+#'
 #' - `dataOrigin`, `dataOrigin<-`: gets or sets the *data origin* for each
 #'   spectrum. `dataOrigin` returns a `character` vector (same length than
 #'   `object`) with the origin of the spectra. `dataOrigin<-` expects a
@@ -926,6 +929,9 @@ NULL
 #' dataStorage(data)
 #' rtime(data)
 #' precursorMz(data)
+#'
+#' ## The core spectra variables are:
+#' coreSpectraVariables()
 #'
 #' ## Add an additional metadata column.
 #' data$spectrum_id <- c("sp_1", "sp_2")
@@ -2263,3 +2269,8 @@ setMethod("addProcessing", "Spectra", function(object, FUN, ...,
     validObject(object)
     object
 })
+
+#' @rdname Spectra
+#'
+#' @export
+coreSpectraVariables <- function() .SPECTRA_DATA_COLUMNS

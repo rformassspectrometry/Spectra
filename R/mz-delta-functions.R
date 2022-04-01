@@ -184,7 +184,7 @@ plotMzDelta <- function(x, aaLabels = TRUE) {
     col <- "grey30"
     hist(unlist(x), breaks = 200, col = col, border = col,
          ylab = "Frequency", xlab = "M/Z delta",
-         main = "Histrogram of Mass Delta Distributions")
+         main = "Histogram of Mass Delta Distributions")
     if (aaLabels) {
         usr <- par("usr")
         aa_labels <- amino_acids$AA

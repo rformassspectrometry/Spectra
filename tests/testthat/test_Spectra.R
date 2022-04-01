@@ -1513,3 +1513,7 @@ test_that("peaksVariables,Spectra works", {
     sps <- Spectra(sciex_mzr)
     expect_equal(peaksVariables(sps), c("mz", "intensity"))
 })
+
+test_that("coreSpectraVariables works", {
+    expect_equal(coreSpectraVariables(), .SPECTRA_DATA_COLUMNS)
+})

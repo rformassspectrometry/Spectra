@@ -1,11 +1,20 @@
 # Spectra 1.5
 
-## Changes in 1.5.14
+## Changes in 1.5.16
 
 - Add `peaksVariables` method and add parameter `columns` (or `...`) to
   `peaksData`.
 - Add `columns` parameter to the `peaksData` method of `MsBackendDataFrame`,
   `MsBackendMzR` and `MsBackendHdf5peaks`.
+
+## Changes in 1.5.15
+
+- Fix typo in MZ delta plot title.
+
+## Changes in 1.5.14
+
+- Add `coreSpectraVariables` function to export the *core* spectra variables and
+  their expected data types.
 
 ## Changes in 1.5.13
 
