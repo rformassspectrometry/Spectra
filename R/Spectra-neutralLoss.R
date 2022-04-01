@@ -34,6 +34,10 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #' neutral loss spectra might not be the same than in the original `Spectra`
 #' object.
 #'
+#' Note also that for spectra with a missing precursor m/z empty spectra are
+#' returned (i.e. spectra without peaks) since it is not possible to calcualte
+#' the neutral loss spectra.
+#'
 #' @param filterPeaks For `PrecursorMzParam`: `character(1)` or `function`
 #'     defining if and how fragment peaks should be filtered before calculation.
 #'     Pre-defined options are: `"none"` (keep all peaks), `"abovePrecursor"`
@@ -44,7 +48,10 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #'     (the precursor m/z) that returns the sub-setted two column peak matrix.
 #'
 #' @param msLevel `integer` defining for which MS level(s) the neutral loss
-#'     spectra should be calculated.
+#'     spectra should be calculated. Defaults to `msLevel = c(2L, NA)` thus,
+#'     neutral loss spectra will be calculated for all spectra with MS level
+#'     equal to 2 or with missing/undefined MS level. All spectra with a MS
+#'     level different than `msLevel` will be returned unchanged.
 #'
 #' @param object [Spectra()] object with the fragment spectra for which neutral
 #'     loss spectra should be calculated.
@@ -92,6 +99,11 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #' sps_nl <- neutralLoss(sps, PrecursorMzParam(
 #'     filterPeaks = "abovePrecursor", msLevel = 2:3))
 #' mz(sps_nl)
+#'
+#' ## Empty spectra are returned for MS 2 spectra with undefined precursor m/z.
+#' sps$precursorMz <- NA_real_
+#' sps_nl <- neutralLoss(sps, PrecursorMzParam())
+#' mz(sps_nl)
 NULL
 
 #' @importClassesFrom ProtGenerics Param
@@ -118,7 +130,7 @@ setClass("PrecursorMzParam",
 #' @export
 PrecursorMzParam <- function(filterPeaks = c("none", "abovePrecursor",
                                              "belowPrecursor"),
-                             msLevel = 2L) {
+                             msLevel = c(2L, NA_integer_)) {
     filterFun <- NULL
     if (is.character(filterPeaks)) {
         filterPeaks <- match.arg(filterPeaks)
@@ -152,6 +164,7 @@ setMethod(
             if (spectrumMsLevel %in% msl) {
                 x <- filterPeaks(x, precursorMz, ...)
                 x[, "mz"] <- precursorMz - x[, "mz"]
+                x <- x[!is.na(x[, "mz"]), , drop = FALSE]
                 if (is.unsorted(x[, "mz"]))
                     x <- x[order(x[, "mz"]), , drop = FALSE]
             }

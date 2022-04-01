@@ -65,4 +65,19 @@ test_that("neutralLoss,Spectra,PrecursorMzParam works", {
                                              msLevel = 2))
     expect_equal(unname(mz(res)[[2L]]), c(-46))
     expect_equal(mz(res)[[5L]], numeric())
+
+    ## With and without NA MS level.
+    a <- neutralLoss(sps[2], PrecursorMzParam())
+    sps_2 <- sps
+    sps_2$msLevel <- NA_integer_
+    b <- neutralLoss(sps_2[2], PrecursorMzParam())
+    expect_equal(mz(a), mz(b))
+    b <- neutralLoss(sps, PrecursorMzParam(msLevel = 10))
+    expect_equal(mz(sps), mz(b))
+
+    ## With precursor m/z being NA.
+    a <- sps[2]
+    a$precursorMz <- NA_integer_
+    a <- neutralLoss(a, PrecursorMzParam())
+    expect_equal(mz(a)[[1L]], numeric())
 })

@@ -1,5 +1,10 @@
 # Spectra 1.5
 
+## Changes in 1.5.16
+
+- Fix issue in `neutralLoss` that would prevent calculation of neutral loss
+  spectra if
+
 ## Changes in 1.5.15
 
 - Fix typo in MZ delta plot title.
