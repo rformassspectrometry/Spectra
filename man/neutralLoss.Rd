@@ -10,7 +10,7 @@ neutralLoss(object, param, ...)
 
 PrecursorMzParam(
   filterPeaks = c("none", "abovePrecursor", "belowPrecursor"),
-  msLevel = 2L
+  msLevel = c(2L, NA_integer_)
 )
 
 \S4method{neutralLoss}{Spectra,PrecursorMzParam}(object, param, ...)
@@ -33,7 +33,10 @@ parameter with arguments \code{x} (two column peak matrix) and \code{precursorMz
 (the precursor m/z) that returns the sub-setted two column peak matrix.}
 
 \item{msLevel}{\code{integer} defining for which MS level(s) the neutral loss
-spectra should be calculated.}
+spectra should be calculated. Defaults to \code{msLevel = c(2L, NA)} thus,
+neutral loss spectra will be calculated for all spectra with MS level
+equal to 2 or with missing/undefined MS level. All spectra with a MS
+level different than \code{msLevel} will be returned unchanged.}
 }
 \value{
 A \code{\link[=Spectra]{Spectra()}} object with calculated neutral loss spectra.
@@ -63,6 +66,10 @@ By definition, mass peaks in a \code{Spectra} object need to ordered by their m/
 value (in increasing order). Thus, the order of the peaks in the calculated
 neutral loss spectra might not be the same than in the original \code{Spectra}
 object.
+
+Note also that for spectra with a missing precursor m/z empty spectra are
+returned (i.e. spectra without peaks) since it is not possible to calcualte
+the neutral loss spectra.
 }
 \examples{
 
@@ -91,6 +98,11 @@ mz(sps_nl)
 ## with an m/z >= precursorMz
 sps_nl <- neutralLoss(sps, PrecursorMzParam(
     filterPeaks = "abovePrecursor", msLevel = 2:3))
+mz(sps_nl)
+
+## Empty spectra are returned for MS 2 spectra with undefined precursor m/z.
+sps$precursorMz <- NA_real_
+sps_nl <- neutralLoss(sps, PrecursorMzParam())
 mz(sps_nl)
 }
 \references{
