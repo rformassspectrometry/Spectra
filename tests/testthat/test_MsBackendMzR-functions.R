@@ -39,6 +39,17 @@ test_that(".mzR_peaks work", {
 
     expect_equal(.mzR_peaks(fls[1L], hdr$scanIndex),
                  .mzR_peaks(fls[1L], hdr$scanIndex, readHeader = TRUE))
+
+    ## columns
+    res <- .mzR_peaks(fls[1L], hdr$scanIndex, columns = "intensity")
+    expect_true(is.matrix(res[[1L]]))
+    expect_true(colnames(res[[1L]]) == "intensity")
+
+    res <- .mzR_peaks(fls[1L], hdr$scanIndex,
+                      columns = c("mz", "intensity", "mz"))
+    expect_true(is.matrix(res[[1L]]))
+    expect_equal(colnames(res[[1L]]), c("mz", "intensity", "mz"))
+    expect_equal(res[[1L]][, 1L], res[[1L]][, 3L])
 })
 
 test_that(".pattern_to_cv works", {

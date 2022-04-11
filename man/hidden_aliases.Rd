@@ -22,6 +22,7 @@
 \alias{isReadOnly}
 \alias{peaksData}
 \alias{peaksData<-}
+\alias{peaksVariables}
 \alias{pickPeaks}
 \alias{replaceIntensitiesBelow}
 \alias{reset}
@@ -153,6 +154,8 @@ peaksData(object, ...)
 
 peaksData(object) <- value
 
+peaksVariables(object, ...)
+
 pickPeaks(object, ...)
 
 replaceIntensitiesBelow(object, threshold = min, ...)
@@ -171,7 +174,7 @@ spectrapply(object, ...)
 
 \S4method{acquisitionNum}{MsBackendDataFrame}(object)
 
-\S4method{peaksData}{MsBackendDataFrame}(object)
+\S4method{peaksData}{MsBackendDataFrame}(object, columns = peaksVariables(object))
 
 \S4method{centroided}{MsBackendDataFrame}(object)
 
@@ -285,7 +288,7 @@ spectrapply(object, ...)
 
 \S4method{show}{MsBackendHdf5Peaks}(object)
 
-\S4method{peaksData}{MsBackendHdf5Peaks}(object)
+\S4method{peaksData}{MsBackendHdf5Peaks}(object, columns = peaksVariables(object))
 
 \S4method{intensity}{MsBackendHdf5Peaks}(object)
 
@@ -319,7 +322,7 @@ spectrapply(object, ...)
 
 \S4method{show}{MsBackendMzR}(object)
 
-\S4method{peaksData}{MsBackendMzR}(object)
+\S4method{peaksData}{MsBackendMzR}(object, columns = peaksVariables(object))
 
 \S4method{intensity}{MsBackendMzR}(object)
 

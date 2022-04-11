@@ -134,19 +134,12 @@ NULL
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `peaksData`: gets the *peaks* matrices for all spectra in `object`. The
-#'   function returns a [SimpleList()] of matrices, each `matrix` with columns
-#'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
-#'   a spectrum. Note that it is also possible to extract the peaks matrices
-#'   with `as(x, "list")` and `as(x, "SimpleList")` as a `list` and
-#'   `SimpleList`, respectively.
-#'
 #' - `centroided`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
 #'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
 #'   if it is undefined. See also `isCentroided` for estimating from
-#'   the spectrum data whether the spectrum is centroided.  `value`
+#'   the spectrum data whether the spectrum is centroided. `value`
 #'   for `centroided<-` is either a single `logical` or a `logical` of
 #'   length equal to the number of spectra in `object`.
 #'
@@ -223,6 +216,24 @@ NULL
 #'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
+#'
+#' - `peaksData`: gets the *peaks* matrices for all spectra in `object`. The
+#'   function returns a [SimpleList()] of matrices, each `matrix` with columns
+#'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
+#'   a spectrum. Optional parameter `columns` is passed to the backend's
+#'   `peaksData` function to allow selection of specific (or additional) peaks
+#'   variables (columns) that should be extracted (if available). Importantly,
+#'   it is **not** guaranteed that each backend supports this parameter (while
+#'   each backend must support extraction of `"mz"` and `"intensity"` columns).
+#'   Note also that it is possible to extract the peaks matrices with
+#'   `as(x, "list")` and `as(x, "SimpleList")` as a `list` and `SimpleList`,
+#'   respectively.
+#'
+#' - `peaksVariables`: lists the available variables for mass peaks. Default
+#'   peak variables are `"mz"` and `"intensity"` (which all backends need to
+#'   support and provide), but some backends might provide additional variables.
+#'   These variables correspond to the column names of the `numeric` `matrix`
+#'   representing the peak data (returned by `peaksData`).
 #'
 #' - `polarity`, `polarity<-`: gets or sets the polarity for each
 #'   spectrum.  `polarity` returns an `integer` vector (length equal
@@ -612,6 +623,10 @@ NULL
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
+#'     For `peaksData` accessor: optional `character` with requested columns in
+#'     the individual `matrix` of the returned `list`. Defaults to
+#'     `peaksVariables(object)` and depends on what *peaks variables* the
+#'     backend provides.
 #'
 #' @param dataOrigin For `filterDataOrigin`: `character` to define which
 #'     spectra to keep.
@@ -1362,9 +1377,15 @@ setMethod("acquisitionNum", "Spectra", function(object)
     acquisitionNum(object@backend))
 
 #' @rdname Spectra
-setMethod("peaksData", "Spectra", function(object, ...) {
-    SimpleList(.peaksapply(object, ...))
+setMethod(
+    "peaksData", "Spectra",
+    function(object, columns = peaksVariables(object), ...) {
+        SimpleList(.peaksapply(object, columns = columns, ...))
 })
+
+#' @rdname Spectra
+setMethod("peaksVariables", "Spectra", function(object)
+    peaksVariables(object@backend))
 
 #' @importFrom methods setAs
 setAs("Spectra", "list", function(from, to) {

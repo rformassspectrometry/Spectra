@@ -126,6 +126,9 @@ MsBackendHdf5Peaks <- function() {
 #'     thrown if they differ, i.e. if the object was copied and the hdf5 files
 #'     modified by the original/source object.
 #'
+#' @param columns `character` with the column names to return. Only values
+#'     `"mz"` and `"intensity"` are currently supported (in any order).
+#'
 #' @return list of `matrix` objects with the peak data.
 #'
 #' @author Johannes Rainer
@@ -134,7 +137,7 @@ MsBackendHdf5Peaks <- function() {
 #'
 #' @noRd
 .h5_read_peaks <- function(x = character(), scanIndex = integer(),
-                           modCount = 0L) {
+                           modCount = 0L, columns = c("mz", "intensity")) {
     if (length(x) != 1)
         stop("'x' should have length 1")
     if (!length(scanIndex))
@@ -150,11 +153,22 @@ MsBackendHdf5Peaks <- function() {
         stop("The data in the hdf5 files associated with this object appear ",
              "to have changed! Please see the Notes section in ?MsBackend ",
              "for more information.")
-    base::lapply(paste0("/spectra/", scanIndex), function(z, file) {
-        res <- .h5_read_bare(name = z, file = file)
-        colnames(res) <- c("mz", "intensity")
-        res
-    }, file = fid)
+    cn <- c("mz", "intensity")
+    if (length(columns) == 2L && all(columns == c("mz", "intensity"))) {
+        read_fun <- function(z, file, cn, columns, ...) {
+            res <- .h5_read_bare(name = z, file = file)
+            colnames(res) <- c("mz", "intensity")
+            res
+        }
+    } else {
+        read_fun <- function(z, file, cn, columns, ...) {
+            res <- .h5_read_bare(name = z, file = file)
+            colnames(res) <- c("mz", "intensity")
+            res[, columns, drop = FALSE]
+        }
+    }
+    base::lapply(paste0("/spectra/", scanIndex), read_fun, file = fid,
+                 cn = cn, columns = columns)
 }
 
 #' Write spectra of an mzML file to a group within a hdf5 file. Depending on

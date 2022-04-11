@@ -61,7 +61,7 @@ MsBackendMzR <- function() {
 #'
 #' @noRd
 .mzR_peaks <- function(x = character(), scanIndex = integer(),
-                       readHeader = FALSE) {
+                       readHeader = FALSE, columns = c("mz", "intensity")) {
     if (length(x) != 1)
         stop("'x' should have length 1")
     msd <- mzR::openMSfile(x)
@@ -72,10 +72,19 @@ MsBackendMzR <- function() {
     pks <- mzR::peaks(msd, scanIndex)
     if (is.matrix(pks))
         pks <- list(pks)
-    lapply(pks, function(z) {
-        colnames(z) <- c("mz", "intensity")
-        z
-    })
+    cn <- c("mz", "intensity")
+    if (length(columns) == 2L && all(columns == c("mz", "intensity"))) {
+        peaks_fun <- function(z, cn, columns) {
+            colnames(z) <- cn
+            z
+        }
+    } else {
+        peaks_fun <- function(z, cn, columns) {
+            colnames(z) <- cn
+            z[, columns, drop = FALSE]
+        }
+    }
+    lapply(pks, peaks_fun, cn = cn, columns = columns)
 }
 
 #' @importFrom IRanges NumericList

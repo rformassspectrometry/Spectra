@@ -90,10 +90,16 @@ setMethod("acquisitionNum", "MsBackendDataFrame", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksData", "MsBackendDataFrame", function(object) {
-    mapply(cbind, mz = mz(object), intensity = intensity(object),
-           SIMPLIFY = FALSE, USE.NAMES = FALSE)
-})
+setMethod("peaksData", "MsBackendDataFrame",
+          function(object, columns = peaksVariables(object)) {
+              if (!all(columns %in% c("mz", "intensity")))
+                  stop("'peaksData' for 'MsBackendDataFrame' does only support",
+                       " columns \"mz\" and \"intensity\"", call. = FALSE)
+              lst <- lapply(columns, function(z) do.call(z, list(object)))
+              names(lst) <- columns
+              tmp <- do.call(mapply, c(list(FUN = cbind, SIMPLIFY = FALSE,
+                                            USE.NAMES = FALSE), lst))
+          })
 
 #' @rdname hidden_aliases
 setMethod("centroided", "MsBackendDataFrame", function(object) {

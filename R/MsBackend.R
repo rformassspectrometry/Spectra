@@ -47,6 +47,10 @@
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
+#'     For `peaksData` accessor: optional `character` with requested columns in
+#'     the individual `matrix` of the returned `list`. Defaults to
+#'     `peaksVariables(object)` and depends on what *peaks variables* the
+#'     backend provides.
 #'
 #' @param data For `backendInitialize`: `DataFrame` with spectrum
 #'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
@@ -174,12 +178,6 @@
 #' - `acquisitionNum`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
-#'
-#' - `peaksData` returns a `list` with the spectras' peak data. The length of
-#'   the list is equal to the number of spectra in `object`. Each element of
-#'   the list is a `matrix` with columns `"mz"` and `"intensity"`. For an empty
-#'   spectrum, a `matrix` with 0 rows and two columns (named `mz` and
-#'   `intensity`) is returned.
 #'
 #' - `backendInitialize`: initialises the backend. This method is
 #'   supposed to be called rights after creating an instance of the
@@ -381,11 +379,28 @@
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
+#' - `peaksData` returns a `list` with the spectras' peak data, i.e. numeric
+#'   `matrix` with peak values. The length of the list is equal to the number
+#'   of spectra in `object`. Each element of the list is a `numeric` `matrix`
+#'   with columns depending on the provided `columns` parameter (by default
+#'   `"mz"` and `"intensity"`, but depends on the backend's available
+#'   `peaksVariables`). For an empty spectrum, a `matrix` with 0 rows and
+#'   columns according to `columns` is returned. The optional parameter
+#'   `columns`, if supported by the backend, allows to define which peak
+#'   variables should be returned in the `numeric` peak `matrix`. As a default
+#'   `peaksVariables` should be used.
+#'
 #' - `peaksData<-` replaces the peak data (m/z and intensity values) of the
 #'   backend. This method expects a `list` of `matrix` objects with columns
 #'   `"mz"` and `"intensity"` that has the same length as the number of
 #'   spectra in the backend. Note that just writeable backends support this
 #'   method.
+#'
+#' - `peaksVariables`: lists the available variables for mass peaks. Default
+#'   peak variables are `"mz"` and `"intensity"` (which all backends need to
+#'   support and provide), but some backends might provide additional variables.
+#'   These variables correspond to the column names of the `numeric` `matrix`
+#'   representing the peak data (returned by `peaksData`).
 #'
 #' - `reset` a backend (if supported). This method will be called on the backend
 #'   by the `reset,Spectra` method that is supposed to restore the data to its
@@ -489,6 +504,8 @@
 #'
 #' Additional columns are allowed too.
 #'
+#' The `MsBackendDataFrame` ignores parameter `columns` of the `peaksData`
+#' function and returns **always** m/z and intensity values.
 #'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
@@ -531,6 +548,8 @@
 #' See examples in [Spectra-class] or the vignette for more details and
 #' examples.
 #'
+#' The `MsBackendMzR` ignores parameter `columns` of the `peaksData`
+#' function and returns **always** m/z and intensity values.
 #'
 #' @section `MsBackendHdf5Peaks`, on-disk MS data backend:
 #'
@@ -559,6 +578,9 @@
 #' `"dataStorage"`.
 #'
 #' For details see examples on the [Spectra()] help page.
+#'
+#' The `MsBackendHdf5Peaks` ignores parameter `columns` of the `peaksData`
+#' function and returns **always** m/z and intensity values.
 #'
 #' @section Implementation notes:
 #'
@@ -637,6 +659,20 @@
 #' ## The `peaksData` method is supposed to return the peaks of the spectra as
 #' ## a `list`.
 #' peaksData(be)
+#'
+#' ## List available peaks variables
+#' peaksVariables(be)
+#'
+#'
+#' ## Use columns to extract specific peaks variables. Below we extract m/z and
+#' ## intensity values, but in reversed order to the default.
+#' peaksData(be, columns = c("intensity", "mz"))
+#'
+#' ## List available spectra variables (i.e. spectrum metadata)
+#' spectraVariables(be)
+#'
+#' ## Extract precursor m/z, rtime, MS level spectra variables
+#' spectraData(be, c("precursorMz", "rtime", "msLevel"))
 NULL
 
 setClass(
@@ -696,8 +732,16 @@ setMethod("acquisitionNum", "MsBackend", function(object) {
 #' @exportMethod peaksData
 #'
 #' @rdname MsBackend
-setMethod("peaksData", "MsBackend", function(object) {
+setMethod("peaksData", "MsBackend", function(object,
+                                             columns = peaksVariables(object)) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod peaksVariables
+#'
+#' @rdname MsBackend
+setMethod("peaksVariables", "MsBackend", function(object) {
+    c("mz", "intensity")
 })
 
 #' @exportMethod centroided

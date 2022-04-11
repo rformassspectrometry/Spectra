@@ -79,6 +79,9 @@ NULL
 #' @param f `factor` or `vector` that can be coerced to one defining how the
 #'     data should be split for parallel processing.
 #'
+#' @param columns `character` defining the columns that should be returned. This
+#'     will be passed to the backend's `peaksData` function.
+#'
 #' @param BPPARAM parallel processing setup.
 #'
 #' @return `list` of `matrix` with the peaks.
@@ -90,7 +93,8 @@ NULL
 #' @noRd
 .peaksapply <- function(object, FUN = NULL, ...,
                         spectraVariables = .processingQueueVariables(object),
-                        f = dataStorage(object), BPPARAM = bpparam()) {
+                        f = dataStorage(object),
+                        columns = c("mz", "intensity"), BPPARAM = bpparam()) {
     len <- length(object)
     if (!len)
         return(list())
@@ -106,10 +110,11 @@ NULL
             if (length(svars))
                 spd <- as.data.frame(spectraData(z, columns = svars))
             else spd <- NULL
-            .apply_processing_queue(peaksData(z), spd, queue = queue)
+            .apply_processing_queue(peaksData(z, columns = columns), spd,
+                                    queue = queue)
         }, queue = pqueue, svars = spectraVariables, BPPARAM = BPPARAM)
         unsplit(res, f = f, drop = TRUE)
-    } else peaksData(object@backend)
+    } else peaksData(object@backend, columns = columns)
 }
 
 #' @title Apply a function to subsets of Spectra

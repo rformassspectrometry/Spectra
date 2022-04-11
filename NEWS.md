@@ -1,5 +1,12 @@
 # Spectra 1.5
 
+## Changes in 1.5.17
+
+- Add `peaksVariables` method and add parameter `columns` (or `...`) to
+  `peaksData`.
+- Add `columns` parameter to the `peaksData` method of `MsBackendDataFrame`,
+  `MsBackendMzR` and `MsBackendHdf5peaks`.
+
 ## Changes in 1.5.16
 
 - Fix issue in `neutralLoss` that would prevent calculation of neutral loss

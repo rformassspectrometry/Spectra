@@ -104,4 +104,19 @@ test_that(".h5_read_peaks, .h5_write_peaks works", {
                                  modCount = 0L), "have to be ordered")
     expect_error(.h5_write_peaks(tmp[3], scanIndex = 2L, tmpf,
                                  modCount = 0L), "two columns")
+
+    ## columns parameter.
+    fl <- sciex_hd5$dataStorage[1L]
+    res <- .h5_read_peaks(fl, scanIndex = 15, columns = "intensity")
+    expect_true(is.matrix(res[[1L]]))
+    expect_equal(colnames(res[[1L]]), "intensity")
+    expect_equal(res[[1L]][, 1L], sciex_pks[[15L]][, 2L])
+
+    res <- .h5_read_peaks(fl, scanIndex = 15,
+                          columns = c("intensity", "mz", "intensity"))
+    expect_true(is.matrix(res[[1L]]))
+    expect_equal(colnames(res[[1L]]), c("intensity", "mz", "intensity"))
+    expect_equal(res[[1L]][, 1L], sciex_pks[[15L]][, 2L])
+    expect_equal(res[[1L]][, 2L], sciex_pks[[15L]][, 1L])
+    expect_equal(res[[1L]][, 3L], sciex_pks[[15L]][, 2L])
 })

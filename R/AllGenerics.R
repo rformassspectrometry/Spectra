@@ -52,6 +52,9 @@ setGeneric("peaksData", function(object, ...) standardGeneric("peaksData"))
 setGeneric("peaksData<-", function(object, value)
     standardGeneric("peaksData<-"))
 #' @rdname hidden_aliases
+setGeneric("peaksVariables", function(object, ...)
+    standardGeneric("peaksVariables"))
+#' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
 setGeneric("plotSpectraMirror", function(x, y, ...)

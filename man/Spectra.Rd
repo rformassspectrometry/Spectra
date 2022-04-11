@@ -20,6 +20,7 @@
 \alias{export,Spectra-method}
 \alias{acquisitionNum,Spectra-method}
 \alias{peaksData,Spectra-method}
+\alias{peaksVariables,Spectra-method}
 \alias{centroided,Spectra-method}
 \alias{centroided<-,Spectra-method}
 \alias{collisionEnergy,Spectra-method}
@@ -169,7 +170,9 @@ estimatePrecursorIntensity(
 
 \S4method{acquisitionNum}{Spectra}(object)
 
-\S4method{peaksData}{Spectra}(object, ...)
+\S4method{peaksData}{Spectra}(object, columns = peaksVariables(object), ...)
+
+\S4method{peaksVariables}{Spectra}(object)
 
 \S4method{centroided}{Spectra}(object)
 
@@ -495,6 +498,14 @@ of objects, conversion and changing the backend} for more details.}
 
 \item{drop}{For \code{[}, \code{split}: not considered.}
 
+\item{columns}{For \code{spectraData} accessor: optional \code{character} with column
+names (spectra variables) that should be included in the
+returned \code{DataFrame}. By default, all columns are returned.
+For \code{peaksData} accessor: optional \code{character} with requested columns in
+the individual \code{matrix} of the returned \code{list}. Defaults to
+\code{peaksVariables(object)} and depends on what \emph{peaks variables} the
+backend provides.}
+
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
 
@@ -517,10 +528,6 @@ names of the spectra variables to which the backend should be subsetted.
 For \code{addProcessing}: \code{character} with additional spectra variables that
 should be passed along to the function defined with \code{FUN}. See function
 description for details.}
-
-\item{columns}{For \code{spectraData} accessor: optional \code{character} with column
-names (spectra variables) that should be included in the
-returned \code{DataFrame}. By default, all columns are returned.}
 
 \item{initial}{For \code{tic}: \code{logical(1)} whether the initially
 reported total ion current should be reported, or whether the
@@ -744,18 +751,12 @@ backend.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
-\item \code{peaksData}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
-function returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns
-\code{"mz"} and \code{"intensity"} with the m/z and intensity values for all peaks of
-a spectrum. Note that it is also possible to extract the peaks matrices
-with \code{as(x, "list")} and \code{as(x, "SimpleList")} as a \code{list} and
-\code{SimpleList}, respectively.
 \item \code{centroided}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
 spectrum is centroided, \code{FALSE} if it is in profile mode and \code{NA}
 if it is undefined. See also \code{isCentroided} for estimating from
-the spectrum data whether the spectrum is centroided.  \code{value}
+the spectrum data whether the spectrum is centroided. \code{value}
 for \verb{centroided<-} is either a single \code{logical} or a \code{logical} of
 length equal to the number of spectra in \code{object}.
 \item \code{collisionEnergy}, \verb{collisionEnergy<-}: gets or sets the
@@ -815,6 +816,22 @@ level for each spectrum.
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
+\item \code{peaksData}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
+function returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns
+\code{"mz"} and \code{"intensity"} with the m/z and intensity values for all peaks of
+a spectrum. Optional parameter \code{columns} is passed to the backend's
+\code{peaksData} function to allow selection of specific (or additional) peaks
+variables (columns) that should be extracted (if available). Importantly,
+it is \strong{not} guaranteed that each backend supports this parameter (while
+each backend must support extraction of \code{"mz"} and \code{"intensity"} columns).
+Note also that it is possible to extract the peaks matrices with
+\code{as(x, "list")} and \code{as(x, "SimpleList")} as a \code{list} and \code{SimpleList},
+respectively.
+\item \code{peaksVariables}: lists the available variables for mass peaks. Default
+peak variables are \code{"mz"} and \code{"intensity"} (which all backends need to
+support and provide), but some backends might provide additional variables.
+These variables correspond to the column names of the \code{numeric} \code{matrix}
+representing the peak data (returned by \code{peaksData}).
 \item \code{polarity}, \verb{polarity<-}: gets or sets the polarity for each
 spectrum.  \code{polarity} returns an \code{integer} vector (length equal
 to the number of spectra), with \code{0} and \code{1} representing negative
