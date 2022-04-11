@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.17</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,6 +91,8 @@ peaksData(object, ...)
 
 peaksData(object) &lt;- value
 
+peaksVariables(object, ...)
+
 pickPeaks(object, ...)
 
 replaceIntensitiesBelow(object, threshold = min, ...)
@@ -113,7 +115,7 @@ backendMerge(object, ...)
 acquisitionNum(object)
 
 # S4 method for MsBackendDataFrame
-peaksData(object)
+peaksData(object, columns = peaksVariables(object))
 
 # S4 method for MsBackendDataFrame
 centroided(object)
@@ -278,7 +280,7 @@ backendInitialize(
 show(object)
 
 # S4 method for MsBackendHdf5Peaks
-peaksData(object)
+peaksData(object, columns = peaksVariables(object))
 
 # S4 method for MsBackendHdf5Peaks
 intensity(object)
@@ -329,7 +331,7 @@ backendInitialize(object, files, ..., BPPARAM = bpparam())
 show(object)
 
 # S4 method for MsBackendMzR
-peaksData(object)
+peaksData(object, columns = peaksVariables(object))
 
 # S4 method for MsBackendMzR
 intensity(object)

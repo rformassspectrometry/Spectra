@@ -16,7 +16,7 @@ on-disk as mzML (MsBackendMzR()) or HDF5 (MsBackendHdf5Peaks())."><meta property
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.17</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,7 +147,10 @@ export(object, backend, ...)
 acquisitionNum(object)
 
 # S4 method for Spectra
-peaksData(object, ...)
+peaksData(object, columns = peaksVariables(object), ...)
+
+# S4 method for Spectra
+peaksVariables(object)
 
 # S4 method for Spectra
 centroided(object)
@@ -547,6 +550,14 @@ to import spectrum data from the provided files. See section <em>Creation
 of objects, conversion and changing the backend</em> for more details.</p></dd>
 <dt>drop</dt>
 <dd><p>For <code>[</code>, <code>split</code>: not considered.</p></dd>
+<dt>columns</dt>
+<dd><p>For <code>spectraData</code> accessor: optional <code>character</code> with column
+names (spectra variables) that should be included in the
+returned <code>DataFrame</code>. By default, all columns are returned.
+For <code>peaksData</code> accessor: optional <code>character</code> with requested columns in
+the individual <code>matrix</code> of the returned <code>list</code>. Defaults to
+<code>peaksVariables(object)</code> and depends on what <em>peaks variables</em> the
+backend provides.</p></dd>
 <dt>value</dt>
 <dd><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></dd>
@@ -570,10 +581,6 @@ names of the spectra variables to which the backend should be subsetted.
 For <code>addProcessing</code>: <code>character</code> with additional spectra variables that
 should be passed along to the function defined with <code>FUN</code>. See function
 description for details.</p></dd>
-<dt>columns</dt>
-<dd><p>For <code>spectraData</code> accessor: optional <code>character</code> with column
-names (spectra variables) that should be included in the
-returned <code>DataFrame</code>. By default, all columns are returned.</p></dd>
 <dt>initial</dt>
 <dd><p>For <code>tic</code>: <code>logical(1)</code> whether the initially
 reported total ion current should be reported, or whether the
@@ -772,18 +779,12 @@ backend.</p></li>
 <li><p><code>acquisitionNum</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
 spectra (with <code>NA_integer_</code> if not available).</p></li>
-<li><p><code>peaksData</code>: gets the <em>peaks</em> matrices for all spectra in <code>object</code>. The
-function returns a <code>SimpleList()</code> of matrices, each <code>matrix</code> with columns
-<code>"mz"</code> and <code>"intensity"</code> with the m/z and intensity values for all peaks of
-a spectrum. Note that it is also possible to extract the peaks matrices
-with <code>as(x, "list")</code> and <code>as(x, "SimpleList")</code> as a <code>list</code> and
-<code>SimpleList</code>, respectively.</p></li>
 <li><p><code>centroided</code>, <code>centroided&lt;-</code>: gets or sets the centroiding
 information of the spectra. <code>centroided</code> returns a <code>logical</code>
 vector of length equal to the number of spectra with <code>TRUE</code> if a
 spectrum is centroided, <code>FALSE</code> if it is in profile mode and <code>NA</code>
 if it is undefined. See also <code>isCentroided</code> for estimating from
-the spectrum data whether the spectrum is centroided.  <code>value</code>
+the spectrum data whether the spectrum is centroided. <code>value</code>
 for <code>centroided&lt;-</code> is either a single <code>logical</code> or a <code>logical</code> of
 length equal to the number of spectra in <code>object</code>.</p></li>
 <li><p><code>collisionEnergy</code>, <code>collisionEnergy&lt;-</code>: gets or sets the
@@ -843,6 +844,22 @@ level for each spectrum.</p></li>
 spectra. Returns a <code>NumericList()</code> or length equal to the number of
 spectra, each element a <code>numeric</code> vector with the m/z values of
 one spectrum.</p></li>
+<li><p><code>peaksData</code>: gets the <em>peaks</em> matrices for all spectra in <code>object</code>. The
+function returns a <code>SimpleList()</code> of matrices, each <code>matrix</code> with columns
+<code>"mz"</code> and <code>"intensity"</code> with the m/z and intensity values for all peaks of
+a spectrum. Optional parameter <code>columns</code> is passed to the backend's
+<code>peaksData</code> function to allow selection of specific (or additional) peaks
+variables (columns) that should be extracted (if available). Importantly,
+it is <strong>not</strong> guaranteed that each backend supports this parameter (while
+each backend must support extraction of <code>"mz"</code> and <code>"intensity"</code> columns).
+Note also that it is possible to extract the peaks matrices with
+<code>as(x, "list")</code> and <code>as(x, "SimpleList")</code> as a <code>list</code> and <code>SimpleList</code>,
+respectively.</p></li>
+<li><p><code>peaksVariables</code>: lists the available variables for mass peaks. Default
+peak variables are <code>"mz"</code> and <code>"intensity"</code> (which all backends need to
+support and provide), but some backends might provide additional variables.
+These variables correspond to the column names of the <code>numeric</code> <code>matrix</code>
+representing the peak data (returned by <code>peaksData</code>).</p></li>
 <li><p><code>polarity</code>, <code>polarity&lt;-</code>: gets or sets the polarity for each
 spectrum.  <code>polarity</code> returns an <code>integer</code> vector (length equal
 to the number of spectra), with <code>0</code> and <code>1</code> representing negative
@@ -1242,7 +1259,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1862         1   259.752       931</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Fri Apr  1 12:46:29 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Apr 11 13:14:38 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## The on-disk object `sciex` is light-weight, because it does not keep the</span></span>
 <span class="r-in"><span class="co">## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span></span>
@@ -1364,19 +1381,6 @@ level(s).</p></li>
 <span class="r-in"><span class="co">## Note that we could get the same resulb by coercing the `Spectra` to</span></span>
 <span class="r-in"><span class="co">## a `list` or `SimpleList`:</span></span>
 <span class="r-in"><span class="fu">as</span><span class="op">(</span><span class="va">data</span>, <span class="st">"list"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 100.0     200.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 103.2     400.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 104.3      34.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 106.5      17.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  45.6      12.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 120.4      15.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 190.2       6.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="fu">as</span><span class="op">(</span><span class="va">data</span>, <span class="st">"SimpleList"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of length 2</span>
 <span class="r-in"></span>
@@ -1510,7 +1514,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         2       1.2        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Fri Apr  1 12:46:31 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Mon Apr 11 13:14:39 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## Below we combine the `data` and `sciex_im` objects into a single one.</span></span>
 <span class="r-in"><span class="va">data_comb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">sciex_im</span><span class="op">)</span></span>
@@ -1536,7 +1540,7 @@ level(s).</p></li>
 <span class="r-in"><span class="fu"><a href="hidden_aliases.html">filterPrecursorMzRange</a></span><span class="op">(</span><span class="va">data_filt</span>, mz <span class="op">=</span> <span class="fl">543.23</span> <span class="op">+</span> <span class="fu"><a href="hidden_aliases.html">ppm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">543.23</span>, <span class="fl">543.23</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 0 spectra in a MsBackendDataFrame backend:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2354323, 543.2354323] [Fri Apr  1 12:46:31 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2354323, 543.2354323] [Mon Apr 11 13:14:40 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## Filter a Spectra keeping only peaks matching certain m/z values</span></span>
 <span class="r-in"><span class="va">sps_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="hidden_aliases.html">filterMzValues</a></span><span class="op">(</span><span class="va">data</span>, mz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">103</span>, <span class="fl">104</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
@@ -1606,18 +1610,18 @@ level(s).</p></li>
 <span class="r-in">                 var2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">letters</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">spv</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 10 rows and 3 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                spectrumId      var1        var2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               &lt;character&gt; &lt;numeric&gt; &lt;character&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  sample=1 period=1 cy.. -1.399420           c</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sample=1 period=1 cy.. -0.786817           n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  sample=1 period=1 cy..  0.124463           z</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  sample=1 period=1 cy..  1.152566           e</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  sample=1 period=1 cy..  0.424950           s</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  sample=1 period=1 cy.. -0.678662           q</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  sample=1 period=1 cy..  0.676167           j</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  sample=1 period=1 cy.. -0.146476           b</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  sample=1 period=1 cy..  0.125902           d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 sample=1 period=1 cy.. -0.838577           r</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                spectrumId       var1        var2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               &lt;character&gt;  &lt;numeric&gt; &lt;character&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  sample=1 period=1 cy..  0.1334118           c</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sample=1 period=1 cy..  0.4797908           m</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  sample=1 period=1 cy..  1.6044303           d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  sample=1 period=1 cy..  1.2463375           h</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  sample=1 period=1 cy..  1.4752786           u</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  sample=1 period=1 cy.. -0.8090663           k</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  sample=1 period=1 cy..  0.7079450           r</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  sample=1 period=1 cy.. -0.0384448           w</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  sample=1 period=1 cy..  0.4860872           x</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 sample=1 period=1 cy..  0.7455680           z</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">sciex2</span> <span class="op">&lt;-</span> <span class="fu">joinSpectraData</span><span class="op">(</span><span class="va">sciex1</span>, <span class="va">spv</span>, by.y <span class="op">=</span> <span class="st">"spectrumId"</span><span class="op">)</span></span>
 <span class="r-in"></span>
@@ -1642,19 +1646,19 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [35] "var1"                     "var2"                    </span>
 <span class="r-in"><span class="fu">spectraData</span><span class="op">(</span><span class="va">sciex2</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">13</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spectrumId"</span>, <span class="st">"var1"</span>, <span class="st">"var2"</span><span class="op">)</span><span class="op">]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 13 rows and 3 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 spectrumId      var1        var2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                &lt;character&gt; &lt;numeric&gt; &lt;character&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sample=1 period=1 cy..        NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   sample=1 period=1 cy..        NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   sample=1 period=1 cy.. -1.399420           c</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   sample=1 period=1 cy.. -0.786817           n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   sample=1 period=1 cy..  0.124463           z</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...                    ...       ...         ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   sample=1 period=1 cy..  0.676167           j</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  sample=1 period=1 cy.. -0.146476           b</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11  sample=1 period=1 cy..  0.125902           d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  sample=1 period=1 cy.. -0.838577           r</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13  sample=1 period=1 cy..        NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 spectrumId       var1        var2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                &lt;character&gt;  &lt;numeric&gt; &lt;character&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sample=1 period=1 cy..         NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   sample=1 period=1 cy..         NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   sample=1 period=1 cy..   0.133412           c</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   sample=1 period=1 cy..   0.479791           m</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   sample=1 period=1 cy..   1.604430           d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...                    ...        ...         ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   sample=1 period=1 cy..  0.7079450           r</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  sample=1 period=1 cy.. -0.0384448           w</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  sample=1 period=1 cy..  0.4860872           x</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  sample=1 period=1 cy..  0.7455680           z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  sample=1 period=1 cy..         NA          NA</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## Removing fourier transform artefacts seen in Orbitra data.</span></span>
 <span class="r-in"></span>
@@ -1675,7 +1679,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Fri Apr  1 12:46:32 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Mon Apr 11 13:14:40 2022] </span>
 <span class="r-in"><span class="fu"><a href="spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">fft_spectrum</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">264.5</span>, <span class="fl">265.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5e6</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="Spectra-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
@@ -1697,8 +1701,8 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 2 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Fri Apr  1 12:46:32 2022]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Fri Apr  1 12:46:32 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Mon Apr 11 13:14:40 2022]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Mon Apr 11 13:14:40 2022] </span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">fft_spectrum_filtered</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 297</span>
 <span class="r-in"><span class="fu"><a href="spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">fft_spectrum_filtered</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">264.5</span>, <span class="fl">265.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5e6</span><span class="op">)</span><span class="op">)</span></span>
@@ -1720,7 +1724,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Apr  1 12:46:32 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Apr 11 13:14:40 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## Get the intensities of the first and second spectrum.</span></span>
 <span class="r-in"><span class="fu">intensity</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -1777,9 +1781,9 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         2       1.2        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Apr  1 12:46:32 2022]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Apr  1 12:46:32 2022]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Fri Apr  1 12:46:32 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Apr 11 13:14:40 2022]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Mon Apr 11 13:14:40 2022]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Mon Apr 11 13:14:40 2022] </span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">res_rest</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4 3</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">)</span></span>
@@ -1917,7 +1921,7 @@ level(s).</p></li>
 <span class="r-in"><span class="co">## provide a file name.</span></span>
 <span class="r-in"><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing file file117f1fb03753...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing file file78705a33f52d...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## This exported our data in mzML format. Below we read the first 6 lines</span></span>
@@ -1936,9 +1940,9 @@ level(s).</p></li>
 <span class="r-in"><span class="co">## Below we export each spectrum to its own file.</span></span>
 <span class="r-in"><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing file file117f160f5c08...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing file file787027ea08c1...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing file file117f1dd65dad...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing file file78702457b4d8...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## Reading the data from the first file</span></span>
