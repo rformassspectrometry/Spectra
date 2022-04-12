@@ -60,7 +60,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.18</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,7 +142,7 @@ export(object, ...)
 acquisitionNum(object)
 
 # S4 method for MsBackend
-peaksData(object, columns = peaksVariables(object))
+peaksData(object, columns = c("mz", "intensity"))
 
 # S4 method for MsBackend
 peaksVariables(object)
@@ -673,7 +673,7 @@ with columns depending on the provided <code>columns</code> parameter (by defaul
 columns according to <code>columns</code> is returned. The optional parameter
 <code>columns</code>, if supported by the backend, allows to define which peak
 variables should be returned in the <code>numeric</code> peak <code>matrix</code>. As a default
-<code>peaksVariables</code> should be used.</p></li>
+<code>c("mz", "intensity")</code> should be used.</p></li>
 <li><p><code>peaksData&lt;-</code> replaces the peak data (m/z and intensity values) of the
 backend. This method expects a <code>list</code> of <code>matrix</code> objects with columns
 <code>"mz"</code> and <code>"intensity"</code> that has the same length as the number of
