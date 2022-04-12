@@ -1,5 +1,10 @@
 # Spectra 1.5
 
+## Changes in 1.5.18
+
+- Set default for parameter `columns` in `peaksData,Spectra` and
+  `peaksData,MsBackend` to `c("mz", "intensity")`.
+
 ## Changes in 1.5.17
 
 - Add `peaksVariables` method and add parameter `columns` (or `...`) to

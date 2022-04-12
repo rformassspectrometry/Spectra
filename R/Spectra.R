@@ -225,13 +225,17 @@ NULL
 #'   variables (columns) that should be extracted (if available). Importantly,
 #'   it is **not** guaranteed that each backend supports this parameter (while
 #'   each backend must support extraction of `"mz"` and `"intensity"` columns).
+#'   Parameter `columns` defaults to `c("mz", "intensity")` but any value
+#'   returned from `peaksVariables` is supported.
 #'   Note also that it is possible to extract the peaks matrices with
 #'   `as(x, "list")` and `as(x, "SimpleList")` as a `list` and `SimpleList`,
-#'   respectively.
+#'   respectively. Note however that, in contrast to `peaksData`, `as` does not
+#'   support the parameter `columns`.
 #'
-#' - `peaksVariables`: lists the available variables for mass peaks. Default
-#'   peak variables are `"mz"` and `"intensity"` (which all backends need to
-#'   support and provide), but some backends might provide additional variables.
+#' - `peaksVariables`: lists the available variables for mass peaks provided by
+#'   the backend. Default peak variables are `"mz"` and `"intensity"` (which
+#'   all backends need to support and provide), but some backends might provide
+#'   additional variables.
 #'   These variables correspond to the column names of the `numeric` `matrix`
 #'   representing the peak data (returned by `peaksData`).
 #'
@@ -625,8 +629,8 @@ NULL
 #'     returned `DataFrame`. By default, all columns are returned.
 #'     For `peaksData` accessor: optional `character` with requested columns in
 #'     the individual `matrix` of the returned `list`. Defaults to
-#'     `peaksVariables(object)` and depends on what *peaks variables* the
-#'     backend provides.
+#'     `c("mz", "value")` but any values returned by `peaksVariables(object)`
+#'     with `object` being the `Spectra` object are supported.
 #'
 #' @param dataOrigin For `filterDataOrigin`: `character` to define which
 #'     spectra to keep.
@@ -1379,7 +1383,7 @@ setMethod("acquisitionNum", "Spectra", function(object)
 #' @rdname Spectra
 setMethod(
     "peaksData", "Spectra",
-    function(object, columns = peaksVariables(object), ...) {
+    function(object, columns = c("mz", "intensity"), ...) {
         SimpleList(.peaksapply(object, columns = columns, ...))
 })
 

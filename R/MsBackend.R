@@ -388,7 +388,7 @@
 #'   columns according to `columns` is returned. The optional parameter
 #'   `columns`, if supported by the backend, allows to define which peak
 #'   variables should be returned in the `numeric` peak `matrix`. As a default
-#'   `peaksVariables` should be used.
+#'   `c("mz", "intensity")` should be used.
 #'
 #' - `peaksData<-` replaces the peak data (m/z and intensity values) of the
 #'   backend. This method expects a `list` of `matrix` objects with columns
@@ -733,7 +733,7 @@ setMethod("acquisitionNum", "MsBackend", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("peaksData", "MsBackend", function(object,
-                                             columns = peaksVariables(object)) {
+                                             columns = c("mz", "intensity")) {
     stop("Not implemented for ", class(object), ".")
 })
 

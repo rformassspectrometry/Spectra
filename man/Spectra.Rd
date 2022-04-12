@@ -170,7 +170,7 @@ estimatePrecursorIntensity(
 
 \S4method{acquisitionNum}{Spectra}(object)
 
-\S4method{peaksData}{Spectra}(object, columns = peaksVariables(object), ...)
+\S4method{peaksData}{Spectra}(object, columns = c("mz", "intensity"), ...)
 
 \S4method{peaksVariables}{Spectra}(object)
 
@@ -503,8 +503,8 @@ names (spectra variables) that should be included in the
 returned \code{DataFrame}. By default, all columns are returned.
 For \code{peaksData} accessor: optional \code{character} with requested columns in
 the individual \code{matrix} of the returned \code{list}. Defaults to
-\code{peaksVariables(object)} and depends on what \emph{peaks variables} the
-backend provides.}
+\code{c("mz", "value")} but any values returned by \code{peaksVariables(object)}
+with \code{object} being the \code{Spectra} object are supported.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
@@ -824,12 +824,16 @@ a spectrum. Optional parameter \code{columns} is passed to the backend's
 variables (columns) that should be extracted (if available). Importantly,
 it is \strong{not} guaranteed that each backend supports this parameter (while
 each backend must support extraction of \code{"mz"} and \code{"intensity"} columns).
+Parameter \code{columns} defaults to \code{c("mz", "intensity")} but any value
+returned from \code{peaksVariables} is supported.
 Note also that it is possible to extract the peaks matrices with
 \code{as(x, "list")} and \code{as(x, "SimpleList")} as a \code{list} and \code{SimpleList},
-respectively.
-\item \code{peaksVariables}: lists the available variables for mass peaks. Default
-peak variables are \code{"mz"} and \code{"intensity"} (which all backends need to
-support and provide), but some backends might provide additional variables.
+respectively. Note however that, in contrast to \code{peaksData}, \code{as} does not
+support the parameter \code{columns}.
+\item \code{peaksVariables}: lists the available variables for mass peaks provided by
+the backend. Default peak variables are \code{"mz"} and \code{"intensity"} (which
+all backends need to support and provide), but some backends might provide
+additional variables.
 These variables correspond to the column names of the \code{numeric} \code{matrix}
 representing the peak data (returned by \code{peaksData}).
 \item \code{polarity}, \verb{polarity<-}: gets or sets the polarity for each

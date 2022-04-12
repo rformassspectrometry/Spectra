@@ -96,7 +96,7 @@
 
 \S4method{acquisitionNum}{MsBackend}(object)
 
-\S4method{peaksData}{MsBackend}(object, columns = peaksVariables(object))
+\S4method{peaksData}{MsBackend}(object, columns = c("mz", "intensity"))
 
 \S4method{peaksVariables}{MsBackend}(object)
 
@@ -600,7 +600,7 @@ with columns depending on the provided \code{columns} parameter (by default
 columns according to \code{columns} is returned. The optional parameter
 \code{columns}, if supported by the backend, allows to define which peak
 variables should be returned in the \code{numeric} peak \code{matrix}. As a default
-\code{peaksVariables} should be used.
+\code{c("mz", "intensity")} should be used.
 \item \verb{peaksData<-} replaces the peak data (m/z and intensity values) of the
 backend. This method expects a \code{list} of \code{matrix} objects with columns
 \code{"mz"} and \code{"intensity"} that has the same length as the number of
