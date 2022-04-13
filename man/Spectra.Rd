@@ -349,7 +349,7 @@ estimatePrecursorIntensity(
 
 \S4method{reset}{Spectra}(object, ...)
 
-\S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)))
+\S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)), FUN = sum)
 
 \S4method{compareSpectra}{Spectra,Spectra}(
   x,
@@ -437,7 +437,9 @@ of each spectrum in \code{object}. For \code{compareSpectra}: function to compar
 intensities of peaks between two spectra with each other.
 For \code{combineSpectra}: function to combine the (peak matrices) of the
 spectra. See section \emph{Data manipulations} and examples below for more
-details.}
+details.
+For \code{bin}: function to aggregate intensity values of peaks falling into
+the same bin. Defaults to \code{FUN = sum} thus summing up intensities.}
 
 \item{y}{A \code{Spectra} object. A \code{DataFrame} for \code{joinSpectraData()}.}
 
@@ -1041,8 +1043,18 @@ write it back to the data storage. Parameter \code{f} allows to specify how
 equal to the \code{dataStorage}, or \code{f = rep(1, length(object))} to disable
 parallel processing alltogether. Other partitionings might result in
 errors (especially if a \code{MsBackendHdf5Peaks} backend is used).
-\item \code{bin}: aggregates individual spectra into discrete (m/z) bins. All
-intensity values for peaks falling into the same bin are summed.
+\item \code{bin}: aggregates individual spectra into discrete (m/z) bins. Binning is
+performed only on spectra of the specified MS level(s) (parameter
+\code{msLevel}, by default all MS levels of \code{x}). The bins can be defined with
+parameter \code{breaks} which by default are equally sized bins, with size
+being defined by parameter \code{binSize}, from the minimal to the maximal m/z
+of all spectra (of MS level \code{msLevel}) within \code{x}. The same bins are used
+for all spectra in \code{x}. All intensity values for peaks falling into the
+same bin are aggregated using the function provided with parameter \code{FUN}
+(defaults to \code{FUN = sum}, i.e. all intensities are summed up). Note that
+the binning operation is applied to the peak data on-the-fly upon data
+access and it is possible to \emph{revert} the operation with the \code{reset}
+function (see description of \code{reset} above).
 \item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum
 are used and the peak matrices are combined using the function specified

@@ -233,13 +233,24 @@ intensity(sps)
 ```
 
 Peak data can also be extracted with the `peaksData` function that returns a
-list of matrices, each with columns `"mz"` and `"intensity"` containing the m/z
-and intensity values for one spectrum.
+list of numerical matrices with *peak variables* such as m/z and intensity
+values. Which peak variables are available in a `Spectra` object can be
+determined with the `peaksVariables` function.
+
+```{r}
+peaksVariables(sps)
+```
+
+These can be passed to the `peaksData` function with parameter `columns` to
+extract the peak variables of interest. By default `peaksData` extracts m/z and
+intensity values.
 
 ```{r peaks}
 pks <- peaksData(sps)
 pks[[1]]
 ```
+
+
 
 Note that we would get the same result by using the `as` method to coerce a
 `Spectra` object to a `list` or `SimpleList`:
@@ -494,14 +505,15 @@ Each spectrum in `sps_2` thus contains only a single peak. The parameter
 spectra variables that should be passed (in addition to the peaks matrix) to the
 user-provided function. This would enable for example to calculate *neutral
 loss* spectra from a `Spectra` by subtracting the precursor m/z from each m/z of
-a spectrum. Our tool example does not have precursor m/z values defined, thus we
-first set them to arbitrary values. Then we define a function `neutral_loss`
-that calculates the difference between the precursor m/z and the fragment peak's
-m/z. In addition we need to ensure the peaks in the resulting spectra are
-ordered by (the delta) m/z values. Note that, in order to be able to access the
-precursor m/z of the spectrum within our function, we have to add a parameter to
-the function that has the same name as the spectrum variable we want to access
-(in our case `precursorMz`).
+a spectrum (note that there would also be a dedicated `neutralLoss` function to
+perform this operation more efficiently). Our tool example does not have
+precursor m/z values defined, thus we first set them to arbitrary values. Then
+we define a function `neutral_loss` that calculates the difference between the
+precursor m/z and the fragment peak's m/z. In addition we need to ensure the
+peaks in the resulting spectra are ordered by (the delta) m/z values. Note that,
+in order to be able to access the precursor m/z of the spectrum within our
+function, we have to add a parameter to the function that has the same name as
+the spectrum variable we want to access (in our case `precursorMz`).
 
 ```{r set-precursor-mz}
 sps_rep$precursorMz <- c(150, 20, 30, 40)
@@ -767,6 +779,63 @@ The resulting matrix represents the result from the pairwise comparison. As
 expected, the first two and the last two spectra are similar, albeit only
 moderately while the spectra from 1-Methylhistidine don't share any similarity
 with those of Caffeine.
+
+Another way of comparing spectra would be to *bin* the spectra and to cluster
+them based on similar intensity values. Spectra binning ensures that the binned
+m/z values are comparable across all spectra. Below we bin our spectra using a
+bin size of 0.1 (i.e. all peaks with an m/z smaller than 0.1 are aggregated into
+one binned peak.
+
+```{r}
+sps_bin <- bin(sps, binSize = 0.1)
+```
+
+All spectra will now have the same number of m/z values.
+
+```{r}
+lengths(sps_bin)
+```
+
+Most of the intensity values for these will however be 0 (because in the
+original spectra no peak for the respective m/z bin was present).
+
+```{r}
+intensity(sps_bin)
+```
+
+We're next creating an intensity matrix for our `Spectra` object, each row being
+one spectrum and columns representing the binned m/z values.
+
+```{r}
+intmat <- do.call(rbind, intensity(sps_bin))
+```
+
+We can now identify those columns (m/z bins) with only 0s across all spectra and
+remove these.
+
+```{r}
+zeros <- colSums(intmat) == 0
+intmat <- intmat[, !zeros]
+intmat
+```
+
+The associated m/z values for the bins can be extracted with `mz` from the
+binned `Spectra` object. Below we use these as column names for the intensity
+matrix.
+
+```{r}
+colnames(intmat) <- mz(sps_bin)[[1L]][!zeros]
+```
+
+This intensity matrix could now for example be used to cluster the spectra based
+on their peak intensities.
+
+```{r}
+heatmap(intmat)
+```
+
+As expected, the first 2 and the last 2 spectra are more similar and are
+clustered together.
 
 
 ## Exporting spectra

@@ -72,16 +72,33 @@ test_that(".peaks_bin works", {
              0, 1, 5, 10, 5, 1)
     x <- cbind(mz = 1:length(int), intensity = int)
 
-    res <- .peaks_bin(x, spectrumMsLevel = 1L)
-    expect_identical(res[, 2], x[, 2])
-    expect_identical(res[, 1], x[, 1] + 0.5)
+    brks <- seq(min(x), max(x), by = 1L)
+    brks <- MsCoreUtils:::.fix_breaks(brks, range(x))
+    mids <- seq_len(length(brks) -1)
+    res <- .peaks_bin(x, spectrumMsLevel = 1L, breaks = brks, mids = mids)
+    expect_identical(res[-1, 2], x[, 2])
+    expect_identical(res[, 1], as.numeric(mids))
 
-    res <- .peaks_bin(x, spectrumMsLevel = 1L, binSize = 2L)
-    expect_equal(res[, 2], c(1, 5, 1, 0, 1, 13, 8, 1, 3, 0, 6, 15, 1))
-    res <- .peaks_bin(x, spectrumMsLevel = 1L, binSize = 2L, FUN = max)
-    expect_equal(res[, 2], c(1, 3, 1, 0, 1, 10, 6, 1, 2, 0, 5, 10, 1))
+    brks <- seq(min(x), max(x), by = 2L)
+    brks <- MsCoreUtils:::.fix_breaks(brks, range(x))
+    mids <- (brks[-length(brks)] + brks[-1L]) / 2
+    res <- .peaks_bin(x, spectrumMsLevel = 1L, breaks = brks,
+                                mids = mids)
+    expect_equal(res[, 1], seq(1, 25, by = 2))
+    expect_equal(res[, 2], c(0, 3, 4, 0, 0, 4, 16, 3, 1, 2, 1, 15, 6))
+    res <- .peaks_bin(x, spectrumMsLevel = 1L, breaks = brks,
+                      agg_fun = max, mids = mids)
+    expect_equal(res[, 1], seq(1, 25, by = 2))
+    expect_equal(res[, 2], c(0, 2, 3, 0, 0, 3, 10, 2, 1, 2, 1, 10, 5))
     res <- .peaks_bin(x, spectrumMsLevel = 1L, msLevel = 2L, binSize = 2L)
     expect_identical(res, x)
+
+    brks <- seq(0.5, 30.5, by = 2)
+    mids <- seq((length(brks) - 1))
+    res <- Spectra:::.peaks_bin(x, breaks = brks, mids = mids,
+                                spectrumMsLevel = 1L)
+    expect_equal(res[, 1], mids)
+    expect_equal(res[, 2], c(1, 5, 1, 0, 1, 13, 8, 1, 3, 0, 6, 15, 1, 0, 0))
 })
 
 test_that("joinPeaks works", {

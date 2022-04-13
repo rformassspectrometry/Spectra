@@ -470,8 +470,18 @@ NULL
 #'   parallel processing alltogether. Other partitionings might result in
 #'   errors (especially if a `MsBackendHdf5Peaks` backend is used).
 #'
-#' - `bin`: aggregates individual spectra into discrete (m/z) bins. All
-#'   intensity values for peaks falling into the same bin are summed.
+#' - `bin`: aggregates individual spectra into discrete (m/z) bins. Binning is
+#'   performed only on spectra of the specified MS level(s) (parameter
+#'   `msLevel`, by default all MS levels of `x`). The bins can be defined with
+#'   parameter `breaks` which by default are equally sized bins, with size
+#'   being defined by parameter `binSize`, from the minimal to the maximal m/z
+#'   of all spectra (of MS level `msLevel`) within `x`. The same bins are used
+#'   for all spectra in `x`. All intensity values for peaks falling into the
+#'   same bin are aggregated using the function provided with parameter `FUN`
+#'   (defaults to `FUN = sum`, i.e. all intensities are summed up). Note that
+#'   the binning operation is applied to the peak data on-the-fly upon data
+#'   access and it is possible to *revert* the operation with the `reset`
+#'   function (see description of `reset` above).
 #'
 #' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
@@ -663,6 +673,8 @@ NULL
 #'     For `combineSpectra`: function to combine the (peak matrices) of the
 #'     spectra. See section *Data manipulations* and examples below for more
 #'     details.
+#'     For `bin`: function to aggregate intensity values of peaks falling into
+#'     the same bin. Defaults to `FUN = sum` thus summing up intensities.
 #'
 #' @param halfWindowSize
 #' - For `pickPeaks`: `integer(1)`, used in the
@@ -2080,7 +2092,8 @@ setMethod("reset", "Spectra", function(object, ...) {
 #'
 #' @export
 setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
-                                     msLevel. = unique(msLevel(x))) {
+                                     msLevel. = unique(msLevel(x)),
+                                     FUN = sum) {
     if (!.check_ms_level(x, msLevel.))
         return(x)
     if (!length(breaks)) {
@@ -2088,9 +2101,12 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
                                  function(z, ...) z[c(1L, nrow(z))]
                                  ), na.rm = TRUE)
         breaks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = binSize)
+        breaks <- MsCoreUtils:::.fix_breaks(breaks, mzr)
     }
-    x <- addProcessing(x, .peaks_bin, breaks = breaks,
-                       msLevel = msLevel., spectraVariables = "msLevel")
+    mids <- (breaks[-length(breaks)] + breaks[-1L]) / 2
+    x <- addProcessing(x, .peaks_bin, breaks = breaks, mids = mids,
+                       agg_fun = FUN, msLevel = msLevel.,
+                       spectraVariables = "msLevel")
     x@processing <- .logging(x@processing,
                              "Spectra of MS level(s) ",
                              paste0(msLevel., collapse = ", "),
