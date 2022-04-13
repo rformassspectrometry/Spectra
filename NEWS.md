@@ -1,5 +1,7 @@
 # Spectra 1.5
 
+## Changes in 1.5.19
+
 ## Changes in 1.5.18
 
 - Set default for parameter `columns` in `peaksData,Spectra` and

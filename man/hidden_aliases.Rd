@@ -129,7 +129,8 @@ backendMerge(object, ...)
   y,
   size = 1,
   breaks = seq(floor(min(y)), ceiling(max(y)), by = size),
-  FUN = max
+  FUN = max,
+  returnMids = TRUE
 )
 
 containsMz(object, ...)

@@ -1030,8 +1030,9 @@ test_that("bin,Spectra works", {
                      pks[sps$msLevel == 2])
 
     mzr <- range(unlist(mz(sps)))
-    brks <- seq(floor(mzr[1]), ceiling(mzr[2]), by = 2)
-    res1 <- bin(sps, msLevel = 1, binSize = 2, breaks = brks)
+    brks <- MsCoreUtils:::.fix_breaks(
+                              seq(floor(mzr[1]), ceiling(mzr[2]), by = 2), mzr)
+    res1 <- bin(sps, msLevel = 1, breaks = brks)
     res1_pks <- peaksData(res1)
     res_pks <- peaksData(res)
     expect_identical(res1_pks[res1$msLevel == 1],

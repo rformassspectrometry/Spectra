@@ -179,6 +179,8 @@ NULL
 #'
 #' Bin peaks of a spectrum.
 #'
+#' @param mids mid points. This parameter is mandatory.
+#'
 #' @inheritParams .peaks_remove
 #'
 #' @return `matrix` with columns `"mz"` and `"intensity"`
@@ -187,13 +189,15 @@ NULL
 .peaks_bin <- function(x, spectrumMsLevel, binSize = 1L,
                        breaks = seq(floor(min(x[, 1])),
                                     ceiling(max(x[, 1])),
-                                    by = binSize), FUN = sum,
+                                    by = binSize),
+                       agg_fun = sum,
+                       mids,
                        msLevel = spectrumMsLevel, ...) {
     if (!(spectrumMsLevel %in% msLevel))
         return(x)
     bins <- MsCoreUtils::bin(x[, 2], x[, 1], size = binSize, breaks = breaks,
-                             FUN = FUN)
-    cbind(mz = bins$mids, intensity = bins$x)
+                             FUN = agg_fun, returnMids = FALSE)
+    cbind(mz = mids, intensity = bins)
 }
 
 #' @importFrom stats quantile
