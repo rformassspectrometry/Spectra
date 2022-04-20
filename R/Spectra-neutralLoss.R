@@ -21,18 +21,26 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #'   precursor m/z value of each spectrum (precursor m/z - fragment m/z).
 #'   Parameter `msLevel` allows to restrict calculation of neutral loss
 #'   spectra to specified MS level(s). Spectra from other MS level(s) are
-#'   returned as-is. Parameter `filterPeaks` allows to filter fragment peaks
-#'   e.g. if their m/z value is larger than the precursor's
-#'   (`filterPeaks = "abovePrecursor"`) or below
-#'   (`filterPeaks = "belowPrecursor")`. By default, no peak filtering
-#'   is performed. See also parameter `filterPeaks` below for details.
+#'   returned as-is. Parameter `filterPeaks` allows to remove certain peaks
+#'   from the neutral loss spectra. By default (`filterPeaks = "none"`) no
+#'   filtering takes place. With `filterPeaks = "removePrecursor"` all fragment
+#'   peaks with an m/z value matching the precursor m/z (considering also `ppm`
+#'   and `tolerance` are removed. With `filterPeaks = "abovePrecursor"`, all
+#'   fragment peaks with an m/z larger than the precursor m/z (m/z > precursor
+#'   m/z - `tolerance` - `ppm` of the precursor m/z) are removed (thus removing
+#'   also in most cases the fragment peaks representing the precursor). Finally,
+#'   with `filterPeaks = "belowPrecursor"` all fragment peaks with an m/z
+#'   smaller than the precursor m/z (m/z < precursor m/z + `tolerance` + `ppm`
+#'   of the precursor m/z) are removed. Also in this case the precursor
+#'   fragment peak is (depending on the values of `ppm` and `tolerance`)
+#'   removed.
 #'
 #' @note
 #'
-#' By definition, mass peaks in a `Spectra` object need to ordered by their m/z
-#' value (in increasing order). Thus, the order of the peaks in the calculated
-#' neutral loss spectra might not be the same than in the original `Spectra`
-#' object.
+#' By definition, mass peaks in a `Spectra` object need to be ordered by their
+#' m/z value (in increasing order). Thus, the order of the peaks in the
+#' calculated neutral loss spectra might not be the same than in the original
+#' `Spectra` object.
 #'
 #' Note also that for spectra with a missing precursor m/z empty spectra are
 #' returned (i.e. spectra without peaks) since it is not possible to calcualte
@@ -57,6 +65,14 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #'     loss spectra should be calculated.
 #'
 #' @param param One of the *parameter* objects discussed below.
+#'
+#' @param ppm `numeric(1)` with m/z-relative acceptable difference in m/z
+#'     values to filter peaks. Defaults to `ppm = 10`. See function description
+#'     for details.
+#'
+#' @param tolerance `numeric(1)` with absolute acceptable difference in m/z
+#'     values to filter peaks. Defaults to `tolerance = 0`. See function
+#'     description for details.
 #'
 #' @param ... Currently ignored.
 #'
@@ -99,6 +115,13 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #' sps_nl <- neutralLoss(sps, PrecursorMzParam(
 #'     filterPeaks = "abovePrecursor", msLevel = 2:3))
 #' mz(sps_nl)
+#' ## This removed also the peak with m/z 39 from the second spectrum
+#'
+#' ## Removing all fragment peaks matching the precursor m/z with a tolerance
+#' ## of 1 and ppm 10
+#' sps_nl <- neutralLoss(sps, PrecursorMzParam(
+#'     filterPeaks = "removePrecursor", tolerance = 1, ppm = 10, msLevel = 2:3))
+#' mz(sps_nl)
 #'
 #' ## Empty spectra are returned for MS 2 spectra with undefined precursor m/z.
 #' sps$precursorMz <- NA_real_
@@ -113,12 +136,16 @@ setClass("PrecursorMzParam",
          contains = "Param",
          slots = c(
              filterPeaks = "functionOrNull",
-             msLevel = "integer"
+             msLevel = "integer",
+             ppm = "numeric",
+             tolerance = "numeric"
          ),
          prototype = prototype(
              filterPeaks = NULL,
              msLevel = 2L,
-             version = "0.1"
+             ppm = 10,
+             tolerance = 0,
+             version = "0.2"
          ),
          validity = function(object) {
            msg <- NULL
@@ -129,28 +156,39 @@ setClass("PrecursorMzParam",
 #'
 #' @export
 PrecursorMzParam <- function(filterPeaks = c("none", "abovePrecursor",
-                                             "belowPrecursor"),
-                             msLevel = c(2L, NA_integer_)) {
+                                             "belowPrecursor",
+                                             "removePrecursor"),
+                             msLevel = c(2L, NA_integer_),
+                             ppm = 10, tolerance = 0) {
     filterFun <- NULL
     if (is.character(filterPeaks)) {
         filterPeaks <- match.arg(filterPeaks)
         filterFun <- switch(
             filterPeaks,
             none = function(x, ...) x,
-            abovePrecursor = function(x, precursorMz, ...) {
-                x[which(x[, "mz"] < precursorMz), , drop = FALSE]
+            abovePrecursor = function(x, precursorMz, ppm, tolerance, ...) {
+                pmz <- precursorMz - ppm(precursorMz, ppm) - tolerance
+                x[which(x[, "mz"] < pmz), , drop = FALSE]
             },
-            belowPrecursor = function(x, precursorMz, ...) {
-                x[which(x[, "mz"] > precursorMz), , drop = FALSE]
+            belowPrecursor = function(x, precursorMz, ppm, tolerance, ...) {
+                pmz <- precursorMz + ppm(precursorMz, ppm) + tolerance
+                x[which(x[, "mz"] > pmz), , drop = FALSE]
+            },
+            removePrecursor = function(x, precursorMz, ppm, tolerance, ...) {
+                keep <- is.na(closest(x[, "mz"], c(precursorMz, precursorMz),
+                                      ppm = ppm, tolerance = tolerance,
+                                      .check = FALSE))
+                x[keep, , drop = FALSE]
             })
     }
     if (!is.function(filterFun))
         stop("'filterPeaks' should be either one of \"none\", ",
-             "\"abovePrecursor\" or \"belowPrecursor\" or a function.")
+             "\"abovePrecursor\", \"belowPrecursor\", \"removePrecursor\" or ",
+             "a function.")
     if (!is.numeric(msLevel))
         stop("'msLevel' is expected to be of type integer")
     new("PrecursorMzParam", filterPeaks = filterFun,
-        msLevel = as.integer(msLevel))
+        msLevel = as.integer(msLevel), ppm = ppm, tolerance = tolerance)
 }
 
 #' @exportMethod neutralLoss
@@ -160,9 +198,9 @@ setMethod(
     "neutralLoss", c(object = "Spectra", param = "PrecursorMzParam"),
     function(object, param, ...) {
         .nl <- function(x, spectrumMsLevel, precursorMz, msl,
-                        filterPeaks, ...) {
+                        filterPeaks, PPM, TOLERANCE, ...) {
             if (spectrumMsLevel %in% msl) {
-                x <- filterPeaks(x, precursorMz, ...)
+                x <- filterPeaks(x, precursorMz, PPM, TOLERANCE, ...)
                 x[, "mz"] <- precursorMz - x[, "mz"]
                 x <- x[!is.na(x[, "mz"]), , drop = FALSE]
                 if (is.unsorted(x[, "mz"]))
@@ -175,7 +213,8 @@ setMethod(
             .fpeaks <- function(x, ...) x
         object <- addProcessing(
             object, .nl, spectraVariables = c("msLevel", "precursorMz"),
-            msl = param@msLevel, filterPeaks = .fpeaks)
+            msl = param@msLevel, filterPeaks = .fpeaks, PPM = param@ppm,
+            TOLERANCE = param@tolerance)
         object@processing <- .logging(
             object@processing, "Neutral loss calculation using ",
             "'PrecursorMzParam'")

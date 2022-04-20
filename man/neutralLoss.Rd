@@ -9,8 +9,10 @@
 neutralLoss(object, param, ...)
 
 PrecursorMzParam(
-  filterPeaks = c("none", "abovePrecursor", "belowPrecursor"),
-  msLevel = c(2L, NA_integer_)
+  filterPeaks = c("none", "abovePrecursor", "belowPrecursor", "removePrecursor"),
+  msLevel = c(2L, NA_integer_),
+  ppm = 10,
+  tolerance = 0
 )
 
 \S4method{neutralLoss}{Spectra,PrecursorMzParam}(object, param, ...)
@@ -37,6 +39,14 @@ spectra should be calculated. Defaults to \code{msLevel = c(2L, NA)} thus,
 neutral loss spectra will be calculated for all spectra with MS level
 equal to 2 or with missing/undefined MS level. All spectra with a MS
 level different than \code{msLevel} will be returned unchanged.}
+
+\item{ppm}{\code{numeric(1)} with m/z-relative acceptable difference in m/z
+values to filter peaks. Defaults to \code{ppm = 10}. See function description
+for details.}
+
+\item{tolerance}{\code{numeric(1)} with absolute acceptable difference in m/z
+values to filter peaks. Defaults to \code{tolerance = 0}. See function
+description for details.}
 }
 \value{
 A \code{\link[=Spectra]{Spectra()}} object with calculated neutral loss spectra.
@@ -54,18 +64,26 @@ The parameter objects for the different algorithms are:
 precursor m/z value of each spectrum (precursor m/z - fragment m/z).
 Parameter \code{msLevel} allows to restrict calculation of neutral loss
 spectra to specified MS level(s). Spectra from other MS level(s) are
-returned as-is. Parameter \code{filterPeaks} allows to filter fragment peaks
-e.g. if their m/z value is larger than the precursor's
-(\code{filterPeaks = "abovePrecursor"}) or below
-(\verb{filterPeaks = "belowPrecursor")}. By default, no peak filtering
-is performed. See also parameter \code{filterPeaks} below for details.
+returned as-is. Parameter \code{filterPeaks} allows to remove certain peaks
+from the neutral loss spectra. By default (\code{filterPeaks = "none"}) no
+filtering takes place. With \code{filterPeaks = "removePrecursor"} all fragment
+peaks with an m/z value matching the precursor m/z (considering also \code{ppm}
+and \code{tolerance} are removed. With \code{filterPeaks = "abovePrecursor"}, all
+fragment peaks with an m/z larger than the precursor m/z (m/z > precursor
+m/z - \code{tolerance} - \code{ppm} of the precursor m/z) are removed (thus removing
+also in most cases the fragment peaks representing the precursor). Finally,
+with \code{filterPeaks = "belowPrecursor"} all fragment peaks with an m/z
+smaller than the precursor m/z (m/z < precursor m/z + \code{tolerance} + \code{ppm}
+of the precursor m/z) are removed. Also in this case the precursor
+fragment peak is (depending on the values of \code{ppm} and \code{tolerance})
+removed.
 }
 }
 \note{
-By definition, mass peaks in a \code{Spectra} object need to ordered by their m/z
-value (in increasing order). Thus, the order of the peaks in the calculated
-neutral loss spectra might not be the same than in the original \code{Spectra}
-object.
+By definition, mass peaks in a \code{Spectra} object need to be ordered by their
+m/z value (in increasing order). Thus, the order of the peaks in the
+calculated neutral loss spectra might not be the same than in the original
+\code{Spectra} object.
 
 Note also that for spectra with a missing precursor m/z empty spectra are
 returned (i.e. spectra without peaks) since it is not possible to calcualte
@@ -98,6 +116,13 @@ mz(sps_nl)
 ## with an m/z >= precursorMz
 sps_nl <- neutralLoss(sps, PrecursorMzParam(
     filterPeaks = "abovePrecursor", msLevel = 2:3))
+mz(sps_nl)
+## This removed also the peak with m/z 39 from the second spectrum
+
+## Removing all fragment peaks matching the precursor m/z with a tolerance
+## of 1 and ppm 10
+sps_nl <- neutralLoss(sps, PrecursorMzParam(
+    filterPeaks = "removePrecursor", tolerance = 1, ppm = 10, msLevel = 2:3))
 mz(sps_nl)
 
 ## Empty spectra are returned for MS 2 spectra with undefined precursor m/z.

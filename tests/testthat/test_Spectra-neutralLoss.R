@@ -10,10 +10,16 @@ test_that("PrecursorMzParam works", {
     expect_equal(res@filterPeaks(X), X)
 
     res <- PrecursorMzParam("abovePrecursor")
-    expect_equal(res@filterPeaks(X, 3), X[X[, 1] < 3, ])
+    expect_equal(res@filterPeaks(X, 3, 0, 0), X[X[, 1] < 3, ])
 
     res <- PrecursorMzParam("belowPrecursor")
-    expect_equal(res@filterPeaks(X, 3), X[X[, 1] > 3, ])
+    expect_equal(res@filterPeaks(X, 3, 0, 0), X[X[, 1] > 3, ])
+
+    res <- PrecursorMzParam("none")
+    expect_equal(res@filterPeaks(X, 3, 0, 0), X)
+
+    res <- PrecursorMzParam("removePrecursor")
+    expect_equal(res@filterPeaks(X, 3, 0, 0), X[X[, 1] != 3, ])
 })
 
 test_that("neutralLoss,Spectra,PrecursorMzParam works", {
@@ -80,4 +86,32 @@ test_that("neutralLoss,Spectra,PrecursorMzParam works", {
     a$precursorMz <- NA_integer_
     a <- neutralLoss(a, PrecursorMzParam())
     expect_equal(mz(a)[[1L]], numeric())
+
+    ## Remove precursor
+    DF <- DataFrame(msLevel = c(2L),
+                    precursorMz = c(15))
+    DF$mz <- IRanges::NumericList(
+                          c(3, 12, 14, 15, 16, 200)
+                      , compress = FALSE)
+    DF$intensity <- IRanges::NumericList(1:6, compress = FALSE)
+
+    sps <- Spectra(DF, backend = MsBackendDataFrame())
+    res <- neutralLoss(sps, PrecursorMzParam(filterPeaks = "belowPrecursor",
+                                             tolerance = 0))
+    expect_equal(mz(res)[[1L]], c(-185, -1))
+    res <- neutralLoss(sps, PrecursorMzParam(filterPeaks = "belowPrecursor",
+                                             tolerance = 1))
+    expect_equal(unname(mz(res)[[1L]]), c(-185))
+
+    res <- neutralLoss(sps, PrecursorMzParam(filterPeaks = "abovePrecursor",
+                                             tolerance = 1))
+    expect_equal(unname(mz(res)[[1L]]), c(3, 12))
+
+    res <- neutralLoss(sps, PrecursorMzParam(filterPeaks = "removePrecursor",
+                                             tolerance = 1))
+    expect_equal(unname(mz(res)[[1L]]), c(-185, 3, 12))
+
+    res <- neutralLoss(sps, PrecursorMzParam(filterPeaks = "removePrecursor",
+                                             tolerance = 0.2))
+    expect_equal(unname(mz(res)[[1L]]), c(-185, -1, 1, 3, 12))
 })

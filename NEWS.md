@@ -1,6 +1,13 @@
 # Spectra 1.5
 
+## Changes in 1.5.20
+
+- Add parameters `ppm` and `tolerance` to `PrecursorMzParam` (for neutral loss
+  calculation) and add option `filterPeaks = "removePrecursor"`.
+
 ## Changes in 1.5.19
+
+- Improved the `bin` method.
 
 ## Changes in 1.5.18
 
