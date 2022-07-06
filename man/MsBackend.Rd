@@ -9,6 +9,7 @@
 \alias{MsBackendDataFrame-class}
 \alias{MsBackendMzR-class}
 \alias{[,MsBackend-method}
+\alias{uniqueMsLevels,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
@@ -142,7 +143,7 @@
 
 \S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum = integer(), f = dataOrigin(object))
 
-\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
+\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
 
 \S4method{intensity}{MsBackend}(object)
 
@@ -229,6 +230,8 @@
 \S4method{[[}{MsBackend}(x, i, j, ...)
 
 \S4method{[[}{MsBackend}(x, i, j, ...) <- value
+
+\S4method{uniqueMsLevels}{MsBackend}(object, ...)
 
 MsBackendDataFrame()
 
@@ -654,6 +657,9 @@ this method.
 spectrum) for all spectra in \code{object}. By default, the value
 reported in the original raw data file is returned. For an empty
 spectrum, \code{NA_real_} is returned.
+\item \code{uniqueMsLevels}: gets the unique MS levels of all spectra in \code{object}.
+The default implementation calls \code{unique(msLevel(object))} but more
+efficient implementations could be defined for specific backends.
 }
 }
 

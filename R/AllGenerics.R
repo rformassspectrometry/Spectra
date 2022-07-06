@@ -102,3 +102,6 @@ setGeneric("spectrapply", function(object, ...) standardGeneric("spectrapply"))
 #' @export
 setGeneric("spectraVariableMapping", function(object, ...)
     standardGeneric("spectraVariableMapping"))
+
+setGeneric("uniqueMsLevels", function(object, ...)
+    standardGeneric("uniqueMsLevels"))
