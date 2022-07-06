@@ -58,7 +58,7 @@ removed.
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,10 +141,16 @@ removed.</p></li>
     <dl><dt>object</dt>
 <dd><p><code><a href="Spectra.html">Spectra()</a></code> object with the fragment spectra for which neutral
 loss spectra should be calculated.</p></dd>
+
+
 <dt>param</dt>
 <dd><p>One of the <em>parameter</em> objects discussed below.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Currently ignored.</p></dd>
+
+
 <dt>filterPeaks</dt>
 <dd><p>For <code>PrecursorMzParam</code>: <code>character(1)</code> or <code>function</code>
 defining if and how fragment peaks should be filtered before calculation.
@@ -154,24 +160,33 @@ Pre-defined options are: <code>"none"</code> (keep all peaks), <code>"abovePrecu
 m/z). In addition, it is possible to pass a custom function with this
 parameter with arguments <code>x</code> (two column peak matrix) and <code>precursorMz</code>
 (the precursor m/z) that returns the sub-setted two column peak matrix.</p></dd>
+
+
 <dt>msLevel</dt>
 <dd><p><code>integer</code> defining for which MS level(s) the neutral loss
 spectra should be calculated. Defaults to <code>msLevel = c(2L, NA)</code> thus,
 neutral loss spectra will be calculated for all spectra with MS level
 equal to 2 or with missing/undefined MS level. All spectra with a MS
 level different than <code>msLevel</code> will be returned unchanged.</p></dd>
+
+
 <dt>ppm</dt>
 <dd><p><code>numeric(1)</code> with m/z-relative acceptable difference in m/z
 values to filter peaks. Defaults to <code>ppm = 10</code>. See function description
 for details.</p></dd>
+
+
 <dt>tolerance</dt>
 <dd><p><code>numeric(1)</code> with absolute acceptable difference in m/z
 values to filter peaks. Defaults to <code>tolerance = 0</code>. See function
 description for details.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code><a href="Spectra.html">Spectra()</a></code> object with calculated neutral loss spectra.</p>
+    
+
+<p>A <code><a href="Spectra.html">Spectra()</a></code> object with calculated neutral loss spectra.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
@@ -282,7 +297,7 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.9000.</p>
 </div>
 
     </footer></div>

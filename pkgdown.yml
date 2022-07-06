@@ -1,9 +1,9 @@
 pandoc: 2.17.1.1
-pkgdown: 2.0.3.9000
-pkgdown_sha: 9dee019f9983b86585a77a3b1a1459b9f0390fe6
+pkgdown: 2.0.5.9000
+pkgdown_sha: b4096aa376773d7dee98a267fd0b5a025975a3dc
 articles:
   Spectra: Spectra.html
-last_built: 2022-05-03T12:42Z
+last_built: 2022-07-06T15:03Z
 urls:
   reference: https://rformassspectrometry.github.io/Spectra/reference
   article: https://rformassspectrometry.github.io/Spectra/articles

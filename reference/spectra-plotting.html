@@ -34,7 +34,7 @@ indicated.
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -163,88 +163,141 @@ indicated.</p></li>
     <dl><dt>x</dt>
 <dd><p>a <code><a href="Spectra.html">Spectra()</a></code> object. For <code>plotSpectraMirror</code> it has to be an
 object of length 2.</p></dd>
+
+
 <dt>xlab</dt>
 <dd><p><code>character(1)</code> with the label for the x-axis (by default
 <code>xlab = "m/z"</code>).</p></dd>
+
+
 <dt>ylab</dt>
 <dd><p><code>character(1)</code> with the label for the y-axis (by default
 <code>ylab = "intensity"</code>).</p></dd>
+
+
 <dt>type</dt>
 <dd><p><code>character(1)</code> specifying the type of plot. See <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot.default()</a></code>
 for details. Defaults to <code>type = "h"</code> which draws each peak as a line.</p></dd>
+
+
 <dt>xlim</dt>
 <dd><p><code>numeric(2)</code> defining the x-axis limits. The range of m/z values
 are used by default.</p></dd>
+
+
 <dt>ylim</dt>
 <dd><p><code>numeric(2)</code> defining the y-axis limits. The range of intensity
 values are used by default.</p></dd>
+
+
 <dt>main</dt>
 <dd><p><code>character(1)</code> with the title for the plot. By default the
 spectrum's MS level and retention time (in seconds) is used.</p></dd>
+
+
 <dt>col</dt>
 <dd><p>color to be used to draw the peaks. Should be either of length 1,
 or equal to the number of spectra (to plot each spectrum in a different
 color) or be a <code>list</code> with colors for each individual peak in each
 spectrum.</p></dd>
+
+
 <dt>labels</dt>
 <dd><p>allows to specify a label for each peak. Can be a <code>character</code>
 with length equal to the number of peaks, or, ideally, a <code>function</code> that
 uses one of the <code>Spectra</code>'s variables (see examples below).
 <code>plotSpectraMirror</code> supports only <code>labels</code> of type <em>function</em>.</p></dd>
+
+
 <dt>labelCex</dt>
 <dd><p><code>numeric(1)</code> giving the amount by which the text should be
 magnified relative to the default. See parameter <code>cex</code> in <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code>.</p></dd>
+
+
 <dt>labelSrt</dt>
 <dd><p><code>numeric(1)</code> defining the rotation of the label. See
 parameter <code>srt</code> in <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>.</p></dd>
+
+
 <dt>labelAdj</dt>
 <dd><p>see parameter <code>adj</code> in <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>.</p></dd>
+
+
 <dt>labelPos</dt>
 <dd><p>see parameter <code>pos</code> in <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>.</p></dd>
+
+
 <dt>labelOffset</dt>
 <dd><p>see parameter <code>offset</code> in <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>.</p></dd>
+
+
 <dt>labelCol</dt>
 <dd><p>color for the label(s).</p></dd>
+
+
 <dt>asp</dt>
 <dd><p>for <code>plotSpectra</code>: the target ratio (columns / rows) when plotting
 mutliple spectra (e.g. for 20 spectra use <code>asp = 4/5</code> for 4 columns and 5 rows
 or <code>asp = 5/4</code> for 5 columns and 4 rows; see <code><a href="https://rdrr.io/r/grDevices/n2mfrow.html" class="external-link">grDevices::n2mfrow()</a></code> for
 details).</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional parameters to be passed to the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot.default()</a></code>
 function.</p></dd>
+
+
 <dt>axes</dt>
 <dd><p><code>logical(1)</code> whether (x and y) axes should be drawn.</p></dd>
+
+
 <dt>frame.plot</dt>
 <dd><p><code>logical(1)</code> whether a box should be drawn around the
 plotting area.</p></dd>
+
+
 <dt>y</dt>
 <dd><p>for <code>plotSpectraMirror</code>: <code>Spectra</code> object of length 1 against which
 <code>x</code> should be plotted against.</p></dd>
+
+
 <dt>ppm</dt>
 <dd><p>for <code>plotSpectraMirror</code>: m/z relative acceptable difference (in
 ppm) for peaks to be considered matching (see <code>common()</code> for more
 details).</p></dd>
+
+
 <dt>tolerance</dt>
 <dd><p>for <code>plotSpectraMirror</code>: absolute acceptable difference of
 m/z values for peaks to be considered matching (see <code>common()</code> for more
 details).</p></dd>
+
+
 <dt>matchCol</dt>
 <dd><p>for <code>plotSpectraMirror</code>: color for matching peaks.</p></dd>
+
+
 <dt>matchLwd</dt>
 <dd><p>for <code>plotSpectraMirror</code>: line width (<code>lwd</code>) to draw matching
 peaks. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code> for more details.</p></dd>
+
+
 <dt>matchLty</dt>
 <dd><p>for <code>plotSpectraMirror</code>: line type (<code>lty</code>) to draw matching
 peaks. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code> for more details.</p></dd>
+
+
 <dt>matchPch</dt>
 <dd><p>for <code>plotSpectraMirror</code>: point character (<code>pch</code>) to label
 matching peaks. Defaults to <code>matchPch = 16</code>, set to <code>matchPch = NA</code> to
 disable. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code> for more details.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>These functions create a plot.</p>
+    
+
+<p>These functions create a plot.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -360,7 +413,7 @@ disable. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.9000.</p>
 </div>
 
     </footer></div>

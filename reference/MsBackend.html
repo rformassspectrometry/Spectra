@@ -60,7 +60,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -211,7 +211,7 @@ filterPrecursorCharge(object, z = integer())
 filterPrecursorScan(object, acquisitionNum = integer(), f = dataOrigin(object))
 
 # S4 method for MsBackend
-filterRt(object, rt = numeric(), msLevel. = unique(msLevel(object)))
+filterRt(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
 
 # S4 method for MsBackend
 intensity(object)
@@ -342,6 +342,9 @@ $(x, name) &lt;- value
 # S4 method for MsBackend
 [[(x, i, j, ...) &lt;- value
 
+# S4 method for MsBackend
+uniqueMsLevels(object, ...)
+
 MsBackendDataFrame()
 
 # S4 method for MsBackendDataFrame
@@ -356,8 +359,12 @@ MsBackendMzR()</code></pre></div>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
 <dd><p>Object extending <code>MsBackend</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments.</p></dd>
+
+
 <dt>columns</dt>
 <dd><p>For <code>spectraData</code> accessor: optional <code>character</code> with column
 names (spectra variables) that should be included in the
@@ -366,92 +373,143 @@ For <code>peaksData</code> accessor: optional <code>character</code> with reques
 the individual <code>matrix</code> of the returned <code>list</code>. Defaults to
 <code>peaksVariables(object)</code> and depends on what <em>peaks variables</em> the
 backend provides.</p></dd>
+
+
 <dt>value</dt>
 <dd><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></dd>
+
+
 <dt>n</dt>
 <dd><p>for <code>filterAcquisitionNum</code>: <code>integer</code> with the acquisition numbers
 to filter for.</p></dd>
+
+
 <dt>file</dt>
 <dd><p>For <code>filterFile</code>: index or name of the file(s) to which the data
 should be subsetted. For <code>export</code>: <code>character</code> of length 1 or equal to
 the number of spectra.</p></dd>
+
+
 <dt>dataOrigin</dt>
 <dd><p>For <code>filterDataOrigin</code>: <code>character</code> to define which
 spectra to keep.
 For <code>filterAcquisitionNum</code>: optionally specify if filtering should occurr
 only for spectra of selected <code>dataOrigin</code>.</p></dd>
+
+
 <dt>dataStorage</dt>
 <dd><p>For <code>filterDataStorage</code>: <code>character</code> to define which
 spectra to keep.
 For <code>filterAcquisitionNum</code>: optionally specify if filtering should occur
 only for spectra of selected <code>dataStorage</code>.</p></dd>
+
+
 <dt>mz</dt>
 <dd><p>For <code>filterIsolationWindow</code>: <code>numeric(1)</code> with the m/z value to
 filter the object. For <code>filterPrecursorMzRange</code>: <code>numeric(2)</code> with the
 lower and upper m/z boundary. For <code>filterPrecursorMzValues</code>: <code>numeric</code>
 with the m/z value(s) to filter the object.</p></dd>
+
+
 <dt>msLevel</dt>
 <dd><p><code>integer</code> defining the MS level of the spectra to which the
 function should be applied. For <code>filterMsLevel</code>: the MS level to which
 <code>object</code> should be subsetted.</p></dd>
+
+
 <dt>polarity</dt>
 <dd><p>For <code>filterPolarity</code>: <code>integer</code> specifying the polarity to
 to subset <code>object</code>.</p></dd>
+
+
 <dt>ppm</dt>
 <dd><p>For <code>filterPrecursorMzValues</code>: <code>numeric(1)</code> with the m/z-relative
 maximal acceptable difference for a m/z to be considered matching. See
 <code>closest()</code> for details.</p></dd>
+
+
 <dt>tolerance</dt>
 <dd><p>For <code>filterPrecursorMzValues</code>: <code>numeric(1)</code> with the
 maximal absolute acceptable difference for a m/z value to be considered
 matching. See <code>closest()</code> for details.</p></dd>
+
+
 <dt>z</dt>
 <dd><p>For <code>filterPrecursorCharge</code>: <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer()</a></code> with the precursor charges
 to be used as filter.</p></dd>
+
+
 <dt>acquisitionNum</dt>
 <dd><p>for <code>filterPrecursorScan</code>: <code>integer</code> with the
 acquisition number of the spectra to which the object should be
 subsetted.</p></dd>
+
+
 <dt>f</dt>
 <dd><p><code>factor</code> defining the grouping to split <code>x</code>. See <code><a href="https://rdrr.io/r/base/split.html" class="external-link">split()</a></code>. For
 <code>filterPrecursorScan</code>: factor defining from which original data files
 the spectra derive to avoid selecting spectra from different
 samples/files. Defaults to <code>f = dataOrigin(object)</code>.</p></dd>
+
+
 <dt>rt</dt>
 <dd><p>for <code>filterRt</code>: <code>numeric(2)</code> defining the retention time range to
 be used to subset/filter <code>object</code>.</p></dd>
+
+
 <dt>msLevel.</dt>
 <dd><p>same as <code>msLevel</code> above.</p></dd>
+
+
 <dt>x</dt>
 <dd><p>Object extending <code>MsBackend</code>.</p></dd>
+
+
 <dt>use.names</dt>
 <dd><p>For <code>lengths</code>: whether spectrum names should be used.</p></dd>
+
+
 <dt>spectraVariables</dt>
 <dd><p>For <code>selectSpectraVariables</code>: <code>character</code> with the
 names of the spectra variables to which the backend should be subsetted.</p></dd>
+
+
 <dt>drop</dt>
 <dd><p>For <code>[</code>: not considered.</p></dd>
+
+
 <dt>initial</dt>
 <dd><p>For <code>tic</code>: <code>logical(1)</code> whether the initially
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (<code>initial = FALSE</code>).</p></dd>
+
+
 <dt>i</dt>
 <dd><p>For <code>[</code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></dd>
+
+
 <dt>j</dt>
 <dd><p>For <code>[</code>: not supported.</p></dd>
+
+
 <dt>name</dt>
 <dd><p>For <code>$</code> and <code>$&lt;-</code>: the name of the spectra variable to return
 or set.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>For <code>backendInitialize</code>: <code>DataFrame</code> with spectrum
 metadata/data. This parameter can be empty for <code>MsBackendMzR</code> backends
 but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>See documentation of respective function.</p>
+    
+
+<p>See documentation of respective function.</p>
     </div>
     <div class="section level2">
     <h2 id="implementation-notes">Implementation notes<a class="anchor" aria-label="anchor" href="#implementation-notes"></a></h2>
@@ -727,6 +785,9 @@ this method.</p></li>
 spectrum) for all spectra in <code>object</code>. By default, the value
 reported in the original raw data file is returned. For an empty
 spectrum, <code>NA_real_</code> is returned.</p></li>
+<li><p><code>uniqueMsLevels</code>: gets the unique MS levels of all spectra in <code>object</code>.
+The default implementation calls <code>unique(msLevel(object))</code> but more
+efficient implementations could be defined for specific backends.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="subsetting-and-merging-backend-classes">Subsetting and merging backend classes<a class="anchor" aria-label="anchor" href="#subsetting-and-merging-backend-classes"></a></h2>
@@ -967,7 +1028,7 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.9000.</p>
 </div>
 
     </footer></div>
