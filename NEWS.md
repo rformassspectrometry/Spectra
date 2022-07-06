@@ -1,3 +1,10 @@
+# Spectra 1.7
+
+## Changes in 1.7.1
+
+- Add `uniqueMsLevels` function to allow more efficient, backend-specific,
+  implementations for retrieving unique MS levels from a data set.
+
 # Spectra 1.5
 
 ## Changes in 1.5.20

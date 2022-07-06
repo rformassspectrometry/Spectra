@@ -4,6 +4,7 @@
 #'
 #' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class
 #' @aliases MsBackendMzR-class [,MsBackend-method
+#' @aliases uniqueMsLevels,MsBackend-method
 #'
 #' @description
 #'
@@ -454,6 +455,10 @@
 #'   spectrum) for all spectra in `object`. By default, the value
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `NA_real_` is returned.
+#'
+#' - `uniqueMsLevels`: gets the unique MS levels of all spectra in `object`.
+#'   The default implementation calls `unique(msLevel(object))` but more
+#'   efficient implementations could be defined for specific backends.
 #'
 #' @section Subsetting and merging backend classes:
 #'
@@ -988,7 +993,7 @@ setMethod("filterPrecursorScan", "MsBackend",
 #'
 #' @rdname MsBackend
 setMethod("filterRt", "MsBackend",
-          function(object, rt = numeric(), msLevel. = unique(msLevel(object))) {
+          function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
               if (length(rt)) {
                   rt <- range(rt)
                   sel_ms <- msLevel(object) %in% msLevel.
@@ -1375,4 +1380,11 @@ setReplaceMethod("[[", "MsBackend", function(x, i, j, ..., value) {
     if (!missing(j))
         stop("'j' is not supported.")
     do.call("$<-", list(x, i, value))
+})
+
+#' @exportMethod uniqueMsLevels
+#'
+#' @rdname MsBackend
+setMethod("uniqueMsLevels", "MsBackend", function(object, ...) {
+    unique(msLevel(object))
 })

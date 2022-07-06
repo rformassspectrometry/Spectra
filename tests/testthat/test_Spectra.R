@@ -1518,3 +1518,10 @@ test_that("peaksVariables,Spectra works", {
 test_that("coreSpectraVariables works", {
     expect_equal(coreSpectraVariables(), .SPECTRA_DATA_COLUMNS)
 })
+
+test_that("uniqueMsLevels,Spectra works", {
+    res <- uniqueMsLevels(sciex_mzr)
+    expect_equal(res, unique(msLevel(sciex_mzr)))
+
+    expect_equal(res, uniqueMsLevels(Spectra(sciex_mzr)))
+})

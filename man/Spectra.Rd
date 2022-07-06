@@ -10,6 +10,8 @@
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
+\alias{uniqueMsLevels}
+\alias{uniqueMsLevels,Spectra-method}
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
 \alias{Spectra,character-method}
@@ -314,7 +316,7 @@ estimatePrecursorIntensity(
 \S4method{filterIntensity}{Spectra}(
   object,
   intensity = c(0, Inf),
-  msLevel. = unique(msLevel(object)),
+  msLevel. = uniqueMsLevels(object),
   ...
 )
 
@@ -322,14 +324,14 @@ estimatePrecursorIntensity(
 
 \S4method{filterMsLevel}{Spectra}(object, msLevel. = integer())
 
-\S4method{filterMzRange}{Spectra}(object, mz = numeric(), msLevel. = unique(msLevel(object)))
+\S4method{filterMzRange}{Spectra}(object, mz = numeric(), msLevel. = uniqueMsLevels(object))
 
 \S4method{filterMzValues}{Spectra}(
   object,
   mz = numeric(),
   tolerance = 0,
   ppm = 20,
-  msLevel. = unique(msLevel(object)),
+  msLevel. = uniqueMsLevels(object),
   keep = TRUE
 )
 
@@ -345,11 +347,11 @@ estimatePrecursorIntensity(
 
 \S4method{filterPrecursorScan}{Spectra}(object, acquisitionNum = integer(), f = dataOrigin(object))
 
-\S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = unique(msLevel(object)))
+\S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
 
 \S4method{reset}{Spectra}(object, ...)
 
-\S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = unique(msLevel(x)), FUN = sum)
+\S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = uniqueMsLevels(x), FUN = sum)
 
 \S4method{compareSpectra}{Spectra,Spectra}(
   x,
@@ -381,7 +383,7 @@ estimatePrecursorIntensity(
   k = 0L,
   descending = FALSE,
   threshold = 0,
-  msLevel. = unique(msLevel(object)),
+  msLevel. = uniqueMsLevels(object),
   ...
 )
 
@@ -389,20 +391,22 @@ estimatePrecursorIntensity(
   object,
   threshold = min,
   value = 0,
-  msLevel. = unique(msLevel(object))
+  msLevel. = uniqueMsLevels(object)
 )
 
 \S4method{smooth}{Spectra}(
   x,
   halfWindowSize = 2L,
   method = c("MovingAverage", "WeightedMovingAverage", "SavitzkyGolay"),
-  msLevel. = unique(msLevel(x)),
+  msLevel. = uniqueMsLevels(x),
   ...
 )
 
 \S4method{addProcessing}{Spectra}(object, FUN, ..., spectraVariables = character())
 
 coreSpectraVariables()
+
+\S4method{uniqueMsLevels}{Spectra}(object, ...)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -882,6 +886,8 @@ available in \code{object}.
 spectrum) for all spectra in \code{object}. By default, the value
 reported in the original raw data file is returned. For an empty
 spectrum, \code{0} is returned.
+\item \code{uniqueMsLevels}: get the unique MS levels available in \code{object}. This
+function is supposed to be more efficient than \code{unique(msLevel(object))}.
 }
 }
 

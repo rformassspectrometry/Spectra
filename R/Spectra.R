@@ -4,6 +4,7 @@ NULL
 #' @title The Spectra class to manage and access MS data
 #'
 #' @aliases Spectra-class [,Spectra-method
+#' @aliases uniqueMsLevels uniqueMsLevels,Spectra-method
 #'
 #' @name Spectra
 #'
@@ -293,6 +294,8 @@ NULL
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `0` is returned.
 #'
+#' - `uniqueMsLevels`: get the unique MS levels available in `object`. This
+#'   function is supposed to be more efficient than `unique(msLevel(object))`.
 #'
 #' @section Data subsetting, filtering and merging:
 #'
@@ -1868,7 +1871,7 @@ setMethod("filterFourierTransformArtefacts", "Spectra",
 #' @exportMethod filterIntensity
 setMethod("filterIntensity", "Spectra",
           function(object, intensity = c(0, Inf),
-                   msLevel. = unique(msLevel(object)), ...) {
+                   msLevel. = uniqueMsLevels(object), ...) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
               if (is.numeric(intensity)) {
@@ -1927,7 +1930,7 @@ setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
 #'
 #' @export
 setMethod("filterMzRange", "Spectra",
-          function(object, mz = numeric(), msLevel. = unique(msLevel(object))) {
+          function(object, mz = numeric(), msLevel. = uniqueMsLevels(object)) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
               mz <- range(mz)
@@ -1945,7 +1948,7 @@ setMethod("filterMzRange", "Spectra",
 #' @export
 setMethod("filterMzValues", "Spectra",
           function(object, mz = numeric(), tolerance = 0, ppm = 20,
-                   msLevel. = unique(msLevel(object)), keep = TRUE) {
+                   msLevel. = uniqueMsLevels(object), keep = TRUE) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
               l <- length(mz)
@@ -2052,7 +2055,7 @@ setMethod("filterPrecursorScan", "Spectra",
 
 #' @rdname Spectra
 setMethod("filterRt", "Spectra",
-          function(object, rt = numeric(), msLevel. = unique(msLevel(object))) {
+          function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
               if (!is.numeric(msLevel.))
                   stop("Please provide a numeric MS level.")
               if (length(rt) != 2L || !is.numeric(rt) || rt[1] >= rt[2])
@@ -2092,7 +2095,7 @@ setMethod("reset", "Spectra", function(object, ...) {
 #'
 #' @export
 setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
-                                     msLevel. = unique(msLevel(x)),
+                                     msLevel. = uniqueMsLevels(x),
                                      FUN = sum) {
     if (!.check_ms_level(x, msLevel.))
         return(x)
@@ -2167,7 +2170,7 @@ setMethod("pickPeaks", "Spectra",
           function(object, halfWindowSize = 2L,
                    method = c("MAD", "SuperSmoother"), snr = 0, k = 0L,
                    descending = FALSE, threshold = 0,
-                   msLevel. = unique(msLevel(object)), ...) {
+                   msLevel. = uniqueMsLevels(object), ...) {
     if (!.check_ms_level(object, msLevel.))
         return(object)
     if (!is.integer(halfWindowSize) || length(halfWindowSize) != 1L ||
@@ -2211,7 +2214,7 @@ setMethod("pickPeaks", "Spectra",
 #' @exportMethod replaceIntensitiesBelow
 setMethod("replaceIntensitiesBelow", "Spectra",
           function(object, threshold = min, value = 0,
-                   msLevel. = unique(msLevel(object))) {
+                   msLevel. = uniqueMsLevels(object)) {
               if (!is.numeric(threshold) && !is.function(threshold))
                   stop("Argument 'threshold' has to be either numeric or ",
                        "a function.")
@@ -2243,7 +2246,7 @@ setMethod("smooth", "Spectra",
           function(x, halfWindowSize = 2L,
                    method = c("MovingAverage", "WeightedMovingAverage",
                               "SavitzkyGolay"),
-                   msLevel. = unique(msLevel(x)), ...) {
+                   msLevel. = uniqueMsLevels(x), ...) {
     if (!.check_ms_level(x, msLevel.))
         return(x)
     if (!is.integer(halfWindowSize) || length(halfWindowSize) != 1L ||
@@ -2294,3 +2297,8 @@ setMethod("addProcessing", "Spectra", function(object, FUN, ...,
 #'
 #' @export
 coreSpectraVariables <- function() .SPECTRA_DATA_COLUMNS
+
+#' @rdname Spectra
+setMethod("uniqueMsLevels", "Spectra", function(object, ...) {
+    uniqueMsLevels(object@backend, ...)
+})
