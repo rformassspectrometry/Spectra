@@ -1,5 +1,11 @@
 # Spectra 1.7
 
+## Changes in 1.7.2
+
+- Fix `setBackend` if provided `Spectra` is empty.
+- `backendInitialize,Spectra,MsBackendDataFrame` returns a `Spectra` object
+  with the full provided spectra data.
+
 ## Changes in 1.7.1
 
 - Add `uniqueMsLevels` function to allow more efficient, backend-specific,
