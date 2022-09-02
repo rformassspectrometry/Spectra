@@ -1332,23 +1332,29 @@ setMethod("setBackend", c("Spectra", "MsBackend"),
               if (isReadOnly(backend))
                   stop(class(backend), " is read-only. Changing backend to a ",
                        "read-only backend is not supported.")
-              f <- force(factor(f, levels = unique(f)))
-              if (length(f) != length(object))
-                  stop("length of 'f' has to match the length of 'object'")
-              data_storage <- object@backend$dataStorage
-              bknds <- bplapply(split(object@backend, f = f), function(z, ...) {
-                  backendInitialize(backend,
-                                    data = spectraData(z),
-                                    ...,
-                                    BPPARAM = SerialParam())
-              }, ..., BPPARAM = BPPARAM)
-              bknds <- backendMerge(bknds)
-              ## That below ensures the backend is returned in its original
-              ## order - unsplit does unfortunately not work.
-              if (is.unsorted(f))
-                  bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-                                              use.names = FALSE))]
-              bknds$dataOrigin <- data_storage
+              if (!length(object)) {
+                  bknds <- backendInitialize(
+                      backend, data = spectraData(object@backend))
+              } else {
+                  f <- force(factor(f, levels = unique(f)))
+                  if (length(f) != length(object))
+                      stop("length of 'f' has to match the length of 'object'")
+                  data_storage <- object@backend$dataStorage
+                  bknds <- bplapply(
+                      split(object@backend, f = f),
+                      function(z, ...) {
+                          backendInitialize(backend,
+                                            data = spectraData(z), ...,
+                                            BPPARAM = SerialParam())
+                      }, ..., BPPARAM = BPPARAM)
+                  bknds <- backendMerge(bknds)
+                  ## That below ensures the backend is returned in its original
+                  ## order - unsplit does unfortunately not work.
+                  if (is.unsorted(f))
+                      bknds <- bknds[order(unlist(split(seq_along(bknds), f),
+                                                  use.names = FALSE))]
+                  bknds$dataOrigin <- data_storage
+              }
               object@backend <- bknds
               object@processing <- .logging(object@processing,
                                             "Switch backend from ",

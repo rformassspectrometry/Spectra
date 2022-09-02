@@ -58,14 +58,14 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
                   data <- DataFrame(data)
               if (!is(data, "DataFrame"))
                   stop("'data' has to be a 'DataFrame'")
-              if (!nrow(data))
-                  return(object)
-              data$dataStorage <- "<memory>"
-              if (nrow(data) && !is(data$mz, "NumericList"))
-                  data$mz <- NumericList(data$mz, compress = FALSE)
-              if (nrow(data) && !is(data$intensity, "NumericList"))
-                  data$intensity <- NumericList(data$intensity,
-                                                compress = FALSE)
+              if (nrow(data)) {
+                  data$dataStorage <- "<memory>"
+                  if (nrow(data) && !is(data$mz, "NumericList"))
+                      data$mz <- NumericList(data$mz, compress = FALSE)
+                  if (nrow(data) && !is(data$intensity, "NumericList"))
+                      data$intensity <- NumericList(data$intensity,
+                                                    compress = FALSE)
+              }
               object@spectraData <- data
               validObject(object)
               object
