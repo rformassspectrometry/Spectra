@@ -24,7 +24,7 @@ data files and the remaining spectra variables in memory (in a
 DataFrame). This backend requires the rhdf5 package.
 
 
-See below for more details about individual backends."><title>Mass spectrometry data backends — MsBackend • Spectra</title><!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png"><link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png"><link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png"><link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png"><link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png"><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Mass spectrometry data backends — MsBackend"><meta property="og:description" content="Note that the classes described here are not meant to be used
+See below for more details about individual backends."><title>Mass spectrometry data backends — MsBackend • Spectra</title><!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png"><link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png"><link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png"><link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png"><link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png"><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Mass spectrometry data backends — MsBackend"><meta property="og:description" content="Note that the classes described here are not meant to be used
 directly by the end-users and the material in this man page is
 aimed at package developers.
 MsBackend is a virtual class that defines what each different
@@ -60,7 +60,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -914,12 +914,12 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co">## The MsBackend class is a virtual class and can not be instantiated</span></span>
-<span class="r-in"><span class="co">## directly. Below we define a new backend class extending this virtual</span></span>
-<span class="r-in"><span class="co">## class</span></span>
-<span class="r-in"><span class="va">MsBackendDummy</span> <span class="op">&lt;-</span> <span class="kw">setClass</span><span class="op">(</span><span class="st">"MsBackendDummy"</span>, contains <span class="op">=</span> <span class="st">"MsBackend"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">MsBackendDummy</span><span class="op">(</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## The MsBackend class is a virtual class and can not be instantiated</span></span></span>
+<span class="r-in"><span><span class="co">## directly. Below we define a new backend class extending this virtual</span></span></span>
+<span class="r-in"><span><span class="co">## class</span></span></span>
+<span class="r-in"><span><span class="va">MsBackendDummy</span> <span class="op">&lt;-</span> <span class="kw">setClass</span><span class="op">(</span><span class="st">"MsBackendDummy"</span>, contains <span class="op">=</span> <span class="st">"MsBackend"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">MsBackendDummy</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "MsBackendDummy"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "readonly":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -927,39 +927,39 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "version":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0.1"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## This class inherits now all methods from `MsBackend`, all of which</span></span>
-<span class="r-in"><span class="co">## however throw an error. These methods would have to be implemented</span></span>
-<span class="r-in"><span class="co">## for the new backend class.</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="fu">MsBackendDummy</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## This class inherits now all methods from `MsBackend`, all of which</span></span></span>
+<span class="r-in"><span><span class="co">## however throw an error. These methods would have to be implemented</span></span></span>
+<span class="r-in"><span><span class="co">## for the new backend class.</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="fu">MsBackendDummy</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error in .local(object, ...) : Not implemented for MsBackendDummy.</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## See `MsBackendDataFrame` as a reference implementation for a backend</span></span>
-<span class="r-in"><span class="co">## class (in the *R/MsBackendDataFrame.R* file).</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## MsBackendDataFrame</span></span>
-<span class="r-in"><span class="co">##</span></span>
-<span class="r-in"><span class="co">## The `MsBackendDataFrame` uses a `S4Vectors::DataFrame` to store all MS</span></span>
-<span class="r-in"><span class="co">## data. Below we create such a backend by passing a `DataFrame` with all</span></span>
-<span class="r-in"><span class="co">## data to it.</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">DataFrame</span><span class="op">(</span>msLevel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">1L</span><span class="op">)</span>, scanIndex <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">data</span><span class="op">$</span><span class="va">mz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>, <span class="fl">1.2</span>, <span class="fl">1.3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.4</span>, <span class="fl">54.2</span>, <span class="fl">56.4</span>, <span class="fl">122.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15.3</span>, <span class="fl">23.2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">data</span><span class="op">$</span><span class="va">intensity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span>, <span class="fl">12.2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">123</span>, <span class="fl">12324.2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Backends are supposed to be created with their specific constructor</span></span>
-<span class="r-in"><span class="co">## function</span></span>
-<span class="r-in"><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu">MsBackendDataFrame</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">be</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## See `MsBackendDataFrame` as a reference implementation for a backend</span></span></span>
+<span class="r-in"><span><span class="co">## class (in the *R/MsBackendDataFrame.R* file).</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## MsBackendDataFrame</span></span></span>
+<span class="r-in"><span><span class="co">##</span></span></span>
+<span class="r-in"><span><span class="co">## The `MsBackendDataFrame` uses a `S4Vectors::DataFrame` to store all MS</span></span></span>
+<span class="r-in"><span><span class="co">## data. Below we create such a backend by passing a `DataFrame` with all</span></span></span>
+<span class="r-in"><span><span class="co">## data to it.</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">DataFrame</span><span class="op">(</span>msLevel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">1L</span><span class="op">)</span>, scanIndex <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">mz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>, <span class="fl">1.2</span>, <span class="fl">1.3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.4</span>, <span class="fl">54.2</span>, <span class="fl">56.4</span>, <span class="fl">122.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15.3</span>, <span class="fl">23.2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">intensity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span>, <span class="fl">12.2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">123</span>, <span class="fl">12324.2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Backends are supposed to be created with their specific constructor</span></span></span>
+<span class="r-in"><span><span class="co">## function</span></span></span>
+<span class="r-in"><span><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu">MsBackendDataFrame</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">be</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MsBackendDataFrame with 0 spectra</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## The `backendInitialize` method initializes the backend filling it with</span></span>
-<span class="r-in"><span class="co">## data. This method can take any parameters needed for the backend to</span></span>
-<span class="r-in"><span class="co">## get loaded with the data (e.g. a file name from which to load the data,</span></span>
-<span class="r-in"><span class="co">## a database connection or, in this case, a data frame containing the data).</span></span>
-<span class="r-in"><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu"><a href="hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="va">be</span>, <span class="va">data</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">be</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## The `backendInitialize` method initializes the backend filling it with</span></span></span>
+<span class="r-in"><span><span class="co">## data. This method can take any parameters needed for the backend to</span></span></span>
+<span class="r-in"><span><span class="co">## get loaded with the data (e.g. a file name from which to load the data,</span></span></span>
+<span class="r-in"><span><span class="co">## a database connection or, in this case, a data frame containing the data).</span></span></span>
+<span class="r-in"><span><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu"><a href="hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="va">be</span>, <span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">be</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MsBackendDataFrame with 3 spectra</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     msLevel     rtime scanIndex</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
@@ -967,37 +967,37 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         2        NA         2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         1        NA         3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 16 more variables/columns.</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Data can be accessed with the accessor methods</span></span>
-<span class="r-in"><span class="fu">msLevel</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Data can be accessed with the accessor methods</span></span></span>
+<span class="r-in"><span><span class="fu">msLevel</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 1</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">mz</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">mz</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 1.1 1.2 1.3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] 1.4 54.2 56.4 122.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]] 15.3 23.2</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Even if no data was provided for all spectra variables, its accessor</span></span>
-<span class="r-in"><span class="co">## methods are supposed to return a value.</span></span>
-<span class="r-in"><span class="fu">precursorMz</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Even if no data was provided for all spectra variables, its accessor</span></span></span>
+<span class="r-in"><span><span class="co">## methods are supposed to return a value.</span></span></span>
+<span class="r-in"><span><span class="fu">precursorMz</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA NA NA</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## The `peaksData` method is supposed to return the peaks of the spectra as</span></span>
-<span class="r-in"><span class="co">## a `list`.</span></span>
-<span class="r-in"><span class="fu"><a href="hidden_aliases.html">peaksData</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## List available peaks variables</span></span>
-<span class="r-in"><span class="fu"><a href="hidden_aliases.html">peaksVariables</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## The `peaksData` method is supposed to return the peaks of the spectra as</span></span></span>
+<span class="r-in"><span><span class="co">## a `list`.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksData</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## List available peaks variables</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksVariables</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mz"        "intensity"</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Use columns to extract specific peaks variables. Below we extract m/z and</span></span>
-<span class="r-in"><span class="co">## intensity values, but in reversed order to the default.</span></span>
-<span class="r-in"><span class="fu"><a href="hidden_aliases.html">peaksData</a></span><span class="op">(</span><span class="va">be</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"intensity"</span>, <span class="st">"mz"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## List available spectra variables (i.e. spectrum metadata)</span></span>
-<span class="r-in"><span class="fu">spectraVariables</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Use columns to extract specific peaks variables. Below we extract m/z and</span></span></span>
+<span class="r-in"><span><span class="co">## intensity values, but in reversed order to the default.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksData</a></span><span class="op">(</span><span class="va">be</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"intensity"</span>, <span class="st">"mz"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## List available spectra variables (i.e. spectrum metadata)</span></span></span>
+<span class="r-in"><span><span class="fu">spectraVariables</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "msLevel"                 "rtime"                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "acquisitionNum"          "scanIndex"              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "mz"                      "intensity"              </span>
@@ -1008,9 +1008,9 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15] "precursorCharge"         "collisionEnergy"        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [17] "isolationWindowLowerMz"  "isolationWindowTargetMz"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [19] "isolationWindowUpperMz" </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Extract precursor m/z, rtime, MS level spectra variables</span></span>
-<span class="r-in"><span class="fu">spectraData</span><span class="op">(</span><span class="va">be</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"precursorMz"</span>, <span class="st">"rtime"</span>, <span class="st">"msLevel"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Extract precursor m/z, rtime, MS level spectra variables</span></span></span>
+<span class="r-in"><span><span class="fu">spectraData</span><span class="op">(</span><span class="va">be</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"precursorMz"</span>, <span class="st">"rtime"</span>, <span class="st">"msLevel"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 3 rows and 3 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   precursorMz     rtime   msLevel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;numeric&gt; &lt;numeric&gt; &lt;integer&gt;</span>
@@ -1028,7 +1028,7 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
     </footer></div>
