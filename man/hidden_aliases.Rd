@@ -42,14 +42,36 @@
 \alias{intensity,MsBackendDF-method}
 \alias{intensity<-,MsBackendDF-method}
 \alias{ionCount,MsBackendDF-method}
+\alias{isEmpty,MsBackendDF-method}
+\alias{isolationWindowLowerMz,MsBackendDF-method}
+\alias{isolationWindowLowerMz<-,MsBackendDF-method}
+\alias{isolationWindowTargetMz,MsBackendDF-method}
+\alias{isolationWindowTargetMz<-,MsBackendDF-method}
+\alias{isolationWindowUpperMz,MsBackendDF-method}
+\alias{isolationWindowUpperMz<-,MsBackendDF-method}
 \alias{length,MsBackendDF-method}
 \alias{lengths,MsBackendDF-method}
+\alias{msLevel,MsBackendDF-method}
+\alias{msLevel<-,MsBackendDF-method}
 \alias{mz,MsBackendDF-method}
 \alias{mz<-,MsBackendDF-method}
 \alias{peaksData,MsBackendDF-method}
 \alias{peaksData<-,MsBackendDF-method}
+\alias{polarity,MsBackendDF-method}
+\alias{polarity<-,MsBackendDF-method}
+\alias{precScanNum,MsBackendDF-method}
+\alias{precursorCharge,MsBackendDF-method}
+\alias{precursorIntensity,MsBackendDF-method}
+\alias{precursorMz,MsBackendDF-method}
+\alias{rtime,MsBackendDF-method}
+\alias{rtime<-,MsBackendDF-method}
+\alias{scanIndex,MsBackendDF-method}
+\alias{smoothed,MsBackendDF-method}
+\alias{smoothed<-,MsBackendDF-method}
 \alias{spectraData,MsBackendDF-method}
 \alias{spectraData<-,MsBackendDF-method}
+\alias{spectraNames,MsBackendDF-method}
+\alias{spectraNames<-,MsBackendDF-method}
 \alias{spectraVariables,MsBackendDF-method}
 \alias{peaksVariables,MsBackendDF-method}
 \alias{$,MsBackendDF-method}
@@ -223,9 +245,27 @@ spectrapply(object, ...)
 
 \S4method{ionCount}{MsBackendDF}(object)
 
+\S4method{isEmpty}{MsBackendDF}(x)
+
+\S4method{isolationWindowLowerMz}{MsBackendDF}(object)
+
+\S4method{isolationWindowLowerMz}{MsBackendDF}(object) <- value
+
+\S4method{isolationWindowTargetMz}{MsBackendDF}(object)
+
+\S4method{isolationWindowTargetMz}{MsBackendDF}(object) <- value
+
+\S4method{isolationWindowUpperMz}{MsBackendDF}(object)
+
+\S4method{isolationWindowUpperMz}{MsBackendDF}(object) <- value
+
 \S4method{length}{MsBackendDF}(x)
 
 \S4method{lengths}{MsBackendDF}(x, use.names = FALSE)
+
+\S4method{msLevel}{MsBackendDF}(object, ...)
+
+\S4method{msLevel}{MsBackendDF}(object) <- value
 
 \S4method{mz}{MsBackendDF}(object)
 
@@ -235,9 +275,35 @@ spectrapply(object, ...)
 
 \S4method{peaksData}{MsBackendDF}(object) <- value
 
+\S4method{polarity}{MsBackendDF}(object)
+
+\S4method{polarity}{MsBackendDF}(object) <- value
+
+\S4method{precScanNum}{MsBackendDF}(object)
+
+\S4method{precursorCharge}{MsBackendDF}(object)
+
+\S4method{precursorIntensity}{MsBackendDF}(object)
+
+\S4method{precursorMz}{MsBackendDF}(object)
+
+\S4method{rtime}{MsBackendDF}(object)
+
+\S4method{rtime}{MsBackendDF}(object) <- value
+
+\S4method{scanIndex}{MsBackendDF}(object)
+
+\S4method{smoothed}{MsBackendDF}(object)
+
+\S4method{smoothed}{MsBackendDF}(object) <- value
+
 \S4method{spectraData}{MsBackendDF}(object, columns = spectraVariables(object))
 
 \S4method{spectraData}{MsBackendDF}(object) <- value
+
+\S4method{spectraNames}{MsBackendDF}(object)
+
+\S4method{spectraNames}{MsBackendDF}(object) <- value
 
 \S4method{spectraVariables}{MsBackendDF}(object)
 

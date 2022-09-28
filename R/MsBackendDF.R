@@ -228,61 +228,61 @@ setMethod("ionCount", "MsBackendDF", function(object) {
     vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
-## #' @rdname hidden_aliases
-## setMethod("isEmpty", "MsBackendDF", function(x) {
-##     lengths(intensity(x)) == 0
-## })
+#' @rdname hidden_aliases
+setMethod("isEmpty", "MsBackendDF", function(x) {
+    lengths(intensity(x)) == 0
+})
 
-## #' @rdname hidden_aliases
-## setMethod("isolationWindowLowerMz", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "isolationWindowLowerMz")
-## })
+#' @rdname hidden_aliases
+setMethod("isolationWindowLowerMz", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "isolationWindowLowerMz")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("isolationWindowLowerMz", "MsBackendDF",
-##                  function(object, value) {
-##                      if (!is.numeric(value) || length(value) != length(object))
-##                          stop("'value' has to be a 'numeric' of length ",
-##                               length(object))
-##                      object@spectraData$isolationWindowLowerMz <-
-##                          as.numeric(value)
-##                      validObject(object)
-##                      object
-##                  })
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowLowerMz", "MsBackendDF",
+                 function(object, value) {
+                     if (!is.numeric(value) || length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowLowerMz <-
+                         as.numeric(value)
+                     validObject(object)
+                     object
+                 })
 
-## #' @rdname hidden_aliases
-## setMethod("isolationWindowTargetMz", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "isolationWindowTargetMz")
-## })
+#' @rdname hidden_aliases
+setMethod("isolationWindowTargetMz", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "isolationWindowTargetMz")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("isolationWindowTargetMz", "MsBackendDF",
-##                  function(object, value) {
-##                      if (!is.numeric(value) || length(value) != length(object))
-##                          stop("'value' has to be a 'numeric' of length ",
-##                               length(object))
-##                      object@spectraData$isolationWindowTargetMz <-
-##                          as.numeric(value)
-##                      validObject(object)
-##                      object
-##                  })
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowTargetMz", "MsBackendDF",
+                 function(object, value) {
+                     if (!is.numeric(value) || length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowTargetMz <-
+                         as.numeric(value)
+                     validObject(object)
+                     object
+                 })
 
-## #' @rdname hidden_aliases
-## setMethod("isolationWindowUpperMz", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "isolationWindowUpperMz")
-## })
+#' @rdname hidden_aliases
+setMethod("isolationWindowUpperMz", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "isolationWindowUpperMz")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("isolationWindowUpperMz", "MsBackendDF",
-##                  function(object, value) {
-##                      if (!is.numeric(value) || length(value) != length(object))
-##                          stop("'value' has to be a 'numeric' of length ",
-##                               length(object))
-##                      object@spectraData$isolationWindowUpperMz <-
-##                          as.numeric(value)
-##                      validObject(object)
-##                      object
-##                  })
+#' @rdname hidden_aliases
+setReplaceMethod("isolationWindowUpperMz", "MsBackendDF",
+                 function(object, value) {
+                     if (!is.numeric(value) || length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$isolationWindowUpperMz <-
+                         as.numeric(value)
+                     validObject(object)
+                     object
+                 })
 
 #' @rdname hidden_aliases
 setMethod("length", "MsBackendDF", function(x) {
@@ -296,21 +296,21 @@ setMethod("lengths", "MsBackendDF", function(x, use.names = FALSE) {
     else integer()
 })
 
-## #' @rdname hidden_aliases
-## setMethod("msLevel", "MsBackendDF", function(object, ...) {
-##     .get_column(object@spectraData, "msLevel")
-## })
+#' @rdname hidden_aliases
+setMethod("msLevel", "MsBackendDF", function(object, ...) {
+    .get_column(object@spectraData, "msLevel")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("msLevel", "MsBackendDF", function(object, value) {
-##     if (!is.integer(value) && is.numeric(value))
-##         value <- as.integer(value)
-##     if (!is.integer(value) || length(value) != length(object))
-##         stop("'value' has to be an 'integer' of length ", length(object))
-##     object@spectraData$msLevel <- value
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("msLevel", "MsBackendDF", function(object, value) {
+    if (!is.integer(value) && is.numeric(value))
+        value <- as.integer(value)
+    if (!is.integer(value) || length(value) != length(object))
+        stop("'value' has to be an 'integer' of length ", length(object))
+    object@spectraData$msLevel <- value
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 setMethod("mz", "MsBackendDF", function(object) {
@@ -409,61 +409,61 @@ setReplaceMethod("peaksData", "MsBackendDF", function(object, value) {
     object
 })
 
-## #' @rdname hidden_aliases
-## setMethod("polarity", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "polarity")
-## })
+#' @rdname hidden_aliases
+setMethod("polarity", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "polarity")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("polarity", "MsBackendDF", function(object, value) {
-##     value_len <- length(value)
-##     value_type <- is.numeric(value)
-##     if (value_type && (value_len == 1L || value_len == length(object)))
-##         object@spectraData$polarity <- as.integer(value)
-##     else
-##         stop("'value' has to be an 'integer' of length 1 or ", length(object))
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("polarity", "MsBackendDF", function(object, value) {
+    value_len <- length(value)
+    value_type <- is.numeric(value)
+    if (value_type && (value_len == 1L || value_len == length(object)))
+        object@spectraData$polarity <- as.integer(value)
+    else
+        stop("'value' has to be an 'integer' of length 1 or ", length(object))
+    validObject(object)
+    object
+})
 
-## #' @rdname hidden_aliases
-## setMethod("precScanNum", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "precScanNum")
-## })
+#' @rdname hidden_aliases
+setMethod("precScanNum", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "precScanNum")
+})
 
-## #' @rdname hidden_aliases
-## setMethod("precursorCharge", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "precursorCharge")
-## })
+#' @rdname hidden_aliases
+setMethod("precursorCharge", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "precursorCharge")
+})
 
-## #' @rdname hidden_aliases
-## setMethod("precursorIntensity", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "precursorIntensity")
-## })
+#' @rdname hidden_aliases
+setMethod("precursorIntensity", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "precursorIntensity")
+})
 
-## #' @rdname hidden_aliases
-## setMethod("precursorMz", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "precursorMz")
-## })
+#' @rdname hidden_aliases
+setMethod("precursorMz", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "precursorMz")
+})
 
-## #' @rdname hidden_aliases
-## setMethod("rtime", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "rtime")
-## })
+#' @rdname hidden_aliases
+setMethod("rtime", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "rtime")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("rtime", "MsBackendDF", function(object, value) {
-##     if (!is.numeric(value) || length(value) != length(object))
-##         stop("'value' has to be a 'numeric' of length ", length(object))
-##     object@spectraData$rtime <- as.numeric(value)
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("rtime", "MsBackendDF", function(object, value) {
+    if (!is.numeric(value) || length(value) != length(object))
+        stop("'value' has to be a 'numeric' of length ", length(object))
+    object@spectraData$rtime <- as.numeric(value)
+    validObject(object)
+    object
+})
 
-## #' @rdname hidden_aliases
-## setMethod("scanIndex", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "scanIndex")
-## })
+#' @rdname hidden_aliases
+setMethod("scanIndex", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "scanIndex")
+})
 
 ## #' @rdname hidden_aliases
 ## setMethod("selectSpectraVariables", "MsBackendDF",
@@ -485,24 +485,24 @@ setReplaceMethod("peaksData", "MsBackendDF", function(object, value) {
 ##               object
 ## })
 
-## #' @rdname hidden_aliases
-## setMethod("smoothed", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "smoothed")
-## })
+#' @rdname hidden_aliases
+setMethod("smoothed", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "smoothed")
+})
 
-## #' @rdname hidden_aliases
-## #'
-## #' @aliases smoothed<-,MsBackendDF-method
-## setReplaceMethod("smoothed", "MsBackendDF", function(object, value) {
-##     value_len <- length(value)
-##     value_type <- is.logical(value)
-##     if (value_type && (value_len == 1L || value_len == length(object)))
-##         object@spectraData$smoothed <- value
-##     else
-##         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+#'
+#' @aliases smoothed<-,MsBackendDF-method
+setReplaceMethod("smoothed", "MsBackendDF", function(object, value) {
+    value_len <- length(value)
+    value_type <- is.logical(value)
+    if (value_type && (value_len == 1L || value_len == length(object)))
+        object@spectraData$smoothed <- value
+    else
+        stop("'value' has to be a 'logical' of length 1 or ", length(object))
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 #'
@@ -530,17 +530,17 @@ setReplaceMethod("spectraData", "MsBackendDF", function(object, value) {
     object
 })
 
-## #' @rdname hidden_aliases
-## setMethod("spectraNames", "MsBackendDF", function(object) {
-##     rownames(object@spectraData)
-## })
+#' @rdname hidden_aliases
+setMethod("spectraNames", "MsBackendDF", function(object) {
+    rownames(object@spectraData)
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("spectraNames", "MsBackendDF", function(object, value) {
-##     rownames(object@spectraData) <- value
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("spectraNames", "MsBackendDF", function(object, value) {
+    rownames(object@spectraData) <- value
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 setMethod("spectraVariables", "MsBackendDF", function(object) {

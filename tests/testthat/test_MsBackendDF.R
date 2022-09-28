@@ -8,7 +8,7 @@ test_that("backendInitialize,MsBackendDF works", {
 
     be <- backendInitialize(be, data = DataFrame(msLevel = 2L))
     expect_true(validObject(be))
-    expect_equal(dataStorage(be), "<memory>")
+    expect_identical(dataStorage(be), "<memory>")
     expect_true(length(be@peaksData) == nrow(be@spectraData))
     expect_equal(be@peaksData[[1L]],
                  matrix(numeric(), ncol = 2, nrow = 0,
@@ -565,4 +565,197 @@ test_that("ionCount,MsBackendDF works", {
     be <- backendInitialize(be, test_df)
     expect_equal(ionCount(be),
                  vapply(test_df$intensity, sum, numeric(1)))
+})
+
+test_that("isEmpty,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(isEmpty(be), logical(0))
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(isEmpty(be), c(FALSE, FALSE, FALSE))
+})
+
+test_that("isolationWindowLowerMz,isolationWindowLowerMz<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(isolationWindowLowerMz(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(isolationWindowLowerMz(be), rep(NA_real_, 3))
+    isolationWindowLowerMz(be) <- c(1.3, 1.4, 1.5)
+    expect_identical(isolationWindowLowerMz(be), c(1.3, 1.4, 1.5))
+
+    expect_error(isolationWindowLowerMz(be) <- 1.3, "length 3")
+    expect_error(isolationWindowLowerMz(be) <- letters[1:3], "numeric")
+})
+
+test_that("isolationWindowTargetMz,isolationWindowTargetMz<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(isolationWindowTargetMz(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(isolationWindowTargetMz(be), rep(NA_real_, 3))
+    isolationWindowTargetMz(be) <- c(1.3, 1.4, 1.5)
+    expect_identical(isolationWindowTargetMz(be), c(1.3, 1.4, 1.5))
+
+    expect_error(isolationWindowTargetMz(be) <- 1.3, "length 3")
+    expect_error(isolationWindowTargetMz(be) <- letters[1:3], "numeric")
+})
+
+test_that("isolationWindowUpperMz,isolationWindowUpperMz<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(isolationWindowUpperMz(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(isolationWindowUpperMz(be), rep(NA_real_, 3))
+    isolationWindowUpperMz(be) <- c(1.3, 1.4, 1.5)
+    expect_identical(isolationWindowUpperMz(be), c(1.3, 1.4, 1.5))
+
+    expect_error(isolationWindowUpperMz(be) <- 1.3, "length 3")
+    expect_error(isolationWindowUpperMz(be) <- letters[1:3], "numeric")
+})
+
+test_that("msLevel,msLevel<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(msLevel(be), integer())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(msLevel(be), test_df$msLevel)
+    expect_identical(be$msLevel, test_df$msLevel)
+    msLevel(be) <- 3:1
+    expect_identical(msLevel(be), 3:1)
+    expect_identical(be$msLevel, 3:1)
+
+    be$msLevel <- 1:3
+    expect_identical(msLevel(be), 1:3)
+    expect_identical(be$msLevel, 1:3)
+
+    expect_error(msLevel(be) <- 1L, "length 3")
+    expect_error(msLevel(be) <- letters[1:3], "integer")
+})
+
+test_that("polarity,polarity<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(polarity(be), integer())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(polarity(be), rep(NA_integer_, 3))
+    expect_identical(be$polarity, rep(NA_integer_, 3))
+    polarity(be) <- 3:1
+    expect_identical(polarity(be), 3:1)
+    expect_identical(be$polarity, 3:1)
+
+    be$polarity <- 1:3
+    expect_identical(polarity(be), 1:3)
+    expect_identical(be$polarity, 1:3)
+
+    polarity(be) <- 1L
+    expect_identical(polarity(be), rep(1L, 3))
+    expect_error(polarity(be) <- letters[1:3], "integer")
+})
+
+test_that("precScanNum,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(precScanNum(be), integer())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(precScanNum(be), rep(NA_integer_, 3))
+    expect_identical(be$precScanNum, rep(NA_integer_, 3))
+    be$precScanNum <- 1:3
+    expect_identical(precScanNum(be), 1:3)
+    expect_identical(be$precScanNum, 1:3)
+})
+
+test_that("precursorCharge,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(precursorCharge(be), integer())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(precursorCharge(be), rep(NA_integer_, 3))
+    expect_identical(be$precursorCharge, rep(NA_integer_, 3))
+    be$precursorCharge <- 1:3
+    expect_identical(precursorCharge(be), 1:3)
+    expect_identical(be$precursorCharge, 1:3)
+})
+
+test_that("precursorIntensity,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(precursorIntensity(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(precursorIntensity(be), rep(NA_real_, 3))
+    expect_identical(be$precursorIntensity, rep(NA_real_, 3))
+    be$precursorIntensity <- c(12.2, 12.5, 15.2)
+    expect_identical(precursorIntensity(be), c(12.2, 12.5, 15.2))
+    expect_identical(be$precursorIntensity, c(12.2, 12.5, 15.2))
+})
+
+test_that("precursorMz,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(precursorMz(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(precursorMz(be), rep(NA_real_, 3))
+    expect_identical(be$precursorMz, rep(NA_real_, 3))
+    be$precursorMz <- c(1.2, 1.3, 1.4)
+    expect_identical(precursorMz(be), c(1.2, 1.3, 1.4))
+    expect_identical(be$precursorMz, c(1.2, 1.3, 1.4))
+})
+
+test_that("rtime,rtime<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(rtime(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(rtime(be), rep(NA_real_, 3))
+    expect_identical(be$rtime, rep(NA_real_, 3))
+    rtime(be) <- c(1.2, 1.3, 1.4)
+    expect_identical(rtime(be), c(1.2, 1.3, 1.4))
+    expect_identical(be$rtime, c(1.2, 1.3, 1.4))
+
+    be$rtime <- c(2.1, 2.2, 2.3)
+    expect_identical(rtime(be), c(2.1, 2.2, 2.3))
+    expect_identical(be$rtime, c(2.1, 2.2, 2.3))
+
+    expect_error(rtime(be) <- 1.3, "length 3")
+    expect_error(rtime(be) <- letters[1:3], "numeric")
+})
+
+test_that("scanIndex,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(scanIndex(be), integer())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(scanIndex(be), test_df$scanIndex)
+    expect_identical(be$scanIndex, test_df$scanIndex)
+    be$scanIndex <- 1:3
+    expect_identical(scanIndex(be), 1:3)
+    expect_identical(be$scanIndex, 1:3)
+})
+
+test_that("smoothed,smoothed<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(smoothed(be), logical())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(smoothed(be), rep(NA, 3))
+    expect_identical(be$smoothed, rep(NA, 3))
+    smoothed(be) <- c(TRUE, FALSE, TRUE)
+    expect_identical(smoothed(be), c(TRUE, FALSE, TRUE))
+    expect_identical(be$smoothed, c(TRUE, FALSE, TRUE))
+
+    smoothed(be) <- FALSE
+    expect_identical(smoothed(be), rep(FALSE, 3))
+    expect_error(smoothed(be) <- letters[1:3], "logical")
+})
+
+test_that("spectraNames,spectraNames<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_identical(spectraNames(be), character())
+
+    be <- backendInitialize(be, test_df)
+    expect_identical(spectraNames(be), as.character(1:3))
+    spectraNames(be) <- c("a", "b", "c")
+    expect_identical(spectraNames(be), c("a", "b", "c"))
+
+    expect_error(spectraNames(be) <- 1, "length")
 })
