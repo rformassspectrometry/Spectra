@@ -348,3 +348,132 @@ test_that("peaksData<-,MsBackendDF works", {
                                          data.frame(add_col = 5:7),
                                          data.frame(add_col = 100)))
 })
+
+test_that("$,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_equal(be$msLevel, integer())
+    expect_equal(be$rtime, numeric())
+    expect_error(be$other, "are not available")
+
+    be <- backendInitialize(be, test_df)
+    expect_equal(be$msLevel, test_df$msLevel)
+    expect_equal(be$scanIndex, test_df$scanIndex)
+    expect_equal(be$mz, IRanges::NumericList(test_df$mz, compress = FALSE))
+    expect_equal(be$intensity, IRanges::NumericList(test_df$intensity,
+                                                    compress = FALSE))
+
+    tmp <- test_df
+    tmp$peak_ann <- list(letters[1:3], letters[1:2], letters[1:4])
+    be <- backendInitialize(be, tmp)
+    expect_equal(be$peak_ann, tmp$peak_ann)
+})
+
+test_that("$<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+
+    expect_error(be$rtime <- 1.3, "data has 0")
+    expect_error(be$mz <- list(1:3), "has to match")
+
+    be <- backendInitialize(be, test_df)
+    expect_error(be$rtime <- 1:2, "data has")
+
+    ## existing spectra variable
+    be$msLevel <- 1:3
+    expect_equal(be$msLevel, 1:3)
+
+    ## new spectra variable
+    be$rtime <- c(4.2, 1.23, 4.23)
+    expect_equal(be$rtime, c(4.2, 1.23, 4.23))
+    be$new_var <- letters[1:3]
+    expect_equal(be$new_var, letters[1:3])
+
+    ## mz
+    expect_error(be$mz <- list(1:2, 1:3, 1:4), "number of values")
+    be$mz <- list(c(2.2, 2.3, 2.4), c(1.1, 1.2), c(1.1, 1.2, 1.3, 1.4))
+    expect_equal(be$mz, IRanges::NumericList(list(c(2.2, 2.3, 2.4),
+                                                  c(1.1, 1.2),
+                                                  c(1.1, 1.2, 1.3, 1.4)),
+                                             compress = FALSE))
+    ## intensity
+    vals <- list(c(12.2, 12.3, 12.4), c(12.2, 12.3), c(12.2, 12.3, 12.4, 12.5))
+    expect_error(be$intensity <- list(1:2, 1:3, 1:4), "number of values")
+    be$intensity <- vals
+    expect_equal(be$intensity, IRanges::NumericList(vals, compress = FALSE))
+
+    ## new peaks annotation
+    vals <- list(letters[1:3], letters[1:2], letters[1:4])
+    be$peak_anno <- vals
+    expect_true(length(be@peaksDataFrame) == 3)
+    expect_equal(be$peak_anno, vals)
+
+    ## add to peaks annotation
+    vals <- list(1:3, 1:2, 1:4)
+    be$add_anno <- vals
+    expect_equal(colnames(be@peaksDataFrame[[1L]]), c("peak_anno", "add_anno"))
+    expect_equal(be$add_anno, vals)
+
+    ## replace peaks annotation
+    vals <- list(2:4, 2:3, 2:5)
+    be$add_anno <- vals
+    expect_equal(be$add_anno, vals)
+})
+
+test_that("[,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    df <- data.frame(scanIndex = 1:2, a = "a", b = "b")
+    be <- backendInitialize(be, df)
+    res <- be[1]
+    expect_true(validObject(res))
+    expect_equal(be@spectraData[1, ], res@spectraData[1, ])
+    res <- be[2]
+    expect_true(validObject(res))
+    expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res <- be[2:1]
+    expect_true(validObject(res))
+    expect_equal(be@spectraData[2:1, ], res@spectraData)
+
+    res <- be[c(FALSE, FALSE)]
+    expect_true(validObject(res))
+    expect_true(length(res) == 0)
+    res <- be[c(FALSE, TRUE)]
+    expect_true(validObject(res))
+    expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+
+    expect_error(be[TRUE], "match the length of")
+    expect_error(be["a"], "names")
+
+    df <- data.frame(scanIndex = c(1L, 2L, 1L, 2L),
+                     file = c("a", "a", "b", "b"))
+    be <- backendInitialize(be, df)
+    dataStorage(be) <- c("1", "1", "2", "2")
+    res <- be[3]
+    expect_true(validObject(res))
+    expect_equal(dataStorage(res), "2")
+    expect_equal(res@spectraData$file, "b")
+
+    res <- be[c(3, 1)]
+    expect_true(validObject(res))
+    expect_equal(dataStorage(res), c("2", "1"))
+    expect_equal(res@spectraData$file, c("b", "a"))
+})
+
+test_that("split,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    be <- backendInitialize(be, test_df)
+    f <- factor(c("b", "a", "a"))
+    res <- split(be, f)
+    expect_true(is.list(res))
+    expect_true(length(res) == 2)
+    expect_s4_class(res[[1L]], "MsBackendDF")
+    expect_s4_class(res[[2L]], "MsBackendDF")
+    expect_equal(res[[1L]]$scanIndex, c(5, 6))
+    expect_equal(res[[2L]]$scanIndex, c(4))
+
+    res <- split(be, factor(c("b", "a", "a"), levels = c("b", "a")))
+    expect_true(is.list(res))
+    expect_true(length(res) == 2)
+    expect_s4_class(res[[1L]], "MsBackendDF")
+    expect_s4_class(res[[2L]], "MsBackendDF")
+    expect_equal(res[[2L]]$scanIndex, c(5, 6))
+    expect_equal(res[[1L]]$scanIndex, c(4))
+})

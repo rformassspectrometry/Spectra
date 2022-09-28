@@ -71,7 +71,7 @@ setMethod("backendInitialize", signature = "MsBackendDF",
               if (nrow(data)) {
                   data$dataStorage <- "<memory>"
                   ## Check for *peaks data* columns
-                  peaks_cols <- .get_peaks_columns_data_frame(data)
+                  peaks_cols <- .df_peaks_columns_data_frame(data)
                   ## Get m/z and intensity and put into peaksData
                   p_cols <- intersect(peaks_cols, c("mz", "intensity"))
                   if (length(p_cols)) {
@@ -514,32 +514,7 @@ setReplaceMethod("peaksData", "MsBackendDF", function(object, value) {
 setMethod(
     "spectraData", "MsBackendDF",
     function(object, columns = spectraVariables(object)) {
-        if (!all(columns %in% spectraVariables(object)))
-            stop("Some of the requested spectra variables are not available")
-        p_vars <- peaksVariables(object)
-        sp_vars <- setdiff(columns, p_vars)
-        df_columns <- intersect(sp_vars, colnames(object@spectraData))
-        res <- DataFrame(object@spectraData[, df_columns, drop = FALSE])
-        ## Get missing core variables.
-        other_columns <- setdiff(sp_vars, colnames(object@spectraData))
-        if (length(other_columns)) {
-            other_res <- lapply(other_columns, .get_column,
-                                x = object@spectraData)
-            names(other_res) <- other_columns
-            res <- cbind(res, as(other_res, "DataFrame"))
-        }
-        if (any(columns == "mz"))
-            res$mz <- mz(object)
-        if (any(columns == "intensity"))
-            res$intensity <- intensity(object)
-        p_columns <- setdiff(p_vars, c("mz", "intensity"))
-        for (p_column in p_columns) {
-            res <- do.call(`$<-`,
-                           list(res, name = p_column,
-                                value = .df_pdata_column(object@peaksDataFrame,
-                                                         p_column)))
-        }
-        res[, columns, drop = FALSE]
+        as(.df_spectra_data(object, columns), "DataFrame")
     })
 
 #' @rdname hidden_aliases
@@ -592,21 +567,41 @@ setMethod("peaksVariables", "MsBackendDF", function(object) {
 ##     } else vapply1d(intensity(object), sum, na.rm = TRUE)
 ## })
 
-## #' @rdname hidden_aliases
-## setMethod("$", "MsBackendDF", function(x, name) {
-##     if (!any(spectraVariables(x) == name))
-##         stop("spectra variable '", name, "' not available")
-##     spectraData(x, name)[, 1]
-## })
+#' @rdname hidden_aliases
+setMethod("$", "MsBackendDF", function(x, name) {
+    .df_spectra_data(x, name)[, 1]
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("$", "MsBackendDF", function(x, name, value) {
-##     if (is.list(value) && any(c("mz", "intensity") == name))
-##         value <- NumericList(value, compress = FALSE)
-##     x@spectraData[[name]] <- value
-##     validObject(x)
-##     x
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("$", "MsBackendDF", function(x, name, value) {
+    if (is.list(value) || inherits(value, "SimpleList")) {
+        ## Check if lengths matches those of peaksData.
+        lns <- lengths(x)
+        if (!length(value) == length(x) || !all(lns == lengths(value)))
+            stop("length of 'value' has to match length of 'x' and the number ",
+                 "of values per list-element has to match the number of peaks ",
+                 "per spectrum.")
+        if (name %in% c("mz", "intensity")) {
+            for (i in seq_along(value))
+                x@peaksData[[i]][, name] <- value[[i]]
+        } else {
+            if (length(x@peaksDataFrame)) {
+                for (i in seq_along(value))
+                    x@peaksDataFrame[[i]][[name]] <- value[[i]]
+            } else {
+                value <- lapply(value, function(z) {
+                    df <- data.frame(z, check.names = FALSE)
+                    colnames(df) <- name
+                    df
+                })
+                x@peaksDataFrame <- value
+            }
+        }
+    } else
+        x@spectraData[[name]] <- value
+    validObject(x)
+    x
+})
 
 #### ---------------------------------------------------------------------------
 ##
@@ -614,21 +609,21 @@ setMethod("peaksVariables", "MsBackendDF", function(object) {
 ##
 #### ---------------------------------------------------------------------------
 
-## #' @importMethodsFrom S4Vectors [
-## #'
-## #' @importFrom MsCoreUtils i2index
-## #'
-## #' @rdname hidden_aliases
-## setMethod("[", "MsBackendDF", function(x, i, j, ..., drop = FALSE) {
-##     .subset_backend_data_frame(x, i)
-## })
+#' @importMethodsFrom S4Vectors [
+#'
+#' @importFrom MsCoreUtils i2index
+#'
+#' @rdname hidden_aliases
+setMethod("[", "MsBackendDF", function(x, i, j, ..., drop = FALSE) {
+    .df_subset(x, i)
+})
 
-## #' @rdname hidden_aliases
-## setMethod("split", "MsBackendDF", function(x, f, drop = FALSE, ...) {
-##     if (!is.factor(f))
-##         f <- as.factor(f)
-##     lapply(split(seq_along(x), f, ...), function(i) x[i, ])
-## })
+#' @rdname hidden_aliases
+setMethod("split", "MsBackendDF", function(x, f, drop = FALSE, ...) {
+    if (!is.factor(f))
+        f <- as.factor(f)
+    lapply(split(seq_along(x), f, ...), function(i) .df_subset(x, i))
+})
 
 ## #' @rdname hidden_aliases
 ## setMethod("filterAcquisitionNum", "MsBackendDF",

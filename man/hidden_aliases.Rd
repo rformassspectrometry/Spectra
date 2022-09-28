@@ -44,6 +44,10 @@
 \alias{spectraData<-,MsBackendDF-method}
 \alias{spectraVariables,MsBackendDF-method}
 \alias{peaksVariables,MsBackendDF-method}
+\alias{$,MsBackendDF-method}
+\alias{$<-,MsBackendDF-method}
+\alias{[,MsBackendDF-method}
+\alias{split,MsBackendDF,ANY-method}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendMerge,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
@@ -213,6 +217,14 @@ spectrapply(object, ...)
 \S4method{spectraVariables}{MsBackendDF}(object)
 
 \S4method{peaksVariables}{MsBackendDF}(object)
+
+\S4method{$}{MsBackendDF}(x, name)
+
+\S4method{$}{MsBackendDF}(x, name) <- value
+
+\S4method{[}{MsBackendDF}(x, i, j, ..., drop = FALSE)
+
+\S4method{split}{MsBackendDF,ANY}(x, f, drop = FALSE, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 
