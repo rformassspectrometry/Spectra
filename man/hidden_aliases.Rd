@@ -30,10 +30,18 @@
 \alias{setBackend}
 \alias{spectrapply}
 \alias{show,MsBackendDF-method}
+\alias{acquisitionNum,MsBackendDF-method}
+\alias{centroided,MsBackendDF-method}
+\alias{centroided<-,MsBackendDF-method}
+\alias{collisionEnergy,MsBackendDF-method}
+\alias{collisionEnergy<-,MsBackendDF-method}
+\alias{dataOrigin,MsBackendDF-method}
+\alias{dataOrigin<-,MsBackendDF-method}
 \alias{dataStorage,MsBackendDF-method}
 \alias{dataStorage<-,MsBackendDF-method}
 \alias{intensity,MsBackendDF-method}
 \alias{intensity<-,MsBackendDF-method}
+\alias{ionCount,MsBackendDF-method}
 \alias{length,MsBackendDF-method}
 \alias{lengths,MsBackendDF-method}
 \alias{mz,MsBackendDF-method}
@@ -48,6 +56,7 @@
 \alias{$<-,MsBackendDF-method}
 \alias{[,MsBackendDF-method}
 \alias{split,MsBackendDF,ANY-method}
+\alias{filterAcquisitionNum,MsBackendDF-method}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendMerge,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
@@ -190,6 +199,20 @@ spectrapply(object, ...)
 
 \S4method{show}{MsBackendDF}(object)
 
+\S4method{acquisitionNum}{MsBackendDF}(object)
+
+\S4method{centroided}{MsBackendDF}(object)
+
+\S4method{centroided}{MsBackendDF}(object) <- value
+
+\S4method{collisionEnergy}{MsBackendDF}(object)
+
+\S4method{collisionEnergy}{MsBackendDF}(object) <- value
+
+\S4method{dataOrigin}{MsBackendDF}(object)
+
+\S4method{dataOrigin}{MsBackendDF}(object) <- value
+
 \S4method{dataStorage}{MsBackendDF}(object)
 
 \S4method{dataStorage}{MsBackendDF}(object) <- value
@@ -197,6 +220,8 @@ spectrapply(object, ...)
 \S4method{intensity}{MsBackendDF}(object)
 
 \S4method{intensity}{MsBackendDF}(object) <- value
+
+\S4method{ionCount}{MsBackendDF}(object)
 
 \S4method{length}{MsBackendDF}(x)
 
@@ -225,6 +250,13 @@ spectrapply(object, ...)
 \S4method{[}{MsBackendDF}(x, i, j, ..., drop = FALSE)
 
 \S4method{split}{MsBackendDF,ANY}(x, f, drop = FALSE, ...)
+
+\S4method{filterAcquisitionNum}{MsBackendDF}(
+  object,
+  n = integer(),
+  dataStorage = character(),
+  dataOrigin = character()
+)
 
 \S4method{show}{MsBackendDataFrame}(object)
 

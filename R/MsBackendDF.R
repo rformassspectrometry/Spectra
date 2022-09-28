@@ -120,59 +120,59 @@ setMethod("backendInitialize", signature = "MsBackendDF",
 
 ## Data accessors
 
-## #' @rdname hidden_aliases
-## setMethod("acquisitionNum", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "acquisitionNum")
-## })
+#' @rdname hidden_aliases
+setMethod("acquisitionNum", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "acquisitionNum")
+})
 
-## #' @rdname hidden_aliases
-## setMethod("centroided", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "centroided")
-## })
+#' @rdname hidden_aliases
+setMethod("centroided", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "centroided")
+})
 
-## #' @rdname hidden_aliases
-## #'
-## #' @aliases centroided<-,MsBackendDF-method
-## setReplaceMethod("centroided", "MsBackendDF", function(object, value) {
-##     value_len <- length(value)
-##     value_type <- is.logical(value)
-##     if (value_type && (value_len == 1L || value_len == length(object)))
-##         object@spectraData$centroided <- value
-##     else
-##         stop("'value' has to be a 'logical' of length 1 or ", length(object))
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+#'
+#' @aliases centroided<-,MsBackendDF-method
+setReplaceMethod("centroided", "MsBackendDF", function(object, value) {
+    value_len <- length(value)
+    value_type <- is.logical(value)
+    if (value_type && (value_len == 1L || value_len == length(object)))
+        object@spectraData$centroided <- value
+    else
+        stop("'value' has to be a 'logical' of length 1 or ", length(object))
+    validObject(object)
+    object
+})
 
-## #' @rdname hidden_aliases
-## setMethod("collisionEnergy", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "collisionEnergy")
-## })
+#' @rdname hidden_aliases
+setMethod("collisionEnergy", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "collisionEnergy")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("collisionEnergy", "MsBackendDF",
-##                  function(object, value) {
-##                      if (!is.numeric(value) || length(value) != length(object))
-##                          stop("'value' has to be a 'numeric' of length ",
-##                               length(object))
-##                      object@spectraData$collisionEnergy <- as.numeric(value)
-##                      validObject(object)
-##                      object
-##                  })
+#' @rdname hidden_aliases
+setReplaceMethod("collisionEnergy", "MsBackendDF",
+                 function(object, value) {
+                     if (!is.numeric(value) || length(value) != length(object))
+                         stop("'value' has to be a 'numeric' of length ",
+                              length(object))
+                     object@spectraData$collisionEnergy <- as.numeric(value)
+                     validObject(object)
+                     object
+                 })
 
-## #' @rdname hidden_aliases
-## setMethod("dataOrigin", "MsBackendDF", function(object) {
-##     .get_column(object@spectraData, "dataOrigin")
-## })
+#' @rdname hidden_aliases
+setMethod("dataOrigin", "MsBackendDF", function(object) {
+    .get_column(object@spectraData, "dataOrigin")
+})
 
-## #' @rdname hidden_aliases
-## setReplaceMethod("dataOrigin", "MsBackendDF", function(object, value) {
-##     if (!is.character(value) || length(value) != length(object))
-##         stop("'value' has to be a 'character' of length ", length(object))
-##     object@spectraData$dataOrigin <- as.character(value)
-##     validObject(object)
-##     object
-## })
+#' @rdname hidden_aliases
+setReplaceMethod("dataOrigin", "MsBackendDF", function(object, value) {
+    if (!is.character(value) || length(value) != length(object))
+        stop("'value' has to be a 'character' of length ", length(object))
+    object@spectraData$dataOrigin <- as.character(value)
+    validObject(object)
+    object
+})
 
 #' @rdname hidden_aliases
 setMethod("dataStorage", "MsBackendDF", function(object) {
@@ -222,11 +222,11 @@ setReplaceMethod("intensity", "MsBackendDF", function(object, value) {
     object
 })
 
-## #' @rdname hidden_aliases
-## #' @importFrom MsCoreUtils vapply1d
-## setMethod("ionCount", "MsBackendDF", function(object) {
-##     vapply1d(intensity(object), sum, na.rm = TRUE)
-## })
+#' @rdname hidden_aliases
+#' @importFrom MsCoreUtils vapply1d
+setMethod("ionCount", "MsBackendDF", function(object) {
+    vapply1d(intensity(object), sum, na.rm = TRUE)
+})
 
 ## #' @rdname hidden_aliases
 ## setMethod("isEmpty", "MsBackendDF", function(x) {
@@ -625,14 +625,14 @@ setMethod("split", "MsBackendDF", function(x, f, drop = FALSE, ...) {
     lapply(split(seq_along(x), f, ...), function(i) .df_subset(x, i))
 })
 
-## #' @rdname hidden_aliases
-## setMethod("filterAcquisitionNum", "MsBackendDF",
-##           function(object, n = integer(), dataStorage = character(),
-##                    dataOrigin = character()) {
-##     if (!length(n) || !length(object)) return(object)
-##     if (!is.integer(n)) stop("'n' has to be an integer representing the ",
-##                              "acquisition number(s) for sub-setting")
-##     sel_file <- .sel_file(object, dataStorage, dataOrigin)
-##     sel_acq <- acquisitionNum(object) %in% n & sel_file
-##     object[sel_acq | !sel_file]
-## })
+#' @rdname hidden_aliases
+setMethod("filterAcquisitionNum", "MsBackendDF",
+          function(object, n = integer(), dataStorage = character(),
+                   dataOrigin = character()) {
+    if (!length(n) || !length(object)) return(object)
+    if (!is.integer(n)) stop("'n' has to be an integer representing the ",
+                             "acquisition number(s) for sub-setting")
+    sel_file <- .sel_file(object, dataStorage, dataOrigin)
+    sel_acq <- acquisitionNum(object) %in% n & sel_file
+    object[sel_acq | !sel_file]
+})

@@ -1,5 +1,10 @@
 # Spectra 1.7
 
+## Changes in 1.7.3
+
+- Add `MsBackendDF` backend class providing a more efficient in-memory data
+  representation than `MsBackendDataFrame`.
+
 ## Changes in 1.7.2
 
 - Fix `setBackend` if provided `Spectra` is empty.

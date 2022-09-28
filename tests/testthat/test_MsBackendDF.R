@@ -477,3 +477,92 @@ test_that("split,MsBackendDF works", {
     expect_equal(res[[2L]]$scanIndex, c(5, 6))
     expect_equal(res[[1L]]$scanIndex, c(4))
 })
+
+test_that("filterAcquisitionNum,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_equal(be, filterAcquisitionNum(be, n = 4))
+
+    df <- data.frame(acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
+                     msLevel = 1L)
+    be <- backendInitialize(be, df)
+    be$dataStorage <- c("1", "1", "1", "2", "2", "3", "3", "3")
+    res <- filterAcquisitionNum(be, n = c(2L, 4L))
+    expect_equal(length(res), 4)
+    expect_equal(dataStorage(res), c("1", "2", "3", "3"))
+    expect_equal(acquisitionNum(res), c(2L, 2L, 2L, 4L))
+
+    res <- filterAcquisitionNum(be, n = 2L, dataStorage = "2")
+    expect_equal(dataStorage(res), c("1", "1", "1", "2", "3", "3", "3"))
+    expect_equal(acquisitionNum(res), c(1L, 2L, 3L, 2L, 1L, 2L, 4L))
+
+    expect_error(filterAcquisitionNum(be, n = "a"), "integer representing")
+    expect_equal(filterAcquisitionNum(be), be)
+})
+
+test_that("dataOrigin,dataOrigin<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_equal(dataOrigin(be), character())
+
+    be <- backendInitialize(be, test_df)
+    expect_equal(dataOrigin(be), c(NA_character_, NA_character_, NA_character_))
+
+    dataOrigin(be) <- c("A", "B", "C")
+    expect_equal(dataOrigin(be), c("A", "B", "C"))
+
+    expect_error(dataOrigin(be) <- c("c", "d"), "length 3")
+    expect_error(dataOrigin(be) <- 1:3, "length 3")
+
+    expect_error(be$dataOrigin <- 1:3, "invalid")
+    be$dataOrigin <- as.character(1:3)
+    expect_equal(dataOrigin(be), as.character(1:3))
+})
+
+test_that("collisionEnergy,collisionEnergy<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_equal(collisionEnergy(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_equal(collisionEnergy(be), rep(NA_real_, 3))
+    collisionEnergy(be) <- c(1.2, 1.4, 1.3)
+    expect_equal(collisionEnergy(be), c(1.2, 1.4, 1.3))
+    expect_equal(be$collisionEnergy, c(1.2, 1.4, 1.3))
+
+    expect_error(collisionEnergy(be) <- 3.2, "length 3")
+    expect_error(collisionEnergy(be) <- c("a", "b", "c"), "length 3")
+})
+
+test_that("acquisitionNum,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_equal(acquisitionNum(be), integer())
+
+    be <- backendInitialize(be, test_df)
+    expect_equal(acquisitionNum(be), rep(NA_integer_, 3))
+    be$acquisitionNum <- 1:3
+    expect_equal(acquisitionNum(be), 1:3)
+})
+
+test_that("centroided,centroided<-,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_equal(centroided(be), logical())
+
+    be <- backendInitialize(be, test_df)
+    expect_equal(centroided(be), rep(NA, 3))
+    centroided(be) <- c(TRUE, FALSE, TRUE)
+    expect_equal(centroided(be), c(TRUE, FALSE, TRUE))
+    expect_equal(be$centroided, c(TRUE, FALSE, TRUE))
+
+    expect_error(centroided(be) <- c("a", "b", "c"), "logical")
+    expect_error(centroided(be) <- c(TRUE, FALSE), "logical")
+
+    centroided(be) <- FALSE
+    expect_equal(centroided(be), rep(FALSE, 3))
+})
+
+test_that("ionCount,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    expect_equal(ionCount(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_equal(ionCount(be),
+                 vapply(test_df$intensity, sum, numeric(1)))
+})
