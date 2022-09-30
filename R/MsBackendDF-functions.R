@@ -67,3 +67,37 @@
         slot(x, "peaksDataFrame", check = FALSE) <- x@peaksDataFrame[i]
     x
 }
+
+#' Helper function to combine/concatenate backends that base on
+#' [MsBackendDF()].
+#'
+#' @param objects `list` of `MsBackend` objects. Note that this function does
+#'     not expect **empty** objects!
+#'
+#' @return [MsBackend()] object with combined content.
+#'
+#' @author Johannes Rainer
+#'
+#' @importFrom MsCoreUtils vapply1c rbindFill
+#'
+#' @noRd
+.df_combine <- function(objects) {
+    if (length(objects) == 1)
+        return(objects[[1]])
+    if (!all(vapply1c(objects, class) == class(objects[[1]])))
+        stop("Can only merge backends of the same type: ", class(objects[[1]]))
+    res <- objects[[1]]
+    pv <- peaksVariables(res)
+    for (i in 2:length(objects)) {
+        res@spectraData <- rbindFill(res@spectraData, objects[[i]]@spectraData)
+        pv2 <- peaksVariables(objects[[i]])
+        if (length(pv) == length(pv2) && all(pv == pv2)) {
+            res@peaksData <- c(res@peaksData, objects[[i]]@peaksData)
+            res@peaksDataFrame <- c(res@peaksDataFrame,
+                                    objects[[i]]@peaksDataFrame)
+        } else
+            stop("Provided objects have different sets of peak variables. ",
+                 "Combining such objects is currently not supported.")
+    }
+    res
+}

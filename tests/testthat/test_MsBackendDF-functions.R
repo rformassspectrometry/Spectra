@@ -105,3 +105,43 @@ test_that(".df_subset works", {
     res <- .df_subset(be, c(3, 1))
     expect_equal(res$peak_anno, vals[c(3, 1)])
 })
+
+test_that(".df_combine works", {
+    be <- new("MsBackendDF")
+    be <- backendInitialize(be, test_df)
+    tmp <- list(be, be, be)
+    res <- .df_combine(tmp)
+    expect_s4_class(res, "MsBackendDF")
+    expect_equal(length(res), length(be) * 3)
+    expect_equal(res$msLevel, rep(test_df$msLevel, 3))
+    expect_equal(res@peaksData[1:3], be@peaksData[1:3])
+    expect_equal(res@peaksData[4:6], be@peaksData[1:3])
+    expect_equal(res@peaksData[7:9], be@peaksData[1:3])
+
+    ## With empty peak matrix
+    df2 <- data.frame(msLevel = c(2L, 1L), rtime = c(1.2, 1.4))
+    be2 <- backendInitialize(be, df2)
+    res <- .df_combine(list(be, be2))
+    expect_s4_class(res, "MsBackendDF")
+    expect_equal(length(res), 5)
+    expect_equal(res$msLevel, c(test_df$msLevel, df2$msLevel))
+    expect_equal(res$rtime, c(NA, NA, NA, 1.2, 1.4))
+    expect_equal(res@peaksData[1:3], be@peaksData[1:3])
+    expect_equal(res@peaksData[4:5], be2@peaksData[1:2])
+
+    ## With peaksDataFrame
+    be$peak_ann <- list(letters[1:3], letters[1:2], letters[1:4])
+    expect_error(.df_combine(list(be, be2)), "peak variables")
+    res <- .df_combine(list(be, be))
+    expect_s4_class(res, "MsBackendDF")
+    expect_equal(length(res), length(be) * 2)
+    expect_equal(res$msLevel, rep(test_df$msLevel, 2))
+    expect_equal(res@peaksData[1:3], be@peaksData[1:3])
+    expect_equal(res@peaksData[4:6], be@peaksData[1:3])
+    expect_equal(res@peaksDataFrame[1:3], be@peaksDataFrame[1:3])
+    expect_equal(res@peaksDataFrame[4:6], be@peaksDataFrame[1:3])
+
+    be3 <- new("MsBackendDataFrame")
+    be3 <- backendInitialize(be3, test_df)
+    expect_error(.df_combine(list(be, be3)), "same type")
+})

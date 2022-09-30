@@ -759,3 +759,20 @@ test_that("spectraNames,spectraNames<-,MsBackendDF works", {
 
     expect_error(spectraNames(be) <- 1, "length")
 })
+
+test_that("backendMerge,MsBackendDF works", {
+    be <- new("MsBackendDF")
+    tmp <- list(be, be, be)
+    res <- backendMerge(tmp)
+    expect_equal(be, res)
+
+    ## With empty one in between.
+    be2 <- backendInitialize(be, test_df)
+    res <- backendMerge(list(be2, be, be2))
+    expect_s4_class(res, "MsBackendDF")
+    expect_true(length(res) == 6)
+    expect_equal(res[1:3], be2)
+    expect_equal(res$msLevel[4:6], be2$msLevel)
+    expect_equal(res$mz[4:6], be2$mz)
+    expect_equal(res$intensity[4:6], be2$intensity)
+})

@@ -107,16 +107,16 @@ setMethod("backendInitialize", signature = "MsBackendDF",
               object
           })
 
-## #' @rdname hidden_aliases
-## setMethod("backendMerge", "MsBackendDF", function(object, ...) {
-##     object <- unname(c(object, ...))
-##     not_empty <- lengths(object) > 0
-##     if (any(not_empty))
-##         res <- .combine_backend_data_frame(object[not_empty])
-##     else res <- object[[1L]]
-##     validObject(res)
-##     res
-## })
+#' @rdname hidden_aliases
+setMethod("backendMerge", "MsBackendDF", function(object, ...) {
+    object <- unname(c(object, ...))
+    not_empty <- lengths(object) > 0
+    if (any(not_empty))
+        res <- .df_combine(object[not_empty])
+    else res <- object[[1L]]
+    validObject(res)
+    res
+})
 
 ## Data accessors
 

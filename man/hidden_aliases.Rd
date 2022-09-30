@@ -30,6 +30,7 @@
 \alias{setBackend}
 \alias{spectrapply}
 \alias{show,MsBackendDF-method}
+\alias{backendMerge,MsBackendDF-method}
 \alias{acquisitionNum,MsBackendDF-method}
 \alias{centroided,MsBackendDF-method}
 \alias{centroided<-,MsBackendDF-method}
@@ -220,6 +221,8 @@ setBackend(object, backend, ...)
 spectrapply(object, ...)
 
 \S4method{show}{MsBackendDF}(object)
+
+\S4method{backendMerge}{MsBackendDF}(object, ...)
 
 \S4method{acquisitionNum}{MsBackendDF}(object)
 
