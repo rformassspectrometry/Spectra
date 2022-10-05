@@ -3,13 +3,13 @@ NULL
 
 #' @title Improved in-memory MS data backend
 #'
-#' @name MsBackendDF
+#' @name MsBackendMemory
 #'
 #' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
 #'
 #' @noRd
 #'
-#' @exportClass MsBackendDF
+#' @exportClass MsBackendMemory
 NULL
 
 #' - spectraData: `data.frame` with arbitrary spectra annotations.
@@ -18,7 +18,7 @@ NULL
 #'     annotations.
 #'
 #' @noRd
-setClass("MsBackendDF",
+setClass("MsBackendMemory",
          contains = "MsBackend",
          slots = c(spectraData = "data.frame",
                    peaksData = "list",
@@ -29,7 +29,7 @@ setClass("MsBackendDF",
                                readonly = FALSE,
                                version = "0.1"))
 
-setValidity("MsBackendDF", function(object) {
+setValidity("MsBackendMemory", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData)
     if (length(msg))
         return(msg)
@@ -43,7 +43,7 @@ setValidity("MsBackendDF", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("show", "MsBackendDF", function(object) {
+setMethod("show", "MsBackendMemory", function(object) {
     spd <- spectraData(object, c("msLevel", "rtime", "scanIndex"))
     cat(class(object), "with", nrow(spd), "spectra\n")
     if (nrow(spd)) {
@@ -61,7 +61,7 @@ setMethod("show", "MsBackendDF", function(object) {
 #' @importFrom IRanges NumericList
 #'
 #' @rdname MsBackend
-setMethod("backendInitialize", signature = "MsBackendDF",
+setMethod("backendInitialize", signature = "MsBackendMemory",
           function(object, data, ...) {
               if (missing(data)) data <- data.frame()
               if (is(data, "DataFrame"))
@@ -108,7 +108,7 @@ setMethod("backendInitialize", signature = "MsBackendDF",
           })
 
 #' @rdname hidden_aliases
-setMethod("backendMerge", "MsBackendDF", function(object, ...) {
+setMethod("backendMerge", "MsBackendMemory", function(object, ...) {
     object <- unname(c(object, ...))
     not_empty <- lengths(object) > 0
     if (any(not_empty))
@@ -121,19 +121,19 @@ setMethod("backendMerge", "MsBackendDF", function(object, ...) {
 ## Data accessors
 
 #' @rdname hidden_aliases
-setMethod("acquisitionNum", "MsBackendDF", function(object) {
+setMethod("acquisitionNum", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "acquisitionNum")
 })
 
 #' @rdname hidden_aliases
-setMethod("centroided", "MsBackendDF", function(object) {
+setMethod("centroided", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "centroided")
 })
 
 #' @rdname hidden_aliases
 #'
-#' @aliases centroided<-,MsBackendDF-method
-setReplaceMethod("centroided", "MsBackendDF", function(object, value) {
+#' @aliases centroided<-,MsBackendMemory-method
+setReplaceMethod("centroided", "MsBackendMemory", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)
     if (value_type && (value_len == 1L || value_len == length(object)))
@@ -145,12 +145,12 @@ setReplaceMethod("centroided", "MsBackendDF", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("collisionEnergy", "MsBackendDF", function(object) {
+setMethod("collisionEnergy", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "collisionEnergy")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("collisionEnergy", "MsBackendDF",
+setReplaceMethod("collisionEnergy", "MsBackendMemory",
                  function(object, value) {
                      if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
@@ -161,12 +161,12 @@ setReplaceMethod("collisionEnergy", "MsBackendDF",
                  })
 
 #' @rdname hidden_aliases
-setMethod("dataOrigin", "MsBackendDF", function(object) {
+setMethod("dataOrigin", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "dataOrigin")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("dataOrigin", "MsBackendDF", function(object, value) {
+setReplaceMethod("dataOrigin", "MsBackendMemory", function(object, value) {
     if (!is.character(value) || length(value) != length(object))
         stop("'value' has to be a 'character' of length ", length(object))
     object@spectraData$dataOrigin <- as.character(value)
@@ -175,12 +175,12 @@ setReplaceMethod("dataOrigin", "MsBackendDF", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("dataStorage", "MsBackendDF", function(object) {
+setMethod("dataStorage", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "dataStorage")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("dataStorage", "MsBackendDF", function(object, value) {
+setReplaceMethod("dataStorage", "MsBackendMemory", function(object, value) {
     if (!is.character(value) || length(value) != length(object))
         stop("'value' has to be a 'character' of length ", length(object))
     object@spectraData$dataStorage <- as.character(value)
@@ -189,7 +189,7 @@ setReplaceMethod("dataStorage", "MsBackendDF", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("intensity", "MsBackendDF", function(object) {
+setMethod("intensity", "MsBackendMemory", function(object) {
     if (length(object)) {
         NumericList(.df_pdata_column(object@peaksData, "intensity"),
                     compress = FALSE)
@@ -197,7 +197,7 @@ setMethod("intensity", "MsBackendDF", function(object) {
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("intensity", "MsBackendDF", function(object, value) {
+setReplaceMethod("intensity", "MsBackendMemory", function(object, value) {
     if (!length(object))
         return(object)
     if (!(is.list(value) || inherits(value, "NumericList")))
@@ -224,22 +224,22 @@ setReplaceMethod("intensity", "MsBackendDF", function(object, value) {
 
 #' @rdname hidden_aliases
 #' @importFrom MsCoreUtils vapply1d
-setMethod("ionCount", "MsBackendDF", function(object) {
+setMethod("ionCount", "MsBackendMemory", function(object) {
     vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
 #' @rdname hidden_aliases
-setMethod("isEmpty", "MsBackendDF", function(x) {
+setMethod("isEmpty", "MsBackendMemory", function(x) {
     lengths(intensity(x)) == 0
 })
 
 #' @rdname hidden_aliases
-setMethod("isolationWindowLowerMz", "MsBackendDF", function(object) {
+setMethod("isolationWindowLowerMz", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "isolationWindowLowerMz")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("isolationWindowLowerMz", "MsBackendDF",
+setReplaceMethod("isolationWindowLowerMz", "MsBackendMemory",
                  function(object, value) {
                      if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
@@ -251,12 +251,12 @@ setReplaceMethod("isolationWindowLowerMz", "MsBackendDF",
                  })
 
 #' @rdname hidden_aliases
-setMethod("isolationWindowTargetMz", "MsBackendDF", function(object) {
+setMethod("isolationWindowTargetMz", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "isolationWindowTargetMz")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("isolationWindowTargetMz", "MsBackendDF",
+setReplaceMethod("isolationWindowTargetMz", "MsBackendMemory",
                  function(object, value) {
                      if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
@@ -268,12 +268,12 @@ setReplaceMethod("isolationWindowTargetMz", "MsBackendDF",
                  })
 
 #' @rdname hidden_aliases
-setMethod("isolationWindowUpperMz", "MsBackendDF", function(object) {
+setMethod("isolationWindowUpperMz", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "isolationWindowUpperMz")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("isolationWindowUpperMz", "MsBackendDF",
+setReplaceMethod("isolationWindowUpperMz", "MsBackendMemory",
                  function(object, value) {
                      if (!is.numeric(value) || length(value) != length(object))
                          stop("'value' has to be a 'numeric' of length ",
@@ -285,24 +285,24 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackendDF",
                  })
 
 #' @rdname hidden_aliases
-setMethod("length", "MsBackendDF", function(x) {
+setMethod("length", "MsBackendMemory", function(x) {
     nrow(x@spectraData)
 })
 
 #' @rdname hidden_aliases
-setMethod("lengths", "MsBackendDF", function(x, use.names = FALSE) {
+setMethod("lengths", "MsBackendMemory", function(x, use.names = FALSE) {
     if (length(x))
-        lengths(x@peaksData) / ncol(x@peaksData[[1L]])
+        as.integer(lengths(x@peaksData) / ncol(x@peaksData[[1L]]))
     else integer()
 })
 
 #' @rdname hidden_aliases
-setMethod("msLevel", "MsBackendDF", function(object, ...) {
+setMethod("msLevel", "MsBackendMemory", function(object, ...) {
     .get_column(object@spectraData, "msLevel")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("msLevel", "MsBackendDF", function(object, value) {
+setReplaceMethod("msLevel", "MsBackendMemory", function(object, value) {
     if (!is.integer(value) && is.numeric(value))
         value <- as.integer(value)
     if (!is.integer(value) || length(value) != length(object))
@@ -313,7 +313,7 @@ setReplaceMethod("msLevel", "MsBackendDF", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("mz", "MsBackendDF", function(object) {
+setMethod("mz", "MsBackendMemory", function(object) {
     if (length(object)) {
         NumericList(.df_pdata_column(object@peaksData, "mz"),
                     compress = FALSE)
@@ -321,7 +321,7 @@ setMethod("mz", "MsBackendDF", function(object) {
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("mz", "MsBackendDF", function(object, value) {
+setReplaceMethod("mz", "MsBackendMemory", function(object, value) {
     if (!length(object))
         return(object)
     if (!(is.list(value) || inherits(value, "NumericList")))
@@ -347,7 +347,7 @@ setReplaceMethod("mz", "MsBackendDF", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksData", "MsBackendDF", function(object,
+setMethod("peaksData", "MsBackendMemory", function(object,
                                                columns = c("mz", "intensity")) {
     if (length(object)) {
         if (!all(columns %in% peaksVariables(object)))
@@ -376,7 +376,7 @@ setMethod("peaksData", "MsBackendDF", function(object,
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("peaksData", "MsBackendDF", function(object, value) {
+setReplaceMethod("peaksData", "MsBackendMemory", function(object, value) {
     if (length(object)) {
         if (!(is.list(value) || inherits(value, "SimpleList")))
             stop("'value' has to be a list-like object")
@@ -410,12 +410,12 @@ setReplaceMethod("peaksData", "MsBackendDF", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("polarity", "MsBackendDF", function(object) {
+setMethod("polarity", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "polarity")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("polarity", "MsBackendDF", function(object, value) {
+setReplaceMethod("polarity", "MsBackendMemory", function(object, value) {
     value_len <- length(value)
     value_type <- is.numeric(value)
     if (value_type && (value_len == 1L || value_len == length(object)))
@@ -427,32 +427,32 @@ setReplaceMethod("polarity", "MsBackendDF", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("precScanNum", "MsBackendDF", function(object) {
+setMethod("precScanNum", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "precScanNum")
 })
 
 #' @rdname hidden_aliases
-setMethod("precursorCharge", "MsBackendDF", function(object) {
+setMethod("precursorCharge", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "precursorCharge")
 })
 
 #' @rdname hidden_aliases
-setMethod("precursorIntensity", "MsBackendDF", function(object) {
+setMethod("precursorIntensity", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "precursorIntensity")
 })
 
 #' @rdname hidden_aliases
-setMethod("precursorMz", "MsBackendDF", function(object) {
+setMethod("precursorMz", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "precursorMz")
 })
 
 #' @rdname hidden_aliases
-setMethod("rtime", "MsBackendDF", function(object) {
+setMethod("rtime", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "rtime")
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("rtime", "MsBackendDF", function(object, value) {
+setReplaceMethod("rtime", "MsBackendMemory", function(object, value) {
     if (!is.numeric(value) || length(value) != length(object))
         stop("'value' has to be a 'numeric' of length ", length(object))
     object@spectraData$rtime <- as.numeric(value)
@@ -461,39 +461,58 @@ setReplaceMethod("rtime", "MsBackendDF", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("scanIndex", "MsBackendDF", function(object) {
+setMethod("scanIndex", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "scanIndex")
 })
 
-## #' @rdname hidden_aliases
-## setMethod("selectSpectraVariables", "MsBackendDF",
-##           function(object, spectraVariables = spectraVariables(object)) {
-##               if (!all(spectraVariables %in% spectraVariables(object)))
-##                   stop("Spectra variables ",
-##                        paste(spectraVariables[!(spectraVariables %in%
-##                                                 spectraVariables(object))],
-##                              collapse = ", "), " not available")
-##               keep <- spectraVariables[spectraVariables %in%
-##                                             colnames(object@spectraData)]
-##               if (length(keep))
-##                   object@spectraData <- object@spectraData[, keep,
-##                                                            drop = FALSE]
-##               msg <- .valid_spectra_data_required_columns(object@spectraData)
-##               if (length(msg))
-##                   stop(msg)
-##               validObject(object)
-##               object
-## })
+#' @rdname hidden_aliases
+setMethod("selectSpectraVariables", "MsBackendMemory",
+          function(object, spectraVariables = spectraVariables(object)) {
+              if (!all(spectraVariables %in% spectraVariables(object)))
+                  stop("Spectra variables ",
+                       paste(spectraVariables[!(spectraVariables %in%
+                                                spectraVariables(object))],
+                             collapse = ", "), " not available")
+              ## spectraData
+              keep <- intersect(spectraVariables, colnames(object@spectraData))
+              object@spectraData <- object@spectraData[, keep, drop = FALSE]
+              ## peaksData
+              if (length(object@peaksData)) {
+                  have <- colnames(object@peaksData[[1L]])
+                  keep <- intersect(spectraVariables, have)
+                  if (length(keep) < length(have))
+                      object@peaksData <- lapply(object@peaksData, function(z)
+                          z[, keep, drop = FALSE])
+              }
+              ## peaksDataFrame
+              if (length(object@peaksDataFrame)) {
+                  have <- colnames(object@peaksDataFrame[[1L]])
+                  keep <- intersect(spectraVariables, have)
+                  if (!length(keep)) {
+                      object@peaksDataFrame <- list()
+                  } else {
+                      if (length(keep) < length(have))
+                          object@peaksDataFrame <- lapply(
+                              object@peaksDataFrame, function(z)
+                                  z[, keep, drop = FALSE])
+                  }
+              }
+              msg <- .valid_spectra_data_required_columns(object@spectraData)
+              if (length(msg))
+                  stop(msg)
+              validObject(object)
+              object
+})
 
 #' @rdname hidden_aliases
-setMethod("smoothed", "MsBackendDF", function(object) {
+setMethod("smoothed", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "smoothed")
 })
 
 #' @rdname hidden_aliases
 #'
-#' @aliases smoothed<-,MsBackendDF-method
-setReplaceMethod("smoothed", "MsBackendDF", function(object, value) {
+#' @aliases smoothed<-,MsBackendMemory-method
+setReplaceMethod("smoothed", "MsBackendMemory", function(object, value) {
     value_len <- length(value)
     value_type <- is.logical(value)
     if (value_type && (value_len == 1L || value_len == length(object)))
@@ -512,7 +531,7 @@ setReplaceMethod("smoothed", "MsBackendDF", function(object, value) {
 #'
 #' @importMethodsFrom S4Vectors lapply
 setMethod(
-    "spectraData", "MsBackendDF",
+    "spectraData", "MsBackendMemory",
     function(object, columns = spectraVariables(object)) {
         as(.df_spectra_data(object, columns), "DataFrame")
     })
@@ -520,36 +539,36 @@ setMethod(
 #' @rdname hidden_aliases
 #'
 #' @note: this replaces **all** the data in the backend.
-setReplaceMethod("spectraData", "MsBackendDF", function(object, value) {
+setReplaceMethod("spectraData", "MsBackendMemory", function(object, value) {
     if (inherits(value, "DataFrame")) {
         if (length(object) && nrow(value) != length(object))
             stop("'value' has to be a 'DataFrame' with ",
                  length(object), " rows.")
-        object <- backendInitialize(new("MsBackendDF"), value)
+        object <- backendInitialize(new("MsBackendMemory"), value)
     } else stop("'value' is expected to be a 'DataFrame'")
     object
 })
 
 #' @rdname hidden_aliases
-setMethod("spectraNames", "MsBackendDF", function(object) {
+setMethod("spectraNames", "MsBackendMemory", function(object) {
     rownames(object@spectraData)
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("spectraNames", "MsBackendDF", function(object, value) {
+setReplaceMethod("spectraNames", "MsBackendMemory", function(object, value) {
     rownames(object@spectraData) <- value
     validObject(object)
     object
 })
 
 #' @rdname hidden_aliases
-setMethod("spectraVariables", "MsBackendDF", function(object) {
+setMethod("spectraVariables", "MsBackendMemory", function(object) {
     unique(c(names(.SPECTRA_DATA_COLUMNS), colnames(object@spectraData),
              peaksVariables(object)))
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksVariables", "MsBackendDF", function(object) {
+setMethod("peaksVariables", "MsBackendMemory", function(object) {
     if (length(object)) {
         pv <- colnames(object@peaksData[[1L]])
         if (length(object@peaksDataFrame))
@@ -558,22 +577,22 @@ setMethod("peaksVariables", "MsBackendDF", function(object) {
     } else c("mz", "intensity")
 })
 
-## #' @rdname hidden_aliases
-## setMethod("tic", "MsBackendDF", function(object, initial = TRUE) {
-##     if (initial) {
-##         if (any(colnames(object@spectraData) == "totIonCurrent"))
-##             .get_column(object@spectraData, "totIonCurrent")
-##         else rep(NA_real_, times = length(object))
-##     } else vapply1d(intensity(object), sum, na.rm = TRUE)
-## })
+#' @rdname hidden_aliases
+setMethod("tic", "MsBackendMemory", function(object, initial = TRUE) {
+    if (initial) {
+        if (any(colnames(object@spectraData) == "totIonCurrent"))
+            .get_column(object@spectraData, "totIonCurrent")
+        else rep(NA_real_, times = length(object))
+    } else vapply1d(intensity(object), sum, na.rm = TRUE)
+})
 
 #' @rdname hidden_aliases
-setMethod("$", "MsBackendDF", function(x, name) {
+setMethod("$", "MsBackendMemory", function(x, name) {
     .df_spectra_data(x, name)[, 1]
 })
 
 #' @rdname hidden_aliases
-setReplaceMethod("$", "MsBackendDF", function(x, name, value) {
+setReplaceMethod("$", "MsBackendMemory", function(x, name, value) {
     if (is.list(value) || inherits(value, "SimpleList")) {
         ## Check if lengths matches those of peaksData.
         lns <- lengths(x)
@@ -614,19 +633,19 @@ setReplaceMethod("$", "MsBackendDF", function(x, name, value) {
 #' @importFrom MsCoreUtils i2index
 #'
 #' @rdname hidden_aliases
-setMethod("[", "MsBackendDF", function(x, i, j, ..., drop = FALSE) {
+setMethod("[", "MsBackendMemory", function(x, i, j, ..., drop = FALSE) {
     .df_subset(x, i)
 })
 
 #' @rdname hidden_aliases
-setMethod("split", "MsBackendDF", function(x, f, drop = FALSE, ...) {
+setMethod("split", "MsBackendMemory", function(x, f, drop = FALSE, ...) {
     if (!is.factor(f))
         f <- as.factor(f)
     lapply(split(seq_along(x), f, ...), function(i) .df_subset(x, i))
 })
 
 #' @rdname hidden_aliases
-setMethod("filterAcquisitionNum", "MsBackendDF",
+setMethod("filterAcquisitionNum", "MsBackendMemory",
           function(object, n = integer(), dataStorage = character(),
                    dataOrigin = character()) {
     if (!length(n) || !length(object)) return(object)

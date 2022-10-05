@@ -1,11 +1,13 @@
 test_that("Spectra,ANY works", {
     df <- DataFrame()
     res <- Spectra(df)
+    expect_s4_class(res@backend, "MsBackendMemory")
     expect_true(validObject(res))
     expect_true(length(res) == 0)
 
     df <- DataFrame(msLevel = c(1L, 2L))
     res <- Spectra(df)
+    expect_s4_class(res@backend, "MsBackendMemory")
     expect_identical(msLevel(res), c(1L, 2L))
     expect_true(length(res) == 2)
 
@@ -685,15 +687,15 @@ test_that("spectraData<-,Spectra works", {
 
 test_that("spectraNames,spectraNames<-,Spectra works", {
     sps <- Spectra()
-    expect_identical(spectraNames(sps), NULL)
+    expect_true(length(spectraNames(sps)) == 0)
 
     sps <- Spectra(DataFrame(msLevel = c(1L, 1L)))
-    expect_identical(spectraNames(sps), NULL)
+    expect_identical(spectraNames(sps), as.character(1:2))
 
     spectraNames(sps) <- c("a", "b")
     expect_identical(spectraNames(sps), c("a", "b"))
 
-    expect_error(spectraNames(sps) <- 1, "invalid rownames length")
+    expect_error(spectraNames(sps) <- 1, "invalid")
 })
 
 test_that("spectraVariables,Spectra works", {

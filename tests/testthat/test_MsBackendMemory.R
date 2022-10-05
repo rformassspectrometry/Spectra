@@ -2,8 +2,8 @@ test_df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
 test_df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
 test_df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
 
-test_that("backendInitialize,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("backendInitialize,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_true(validObject(be))
 
     be <- backendInitialize(be, data = DataFrame(msLevel = 2L))
@@ -60,13 +60,13 @@ test_that("backendInitialize,MsBackendDF works", {
                                  yet_another_col = letters[3:6])))
 })
 
-test_that("show,MsBackendDF works", {
-    be <- new("MsBackendDF")
-    expect_output(show(be), "MsBackendDF")
+test_that("show,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
+    expect_output(show(be), "MsBackendMemory")
 })
 
-test_that("dataStorage,dataStorage<-MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("dataStorage,dataStorage<-MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(dataStorage(be), character())
 
     be <- backendInitialize(be, test_df)
@@ -79,15 +79,15 @@ test_that("dataStorage,dataStorage<-MsBackendDF works", {
     expect_error(dataStorage(be) <- 1:3, "'character'")
 })
 
-test_that("length,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("length,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_true(length(be) == 0)
     be <- backendInitialize(be, test_df)
     expect_true(length(be) == 3)
 })
 
-test_that("spectraVariables,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("spectraVariables,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     res <- spectraVariables(be)
     expect_equal(res, names(coreSpectraVariables()))
 
@@ -98,8 +98,8 @@ test_that("spectraVariables,MsBackendDF works", {
     expect_equal(res, c(names(coreSpectraVariables()), "new_col"))
 })
 
-test_that("peaksVariables,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("peaksVariables,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     res <- peaksVariables(be)
     expect_equal(res, c("mz", "intensity"))
 
@@ -115,16 +115,16 @@ test_that("peaksVariables,MsBackendDF works", {
     expect_equal(res, c("mz", "peak_ann"))
 })
 
-test_that("lengths,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("lengths,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(lengths(be), integer())
 
     be <- backendInitialize(be, test_df)
     expect_equal(lengths(be), c(3L, 2L, 4L))
 })
 
-test_that("mz,mz<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("mz,mz<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(mz(be), IRanges::NumericList(compress = FALSE))
 
     be <- backendInitialize(be, test_df)
@@ -147,8 +147,8 @@ test_that("mz,mz<-,MsBackendDF works", {
     expect_equal(colnames(be@peaksData[[1L]]), c("intensity", "mz"))
 })
 
-test_that("intensity,intensity<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("intensity,intensity<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(intensity(be), IRanges::NumericList(compress = FALSE))
 
     be <- backendInitialize(be, test_df)
@@ -172,8 +172,8 @@ test_that("intensity,intensity<-,MsBackendDF works", {
     expect_equal(colnames(be@peaksData[[1L]]), c("mz", "intensity"))
 })
 
-test_that("spectraData,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("spectraData,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
 
     res <- spectraData(be)
     expect_s4_class(res, "DataFrame")
@@ -227,8 +227,8 @@ test_that("spectraData,MsBackendDF works", {
     expect_equal(res$pk_anno, tmp$pk_anno)
 })
 
-test_that("spectraData<-,MsBackendDF works", {
-    be <- backendInitialize(new("MsBackendDF"), test_df)
+test_that("spectraData<-,MsBackendMemory works", {
+    be <- backendInitialize(new("MsBackendMemory"), test_df)
 
     newDF <- test_df
     newDF$rtime <- 1:3
@@ -242,8 +242,8 @@ test_that("spectraData<-,MsBackendDF works", {
     expect_error(spectraData(be) <- "a", "DataFrame")
 })
 
-test_that("peaksData,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("peaksData,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     res <- peaksData(be)
     expect_equal(res, list())
 
@@ -315,8 +315,8 @@ test_that("peaksData,MsBackendDF works", {
     expect_equal(res[[3L]], cbind(pk_ann = tmp$pk_ann[[3L]]))
 })
 
-test_that("peaksData<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("peaksData<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     peaksData(be) <- list()
 
     be <- backendInitialize(be, test_df)
@@ -349,8 +349,8 @@ test_that("peaksData<-,MsBackendDF works", {
                                          data.frame(add_col = 100)))
 })
 
-test_that("$,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("$,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(be$msLevel, integer())
     expect_equal(be$rtime, numeric())
     expect_error(be$other, "are not available")
@@ -368,8 +368,8 @@ test_that("$,MsBackendDF works", {
     expect_equal(be$peak_ann, tmp$peak_ann)
 })
 
-test_that("$<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("$<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
 
     expect_error(be$rtime <- 1.3, "data has 0")
     expect_error(be$mz <- list(1:3), "has to match")
@@ -418,8 +418,8 @@ test_that("$<-,MsBackendDF works", {
     expect_equal(be$add_anno, vals)
 })
 
-test_that("[,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("[,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     df <- data.frame(scanIndex = 1:2, a = "a", b = "b")
     be <- backendInitialize(be, df)
     res <- be[1]
@@ -457,29 +457,29 @@ test_that("[,MsBackendDF works", {
     expect_equal(res@spectraData$file, c("b", "a"))
 })
 
-test_that("split,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("split,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     be <- backendInitialize(be, test_df)
     f <- factor(c("b", "a", "a"))
     res <- split(be, f)
     expect_true(is.list(res))
     expect_true(length(res) == 2)
-    expect_s4_class(res[[1L]], "MsBackendDF")
-    expect_s4_class(res[[2L]], "MsBackendDF")
+    expect_s4_class(res[[1L]], "MsBackendMemory")
+    expect_s4_class(res[[2L]], "MsBackendMemory")
     expect_equal(res[[1L]]$scanIndex, c(5, 6))
     expect_equal(res[[2L]]$scanIndex, c(4))
 
     res <- split(be, factor(c("b", "a", "a"), levels = c("b", "a")))
     expect_true(is.list(res))
     expect_true(length(res) == 2)
-    expect_s4_class(res[[1L]], "MsBackendDF")
-    expect_s4_class(res[[2L]], "MsBackendDF")
+    expect_s4_class(res[[1L]], "MsBackendMemory")
+    expect_s4_class(res[[2L]], "MsBackendMemory")
     expect_equal(res[[2L]]$scanIndex, c(5, 6))
     expect_equal(res[[1L]]$scanIndex, c(4))
 })
 
-test_that("filterAcquisitionNum,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("filterAcquisitionNum,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(be, filterAcquisitionNum(be, n = 4))
 
     df <- data.frame(acquisitionNum = c(1L, 2L, 3L, 2L, 3L, 1L, 2L, 4L),
@@ -499,8 +499,8 @@ test_that("filterAcquisitionNum,MsBackendDF works", {
     expect_equal(filterAcquisitionNum(be), be)
 })
 
-test_that("dataOrigin,dataOrigin<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("dataOrigin,dataOrigin<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(dataOrigin(be), character())
 
     be <- backendInitialize(be, test_df)
@@ -517,8 +517,8 @@ test_that("dataOrigin,dataOrigin<-,MsBackendDF works", {
     expect_equal(dataOrigin(be), as.character(1:3))
 })
 
-test_that("collisionEnergy,collisionEnergy<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("collisionEnergy,collisionEnergy<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(collisionEnergy(be), numeric())
 
     be <- backendInitialize(be, test_df)
@@ -531,8 +531,8 @@ test_that("collisionEnergy,collisionEnergy<-,MsBackendDF works", {
     expect_error(collisionEnergy(be) <- c("a", "b", "c"), "length 3")
 })
 
-test_that("acquisitionNum,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("acquisitionNum,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(acquisitionNum(be), integer())
 
     be <- backendInitialize(be, test_df)
@@ -541,8 +541,8 @@ test_that("acquisitionNum,MsBackendDF works", {
     expect_equal(acquisitionNum(be), 1:3)
 })
 
-test_that("centroided,centroided<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("centroided,centroided<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(centroided(be), logical())
 
     be <- backendInitialize(be, test_df)
@@ -558,8 +558,8 @@ test_that("centroided,centroided<-,MsBackendDF works", {
     expect_equal(centroided(be), rep(FALSE, 3))
 })
 
-test_that("ionCount,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("ionCount,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_equal(ionCount(be), numeric())
 
     be <- backendInitialize(be, test_df)
@@ -567,16 +567,16 @@ test_that("ionCount,MsBackendDF works", {
                  vapply(test_df$intensity, sum, numeric(1)))
 })
 
-test_that("isEmpty,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("isEmpty,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(isEmpty(be), logical(0))
 
     be <- backendInitialize(be, test_df)
     expect_identical(isEmpty(be), c(FALSE, FALSE, FALSE))
 })
 
-test_that("isolationWindowLowerMz,isolationWindowLowerMz<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("isolationWindowLowerMz,isolationWindowLowerMz<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(isolationWindowLowerMz(be), numeric())
 
     be <- backendInitialize(be, test_df)
@@ -588,8 +588,8 @@ test_that("isolationWindowLowerMz,isolationWindowLowerMz<-,MsBackendDF works", {
     expect_error(isolationWindowLowerMz(be) <- letters[1:3], "numeric")
 })
 
-test_that("isolationWindowTargetMz,isolationWindowTargetMz<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("isolationWindowTargetMz,isolationWindowTargetMz<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(isolationWindowTargetMz(be), numeric())
 
     be <- backendInitialize(be, test_df)
@@ -601,8 +601,8 @@ test_that("isolationWindowTargetMz,isolationWindowTargetMz<-,MsBackendDF works",
     expect_error(isolationWindowTargetMz(be) <- letters[1:3], "numeric")
 })
 
-test_that("isolationWindowUpperMz,isolationWindowUpperMz<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("isolationWindowUpperMz,isolationWindowUpperMz<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(isolationWindowUpperMz(be), numeric())
 
     be <- backendInitialize(be, test_df)
@@ -614,8 +614,8 @@ test_that("isolationWindowUpperMz,isolationWindowUpperMz<-,MsBackendDF works", {
     expect_error(isolationWindowUpperMz(be) <- letters[1:3], "numeric")
 })
 
-test_that("msLevel,msLevel<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("msLevel,msLevel<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(msLevel(be), integer())
 
     be <- backendInitialize(be, test_df)
@@ -633,8 +633,8 @@ test_that("msLevel,msLevel<-,MsBackendDF works", {
     expect_error(msLevel(be) <- letters[1:3], "integer")
 })
 
-test_that("polarity,polarity<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("polarity,polarity<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(polarity(be), integer())
 
     be <- backendInitialize(be, test_df)
@@ -653,8 +653,8 @@ test_that("polarity,polarity<-,MsBackendDF works", {
     expect_error(polarity(be) <- letters[1:3], "integer")
 })
 
-test_that("precScanNum,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("precScanNum,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(precScanNum(be), integer())
 
     be <- backendInitialize(be, test_df)
@@ -665,8 +665,8 @@ test_that("precScanNum,MsBackendDF works", {
     expect_identical(be$precScanNum, 1:3)
 })
 
-test_that("precursorCharge,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("precursorCharge,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(precursorCharge(be), integer())
 
     be <- backendInitialize(be, test_df)
@@ -677,8 +677,8 @@ test_that("precursorCharge,MsBackendDF works", {
     expect_identical(be$precursorCharge, 1:3)
 })
 
-test_that("precursorIntensity,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("precursorIntensity,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(precursorIntensity(be), numeric())
 
     be <- backendInitialize(be, test_df)
@@ -689,8 +689,8 @@ test_that("precursorIntensity,MsBackendDF works", {
     expect_identical(be$precursorIntensity, c(12.2, 12.5, 15.2))
 })
 
-test_that("precursorMz,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("precursorMz,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(precursorMz(be), numeric())
 
     be <- backendInitialize(be, test_df)
@@ -701,8 +701,8 @@ test_that("precursorMz,MsBackendDF works", {
     expect_identical(be$precursorMz, c(1.2, 1.3, 1.4))
 })
 
-test_that("rtime,rtime<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("rtime,rtime<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(rtime(be), numeric())
 
     be <- backendInitialize(be, test_df)
@@ -720,8 +720,8 @@ test_that("rtime,rtime<-,MsBackendDF works", {
     expect_error(rtime(be) <- letters[1:3], "numeric")
 })
 
-test_that("scanIndex,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("scanIndex,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(scanIndex(be), integer())
 
     be <- backendInitialize(be, test_df)
@@ -732,8 +732,8 @@ test_that("scanIndex,MsBackendDF works", {
     expect_identical(be$scanIndex, 1:3)
 })
 
-test_that("smoothed,smoothed<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("smoothed,smoothed<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(smoothed(be), logical())
 
     be <- backendInitialize(be, test_df)
@@ -748,8 +748,8 @@ test_that("smoothed,smoothed<-,MsBackendDF works", {
     expect_error(smoothed(be) <- letters[1:3], "logical")
 })
 
-test_that("spectraNames,spectraNames<-,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("spectraNames,spectraNames<-,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     expect_identical(spectraNames(be), character())
 
     be <- backendInitialize(be, test_df)
@@ -760,8 +760,8 @@ test_that("spectraNames,spectraNames<-,MsBackendDF works", {
     expect_error(spectraNames(be) <- 1, "length")
 })
 
-test_that("backendMerge,MsBackendDF works", {
-    be <- new("MsBackendDF")
+test_that("backendMerge,MsBackendMemory works", {
+    be <- new("MsBackendMemory")
     tmp <- list(be, be, be)
     res <- backendMerge(tmp)
     expect_equal(be, res)
@@ -769,10 +769,49 @@ test_that("backendMerge,MsBackendDF works", {
     ## With empty one in between.
     be2 <- backendInitialize(be, test_df)
     res <- backendMerge(list(be2, be, be2))
-    expect_s4_class(res, "MsBackendDF")
+    expect_s4_class(res, "MsBackendMemory")
     expect_true(length(res) == 6)
     expect_equal(res[1:3], be2)
     expect_equal(res$msLevel[4:6], be2$msLevel)
     expect_equal(res$mz[4:6], be2$mz)
     expect_equal(res$intensity[4:6], be2$intensity)
+})
+
+test_that("selectSpectraVariables,MsBackendMemory works", {
+    be <- MsBackendMemory()
+    expect_error(selectSpectraVariables(be, c("msLevel", "other")),
+                 "not available")
+
+    be <- backendInitialize(be, test_df)
+    expect_error(selectSpectraVariables(be, c("msLevel")), "dataStorage")
+    res <- selectSpectraVariables(be, c("msLevel", "dataStorage"))
+    expect_equal(colnames(res@spectraData), c("msLevel", "dataStorage"))
+    expect_equal(peaksVariables(res), NULL)
+
+    res <- selectSpectraVariables(be, c("mz", "dataStorage"))
+    expect_equal(colnames(res@spectraData), c("dataStorage"))
+    expect_equal(peaksVariables(res), "mz")
+
+    be$peak_anno <- list(c("a", "", "b"), c("a", "b"), c("a", "b", "c", "d"))
+    res <- selectSpectraVariables(be, c("msLevel", "dataStorage",
+                                        "mz", "intensity"))
+    expect_equal(res@peaksDataFrame, list())
+
+    be$second_col <- list(1:3, 1:2, 1:4)
+    expect_equal(peaksVariables(be), c("mz", "intensity",
+                                       "peak_anno", "second_col"))
+    res <- selectSpectraVariables(be, c("msLevel", "dataStorage",
+                                        "mz", "intensity", "second_col"))
+    expect_equal(sort(peaksVariables(res)),
+                 sort(c("mz", "intensity", "second_col")))
+})
+
+test_that("tic,MsBackendMemory works", {
+    be <- MsBackendMemory()
+    expect_equal(tic(be), numeric())
+
+    be <- backendInitialize(be, test_df)
+    expect_equal(tic(be), rep(NA_real_, 3))
+    expect_equal(tic(be, initial = FALSE)[1], sum(intensity(be)[[1L]]))
+    expect_equal(tic(be, initial = FALSE)[2], sum(intensity(be)[[2L]]))
 })

@@ -1,3 +1,10 @@
+#' @rdname MsBackend
+#'
+#' @export MsBackendMemory
+MsBackendMemory <- function() {
+    new("MsBackendMemory")
+}
+
 .df_pdata_column <- function(x, column) {
     idx <- which(colnames(x[[1L]]) == column)
     if (length(idx)) {
@@ -69,7 +76,7 @@
 }
 
 #' Helper function to combine/concatenate backends that base on
-#' [MsBackendDF()].
+#' [MsBackendMemory()].
 #'
 #' @param objects `list` of `MsBackend` objects. Note that this function does
 #'     not expect **empty** objects!

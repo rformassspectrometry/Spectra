@@ -148,13 +148,13 @@ on backends and their properties.
 
 ```{r spectra-msbackendmzr, message = FALSE}
 fls <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
-sps_sciex <- Spectra(fls, backend = MsBackendMzR())
+sps_sciex <- Spectra(fls, source = MsBackendMzR())
 sps_sciex
 ```
 
 The `Spectra` object `sps_sciex` allows now to access spectra data from 1862 MS1
 spectra and uses `MsBackendMzR` as backend (the `Spectra` object `sps` created
-in the previous code block uses the default `MsBackendDataFrame`).
+in the previous code block uses the default `MsBackendMemory`).
 
 
 ## Accessing spectrum data
@@ -250,14 +250,39 @@ pks <- peaksData(sps)
 pks[[1]]
 ```
 
-
-
 Note that we would get the same result by using the `as` method to coerce a
 `Spectra` object to a `list` or `SimpleList`:
 
 ```{r as}
 as(sps, "SimpleList")
 ```
+
+Certain backends (such as the `MsBackendMemory`) support also additional peaks
+variables. Below we define *peak annotations* for each individual peak in the
+peak matrices and assign that to a variable called `peak_anno` to the `Spectra`
+object. Importantly, for peak variables, a value needs to be assigned to each
+peak, even if it is `NA` or `empty`. In the example below we define a `list` of
+`character` vectors with arbitrary IDs/names for each peak.
+
+```{r}
+sps2 <- sps
+sps2$peak_anno <- list(c("a", NA_character_, "b", "c", "d"),
+                       c("a", "b", "c", "d", "e", "f", "g"),
+                       c("a", "b", "c", "d", "e", "f", "g", "h", "i"))
+peaksVariables(sps2)
+```
+
+We can use the `peaksData` to extract the values for these additional peak
+variable.
+
+```{r}
+## Peak annotations for the first spectrum
+peaksData(sps2, "peak_anno")[[1L]]
+## Peak annotations for the second spectrum
+peaksData(sps2, "peak_anno")[[2L]]
+```
+
+This works however **only** for `Spectra` that use a `MsBackendMemory` backend.
 
 The `spectraData` function returns a `DataFrame` with the full data for each
 spectrum (except m/z and intensity values), or with selected spectra variables
@@ -576,10 +601,10 @@ intensity(sps)
 ```
 
 Finally, for `Spectra` that use a *writeable* backend, such as the
-`MsBackendDataFrame` or `MsBackendHdf5Peaks`, it is possible to apply the
-processing queue to the peak data and write that back to the data storage with
-the `applyProcessing` function. Below we use this to make all data manipulations
-on peak data of the `sps_rep` object persistent.
+`MsBackendMemory`, `MsBackendDataFrame` or `MsBackendHdf5Peaks`, it is possible
+to apply the processing queue to the peak data and write that back to the data
+storage with the `applyProcessing` function. Below we use this to make all data
+manipulations on peak data of the `sps_rep` object persistent.
 
 ```{r applyProcessing}
 length(sps_rep@processingQueue)
@@ -903,13 +928,13 @@ In the previous sections we learned already that a `Spectra` object can use
 different backends for the actual data handling. It is also possible to
 change the backend of a `Spectra` to a different one with the `setBackend`
 function. We could for example change the (`MsBackendMzR`) backend of the
-`sps_sciex` object to a `MsBackendDataFrame` backend to enable use of the data
+`sps_sciex` object to a `MsBackendMemory` backend to enable use of the data
 even without the need to keep the original mzML files. Below we change the
-backend of `sps_sciex` to the in-memory `MsBackendDataFrame` backend.
+backend of `sps_sciex` to the in-memory `MsBackendMemory` backend.
 
 ```{r setbackend}
 print(object.size(sps_sciex), units = "Mb")
-sps_sciex <- setBackend(sps_sciex, MsBackendDataFrame())
+sps_sciex <- setBackend(sps_sciex, MsBackendMemory())
 sps_sciex
 ```
 
@@ -948,6 +973,13 @@ is a further abstraction to the *on-disk* and *in-memory* data modes from
 set of example backends but any object extending the base `MsBackend` class
 could be used instead. The default backends are:
 
+- `MsBackendMemory`: the *default* backend to store data in memory. Due to its
+  design the `MsBackendMemory` provides fast access to the peaks matrices (using
+  the `peaksData` function) and is also optimized for fast access to spectra
+  variables and subsetting. Since all data is kept in memory, this backend has a
+  relatively large memory footprint (depending on the data) and is thus not
+  suggested for very large MS experiments.
+
 - `MsBackendDataFrame`: the mass spectrometry data is stored (in-memory) in a
   `DataFrame`. Keeping the data in memory guarantees high performance but has
   also, depending on the number of mass peaks in each spectrum, a much higher
@@ -983,7 +1015,10 @@ add support for additional data types or storage options is provided below:
 - `r BiocStyle::Biocpkg("MsBackendMgf")`: support for import/export of mass
   spectrometry files in mascot generic format (MGF).
 - `r BiocStyle::Biocpkg("MsBackendMassbank")`: support for import/export and
-  access of MassBank files/databases.
+  access of MassBank files/databases while still providing acceptable
+  performance.
+- [MsBackendSql](https://rformassspectrometry.github.io/MsBackendSql): stores
+  all MS data in a SQL database and has thus a minimal memory footprint.
 - [MsBackendHmdb](https://rformassspectrometry.github.io/MsBackendHmdb):
   support for import of MS2 spectra from files in the xml-file format of the
   Human Metabolome Database (HMDB).

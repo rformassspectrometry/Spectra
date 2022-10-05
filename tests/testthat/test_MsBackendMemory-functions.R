@@ -2,6 +2,11 @@ test_df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
 test_df$mz <- list(c(1.1, 1.3, 1.5), c(4.1, 5.1), c(1.6, 1.7, 1.8, 1.9))
 test_df$intensity <- list(c(45.1, 34, 12), c(234.4, 1333), c(42.1, 34.2, 65, 6))
 
+test_that("MsBackendMemory works", {
+    res <- MsBackendMemory()
+    expect_s4_class(res, "MsBackendMemory")
+})
+
 test_that(".df_pdata_column works", {
     tmp <- list(cbind(a = 1:3, b = 2:4), cbind(a = 1:10, b = 1:10),
                 cbind(a = 2, b = 3))
@@ -35,7 +40,7 @@ test_that(".df_peaks_columns_data_frame works", {
 })
 
 test_that(".df_spectra_data works", {
-    be <- new("MsBackendDF")
+    be <- new("MsBackendMemory")
 
     res <- .df_spectra_data(be)
     expect_true(is.data.frame(res))
@@ -90,7 +95,7 @@ test_that(".df_spectra_data works", {
 })
 
 test_that(".df_subset works", {
-    be <- new("MsBackendDF")
+    be <- new("MsBackendMemory")
     expect_error(.df_subset(be, 1:3), "out of bounds")
 
     be <- backendInitialize(be, test_df)
@@ -107,11 +112,11 @@ test_that(".df_subset works", {
 })
 
 test_that(".df_combine works", {
-    be <- new("MsBackendDF")
+    be <- new("MsBackendMemory")
     be <- backendInitialize(be, test_df)
     tmp <- list(be, be, be)
     res <- .df_combine(tmp)
-    expect_s4_class(res, "MsBackendDF")
+    expect_s4_class(res, "MsBackendMemory")
     expect_equal(length(res), length(be) * 3)
     expect_equal(res$msLevel, rep(test_df$msLevel, 3))
     expect_equal(res@peaksData[1:3], be@peaksData[1:3])
@@ -122,7 +127,7 @@ test_that(".df_combine works", {
     df2 <- data.frame(msLevel = c(2L, 1L), rtime = c(1.2, 1.4))
     be2 <- backendInitialize(be, df2)
     res <- .df_combine(list(be, be2))
-    expect_s4_class(res, "MsBackendDF")
+    expect_s4_class(res, "MsBackendMemory")
     expect_equal(length(res), 5)
     expect_equal(res$msLevel, c(test_df$msLevel, df2$msLevel))
     expect_equal(res$rtime, c(NA, NA, NA, 1.2, 1.4))
@@ -133,7 +138,7 @@ test_that(".df_combine works", {
     be$peak_ann <- list(letters[1:3], letters[1:2], letters[1:4])
     expect_error(.df_combine(list(be, be2)), "peak variables")
     res <- .df_combine(list(be, be))
-    expect_s4_class(res, "MsBackendDF")
+    expect_s4_class(res, "MsBackendMemory")
     expect_equal(length(res), length(be) * 2)
     expect_equal(res$msLevel, rep(test_df$msLevel, 2))
     expect_equal(res@peaksData[1:3], be@peaksData[1:3])
