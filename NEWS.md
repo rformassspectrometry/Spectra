@@ -1,5 +1,9 @@
 # Spectra 1.7
 
+## Changes in 1.7.3
+
+- Import `spectrapply` from `ProtGenerics`.
+
 ## Changes in 1.7.2
 
 - Fix `setBackend` if provided `Spectra` is empty.

@@ -1573,6 +1573,8 @@ setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
 
 #' @rdname Spectra
 #'
+#' @importMethodsFrom ProtGenerics spectrapply
+#'
 #' @exportMethod spectrapply
 setMethod("spectrapply", "Spectra", function(object, FUN,
                                              f = as.factor(seq_along(object)),
