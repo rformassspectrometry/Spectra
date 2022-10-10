@@ -1,9 +1,13 @@
 # Spectra 1.7
 
-## Changes in 1.7.3
+## Changes in 1.7.4
 
 - Add `MsBackendMemory` backend class providing a more efficient in-memory data
   representation than `MsBackendDataFrame`.
+
+## Changes in 1.7.3
+
+- Import `spectrapply` from `ProtGenerics`.
 
 ## Changes in 1.7.2
 
