@@ -25,10 +25,10 @@ MsBackendMemory <- function() {
     if (!length(lns) && any(colnames(x) == "intensity"))
         lns <- lengths(x$intensity)
     if (length(lns)) {
-        colnames(x)[vapply(x, function(z) {
+        colnames(x)[vapply1l(x, function(z) {
             (inherits(z, "NumericList") || inherits(z, "SimpleList") ||
              is.list(z)) && all(lengths(z) == lns)
-        }, logical(1))]
+        })]
     } else character()
 }
 
