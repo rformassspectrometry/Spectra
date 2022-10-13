@@ -499,9 +499,11 @@
 #'
 #' Thus, for most use cases, the `MsBackendMemory` provides a higher
 #' performance and flexibility than the `MsBackendDataFrame` and should thus be
-#' preferred.
+#' preferred. See also issue
+#' [246](https://github.com/rformassspectrometry/Spectra/issues/246) for a
+#' performance comparison.
 #'
-#' New objects can be created with the `MsBackendMemory` and
+#' New objects can be created with the `MsBackendMemory()` and
 #' `MsBackendDataFrame()` function, respectively. The backend can be
 #' subsequently initialized with the `backendInitialize` method, taking a
 #' `DataFrame` (or `data.frame`) with the MS data as parameter. Suggested

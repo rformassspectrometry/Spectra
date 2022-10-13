@@ -52,9 +52,9 @@ NULL
 #' `Spectra` classes can be created with the `Spectra` constructor function
 #' which supports the following formats:
 #'
-#' - parameter `object` is a `DataFrame` containing the spectrum data. The
-#'   provided `backend` (by default a [MsBackendMemory-class]) will be
-#'   initialized with that data.
+#' - parameter `object` is a `data.frame` or `DataFrame` containing the
+#'   spectrum data. The provided `backend` (by default a
+#'   [MsBackendMemory-class]) will be initialized with that data.
 #'
 #' - parameter `object` is a [MsBackend-class] (assumed to be already
 #'   initialized).

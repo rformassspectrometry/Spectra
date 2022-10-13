@@ -27,7 +27,7 @@ MsBackendMemory <- function() {
     if (length(lns)) {
         colnames(x)[vapply(x, function(z) {
             (is.list(z) || inherits(z, "NumericList") ||
-             inherits(z, "SimpleList") ||) && all(lengths(z) == lns)
+             inherits(z, "SimpleList")) && all(lengths(z) == lns)
         }, logical(1))]
     } else character()
 }

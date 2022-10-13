@@ -683,9 +683,9 @@ See also \href{https://github.com/lgatto/MSnbase/issues/525}{this issue}.
 \code{Spectra} classes can be created with the \code{Spectra} constructor function
 which supports the following formats:
 \itemize{
-\item parameter \code{object} is a \code{DataFrame} containing the spectrum data. The
-provided \code{backend} (by default a \linkS4class{MsBackendMemory}) will be
-initialized with that data.
+\item parameter \code{object} is a \code{data.frame} or \code{DataFrame} containing the
+spectrum data. The provided \code{backend} (by default a
+\linkS4class{MsBackendMemory}) will be initialized with that data.
 \item parameter \code{object} is a \linkS4class{MsBackend} (assumed to be already
 initialized).
 \item parameter \code{object} is missing, in which case it is supposed that the data

@@ -698,8 +698,8 @@ one object being filled with \code{NA}.
 The \code{MsBackendMemory} and \code{MsBackendDataFrame} objects keep all MS data in
 memory are thus ideal for fast data processing. Due to their large memory
 footprint they are however not suited for large scale experiments. The two
-backends store the data internally different. The \code{MsBackendDataFrame} stores
-all data internally in a \code{DataFrame} and thus supports also S4-classes as
+backends store the data different. The \code{MsBackendDataFrame} stores
+all data in a \code{DataFrame} and thus supports also S4-classes as
 spectra variables. Also, sepratate access to m/z or intensity values (i.e.
 using the \code{mz} and \code{intensity} methods) is faster for the
 \code{MsBackendDataFrame}. The \code{MsBackendMemory} on the other hand, due to the
@@ -713,9 +713,11 @@ variables.
 
 Thus, for most use cases, the \code{MsBackendMemory} provides a higher
 performance and flexibility than the \code{MsBackendDataFrame} and should thus be
-preferred.
+preferred. See also issue
+\href{https://github.com/rformassspectrometry/Spectra/issues/246}{246} for a
+performance comparison.
 
-New objects can be created with the \code{MsBackendMemory} and
+New objects can be created with the \code{MsBackendMemory()} and
 \code{MsBackendDataFrame()} function, respectively. The backend can be
 subsequently initialized with the \code{backendInitialize} method, taking a
 \code{DataFrame} (or \code{data.frame}) with the MS data as parameter. Suggested
