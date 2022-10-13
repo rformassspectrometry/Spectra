@@ -13,7 +13,7 @@ MsBackendMemory <- function() {
 }
 
 #' Check columns of a DataFrame or data.frame for their data type. If they
-#' are `list` or inherit `List`, and they have the same lengths than a column
+#' are `list` or inherit `List`, and they have the same lengths as a column
 #' mz or intensity return them.
 #'
 #' Note that the function will not return any column if there is not at least
