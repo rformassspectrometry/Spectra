@@ -28,8 +28,8 @@ MsBackendMemory <- function() {
         lns <- lengths(x$intensity)
     if (length(lns)) {
         colnames(x)[vapply(x, function(z) {
-            (inherits(z, "NumericList") || inherits(z, "SimpleList") ||
-             is.list(z)) && all(lengths(z) == lns)
+            (is.list(z) || inherits(z, "NumericList") ||
+             inherits(z, "SimpleList") ||) && all(lengths(z) == lns)
         }, logical(1))]
     } else character()
 }
