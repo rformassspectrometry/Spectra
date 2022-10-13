@@ -485,7 +485,7 @@
 #' memory are thus ideal for fast data processing. Due to their large memory
 #' footprint they are however not suited for large scale experiments. The two
 #' backends store the data different. The `MsBackendDataFrame` stores
-#' all data internally in a `DataFrame` and thus supports also S4-classes as
+#' all data in a `DataFrame` and thus supports also S4-classes as
 #' spectra variables. Also, sepratate access to m/z or intensity values (i.e.
 #' using the `mz` and `intensity` methods) is faster for the
 #' `MsBackendDataFrame`. The `MsBackendMemory` on the other hand, due to the
