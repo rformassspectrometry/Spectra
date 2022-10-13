@@ -21,9 +21,7 @@ MsBackendMemory <- function() {
 #'
 #' @noRd
 .df_peaks_columns_data_frame <- function(x) {
-    lns <- integer()
-    if (any(colnames(x) == "mz"))
-        lns <- lengths(x$mz)
+    lns <- lengths(x$mz)
     if (!length(lns) && any(colnames(x) == "intensity"))
         lns <- lengths(x$intensity)
     if (length(lns)) {
