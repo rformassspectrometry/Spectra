@@ -2283,6 +2283,8 @@ setMethod("smooth", "Spectra",
 #'
 #' @importFrom ProtGenerics ProcessingStep
 #'
+#' @importMethodsFrom ProtGenerics addProcessing
+#'
 #' @importClassesFrom ProtGenerics ProcessingStep
 #'
 #' @importFrom methods .hasSlot

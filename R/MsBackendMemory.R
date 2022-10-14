@@ -593,17 +593,29 @@ setMethod("$", "MsBackendMemory", function(x, name) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendMemory", function(x, name, value) {
+    lv <- length(value)
+    ## Replace mz or intensity: number of peaks have to match existing data.
+    if (lv && name %in% c("mz", "intensity")) {
+        if (is.list(value) || inherits(value, "SimpleList")) {
+            lns <- lengths(x)
+            if (length(value) == length(x) && all(lns == lengths(value))) {
+                for (i in seq_along(value))
+                    x@peaksData[[i]][, name] <- value[[i]]
+                validObject(x)
+                return(x)
+            } else
+                stop("length of 'value' has to match length of 'x' and the ",
+                     "number of values per list-element has to match the ",
+                     "number of peaks per spectrum.")
+
+        }
+        else stop("mz and intensity values are expected to be provided as a ",
+                  "list with numeric values")
+    }
+    ## Is it a potential peak annotation?
     if (is.list(value) || inherits(value, "SimpleList")) {
-        ## Check if lengths matches those of peaksData.
         lns <- lengths(x)
-        if (!length(value) == length(x) || !all(lns == lengths(value)))
-            stop("length of 'value' has to match length of 'x' and the number ",
-                 "of values per list-element has to match the number of peaks ",
-                 "per spectrum.")
-        if (name %in% c("mz", "intensity")) {
-            for (i in seq_along(value))
-                x@peaksData[[i]][, name] <- value[[i]]
-        } else {
+        if (length(value) == length(x) && all(lns == lengths(value))) {
             if (length(x@peaksDataFrame)) {
                 for (i in seq_along(value))
                     x@peaksDataFrame[[i]][[name]] <- value[[i]]
@@ -615,9 +627,12 @@ setReplaceMethod("$", "MsBackendMemory", function(x, name, value) {
                 })
                 x@peaksDataFrame <- value
             }
+            validObject(x)
+            return(x)
         }
-    } else
-        x@spectraData[[name]] <- value
+    }
+    ## Otherwise just add.
+    x@spectraData[[name]] <- value
     validObject(x)
     x
 })

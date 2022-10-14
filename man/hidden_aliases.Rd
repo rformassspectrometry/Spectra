@@ -7,7 +7,6 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
-\alias{addProcessing}
 \alias{backendInitialize}
 \alias{backendMerge}
 \alias{bin,numeric-method}
@@ -171,8 +170,6 @@
 \alias{show,Spectra-method}
 \title{Internal page for hidden aliases}
 \usage{
-addProcessing(object, ...)
-
 backendInitialize(object, ...)
 
 backendMerge(object, ...)

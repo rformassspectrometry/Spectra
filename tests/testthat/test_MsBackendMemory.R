@@ -381,6 +381,10 @@ test_that("$<-,MsBackendMemory works", {
     be$msLevel <- 1:3
     expect_equal(be$msLevel, 1:3)
 
+    ## replace mz with different number of peaks
+    expect_error(be$mz <- list(1:3, 1:4, 1:10), "values per list")
+    expect_error(be$intensity <- list(1:3, 1:4, 1:10), "values per list")
+
     ## new spectra variable
     be$rtime <- c(4.2, 1.23, 4.23)
     expect_equal(be$rtime, c(4.2, 1.23, 4.23))
@@ -416,6 +420,15 @@ test_that("$<-,MsBackendMemory works", {
     vals <- list(2:4, 2:3, 2:5)
     be$add_anno <- vals
     expect_equal(be$add_anno, vals)
+
+    ## list like data but no peak annotation.
+    vals <- list("A", c("B", "C"), c("D", "E", "F"))
+    be$no_peak <- vals
+    expect_equal(be$no_peak, vals)
+    expect_true(any(colnames(be@spectraData) == "no_peak"))
+    ## remove again
+    be$no_peak <- NULL
+    expect_false(any(colnames(be@spectraData) == "no_peak"))
 })
 
 test_that("[,MsBackendMemory works", {
