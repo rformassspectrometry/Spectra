@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Internal page for hidden aliases</h1>
-      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/hidden_aliases.R" class="external-link"><code>R/hidden_aliases.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/MsBackendDataFrame.R" class="external-link"><code>R/MsBackendDataFrame.R</code></a>, and 3 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/hidden_aliases.R" class="external-link"><code>R/hidden_aliases.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/MsBackendDataFrame.R" class="external-link"><code>R/MsBackendDataFrame.R</code></a>, and 4 more</small>
       <div class="d-none name"><code>hidden_aliases.Rd</code></div>
     </div>
 
@@ -54,9 +54,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre><code>addProcessing(object, ...)
-
-backendInitialize(object, ...)
+    <div class="sourceCode"><pre><code>backendInitialize(object, ...)
 
 backendMerge(object, ...)
 
@@ -325,6 +323,170 @@ $(x, name) &lt;- value
 # S4 method for MsBackendHdf5Peaks
 backendMerge(object, ...)
 
+# S4 method for MsBackendMemory
+show(object)
+
+# S4 method for MsBackendMemory
+backendMerge(object, ...)
+
+# S4 method for MsBackendMemory
+acquisitionNum(object)
+
+# S4 method for MsBackendMemory
+centroided(object)
+
+# S4 method for MsBackendMemory
+centroided(object) &lt;- value
+
+# S4 method for MsBackendMemory
+collisionEnergy(object)
+
+# S4 method for MsBackendMemory
+collisionEnergy(object) &lt;- value
+
+# S4 method for MsBackendMemory
+dataOrigin(object)
+
+# S4 method for MsBackendMemory
+dataOrigin(object) &lt;- value
+
+# S4 method for MsBackendMemory
+dataStorage(object)
+
+# S4 method for MsBackendMemory
+dataStorage(object) &lt;- value
+
+# S4 method for MsBackendMemory
+intensity(object)
+
+# S4 method for MsBackendMemory
+intensity(object) &lt;- value
+
+# S4 method for MsBackendMemory
+ionCount(object)
+
+# S4 method for MsBackendMemory
+isEmpty(x)
+
+# S4 method for MsBackendMemory
+isolationWindowLowerMz(object)
+
+# S4 method for MsBackendMemory
+isolationWindowLowerMz(object) &lt;- value
+
+# S4 method for MsBackendMemory
+isolationWindowTargetMz(object)
+
+# S4 method for MsBackendMemory
+isolationWindowTargetMz(object) &lt;- value
+
+# S4 method for MsBackendMemory
+isolationWindowUpperMz(object)
+
+# S4 method for MsBackendMemory
+isolationWindowUpperMz(object) &lt;- value
+
+# S4 method for MsBackendMemory
+length(x)
+
+# S4 method for MsBackendMemory
+lengths(x, use.names = FALSE)
+
+# S4 method for MsBackendMemory
+msLevel(object, ...)
+
+# S4 method for MsBackendMemory
+msLevel(object) &lt;- value
+
+# S4 method for MsBackendMemory
+mz(object)
+
+# S4 method for MsBackendMemory
+mz(object) &lt;- value
+
+# S4 method for MsBackendMemory
+peaksData(object, columns = c("mz", "intensity"))
+
+# S4 method for MsBackendMemory
+peaksData(object) &lt;- value
+
+# S4 method for MsBackendMemory
+polarity(object)
+
+# S4 method for MsBackendMemory
+polarity(object) &lt;- value
+
+# S4 method for MsBackendMemory
+precScanNum(object)
+
+# S4 method for MsBackendMemory
+precursorCharge(object)
+
+# S4 method for MsBackendMemory
+precursorIntensity(object)
+
+# S4 method for MsBackendMemory
+precursorMz(object)
+
+# S4 method for MsBackendMemory
+rtime(object)
+
+# S4 method for MsBackendMemory
+rtime(object) &lt;- value
+
+# S4 method for MsBackendMemory
+scanIndex(object)
+
+# S4 method for MsBackendMemory
+selectSpectraVariables(object, spectraVariables = spectraVariables(object))
+
+# S4 method for MsBackendMemory
+smoothed(object)
+
+# S4 method for MsBackendMemory
+smoothed(object) &lt;- value
+
+# S4 method for MsBackendMemory
+spectraData(object, columns = spectraVariables(object))
+
+# S4 method for MsBackendMemory
+spectraData(object) &lt;- value
+
+# S4 method for MsBackendMemory
+spectraNames(object)
+
+# S4 method for MsBackendMemory
+spectraNames(object) &lt;- value
+
+# S4 method for MsBackendMemory
+spectraVariables(object)
+
+# S4 method for MsBackendMemory
+peaksVariables(object)
+
+# S4 method for MsBackendMemory
+tic(object, initial = TRUE)
+
+# S4 method for MsBackendMemory
+$(x, name)
+
+# S4 method for MsBackendMemory
+$(x, name) &lt;- value
+
+# S4 method for MsBackendMemory
+[(x, i, j, ..., drop = FALSE)
+
+# S4 method for MsBackendMemory,ANY
+split(x, f, drop = FALSE, ...)
+
+# S4 method for MsBackendMemory
+filterAcquisitionNum(
+  object,
+  n = integer(),
+  dataStorage = character(),
+  dataOrigin = character()
+)
+
 # S4 method for MsBackendMzR
 backendInitialize(object, files, ..., BPPARAM = bpparam())
 
@@ -395,6 +557,10 @@ show(object)</code></pre></div>
     
 
 <p>Not applicable</p>
+    </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>: this replaces <strong>all</strong> the data in the backend.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

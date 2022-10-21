@@ -14,7 +14,10 @@ disk and retrieve it on demand.
 The Backend functions and implementation notes for new backend
 classes section documents the API that a backend must implement.
 Currently available backends are:
-MsBackendDataFrame: stores all data in memory using a DataFrame.
+MsBackendMemory and MsBackendDataFrame: store all data in memory. The
+MsBackendMemory is optimized for accessing and processing the peak data
+(i.e. the numerical matrices with the m/z and intensity values) while the
+MsBackendDataFrame keeps all data in a DataFrame.
 MsBackendMzR: stores the m/z and intensities on-disk in raw
 data files (typically mzML or mzXML) and the spectra
 annotation information (header) in memory in a DataFrame. This
@@ -39,7 +42,10 @@ disk and retrieve it on demand.
 The Backend functions and implementation notes for new backend
 classes section documents the API that a backend must implement.
 Currently available backends are:
-MsBackendDataFrame: stores all data in memory using a DataFrame.
+MsBackendMemory and MsBackendDataFrame: store all data in memory. The
+MsBackendMemory is optimized for accessing and processing the peak data
+(i.e. the numerical matrices with the m/z and intensity values) while the
+MsBackendDataFrame keeps all data in a DataFrame.
 MsBackendMzR: stores the m/z and intensities on-disk in raw
 data files (typically mzML or mzXML) and the spectra
 annotation information (header) in memory in a DataFrame. This
@@ -60,7 +66,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +100,7 @@ See below for more details about individual backends."><meta property="og:image"
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Mass spectrometry data backends</h1>
-      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/MsBackend.R" class="external-link"><code>R/MsBackend.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/MsBackendDataFrame-functions.R" class="external-link"><code>R/MsBackendDataFrame-functions.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/MsBackendDataFrame.R" class="external-link"><code>R/MsBackendDataFrame.R</code></a>, and 2 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/MsBackend.R" class="external-link"><code>R/MsBackend.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/MsBackendDataFrame-functions.R" class="external-link"><code>R/MsBackendDataFrame-functions.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/HEAD/R/MsBackendDataFrame.R" class="external-link"><code>R/MsBackendDataFrame.R</code></a>, and 4 more</small>
       <div class="d-none name"><code>MsBackend.Rd</code></div>
     </div>
 
@@ -113,7 +119,10 @@ data access, while on-disk backends store (parts of) their data on
 disk and retrieve it on demand.</p>
 <p>The <em>Backend functions and implementation notes for new backend
 classes</em> section documents the API that a backend must implement.</p>
-<p>Currently available backends are:</p><ul><li><p><code>MsBackendDataFrame</code>: stores all data in memory using a <code>DataFrame</code>.</p></li>
+<p>Currently available backends are:</p><ul><li><p><code>MsBackendMemory</code> and <code>MsBackendDataFrame</code>: store all data in memory. The
+<code>MsBackendMemory</code> is optimized for accessing and processing the peak data
+(i.e. the numerical matrices with the m/z and intensity values) while the
+<code>MsBackendDataFrame</code> keeps all data in a <code>DataFrame</code>.</p></li>
 <li><p><code>MsBackendMzR</code>: stores the m/z and intensities on-disk in raw
 data files (typically <code>mzML</code> or <code>mzXML</code>) and the spectra
 annotation information (header) in memory in a <code>DataFrame</code>. This
@@ -351,6 +360,11 @@ MsBackendDataFrame()
 backendInitialize(object, data, ...)
 
 MsBackendHdf5Peaks()
+
+MsBackendMemory()
+
+# S4 method for MsBackendMemory
+backendInitialize(object, data, ...)
 
 MsBackendMzR()</code></pre></div>
     </div>
@@ -805,15 +819,33 @@ spectra variables (columns/fields), with eventually missing variables in
 one object being filled with <code>NA</code>.</p></li>
 </ul></div>
     <div class="section level2">
-    <h2 id="msbackenddataframe-in-memory-ms-data-backend"><code>MsBackendDataFrame</code>, in-memory MS data backend<a class="anchor" aria-label="anchor" href="#msbackenddataframe-in-memory-ms-data-backend"></a></h2>
-    
-
-
-<p>The <code>MsBackendDataFrame</code> objects keep all MS data in memory.</p>
-<p>New objects can be created with the <code>MsBackendDataFrame()</code>
-function. The backend can be subsequently initialized with the
-<code>backendInitialize</code> method, taking a <code>DataFrame</code> with the MS data
-as parameter. Suggested columns of this <code>DataFrame</code> are:</p><ul><li><p><code>"msLevel"</code>: <code>integer</code> with MS levels of the spectra.</p></li>
+    <h2 id="in-memory-data-backends">In-memory data backends<a class="anchor" aria-label="anchor" href="#in-memory-data-backends"></a></h2>
+    <p><code>MsBackendMemory</code> and <code>MsBackendDataFrame</code>:</p>
+<p>The <code>MsBackendMemory</code> and <code>MsBackendDataFrame</code> objects keep all MS data in
+memory are thus ideal for fast data processing. Due to their large memory
+footprint they are however not suited for large scale experiments. The two
+backends store the data different. The <code>MsBackendDataFrame</code> stores
+all data in a <code>DataFrame</code> and thus supports also S4-classes as
+spectra variables. Also, sepratate access to m/z or intensity values (i.e.
+using the <code>mz</code> and <code>intensity</code> methods) is faster for the
+<code>MsBackendDataFrame</code>. The <code>MsBackendMemory</code> on the other hand, due to the
+way the data is organized internally, provides much faster access to the
+full peak data (i.e. the numerical matrices of m/z and intensity values).
+Also subsetting and access to any spectra variable (except <code>"mz"</code> and
+<code>"intensity"</code> is fastest for the <code>MsBackendMemory</code>. Finally, the
+<code>MsBackendMemory</code> supports also arbitrary peak annotations while the
+<code>MsBackendDataFrame</code> does not have support for such additional peak
+variables.</p>
+<p>Thus, for most use cases, the <code>MsBackendMemory</code> provides a higher
+performance and flexibility than the <code>MsBackendDataFrame</code> and should thus be
+preferred. See also issue
+<a href="https://github.com/rformassspectrometry/Spectra/issues/246" class="external-link">246</a> for a
+performance comparison.</p>
+<p>New objects can be created with the <code>MsBackendMemory()</code> and
+<code>MsBackendDataFrame()</code> function, respectively. The backend can be
+subsequently initialized with the <code>backendInitialize</code> method, taking a
+<code>DataFrame</code> (or <code>data.frame</code>) with the MS data as parameter. Suggested
+columns of this <code>DataFrame</code> are:</p><ul><li><p><code>"msLevel"</code>: <code>integer</code> with MS levels of the spectra.</p></li>
 <li><p><code>"rt"</code>: <code>numeric</code> with retention times of the spectra.</p></li>
 <li><p><code>"acquisitionNum"</code>: <code>integer</code> with the acquisition number of the spectrum.</p></li>
 <li><p><code>"scanIndex"</code>: <code>integer</code> with the index of the scan/spectrum within the
@@ -836,6 +868,10 @@ for each spectrum.</p></li>
 <li><p><code>"intensity"</code>: <code>NumericList()</code> of <code>numeric</code> vectors representing the
 intensity values for each spectrum.</p></li>
 </ul><p>Additional columns are allowed too.</p>
+<p>For the <code>MsBackendMemory</code>, any column in the provided <code>data.frame</code> which
+contains a <code>list</code> of vectors each with length equal to the number of peaks
+for a spectrum will be used as additional <em>peak variable</em> (see examples
+below for details).</p>
 <p>The <code>MsBackendDataFrame</code> ignores parameter <code>columns</code> of the <code>peaksData</code>
 function and returns <strong>always</strong> m/z and intensity values.</p>
     </div>
@@ -1017,6 +1053,60 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1          NA        NA         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2          NA        NA         2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3          NA        NA         1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## MsBackendMemory</span></span></span>
+<span class="r-in"><span><span class="co">##</span></span></span>
+<span class="r-in"><span><span class="co">## The `MsBackendMemory` uses a more efficient internal data organization</span></span></span>
+<span class="r-in"><span><span class="co">## and allows also adding arbitrary additional peaks variables (annotations)</span></span></span>
+<span class="r-in"><span><span class="co">## Below we thus add a column "peak_ann" with arbitrary names/ids for each</span></span></span>
+<span class="r-in"><span><span class="co">## peak</span></span></span>
+<span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">peak_ann</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">""</span>, <span class="st">"d"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"d"</span>, <span class="st">"e"</span>, <span class="st">"f"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"h"</span>, <span class="st">"i"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu"><a href="hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="fu">MsBackendMemory</span><span class="op">(</span><span class="op">)</span>, <span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">be</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MsBackendMemory with 3 spectra</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     msLevel     rtime scanIndex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1        NA         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2        NA         2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         1        NA         3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">spectraVariables</span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "msLevel"                 "rtime"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "acquisitionNum"          "scanIndex"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "mz"                      "intensity"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "dataStorage"             "dataOrigin"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "centroided"              "smoothed"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "polarity"                "precScanNum"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "precursorMz"             "precursorIntensity"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "precursorCharge"         "collisionEnergy"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "isolationWindowLowerMz"  "isolationWindowTargetMz"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "isolationWindowUpperMz"  "peak_ann"               </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## peak_ann is also listed as a peaks variable</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksVariables</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mz"        "intensity" "peak_ann" </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## The additional peaks variable can be accessed using the peaksData function</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksData</a></span><span class="op">(</span><span class="va">be</span>, <span class="st">"peak_ann"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      peak_ann</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "a"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] ""      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] "d"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      peak_ann</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] ""      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "d"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] "e"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] "f"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      peak_ann</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "h"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "i"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
