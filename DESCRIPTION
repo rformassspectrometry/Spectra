@@ -1,6 +1,6 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 1.7.3
+Version: 1.7.4
 Description: The Spectra package defines an efficient infrastructure
    for storing and handling mass spectrometry spectra and functionality to
    subset, process, visualize and compare spectra data. It provides different
@@ -70,6 +70,8 @@ Collate:
     'MsBackendDataFrame.R'
     'MsBackendHdf5Peaks-functions.R'
     'MsBackendHdf5Peaks.R'
+    'MsBackendMemory-functions.R'
+    'MsBackendMemory.R'
     'MsBackendMzR-functions.R'
     'MsBackendMzR.R'
     'Spectra-functions.R'

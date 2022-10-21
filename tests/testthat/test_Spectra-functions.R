@@ -443,6 +443,67 @@ test_that("joinSpectraData works", {
     expect_true(is(ms2$NumList, "NumericList"))
     expect_true(is(ms2$IntList, "IntegerList"))
     expect_true(is(ms2$CharList, "CharacterList"))
+
+    ## With MsBackendMemory
+    ms <- Spectra(msdata::proteomics(pattern = "TMT10", full.names = TRUE))
+    ms <- setBackend(ms, MsBackendMemory())
+    k <- sample(length(ms), 10)
+    spd2 <- spd1 <- DataFrame(id = ms$spectrumId[k],
+                              X = 1:10,
+                              Y = letters[1:10])
+    ## Input errors
+    expect_error(joinSpectraData(ms, spd2, by.x = 1:2),
+                 "'by.x' and 'by.y' must be of length 1.")
+    expect_error(joinSpectraData(ms, spd2, by.y = 1:2),
+                 "'by.x' and 'by.y' must be of length 1.")
+    expect_error(joinSpectraData(ms, spd2, by.x = 1),
+                 "'by.x' and 'by.y' must be characters.")
+    expect_error(joinSpectraData(ms, spd2, by.y = 1),
+                 "'by.x' and 'by.y' must be characters.")
+    expect_error(joinSpectraData(ms, spd2, by.x = "id"),
+                 "'by.x' not found in spectra variables.")
+    ## Works with by.y provided
+    ms1 <- joinSpectraData(ms, spd1, by.y = "id")
+    ## Error with wrong by.y
+    expect_error(joinSpectraData(ms, spd2),
+                 "'by.y' not found.")
+    names(spd2)[1] <- "spectrumId"
+    ## Works with default by.y
+    ms2 <- joinSpectraData(ms, spd2)
+    ## Expected results
+    expect_identical(spectraData(ms1[k]),
+                     spectraData(ms2[k]))
+    expect_identical(c(spectraVariables(ms), "X", "Y"),
+                     spectraVariables(ms1))
+    expect_identical(spectraData(ms1)$X[k], spd1$X)
+    expect_identical(spectraData(ms1)$Y[k], spd1$Y)
+    ## Test suffix.y
+    spd2$msLevel <- 2
+    ms3 <- joinSpectraData(ms, spd2)
+    expect_identical(c(spectraVariables(ms), "X", "Y", "msLevel.y"),
+                     spectraVariables(ms3))
+    ## Use S3 instead of S4 objects here.
+    spd2$num_list <- mapply(rep, 1.0, 1:10)
+    spd2$int_list <- mapply(rep, 1L, 1:10)
+    spd2$char_list <- mapply(rep, "a", 1:10)
+
+    ms2 <- joinSpectraData(ms, spd2)
+    expect_true(is(ms2$X, "integer"))
+    expect_true(is(ms2$Y, "character"))
+    expect_true(is.list(ms2$num_list))
+    expect_true(is.list(ms2$int_list))
+    expect_true(is.list(ms2$char_list))
+
+    ## Same with S4 objects
+    spd2$NumList <- List(mapply(rep, 1.0, 1:10))
+    spd2$IntList <- List(mapply(rep, 1L, 1:10))
+    spd2$CharList <- List(mapply(rep, "a", 1:10))
+    ms2 <- joinSpectraData(ms, spd2)
+    expect_true(is(ms2$X, "integer"))
+    expect_true(is(ms2$Y, "character"))
+    expect_true(is(ms2$NumList, "NumericList"))
+    expect_true(is(ms2$IntList, "IntegerList"))
+    expect_true(is(ms2$CharList, "CharacterList"))
 })
 
 test_that("joinSpectraData key checks work", {

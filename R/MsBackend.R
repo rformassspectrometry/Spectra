@@ -5,6 +5,7 @@
 #' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class
 #' @aliases MsBackendMzR-class [,MsBackend-method
 #' @aliases uniqueMsLevels,MsBackend-method
+#' @aliases MsBackendMemory-class
 #'
 #' @description
 #'
@@ -28,7 +29,10 @@
 #'
 #' Currently available backends are:
 #'
-#' - `MsBackendDataFrame`: stores all data in memory using a `DataFrame`.
+#' - `MsBackendMemory` and `MsBackendDataFrame`: store all data in memory. The
+#'   `MsBackendMemory` is optimized for accessing and processing the peak data
+#'   (i.e. the numerical matrices with the m/z and intensity values) while the
+#'   `MsBackendDataFrame` keeps all data in a `DataFrame`.
 #'
 #' - `MsBackendMzR`: stores the m/z and intensities on-disk in raw
 #'   data files (typically `mzML` or `mzXML`) and the spectra
@@ -475,14 +479,35 @@
 #'   spectra variables (columns/fields), with eventually missing variables in
 #'   one object being filled with `NA`.
 #'
-#' @section `MsBackendDataFrame`, in-memory MS data backend:
+#' @section In-memory data backends: `MsBackendMemory` and `MsBackendDataFrame`:
 #'
-#' The `MsBackendDataFrame` objects keep all MS data in memory.
+#' The `MsBackendMemory` and `MsBackendDataFrame` objects keep all MS data in
+#' memory are thus ideal for fast data processing. Due to their large memory
+#' footprint they are however not suited for large scale experiments. The two
+#' backends store the data different. The `MsBackendDataFrame` stores
+#' all data in a `DataFrame` and thus supports also S4-classes as
+#' spectra variables. Also, sepratate access to m/z or intensity values (i.e.
+#' using the `mz` and `intensity` methods) is faster for the
+#' `MsBackendDataFrame`. The `MsBackendMemory` on the other hand, due to the
+#' way the data is organized internally, provides much faster access to the
+#' full peak data (i.e. the numerical matrices of m/z and intensity values).
+#' Also subsetting and access to any spectra variable (except `"mz"` and
+#' `"intensity"` is fastest for the `MsBackendMemory`. Finally, the
+#' `MsBackendMemory` supports also arbitrary peak annotations while the
+#' `MsBackendDataFrame` does not have support for such additional peak
+#' variables.
 #'
-#' New objects can be created with the `MsBackendDataFrame()`
-#' function. The backend can be subsequently initialized with the
-#' `backendInitialize` method, taking a `DataFrame` with the MS data
-#' as parameter. Suggested columns of this `DataFrame` are:
+#' Thus, for most use cases, the `MsBackendMemory` provides a higher
+#' performance and flexibility than the `MsBackendDataFrame` and should thus be
+#' preferred. See also issue
+#' [246](https://github.com/rformassspectrometry/Spectra/issues/246) for a
+#' performance comparison.
+#'
+#' New objects can be created with the `MsBackendMemory()` and
+#' `MsBackendDataFrame()` function, respectively. The backend can be
+#' subsequently initialized with the `backendInitialize` method, taking a
+#' `DataFrame` (or `data.frame`) with the MS data as parameter. Suggested
+#' columns of this `DataFrame` are:
 #'
 #' - `"msLevel"`: `integer` with MS levels of the spectra.
 #' - `"rt"`: `numeric` with retention times of the spectra.
@@ -508,6 +533,11 @@
 #'   intensity values for each spectrum.
 #'
 #' Additional columns are allowed too.
+#'
+#' For the `MsBackendMemory`, any column in the provided `data.frame` which
+#' contains a `list` of vectors each with length equal to the number of peaks
+#' for a spectrum will be used as additional *peak variable* (see examples
+#' below for details).
 #'
 #' The `MsBackendDataFrame` ignores parameter `columns` of the `peaksData`
 #' function and returns **always** m/z and intensity values.
@@ -678,6 +708,24 @@
 #'
 #' ## Extract precursor m/z, rtime, MS level spectra variables
 #' spectraData(be, c("precursorMz", "rtime", "msLevel"))
+#'
+#' ## MsBackendMemory
+#' ##
+#' ## The `MsBackendMemory` uses a more efficient internal data organization
+#' ## and allows also adding arbitrary additional peaks variables (annotations)
+#' ## Below we thus add a column "peak_ann" with arbitrary names/ids for each
+#' ## peak
+#' data$peak_ann <- list(c("a", "", "d"), c("", "d", "e", "f"), c("h", "i"))
+#' be <- backendInitialize(MsBackendMemory(), data)
+#' be
+#'
+#' spectraVariables(be)
+#'
+#' ## peak_ann is also listed as a peaks variable
+#' peaksVariables(be)
+#'
+#' ## The additional peaks variable can be accessed using the peaksData function
+#' peaksData(be, "peak_ann")
 NULL
 
 setClass(

@@ -13,8 +13,9 @@ NULL
 #' The `Spectra` class encapsules spectral mass spectrometry data and
 #' related metadata.
 #'
-#' It supports multiple data backends, e.g. in-memory ([MsBackendDataFrame()]),
-#' on-disk as mzML ([MsBackendMzR()]) or HDF5 ([MsBackendHdf5Peaks()]).
+#' It supports multiple data backends, e.g. in-memory ([MsBackendMemory],
+#' [MsBackendDataFrame()]), on-disk as mzML ([MsBackendMzR()]) or HDF5
+#' ([MsBackendHdf5Peaks()]).
 #'
 #' @details
 #'
@@ -22,8 +23,8 @@ NULL
 #' i.e. data manipulations such as performed with `replaceIntensitiesBelow` are
 #' not applied immediately to the data, but applied on-the-fly to the spectrum
 #' data once it is retrieved. For some backends that allow to write data back
-#' to the data storage (such as the [MsBackendDataFrame()] and
-#' [MsBackendHdf5Peaks()]) it is possible to apply to queue with the
+#' to the data storage (such as the [MsBackendMemory()], [MsBackendDataFrame()]
+#' and [MsBackendHdf5Peaks()]) it is possible to apply to queue with the
 #' `applyProcessing` function. See the *Data manipulation and analysis
 #' methods* section below for more details.
 #'
@@ -51,9 +52,9 @@ NULL
 #' `Spectra` classes can be created with the `Spectra` constructor function
 #' which supports the following formats:
 #'
-#' - parameter `object` is a `DataFrame` containing the spectrum data. The
-#'   provided `backend` (by default a [MsBackendDataFrame-class]) will be
-#'   initialized with that data.
+#' - parameter `object` is a `data.frame` or `DataFrame` containing the
+#'   spectrum data. The provided `backend` (by default a
+#'   [MsBackendMemory-class]) will be initialized with that data.
 #'
 #' - parameter `object` is a [MsBackend-class] (assumed to be already
 #'   initialized).
@@ -88,7 +89,7 @@ NULL
 #' - parameter `object`: the `Spectra` object.
 #'
 #' - parameter `backend`: an instance of the new backend, e.g.
-#'   `MsBackendDataFrame()`.
+#'   `[MsBackendMemory()]`.
 #'
 #' - parameter `f`: factor allowing to parallelize the change of the backends.
 #'   By default the process of copying the spectra data from the original to the
@@ -443,10 +444,11 @@ NULL
 #' applied on-the-fly to spectra data each time it is accessed. This lazy
 #' execution guarantees the same functionality for `Spectra` objects with
 #' any backend, i.e. backends supporting to save changes to spectrum data
-#' ([MsBackendDataFrame()] or [MsBackendHdf5Peaks()]) as well as read-only
-#' backends (such as the [MsBackendMzR()]). Note that for the former it is
-#' possible to apply the processing queue and write the modified peak data back
-#' to the data storage with the `applyProcessing` function.
+#' ([MsBackendMemory], [MsBackendDataFrame()] or [MsBackendHdf5Peaks()]) as
+#' well as read-only backends (such as the [MsBackendMzR()]).
+#' Note that for the former it is possible to apply the processing queue and
+#' write the modified peak data back to the data storage with the
+#' `applyProcessing` function.
 #'
 #' - `addProcessing`: adds an arbitrary function that should be applied to the
 #'   peaks matrix of every spectrum in `object`. The function (can be passed
@@ -503,8 +505,9 @@ NULL
 #'   evaluation queue are applied. Be aware that calling `combineSpectra` on a
 #'   `Spectra` object with certain backends that allow modifications might
 #'   **overwrite** the original data. This does not happen with a
-#'   `MsBackendDataFrame` backend, but with a `MsBackendHdf5Peaks` backend the
-#'   m/z and intensity values in the original hdf5 file(s) will be overwritten.
+#'   `MsBackendMemory` or `MsBackendDataFrame` backend, but with a
+#'   `MsBackendHdf5Peaks` backend the m/z and intensity values in the original
+#'   hdf5 file(s) will be overwritten.
 #'   The function returns a `Spectra` of length equal to the unique levels
 #'   of `f`.
 #'
@@ -879,9 +882,9 @@ NULL
 #' sciex
 #'
 #' ## The MS data is on disk and will be read into memory on-demand. We can
-#' ## however change the backend to a MsBackendDataFrame backend which will
+#' ## however change the backend to a MsBackendMemory backend which will
 #' ## keep all of the data in memory.
-#' sciex_im <- setBackend(sciex, MsBackendDataFrame())
+#' sciex_im <- setBackend(sciex, MsBackendMemory())
 #' sciex_im
 #'
 #' ## The on-disk object `sciex` is light-weight, because it does not keep the
@@ -1108,7 +1111,7 @@ NULL
 #' ## `reset` after a `applyProcessing` can not restore the data, because the
 #' ## data in the backend was changed. Similarly, `reset` after any filter
 #' ## operations can not restore data for a `Spectra` with a
-#' ## `MsBackendDataFrame`.
+#' ## `MsBackendMemory` or `MsBackendDataFrame`.
 #' res_2 <- applyProcessing(res)
 #' res_rest <- reset(res_2)
 #' lengths(mz(res))
@@ -1281,7 +1284,7 @@ setMethod("show", "Spectra",
 #' @rdname Spectra
 setMethod("Spectra", "missing", function(object, processingQueue = list(),
                                          metadata = list(), ...,
-                                         backend = MsBackendDataFrame(),
+                                         backend = MsBackendMemory(),
                                          BPPARAM = bpparam()) {
     new("Spectra", metadata = metadata, processingQueue = processingQueue,
         backend = backend)
@@ -1311,7 +1314,7 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
 #' @rdname Spectra
 setMethod("Spectra", "ANY", function(object, processingQueue = list(),
                                      metadata = list(),
-                                     source = MsBackendDataFrame(),
+                                     source = MsBackendMemory(),
                                      backend = source,
                                      ..., BPPARAM = bpparam()) {
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
@@ -2279,6 +2282,8 @@ setMethod("smooth", "Spectra",
 #' @exportMethod addProcessing
 #'
 #' @importFrom ProtGenerics ProcessingStep
+#'
+#' @importMethodsFrom ProtGenerics addProcessing
 #'
 #' @importClassesFrom ProtGenerics ProcessingStep
 #'

@@ -130,7 +130,7 @@ estimatePrecursorIntensity(
   processingQueue = list(),
   metadata = list(),
   ...,
-  backend = MsBackendDataFrame(),
+  backend = MsBackendMemory(),
   BPPARAM = bpparam()
 )
 
@@ -156,7 +156,7 @@ estimatePrecursorIntensity(
   object,
   processingQueue = list(),
   metadata = list(),
-  source = MsBackendDataFrame(),
+  source = MsBackendMemory(),
   backend = source,
   ...,
   BPPARAM = bpparam()
@@ -646,16 +646,17 @@ See individual method description for the return value.
 The \code{Spectra} class encapsules spectral mass spectrometry data and
 related metadata.
 
-It supports multiple data backends, e.g. in-memory (\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}),
-on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}) or HDF5 (\code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}).
+It supports multiple data backends, e.g. in-memory (\link{MsBackendMemory},
+\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}), on-disk as mzML (\code{\link[=MsBackendMzR]{MsBackendMzR()}}) or HDF5
+(\code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}).
 }
 \details{
 The \code{Spectra} class uses by default a lazy data manipulation strategy,
 i.e. data manipulations such as performed with \code{replaceIntensitiesBelow} are
 not applied immediately to the data, but applied on-the-fly to the spectrum
 data once it is retrieved. For some backends that allow to write data back
-to the data storage (such as the \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} and
-\code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it is possible to apply to queue with the
+to the data storage (such as the \code{\link[=MsBackendMemory]{MsBackendMemory()}}, \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}
+and \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it is possible to apply to queue with the
 \code{applyProcessing} function. See the \emph{Data manipulation and analysis
 methods} section below for more details.
 
@@ -682,9 +683,9 @@ See also \href{https://github.com/lgatto/MSnbase/issues/525}{this issue}.
 \code{Spectra} classes can be created with the \code{Spectra} constructor function
 which supports the following formats:
 \itemize{
-\item parameter \code{object} is a \code{DataFrame} containing the spectrum data. The
-provided \code{backend} (by default a \linkS4class{MsBackendDataFrame}) will be
-initialized with that data.
+\item parameter \code{object} is a \code{data.frame} or \code{DataFrame} containing the
+spectrum data. The provided \code{backend} (by default a
+\linkS4class{MsBackendMemory}) will be initialized with that data.
 \item parameter \code{object} is a \linkS4class{MsBackend} (assumed to be already
 initialized).
 \item parameter \code{object} is missing, in which case it is supposed that the data
@@ -715,7 +716,7 @@ The definition of the function is:
 \itemize{
 \item parameter \code{object}: the \code{Spectra} object.
 \item parameter \code{backend}: an instance of the new backend, e.g.
-\code{MsBackendDataFrame()}.
+\verb{[MsBackendMemory()]}.
 \item parameter \code{f}: factor allowing to parallelize the change of the backends.
 By default the process of copying the spectra data from the original to the
 new backend is performed separately (and in parallel) for each file. Users
@@ -1021,10 +1022,11 @@ not applied immediately to the spectra, but added to a
 applied on-the-fly to spectra data each time it is accessed. This lazy
 execution guarantees the same functionality for \code{Spectra} objects with
 any backend, i.e. backends supporting to save changes to spectrum data
-(\code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} or \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) as well as read-only
-backends (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}}). Note that for the former it is
-possible to apply the processing queue and write the modified peak data back
-to the data storage with the \code{applyProcessing} function.
+(\link{MsBackendMemory}, \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}} or \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) as
+well as read-only backends (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}}).
+Note that for the former it is possible to apply the processing queue and
+write the modified peak data back to the data storage with the
+\code{applyProcessing} function.
 \itemize{
 \item \code{addProcessing}: adds an arbitrary function that should be applied to the
 peaks matrix of every spectrum in \code{object}. The function (can be passed
@@ -1078,8 +1080,9 @@ Prior combination of the spectra all processings queued in the lazy
 evaluation queue are applied. Be aware that calling \code{combineSpectra} on a
 \code{Spectra} object with certain backends that allow modifications might
 \strong{overwrite} the original data. This does not happen with a
-\code{MsBackendDataFrame} backend, but with a \code{MsBackendHdf5Peaks} backend the
-m/z and intensity values in the original hdf5 file(s) will be overwritten.
+\code{MsBackendMemory} or \code{MsBackendDataFrame} backend, but with a
+\code{MsBackendHdf5Peaks} backend the m/z and intensity values in the original
+hdf5 file(s) will be overwritten.
 The function returns a \code{Spectra} of length equal to the unique levels
 of \code{f}.
 \item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
@@ -1209,9 +1212,9 @@ sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 sciex
 
 ## The MS data is on disk and will be read into memory on-demand. We can
-## however change the backend to a MsBackendDataFrame backend which will
+## however change the backend to a MsBackendMemory backend which will
 ## keep all of the data in memory.
-sciex_im <- setBackend(sciex, MsBackendDataFrame())
+sciex_im <- setBackend(sciex, MsBackendMemory())
 sciex_im
 
 ## The on-disk object `sciex` is light-weight, because it does not keep the
@@ -1438,7 +1441,7 @@ lengths(mz(data))
 ## `reset` after a `applyProcessing` can not restore the data, because the
 ## data in the backend was changed. Similarly, `reset` after any filter
 ## operations can not restore data for a `Spectra` with a
-## `MsBackendDataFrame`.
+## `MsBackendMemory` or `MsBackendDataFrame`.
 res_2 <- applyProcessing(res)
 res_rest <- reset(res_2)
 lengths(mz(res))
