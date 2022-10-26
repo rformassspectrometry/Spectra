@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,21 +50,25 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.7" id="spectra-17">Spectra 1.7<a class="anchor" aria-label="anchor" href="#spectra-17"></a></h2>
 <div class="section level3">
-<h3 id="changes-in-1-7">Changes in 1.7.4<a class="anchor" aria-label="anchor" href="#changes-in-1-7"></a></h3>
+<h3 id="changes-in-1-7">Changes in 1.7.5<a class="anchor" aria-label="anchor" href="#changes-in-1-7"></a></h3>
+<ul><li>Force serial processing in some unit tests to avoid potential failures on some Bioconductor build and check servers (under some circumstances).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-in-1-7-1">Changes in 1.7.4<a class="anchor" aria-label="anchor" href="#changes-in-1-7-1"></a></h3>
 <ul><li>Add <code>MsBackendMemory</code> backend class providing a more efficient in-memory data representation than <code>MsBackendDataFrame</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-7-1">Changes in 1.7.3<a class="anchor" aria-label="anchor" href="#changes-in-1-7-1"></a></h3>
+<h3 id="changes-in-1-7-2">Changes in 1.7.3<a class="anchor" aria-label="anchor" href="#changes-in-1-7-2"></a></h3>
 <ul><li>Import <code>spectrapply</code> from <code>ProtGenerics</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-7-2">Changes in 1.7.2<a class="anchor" aria-label="anchor" href="#changes-in-1-7-2"></a></h3>
+<h3 id="changes-in-1-7-3">Changes in 1.7.2<a class="anchor" aria-label="anchor" href="#changes-in-1-7-3"></a></h3>
 <ul><li>Fix <code>setBackend</code> if provided <code>Spectra</code> is empty.</li>
 <li>
 <code>backendInitialize,Spectra,MsBackendDataFrame</code> returns a <code>Spectra</code> object with the full provided spectra data.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-7-3">Changes in 1.7.1<a class="anchor" aria-label="anchor" href="#changes-in-1-7-3"></a></h3>
+<h3 id="changes-in-1-7-4">Changes in 1.7.1<a class="anchor" aria-label="anchor" href="#changes-in-1-7-4"></a></h3>
 <ul><li>Add <code>uniqueMsLevels</code> function to allow more efficient, backend-specific, implementations for retrieving unique MS levels from a data set.</li>
 </ul></div>
 </div>
