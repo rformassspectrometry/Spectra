@@ -446,7 +446,7 @@ test_that("joinSpectraData works", {
 
     ## With MsBackendMemory
     ms <- Spectra(msdata::proteomics(pattern = "TMT10", full.names = TRUE))
-    ms <- setBackend(ms, MsBackendMemory())
+    ms <- setBackend(ms, MsBackendMemory(), BPPARAM = SerialParam())
     k <- sample(length(ms), 10)
     spd2 <- spd1 <- DataFrame(id = ms$spectrumId[k],
                               X = 1:10,

@@ -1,5 +1,10 @@
 # Spectra 1.7
 
+## Changes in 1.7.5
+
+- Force serial processing in some unit tests to avoid potential failures on some
+  Bioconductor build and check servers (under some circumstances).
+
 ## Changes in 1.7.4
 
 - Add `MsBackendMemory` backend class providing a more efficient in-memory data
