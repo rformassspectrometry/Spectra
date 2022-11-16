@@ -232,8 +232,9 @@ estimatePrecursorIntensity(
 \S4method{spectrapply}{Spectra}(
   object,
   FUN,
-  f = as.factor(seq_along(object)),
   ...,
+  chunkSize = integer(),
+  f = factor(),
   BPPARAM = SerialParam()
 )
 
@@ -443,7 +444,8 @@ For \code{combineSpectra}: function to combine the (peak matrices) of the
 spectra. See section \emph{Data manipulations} and examples below for more
 details.
 For \code{bin}: function to aggregate intensity values of peaks falling into
-the same bin. Defaults to \code{FUN = sum} thus summing up intensities.}
+the same bin. Defaults to \code{FUN = sum} thus summing up intensities.
+For \code{spectrapply} and \code{chunkapply}: function to be applied to \code{Spectra}.}
 
 \item{y}{A \code{Spectra} object. A \code{DataFrame} for \code{joinSpectraData()}.}
 
@@ -526,6 +528,9 @@ m/z values to match peaks or precursor m/z against.}
 
 \item{neutralLoss}{for \code{containsNeutralLoss}: \code{numeric(1)} defining the value
 which should be subtracted from the spectrum's precursor m/z.}
+
+\item{chunkSize}{For \code{spectrapply}: size of the chunks into which \code{Spectra}
+should be split. This parameter overrides parameters \code{f} and \code{BPPARAM}.}
 
 \item{use.names}{For \code{lengths}: ignored.}
 
@@ -659,6 +664,10 @@ to the data storage (such as the \code{\link[=MsBackendMemory]{MsBackendMemory()
 and \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it is possible to apply to queue with the
 \code{applyProcessing} function. See the \emph{Data manipulation and analysis
 methods} section below for more details.
+
+To apply arbitrary functions to a \code{Spectra} use the \code{spectrapply} function
+(or directly \code{\link[=chunkapply]{chunkapply()}} for chunk-wise processing). See description of
+the \code{spectrapply} function below for details.
 
 For details on plotting spectra, see \code{\link[=plotSpectra]{plotSpectra()}}.
 
@@ -1135,17 +1144,25 @@ filtering to spectra of the specified MS level(s).
 \code{\link[=neutralLoss]{neutralLoss()}} for detailed documentation.
 \item \code{processingLog}: returns a \code{character} vector with the processing log
 messages.
-\item \code{spectrapply}: apply a given function to each spectrum in a \code{Spectra}
-object. The \code{Spectra} is splitted into individual spectra and on each of
-them (i.e. \code{Spectra} of length 1) the function \code{FUN} is applied. Additional
-parameters to \code{FUN} can be passed with the \code{...} argument. Parameter
-\code{BPPARAM} allows to enable parallel processing, which however makes only
-sense if \code{FUN} is computational intense. \code{spectrapply} returns a \code{list}
-(same length than \code{object}) with the result from \code{FUN}. See examples for
-more details.
-Note that the result and its order depends on the factor \code{f} used for
-splitting \code{object} with \code{split}, i.e. no re-ordering or \code{unsplit} is
-performed on the result.
+\item \code{spectrapply}: apply a given function to each individual spectrum or sets
+of a \code{Spectra} object. By default, the \code{Spectra} is split into individual
+spectra (i.e. \code{Spectra} of length 1) and the function \code{FUN} is applied to
+each of them. An alternative splitting can be defined with parameter \code{f}.
+Parameters for \code{FUN} can be passed using \code{...}.
+The returned result and its order depend on the function \code{FUN} and how
+\code{object} is split (hence on \code{f}, if provided). Parallel processing is
+supported and can be configured with parameter \code{BPPARAM}, is however only
+suggested for computational intense \code{FUN}.
+As an alternative to the (eventual parallel) processing of the full
+\code{Spectra}, \code{spectrapply} supports also a chunk-wise processing. For this,
+parameter \code{chunkSize} needs to be specified. \code{object} is then split into
+chunks of size \code{chunkSize} which are then (stepwise) processed by \code{FUN}.
+This guarantees a lower memory demand (especially for on-disk backends)
+since only the data for one chunk needs to be loaded into memory in each
+iteration. Note that by specifying \code{chunkSize}, parameters \code{f} and
+\code{BPPARAM} will be ignored.
+See also \code{\link[=chunkapply]{chunkapply()}} or examples below for details on chunk-wise
+processing.
 \item \code{smooth}: smooth individual spectra using a moving window-based approach
 (window size = \code{2 * halfWindowSize}). Currently, the
 Moving-Average- (\code{method = "MovingAverage"}),
@@ -1485,6 +1502,14 @@ head(res)
 ## data (such as `intensity`) are much more efficient than using `lapply`:
 res <- lapply(intensity(sciex_im[1:20]), mean)
 head(res)
+
+## As an alternative, applying a function `FUN` to a `Spectra` can be
+## performed *chunk-wise*. The advantage of this is, that only the data for
+## one chunk at a time needs to be loaded into memory reducing the memory
+## demand. This type of processing can be performed by specifying the size
+## of the chunks (i.e. number of spectra per chunk) with the `chunkSize`
+## parameter
+spectrapply(sciex_im[1:20], lengths, chunkSize = 5L)
 
 ## Calculating the precursor intensity for MS2 spectra:
 ##

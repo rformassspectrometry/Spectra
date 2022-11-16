@@ -676,3 +676,26 @@ test_that("estimatePrecursorIntensity works", {
     res_both <- estimatePrecursorIntensity(both)
     expect_equal(res_second, res_both[510:length(res_both)])
 })
+
+test_that(".chunk_factor works", {
+    res <- .chunk_factor(10, chunkSize = 3)
+    expect_equal(res, as.factor(c(1, 1, 1, 2, 2, 2, 3, 3, 3, 4)))
+    res <- .chunk_factor(10)
+    expect_equal(res, as.factor(rep(1L, 10)))
+})
+
+test_that("chunkapply works", {
+    smem <- setBackend(Spectra(sciex_mzr), MsBackendMemory())
+    res <- chunkapply(smem, lengths, chunkSize = 10)
+    expect_equal(res, lengths(smem))
+    a <- smem[1:10]
+    chnks <- as.factor(c(1, 1, 1, 2, 2, 2, 3, 3))
+    expect_error(chunkapply(a, lengths, chunks = chnks), "does not match")
+    chnks <- as.factor(c(1, 1, 1, 2, 2, 2, 3, 3, 3, 4))
+    res <- chunkapply(a, lengths, chunks = chnks)
+    expect_equal(res, lengths(a))
+
+    chnks <- as.factor(c(2, 2, 2, 1, 1, 1, 4, 3, 3, 3))
+    res2 <- chunkapply(a, lengths, chunks = chnks)
+    expect_equal(res2, res)
+})

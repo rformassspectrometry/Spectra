@@ -1,3 +1,10 @@
+# Spectra 1.9
+
+## Changes in 1.9.1
+
+- Add `chunkapply` function to split a `Spectra` into chunks and stepwise apply
+  a function `FUN` to each.
+
 # Spectra 1.7
 
 ## Changes in 1.7.5

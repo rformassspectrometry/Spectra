@@ -687,3 +687,72 @@ estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
         pmi <- pmi[order(idx)]
     pmi
 }
+
+#' @title Apply a function stepwise to chunks of data
+#'
+#' @description
+#'
+#' `chunkapply` splits `x` into chunks and applies the function `FUN` stepwise
+#' to each of these chunks. Depending on the object it is called, this
+#' function might reduce memory demand considerably, if for example only the
+#' full data for a single chunk needs to be loaded into memory at a time (e.g.,
+#' for `Spectra` objects with on-disk or similar backends).
+#'
+#' @param x object to which `FUN` should be applied. Can be any object that
+#'     supports `split`.
+#'
+#' @param FUN the function to apply to `x`.
+#'
+#' @param ... additional parameters to `FUN`.
+#'
+#' @param chunkSize `integer(1)` defining the size of each chunk into which `x`
+#'     should be splitted.
+#'
+#' @param chunks optional `factor` or length equal to `length(x)` defining the
+#'     chunks into which `x` should be splitted.
+#'
+#' @return Depending on `FUN`, but in most cases a vector/result object of
+#'     length equal to `length(x)`.
+#'
+#' @export
+#'
+#' @author Johannes Rainer
+#'
+#' @examples
+#'
+#' ## Apply a function (`sqrt`) to each element in `x`, processed in chunks of
+#' ## size 200.
+#' x <- rnorm(n = 1000, mean = 500)
+#' res <- chunkapply(x, sqrt, chunkSize = 200)
+#' length(res)
+#' head(res)
+#'
+#' ## For such a calculation the vectorized `sqrt` would however be recommended
+#' system.time(sqrt(x))
+#' system.time(chunkapply(x, sqrt, chunkSize = 200))
+#'
+#' ## Simple example splitting a numeric vector into chunks of 200 and
+#' ## aggregating the values within the chunk using the `mean`. Due to the
+#' ## `unsplit` the result has the same length than the input with the mean
+#' ## value repeated.
+#' x <- 1:1000
+#' res <- chunkapply(x, mean, chunkSize = 200)
+#' length(res)
+#' head(res)
+chunkapply <- function(x, FUN, ..., chunkSize = 1000L, chunks = factor()) {
+    lx <- length(x)
+    lc <- length(chunks)
+    if (lx <= length(levels(chunks)) || (!lc & lx <= chunkSize))
+        return(FUN(x, ...))
+    if (lc > 0) {
+        if (lc != lx)
+            stop("Length of 'chunks' does not match length of 'x'")
+    } else chunks <- .chunk_factor(lx, chunkSize = chunkSize)
+    unsplit(lapply(split(x, chunks), FUN, ...), f = chunks)
+}
+
+.chunk_factor <- function(len, chunkSize = 1000L) {
+    if (len <= chunkSize)
+        return(as.factor(rep(1L, len)))
+    as.factor(rep(1:ceiling(len / chunkSize), each = chunkSize)[seq_len(len)])
+}
