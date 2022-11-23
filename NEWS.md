@@ -1,3 +1,13 @@
+# Spectra 1.9
+
+## Changes in 1.9.1
+
+- Expand documentation on `compareSpectra` for GNPS-like similarity scoring.
+
+## Changes in 1.9.0
+
+- Bioconductor 3.17 developmental version.
+
 # Spectra 1.7
 
 ## Changes in 1.7.5
