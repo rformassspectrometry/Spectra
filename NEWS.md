@@ -1,3 +1,12 @@
+# Spectra 1.8
+
+- Extend documentation on `compareSpectra` for GNPS-like scores.
+
+## Changes in 1.8.0
+
+- Bioconductor 3.16 release.
+
+
 # Spectra 1.7
 
 ## Changes in 1.7.5
