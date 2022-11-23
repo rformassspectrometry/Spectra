@@ -791,7 +791,9 @@ to be passed with the `MAPFUN` parameter (see `?joinPeaks` man page in
 `MsCoreUtils` for more details). The similarity calculation function can be
 specified with the `FUN` parameter and defaults to [ndotproduct()], the
 normalized dot-product. For more details, see also [@rainer_modular_2022] or the
-[SpectraTutorials](https://jorainer.github.io/SpectraTutorials) tutorial.
+[SpectraTutorials](https://jorainer.github.io/SpectraTutorials) tutorial. Note
+also that GNPS-like scores can be calculated with `MAPFUN = joinPeaksGnps` and
+`FUN = MsCoreUtils::gnps`.
 
 Below we calculate pairwise similarities between all spectra in `sps` accepting
 a 50 ppm difference of peaks' m/z values for being considered matching.

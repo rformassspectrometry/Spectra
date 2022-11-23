@@ -1,9 +1,17 @@
 # Spectra 1.9
 
-## Changes in 1.9.1
+## Changes in 1.9.2
 
 - Add `chunkapply` function to split a `Spectra` into chunks and stepwise apply
   a function `FUN` to each.
+
+## Changes in 1.9.1
+
+- Expand documentation on `compareSpectra` for GNPS-like similarity scoring.
+
+## Changes in 1.9.0
+
+- Bioconductor 3.17 developmental version.
 
 # Spectra 1.7
 
