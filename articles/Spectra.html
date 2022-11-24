@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
 Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
 [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup
-[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2022-11-23 14:22:15.515091<br><strong>Compiled</strong>: Wed Nov 23 14:47:16 2022</p>
+[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2022-11-24 12:53:53.150151<br><strong>Compiled</strong>: Thu Nov 24 13:13:51 2022</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -619,8 +619,8 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Nov 23 14:47:23 2022]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Nov 23 14:47:23 2022]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Thu Nov 24 13:13:56 2022]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Thu Nov 24 13:13:56 2022]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -655,7 +655,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Wed Nov 23 14:47:23 2022]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Thu Nov 24 13:13:57 2022]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
@@ -747,9 +747,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Wed Nov 23 14:47:23 2022]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Nov 23 14:47:23 2022]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Nov 23 14:47:24 2022]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Thu Nov 24 13:13:57 2022]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Nov 24 13:13:57 2022]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu Nov 24 13:13:57 2022]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -780,9 +780,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Wed Nov 23 14:47:23 2022]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Nov 23 14:47:23 2022]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Nov 23 14:47:24 2022]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Thu Nov 24 13:13:57 2022]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Nov 24 13:13:57 2022]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu Nov 24 13:13:57 2022]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code>intensity</code> on this object will now
 return intensities that are half of the intensities of the original
@@ -943,9 +943,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Wed Nov 23 14:47:23 2022]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Nov 23 14:47:23 2022]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Nov 23 14:47:24 2022]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Thu Nov 24 13:13:57 2022]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Nov 24 13:13:57 2022]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu Nov 24 13:13:57 2022]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1282,7 +1282,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1862         1   259.752       931</span></span>
 <span><span class="co">##  ... 33 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Wed Nov 23 14:47:33 2022]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Thu Nov 24 13:14:04 2022]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
@@ -1420,8 +1420,8 @@ import MS2 spectra from files in MSP format.</li>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] msdata_0.39.0       Spectra_1.9.1       ProtGenerics_1.31.0</span></span>
-<span><span class="co">## [4] BiocParallel_1.33.0 S4Vectors_0.37.0    BiocGenerics_0.45.0</span></span>
+<span><span class="co">## [1] msdata_0.39.0       Spectra_1.9.2       ProtGenerics_1.31.0</span></span>
+<span><span class="co">## [4] BiocParallel_1.33.5 S4Vectors_0.37.0    BiocGenerics_0.45.0</span></span>
 <span><span class="co">## [7] BiocStyle_2.27.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
@@ -1434,7 +1434,7 @@ import MS2 spectra from files in MSP format.</li>
 <span><span class="co">## [19] MASS_7.3-58.1       bookdown_0.30       desc_1.4.2         </span></span>
 <span><span class="co">## [22] rprojroot_2.0.3     bslib_0.4.1         rlang_1.0.6        </span></span>
 <span><span class="co">## [25] cachem_1.0.6        stringi_1.7.8       xfun_0.35          </span></span>
-<span><span class="co">## [28] fs_1.5.2            MsCoreUtils_1.11.2  sass_0.4.3         </span></span>
+<span><span class="co">## [28] fs_1.5.2            MsCoreUtils_1.11.2  sass_0.4.4         </span></span>
 <span><span class="co">## [31] memoise_2.0.1       cli_3.4.1           Rhdf5lib_1.21.0    </span></span>
 <span><span class="co">## [34] pkgdown_2.0.6.9000  magrittr_2.0.3      ncdf4_1.19         </span></span>
 <span><span class="co">## [37] digest_0.6.30       mzR_2.31.1          rhdf5_2.43.0       </span></span>
