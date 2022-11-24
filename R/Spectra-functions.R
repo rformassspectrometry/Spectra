@@ -371,7 +371,7 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @note
 #'
 #' If the backend of the input `Spectra` is *read-only* we're first converting
-#' that to a `MsBackendDataFrame` to support replacing peak data.
+#' that to a `MsBackendMemory` to support replacing peak data.
 #'
 #' @param x `Spectra`, ideally from a single `$dataStorage`.
 #'
@@ -381,7 +381,7 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @param FUN `function` to be applied to the list of peak matrices.
 #'
 #' @return `Spectra` of length 1. If the input `Spectra` uses a read-only
-#'     backend that is changed to a `MsBackendDataFrame`.
+#'     backend that is changed to a `MsBackendMemory`.
 #'
 #' @author Johannes Rainer
 #'
@@ -408,7 +408,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     else f <- droplevels(f)
     x_new <- x[match(levels(f), f)]
     if (isReadOnly(x_new@backend))
-        x_new <- setBackend(x_new, MsBackendDataFrame())
+        x_new <- setBackend(x_new, MsBackendMemory())
     peaksData(x_new@backend) <- lapply(
         split(.peaksapply(x, BPPARAM = SerialParam()), f = f), FUN = FUN, ...)
     x_new@processingQueue <- list()
@@ -468,7 +468,7 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
         stop("length of 'f' and 'p' have to match length of 'x'")
     if (isReadOnly(x@backend))
         message("Backend of the input object is read-only, will change that",
-                " to an 'MsBackendDataFrame'")
+                " to an 'MsBackendMemory'")
     if (nlevels(p) > 1) {
         ## We split the workload by storage file. This ensures memory efficiency
         ## for file-based backends.

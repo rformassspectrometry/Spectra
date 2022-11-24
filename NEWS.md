@@ -1,5 +1,10 @@
 # Spectra 1.9
 
+## Changes in 1.9.2
+
+- `combineSpectra` on `Spectra` with read-only backends change backend to an
+  `MsBackendMemory` instead of an `MsBackendDataFrame`.
+
 ## Changes in 1.9.1
 
 - Expand documentation on `compareSpectra` for GNPS-like similarity scoring.
