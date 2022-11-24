@@ -1,9 +1,14 @@
 # Spectra 1.9
 
-## Changes in 1.9.2
+## Changes in 1.9.3
 
 - Add `chunkapply` function to split a `Spectra` into chunks and stepwise apply
   a function `FUN` to each.
+
+## Changes in 1.9.2
+
+- `combineSpectra` on `Spectra` with read-only backends change backend to an
+  `MsBackendMemory` instead of an `MsBackendDataFrame`.
 
 ## Changes in 1.9.1
 

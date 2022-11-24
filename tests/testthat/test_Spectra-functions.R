@@ -277,7 +277,7 @@ test_that(".combine_spectra works", {
     res <- .combine_spectra(sps, tolerance = 0.1, FUN = combinePeaks)
     expect_true(length(res) == 2)
     expect_true(is(res, "Spectra"))
-    expect_true(class(res@backend) == "MsBackendDataFrame")
+    expect_true(class(res@backend) == "MsBackendMemory")
     expect_true(length(unlist(res$mz)) < length(unlist(sps$mz)))
 })
 
@@ -295,7 +295,7 @@ test_that("combineSpectra works", {
 
     expect_true(is(res, "Spectra"))
     expect_true(length(res) == 2)
-    expect_true(class(res@backend) == "MsBackendDataFrame")
+    expect_true(class(res@backend) == "MsBackendMemory")
     expect_equal(res$dataOrigin, unique(sps$dataStorage))
 
     ## Different f
