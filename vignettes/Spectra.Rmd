@@ -965,6 +965,14 @@ splitting factor). `Spectra` uses `r Biocpkg("BiocParallel")` for
 parallel processing and all functions use the default registered parallel
 processing setup of that package.
 
+Note however that some backends (e.g. those using connections to SQL databases
+such as `MsBackendMassbank`, `MsBackendSql`) do not support parallel processing
+because the database connection can not be shared across processes. In such
+cases parallel processing should be disabled *globally* for the R session using
+`register(SerialParam())` or specifically in certain calls to functions of the
+`Spectra` package by passing `BPPARAM = SerialParam()` to the function
+(e.g. `peaksData(sps, BPPARAM = SerialParam())`).
+
 
 # Backends
 
@@ -1027,6 +1035,32 @@ add support for additional data types or storage options is provided below:
 - [MsBackendMsp](https://rformassspectrometry.github.io/MsBackendMsp): import
   MS2 spectra from files in MSP format.
 
+
+# Handling very large data sets
+
+The `Spectra` package was designed to support also efficient processing of very
+large data sets. Most of the functionality do not require to keep the full MS
+data in memory (specifically, the peaks data, i.e., m/z and intensity values,
+which represent the largest chunk of data for MS experiments). For some
+functions however the peaks data needs to be loaded into memory. One such
+example is the `lengths` function to determine the number of peaks per spectra
+that is calculated (on the fly) by evaluating the number of rows of the peaks
+matrix. Backends such as the `MsBackendMzR` perform by default any data
+processing separately (and eventually in parallel) by data file and it should
+thus be safe to call any such functions on a `Spectra` object with that
+backend. For other backends (such as the
+[`MsBackendSql`](https://github.com/RforMassSpectrometry/MsBackendSql) or the
+[`MsBackendMassbankSql`](https://github.com/RforMassSpectrometry/MsBackendMassbank))
+it is however advised to process the data in a *chunk-wise* manner using the
+`spectrapply` function with parameter `chunkSize`. This will split the original
+`Spectra` object into chunks of size `chunkSize` and applies the function
+separately to each chunk. That way only data from one chunk will eventually be
+loaded into memory in each iteration enabling to process also very large
+`Spectra` objects on computers with limited hardware resources. Instead of a
+`lengths(sps)` call, the number of peaks per spectra could also be determined
+(in a less memory demanding way) with `spectrapply(sps, lengths, chunkSize =
+5000L)`. In that way only peak data of 5000 spectra at a time will be loaded
+into memory.
 
 # Session information
 

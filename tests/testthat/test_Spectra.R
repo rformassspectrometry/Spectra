@@ -1318,6 +1318,10 @@ test_that("spectrapply,Spectra works", {
     res <- spectrapply(sps, FUN = function(x) mean(x$intensity[[1]]))
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(intensity(sps), mean, numeric(1)))
+
+    ## chunkify
+    res <- spectrapply(Spectra(sciex_mzr), lengths, chunkSize = 100)
+    expect_equal(res, lengths(sciex_pks) / 2)
 })
 
 test_that("split,Spectra works", {

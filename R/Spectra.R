@@ -28,6 +28,10 @@ NULL
 #' `applyProcessing` function. See the *Data manipulation and analysis
 #' methods* section below for more details.
 #'
+#' To apply arbitrary functions to a `Spectra` use the `spectrapply` function
+#' (or directly [chunkapply()] for chunk-wise processing). See description of
+#' the `spectrapply` function below for details.
+#'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
 #' Clarifications regarding scan/acquisition numbers and indices:
@@ -569,27 +573,35 @@ NULL
 #' - `processingLog`: returns a `character` vector with the processing log
 #'   messages.
 #'
-#' - `spectrapply`: apply a given function to each spectrum in a `Spectra`
-#'   object. The `Spectra` is splitted into individual spectra and on each of
-#'   them (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
-#'   parameters to `FUN` can be passed with the `...` argument. Parameter
-#'   `BPPARAM` allows to enable parallel processing, which however makes only
-#'   sense if `FUN` is computational intense. `spectrapply` returns a `list`
-#'   (same length than `object`) with the result from `FUN`. See examples for
-#'   more details.
-#'   Note that the result and its order depends on the factor `f` used for
-#'   splitting `object` with `split`, i.e. no re-ordering or `unsplit` is
-#'   performed on the result.
+#' - `spectrapply`: apply a given function to each individual spectrum or sets
+#'   of a `Spectra` object. By default, the `Spectra` is split into individual
+#'   spectra (i.e. `Spectra` of length 1) and the function `FUN` is applied to
+#'   each of them. An alternative splitting can be defined with parameter `f`.
+#'   Parameters for `FUN` can be passed using `...`.
+#'   The returned result and its order depend on the function `FUN` and how
+#'   `object` is split (hence on `f`, if provided). Parallel processing is
+#'   supported and can be configured with parameter `BPPARAM`, is however only
+#'   suggested for computational intense `FUN`.
+#'   As an alternative to the (eventual parallel) processing of the full
+#'   `Spectra`, `spectrapply` supports also a chunk-wise processing. For this,
+#'   parameter `chunkSize` needs to be specified. `object` is then split into
+#'   chunks of size `chunkSize` which are then (stepwise) processed by `FUN`.
+#'   This guarantees a lower memory demand (especially for on-disk backends)
+#'   since only the data for one chunk needs to be loaded into memory in each
+#'   iteration. Note that by specifying `chunkSize`, parameters `f` and
+#'   `BPPARAM` will be ignored.
+#'   See also [chunkapply()] or examples below for details on chunk-wise
+#'   processing.
 #'
 #' - `smooth`: smooth individual spectra using a moving window-based approach
-#'    (window size = `2 * halfWindowSize`). Currently, the
-#'    Moving-Average- (`method = "MovingAverage"`),
-#'    Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
-#'    weights depending on the distance of the center and calculated
-#'    `1/2^(-halfWindowSize:halfWindowSize)`) and
-#'    Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
-#'    For details how to choose the correct `halfWindowSize` please see
-#'    [`MsCoreUtils::smooth()`].
+#'   (window size = `2 * halfWindowSize`). Currently, the
+#'   Moving-Average- (`method = "MovingAverage"`),
+#'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
+#'   weights depending on the distance of the center and calculated
+#'   `1/2^(-halfWindowSize:halfWindowSize)`) and
+#'   Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
+#'   For details how to choose the correct `halfWindowSize` please see
+#'   [`MsCoreUtils::smooth()`].
 #'
 #' - `pickPeaks`: picks peaks on individual spectra using a moving window-based
 #'   approach (window size = `2 * halfWindowSize`). For noisy spectra there
@@ -643,6 +655,9 @@ NULL
 #'
 #' @param breaks For `bin`: `numeric` defining the m/z breakpoints between bins.
 #'
+#' @param chunkSize For `spectrapply`: size of the chunks into which `Spectra`
+#'     should be split. This parameter overrides parameters `f` and `BPPARAM`.
+#'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
@@ -684,6 +699,7 @@ NULL
 #'     details.
 #'     For `bin`: function to aggregate intensity values of peaks falling into
 #'     the same bin. Defaults to `FUN = sum` thus summing up intensities.
+#'     For `spectrapply` and `chunkapply`: function to be applied to `Spectra`.
 #'
 #' @param halfWindowSize
 #' - For `pickPeaks`: `integer(1)`, used in the
@@ -1159,6 +1175,14 @@ NULL
 #' res <- lapply(intensity(sciex_im[1:20]), mean)
 #' head(res)
 #'
+#' ## As an alternative, applying a function `FUN` to a `Spectra` can be
+#' ## performed *chunk-wise*. The advantage of this is, that only the data for
+#' ## one chunk at a time needs to be loaded into memory reducing the memory
+#' ## demand. This type of processing can be performed by specifying the size
+#' ## of the chunks (i.e. number of spectra per chunk) with the `chunkSize`
+#' ## parameter
+#' spectrapply(sciex_im[1:20], lengths, chunkSize = 5L)
+#'
 #' ## Calculating the precursor intensity for MS2 spectra:
 #' ##
 #' ## Some MS instrument manufacturer don't report the precursor intensities
@@ -1582,11 +1606,16 @@ setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
 #' @importMethodsFrom ProtGenerics spectrapply
 #'
 #' @exportMethod spectrapply
-setMethod("spectrapply", "Spectra", function(object, FUN,
-                                             f = as.factor(seq_along(object)),
-                                             ..., BPPARAM = SerialParam()) {
+setMethod("spectrapply", "Spectra", function(object, FUN, ...,
+                                             chunkSize = integer(),
+                                             f = factor(),
+                                             BPPARAM = SerialParam()) {
     if (missing(FUN))
         FUN <- identity
+    if (length(chunkSize))
+        return(chunkapply(object, FUN, ..., chunkSize = chunkSize))
+    if (!length(f))
+        f <- as.factor(seq_along(object))
     .lapply(object, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
 })
 
