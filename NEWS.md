@@ -1,5 +1,9 @@
 # Spectra 1.9
 
+## Changes in 1.9.4
+
+- Fix error when extracting spectra variables from a `MsBackendMzR` of length 0.
+
 ## Changes in 1.9.3
 
 - Add `chunkapply` function to split a `Spectra` into chunks and stepwise apply

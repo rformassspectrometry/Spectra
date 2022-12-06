@@ -2204,8 +2204,6 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
 
 ## normalize
 
-## peaksapply
-
 #' @rdname Spectra
 #'
 #' @exportMethod pickPeaks
