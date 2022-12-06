@@ -413,11 +413,11 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     res <- spectraData(be)
     expect_true(is(res, "DataFrame"))
     expect_true(nrow(res) == 0)
-    expect_true(all(names(Spectra:::.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
 
     tmp <- sciex_mzr
-    res <- Spectra:::.spectra_data_mzR(tmp)
-    expect_true(all(names(Spectra:::.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+    res <- .spectra_data_mzR(tmp)
+    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
     expect_true(all(colnames(tmp@spectraData) %in% colnames(res)))
     expect_true(is.logical(res$smoothed))
     expect_equal(nrow(res), length(tmp))
@@ -440,6 +440,16 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(is.logical(res$smoothed))
     expect_true(all(is.na(res$smoothed)))
 
+    ## Empty object.
+    tmp_sub <- tmp[integer()]
+    expect_identical(tmp_sub$new_col, numeric())
+    spd <- spectraData(tmp_sub, columns = c("msLevel", "rtime", "new_col"))
+    expect_true(nrow(spd) == 0)
+    expect_identical(spd$msLevel, integer())
+    expect_identical(spd$rtime, numeric())
+    expect_identical(spd$new_col, numeric())
+    expect_identical(tmp_sub$mz, IRanges::NumericList(compress = FALSE))
+
     spd <- spectraData(tmp, columns = c("msLevel", "rtime", "dataStorage"))
     expect_error(spectraData(tmp) <- spd, "scanIndex")
     spd <- spectraData(tmp, columns = c("msLevel", "rtime", "dataStorage",
@@ -448,6 +458,7 @@ test_that("spectraData, spectraData<-, MsBackendMzR works", {
     expect_true(all(is.na(centroided(tmp))))
     expect_true(all(is.na(polarity(tmp))))
     expect_equal(mz(tmp), mz(sciex_mzr))
+
 })
 
 test_that("show,MsBackendMzR works", {

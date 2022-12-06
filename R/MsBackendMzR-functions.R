@@ -96,22 +96,23 @@ MsBackendMzR <- function() {
 #' @noRd
 .spectra_data_mzR <- function(x, columns = spectraVariables(x)) {
     cn <- colnames(x@spectraData)
-    if(!nrow(x@spectraData)) {
-        res <- lapply(
-            .SPECTRA_DATA_COLUMNS[!(names(.SPECTRA_DATA_COLUMNS) %in%
-                                    c("mz", "intensity"))], do.call,
-            args = list())
-        res <- DataFrame(res)
-        res$mz <- NumericList(compress = FALSE)
-        res$intensity <- NumericList(compress = FALSE)
-        return(res[, columns, drop = FALSE])
-    }
     not_found <- setdiff(columns, c(cn, names(.SPECTRA_DATA_COLUMNS)))
     if (length(not_found))
         stop("Column(s) ", paste(not_found, collapse = ", "),
              " not available")
     sp_cols <- columns[columns %in% cn]
     res <- x@spectraData[, sp_cols, drop = FALSE]
+    if(!nrow(x@spectraData)) {
+        res$mz <- NumericList(compress = FALSE)
+        res$intensity <- NumericList(compress = FALSE)
+        other_cols <- setdiff(columns, c(sp_cols, "mz", "intensity"))
+        if (length(other_cols)) {
+            res_add <- lapply(.SPECTRA_DATA_COLUMNS[other_cols],
+                              do.call, args = list())
+            res <- cbind(res, res_add)
+        }
+        return(res[, columns, drop = FALSE])
+    }
     any_mz <- any(columns == "mz")
     any_int <- any(columns == "intensity")
     if (any_mz || any_int) {
