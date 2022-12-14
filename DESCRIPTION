@@ -1,6 +1,6 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 1.9.4
+Version: 1.9.5
 Description: The Spectra package defines an efficient infrastructure
    for storing and handling mass spectrometry spectra and functionality to
    subset, process, visualize and compare spectra data. It provides different
@@ -41,7 +41,8 @@ Imports:
     tools,
     utils,
     fs,
-    BiocGenerics
+    BiocGenerics,
+    dplyr
 Suggests:
     testthat,
     knitr (>= 1.1.0),
@@ -58,7 +59,7 @@ VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/Spectra/issues
 URL: https://github.com/RforMassSpectrometry/Spectra
 biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Roxygen: list(markdown=TRUE)
 Collate:
     'hidden_aliases.R'

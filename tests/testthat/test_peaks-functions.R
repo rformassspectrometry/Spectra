@@ -196,7 +196,7 @@ test_that(".peaks_filter_mz_range works", {
                intensity = 1:8)
     expect_warning(res <- .peaks_filter_mz_range(
                        p, 1L, mz = range(numeric())), "Inf")
-    expect_equal(res, p)
+    expect_equal(nrow(res), 0)
 
     res <- .peaks_filter_mz_range(p, 1L, msLevel = 2)
     expect_equal(res, p)

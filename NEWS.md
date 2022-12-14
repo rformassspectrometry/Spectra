@@ -1,5 +1,9 @@
 # Spectra 1.9
 
+## Changes in 1.9.5
+
+- Use `dplyr::between` instead of `MsCoreUtils::between`.
+
 ## Changes in 1.9.4
 
 - Fix error when extracting spectra variables from a `MsBackendMzR` of length 0.

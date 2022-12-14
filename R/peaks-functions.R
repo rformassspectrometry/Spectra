@@ -80,14 +80,15 @@ NULL
 #'
 #' @param intensity `numeric(2)` with the lower and upper range.
 #'
-#' @importFrom MsCoreUtils between
+#' @importFrom dplyr between
 #'
 #' @noRd
 .peaks_filter_intensity <- function(x, spectrumMsLevel, intensity = c(0, Inf),
                                     msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    x[which(between(x[, "intensity"], intensity)), , drop = FALSE]
+    x[which(between(x[, "intensity"], intensity[1L], intensity[2L])), ,
+      drop = FALSE]
 }
 
 #' @description
@@ -172,7 +173,7 @@ NULL
                                    msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    x[between(x[, "mz"], mz), , drop = FALSE]
+    x[between(x[, "mz"], mz[1L], mz[2L]), , drop = FALSE]
 }
 
 #' @description
