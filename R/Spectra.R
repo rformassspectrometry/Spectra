@@ -1565,6 +1565,11 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
                                             ppm = 20, which = c("any", "all"),
                                             BPPARAM = bpparam()) {
     cond_fun <- match.fun(match.arg(which))
+    if (!identical(order(mz), seq_along(mz))) {
+        message("Ordering mz values.")
+        mz <- sort(mz)
+    }
+    mz <- sort(mz)
     if (all(is.na(mz)))
         return(rep(NA, length(object)))
     if (is(BPPARAM, "SerialParam"))
