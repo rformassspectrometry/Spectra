@@ -1567,7 +1567,6 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
     cond_fun <- match.fun(match.arg(which))
     if (is.unsorted(mz))
         mz <- sort(mz)
-    mz <- sort(mz)
     if (all(is.na(mz)))
         return(rep(NA, length(object)))
     if (is(BPPARAM, "SerialParam"))
