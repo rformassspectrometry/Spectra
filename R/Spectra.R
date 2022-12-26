@@ -1565,7 +1565,7 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
                                             ppm = 20, which = c("any", "all"),
                                             BPPARAM = bpparam()) {
     cond_fun <- match.fun(match.arg(which))
-    if (!identical(order(mz), seq_along(mz))) {
+    if (is.unsorted(mz)) {
         message("Ordering mz values.")
         mz <- sort(mz)
     }
