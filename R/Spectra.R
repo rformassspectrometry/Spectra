@@ -1565,10 +1565,9 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
                                             ppm = 20, which = c("any", "all"),
                                             BPPARAM = bpparam()) {
     cond_fun <- match.fun(match.arg(which))
-    if (is.unsorted(mz))
-        mz <- sort(mz)
     if (all(is.na(mz)))
         return(rep(NA, length(object)))
+    mz <- unique(sort(mz))
     if (is(BPPARAM, "SerialParam"))
         .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
                 condFun = cond_fun, parallel = BPPARAM)
