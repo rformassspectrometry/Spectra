@@ -41,8 +41,7 @@ Imports:
     tools,
     utils,
     fs,
-    BiocGenerics,
-    dplyr
+    BiocGenerics
 Suggests:
     testthat,
     knitr (>= 1.1.0),
