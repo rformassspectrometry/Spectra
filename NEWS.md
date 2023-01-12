@@ -1,5 +1,10 @@
 # Spectra 1.9
 
+## Changes in 1.9.x
+
+- Add a vignette describing how to build a `MsBackend` from scratch (issue
+  #262).
+
 ## Changes in 1.9.5
 
 - Fix bug in `containsMz()` when `mz` isn't ordered (see #258).

@@ -1,0 +1,525 @@
+---
+title: "Creating new `MsBackend` classes"
+output:
+    BiocStyle::html_document:
+        toc_float: true
+vignette: >
+    %\VignetteIndexEntry{Creating new `MsBackend` class}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+    %\VignettePackage{Spectra}
+    %\VignetteDepends{Spectra,BiocStyle}
+bibliography: references.bib
+---
+
+```{r style, echo = FALSE, results = 'asis', message=FALSE}
+BiocStyle::markdown()
+```
+
+**Package**: `r Biocpkg("Spectra")`<br />
+**Authors**: `r packageDescription("Spectra")[["Author"]] `<br />
+**Last modified:** `r file.info("Spectra.Rmd")$mtime`<br />
+**Compiled**: `r date()`
+
+```{r, echo = FALSE, message = FALSE}
+library(Spectra)
+library(BiocStyle)
+```
+
+# Introduction
+
+This vignette briefly describes the `MsBackend` class which is used by the
+`Spectra` package to *represent* and provide Mass Spectrometry (MS) data and
+illustrates how a new such *backend* class can be created and tested for
+validity.
+
+
+# What is a `MsBackend`?
+
+The `Spectra` package separates the code for the analysis of MS data from the
+code needed to import, represent and provide the data. The former is implemented
+for the `Spectra` class which is the main object users will use for their
+analyses. The `Spectra` object relies on a so-called *backend* to provide the MS
+data. The `MsBackend` virtual class defines the API that new *backend* classes
+need to implement in order to be used with the `Spectra` object. Each `Spectra`
+object contains an implementation of such a `MsBackend` within its `@backend`
+slot which provides the MS data to the `Spectra` object. All data management is
+thus hidden from the user. In addition this separation allows to define new,
+alternative, data representations and integrate them seamlessly into a
+`Spectra`-based data analysis workflow.
+
+This whole concept is an extension of the of *in-memory* and *on-disk* data
+representations from the `r Biocpkg("MSnbase")` package
+[@gattoMSnbaseEfficientElegant2020a].
+
+## Conventions and definitions
+
+General conventions for MS data of a `Spectra` are:
+
+- One `Spectra` object is supposed to contain MS (spectral) data of multiple
+  MS spectra.
+- m/z values within each spectrum are expected to be sorted increasingly.
+- Missing values (`NA`) for m/z values are not supported.
+- Properties of a spectrum are called *spectra variables*. While backends can
+  define their own properties, a minimum required set of spectra variables must
+  be provided by each backend (even if their values are empty). These *core*
+  spectra variables along with their data type are listed by the
+  `coreSpectraVariables()` function.
+- `dataStorage` and `dataOrigin` are two special spectra variables that define
+  for each spectrum where the data is stored and from where the data derived (or
+  was loaded, such as the data origin). Both are expected to be of
+  type`character` and need to be defined by the backend (i.e. they can not be
+  empty or missing).
+- `MsBackend` implementations can also represent purely *read-only* data
+  resources. In this case only data accessor methods need to be implemented but
+  not data replacement methods. The virtual `MsBackend` class provides also a
+  slot `@readonly` (which is by default `TRUE`) to indicate that a backend does
+  not support replacement of data.
+
+
+# API
+
+The `MsBackend` class defines core methods that have to be implemented by a
+MS *backend* as well as *optional* methods with default implementations that
+might be implemented for a new backend but don't necessarily have to. These
+functions are described in sections *Required methods* and *Optional methods*, respectively.
+
+To create a new backend a class extending the virtual `MsBackend` needs to be
+implemented. In the example below we create thus a simple class with a
+`data.frame` to contain general spectral properties (*spectra variables*) and
+two slots for m/z and intensity values. These are stored as `NumericList`
+objects since both m/z and intensity values are expected to be of type `numeric`
+and to allow to store data from multiple spectra into a single backend
+object. We also define a simple constructor function that returns an empty
+instance of our new class.
+
+
+```{r, message = FALSE}
+library(Spectra)
+library(IRanges)
+
+setClass("MsBackendTest",
+         contains = "MsBackend",
+         slots = c(
+             spectraVars = "data.frame",
+             mz = "NumericList",
+             intensity = "NumericList"
+         ),
+         prototype = prototype(
+             spectraVars = data.frame(),
+             mz = NumericList(compress = FALSE),
+             intensity = NumericList(compress = FALSE)
+         ))
+
+MsBackendTest <- function() {
+    new("MsBackendTest")
+}
+```
+
+The 3 slots `spectraVars`, `mz` and `intensity` will be used to store our MS
+data, each row in `spectraVars` being data for one spectrum with the columns
+being the different *spectra variables* (i.e. additional properties of a
+spectrum such as its retention time or MS level) and each element in `mz` and
+`intensity` being a `numeric` with the m/z and intensity values of the
+respective spectrum.
+
+We should ideally also add some basic validity function that ensures the data to
+be OK. The function below simply checks that the number of rows of the
+`spectraVars` slot matches the length of the `mz` and `intensity` slot.
+
+```{r, message = FALSE}
+setValidity("MsBackendTest", function(object) {
+    if (length(object@mz) != length(object@intensity) ||
+        length(object@mz) != nrow(object@spectraVars))
+        return("length of 'mz' and 'intensity' has to match the number of ",
+               "rows of 'spectraVars'")
+    NULL
+})
+
+```
+
+We can now create an instance of our new class with the `MsBackendTest`
+function.
+
+```{r}
+MsBackendTest()
+```
+
+Note that a *backend* class does not necessarily need to contain all the data
+like the one from our example. Backends such as the `MsBackendMzR` for example
+retrieve the data on the fly from the raw MS data files or the `MsBackendSql`
+from the `r Biocpkg("MsBackendSql")` a SQL database.
+
+
+## Required methods
+
+Methods listed in this section must be implemented for a new class extending
+`MsBackend`. Methods should ideally also implemented in the order they are
+listed here. Also, it is strongly advised to write dedicated unit tests for
+each newly implemented method or function already **during** the development.
+
+
+### `dataStorage`
+
+The `dataStorage` spectra variable of a spectrum provides some information how
+or where the data is stored. The `dataStorage` method should therefor return a
+`character` vector with length equal to the number of spectra of a backend
+object with that information. For most backends the data storage information can
+be a simple string such as `"memory"` or `"database"` to specify that the data
+of a spectrum is stored within the object itself or in a database,
+respectively.
+
+Backend classes that keep only a subset of the MS data in memory and need to
+load data from data files upon request will use this spectra variable to store
+and keep track of the original data file for each spectrum. An example is the
+`MsBackendMzR` backend that retrieves the MS data on-the-fly from the original
+data file(s) whenever m/z or intensity values are requested from the
+backend. Calling `dataStorage` on an `MsBackendMzR` returns thus the names from
+the originating files.
+
+For our example backend we define a simple `dataStorage` method that simply
+returns the column `"dataStorage"` from the `@svars` (as a `character`).
+
+```{r}
+setMethod("dataStorage", "MsBackendTest", function(object) {
+    as.character(object@spectraVars$dataStorage)
+})
+```
+
+
+### `length`
+
+`length` is supposed to return a single `integer` with the total number of
+spectra that are available through the backend class. For our example backend we
+simply return the number of rows of the `data.frame` stored in the
+`@spectraVars` slot.
+
+```{r}
+setMethod("length", "MsBackendTest", function(x) {
+    nrow(x@spectraVars)
+})
+```
+
+
+### `backendInitialize`
+
+The `backendInitialize` method is supposed to be called after creating an
+instance of the backend class and should prepare (initialize) the backend which
+in most cases means that MS data is loaded. This method can take any parameters
+needed by the backend to get loaded/initialized with data (which can be file
+names from which to load the data, a database connection or object(s) containing
+the data). During `backendInitialize` usually also the special spectra variables
+`dataStorage` and `dataOrigin` are set.
+
+Below we define a `backendInitialize` method that takes as arguments a
+`data.frame` with spectra variables and two `list`s with the m/z and intensity
+values for each spectrum.
+
+```{r}
+setMethod(
+    "backendInitialize", "MsBackendTest",
+    function(object, svars, mz, intensity) {
+        if (!is.data.frame(svars))
+            stop("'svars' needs to be a 'data.frame' with spectra variables")
+        svars$dataStorage <- "<memory>"
+        if (is.null(svars$dataOrigin))
+            svars$dataOrigin <- "<user provided>"
+        object@spectraVars <- svars
+        object@mz <- NumericList(mz, compress = FALSE)
+        object@intensity <- NumericList(intensity, compress = FALSE)
+        validObject(object)
+        object
+    })
+```
+
+In addition to adding the data to object, the function also defined the
+`dataStorage` and `dataOrigin` spectra variables. The purpose of these two
+variables is to provide some information on where the data is stored (*in
+memory* as in our example) and from where the data is originating. The
+`dataOrigin` would for example allow to specify from which original data files
+individual spectra derive.
+
+We can now create an instance of our backend class and fill it with data. We
+thus first define our MS data and pass this to the `backendInitialize` method.
+
+```{r}
+## A data.frame with spectra variables.
+svars <- data.frame(msLevel = c(1L, 2L, 2L),
+                    rtime = c(1.2, 1.3, 1.4))
+## m/z values for each spectrum.
+mzs <- list(c(12.3, 13.5, 16.5, 17.5),
+            c(45.1, 45.2),
+            c(64.4, 123.1, 124.1))
+## intensity values for each spectrum.
+ints <- list(c(123.3, 153.6, 2354.3, 243.4),
+             c(100, 80.1),
+             c(12.3, 35.2, 100))
+
+## Create and initialize the backend
+be <- backendInitialize(MsBackendTest(),
+                        svars = svars, mz = mzs, intensity = ints)
+be
+```
+
+The `backendInitialize` method for our backend class thus expects the user to
+provide the full MS data. This does however not always have to be the case. The
+`backendInitialize` method of the `MsBackendMzR` backend takes for example the
+file names of the raw mzML, mzXML or CDF files as input and initializes the
+backend by importing part of the data from these. Also the backends defined by
+the `r Biocpkg("MsBackendMgf")` or `r Biocpkg("MsBackendMsp")` packages work in
+the same way and thus allow to import MS data from these specific file
+formats. The `backendInitialize` method of the backend defined in the
+`r Biocpkg("MsBackendSql")` on the other hand takes only the connection to a
+database containing the data as input and performs some sanity checks on the
+data but does not load the data into the backend. Any subsequent data access is
+handled by the methods of the backend class through SQL calls to the database.
+
+The purpose of the `backendInitialize` method is to *initialize* and prepare the
+data in a way that it can be accessed by a `Spectra` object (through the
+initialized backend class). Whether the data is loaded by the
+`backendInitialize` method into memory or simply referenced to within the
+backend class does not matter as long as the backend is able to provide the data
+with its accessor methods.
+
+Note also that a `backendInitialize` function should ideally also perform some
+data sanity checks (e.g. whether spectra variables have the correct data type
+etc).
+
+
+### `spectraVariables`
+
+The `spectraVariables` method should return a `character` vector with the names
+of all available spectra variables of the backend. While a backend class should
+support defining and providing their own spectra variables, each `MsBackend`
+class **must** provide also the *core spectra variables* (in the correct data
+type). Since not all data file formats provide values for all these spectra
+variables they can however also be `NA` (with the exception of the spectra
+variable `"dataStorage"`).
+
+The `coreSpectraVariables()` function returns the full list of mandatory spectra
+variables along with their expected data type.
+
+```{r}
+coreSpectraVariables()
+```
+
+A typical `spectraVariables` method for a `MsBackend` class will thus be
+implemented similarly to the one for our `MsBackendTest` test backend: it will
+return the union of the core spectra variables and the names for all available
+spectra variables within the backend object.
+
+```{r}
+setMethod("spectraVariables", "MsBackendTest", function(object) {
+    union(names(coreSpectraVariables), colnames(object@spectraVars))
+})
+```
+
+
+### `spectraData`
+
+The `spectraData` method should return the **full** spectra data within a
+backend as a `DataFrame` object (defined in the `r Biocpkg("S4Vectors")`
+package). The second parameter `columns` allows to define the names of the
+spectra variables that should be returned in the `DataFrame`. Each row in this
+data frame should represent one spectrum, each column a spectra
+variable. Columns `"mz"` and `"intensity"` (if requested) have to contain each a
+`NumericList` with the m/z and intensity values of the spectra. The `DataFrame`
+**must** provide values (even if they are `NA`) for **all** requested spectra
+variables of the backend (**including** the core spectra variables).
+
+This is now a first problem for our toy backend class, since we keep the spectra
+variable data in a simple `data.frame` without any constraints such as required
+columns etc. A simple solution to this (which is also used by all backend
+classes in the `Spectra` package) is to *fill* missing spectra variables
+on-the-fly into the returned `DataFrame`. We thus define below a simple helper
+function that adds columns with missing values (of the correct data type) for
+core spectra variables that are not available within the backend to the result.
+
+```{r}
+#' @description Add columns with missing core spectra variables.
+#'
+#' @param x `data.frame` or `DataFrame` with some spectra variables.
+#'
+#' @param core_vars `character` with core spectra variable names that should
+#'     be added to `x` if not already present.
+#'
+.fill_core_variables <- function(x, core_vars = names(coreSpectraVariables())) {
+    fill_vars <- setdiff(core_vars, colnames(x))
+    core_type <- coreSpectraVariables()
+    n <- nrow(x)
+    if (length(fill_vars)) {
+        fill <- lapply(fill_vars, function(z) {
+            rep(as(NA, core_type[z]), n)
+        })
+        names(fill) <- fill_vars
+        x <- cbind(x, as.data.frame(fill))
+    }
+    x
+}
+```
+
+We next implement the `spectraData` method that uses this helper function to
+fill eventually missing core spectra variables.
+
+```{r}
+setMethod(
+    "spectraData", "MsBackendTest",
+    function(object, columns = spectraVariables(object)) {
+        if (!all(columns %in% spectraVariables(object)))
+            stop("Some of the requested spectra variables are not available")
+        ## Add m/z and intensity values to the result
+        res <- DataFrame(object@spectraVars)
+        res$mz <- object@mz
+        res$intensity <- object@intensity
+        ## Fill with eventually missing core variables
+        res <- .fill_core_variables(
+            res, intersect(columns, names(coreSpectraVariables())))
+        res[, columns]
+})
+```
+
+As an alternative, we could also initialize the `@spectraVars` data frame within
+the `backendInitialize` method adding columns for spectra variables that are not
+provided by the user and require that this data frame always contains all core
+spectra variables. Extracting spectra data (single spectra variables or the full
+data) might thus be more efficient then the on-the-fly initialization with
+eventual missing spectra variables, but the backend class would also have a
+larger memory footprint because even spectra variables with only missing values
+for all spectra need to be stored within the object.
+
+We can now use `spectraData` to either extract the full spectra data from the
+backend, or only the data for selected spectra variables.
+
+```{r}
+## Full data
+spectraData(be)
+
+## Selected variables
+spectraData(be, c("rtime", "mz", "centroided"))
+
+## Only missing core spectra variables
+spectraData(be, c("centroided", "polarity"))
+```
+
+### `peaksVariables`
+
+
+### `peaksData`
+
+The `peaksData` method extracts the MS peaks data from a backend, which includes
+the m/z and intensity values of each MS peak of a spectrum. These are expected
+to be returned as a `List` of numerical matrices with columns in each `matrix`
+being the requested *peaks variables* (with the default being `"mz"` and
+`"intensity"`) of one spectrum. Backends must provide at least these two peaks
+variables.
+
+Below we implement the `peaksData` method for our backend. We need to loop over
+the `@mz` and `@intensity` slots to merge the m/z and intensity of each spectrum
+into a `matrix`. Also, for simplicity reasons, we accept only
+`c("mz", "intensity")` for the `columns` parameter. This is the expected default
+behavior for a `MsBackend`, but in general the `columns` parameter is thought to
+allow the user to specify which peaks variables should be returned in each
+`matrix`.
+
+```{r}
+setMethod(
+    "peaksData", "MsBackendTest",
+    function(object, columns = c("mz", "intensity")) {
+        if (length(columns) != 2 && columns != c("mz", "intensity"))
+            stop("'columns' supports only \"mz\" and \"intensity\"")
+        mapply(mz = object@mz, intensity = object@intensity,
+               FUN = cbind, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+    })
+```
+
+And with this method we can now extract the peaks data from our backend.
+
+```{r}
+peaksData(be)
+```
+
+The `peaksData` method is used in many data analysis functions of the `Spectra`
+object to extract the MS data, thus ideally this method should be implemented in
+an efficient way. For our backend we need to loop over the lists of m/z and
+intensity values which is obviously not ideal. Thus, storing the m/z and
+intensity values in separate slots as done in this backend might not be
+ideal. The `MsBackendMemory` backend for example stores the MS data already as
+a `list` of matrices which results in a more efficient `peaksData` method (but
+comes also with a larger overhead when adding, replacing or checking MS data).
+
+Note also that while a backend needs to provide m/z and intensity values,
+additional peak variables would also be supported. The `MsBackendMemory` class
+for example allows to store and provide additional peak variables that can then
+be added as additional columns to each returned `matrix`. In this case the
+default `peaksVariables` method should also be overwritten to list the
+additionally available variables and the `columns` parameter of the `peaksData`
+method should allow selection of these additional peaks variables (in addition
+to the required `"mz"` and `"intensity"` variables).
+
+
+### `[`
+
+The `[` method allows to subset `MsBackend` objects. The method should support
+to subset by indices or logical vectors and should also support duplicating
+elements (i.e. when duplicated indices are used) as well as to subset in
+arbitrary order.
+
+```{r}
+
+```
+
+## Data replacement methods
+
+As stated in the general description, `MsBackend` implementations can also be
+purely *read-only* resources allowing to just access data, but not to replace
+the data. Thus, it is not strictly required to implement these methods, but for
+a fully functional backend it is suggested (as much as possible). A backend for
+a purely read-only MS data resource might even extend the `MsBackendCached`
+backend defined in the `Spectra` package that provides a mechanism to cache
+(spectra variable) data in a `data.frame` within the object. The
+`MsBackendMassbankSql` implemented in the `r Biocpkg("MsBackendMassbank")`
+package extends for example this backend and thus allows modifying some spectra
+variables without changing the original data in the MassBank SQL database.
+
+
+## Optional methods
+
+Default implementations for these methods are available for `MsBackend`
+classes.
+
+### `peaksVariables`
+
+## Implementation notes
+
+In this tutorial we implemented a simple *in-memory* `MsBackend` from
+scratch. For many real-life situation it might however be better to extend some
+of the pre-defined backend classes from the `Spectra` package to avoid
+duplicating functionality. A good starting point might be the `MsBackendMemory`
+backend for any *in-memory* data representation, or the `MsBackendCached` for
+backends that retrieve data from inherently read-only resources (such as
+database connection or raw data files) but still would need to support adding
+spectra variables or changing values of spectra variables. Similarly, if the
+only purpose of a backend is to import or export data in a specific format, the
+`MsBackendMemory` might be extended and a single method (`backendInitialize`)
+would need to be implemented for the new class: this new `backendInitialize`
+would then call the code to import the data from the new file format and store
+it within the available slots of the `MsBackendMemory` object. Examples would be
+the backends provided by the `r Biocpkg("MsBackendMgf")`
+and `r Biocpkg("MsBackendMsp")` classes.
+
+
+# Example `MsBackend` implementation
+
+
+
+# Testing the validity of the backend
+
+Run the unit test case.
+
+# Session information
+
+```{r si}
+sessionInfo()
+```
+
+# References
