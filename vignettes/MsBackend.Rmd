@@ -459,14 +459,40 @@ to the required `"mz"` and `"intensity"` variables).
 
 ### `[`
 
-The `[` method allows to subset `MsBackend` objects. The method should support
-to subset by indices or logical vectors and should also support duplicating
-elements (i.e. when duplicated indices are used) as well as to subset in
-arbitrary order.
+The `[` method allows to subset `MsBackend` objects. This operation is expected
+to reduce a `MsBackend` object to the selected spectra. The method should
+support to subset by indices or logical vectors and should also support
+duplicating elements (i.e. when duplicated indices are used) as well as to
+subset in arbitrary order.
+
+Below we implement a possible `[` for our test backend class. We ignore the
+parameters `j` from the definition of the `[` generic, since we treat our data
+to be one-dimensional (with each spectrum being one element).
 
 ```{r}
-
+setMethod("[", "MsBackendTest", function(x, i, j, ..., drop = FALSE) {
+    x@spectraVars <- x@spectraVars[i, ]
+    x@mz <- x@mz[i]
+    x@intensity <- x@intensity[i]
+    x
+})
 ```
+
+We can now subset our backend to the last two spectra.
+
+```{r}
+a <- be[2:3]
+spectraData(a)
+```
+
+Or extracting the second spectrum multiple times.
+
+```{r}
+a <- be[c(2, 2, 2)]
+spectraData(a)
+```
+
+
 
 ## Data replacement methods
 
