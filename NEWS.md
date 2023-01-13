@@ -1,5 +1,9 @@
 # Spectra 1.9
 
+## Changes in 1.9.6
+
+- Replace `<=` with `between` calls.
+
 ## Changes in 1.9.5
 
 - Fix bug in `containsMz()` when `mz` isn't ordered (see #258).

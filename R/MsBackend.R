@@ -978,8 +978,7 @@ setMethod("filterPrecursorMzRange", "MsBackend",
           function(object, mz = numeric()) {
               if (length(mz)) {
                   mz <- range(mz)
-                  keep <- which(precursorMz(object) >= mz[1] &
-                                precursorMz(object) <= mz[2])
+                  keep <- which(between(precursorMz(object), mz))
                   object[keep]
               } else object
           })
@@ -1045,8 +1044,7 @@ setMethod("filterRt", "MsBackend",
               if (length(rt)) {
                   rt <- range(rt)
                   sel_ms <- msLevel(object) %in% msLevel.
-                  sel_rt <- rtime(object) >= rt[1] &
-                      rtime(object) <= rt[2] & sel_ms
+                  sel_rt <- between(rtime(object), rt) & sel_ms
                   object[sel_rt | !sel_ms]
               } else object
           })
