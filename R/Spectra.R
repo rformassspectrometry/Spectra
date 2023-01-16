@@ -1977,7 +1977,8 @@ setMethod("filterMzRange", "Spectra",
           function(object, mz = numeric(), msLevel. = uniqueMsLevels(object)) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              mz <- range(mz)
+              if (!length(mz)) mz <- c(-Inf, Inf)
+              else mz <- range(mz)
               object <- addProcessing(object, .peaks_filter_mz_range,
                                       mz = mz, msLevel = msLevel.,
                                       spectraVariables = "msLevel")
@@ -2105,7 +2106,9 @@ setMethod("filterRt", "Spectra",
               if (length(rt) != 2L || !is.numeric(rt) || rt[1] >= rt[2])
                   stop("Please provide a lower and upper numeric retention",
                        " time range.")
-              suppressWarnings(rt <- range(rt))
+              if (length(rt))
+                  rt <- range(rt)
+              else rt <- c(-Inf, Inf)
               object@backend <- filterRt(object@backend, rt, msLevel.)
               object@processing <- .logging(
                   object@processing,
