@@ -426,7 +426,9 @@
 #'   spectrum as reported in the mzML file.
 #'
 #' - `selectSpectraVariables`: reduces the information within the backend to
-#'   the selected spectra variables.
+#'   the selected spectra variables. It is suggested to **not** remove values
+#'   for the `"dataStorage"` variable, since this might be required for some
+#'   backends to work properly (such as the `MsBackendMzR`).
 #'
 #' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
 #'   *smoothed*. `smoothed` returns a `logical` vector of length equal

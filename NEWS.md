@@ -4,6 +4,7 @@
 
 - Add a vignette describing how to build a `MsBackend` from scratch (issue
   #262).
+- Extend unit test suite to evaluate validity of `MsBackend` implementations.
 
 ## Changes in 1.9.6
 

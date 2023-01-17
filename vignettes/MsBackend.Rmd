@@ -61,31 +61,41 @@ General conventions for MS data of a `Spectra` are:
 - m/z values within each spectrum are expected to be sorted increasingly.
 - Missing values (`NA`) for m/z values are not supported.
 - Properties of a spectrum are called *spectra variables*. While backends can
-  define their own properties, a minimum required set of spectra variables must
-  be provided by each backend (even if their values are empty). These *core*
-  spectra variables along with their data type are listed by the
-  `coreSpectraVariables()` function.
+  define their own properties, a minimum required set of spectra variables
+  **must** be provided by each backend (even if their values are empty). These
+  *core spectra variables* are listed (along with their expected data type) by
+  the `coreSpectraVariables()` function.
 - `dataStorage` and `dataOrigin` are two special spectra variables that define
   for each spectrum where the data is stored and from where the data derived (or
   was loaded, such as the data origin). Both are expected to be of
-  type`character` and need to be defined by the backend (i.e. they can not be
+  type`character` and need to be defined by the backend (i.e., they can not be
   empty or missing).
 - `MsBackend` implementations can also represent purely *read-only* data
   resources. In this case only data accessor methods need to be implemented but
   not data replacement methods. Whether a backend is read-only can be set with
-  the `@readonly` slot of the virtual `MsBackend` class. The default is
+  the `@readonly` slot of the virtual `MsBackend` class (the `isReadOnly`
+  function can be used to retrieve the value for this slot). The default is
   `@readonly = FALSE` and thus all data replacement method listed in section
-  *Data replacement methods* have also to be implemented. For read-only backends
+  *Data replacement methods* have to be implemented. For read-only backends
   (`@readonly = TRUE`) only the methods in section *Required methods* need to be
-  implemented.
+  implemented. Backends can also be *partially* read-only, such as the
+  `MsBackendMzR`. This backend allows for example to change spectra variables,
+  but not the peaks data (i.e. the m/z and intensity values). Also, backends for
+  purely read-only resources could extend the `MsBackendCached` from the
+  `r Biocpkg("Spectra")` package to enable support for modifying (or adding)
+  spectra variables. Any changes to spectra variables will be internally cached
+  by the `MsBackendCached` without the need of them being propagating to the
+  underlying data resource (see for example the `MsBackendMassbankSql` from the
+  `r Biocpkg("MsBackendMassbank")` package).
 
 
 # API
 
-The `MsBackend` class defines core methods that have to be implemented by a
-MS *backend* as well as *optional* methods with default implementations that
-might be implemented for a new backend but don't necessarily have to. These
-functions are described in sections *Required methods* and *Optional methods*, respectively.
+The `MsBackend` class defines core methods that have to be implemented by a MS
+*backend* as well as *optional* methods with default implementations that might
+be implemented for a new backend but don't necessarily have to. These functions
+are described in sections *Required methods* and *Optional methods*,
+respectively.
 
 To create a new backend a class extending the virtual `MsBackend` needs to be
 implemented. In the example below we create thus a simple class with a
@@ -223,7 +233,8 @@ setMethod(
     function(object, svars, mz, intensity) {
         if (!is.data.frame(svars))
             stop("'svars' needs to be a 'data.frame' with spectra variables")
-        svars$dataStorage <- "<memory>"
+        if (is.null(svars$dataStorage))
+            svars$dataStorage <- "<memory>"
         if (is.null(svars$dataOrigin))
             svars$dataOrigin <- "<user provided>"
         object@spectraVars <- svars
@@ -276,8 +287,13 @@ function that checks spectra variables for the correct data type.
 ```{r}
 #' Helper function to check if core spectra variables have the correct
 #' data type.
-.sv_valid_data_type <- function(x) {
-    sv <- coreSpectraVariables()[names(coreSpectraVariables()) %in% colnames(x)]
+#'
+#' @param x `data.frame` with the data for spectra variables.
+#'
+#' @param name `character` defining the column names (spectra variables) of `x`
+#'     for which the correct data type should be evaluated.
+.sv_valid_data_type <- function(x, name = colnames(x)) {
+    sv <- coreSpectraVariables()[names(coreSpectraVariables()) %in% name]
     for (i in seq_along(sv)) {
         if (!is(x[, names(sv[i])], sv[i]))
             stop("Spectra variabe \"", names(sv[i]), "\" is not of type ",
@@ -285,7 +301,12 @@ function that checks spectra variables for the correct data type.
     }
     TRUE
 }
+```
 
+This function is then used to check the input data in our new
+`backendInitialize` method.
+
+```{r}
 setMethod(
     "backendInitialize", "MsBackendTest",
     function(object, svars, mz, intensity, data) {
@@ -299,7 +320,8 @@ setMethod(
         }
         if (!is.data.frame(svars))
             stop("'svars' needs to be a 'data.frame' with spectra variables")
-        svars$dataStorage <- "<memory>"
+        if (is.null(svars$dataStorage))
+            svars$dataStorage <- "<memory>"
         if (is.null(svars$dataOrigin))
             svars$dataOrigin <- "<user provided>"
         .sv_valid_data_type(svars)
@@ -1038,8 +1060,8 @@ of a spectrum (that could be done with the `peaksData<-` method that allows to
 replace intensity **and** m/z values at the same time). The `value` for the
 method should ideally be a `NumericList` to ensure that all intensity values are
 indeed `numeric`. In addition to the method we implement also a simple helper
-function that checks for the correct length of `value` since we need to perform
-this test for every data replacement method.
+function that checks for the correct length of `value`. Each data replacement
+method needs to check for that and this function thus reduces code duplication.
 
 ```{r}
 .match_length <- function(x, y) {
@@ -1073,7 +1095,12 @@ intensity(be)
 ### `mz<-`
 
 The `mz<-` method should allow to replace the m/z values of all spectra in a
-backend. The implementation can be the same as for the `intensity<-` method.
+backend. The implementation can be the same as for the `intensity<-`
+method. m/z values within each spectrum need to be increasingly ordered. We thus
+also check that this is the case for the provided m/z values. We take here the
+advantage that a efficient `is.unsorted` implementation for `NumericList` is
+already available, which is faster than e.g. calling
+`vapply(mz(be), is.unsorted, logical(1))`.
 
 ```{r}
 setReplaceMethod("mz", "MsBackendTest", function(object, value) {
@@ -1084,6 +1111,8 @@ setReplaceMethod("mz", "MsBackendTest", function(object, value) {
         stop("lengths of 'value' has to match the number of peaks per spectrum")
     if (!inherits(value, "NumericList"))
         value <- NumericList(value, compress = FALSE)
+    if (any(is.unsorted(value)))
+        stop("m/z values need to be increasingly sorted within each spectrum")
     object@mz <- value
     object
 })
@@ -1127,6 +1156,364 @@ lengths(be)
 ```
 
 
+### `$<-`
+
+The `$<-` method should allow to replace values for spectra variables or also to
+add additional spectra variables to the backend. As with all replacement
+methods, the `length` of `value` has to match the number of spectra represented
+by the backend.
+
+```{r}
+setReplaceMethod("$", "MsBackendTest", function(x, name, value) {
+    .match_length(x, value)
+    if (name == "mz") {
+        mz(x) <- value
+    } else if (name == "intensity") {
+       intensity(x) <- value
+    } else {
+        x@spectraVars[[name]] <- value
+    }
+    .sv_valid_data_type(x@spectraVars, name)
+    x
+})
+```
+
+We can now replace for example existing spectra variables:
+
+```{r}
+msLevel(be)
+be$msLevel <- c(2L, 1L, 2L)
+msLevel(be)
+```
+
+Or even add new spectra variables.
+
+```{r}
+be$new_var <- c("a", "b", "c")
+be$new_var
+```
+
+Replacement methods for all *core* spectra variables can be implemented
+similarly.
+
+
+### `selectSpectraVariables`
+
+The `selectSpectraVariables` should allow to reduce the information within the
+backend (parameter `object`) to the selected spectra variables (parameter
+`spectraVariables`). This is equivalent to a subset by columns/variables. For
+core spectra variables, if not specified by parameter `spectraVariables`, only
+their values are expected to be removed (since core spectra variables are
+expected to be available even if they are not defined within a backend). The
+implementation for our backend will remove any columns in the `@spectraVars`
+data frame not defined in the `spectraVariables` parameter. Special care is
+given to the `"mz"` and `"intensity"` spectra variables: if they are not
+selected, the `@mz` and `@intensity` slots are initialized with empty
+`NumericList` (of length matching the number of spectra). Note also that it
+might not be allowed to remove spectra variables
+some backends might have spectra variables that are not
+
+```{r}
+setMethod(
+    "selectSpectraVariables", "MsBackendTest",
+    function(object, spectraVariables = spectraVariables(object)) {
+        keep <- colnames(object@spectraVars) %in% spectraVariables
+        object@spectraVars <- object@spectraVars[, keep, drop = FALSE]
+        if (!any(spectraVariables == "mz"))
+            object@mz <- NumericList(vector("list", length(object)),
+                                     compress = FALSE)
+        if (!any(spectraVariables == "intensity"))
+            object@intensity <- NumericList(vector("list", length(object)),
+                                            compress = FALSE)
+        validObject(object)
+        object
+    })
+```
+
+We can now use `selectSpectraVariables` to remove for example the spectra
+variable `"new_var"` added above.
+
+```{r}
+be2 <- be
+be2 <- selectSpectraVariables(be2, c("msLevel", "rtime", "mz",
+                                     "intensity", "dataStorage"))
+spectraVariables(be2)
+```
+
+The spectra variable `"new_var"` is now no longer be available. Note however
+that still **all** core spectra variables are listed, even if they were not
+selected with the `spectraVariables` parameter. While these variables (such as
+`"dataOrigin"`) are still listed by `spectraVariables(be2)`, their actual values
+have been removed:
+
+```{r}
+dataOrigin(be)
+dataOrigin(be2)
+```
+
+If `"mz"` and `"intensitity"` are not selected, the m/z and intensity values get
+removed.
+
+```{r}
+be2 <- selectSpectraVariables(be2, c("msLevel", "rtime", "dataStorage"))
+mz(be2)
+intensity(be2)
+```
+
+
+### `centroided<-`
+
+Replace the value for the *centroided* core spectra variable. The provided data
+type **must** be a logical. We re-use the function `.sv_valid_data_type` which
+was defined above for `backendInitialize` to check for the correct data type of
+core spectra variables.
+
+```{r}
+setReplaceMethod("centroided", "MsBackendTest", function(object, value) {
+    object@spectraVars[["centroided"]] <- value
+    .sv_valid_data_type(object@spectraVars, "centroided")
+    object
+})
+```
+
+Alternatively, we could also simply re-use the `$<-` replacement method
+above. This would make the whole code base for our backend cleaner as replacing
+or adding spectra variables would be handled in a single central function.
+
+```{r}
+setReplaceMethod("centroided", "MsBackendTest", function(object, value) {
+    object$centroided <- value
+    object
+})
+```
+
+```{r}
+centroided(be) <- c(TRUE, FALSE, TRUE)
+centroided(be)
+```
+
+
+### `collisionEnergy<-`
+
+Replace the values for the collision energy. Parameter `value` has to be of type
+`numeric`.
+
+```{r}
+setReplaceMethod("collisionEnergy", "MsBackendTest", function(object, value) {
+    object$collisionEnergy <- value
+    object
+})
+```
+
+```{r}
+collisionEnergy(be) <- c(NA_real_, 20.0, 20.0)
+collisionEnergy(be)
+```
+
+
+### `dataOrigin<-`
+
+Replace the values for the data origin spectra variable. Parameter `value` has
+to be of type `character`.
+
+```{r}
+setReplaceMethod("dataOrigin", "MsBackendTest", function(object, value) {
+    object$dataOrigin <- value
+    object
+})
+```
+
+```{r}
+dataOrigin(be)
+dataOrigin(be) <- c("unknown", "file a", "file b")
+dataOrigin(be)
+```
+
+
+### `dataStorage<-`
+
+Replace the values for the data storage spectra variable. Parameter `value` has
+to be of type `character`. Since our backend does not really make any use of
+this spectra variable, we can accept any character value. For other backends,
+that for example need to load data on-the-fly from data files, this spectra
+variable could be used to store the name of the data files and hence we would
+need to perform some additional checks within this replacement function.
+
+```{r}
+setReplaceMethod("dataStorage", "MsBackendTest", function(object, value) {
+    object$dataStorage <- value
+    object
+})
+```
+
+```{r}
+dataStorage(be)
+dataStorage(be) <- c("", "", "")
+dataStorage(be)
+```
+
+
+### `isolationWindowLowerMz<-`
+
+Replace the values for the *isolation window lower m/z* spectra
+variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
+values are supported, e.g. for MS1 spectra).
+
+```{r}
+setReplaceMethod(
+    "isolationWindowLowerMz", "MsBackendTest", function(object, value) {
+        object$isolationWindowLowerMz <- value
+        object
+    })
+```
+
+```{r}
+isolationWindowLowerMz(be) <- c(NA_real_, 245.3, NA_real_)
+isolationWindowLowerMz(be)
+```
+
+### `isolationWindowTargetMz<-`
+
+Replace the values for the *isolation window target m/z* spectra
+variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
+values are supported, e.g. for MS1 spectra).
+
+```{r}
+setReplaceMethod(
+    "isolationWindowTargetMz", "MsBackendTest", function(object, value) {
+        object$isolationWindowTargetMz <- value
+        object
+    })
+```
+
+```{r}
+isolationWindowTargetMz(be) <- c(NA_real_, 245.4, NA_real_)
+isolationWindowTargetMz(be)
+```
+
+
+### `isolationWindowUpperMz<-`
+
+Replace the values for the *isolation window upper m/z* spectra
+variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
+values are supported, e.g. for MS1 spectra).
+
+```{r}
+setReplaceMethod(
+    "isolationWindowUpperMz", "MsBackendTest", function(object, value) {
+        object$isolationWindowUpperMz <- value
+        object
+    })
+```
+
+```{r}
+isolationWindowUpperMz(be) <- c(NA_real_, 245.5, NA_real_)
+isolationWindowUpperMz(be)
+```
+
+
+### `msLevel<-`
+
+Replace the MS level of spectra in a backend. Parameter `value` has to be of
+type `integer`. Missing values (`NA_integer_`) are supported.
+
+```{r}
+setReplaceMethod("msLevel", "MsBackendTest", function(object, value) {
+    object$msLevel <- value
+    object
+})
+```
+
+```{r}
+msLevel(be)
+msLevel(be) <- c(1L, 1L, 2L)
+msLevel(be)
+```
+
+
+### `polarity<-`
+
+Replace the values for the polarity spectra variables. Parameter `value` has to
+be of type `integer` and should ideally also use the *standard* encoding `0L`
+and `1L` for negative and positive polarity (and `NA_integer` for
+missing). Thus, in our implementation we also make sure the input parameter
+contains the expected values (although this is not a strictly required).
+
+```{r}
+setReplaceMethod("polarity", "MsBackendTest", function(object, value) {
+    if (!all(value %in% c(0, 1, NA)))
+        stop("'polarity' should be encoded as 0L (negative), 1L (positive) ",
+             "with missing values being NA_integer_")
+    object$polarity <- value
+    object
+})
+```
+
+```{r}
+polarity(be) <- c(0L, 0L, 0L)
+polarity(be)
+```
+
+
+### `rtime<-`
+
+Replace the retention times for the spectra represented by the
+backend. Parameter `value` must be of type `numeric`. Also, although it is not a
+strict requirement, retention times should ideally be ordered increasingly *per
+sample* and their unit should be seconds.
+
+```{r}
+setReplaceMethod("rtime", "MsBackendTest", function(object, value) {
+    object$rtime <- value
+    object
+})
+```
+
+```{r}
+rtime(be)
+rtime(be) <- rtime(be) + 2
+rtime(be)
+```
+
+
+### `smoothed<-`
+
+Replace the spectra variable *smoothed* that indicates whether some data
+smoothing operation was performed on the spectra. Parameter `value` must be of
+type `logical`.
+
+```{r}
+setReplaceMethod("smoothed", "MsBackendTest", function(object, value) {
+    object$smoothed <- value
+    object
+})
+```
+
+```{r}
+smoothed(be) <- rep(TRUE, 3)
+smoothed(be)
+```
+
+
+### `spectraNames<-`
+
+Replace the names of individual spectras within the backend. Same as for
+`names`, `colnames` or `rownames`, `spectraNames` are expected to be of type
+`character`. In our backend implementation we store the spectra names into the
+`rownames` of the `@spectraVars` data frame.
+
+```{r}
+setReplaceMethod("spectraNames", "MsBackendTest", function(object, value) {
+    rownames(object@spectraVars) <- value
+    object
+})
+```
+
+```{r}
+spectraNames(be) <- c("a", "b", "c")
+spectraNames(be)
+```
+
 
 ## Optional methods
 
@@ -1134,6 +1521,44 @@ Default implementations for these methods are available for `MsBackend`
 classes, thus these methods don't have to be implemented for each new
 backend. For some backends, depending on how the data is represented or accessed
 within it, different implementations might however be more efficient.
+
+
+### `dropNaSpectraVariables`
+
+The `dropNaSpectraVariables` is supposed to allow removing all spectra variables
+from a data set (storage) that contain only missing values (i.e. where the value
+of a spectra variable for each spectrum is `NA`). This function is intended to
+reduce memory requirements of backends such as the `MsBackendMzR` that load
+values from all core spectra variables from the original data files, even if
+their values are only `NA`. Removing these missing values from the backend can
+hence reduce the size in memory of a backend without data loss (because methods
+extracting core spectra variables are supposed to always return `NA` values even
+if no data is available for them - in such cases the `NA` values are supposed to
+be created on-the-fly.
+
+The default implementation is shown below.
+
+```{r}
+setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
+    svs <- spectraVariables(object)
+    svs <- svs[!(svs %in% c("mz", "intensity"))]
+    spd <- spectraData(object, columns = svs)
+    keep <- !vapply1l(spd, function(z) all(is.na(z)))
+    selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
+})
+```
+
+### `isReadOnly`
+
+`isReadOnly` is expected to return a `logical(1)` with either `TRUE` or `FALSE`
+indicating whether the backend supports replacing data or not. The default
+implementation is shown below.
+
+```{r}
+setMethod("isReadOnly", "MsBackend", function(object) {
+    object@readonly
+})
+```
 
 
 ### `peaksVariables`
@@ -1150,7 +1575,6 @@ setMethod("peaksVariables", "MsBackend", function(object) {
     c("mz", "intensity")
 })
 ```
-
 
 
 ## Implementation notes
@@ -1200,16 +1624,6 @@ sessionInfo()
 
 ### `export`
 
-### `centroided<-`
-
-### `collisionEnergy<-`
-
-### `dataOrigin<-`
-
-### `dataStorage<-`
-
-### `dropNaSpectraVariables`
-
 ### `filterAcquisitionNum`
 
 ### `filterDataOrigin`
@@ -1238,29 +1652,9 @@ sessionInfo()
 
 ### `isCentroided`
 
-### `isolationWindowLowerMz<-`
-
-### `isolationWindowTargetMz<-`
-
-### `isolationWindowUpperMz<-`
-
-### `isReadOnly`
-
-### `polarity<-`
-
 ### `reset`
 
-### `rtime<-`
-
-### `selectSpectraVariables`
-
-### `smoothed<-`
-
-### `spectraNames<-`
-
 ### `split`
-
-### `$<-`
 
 ### `[[`
 
