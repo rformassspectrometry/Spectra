@@ -880,7 +880,12 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     svs <- spectraVariables(object)
     svs <- svs[!(svs %in% c("mz", "intensity"))]
     spd <- spectraData(object, columns = svs)
-    keep <- !vapply1l(spd, function(z) all(is.na(z)))
+    keep <- !vapply1l(spd, function(z) {
+        allna <- all(is.na(z))
+        if (length(allna) > 1)
+            FALSE
+        else allna
+    })
     selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
 })
 
