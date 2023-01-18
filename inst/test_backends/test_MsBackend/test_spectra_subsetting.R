@@ -47,13 +47,6 @@ test_that("[", {
 #' core spectra variables don't get removed, even if only NA.
 test_that("dropNaSpectraVariables", {
     cv <- coreSpectraVariables()
-    sdata <- spectraData(be)
-    all_na <- vapply(sdata, function(z) {
-        nas <- all(is.na(z))
-        if (length(nas) > 1L)
-            FALSE
-        else nas
-    }, logical(1L))
     if (!isReadOnly(be) || inherits(be, "MsBackendCached") ||
         inherits(be, "MsBackendDataFrame")) {
         ## Add an empty additional variable
