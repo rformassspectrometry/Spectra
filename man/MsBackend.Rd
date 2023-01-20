@@ -641,7 +641,9 @@ spectrum within each file. Note that this can be different to the
 \code{acquisitionNum} of the spectrum which is the index of the
 spectrum as reported in the mzML file.
 \item \code{selectSpectraVariables}: reduces the information within the backend to
-the selected spectra variables.
+the selected spectra variables. It is suggested to \strong{not} remove values
+for the \code{"dataStorage"} variable, since this might be required for some
+backends to work properly (such as the \code{MsBackendMzR}).
 \item \code{smoothed},\verb{smoothed<-}: gets or sets whether a spectrum is
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector

@@ -426,7 +426,9 @@
 #'   spectrum as reported in the mzML file.
 #'
 #' - `selectSpectraVariables`: reduces the information within the backend to
-#'   the selected spectra variables.
+#'   the selected spectra variables. It is suggested to **not** remove values
+#'   for the `"dataStorage"` variable, since this might be required for some
+#'   backends to work properly (such as the `MsBackendMzR`).
 #'
 #' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
 #'   *smoothed*. `smoothed` returns a `logical` vector of length equal
@@ -878,7 +880,12 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     svs <- spectraVariables(object)
     svs <- svs[!(svs %in% c("mz", "intensity"))]
     spd <- spectraData(object, columns = svs)
-    keep <- !vapply1l(spd, function(z) all(is.na(z)))
+    keep <- !vapply1l(spd, function(z) {
+        allna <- all(is.na(z))
+        if (length(allna) > 1)
+            FALSE
+        else allna
+    })
     selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
 })
 
@@ -1071,9 +1078,11 @@ setReplaceMethod("intensity", "MsBackend", function(object, value) {
 #'
 #' @importMethodsFrom ProtGenerics ionCount
 #'
+#' @importFrom MsCoreUtils vapply1d
+#'
 #' @rdname MsBackend
 setMethod("ionCount", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
 #' @exportMethod isCentroided
