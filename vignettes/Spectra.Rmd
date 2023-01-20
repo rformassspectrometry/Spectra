@@ -814,7 +814,7 @@ bin size of 0.1 (i.e. all peaks with an m/z smaller than 0.1 are aggregated into
 one binned peak.
 
 ```{r}
-sps_bin <- bin(sps, binSize = 0.1)
+sps_bin <- Spectra::bin(sps, binSize = 0.1)
 ```
 
 All spectra will now have the same number of m/z values.

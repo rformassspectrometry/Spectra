@@ -1419,7 +1419,7 @@ test_that("filterMzRange,Spectra works", {
     expect_warning(res <- filterMzRange(sps, msLevel = 1L), "not available")
     expect_equal(mz(res), mz(sps))
 
-    expect_warning(res <- filterMzRange(sps), "Inf")
+    res <- filterMzRange(sps)
     expect_equal(mz(res), mz(sps))
 
     res <- filterMzRange(sps, mz = c(200, 400))

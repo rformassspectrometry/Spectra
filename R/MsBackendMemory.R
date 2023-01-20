@@ -334,10 +334,16 @@ setReplaceMethod("mz", "MsBackendMemory", function(object, value) {
     idx <- which(colnames(object@peaksData[[1L]]) == "mz")
     if (length(idx)) {
         for (i in seq_along(object@peaksData)) {
+            if (is.unsorted(value[[i]]))
+                stop("m/z values of each spectrum are expected to be ",
+                     "increasingly sorted ")
             object@peaksData[[i]][, idx] <- value[[i]]
         }
     } else {
         for (i in seq_along(object@peaksData)) {
+            if (is.unsorted(value[[i]]))
+                stop("m/z values of each spectrum are expected to be ",
+                     "increasingly sorted ")
             object@peaksData[[i]] <- cbind(object@peaksData[[i]],
                                            mz = value[[i]])
         }

@@ -12,7 +12,10 @@ is provided within these.
 
 The unit tests from one test suite can be called from within another package (in
 their `testthat.R` file) like shown in the example below that will call all unit
-tests from the *test_MsBackend* test suite/directory:
+tests from the *test_MsBackend* test suite/directory. This tests perform all
+tests on a backend class assigned to a variable `be`, thus developers should
+ensure to have create an instance of their `MsBackend` implementation and assign
+it to a variable `be` before the code lines below.
 
 ```
 test_suite <- system.file("test_backends", "test_MsBackend",

@@ -135,7 +135,7 @@ test_that("mz,mz<-,MsBackendMemory works", {
     expect_error(mz(be) <- list(1:3), "length of 'object'")
     expect_error(mz(be) <- list(1:3, 1:3, 1:3), "number of peaks")
 
-    vals <- list(c(1.4, 5.2, 1.3), c(6.2, 5.6), c(1.1, 3.3, 4.4, 5.5))
+    vals <- list(c(1.3, 1.4, 5.2), c(5.6, 6.2), c(1.1, 3.3, 4.4, 5.5))
     mz(be) <- vals
     expect_equal(mz(be), IRanges::NumericList(vals, compress = FALSE))
 
