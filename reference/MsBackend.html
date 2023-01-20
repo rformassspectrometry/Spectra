@@ -66,7 +66,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,6 +79,12 @@ See below for more details about individual backends."><meta property="og:image"
 </li>
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/MsBackend.html">Creating new `MsBackend` classes</a>
+  </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -772,7 +778,9 @@ spectrum within each file. Note that this can be different to the
 <code>acquisitionNum</code> of the spectrum which is the index of the
 spectrum as reported in the mzML file.</p></li>
 <li><p><code>selectSpectraVariables</code>: reduces the information within the backend to
-the selected spectra variables.</p></li>
+the selected spectra variables. It is suggested to <strong>not</strong> remove values
+for the <code>"dataStorage"</code> variable, since this might be required for some
+backends to work properly (such as the <code>MsBackendMzR</code>).</p></li>
 <li><p><code>smoothed</code>,<code>smoothed&lt;-</code>: gets or sets whether a spectrum is
 <em>smoothed</em>. <code>smoothed</code> returns a <code>logical</code> vector of length equal
 to the number of spectra. <code>smoothed&lt;-</code> takes a <code>logical</code> vector
