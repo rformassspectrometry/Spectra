@@ -191,12 +191,6 @@ setReplaceMethod("intensity", "MsBackendDataFrame", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-#' @importFrom MsCoreUtils vapply1d
-setMethod("ionCount", "MsBackendDataFrame", function(object) {
-    vapply1d(intensity(object), sum, na.rm = TRUE)
-})
-
-#' @rdname hidden_aliases
 setMethod("isEmpty", "MsBackendDataFrame", function(x) {
     lengths(intensity(x)) == 0
 })

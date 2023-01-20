@@ -2139,8 +2139,6 @@ setMethod("reset", "Spectra", function(object, ...) {
 #' @importMethodsFrom ProtGenerics bin
 #'
 #' @exportMethod bin
-#'
-#' @export
 setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
                                      msLevel. = uniqueMsLevels(x),
                                      FUN = sum) {
@@ -2171,8 +2169,6 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
 #' @importFrom MsCoreUtils ndotproduct
 #'
 #' @importMethodsFrom ProtGenerics compareSpectra
-#'
-#' @export ppm
 #'
 #' @exportMethod compareSpectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),

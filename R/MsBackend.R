@@ -1078,9 +1078,11 @@ setReplaceMethod("intensity", "MsBackend", function(object, value) {
 #'
 #' @importMethodsFrom ProtGenerics ionCount
 #'
+#' @importFrom MsCoreUtils vapply1d
+#'
 #' @rdname MsBackend
 setMethod("ionCount", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
 #' @exportMethod isCentroided

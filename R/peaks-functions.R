@@ -298,6 +298,8 @@ NULL
 #'
 #' @importFrom MsCoreUtils join ppm
 #'
+#' @export ppm
+#'
 #' @export
 #'
 #' @examples

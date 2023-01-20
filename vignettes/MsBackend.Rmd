@@ -33,6 +33,10 @@ This vignette briefly describes the `MsBackend` class which is used by the
 illustrates how a new such *backend* class can be created and tested for
 validity.
 
+Contributions to this vignette (content or correction of typos) or requests for
+additional details and information are highly welcome (ideally *via* pull
+requests or github issues).
+
 
 # What is a `MsBackend`?
 
@@ -48,9 +52,10 @@ thus hidden from the user. In addition this separation allows to define new,
 alternative, data representations and integrate them seamlessly into a
 `Spectra`-based data analysis workflow.
 
-This whole concept is an extension of the of *in-memory* and *on-disk* data
+This concept is an extension of the of *in-memory* and *on-disk* data
 representations from the `r Biocpkg("MSnbase")` package
 [@gattoMSnbaseEfficientElegant2020a].
+
 
 ## Conventions and definitions
 
@@ -341,7 +346,6 @@ be <- backendInitialize(MsBackendTest(),
                         svars = svars, mz = mzs, intensity = ints)
 be
 ```
-
 
 The `backendInitialize` method that we implemented for our backend class expects
 the user to provide the full MS data. This does however not always have to be
@@ -1372,6 +1376,7 @@ isolationWindowLowerMz(be) <- c(NA_real_, 245.3, NA_real_)
 isolationWindowLowerMz(be)
 ```
 
+
 ### `isolationWindowTargetMz<-`
 
 Replace the values for the *isolation window target m/z* spectra
@@ -1577,6 +1582,346 @@ setMethod("peaksVariables", "MsBackend", function(object) {
 ```
 
 
+### `uniqueMsLevels`
+
+This method should return the unique MS level(s) of all spectra within the
+backend. The default implementation is shown below.
+
+```{r}
+setMethod("uniqueMsLevels", "MsBackend", function(object, ...) {
+    unique(msLevel(object))
+})
+```
+
+This method thus retrieves first the MS levels of all spectra and then calls
+`unique` on them. Database-based backends might avoid such an eventually heavy
+operation by selecting the unique MS levels directly using an SQL call.
+
+
+### `ionCount`
+
+The `ionCount` method should return a `numeric` (length equal to the number of
+spectra represented by the backend) with the sum of all intensities within each
+spectrum. For empty spectra `NA_real_` should be returned. The method below is
+the default implementation of the method.
+
+```{r}
+setMethod("ionCount", "MsBackend", function(object) {
+    vapply1d(intensity(object), sum, na.rm = TRUE)
+})
+```
+
+
+### `isCentroided`
+
+This method should return the information for each spectrum whether it is
+*centroided*. In contrast to the `centroided` method a heuristic approach is
+used. The default implementation is shown below.
+
+```{r}
+setMethod("isCentroided", "MsBackend", function(object, ...) {
+    vapply1l(peaksData(object), .peaks_is_centroided)
+})
+```
+
+
+### `reset`
+
+This is a special method that backends may implement or support, but don't
+necessary have to. This method will be called by the `reset,Spectra` method and
+is supposed to restore the data to its original state. The default
+implementation for `MsBackend` shown below simply returns the backend as-is. The
+`MsBackendSql` backend from the `r Biocpkg("MsBackendSql")` package in contrast
+re-initializes the data using the data from the database.
+
+```{r}
+setMethod("reset", "MsBackend", function(object) {
+    object
+})
+```
+
+
+### `export`
+
+This method should *export* the data from a `MsBackend`. The method is called by
+the `export,Spectra` method that passes itself as a second argument to the
+function. The `export,MsBackend` implementation is thus expected to take a
+`Spectra` object as second argument from which all data should be taken and
+exported. Implementation of this method is optional. The implementation of the
+method for the `MsBackendMzR` backend is shown below.
+
+```{r, eval = FALSE}
+setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
+                                             format = c("mzML", "mzXML"),
+                                             copy = FALSE,
+                                             BPPARAM = bpparam()) {
+    l <- length(x)
+    file <- sanitize_file_name(file)
+    if (length(file) == 1)
+        file <- rep_len(file, l)
+    if (length(file) != l)
+        stop("Parameter 'file' has to be either of length 1 or ",
+             length(x), ", i.e. 'length(x)'.", call. = FALSE)
+    f <- factor(file, levels = unique(file))
+    tmp <- bpmapply(.write_ms_data_mzR, split(x, f), levels(f),
+                    MoreArgs = list(format = format, copy = copy),
+                    BPPARAM = BPPARAM)
+})
+```
+
+See alternatively also the `r Biocpkg("MsBackendMgf")` package for an
+implementation for the `MsBackendMgf` backend.
+
+
+### `split`
+
+The `split` method should allow to split a `MsBackend` into a `list` of
+`MsBackend` objects. The default implementation is shown below.
+
+```{r}
+setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
+    split.default(x, f, drop = drop, ...)
+})
+```
+
+
+### `filterDataOrigin`
+
+The `filter*` methods are expected to take a `MsBackend` and to subset it based
+on some criteria. While also the `[` method could be used to perform such subset
+operation, these methods might allow more efficient ways to subset the data
+e.g. by performing the operation within a database with a dedicated SQL call. A
+default implementation is available for every filter function and thus a method
+needs only to be implemented if the data storage/representation within a backend
+would allow a more efficient operation.
+
+All filter methods are expected to return the subset backend (i.e. an instance
+of the same backend class with the same, or less spectra).
+
+The `filterDataOrigin` should subset the backend to spectra with their
+`dataOrigin` spectra variable matching the values provided with the `dataOrigin`
+parameter. The default implementation for `MsBackend` is shown below.
+
+```{r}
+setMethod("filterDataOrigin", "MsBackend",
+          function(object, dataOrigin = character()) {
+              if (length(dataOrigin)) {
+                  object <- object[dataOrigin(object) %in% dataOrigin]
+                  if (is.unsorted(dataOrigin))
+                      object[order(match(dataOrigin(object), dataOrigin))]
+                  else object
+              } else object
+          })
+
+```
+
+
+### `filterDataStorage`
+
+Similar to the `filterDataOrigin`, the `filterDataStorage` should subset a
+backend to spectra with their `dataStorage` spectra variable matching the values
+provided with the `dataStorage` parameter.
+
+```{r}
+setMethod("filterDataStorage", "MsBackend",
+          function(object, dataStorage = character()) {
+              if (length(dataStorage)) {
+                  object <- object[dataStorage(object) %in% dataStorage]
+                  if (is.unsorted(dataStorage))
+                      object[order(match(dataStorage(object), dataStorage))]
+                  else object
+              } else object
+          })
+```
+
+
+### `filterEmptySpectra`
+
+The `filterEmptySpectra` should remove all *empty* spectra (i.e. spectra without
+any mass peaks) from the backend. The method is expected to return the subset
+backend. The default implementation for `MsBackend` is shown below.
+
+```{r}
+setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
+    if (!length(object)) return(object)
+    object[as.logical(lengths(object))]
+})
+```
+
+
+### `filterIsolationWindow`
+
+The `filterIsolationWindow` filters the backend to spectra with the provided
+`mz` value being within their `isolationWindowLowerMz` and
+`isolationWindowUpperMz`. The parameter `mz` defining this target m/z is
+expected to be a `numeric` of length 1. The default implementation for
+`MsBackend` is shown below.
+
+```{r}
+setMethod("filterIsolationWindow", "MsBackend",
+          function(object, mz = numeric(), ...) {
+              if (length(mz)) {
+                  if (length(mz) > 1)
+                      stop("'mz' is expected to be a single m/z value")
+                  keep <- which(isolationWindowLowerMz(object) <= mz &
+                                isolationWindowUpperMz(object) >= mz)
+                  object[keep]
+              } else object
+          })
+```
+
+
+### `filterMsLevel`
+
+The `filterMsLevel` method is expected to reduce the backend to spectra with the
+provided MS level(s). Parameter `msLevel` has to be an `integer` (any length).
+The default implementation for `MsBackend` is shown below.
+
+```{r}
+setMethod("filterMsLevel", "MsBackend",
+          function(object, msLevel = integer()) {
+              if (length(msLevel)) {
+                  object[msLevel(object) %in% msLevel]
+              } else object
+          })
+```
+
+
+### `filterPolarity`
+
+The `filterPolarity` method is expected to subset the backend to spectra
+matching the provided polarity (or polarities). Parameter `polarity` has to be
+an `integer` (of any length). The default implementation for `MsBackend` is
+shown below.
+
+```{r}
+setMethod("filterPolarity", "MsBackend",
+          function(object, polarity = integer()) {
+              if (length(polarity))
+                  object[polarity(object) %in% polarity]
+              else object
+          })
+```
+
+
+### `filterPrecursorMzRange`
+
+The `filterPrecursorMzRange` method filters the backend to spectra with their
+`precursorMz` being between the provided m/z range (parameter `mz`). This method
+was previously named `filterPrecursorMz`. Parameter `mz` is expected to be a
+`numeric` of length 2 defining the lower and upper limit of this precursor m/z
+range. The default implementation for `MsBackend` is shown below.
+
+```{r}
+library(MsCoreUtils)
+setMethod("filterPrecursorMzRange", "MsBackend",
+          function(object, mz = numeric()) {
+              if (length(mz)) {
+                  mz <- range(mz)
+                  keep <- which(between(precursorMz(object), mz))
+                  object[keep]
+              } else object
+          })
+```
+
+
+### `filterPrecursorMzValues`
+
+The `filterPrecursorMzValues` method filters the backend to spectra with their
+m/z values matching to the provided m/z value(s). Parameters `ppm` and
+`tolerance` (both expected to be `numeric` of length 1) allow to define the
+conditions for the relaxed matching. Parameter `mz` has to be a `numeric` (of
+any length). The default implementation for `MsBackend` is shown below.
+
+```{r}
+setMethod("filterPrecursorMzValues", "MsBackend",
+          function(object, mz = numeric(), ppm = 20, tolerance = 0) {
+              if (length(mz)) {
+                  object[.values_match_mz(precursorMz(object), mz = mz,
+                                          ppm = ppm, tolerance = tolerance)]
+              } else object
+          })
+```
+
+The `.values_match_mz` function used by this function is defined as:
+
+```{r}
+.values_match_mz <- function(x, mz, ppm = 20, tolerance = 0) {
+    o <- order(x, na.last = NA)
+    cmn <- common(x[o], sort(mz), tolerance = tolerance, ppm = ppm,
+                  duplicates = "keep", .check = FALSE)
+    sort(o[cmn])
+}
+```
+
+
+### `filterPrecursorCharge`
+
+The `filterPrecursorCharge` method filters the backend to spectra with matching
+precursor charge. Parameter `z` defining the requested precursor charge has to
+be an `integer` (of any length). The default implementation for `MsBackend` is
+shown below.
+
+```{r}
+setMethod("filterPrecursorCharge", "MsBackend",
+          function(object, z = integer()) {
+              if (length(z)) {
+                  keep <- which(precursorCharge(object) %in% z)
+                  object[keep]
+              } else object
+          })
+```
+
+
+### `filterPrecursorScan`
+
+The `filterPrecursorScan` method filters the backend to parent (e.g. MS1) and
+children scans (e.g. MS2) of acquisition number `acquisitionNum`. Parameter `f`
+defines how the backend should be split (by default by original data file) to
+avoid selecting spectra from different samples/files. The default implementation
+for `MsBackend` is shown below.
+
+```{r}
+setMethod("filterPrecursorScan", "MsBackend",
+          function(object, acquisitionNum = integer(), f = dataOrigin(object)) {
+              if (length(acquisitionNum) && length(f)) {
+                  if (!is.factor(f))
+                      f <- factor(f, exclude = character())
+                  keep <- unsplit(lapply(split(object, f = f), function(z, an) {
+                      .filterSpectraHierarchy(acquisitionNum(z),
+                                              precScanNum(z),
+                                              an)
+                  }, an = acquisitionNum), f = f)
+                  object[keep]
+              } else object
+          })
+```
+
+
+### `filterRt`
+
+The `filterRt` method filters the backend to spectra with their retention time
+being between the provided rt range. Parameter `rt` is expected
+to be a `numeric` of length 2 defining the lower and upper bound of this
+range. Parameter `msLevel.` (note the `.` in the name of the parameter!) can be
+optionally used to restrict the filtering to the selected MS levels (i.e. the RT
+filter is only applied to spectra of the selected MS levels and all spectra with
+a different MS level are returned as well). The default implementation for
+`MsBackend` is shown below.
+
+```{r}
+setMethod("filterRt", "MsBackend",
+          function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
+              if (length(rt)) {
+                  rt <- range(rt)
+                  sel_ms <- msLevel(object) %in% msLevel.
+                  sel_rt <- between(rtime(object), rt) & sel_ms
+                  object[sel_rt | !sel_ms]
+              } else object
+          })
+```
+
+
 ## Implementation notes
 
 In this tutorial we implemented a simple *in-memory* `MsBackend` from
@@ -1618,46 +1963,3 @@ sessionInfo()
 ```
 
 # References
-
-
-# TEMP all methods to implement
-
-### `export`
-
-### `filterAcquisitionNum`
-
-### `filterDataOrigin`
-
-### `filterDataStorage`
-
-### `filterEmptySpectra`
-
-### `filterIsolationWindow`
-
-### `filterMsLevel`
-
-### `filterPolarity`
-
-### `filterPrecursorMzRange`
-
-### `filterPrecursorMzValues`
-
-### `filterPrecursorCharge`
-
-### `filterPrecursorScan`
-
-### `filterRt`
-
-### `ionCount`
-
-### `isCentroided`
-
-### `reset`
-
-### `split`
-
-### `[[`
-
-### `[[<-`
-
-### `uniqueMsLevels`
