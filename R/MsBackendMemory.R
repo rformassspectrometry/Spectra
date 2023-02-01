@@ -62,7 +62,7 @@ setMethod("show", "MsBackendMemory", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackendMemory",
-          function(object, data, ...) {
+          function(object, data, peaksVariables = c("mz", "intensity"), ...) {
               if (missing(data)) data <- data.frame()
               if (is(data, "DataFrame"))
                   data <- as(data, "data.frame")
@@ -70,16 +70,20 @@ setMethod("backendInitialize", signature = "MsBackendMemory",
                   stop("'data' has to be a 'DataFrame' or 'data.frame'")
               if (nrow(data)) {
                   data$dataStorage <- "<memory>"
+                  peaksVariables <- intersect(peaksVariables, colnames(data))
                   ## Check for *peaks data* columns
-                  peaks_cols <- .df_peaks_columns_data_frame(data)
+                  ok <- peaksVariables %in% .df_peaks_columns_data_frame(data)
+                  if (any(!ok))
+                      warning("'peaksVariables' ",
+                              paste0(peaksVariables[!ok], collapse = ", "),
+                              " don't have the correct number of elements.")
+                  peaksVariables <- peaksVariables[ok]
                   ## Get m/z and intensity and put into peaksData
-                  p_cols <- intersect(peaks_cols, c("mz", "intensity"))
+                  p_cols <- intersect(peaksVariables, c("mz", "intensity"))
                   if (length(p_cols)) {
                       object@peaksData <- do.call(
                           mapply, c(list(FUN = cbind, SIMPLIFY = FALSE),
                                     data[p_cols]))
-                      for (p in p_cols)
-                          data[[p]] <- NULL
                   } else {
                       emat <- matrix(
                           numeric(), ncol = 2, nrow = 0,
@@ -89,13 +93,12 @@ setMethod("backendInitialize", signature = "MsBackendMemory",
                   }
                   ## Get any other potential peaks columns and put them
                   ## into peaksDataFrame
-                  p_cols <- peaks_cols[!peaks_cols %in% c("mz", "intensity")]
+                  p_cols <- peaksVariables[!peaksVariables %in%
+                                           c("mz", "intensity")]
                   if (length(p_cols)) {
                       object@peaksDataFrame <- do.call(
                           mapply, c(list(FUN = cbind.data.frame,
                                          SIMPLIFY = FALSE), data[p_cols]))
-                      for (p in p_cols)
-                          data[[p]] <- NULL
                   } else
                       object@peaksDataFrame <- list()
               } else {
@@ -103,7 +106,7 @@ setMethod("backendInitialize", signature = "MsBackendMemory",
                   object@peaksDataFrame <- list()
               }
               object@spectraData <- data[, !colnames(data) %in%
-                                           c("mz", "intensity")]
+                                           peaksVariables]
               validObject(object)
               object
           })

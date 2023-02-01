@@ -59,7 +59,8 @@ test_that(".df_spectra_data works", {
 
     tmp <- test_df
     tmp$pk_anno <- list(c("a", "b", "c"), c("", "d"), letters[12:15])
-    be <- backendInitialize(be, tmp)
+    be <- backendInitialize(
+        be, tmp, peaksVariables = c("mz", "intensity", "pk_anno"))
     expect_true(length(be@peaksDataFrame) == 3)
     res <- .df_spectra_data(be)
     expect_equal(res$msLevel, test_df$msLevel)

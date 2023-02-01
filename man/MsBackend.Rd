@@ -245,7 +245,7 @@ MsBackendHdf5Peaks()
 
 MsBackendMemory()
 
-\S4method{backendInitialize}{MsBackendMemory}(object, data, ...)
+\S4method{backendInitialize}{MsBackendMemory}(object, data, peaksVariables = c("mz", "intensity"), ...)
 
 MsBackendMzR()
 }
@@ -343,6 +343,12 @@ or set.}
 \item{data}{For \code{backendInitialize}: \code{DataFrame} with spectrum
 metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
 but needs to be provided for \code{MsBackendDataFrame} backends.}
+
+\item{peaksVariables}{For \code{backendInitialize} for \code{MsBackendMemory}:
+\code{character} specifying which of the columns of the provided \code{data}
+contain \emph{peaks variables} (i.e. information for individual mass
+peaks). Defaults to \code{peaksVariables = c("mz", "intensity")}. \code{"mz"}
+and \code{"intensity"} should \strong{always} be specified.}
 }
 \value{
 See documentation of respective function.
@@ -722,8 +728,17 @@ performance comparison.
 New objects can be created with the \code{MsBackendMemory()} and
 \code{MsBackendDataFrame()} function, respectively. The backend can be
 subsequently initialized with the \code{backendInitialize} method, taking a
-\code{DataFrame} (or \code{data.frame}) with the MS data as parameter. Suggested
-columns of this \code{DataFrame} are:
+\code{DataFrame} (or \code{data.frame}) with the MS data as first parameter \code{data}.
+\code{backendInitialize} for \code{MsBackendMemory} has a second parameter
+\code{peaksVariables} (default \code{peaksVariables = c("mz", "intensity")} that
+allows to specify which of the columns in the provided data frame should
+be considered as a \emph{peaks variable} (i.e. information of an individual
+mass peak) rather than a \emph{spectra variable} (i.e. information of an
+individual spectrum). Note that it is important to also include \code{"mz"} and
+\code{"intensity"} in \code{peaksVariables} as these would otherwise be considered
+to be spectra variables!
+
+Suggested columns of this \code{DataFrame} are:
 \itemize{
 \item \code{"msLevel"}: \code{integer} with MS levels of the spectra.
 \item \code{"rt"}: \code{numeric} with retention times of the spectra.
@@ -911,9 +926,12 @@ spectraData(be, c("precursorMz", "rtime", "msLevel"))
 ## The `MsBackendMemory` uses a more efficient internal data organization
 ## and allows also adding arbitrary additional peaks variables (annotations)
 ## Below we thus add a column "peak_ann" with arbitrary names/ids for each
-## peak
+## peak and add the name of this columnt to the `peaksVariables` parameter
+## of the `backendInitialize` method (in addition to `"mz"` and
+## `"intensity"` that should **always** be specified.
 data$peak_ann <- list(c("a", "", "d"), c("", "d", "e", "f"), c("h", "i"))
-be <- backendInitialize(MsBackendMemory(), data)
+be <- backendInitialize(MsBackendMemory(), data,
+    peaksVariables = c("mz", "intensity", "peak_ann"))
 be
 
 spectraVariables(be)
