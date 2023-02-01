@@ -58,6 +58,14 @@ test_that("backendInitialize,MsBackendMemory works", {
                                  yet_another_col = c("a", "b")),
                       data.frame(other_col = 1:4,
                                  yet_another_col = letters[3:6])))
+
+    ## backendInitialize with an empty data frame
+    df <- test_df[integer(), ]
+    res <- backendInitialize(MsBackendMemory(), data = df)
+    expect_true(validObject(res))
+    expect_true(length(res) == 0L)
+    expect_equal(res$mz, IRanges::NumericList(compress = FALSE))
+    expect_equal(spectraData(res)$mz, IRanges::NumericList(compress = FALSE))
 })
 
 test_that("show,MsBackendMemory works", {

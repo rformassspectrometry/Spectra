@@ -1,5 +1,10 @@
 # Spectra 1.9
 
+## Changes in 1.9.8
+
+- Support `setBackend` with `MsBackendMemory` for an empty `Spectra` object
+  (issue [#268](https://github.com/rformassspectrometry/Spectra/issues/268)).
+
 ## Changes in 1.9.7
 
 - Add a vignette describing how to build a `MsBackend` from scratch (issue

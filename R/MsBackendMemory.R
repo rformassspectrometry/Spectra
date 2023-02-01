@@ -102,7 +102,8 @@ setMethod("backendInitialize", signature = "MsBackendMemory",
                   object@peaksData <- list()
                   object@peaksDataFrame <- list()
               }
-              object@spectraData <- data
+              object@spectraData <- data[, !colnames(data) %in%
+                                           c("mz", "intensity")]
               validObject(object)
               object
           })

@@ -63,6 +63,17 @@ test_that("setBackend,Spectra works", {
     expect_identical(dataStorage(res), dataStorage(sps))
     expect_identical(dataOrigin(res), dataStorage(sps))
 
+    ## Empty backends
+    e <- sps[integer()]
+    e2 <- setBackend(e, MsBackendDataFrame())
+    expect_true(length(e2) == 0)
+    expect_s4_class(e2@backend, "MsBackendDataFrame")
+    expect_equal(e2$mz, IRanges::NumericList(compress = FALSE))
+    e3 <- setBackend(e, MsBackendMemory())
+    expect_true(length(e3) == 0)
+    expect_s4_class(e3@backend, "MsBackendMemory")
+    expect_equal(e3$mz, IRanges::NumericList(compress = FALSE))
+
     ## Use a different factor.
     res <- setBackend(sps, MsBackendDataFrame(), f = df$fact)
     expect_true(ncol(sps@backend@spectraData) < ncol(res@backend@spectraData))
