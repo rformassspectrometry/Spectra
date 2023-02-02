@@ -4,6 +4,8 @@
 
 - Support `setBackend` with `MsBackendMemory` for an empty `Spectra` object
   (issue [#268](https://github.com/rformassspectrometry/Spectra/issues/268)).
+- Disable automatic detection of peak variables for `MsBackendMemory` (issue
+  [#269](https://github.com/rformassspectrometry/Spectra/issues/269)).
 
 ## Changes in 1.9.7
 
