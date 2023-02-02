@@ -136,16 +136,19 @@ test_that(".df_combine works", {
     expect_equal(res@peaksData[4:5], be2@peaksData[1:2])
 
     ## With peaksDataFrame
-    be$peak_ann <- list(letters[1:3], letters[1:2], letters[1:4])
-    expect_error(.df_combine(list(be, be2)), "peak variables")
-    res <- .df_combine(list(be, be))
+    tmp <- test_df
+    tmp$peak_ann <- list(letters[1:3], letters[1:2], letters[1:4])
+    be3 <- backendInitialize(
+        be, tmp, peaksVariables = c("mz", "intensity", "peak_ann"))
+    expect_error(.df_combine(list(be, be3)), "peak variables")
+    res <- .df_combine(list(be3, be3))
     expect_s4_class(res, "MsBackendMemory")
     expect_equal(length(res), length(be) * 2)
     expect_equal(res$msLevel, rep(test_df$msLevel, 2))
     expect_equal(res@peaksData[1:3], be@peaksData[1:3])
     expect_equal(res@peaksData[4:6], be@peaksData[1:3])
-    expect_equal(res@peaksDataFrame[1:3], be@peaksDataFrame[1:3])
-    expect_equal(res@peaksDataFrame[4:6], be@peaksDataFrame[1:3])
+    expect_equal(res@peaksDataFrame[1:3], be3@peaksDataFrame[1:3])
+    expect_equal(res@peaksDataFrame[4:6], be3@peaksDataFrame[1:3])
 
     be3 <- new("MsBackendDataFrame")
     be3 <- backendInitialize(be3, test_df)

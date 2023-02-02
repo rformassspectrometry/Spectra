@@ -441,7 +441,8 @@ New backend classes \strong{must} extend the base \code{MsBackend} class and
 \item \code{[}: subset the backend. Only subsetting by element (\emph{row}/\code{i}) is
 allowed
 \item \code{$}, \verb{$<-}: access or set/add a single spectrum variable (column) in the
-backend.
+backend. Using a \code{value} of \code{NULL} should allow deleting the specified
+spectra variable.
 \item \code{[[}, \verb{[[<-}: access or set/add a single spectrum variable (column) in the
 backend. The default implementation uses \code{$}, thus these methods don't have
 to be implemented for new classes extending \code{MsBackend}.
@@ -452,8 +453,14 @@ spectra (with \code{NA_integer_} if not available).
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
 for the memory backend or read the spectra header data for the
-\code{MsBackendMzR} backend). This method has to ensure to set the
-spectra variable \code{dataStorage} correctly.
+\code{MsBackendMzR} backend). Parameters can be defined freely for each
+backend, depending on what is needed to initialize the backend. It
+is however suggested to also support a parameter \code{data} that can be
+used to submit the full spectra data as a \code{DataFrame} to the
+backend. This would allow the backend to be also usable for the
+\code{\link[=setBackend]{setBackend()}} function from \code{Spectra}.
+The \code{backendInitialize} method has also to ensure to correctly set
+spectra variable \code{dataStorage}.
 \item \code{backendMerge}: merges (combines) \code{MsBackend} objects into a single
 instance. All objects to be merged have to be of the same type (e.g.
 \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
@@ -736,7 +743,10 @@ be considered as a \emph{peaks variable} (i.e. information of an individual
 mass peak) rather than a \emph{spectra variable} (i.e. information of an
 individual spectrum). Note that it is important to also include \code{"mz"} and
 \code{"intensity"} in \code{peaksVariables} as these would otherwise be considered
-to be spectra variables!
+to be spectra variables! Also, while it is possible to change the values of
+existing peaks variables using the \verb{$<-} method, this method does \strong{not}
+allow to add new peaks variables to an existing \code{MsBackendMemory}. New
+peaks variables should be added using the \code{backendInitialize} method.
 
 Suggested columns of this \code{DataFrame} are:
 \itemize{
@@ -910,7 +920,6 @@ peaksData(be)
 ## List available peaks variables
 peaksVariables(be)
 
-
 ## Use columns to extract specific peaks variables. Below we extract m/z and
 ## intensity values, but in reversed order to the default.
 peaksData(be, columns = c("intensity", "mz"))
@@ -939,8 +948,19 @@ spectraVariables(be)
 ## peak_ann is also listed as a peaks variable
 peaksVariables(be)
 
-## The additional peaks variable can be accessed using the peaksData function
+## The additional peaks variable can be accessed using the peaksData
+## function
 peaksData(be, "peak_ann")
+
+## The $<- method can be used to replace values of an existing peaks
+## variable. It is important that the number of elements matches the
+## number of peaks per spectrum.
+be$peak_ann <- list(1:3, 1:4, 1:2)
+
+## A peaks variable can again be removed by setting it to NULL
+be$peak_ann <- NULL
+
+peaksVariables(be)
 }
 \author{
 Johannes Rainer, Sebastian Gibb, Laurent Gatto

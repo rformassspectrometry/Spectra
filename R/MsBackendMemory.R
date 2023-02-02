@@ -554,7 +554,8 @@ setReplaceMethod("spectraData", "MsBackendMemory", function(object, value) {
         if (length(object) && nrow(value) != length(object))
             stop("'value' has to be a 'DataFrame' with ",
                  length(object), " rows.")
-        object <- backendInitialize(new("MsBackendMemory"), value)
+        object <- backendInitialize(new("MsBackendMemory"), value,
+                                    peaksVariables = peaksVariables(object))
     } else stop("'value' is expected to be a 'DataFrame'")
     object
 })
@@ -604,13 +605,17 @@ setMethod("$", "MsBackendMemory", function(x, name) {
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendMemory", function(x, name, value) {
     lv <- length(value)
-    ## Replace mz or intensity: number of peaks have to match existing data.
-    if (lv && name %in% c("mz", "intensity")) {
+    if (lv && name %in% peaksVariables(x)) {
         if (is.list(value) || inherits(value, "SimpleList")) {
             lns <- lengths(x)
             if (length(value) == length(x) && all(lns == lengths(value))) {
-                for (i in seq_along(value))
-                    x@peaksData[[i]][, name] <- value[[i]]
+                if (name %in% c("mz", "intensity")) {
+                    for (i in seq_along(value))
+                        x@peaksData[[i]][, name] <- value[[i]]
+                } else {
+                    for (i in seq_along(value))
+                        x@peaksDataFrame[[i]][[name]] <- value[[i]]
+                }
                 validObject(x)
                 return(x)
             } else
@@ -619,27 +624,16 @@ setReplaceMethod("$", "MsBackendMemory", function(x, name, value) {
                      "number of peaks per spectrum.")
 
         }
-        else stop("mz and intensity values are expected to be provided as a ",
-                  "list with numeric values")
+        else stop("'", name, "' is a peaks variable and 'value' is thus ",
+                  "expected to be a list of vectors with replacement values")
     }
-    ## Is it a potential peak annotation?
-    if (is.list(value) || inherits(value, "SimpleList")) {
-        lns <- lengths(x)
-        if (length(value) == length(x) && all(lns == lengths(value))) {
-            if (length(x@peaksDataFrame)) {
-                for (i in seq_along(value))
-                    x@peaksDataFrame[[i]][[name]] <- value[[i]]
-            } else {
-                value <- lapply(value, function(z) {
-                    df <- data.frame(z, check.names = FALSE)
-                    colnames(df) <- name
-                    df
-                })
-                x@peaksDataFrame <- value
-            }
-            validObject(x)
-            return(x)
-        }
+    ## Support deleting a peaks variable (except m/z and intensity)
+    if (is.null(value) && name %in% peaksVariables(x) &&
+        !name %in% c("mz", "intensity")) {
+        for (i in seq_along(x@peaksDataFrame))
+            x@peaksDataFrame[[i]][[name]] <- value
+        validObject(x)
+        return(x)
     }
     ## Otherwise just add.
     x@spectraData[[name]] <- value
