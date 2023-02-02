@@ -49,6 +49,17 @@ test_that("Spectra,character works", {
     expect_identical(rtime(res), rtime(res_2))
 
     show(res)
+
+    ## Empty character
+    res <- Spectra(character(), backend = MsBackendMzR())
+    expect_s4_class(res, "Spectra")
+    expect_s4_class(res@backend, "MsBackendMzR")
+    expect_true(length(res) == 0)
+
+    res <- Spectra(character(), backend = MsBackendDataFrame())
+    expect_s4_class(res, "Spectra")
+    expect_s4_class(res@backend, "MsBackendDataFrame")
+    expect_true(length(res) == 0)
 })
 
 test_that("setBackend,Spectra works", {

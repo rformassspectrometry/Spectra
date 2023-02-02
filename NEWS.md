@@ -6,6 +6,8 @@
   (issue [#268](https://github.com/rformassspectrometry/Spectra/issues/268)).
 - Disable automatic detection of peak variables for `MsBackendMemory` (issue
   [#269](https://github.com/rformassspectrometry/Spectra/issues/269)).
+- Fix issue in `Spectra` with empty `character` (issue
+  [#267](https://github.com/rformassspectrometry/Spectra/issues/267)).
 
 ## Changes in 1.9.7
 

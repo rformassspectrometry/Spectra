@@ -1333,9 +1333,13 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            source = MsBackendMzR(),
                                            backend = source,
                                            ..., BPPARAM = bpparam()) {
-    callNextMethod(object = object, processingQueue = processingQueue,
-                   metadata = metadata, source = source, backend = backend,
-                   ..., BPPARAM = BPPARAM)
+    if (!length(object))
+        Spectra(backend, metadata = metadata,
+                processingQueue = processingQueue)
+    else
+        callNextMethod(object = object, processingQueue = processingQueue,
+                       metadata = metadata, source = source, backend = backend,
+                       ..., BPPARAM = BPPARAM)
 })
 
 #' @rdname Spectra
