@@ -177,11 +177,15 @@
 #' **have** to implement the following methods:
 #'
 #' - `[`: subset the backend. Only subsetting by element (*row*/`i`) is
-#'   allowed
+#'   allowed. Parameter `i` should support `integer` indices and `logical`
+#'   and should throw an error if `i` is out of bounds. The
+#'   `MsCoreUtils::i2index` could be used to check the input `i`.
+#'   For `i = integer()` an empty backend should be returned.
 #'
 #' - `$`, `$<-`: access or set/add a single spectrum variable (column) in the
 #'   backend. Using a `value` of `NULL` should allow deleting the specified
-#'   spectra variable.
+#'   spectra variable. An error should be thrown if the spectra variable is not
+#'   available.
 #'
 #' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
 #'   backend. The default implementation uses `$`, thus these methods don't have

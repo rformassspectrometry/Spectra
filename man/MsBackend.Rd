@@ -439,10 +439,14 @@ New backend classes \strong{must} extend the base \code{MsBackend} class and
 \strong{have} to implement the following methods:
 \itemize{
 \item \code{[}: subset the backend. Only subsetting by element (\emph{row}/\code{i}) is
-allowed
+allowed. Parameter \code{i} should support \code{integer} indices and \code{logical}
+and should throw an error if \code{i} is out of bounds. The
+\code{MsCoreUtils::i2index} could be used to check the input \code{i}.
+For \code{i = integer()} an empty backend should be returned.
 \item \code{$}, \verb{$<-}: access or set/add a single spectrum variable (column) in the
 backend. Using a \code{value} of \code{NULL} should allow deleting the specified
-spectra variable.
+spectra variable. An error should be thrown if the spectra variable is not
+available.
 \item \code{[[}, \verb{[[<-}: access or set/add a single spectrum variable (column) in the
 backend. The default implementation uses \code{$}, thus these methods don't have
 to be implemented for new classes extending \code{MsBackend}.

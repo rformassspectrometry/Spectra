@@ -41,6 +41,14 @@ test_that("[", {
     b <- spectraData(res[3L])
     rownames(b) <- NULL
     expect_equal(a, b)
+
+    ## Out of range should throw error
+    expect_error(be[0])
+
+    ## integer(0) should return an empty object
+    res <- be[integer()]
+    expect_s4_class(res, class(be)[1L])
+    expect_true(length(res) == 0L)
 })
 
 #' dropNASpectraVariables: only for not read-only

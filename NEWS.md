@@ -1,6 +1,6 @@
 # Spectra 1.9
 
-## Changes in 1.9.8
+## Changes in 1.9.9
 
 - Support `setBackend` with `MsBackendMemory` for an empty `Spectra` object
   (issue [#268](https://github.com/rformassspectrometry/Spectra/issues/268)).
@@ -8,6 +8,11 @@
   [#269](https://github.com/rformassspectrometry/Spectra/issues/269)).
 - Fix issue in `Spectra` with empty `character` (issue
   [#267](https://github.com/rformassspectrometry/Spectra/issues/267)).
+
+## Changes in 1.9.8
+
+- Address comments from Michele Stravs regarding the `MsBackend` vignette.
+- Add additional tests checking for `MsBackend` compliance.
 
 ## Changes in 1.9.7
 

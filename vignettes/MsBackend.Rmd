@@ -94,6 +94,16 @@ General conventions for MS data of a `Spectra` are:
   `r Biocpkg("MsBackendMassbank")` package).
 
 
+## Notes on parallel processing
+
+The default parallel processing of `Spectra` splits backends by their
+`dataStorage` and performs the processing in parallel on the subsets. Not all
+backends will support such parallel processing (or any parallel processing) and
+thus unexpected errors might occur (depending on the user's settings). A new
+function allowing to evaluate the parallel processing capabilities of a backend
+will be added to help avoiding such issues.
+
+
 # API
 
 The `MsBackend` class defines core methods that have to be implemented by a MS
@@ -152,7 +162,6 @@ setValidity("MsBackendTest", function(object) {
                "rows of 'spectraVars'")
     NULL
 })
-
 ```
 
 We can now create an instance of our new class with the `MsBackendTest`
@@ -550,7 +559,10 @@ The `[` method allows to subset `MsBackend` objects. This operation is expected
 to reduce a `MsBackend` object to the selected spectra. The method should
 support to subset by indices or logical vectors and should also support
 duplicating elements (i.e. when duplicated indices are used) as well as to
-subset in arbitrary order.
+subset in arbitrary order. An error should be thrown if indices are out of
+bounds, but the method should also support returning an empty backend with
+`[integer()]`. Note that the `MsCoreUtils::i2index` function can be used to
+check for correct input (and convert the input to an `integer` index).
 
 Below we implement a possible `[` for our test backend class. We ignore the
 parameters `j` from the definition of the `[` generic, since we treat our data
@@ -558,6 +570,7 @@ to be one-dimensional (with each spectrum being one element).
 
 ```{r}
 setMethod("[", "MsBackendTest", function(x, i, j, ..., drop = FALSE) {
+    i <- MsCoreUtils::i2index(i, length = length(x))
     x@spectraVars <- x@spectraVars[i, ]
     x@mz <- x@mz[i]
     x@intensity <- x@intensity[i]
@@ -618,8 +631,10 @@ backend. Parameter `name` should allow to name the spectra variable to
 return. Each `MsBackend` **must** support extracting the core spectra variables
 with this method (even if no data might be available for that variable). In our
 example implementation below we make use of the `spectraData` method, but more
-efficient implementations might be available as well (with less subsetting
-operations).
+efficient implementations might be available as well (that would not require to
+first subset/create a `DataFrame` with the full data and to then subset that
+again). Also, the `$` method should check if the requested spectra variable is
+available and should throw an error otherwise.
 
 ```{r}
 setMethod("$", "MsBackendTest", function(x, name) {
