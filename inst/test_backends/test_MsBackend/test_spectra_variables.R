@@ -284,3 +284,12 @@ test_that("tic", {
     expect_type(res, "double")
     expect_identical(length(res), length(be))
 })
+
+test_that("$ works", {
+    res <- be$msLevel
+    expect_true(is.integer(res))
+    expect_equal(length(res), length(be))
+
+    ## Error if spectra variable not available
+    expect_error(be$doesnt_exist)
+})

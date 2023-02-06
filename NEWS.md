@@ -1,5 +1,10 @@
 # Spectra 1.9
 
+## Changes in 1.9.8
+
+- Address comments from Michele Stravs regarding the `MsBackend` vignette.
+- Add additional tests checking for `MsBackend` compliance.
+
 ## Changes in 1.9.7
 
 - Add a vignette describing how to build a `MsBackend` from scratch (issue
