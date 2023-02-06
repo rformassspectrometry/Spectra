@@ -66,7 +66,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -570,9 +570,13 @@ of m/z or intensity values.</p></li>
 
 <p>New backend classes <strong>must</strong> extend the base <code>MsBackend</code> class and
 <strong>have</strong> to implement the following methods:</p><ul><li><p><code>[</code>: subset the backend. Only subsetting by element (<em>row</em>/<code>i</code>) is
-allowed</p></li>
+allowed. Parameter <code>i</code> should support <code>integer</code> indices and <code>logical</code>
+and should throw an error if <code>i</code> is out of bounds. The
+<code><a href="https://rdrr.io/pkg/MsCoreUtils/man/i2index.html" class="external-link">MsCoreUtils::i2index</a></code> could be used to check the input <code>i</code>.
+For <code>i = integer()</code> an empty backend should be returned.</p></li>
 <li><p><code>$</code>, <code>$&lt;-</code>: access or set/add a single spectrum variable (column) in the
-backend.</p></li>
+backend. An error should be thrown if the spectra variable is not
+available.</p></li>
 <li><p><code>[[</code>, <code>[[&lt;-</code>: access or set/add a single spectrum variable (column) in the
 backend. The default implementation uses <code>$</code>, thus these methods don't have
 to be implemented for new classes extending <code>MsBackend</code>.</p></li>
