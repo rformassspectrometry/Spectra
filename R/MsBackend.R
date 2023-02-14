@@ -744,7 +744,7 @@
 #' ## The `MsBackendMemory` uses a more efficient internal data organization
 #' ## and allows also adding arbitrary additional peaks variables (annotations)
 #' ## Below we thus add a column "peak_ann" with arbitrary names/ids for each
-#' ## peak and add the name of this columnt to the `peaksVariables` parameter
+#' ## peak and add the name of this column to the `peaksVariables` parameter
 #' ## of the `backendInitialize` method (in addition to `"mz"` and
 #' ## `"intensity"` that should **always** be specified.
 #' data$peak_ann <- list(c("a", "", "d"), c("", "d", "e", "f"), c("h", "i"))
