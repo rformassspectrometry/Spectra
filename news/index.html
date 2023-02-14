@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,42 +56,49 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.9" id="spectra-19">Spectra 1.9<a class="anchor" aria-label="anchor" href="#spectra-19"></a></h2>
 <div class="section level3">
-<h3 id="changes-in-1-9">Changes in 1.9.8<a class="anchor" aria-label="anchor" href="#changes-in-1-9"></a></h3>
+<h3 id="changes-in-1-9">Changes in 1.9.9<a class="anchor" aria-label="anchor" href="#changes-in-1-9"></a></h3>
+<ul><li>Refactor <code>setBackend</code> to only split and merge backends if necessary and to not change <code>dataOrigin</code> of the original backend.</li>
+<li>Support <code>setBackend</code> with <code>MsBackendMemory</code> for an empty <code>Spectra</code> object (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/268" class="external-link">#268</a>).</li>
+<li>Disable automatic detection of peak variables for <code>MsBackendMemory</code> (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/269" class="external-link">#269</a>).</li>
+<li>Fix issue in <code>Spectra</code> with empty <code>character</code> (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/267" class="external-link">#267</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-in-1-9-1">Changes in 1.9.8<a class="anchor" aria-label="anchor" href="#changes-in-1-9-1"></a></h3>
 <ul><li>Address comments from Michele Stravs regarding the <code>MsBackend</code> vignette.</li>
 <li>Add additional tests checking for <code>MsBackend</code> compliance.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-9-1">Changes in 1.9.7<a class="anchor" aria-label="anchor" href="#changes-in-1-9-1"></a></h3>
+<h3 id="changes-in-1-9-2">Changes in 1.9.7<a class="anchor" aria-label="anchor" href="#changes-in-1-9-2"></a></h3>
 <ul><li>Add a vignette describing how to build a <code>MsBackend</code> from scratch (issue <a href="https://github.com/RforMassSpectrometry/Spectra/issues/262" class="external-link">#262</a>).</li>
 <li>Extend unit test suite to evaluate validity of <code>MsBackend</code> implementations.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-9-2">Changes in 1.9.6<a class="anchor" aria-label="anchor" href="#changes-in-1-9-2"></a></h3>
+<h3 id="changes-in-1-9-3">Changes in 1.9.6<a class="anchor" aria-label="anchor" href="#changes-in-1-9-3"></a></h3>
 <ul><li>Replace <code>&lt;=</code> with <code>between</code> calls.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-9-3">Changes in 1.9.5<a class="anchor" aria-label="anchor" href="#changes-in-1-9-3"></a></h3>
+<h3 id="changes-in-1-9-4">Changes in 1.9.5<a class="anchor" aria-label="anchor" href="#changes-in-1-9-4"></a></h3>
 <ul><li>Fix bug in <code><a href="../reference/hidden_aliases.html">containsMz()</a></code> when <code>mz</code> isn’t ordered (see <a href="https://github.com/RforMassSpectrometry/Spectra/issues/258" class="external-link">#258</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-9-4">Changes in 1.9.4<a class="anchor" aria-label="anchor" href="#changes-in-1-9-4"></a></h3>
+<h3 id="changes-in-1-9-5">Changes in 1.9.4<a class="anchor" aria-label="anchor" href="#changes-in-1-9-5"></a></h3>
 <ul><li>Fix error when extracting spectra variables from a <code>MsBackendMzR</code> of length 0.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-9-5">Changes in 1.9.3<a class="anchor" aria-label="anchor" href="#changes-in-1-9-5"></a></h3>
+<h3 id="changes-in-1-9-6">Changes in 1.9.3<a class="anchor" aria-label="anchor" href="#changes-in-1-9-6"></a></h3>
 <ul><li>Add <code>chunkapply</code> function to split a <code>Spectra</code> into chunks and stepwise apply a function <code>FUN</code> to each.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-9-6">Changes in 1.9.2<a class="anchor" aria-label="anchor" href="#changes-in-1-9-6"></a></h3>
+<h3 id="changes-in-1-9-7">Changes in 1.9.2<a class="anchor" aria-label="anchor" href="#changes-in-1-9-7"></a></h3>
 <ul><li>
 <code>combineSpectra</code> on <code>Spectra</code> with read-only backends change backend to an <code>MsBackendMemory</code> instead of an <code>MsBackendDataFrame</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-9-7">Changes in 1.9.1<a class="anchor" aria-label="anchor" href="#changes-in-1-9-7"></a></h3>
+<h3 id="changes-in-1-9-8">Changes in 1.9.1<a class="anchor" aria-label="anchor" href="#changes-in-1-9-8"></a></h3>
 <ul><li>Expand documentation on <code>compareSpectra</code> for GNPS-like similarity scoring.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-9-8">Changes in 1.9.0<a class="anchor" aria-label="anchor" href="#changes-in-1-9-8"></a></h3>
+<h3 id="changes-in-1-9-9">Changes in 1.9.0<a class="anchor" aria-label="anchor" href="#changes-in-1-9-9"></a></h3>
 <ul><li>Bioconductor 3.17 developmental version.</li>
 </ul></div>
 </div>

@@ -66,7 +66,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -370,7 +370,7 @@ MsBackendHdf5Peaks()
 MsBackendMemory()
 
 # S4 method for MsBackendMemory
-backendInitialize(object, data, ...)
+backendInitialize(object, data, peaksVariables = c("mz", "intensity"), ...)
 
 MsBackendMzR()</code></pre></div>
     </div>
@@ -524,6 +524,14 @@ or set.</p></dd>
 metadata/data. This parameter can be empty for <code>MsBackendMzR</code> backends
 but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></dd>
 
+
+<dt>peaksVariables</dt>
+<dd><p>For <code>backendInitialize</code> for <code>MsBackendMemory</code>:
+<code>character</code> specifying which of the columns of the provided <code>data</code>
+contain <em>peaks variables</em> (i.e. information for individual mass
+peaks). Defaults to <code>peaksVariables = c("mz", "intensity")</code>. <code>"mz"</code>
+and <code>"intensity"</code> should <strong>always</strong> be specified.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -575,7 +583,8 @@ and should throw an error if <code>i</code> is out of bounds. The
 <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/i2index.html" class="external-link">MsCoreUtils::i2index</a></code> could be used to check the input <code>i</code>.
 For <code>i = integer()</code> an empty backend should be returned.</p></li>
 <li><p><code>$</code>, <code>$&lt;-</code>: access or set/add a single spectrum variable (column) in the
-backend. An error should be thrown if the spectra variable is not
+backend. Using a <code>value</code> of <code>NULL</code> should allow deleting the specified
+spectra variable. An error should be thrown if the spectra variable is not
 available.</p></li>
 <li><p><code>[[</code>, <code>[[&lt;-</code>: access or set/add a single spectrum variable (column) in the
 backend. The default implementation uses <code>$</code>, thus these methods don't have
@@ -587,8 +596,14 @@ spectra (with <code>NA_integer_</code> if not available).</p></li>
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
 for the memory backend or read the spectra header data for the
-<code>MsBackendMzR</code> backend). This method has to ensure to set the
-spectra variable <code>dataStorage</code> correctly.</p></li>
+<code>MsBackendMzR</code> backend). Parameters can be defined freely for each
+backend, depending on what is needed to initialize the backend. It
+is however suggested to also support a parameter <code>data</code> that can be
+used to submit the full spectra data as a <code>DataFrame</code> to the
+backend. This would allow the backend to be also usable for the
+<code><a href="hidden_aliases.html">setBackend()</a></code> function from <code>Spectra</code>.
+The <code>backendInitialize</code> method has also to ensure to correctly set
+spectra variable <code>dataStorage</code>.</p></li>
 <li><p><code>backendMerge</code>: merges (combines) <code>MsBackend</code> objects into a single
 instance. All objects to be merged have to be of the same type (e.g.
 <code>MsBackendDataFrame()</code>).</p></li>
@@ -856,8 +871,19 @@ performance comparison.</p>
 <p>New objects can be created with the <code>MsBackendMemory()</code> and
 <code>MsBackendDataFrame()</code> function, respectively. The backend can be
 subsequently initialized with the <code>backendInitialize</code> method, taking a
-<code>DataFrame</code> (or <code>data.frame</code>) with the MS data as parameter. Suggested
-columns of this <code>DataFrame</code> are:</p><ul><li><p><code>"msLevel"</code>: <code>integer</code> with MS levels of the spectra.</p></li>
+<code>DataFrame</code> (or <code>data.frame</code>) with the MS data as first parameter <code>data</code>.
+<code>backendInitialize</code> for <code>MsBackendMemory</code> has a second parameter
+<code>peaksVariables</code> (default <code>peaksVariables = c("mz", "intensity")</code> that
+allows to specify which of the columns in the provided data frame should
+be considered as a <em>peaks variable</em> (i.e. information of an individual
+mass peak) rather than a <em>spectra variable</em> (i.e. information of an
+individual spectrum). Note that it is important to also include <code>"mz"</code> and
+<code>"intensity"</code> in <code>peaksVariables</code> as these would otherwise be considered
+to be spectra variables! Also, while it is possible to change the values of
+existing peaks variables using the <code>$&lt;-</code> method, this method does <strong>not</strong>
+allow to add new peaks variables to an existing <code>MsBackendMemory</code>. New
+peaks variables should be added using the <code>backendInitialize</code> method.</p>
+<p>Suggested columns of this <code>DataFrame</code> are:</p><ul><li><p><code>"msLevel"</code>: <code>integer</code> with MS levels of the spectra.</p></li>
 <li><p><code>"rt"</code>: <code>numeric</code> with retention times of the spectra.</p></li>
 <li><p><code>"acquisitionNum"</code>: <code>integer</code> with the acquisition number of the spectrum.</p></li>
 <li><p><code>"scanIndex"</code>: <code>integer</code> with the index of the scan/spectrum within the
@@ -1039,7 +1065,6 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksVariables</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mz"        "intensity"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Use columns to extract specific peaks variables. Below we extract m/z and</span></span></span>
 <span class="r-in"><span><span class="co">## intensity values, but in reversed order to the default.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksData</a></span><span class="op">(</span><span class="va">be</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"intensity"</span>, <span class="st">"mz"</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -1071,9 +1096,12 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory` uses a more efficient internal data organization</span></span></span>
 <span class="r-in"><span><span class="co">## and allows also adding arbitrary additional peaks variables (annotations)</span></span></span>
 <span class="r-in"><span><span class="co">## Below we thus add a column "peak_ann" with arbitrary names/ids for each</span></span></span>
-<span class="r-in"><span><span class="co">## peak</span></span></span>
+<span class="r-in"><span><span class="co">## peak and add the name of this columnt to the `peaksVariables` parameter</span></span></span>
+<span class="r-in"><span><span class="co">## of the `backendInitialize` method (in addition to `"mz"` and</span></span></span>
+<span class="r-in"><span><span class="co">## `"intensity"` that should **always** be specified.</span></span></span>
 <span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">peak_ann</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">""</span>, <span class="st">"d"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"d"</span>, <span class="st">"e"</span>, <span class="st">"f"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"h"</span>, <span class="st">"i"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu"><a href="hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="fu">MsBackendMemory</span><span class="op">(</span><span class="op">)</span>, <span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu"><a href="hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="fu">MsBackendMemory</span><span class="op">(</span><span class="op">)</span>, <span class="va">data</span>,</span></span>
+<span class="r-in"><span>    peaksVariables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mz"</span>, <span class="st">"intensity"</span>, <span class="st">"peak_ann"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">be</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MsBackendMemory with 3 spectra</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     msLevel     rtime scanIndex</span>
@@ -1099,7 +1127,8 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksVariables</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mz"        "intensity" "peak_ann" </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## The additional peaks variable can be accessed using the peaksData function</span></span></span>
+<span class="r-in"><span><span class="co">## The additional peaks variable can be accessed using the peaksData</span></span></span>
+<span class="r-in"><span><span class="co">## function</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksData</a></span><span class="op">(</span><span class="va">be</span>, <span class="st">"peak_ann"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      peak_ann</span>
@@ -1119,6 +1148,17 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "h"     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "i"     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## The $&lt;- method can be used to replace values of an existing peaks</span></span></span>
+<span class="r-in"><span><span class="co">## variable. It is important that the number of elements matches the</span></span></span>
+<span class="r-in"><span><span class="co">## number of peaks per spectrum.</span></span></span>
+<span class="r-in"><span><span class="va">be</span><span class="op">$</span><span class="va">peak_ann</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## A peaks variable can again be removed by setting it to NULL</span></span></span>
+<span class="r-in"><span><span class="va">be</span><span class="op">$</span><span class="va">peak_ann</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">peaksVariables</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mz"        "intensity"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
