@@ -82,9 +82,7 @@ NULL
 #' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())` would
 #' for example change the backend or `sps` to the *in-memory*
 #' `MsBackendDataFrame`. Note that it is not possible to change the backend
-#' to a *read-only* backend (such as the [MsBackendMzR()] backend). `setBackend`
-#' changes the `"dataOrigin"` variable of the resulting `Spectra` object to the
-#' `"dataStorage"` variable of the backend before the switch.
+#' to a *read-only* backend (such as the [MsBackendMzR()] backend).
 #'
 #' The definition of the function is:
 #' `setBackend(object, backend, ..., f = dataStorage(object),
@@ -1333,9 +1331,13 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            source = MsBackendMzR(),
                                            backend = source,
                                            ..., BPPARAM = bpparam()) {
-    callNextMethod(object = object, processingQueue = processingQueue,
-                   metadata = metadata, source = source, backend = backend,
-                   ..., BPPARAM = BPPARAM)
+    if (!length(object))
+        Spectra(backend, metadata = metadata,
+                processingQueue = processingQueue)
+    else
+        callNextMethod(object = object, processingQueue = processingQueue,
+                       metadata = metadata, source = source, backend = backend,
+                       ..., BPPARAM = BPPARAM)
 })
 
 #' @rdname Spectra
@@ -1355,43 +1357,47 @@ setMethod("Spectra", "ANY", function(object, processingQueue = list(),
 #' @rdname Spectra
 #'
 #' @exportMethod setBackend
-setMethod("setBackend", c("Spectra", "MsBackend"),
-          function(object, backend, f = dataStorage(object), ...,
-                   BPPARAM = bpparam()) {
-              backend_class <- class(object@backend)
-              if (isReadOnly(backend))
-                  stop(class(backend), " is read-only. Changing backend to a ",
-                       "read-only backend is not supported.")
-              if (!length(object)) {
-                  bknds <- backendInitialize(
-                      backend, data = spectraData(object@backend))
-              } else {
-                  f <- force(factor(f, levels = unique(f)))
-                  if (length(f) != length(object))
-                      stop("length of 'f' has to match the length of 'object'")
-                  data_storage <- object@backend$dataStorage
-                  bknds <- bplapply(
-                      split(object@backend, f = f),
-                      function(z, ...) {
-                          backendInitialize(backend,
-                                            data = spectraData(z), ...,
-                                            BPPARAM = SerialParam())
-                      }, ..., BPPARAM = BPPARAM)
-                  bknds <- backendMerge(bknds)
-                  ## That below ensures the backend is returned in its original
-                  ## order - unsplit does unfortunately not work.
-                  if (is.unsorted(f))
-                      bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-                                                  use.names = FALSE))]
-                  bknds$dataOrigin <- data_storage
-              }
-              object@backend <- bknds
-              object@processing <- .logging(object@processing,
-                                            "Switch backend from ",
-                                            backend_class, " to ",
-                                            class(object@backend))
-              object
-          })
+setMethod(
+    "setBackend", c("Spectra", "MsBackend"),
+    function(object, backend, f = dataStorage(object), ...,
+             BPPARAM = bpparam()) {
+        backend_class <- class(object@backend)
+        if (isReadOnly(backend))
+            stop(class(backend), " is read-only. Changing backend to a ",
+                 "read-only backend is not supported.")
+        if (!length(object)) {
+            bknds <- backendInitialize(
+                backend, data = spectraData(object@backend))
+        } else {
+            f <- force(factor(f, levels = unique(f)))
+            if (length(f) != length(object))
+                stop("length of 'f' has to match the length of 'object'")
+            if (length(levels(f)) == 1L) {
+                bknds <- backendInitialize(
+                    backend, data = spectraData(object@backend), ...)
+            } else {
+                bknds <- bplapply(
+                    split(object@backend, f = f),
+                    function(z, ...) {
+                        backendInitialize(backend,
+                                          data = spectraData(z), ...,
+                                          BPPARAM = SerialParam())
+                    }, ..., BPPARAM = BPPARAM)
+                bknds <- backendMerge(bknds)
+                ## That below ensures the backend is returned in its original
+                ## order - unsplit does unfortunately not work.
+                if (is.unsorted(f))
+                    bknds <- bknds[order(unlist(split(seq_along(bknds), f),
+                                                use.names = FALSE))]
+            }
+        }
+        object@backend <- bknds
+        object@processing <- .logging(object@processing,
+                                      "Switch backend from ",
+                                      backend_class, " to ",
+                                      class(object@backend))
+        object
+    })
 
 #' @rdname Spectra
 #'

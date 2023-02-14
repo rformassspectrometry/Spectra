@@ -1,6 +1,6 @@
 #' # each base::graphics plot function must be wrapped by an anonymous function
 #' # that could be called by `vdiffr::expect_doppelganger()`
-#' Run test_active_file(file = "tests/testthat/test_plotting-functions.R")
+#' Run devtools::test_active_file(file = "tests/testthat/test_plotting-functions.R")
 
 ## context("test_plotting-functions")
 

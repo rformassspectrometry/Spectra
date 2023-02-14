@@ -49,6 +49,17 @@ test_that("Spectra,character works", {
     expect_identical(rtime(res), rtime(res_2))
 
     show(res)
+
+    ## Empty character
+    res <- Spectra(character(), backend = MsBackendMzR())
+    expect_s4_class(res, "Spectra")
+    expect_s4_class(res@backend, "MsBackendMzR")
+    expect_true(length(res) == 0)
+
+    res <- Spectra(character(), backend = MsBackendDataFrame())
+    expect_s4_class(res, "Spectra")
+    expect_s4_class(res@backend, "MsBackendDataFrame")
+    expect_true(length(res) == 0)
 })
 
 test_that("setBackend,Spectra works", {
@@ -61,7 +72,18 @@ test_that("setBackend,Spectra works", {
                      res@backend@spectraData$fact)
     expect_identical(rtime(res), rtime(sps))
     expect_identical(dataStorage(res), dataStorage(sps))
-    expect_identical(dataOrigin(res), dataStorage(sps))
+    expect_identical(dataOrigin(res), dataOrigin(sps))
+
+    ## Empty backends
+    e <- sps[integer()]
+    e2 <- setBackend(e, MsBackendDataFrame())
+    expect_true(length(e2) == 0)
+    expect_s4_class(e2@backend, "MsBackendDataFrame")
+    expect_equal(e2$mz, IRanges::NumericList(compress = FALSE))
+    e3 <- setBackend(e, MsBackendMemory())
+    expect_true(length(e3) == 0)
+    expect_s4_class(e3@backend, "MsBackendMemory")
+    expect_equal(e3$mz, IRanges::NumericList(compress = FALSE))
 
     ## Use a different factor.
     res <- setBackend(sps, MsBackendDataFrame(), f = df$fact)

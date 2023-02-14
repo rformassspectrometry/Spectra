@@ -257,33 +257,6 @@ Note that we would get the same result by using the `as` method to coerce a
 as(sps, "SimpleList")
 ```
 
-Certain backends (such as the `MsBackendMemory`) support also additional peaks
-variables. Below we define *peak annotations* for each individual peak in the
-peak matrices and assign that to a variable called `peak_anno` to the `Spectra`
-object. Importantly, for peak variables, a value needs to be assigned to each
-peak, even if it is `NA` or `empty`. In the example below we define a `list` of
-`character` vectors with arbitrary IDs/names for each peak.
-
-```{r}
-sps2 <- sps
-sps2$peak_anno <- list(c("a", NA_character_, "b", "c", "d"),
-                       c("a", "b", "c", "d", "e", "f", "g"),
-                       c("a", "b", "c", "d", "e", "f", "g", "h", "i"))
-peaksVariables(sps2)
-```
-
-We can use the `peaksData` to extract the values for these additional peak
-variable.
-
-```{r}
-## Peak annotations for the first spectrum
-peaksData(sps2, "peak_anno")[[1L]]
-## Peak annotations for the second spectrum
-peaksData(sps2, "peak_anno")[[2L]]
-```
-
-This works however **only** for `Spectra` that use a `MsBackendMemory` backend.
-
 The `spectraData` function returns a `DataFrame` with the full data for each
 spectrum (except m/z and intensity values), or with selected spectra variables
 (which can be specified with the `columns` parameter). Below we extract the
@@ -320,6 +293,52 @@ backends:
 dataStorage(sps)
 head(basename(dataStorage(sps_sciex)))
 ```
+
+Certain backends (such as the `MsBackendMemory`) support also additional peaks
+variables. At present, these must already be present when the backend gets
+initialized. In future a dedicated function allowing to add peaks variables will
+be available. Below we thus first extract the full data (including peaks
+variables) from the `sps` spectra object and add a column `"peak_anno"` with
+*peak annotations* for each individual peak. Importantly, for peak variables,
+a value needs to be assigned to each individual peak, even it it is `NA` (the
+`lengths` of the new peak variable must match `lengths` of `mz` or `intensity`,
+i.e. the number of peaks per spectrum).
+
+```{r}
+## Extract the full data from a spectrum
+spd <- spectraData(sps, columns = union(spectraVariables(sps),
+                                        peaksVariables(sps)))
+## Add a new column with a *annotation* for each peak
+spd$peak_anno <- list(c("a", NA_character_, "b", "c", "d"),
+                      c("a", "b", "c", "d", "e", "f", "g"),
+                      c("a", "b", "c", "d", "e", "f", "g", "h", "i"))
+## lengths have to match:
+lengths(spd$peak_anno)
+lengths(spd$mz)
+```
+
+The parameter `peaksVariables` (currently only available for `MsBackendMemory`)
+allows to define which of the columns from an input data contain peaks variables
+(in our case `"mz"`, `"intensity"` and the additional `"peak_anno"` column).
+
+```{r}
+sps2 <- Spectra(spd, backend = MsBackendMemory(),
+                peaksVariables = c("mz", "intensity", "peak_anno"))
+peaksVariables(sps2)
+```
+
+We can use the `peaksData` to extract the values for these additional peak
+variable.
+
+```{r}
+## Peak annotations for the first spectrum
+peaksData(sps2, "peak_anno")[[1L]]
+## Peak annotations for the second spectrum
+peaksData(sps2, "peak_anno")[[2L]]
+```
+
+Similar to spectra variables it is also possible to replace values for
+**existing** peaks variables using the `$<-` function.
 
 
 ## Filtering, subsetting and merging

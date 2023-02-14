@@ -102,6 +102,12 @@
 #'     lower and upper m/z boundary. For `filterPrecursorMzValues`: `numeric`
 #'     with the m/z value(s) to filter the object.
 #'
+#' @param peaksVariables For `backendInitialize` for `MsBackendMemory`:
+#'     `character` specifying which of the columns of the provided `data`
+#'     contain *peaks variables* (i.e. information for individual mass
+#'     peaks). Defaults to `peaksVariables = c("mz", "intensity")`. `"mz"`
+#'     and `"intensity"` should **always** be specified.
+#'
 #' @param ppm For `filterPrecursorMzValues`: `numeric(1)` with the m/z-relative
 #'     maximal acceptable difference for a m/z to be considered matching. See
 #'     [closest()] for details.
@@ -177,7 +183,8 @@
 #'   For `i = integer()` an empty backend should be returned.
 #'
 #' - `$`, `$<-`: access or set/add a single spectrum variable (column) in the
-#'   backend. An error should be thrown if the spectra variable is not
+#'   backend. Using a `value` of `NULL` should allow deleting the specified
+#'   spectra variable. An error should be thrown if the spectra variable is not
 #'   available.
 #'
 #' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
@@ -192,8 +199,14 @@
 #'   supposed to be called rights after creating an instance of the
 #'   backend class and should prepare the backend (e.g. set the data
 #'   for the memory backend or read the spectra header data for the
-#'   `MsBackendMzR` backend). This method has to ensure to set the
-#'   spectra variable `dataStorage` correctly.
+#'   `MsBackendMzR` backend). Parameters can be defined freely for each
+#'   backend, depending on what is needed to initialize the backend. It
+#'   is however suggested to also support a parameter `data` that can be
+#'   used to submit the full spectra data as a `DataFrame` to the
+#'   backend. This would allow the backend to be also usable for the
+#'   [setBackend()] function from `Spectra`.
+#'   The `backendInitialize` method has also to ensure to correctly set
+#'   spectra variable `dataStorage`.
 #'
 #' - `backendMerge`: merges (combines) `MsBackend` objects into a single
 #'   instance. All objects to be merged have to be of the same type (e.g.
@@ -512,8 +525,20 @@
 #' New objects can be created with the `MsBackendMemory()` and
 #' `MsBackendDataFrame()` function, respectively. The backend can be
 #' subsequently initialized with the `backendInitialize` method, taking a
-#' `DataFrame` (or `data.frame`) with the MS data as parameter. Suggested
-#' columns of this `DataFrame` are:
+#' `DataFrame` (or `data.frame`) with the MS data as first parameter `data`.
+#' `backendInitialize` for `MsBackendMemory` has a second parameter
+#' `peaksVariables` (default `peaksVariables = c("mz", "intensity")` that
+#' allows to specify which of the columns in the provided data frame should
+#' be considered as a *peaks variable* (i.e. information of an individual
+#' mass peak) rather than a *spectra variable* (i.e. information of an
+#' individual spectrum). Note that it is important to also include `"mz"` and
+#' `"intensity"` in `peaksVariables` as these would otherwise be considered
+#' to be spectra variables! Also, while it is possible to change the values of
+#' existing peaks variables using the `$<-` method, this method does **not**
+#' allow to add new peaks variables to an existing `MsBackendMemory`. New
+#' peaks variables should be added using the `backendInitialize` method.
+#'
+#' Suggested columns of this `DataFrame` are:
 #'
 #' - `"msLevel"`: `integer` with MS levels of the spectra.
 #' - `"rt"`: `numeric` with retention times of the spectra.
@@ -704,7 +729,6 @@
 #' ## List available peaks variables
 #' peaksVariables(be)
 #'
-#'
 #' ## Use columns to extract specific peaks variables. Below we extract m/z and
 #' ## intensity values, but in reversed order to the default.
 #' peaksData(be, columns = c("intensity", "mz"))
@@ -720,9 +744,12 @@
 #' ## The `MsBackendMemory` uses a more efficient internal data organization
 #' ## and allows also adding arbitrary additional peaks variables (annotations)
 #' ## Below we thus add a column "peak_ann" with arbitrary names/ids for each
-#' ## peak
+#' ## peak and add the name of this column to the `peaksVariables` parameter
+#' ## of the `backendInitialize` method (in addition to `"mz"` and
+#' ## `"intensity"` that should **always** be specified.
 #' data$peak_ann <- list(c("a", "", "d"), c("", "d", "e", "f"), c("h", "i"))
-#' be <- backendInitialize(MsBackendMemory(), data)
+#' be <- backendInitialize(MsBackendMemory(), data,
+#'     peaksVariables = c("mz", "intensity", "peak_ann"))
 #' be
 #'
 #' spectraVariables(be)
@@ -730,8 +757,19 @@
 #' ## peak_ann is also listed as a peaks variable
 #' peaksVariables(be)
 #'
-#' ## The additional peaks variable can be accessed using the peaksData function
+#' ## The additional peaks variable can be accessed using the peaksData
+#' ## function
 #' peaksData(be, "peak_ann")
+#'
+#' ## The $<- method can be used to replace values of an existing peaks
+#' ## variable. It is important that the number of elements matches the
+#' ## number of peaks per spectrum.
+#' be$peak_ann <- list(1:3, 1:4, 1:2)
+#'
+#' ## A peaks variable can again be removed by setting it to NULL
+#' be$peak_ann <- NULL
+#'
+#' peaksVariables(be)
 NULL
 
 setClass(
