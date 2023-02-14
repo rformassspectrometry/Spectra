@@ -2,6 +2,8 @@
 
 ## Changes in 1.9.9
 
+- Refactor `setBackend` to only split and merge backends if necessary and
+  to not change `dataOrigin` of the original backend.
 - Support `setBackend` with `MsBackendMemory` for an empty `Spectra` object
   (issue [#268](https://github.com/rformassspectrometry/Spectra/issues/268)).
 - Disable automatic detection of peak variables for `MsBackendMemory` (issue

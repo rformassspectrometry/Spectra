@@ -72,7 +72,7 @@ test_that("setBackend,Spectra works", {
                      res@backend@spectraData$fact)
     expect_identical(rtime(res), rtime(sps))
     expect_identical(dataStorage(res), dataStorage(sps))
-    expect_identical(dataOrigin(res), dataStorage(sps))
+    expect_identical(dataOrigin(res), dataOrigin(sps))
 
     ## Empty backends
     e <- sps[integer()]

@@ -716,9 +716,7 @@ method that takes an instance of the new backend as second parameter
 \code{backend}. A call to \code{setBackend(sps, backend = MsBackendDataFrame())} would
 for example change the backend or \code{sps} to the \emph{in-memory}
 \code{MsBackendDataFrame}. Note that it is not possible to change the backend
-to a \emph{read-only} backend (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}} backend). \code{setBackend}
-changes the \code{"dataOrigin"} variable of the resulting \code{Spectra} object to the
-\code{"dataStorage"} variable of the backend before the switch.
+to a \emph{read-only} backend (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}} backend).
 
 The definition of the function is:
 \code{setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())} and its parameters are:
