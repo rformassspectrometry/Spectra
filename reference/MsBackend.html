@@ -66,7 +66,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.10</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -340,6 +340,9 @@ spectraVariables(object)
 split(x, f, drop = FALSE, ...)
 
 # S4 method for MsBackend
+supportsSetBackend(object, ...)
+
+# S4 method for MsBackend
 tic(object, initial = TRUE)
 
 # S4 method for MsBackend
@@ -601,7 +604,9 @@ backend, depending on what is needed to initialize the backend. It
 is however suggested to also support a parameter <code>data</code> that can be
 used to submit the full spectra data as a <code>DataFrame</code> to the
 backend. This would allow the backend to be also usable for the
-<code><a href="hidden_aliases.html">setBackend()</a></code> function from <code>Spectra</code>.
+<code><a href="hidden_aliases.html">setBackend()</a></code> function from <code>Spectra</code>. Note that eventually (for
+<em>read-only</em> backends) also the <code>supportsSetBackend</code> method would
+need to be implemented to return <code>TRUE</code>.
 The <code>backendInitialize</code> method has also to ensure to correctly set
 spectra variable <code>dataStorage</code>.</p></li>
 <li><p><code>backendMerge</code>: merges (combines) <code>MsBackend</code> objects into a single
@@ -822,6 +827,17 @@ default not returned by the <code>spectraVariables,Spectra</code> method).</p></
 parameter <code>f</code>). The default method for <code>MsBackend</code> uses <code><a href="https://rdrr.io/r/base/split.html" class="external-link">split.default()</a></code>,
 thus backends extending <code>MsBackend</code> don't necessarily need to implement
 this method.</p></li>
+<li><p><code>supportsSetBackend</code>: whether a <code>MsBackend</code> supports the <code>Spectra</code>
+<code>setBackend</code> function. For a <code>MsBackend</code> to support <code>setBackend</code> it needs
+to have a parameter called <code>data</code> in its <code>backendInitialize</code> method that
+support receiving all spectra data as a <code>DataFrame</code> from another backend
+and to initialize the backend with this data. In general <em>read-only</em>
+backends do not support <code>setBackend</code> hence, the default implementation
+of <code>supportsSetBackend</code> returns <code>!isReadOnly(object)</code>. If a read-only
+backend would support the <code>setBackend</code> and being initialized with a
+<code>DataFrame</code> an implementation of this method for that backend could
+be defined that returns <code>TRUE</code> (see also the <code>MsBackend</code> vignette for
+details and examples).</p></li>
 <li><p><code>tic</code>: gets the total ion current/count (sum of signal of a
 spectrum) for all spectra in <code>object</code>. By default, the value
 reported in the original raw data file is returned. For an empty
@@ -1096,7 +1112,7 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory` uses a more efficient internal data organization</span></span></span>
 <span class="r-in"><span><span class="co">## and allows also adding arbitrary additional peaks variables (annotations)</span></span></span>
 <span class="r-in"><span><span class="co">## Below we thus add a column "peak_ann" with arbitrary names/ids for each</span></span></span>
-<span class="r-in"><span><span class="co">## peak and add the name of this columnt to the `peaksVariables` parameter</span></span></span>
+<span class="r-in"><span><span class="co">## peak and add the name of this column to the `peaksVariables` parameter</span></span></span>
 <span class="r-in"><span><span class="co">## of the `backendInitialize` method (in addition to `"mz"` and</span></span></span>
 <span class="r-in"><span><span class="co">## `"intensity"` that should **always** be specified.</span></span></span>
 <span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">peak_ann</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">""</span>, <span class="st">"d"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"d"</span>, <span class="st">"e"</span>, <span class="st">"f"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"h"</span>, <span class="st">"i"</span><span class="op">)</span><span class="op">)</span></span></span>
