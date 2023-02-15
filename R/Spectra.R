@@ -1383,7 +1383,7 @@ setMethod(
             stop(class(backend), " does not support 'setBackend'")
         if (!length(object)) {
             bknds <- backendInitialize(
-                backend, data = spectraData(object@backend))
+                backend, data = spectraData(object@backend), ...)
         } else {
             f <- force(factor(f, levels = unique(f)))
             if (length(f) != length(object))
