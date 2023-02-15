@@ -12,6 +12,7 @@
 \alias{[,MsBackend-method}
 \alias{uniqueMsLevels,MsBackend-method}
 \alias{MsBackendMemory-class}
+\alias{supportsSetBackend}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
@@ -78,6 +79,7 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{split,MsBackend,ANY-method}
+\alias{supportsSetBackend,MsBackend-method}
 \alias{tic,MsBackend-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
@@ -222,6 +224,8 @@
 \S4method{spectraVariables}{MsBackend}(object)
 
 \S4method{split}{MsBackend,ANY}(x, f, drop = FALSE, ...)
+
+\S4method{supportsSetBackend}{MsBackend}(object, ...)
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
@@ -462,7 +466,9 @@ backend, depending on what is needed to initialize the backend. It
 is however suggested to also support a parameter \code{data} that can be
 used to submit the full spectra data as a \code{DataFrame} to the
 backend. This would allow the backend to be also usable for the
-\code{\link[=setBackend]{setBackend()}} function from \code{Spectra}.
+\code{\link[=setBackend]{setBackend()}} function from \code{Spectra}. Note that eventually (for
+\emph{read-only} backends) also the \code{supportsSetBackend} method would
+need to be implemented to return \code{TRUE}.
 The \code{backendInitialize} method has also to ensure to correctly set
 spectra variable \code{dataStorage}.
 \item \code{backendMerge}: merges (combines) \code{MsBackend} objects into a single
@@ -683,6 +689,17 @@ default not returned by the \verb{spectraVariables,Spectra} method).
 parameter \code{f}). The default method for \code{MsBackend} uses \code{\link[=split.default]{split.default()}},
 thus backends extending \code{MsBackend} don't necessarily need to implement
 this method.
+\item \code{supportsSetBackend}: whether a \code{MsBackend} supports the \code{Spectra}
+\code{setBackend} function. For a \code{MsBackend} to support \code{setBackend} it needs
+to have a parameter called \code{data} in its \code{backendInitialize} method that
+support receiving all spectra data as a \code{DataFrame} from another backend
+and to initialize the backend with this data. In general \emph{read-only}
+backends do not support \code{setBackend} hence, the default implementation
+of \code{supportsSetBackend} returns \code{!isReadOnly(object)}. If a read-only
+backend would support the \code{setBackend} and being initialized with a
+\code{DataFrame} an implementation of this method for that backend could
+be defined that returns \code{TRUE} (see also the \code{MsBackend} vignette for
+details and examples).
 \item \code{tic}: gets the total ion current/count (sum of signal of a
 spectrum) for all spectra in \code{object}. By default, the value
 reported in the original raw data file is returned. For an empty
@@ -939,7 +956,7 @@ spectraData(be, c("precursorMz", "rtime", "msLevel"))
 ## The `MsBackendMemory` uses a more efficient internal data organization
 ## and allows also adding arbitrary additional peaks variables (annotations)
 ## Below we thus add a column "peak_ann" with arbitrary names/ids for each
-## peak and add the name of this columnt to the `peaksVariables` parameter
+## peak and add the name of this column to the `peaksVariables` parameter
 ## of the `backendInitialize` method (in addition to `"mz"` and
 ## `"intensity"` that should **always** be specified.
 data$peak_ann <- list(c("a", "", "d"), c("", "d", "e", "f"), c("h", "i"))

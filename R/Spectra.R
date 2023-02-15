@@ -79,10 +79,16 @@ NULL
 #'
 #' The backend of a `Spectra` object can be changed with the `setBackend`
 #' method that takes an instance of the new backend as second parameter
-#' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())` would
-#' for example change the backend or `sps` to the *in-memory*
-#' `MsBackendDataFrame`. Note that it is not possible to change the backend
-#' to a *read-only* backend (such as the [MsBackendMzR()] backend).
+#' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())`
+#' would for example change the backend of `sps` to the *in-memory*
+#' `MsBackendDataFrame`. Changing to a backend is only supported if that
+#' backend has a `data` parameter in its `backendInitialize` method and if
+#' `supportsSetBackend` returns `TRUE` for that backend. `setBackend` will
+#' transfer the full spectra data from the originating backend as a
+#' `DataFrame` to the new backend.
+#' Most *read-only* backends do not support `setBackend`. It is for example
+#' not possible to change the backend to a *read-only* backend (such as
+#' the [MsBackendMzR()] backend).
 #'
 #' The definition of the function is:
 #' `setBackend(object, backend, ..., f = dataStorage(object),
@@ -640,9 +646,12 @@ NULL
 #'
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
 #'     section on creation of `Spectra` objects for details. For `setBackend`:
-#'     instance of [MsBackend-class]. See section on creation of `Spectra`
-#'     objects for details. For `export`: [MsBackend-class] to be used to export
-#'     the data.
+#'     instance of [MsBackend-class] that supports `setBackend` (i.e. for
+#'     which `supportsSetBackend` returns `TRUE`). Such backends have a
+#'     parameter `data` in their `backendInitialize` function that support
+#'     passing the full spectra data to the initialize method. See section on
+#'     creation of `Spectra` objects for details.
+#'     For `export`: [MsBackend-class] to be used to export the data.
 #'
 #' @param binSize For `bin`: `numeric(1)` defining the size for the m/z bins.
 #'     Defaults to `binSize = 1`.
@@ -903,6 +912,14 @@ NULL
 #' ## keep all of the data in memory.
 #' sciex_im <- setBackend(sciex, MsBackendMemory())
 #' sciex_im
+#'
+#' ## The `MsBackendMemory()` supports the `setBackend` method:
+#' supportsSetBackend(MsBackendMemory())
+#'
+#' ## Thus, it is possible to change to that backend with `setBackend`. Most
+#' ## read-only backends however don't support that, such as the
+#' ## `MsBackendMzR` and `setBackend` would fail to change to that backend.
+#' supportsSetBackend(MsBackendMzR())
 #'
 #' ## The on-disk object `sciex` is light-weight, because it does not keep the
 #' ## MS peak data in memory. The `sciex_im` object in contrast keeps all the
@@ -1362,9 +1379,8 @@ setMethod(
     function(object, backend, f = dataStorage(object), ...,
              BPPARAM = bpparam()) {
         backend_class <- class(object@backend)
-        if (isReadOnly(backend))
-            stop(class(backend), " is read-only. Changing backend to a ",
-                 "read-only backend is not supported.")
+        if (!supportsSetBackend(backend))
+            stop(class(backend), " does not support 'setBackend'")
         if (!length(object)) {
             bknds <- backendInitialize(
                 backend, data = spectraData(object@backend))

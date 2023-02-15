@@ -293,10 +293,12 @@ is no requirement on the input parameters for the `backendInitialize` method),
 it would be good practice for backends that are supposed to support replacing
 data, to add an optional additional parameter `data` that would allow passing
 the *complete* MS data (including m/z and intensity values) to the function as a
-`DataFrame`. This would simplify the implementation of some replacement
-methods. We thus re-implement the `backendInitialize` method supporting also to
-initialize the backend with such a data frame and we also implement a helper
-function that checks spectra variables for the correct data type.
+`DataFrame`. This would simplify the implementation of some replacement methods
+and would in addition also allow to change the backend of a `Spectra` using the
+`setBackend` to our new backend. We thus re-implement the `backendInitialize`
+method supporting also to initialize the backend with such a data frame and we
+also implement a helper function that checks spectra variables for the correct
+data type.
 
 ```{r}
 #' Helper function to check if core spectra variables have the correct
@@ -1696,6 +1698,21 @@ The `split` method should allow to split a `MsBackend` into a `list` of
 ```{r}
 setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
     split.default(x, f, drop = drop, ...)
+})
+```
+
+
+### `supportsSetBackend`
+
+Whether a `MsBackend` supports the `setBackend` method that allows to change the
+backend of a `Spectra` object from one to another backend. To support
+`setBackend` the backend needs to have a parameter `data` in its
+`backendInitialize` method that allows it to be initialized with a `DataFrame`
+containing the full spectra data. The default implementation is shown below.
+
+```{r}
+setMethod("supportsSetBackend", "MsBackend", function(object, ...) {
+    !isReadOnly(object)
 })
 ```
 

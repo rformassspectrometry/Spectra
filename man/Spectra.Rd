@@ -496,9 +496,12 @@ For \code{filterMsLevel}: the MS level to which \code{object} should be subsette
 
 \item{backend}{For \code{Spectra}: \linkS4class{MsBackend} to be used as backend. See
 section on creation of \code{Spectra} objects for details. For \code{setBackend}:
-instance of \linkS4class{MsBackend}. See section on creation of \code{Spectra}
-objects for details. For \code{export}: \linkS4class{MsBackend} to be used to export
-the data.}
+instance of \linkS4class{MsBackend} that supports \code{setBackend} (i.e. for
+which \code{supportsSetBackend} returns \code{TRUE}). Such backends have a
+parameter \code{data} in their \code{backendInitialize} function that support
+passing the full spectra data to the initialize method. See section on
+creation of \code{Spectra} objects for details.
+For \code{export}: \linkS4class{MsBackend} to be used to export the data.}
 
 \item{source}{For \code{Spectra}: instance of \linkS4class{MsBackend} that can be used
 to import spectrum data from the provided files. See section \emph{Creation
@@ -713,10 +716,16 @@ With \code{...} additional arguments can be passed to the backend's
 
 The backend of a \code{Spectra} object can be changed with the \code{setBackend}
 method that takes an instance of the new backend as second parameter
-\code{backend}. A call to \code{setBackend(sps, backend = MsBackendDataFrame())} would
-for example change the backend or \code{sps} to the \emph{in-memory}
-\code{MsBackendDataFrame}. Note that it is not possible to change the backend
-to a \emph{read-only} backend (such as the \code{\link[=MsBackendMzR]{MsBackendMzR()}} backend).
+\code{backend}. A call to \code{setBackend(sps, backend = MsBackendDataFrame())}
+would for example change the backend of \code{sps} to the \emph{in-memory}
+\code{MsBackendDataFrame}. Changing to a backend is only supported if that
+backend has a \code{data} parameter in its \code{backendInitialize} method and if
+\code{supportsSetBackend} returns \code{TRUE} for that backend. \code{setBackend} will
+transfer the full spectra data from the originating backend as a
+\code{DataFrame} to the new backend.
+Most \emph{read-only} backends do not support \code{setBackend}. It is for example
+not possible to change the backend to a \emph{read-only} backend (such as
+the \code{\link[=MsBackendMzR]{MsBackendMzR()}} backend).
 
 The definition of the function is:
 \code{setBackend(object, backend, ..., f = dataStorage(object), BPPARAM = bpparam())} and its parameters are:
@@ -1234,6 +1243,14 @@ sciex
 ## keep all of the data in memory.
 sciex_im <- setBackend(sciex, MsBackendMemory())
 sciex_im
+
+## The `MsBackendMemory()` supports the `setBackend` method:
+supportsSetBackend(MsBackendMemory())
+
+## Thus, it is possible to change to that backend with `setBackend`. Most
+## read-only backends however don't support that, such as the
+## `MsBackendMzR` and `setBackend` would fail to change to that backend.
+supportsSetBackend(MsBackendMzR())
 
 ## The on-disk object `sciex` is light-weight, because it does not keep the
 ## MS peak data in memory. The `sciex_im` object in contrast keeps all the

@@ -102,3 +102,6 @@ setGeneric("spectraVariableMapping", function(object, ...)
 
 setGeneric("uniqueMsLevels", function(object, ...)
     standardGeneric("uniqueMsLevels"))
+
+setGeneric("supportsSetBackend", function(object, ...)
+    standardGeneric("supportsSetBackend"))

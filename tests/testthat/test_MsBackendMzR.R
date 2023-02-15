@@ -560,3 +560,7 @@ test_that("dropNaSpectraVariables works with MsBackendMzR", {
     expect_true(length(spectraVariables(res)) <
                 length(spectraVariables(sciex_mzr)))
 })
+
+test_that("supportsSetBackend,MsBackendMzR", {
+    expect_false(supportsSetBackend(MsBackendMzR()))
+})

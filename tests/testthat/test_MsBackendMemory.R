@@ -884,3 +884,7 @@ test_that("tic,MsBackendMemory works", {
     expect_equal(tic(be, initial = FALSE)[1], sum(intensity(be)[[1L]]))
     expect_equal(tic(be, initial = FALSE)[2], sum(intensity(be)[[2L]]))
 })
+
+test_that("supportsSetBackend,MsBackendMemory", {
+    expect_true(supportsSetBackend(MsBackendMemory()))
+})

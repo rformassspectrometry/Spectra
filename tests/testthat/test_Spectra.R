@@ -119,7 +119,7 @@ test_that("setBackend,Spectra works", {
     expect_identical(peaksData(sps), peaksData(res))
 
     ## errors:
-    expect_error(setBackend(sps, MsBackendMzR()), "is read-only")
+    expect_error(setBackend(sps, MsBackendMzR()), "support")
     expect_error(setBackend(sps, MsBackendMzR()), "MsBackendMzR")
 })
 

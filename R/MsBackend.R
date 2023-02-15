@@ -6,6 +6,7 @@
 #' @aliases MsBackendMzR-class [,MsBackend-method
 #' @aliases uniqueMsLevels,MsBackend-method
 #' @aliases MsBackendMemory-class
+#' @aliases supportsSetBackend
 #'
 #' @description
 #'
@@ -204,7 +205,9 @@
 #'   is however suggested to also support a parameter `data` that can be
 #'   used to submit the full spectra data as a `DataFrame` to the
 #'   backend. This would allow the backend to be also usable for the
-#'   [setBackend()] function from `Spectra`.
+#'   [setBackend()] function from `Spectra`. Note that eventually (for
+#'   *read-only* backends) also the `supportsSetBackend` method would
+#'   need to be implemented to return `TRUE`.
 #'   The `backendInitialize` method has also to ensure to correctly set
 #'   spectra variable `dataStorage`.
 #'
@@ -473,6 +476,18 @@
 #'   parameter `f`). The default method for `MsBackend` uses [split.default()],
 #'   thus backends extending `MsBackend` don't necessarily need to implement
 #'   this method.
+#'
+#' - `supportsSetBackend`: whether a `MsBackend` supports the `Spectra`
+#'   `setBackend` function. For a `MsBackend` to support `setBackend` it needs
+#'   to have a parameter called `data` in its `backendInitialize` method that
+#'   support receiving all spectra data as a `DataFrame` from another backend
+#'   and to initialize the backend with this data. In general *read-only*
+#'   backends do not support `setBackend` hence, the default implementation
+#'   of `supportsSetBackend` returns `!isReadOnly(object)`. If a read-only
+#'   backend would support the `setBackend` and being initialized with a
+#'   `DataFrame` an implementation of this method for that backend could
+#'   be defined that returns `TRUE` (see also the `MsBackend` vignette for
+#'   details and examples).
 #'
 #' - `tic`: gets the total ion current/count (sum of signal of a
 #'   spectrum) for all spectra in `object`. By default, the value
@@ -1423,6 +1438,13 @@ setMethod("spectraVariables", "MsBackend", function(object) {
 #' @rdname MsBackend
 setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
     split.default(x, f, drop = drop, ...)
+})
+
+#' @exportMethod supportsSetBackend
+#'
+#' @rdname MsBackend
+setMethod("supportsSetBackend", "MsBackend", function(object, ...) {
+    !isReadOnly(object)
 })
 
 #' @exportMethod tic

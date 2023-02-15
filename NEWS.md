@@ -1,5 +1,12 @@
 # Spectra 1.9
 
+## Changes in 1.9.10
+
+- Add `supportsSetBackend` method for `MsBackend` to specify whether a backend
+  supports `setBackend,Spectra`.
+- `setBackend` checks using `supportsSetBackend` whether a backend supports
+  `setBackend`.
+
 ## Changes in 1.9.9
 
 - Refactor `setBackend` to only split and merge backends if necessary and
