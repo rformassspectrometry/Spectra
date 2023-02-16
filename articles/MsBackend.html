@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.11</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
 Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
 [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup
-[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2023-02-15 14:46:10.439235<br><strong>Compiled</strong>: Wed Feb 15 15:05:58 2023</p>
+[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2023-02-16 13:11:00.913254<br><strong>Compiled</strong>: Thu Feb 16 13:36:07 2023</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -983,11 +983,10 @@ backend) with the total number of peaks per spectrum.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 4 2 3</span></span></code></pre>
 </div>
-</div>
-<div class="section level3">
-<h3 id="isempty">
+<div class="section level4">
+<h4 id="isempty">
 <code>isEmpty</code><a class="anchor" aria-label="anchor" href="#isempty"></a>
-</h3>
+</h4>
 <p>The <code>isEmpty</code> method is expected to return for each
 spectrum the information whether it is <em>empty</em>, i.e. does not
 contain any MS peaks (and hence m/z or intensity values). The result of
@@ -1003,6 +1002,7 @@ peaks per spectrum.</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/List-class.html" class="external-link">isEmpty</a></span><span class="op">(</span><span class="va">be</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] FALSE FALSE FALSE</span></span></code></pre>
+</div>
 <div class="section level4">
 <h4 id="acquisitionnum">
 <code>acquisitionNum</code><a class="anchor" aria-label="anchor" href="#acquisitionnum"></a>
@@ -1311,11 +1311,10 @@ backend</em> should not produce any errors. For backends that support
 also data replacement also the methods listed in the next section need
 to be implemented.</p>
 </div>
-</div>
-<div class="section level3">
-<h3 id="tic">
+<div class="section level4">
+<h4 id="tic">
 <code>tic</code><a class="anchor" aria-label="anchor" href="#tic"></a>
-</h3>
+</h4>
 <p>The <code>tic</code> method should return the total ion count
 (i.e. the sum of intensities) for each spectrum. This information is
 usually also provided by the raw MS data files, but can also be
@@ -1345,6 +1344,7 @@ available).</p>
 <div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">tic</a></span><span class="op">(</span><span class="va">be</span>, initial <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 2874.6  180.1  147.5</span></span></code></pre>
+</div>
 </div>
 <div class="section level3">
 <h3 id="data-replacement-methods">Data replacement methods<a class="anchor" aria-label="anchor" href="#data-replacement-methods"></a>
@@ -2382,7 +2382,7 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] MsCoreUtils_1.11.5  IRanges_2.33.0      Spectra_1.9.10     </span></span>
+<span><span class="co">## [1] MsCoreUtils_1.11.5  IRanges_2.33.0      Spectra_1.9.11     </span></span>
 <span><span class="co">## [4] ProtGenerics_1.31.0 BiocParallel_1.33.9 S4Vectors_0.37.3   </span></span>
 <span><span class="co">## [7] BiocGenerics_0.45.0 BiocStyle_2.27.1   </span></span>
 <span><span class="co">## </span></span>
