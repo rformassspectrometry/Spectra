@@ -1,7 +1,8 @@
 #' @include hidden_aliases.R
 NULL
 
-#' @rdname hidden_aliases
+setGeneric("backendBpparam", def = function(object, ...)
+    standardGeneric("backendBpparam"))
 setGeneric("backendInitialize", def = function(object, ...)
     standardGeneric("backendInitialize"),
     valueClass = "MsBackend")
