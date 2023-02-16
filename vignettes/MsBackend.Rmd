@@ -685,7 +685,7 @@ lengths(be)
 ```
 
 
-## `isEmpty`
+### `isEmpty`
 
 The `isEmpty` method is expected to return for each spectrum the information
 whether it is *empty*, i.e. does not contain any MS peaks (and hence m/z or
@@ -989,7 +989,7 @@ backends that support also data replacement also the methods listed in the next
 section need to be implemented.
 
 
-## `tic`
+### `tic`
 
 The `tic` method should return the total ion count (i.e. the sum of intensities)
 for each spectrum. This information is usually also provided by the raw MS data
