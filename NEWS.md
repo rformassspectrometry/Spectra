@@ -1,5 +1,9 @@
 # Spectra 1.9
 
+## Changes in 1.9.11
+
+- Fix headers in `MsBackend` vignette.
+
 ## Changes in 1.9.10
 
 - Add `supportsSetBackend` method for `MsBackend` to specify whether a backend
