@@ -1,5 +1,11 @@
 # Spectra 1.9
 
+## Changes in 1.9.12
+
+- Add the `backendBpparam` method that allows to evaluate whether a `MsBackend`
+  supports the provided (or the defailt) `BiocParallel`-based parallel
+  processing setup.
+
 ## Changes in 1.9.11
 
 - Fix headers in `MsBackend` vignette.

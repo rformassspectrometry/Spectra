@@ -638,6 +638,39 @@ NULL
 #'   Parameter `msLevel.` allows to apply this to only spectra of certain MS
 #'   level(s).
 #'
+#' @section Parallel processing:
+#'
+#' Some `Spectra` functions have build-in parallel processing that can be
+#' configured by passing the parallel processing setup with the `BPPARAM`
+#' function argument (which defaults to `BPPARAM = bpparam()`, thus uses
+#' the default set up). Most functions have an additional parameter `f` that
+#' allows to define how `Spectra` will be split to perform parallel processing.
+#' This parameter `f` defaults to `f = dataStorage(object)` and hence
+#' parallel processing is performed *by file* (if a file-based, on-disk
+#' backend such as `MsBackendMzR` is used). Some `MsBackend` classes might
+#' however not support parallel processing. The `backendBpparam` function
+#' allows to evaluate wheter a `Spectra` (respectively its `MsBackend`)
+#' supports a certain parallel processing setup. Calling
+#' `backendBpparam(sps, BPPARAM = MulticoreParam(3))` on a `Spectra` object
+#' `sps` would return `SerialParam()` in case the backend of the `Spectra`
+#' object does not support parallel processing. All functions listed below
+#' use this same function to eventually disable parallel processing to
+#' avoid failure of a function call.
+#'
+#' The functions with build-in parallel processing capabilities are:
+#'
+#' - `applyProcessing`.
+#' - `combineSpectra`.
+#' - `containsMz` (does not provide a parameter `f`, but performs parallel
+#'   processing separate for `dataStorage`).
+#' - `containsNeutralLoss` (same as `containsMz`).
+#' - `estimatePrecursorIntensity`.
+#' - `setBackend`.
+#' - `Spectra` (that passes the `BPPARAM` to the `backendInitialize` of the
+#'   used `MsBackend`).
+#' - `spectrapply`.
+#'
+#'
 #' @return See individual method description for the return value.
 #'
 #' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
@@ -1364,10 +1397,11 @@ setMethod("Spectra", "ANY", function(object, processingQueue = list(),
                                      backend = source,
                                      ..., BPPARAM = bpparam()) {
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
-              backend = backendInitialize(source, object, ...,
-                                          BPPARAM = BPPARAM))
+              backend = backendInitialize(
+                  source, object, ...,
+                  BPPARAM = backendBpparam(source, BPPARAM)))
     if (class(source)[1L] != class(backend)[1L])
-        setBackend(sp, backend, ..., BPPARAM = BPPARAM)
+        setBackend(sp, backend, ..., BPPARAM = backendBpparam(backend, BPPARAM))
     else sp
 })
 
@@ -1379,6 +1413,7 @@ setMethod(
     function(object, backend, f = dataStorage(object), ...,
              BPPARAM = bpparam()) {
         backend_class <- class(object@backend)
+        BPPARAM <- backendBpparam(object@backend, BPPARAM)
         if (!supportsSetBackend(backend))
             stop(class(backend), " does not support 'setBackend'")
         if (!length(object)) {
@@ -1456,8 +1491,13 @@ setMethod("acquisitionNum", "Spectra", function(object)
 #' @rdname Spectra
 setMethod(
     "peaksData", "Spectra",
-    function(object, columns = c("mz", "intensity"), ...) {
-        SimpleList(.peaksapply(object, columns = columns, ...))
+    function(object, columns = c("mz", "intensity"), ..., BPPARAM = bpparam()) {
+        BPPARAM <- backendBpparam(object, BPPARAM)
+        if (is(BPPARAM, "SerialParam"))
+            f <- NULL
+        else f <- factor(dataStorage(object))
+        SimpleList(.peaksapply(object, f = f, columns = columns,
+                               BPPARAM = BPPARAM, ...))
 })
 
 #' @rdname Spectra
@@ -1466,7 +1506,11 @@ setMethod("peaksVariables", "Spectra", function(object)
 
 #' @importFrom methods setAs
 setAs("Spectra", "list", function(from, to) {
-    .peaksapply(from)
+    BPPARAM <- backendBpparam(from)
+    if (is(BPPARAM, "SerialParam"))
+        f <- NULL
+    else f <- factor(dataStorage(from))
+    .peaksapply(from, f = f, BPPARAM = BPPARAM)
 })
 
 setAs("Spectra", "SimpleList", function(from, to) {
@@ -1524,24 +1568,40 @@ setMethod("intensity", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 setMethod("ionCount", "Spectra", function(object) {
+    BPPARAM <- backendBpparam(object)
+    if (is(BPPARAM, "SerialParam"))
+        f <- NULL
+    else f <- factor(dataStorage(object))
     if (length(object))
-        unlist(.peaksapply(object, FUN = function(pks, ...)
-            sum(pks[, 2], na.rm = TRUE)), use.names = FALSE)
+        unlist(.peaksapply(object, f = f, BPPARAM = BPPARAM,
+                           FUN = function(pks, ...)
+                               sum(pks[, 2], na.rm = TRUE)),
+               use.names = FALSE)
     else numeric()
 })
 
 #' @rdname Spectra
 setMethod("isCentroided", "Spectra", function(object, ...) {
+    BPPARAM <- backendBpparam(object)
+    if (is(BPPARAM, "SerialParam"))
+        f <- NULL
+    else f <- factor(dataStorage(object))
     if (length(object))
-        unlist(.peaksapply(object, FUN = .peaks_is_centroided),
+        unlist(.peaksapply(object, f = f, BPPARAM = BPPARAM,
+                           FUN = .peaks_is_centroided),
                use.names = FALSE)
     else logical()
 })
 
 #' @rdname Spectra
 setMethod("isEmpty", "Spectra", function(x) {
+    BPPARAM <- backendBpparam(x)
+    if (is(BPPARAM, "SerialParam"))
+        f <- NULL
+    else f <- factor(dataStorage(x))
     if (length(x))
-        unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks) == 0),
+        unlist(.peaksapply(x, f = f, BPPARAM = BPPARAM,
+                           FUN = function(pks, ...) nrow(pks) == 0),
                use.names = FALSE)
     else logical()
 })
@@ -1590,6 +1650,7 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
     if (all(is.na(mz)))
         return(rep(NA, length(object)))
     mz <- unique(sort(mz))
+    BPPARAM <- backendBpparam(object@backend, BPPARAM)
     if (is(BPPARAM, "SerialParam"))
         .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
                 condFun = cond_fun, parallel = BPPARAM)
@@ -1609,6 +1670,7 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
 setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
                                                      tolerance = 0, ppm = 20,
                                                      BPPARAM = bpparam()) {
+    BPPARAM <- backendBpparam(object@backend, BPPARAM)
     if (is(BPPARAM, "SerialParam")) {
         .has_mz_each(object, precursorMz(object) - neutralLoss,
                      tolerance = tolerance, ppm = ppm, parallel = BPPARAM)
@@ -1639,7 +1701,8 @@ setMethod("spectrapply", "Spectra", function(object, FUN, ...,
         return(chunkapply(object, FUN, ..., chunkSize = chunkSize))
     if (!length(f))
         f <- as.factor(seq_along(object))
-    .lapply(object, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
+    .lapply(object, FUN = FUN, f = f, ...,
+            BPPARAM = backendBpparam(object@backend, BPPARAM))
 })
 
 #' @rdname Spectra
@@ -2366,4 +2429,9 @@ coreSpectraVariables <- function() .SPECTRA_DATA_COLUMNS
 #' @rdname Spectra
 setMethod("uniqueMsLevels", "Spectra", function(object, ...) {
     uniqueMsLevels(object@backend, ...)
+})
+
+#' @rdname Spectra
+setMethod("backendBpparam", "Spectra", function(object, BPPARAM = bpparam()) {
+    backendBpparam(object@backend, BPPARAM)
 })

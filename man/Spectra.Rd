@@ -96,6 +96,7 @@
 \alias{smooth,Spectra-method}
 \alias{addProcessing,Spectra-method}
 \alias{coreSpectraVariables}
+\alias{backendBpparam,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
@@ -172,7 +173,7 @@ estimatePrecursorIntensity(
 
 \S4method{acquisitionNum}{Spectra}(object)
 
-\S4method{peaksData}{Spectra}(object, columns = c("mz", "intensity"), ...)
+\S4method{peaksData}{Spectra}(object, columns = c("mz", "intensity"), ..., BPPARAM = bpparam())
 
 \S4method{peaksVariables}{Spectra}(object)
 
@@ -408,6 +409,8 @@ estimatePrecursorIntensity(
 coreSpectraVariables()
 
 \S4method{uniqueMsLevels}{Spectra}(object, ...)
+
+\S4method{backendBpparam}{Spectra}(object, BPPARAM = bpparam())
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -1211,6 +1214,41 @@ will be passed to the function. If the spectrum is in profile mode,
 ranges of successive non-0 peaks <= \code{threshold} are set to 0.
 Parameter \code{msLevel.} allows to apply this to only spectra of certain MS
 level(s).
+}
+}
+
+\section{Parallel processing}{
+
+
+Some \code{Spectra} functions have build-in parallel processing that can be
+configured by passing the parallel processing setup with the \code{BPPARAM}
+function argument (which defaults to \code{BPPARAM = bpparam()}, thus uses
+the default set up). Most functions have an additional parameter \code{f} that
+allows to define how \code{Spectra} will be split to perform parallel processing.
+This parameter \code{f} defaults to \code{f = dataStorage(object)} and hence
+parallel processing is performed \emph{by file} (if a file-based, on-disk
+backend such as \code{MsBackendMzR} is used). Some \code{MsBackend} classes might
+however not support parallel processing. The \code{backendBpparam} function
+allows to evaluate wheter a \code{Spectra} (respectively its \code{MsBackend})
+supports a certain parallel processing setup. Calling
+\code{backendBpparam(sps, BPPARAM = MulticoreParam(3))} on a \code{Spectra} object
+\code{sps} would return \code{SerialParam()} in case the backend of the \code{Spectra}
+object does not support parallel processing. All functions listed below
+use this same function to eventually disable parallel processing to
+avoid failure of a function call.
+
+The functions with build-in parallel processing capabilities are:
+\itemize{
+\item \code{applyProcessing}.
+\item \code{combineSpectra}.
+\item \code{containsMz} (does not provide a parameter \code{f}, but performs parallel
+processing separate for \code{dataStorage}).
+\item \code{containsNeutralLoss} (same as \code{containsMz}).
+\item \code{estimatePrecursorIntensity}.
+\item \code{setBackend}.
+\item \code{Spectra} (that passes the \code{BPPARAM} to the \code{backendInitialize} of the
+used \code{MsBackend}).
+\item \code{spectrapply}.
 }
 }
 

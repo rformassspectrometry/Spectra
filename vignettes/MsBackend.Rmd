@@ -1544,6 +1544,22 @@ classes, thus these methods don't have to be implemented for each new
 backend. For some backends, depending on how the data is represented or accessed
 within it, different implementations might however be more efficient.
 
+### `backendBpparam`
+
+The `backendBpparam` method is supposed to evaluate whether a provided (or the
+default) parallel processing setup is supported by the backend. Backends that
+do not support parallel processing should return `SerialParam()` instead.
+
+The default implementation is shown below.
+
+```{r}
+setMethod("backendBpparam", signature = "MsBackend",
+          function(object, BPPARAM = bpparam()) {
+              ## Return SerialParam() instead to disable parallel processing
+              BPPARAM
+          })
+
+```
 
 ### `dropNaSpectraVariables`
 
