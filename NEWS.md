@@ -3,8 +3,12 @@
 ## Changes in 1.9.12
 
 - Add the `backendBpparam` method that allows to evaluate whether a `MsBackend`
-  supports the provided (or the defailt) `BiocParallel`-based parallel
+  supports the provided (or the default) `BiocParallel`-based parallel
   processing setup.
+- Minor tweaks in the internal `.peaksapply` function to avoid splitting/merging
+  of data if not needed (e.g. if no parallel processing is performed).
+- Minor tweaks in spectra comparison functions to avoid repeated calling of
+  functions in loops.
 
 ## Changes in 1.9.11
 
