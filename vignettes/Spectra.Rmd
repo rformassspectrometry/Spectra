@@ -1017,6 +1017,11 @@ could be used instead. The default backends are:
 - `MsBackendMzR`: this backend keeps only general spectra variables in memory
   and relies on the `r Biocpkg("mzR")` package to read mass peaks (m/z and
   intensity values) from the original MS files on-demand.
+  
+- `r Biocpkg("MsBackendRawFileReader")`: implements a backend for reading
+  Orbitrap data using Thermo Fisher Scientific's NewRawFileReader .Net
+  libraries. The package is generalizing the functionality introduced by the
+  `r Biocpkg("rawrr")` package, see also [@kockmann_rawrr_2021].
 
 - `MsBackendHdf5Peaks`: similar to `MsBackendMzR` this backend reads peak data
   only on-demand from disk while all other spectra variables are kept in
