@@ -1020,7 +1020,7 @@ could be used instead. The default backends are:
   
 - `r Biocpkg("MsBackendRawFileReader")`: implements a backend for reading
   Orbitrap data using Thermo Fisher Scientific's NewRawFileReader .Net
-  libraries. The package is generalizing the functionality introduced by the
+  libraries. The package generalizes the functionality introduced by the
   `r Biocpkg("rawrr")` package, see also [@kockmann_rawrr_2021].
 
 - `MsBackendHdf5Peaks`: similar to `MsBackendMzR` this backend reads peak data
