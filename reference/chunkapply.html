@@ -122,15 +122,15 @@ length equal to <code>length(x)</code>.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1000</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 22.38413 22.37954 22.39167 22.36388 22.39081 22.36148</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 22.34142 22.35127 22.32975 22.37741 22.38224 22.37242</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## For such a calculation the vectorized `sqrt` would however be recommended</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.002   0.000   0.002 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.002   0.000   0.001 </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu">chunkapply</span><span class="op">(</span><span class="va">x</span>, <span class="va">sqrt</span>, chunkSize <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.001   0.000   0.001 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.000   0.000   0.001 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Simple example splitting a numeric vector into chunks of 200 and</span></span></span>
 <span class="r-in"><span><span class="co">## aggregating the values within the chunk using the `mean`. Due to the</span></span></span>
