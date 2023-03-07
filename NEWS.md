@@ -1,5 +1,10 @@
 # Spectra 1.9
 
+## Changes in 1.9.12
+
+- Extend the list of available `MsBackend` backends provided by other packages
+  (in the README and in the package vignette).
+
 ## Changes in 1.9.11
 
 - Fix headers in `MsBackend` vignette.
