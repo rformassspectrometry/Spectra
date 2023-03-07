@@ -108,7 +108,7 @@ The simplest way to create a `Spectra` object is by defining a `DataFrame` with
 the corresponding spectra data (using the corresponding spectra variable names
 as column names) and passing that to the `Spectra` constructor function. Below
 we create such an object for a set of 3 spectra providing their MS level,
-polarity but also additional annotations such as their ID in
+olarity but also additional annotations such as their ID in
 [HMDB](http://hmdb.ca) (human metabolome database) and their name. The m/z and
 intensity values for each spectrum have to be provided as a `list` of `numeric`
 values.
@@ -1058,16 +1058,39 @@ add support for additional data types or storage options is provided below:
 
 - `r BiocStyle::Biocpkg("MsBackendMgf")`: support for import/export of mass
   spectrometry files in mascot generic format (MGF).
-- `r BiocStyle::Biocpkg("MsBackendMassbank")`: support for import/export and
-  access of MassBank files/databases while still providing acceptable
-  performance.
-- [MsBackendSql](https://rformassspectrometry.github.io/MsBackendSql): stores
-  all MS data in a SQL database and has thus a minimal memory footprint.
-- [MsBackendHmdb](https://rformassspectrometry.github.io/MsBackendHmdb):
-  support for import of MS2 spectra from files in the xml-file format of the
-  Human Metabolome Database (HMDB).
-- [MsBackendMsp](https://rformassspectrometry.github.io/MsBackendMsp): import
-  MS2 spectra from files in MSP format.
+- `r BiocStyle::Biocpkg("MsBackendMsp")`: allows to import/export data in NIST
+  MSP format. Extends the `MsBackendDataFrame` and keeps thus all data, after
+  import, in memory.
+- `MsBackendMassbank` (package `r BiocStyle::Biocpkg("MsBackendMassbank")`):
+  allows to import/export data in MassBank text file format. Extends the
+  `MsBackendDataFrame` and keeps thus all data, after import, in memory.
+- `MsBackendMassbankSql` (package `r BiocStyle::Biocpkg("MsBackendMassbank")`):
+  allows to directly connect to a MassBank SQL database to retrieve all MS data
+  and variables. Has a minimal memory footprint because all data is retrieved
+  on-the-fly from the SQL database.
+- `r BiocStyle::Biocpkg("MsBackendSql")`: stores all MS data in a SQL database
+  and has thus a minimal memory footprint.
+- `MsBackendCompDb` (package `r BiocStyle::Biocpkg("CompoundDb")`): provides
+  access to spectra data (spectra and peaks variables) from a *CompDb*
+  database. Has a small memory footprint because all data (except precursor m/z
+  values) are retrieved on-the-fly from the database.
+- `r Biocpkg("MsBackendRawFileReader")`: implements a backend for reading MS
+  data from Thermo Fisher Scientific's raw data files using the manufacturer's
+  NewRawFileReader .Net libraries. The package generalizes the functionality
+  introduced by the `r Biocpkg("rawrr")` package, see also
+  [@kockmann_rawrr_2021].
+- `MsBackendHmdbXml` (package
+  [`MsbackendHmdb`](https://github.com/rformassspectrometry/MsBackendHmdb)):
+  allows import of MS data from xml files of the Human Metabolome Database
+  (HMDB). Extends the `MsBackendDataFrame` and keeps thus all data, after
+  import, in memory.
+- `MsBackendTimsTof` (package
+  [`MsBackendTimsTof`](https://github.com/rformassspectrometry/MsBackendTimsTof):
+  allows import of data from Bruker TimsTOF raw data files (using the
+  `opentimsr` R package).
+- `MsBackendWeizMass` (package
+  [`MsBackendWeizMass`](https://github.com/rformassspectrometry/MsBackendWeizMass):
+  allows to access MS data from WeizMass MS/MS spectral databases.
 
 
 # Handling very large data sets

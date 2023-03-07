@@ -1,6 +1,6 @@
 # Spectra 1.9
 
-## Changes in 1.9.12
+## Changes in 1.9.13
 
 - Add the `backendBpparam` method that allows to evaluate whether a `MsBackend`
   supports the provided (or the default) `BiocParallel`-based parallel
@@ -9,6 +9,11 @@
   of data if not needed (e.g. if no parallel processing is performed).
 - Minor tweaks in spectra comparison functions to avoid repeated calling of
   functions in loops.
+
+## Changes in 1.9.12
+
+- Extend the list of available `MsBackend` backends provided by other packages
+  (in the README and in the package vignette).
 
 ## Changes in 1.9.11
 
