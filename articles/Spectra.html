@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.13</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
 Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
 [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup
-[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2023-03-10 10:46:49.662706<br><strong>Compiled</strong>: Fri Mar 10 11:12:41 2023</p>
+[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2023-03-10 12:34:01.635904<br><strong>Compiled</strong>: Fri Mar 10 12:54:43 2023</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -646,8 +646,8 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Mar 10 11:12:48 2023]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Mar 10 11:12:48 2023]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Mar 10 12:54:48 2023]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Mar 10 12:54:48 2023]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -682,7 +682,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 10 11:12:48 2023]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 10 12:54:49 2023]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
@@ -774,9 +774,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 10 11:12:48 2023]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 10 11:12:49 2023]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 10 11:12:49 2023]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 10 12:54:49 2023]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 10 12:54:49 2023]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 10 12:54:49 2023]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -807,9 +807,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 10 11:12:48 2023]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 10 11:12:49 2023]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 10 11:12:49 2023]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 10 12:54:49 2023]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 10 12:54:49 2023]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 10 12:54:49 2023]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code>intensity</code> on this object will now
 return intensities that are half of the intensities of the original
@@ -970,9 +970,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 10 11:12:48 2023]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 10 11:12:49 2023]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 10 11:12:49 2023]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 10 12:54:49 2023]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 10 12:54:49 2023]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 10 12:54:49 2023]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1254,7 +1254,7 @@ exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
 the mzML standard).</p>
 <div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sps_im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="fu"><a href="../reference/hidden_aliases.html">backendInitialize</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">fl</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sps_im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">backendInitialize</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">fl</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables</a></span><span class="op">(</span><span class="va">sps_im</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "id"         "name"       "splash"     "instrument"</span></span></code></pre>
 <p>These additional variables were thus not exported. How data export is
@@ -1309,7 +1309,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1862         1   259.752       931</span></span>
 <span><span class="co">##  ... 33 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar 10 11:12:58 2023]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar 10 12:54:56 2023]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
@@ -1337,16 +1337,46 @@ perform by default parallel processing on a per-file basis (i.e. using
 the <code>dataStorage</code> variable as splitting factor).
 <code>Spectra</code> uses <em><a href="https://bioconductor.org/packages/3.17/BiocParallel" class="external-link">BiocParallel</a></em>
 for parallel processing and all functions use the default registered
-parallel processing setup of that package.</p>
+parallel processing setup of that package (see <code>?bpparam()</code>
+for more information).</p>
 <p>Note however that some backends (e.g. those using connections to SQL
 databases such as <code>MsBackendMassbank</code>,
 <code>MsBackendSql</code>) do not support parallel processing because
-the database connection can not be shared across processes. In such
-cases parallel processing should be disabled <em>globally</em> for the R
-session using <code>register(SerialParam())</code> or specifically in
-certain calls to functions of the <code>Spectra</code> package by
-passing <code>BPPARAM = SerialParam()</code> to the function
-(e.g. <code>peaksData(sps, BPPARAM = SerialParam())</code>).</p>
+the database connection can not be shared across processes. The
+<code>backendBpparam</code> function allows to evaluate whether a
+<code>Spectra</code> object (or in fact its used <code>MsBackend</code>
+class) supports a certain parallel processing setup. Calling
+<code>backendBpparam</code> on a <code>Spectra</code> with a backend
+that does not support parallel processing would (should) return
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam()</a></code>, always. Below we create an empty
+<code>Spectra</code> object and test whether that supports parallel
+processing.</p>
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/MsBackend.html">backendBpparam</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: MulticoreParam</span></span>
+<span><span class="co">##   bpisup: FALSE; bpnworkers: 4; bptasks: 0; bpjobname: BPJOB</span></span>
+<span><span class="co">##   bplog: FALSE; bpthreshold: INFO; bpstopOnError: TRUE</span></span>
+<span><span class="co">##   bpRNGseed: ; bptimeout: NA; bpprogressbar: FALSE</span></span>
+<span><span class="co">##   bpexportglobals: TRUE; bpexportvariables: FALSE; bpforceGC: FALSE</span></span>
+<span><span class="co">##   bpfallback: TRUE</span></span>
+<span><span class="co">##   bplogdir: NA</span></span>
+<span><span class="co">##   bpresultdir: NA</span></span>
+<span><span class="co">##   cluster type: FORK</span></span></code></pre>
+<p>The backend (in this case a <code>MsBackendMemory</code> thus
+supports parallel processing. We can also specifically test this for
+individual backends (and parallel setups):</p>
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MsBackend.html">backendBpparam</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">MsBackendDataFrame</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">SnowParam</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: SnowParam</span></span>
+<span><span class="co">##   bpisup: FALSE; bpnworkers: 2; bptasks: 0; bpjobname: BPJOB</span></span>
+<span><span class="co">##   bplog: FALSE; bpthreshold: INFO; bpstopOnError: TRUE</span></span>
+<span><span class="co">##   bpRNGseed: ; bptimeout: NA; bpprogressbar: FALSE</span></span>
+<span><span class="co">##   bpexportglobals: TRUE; bpexportvariables: TRUE; bpforceGC: FALSE</span></span>
+<span><span class="co">##   bpfallback: TRUE</span></span>
+<span><span class="co">##   bplogdir: NA</span></span>
+<span><span class="co">##   bpresultdir: NA</span></span>
+<span><span class="co">##   cluster type: SOCK</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -1390,7 +1420,7 @@ intensity values for the mass peaks.</p>
 use a <code>MsBackendHdf5Peaks</code> backend for data storage. The
 <code>hdf5path</code> parameter allows us to specify the storage
 location of the HDF5 file.</p>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">msdata</span><span class="op">)</span></span>
 <span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msdata/man/proteomics.html" class="external-link">proteomics</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span></span>
 <span></span>
@@ -1489,7 +1519,7 @@ only peak data of 5000 spectra at a time will be loaded into memory.</p>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R Under development (unstable) (2023-03-02 r83926)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
@@ -1515,7 +1545,7 @@ only peak data of 5000 spectra at a time will be loaded into memory.</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] msdata_0.39.0       Spectra_1.9.12      ProtGenerics_1.31.0</span></span>
+<span><span class="co">## [1] msdata_0.39.0       Spectra_1.9.13      ProtGenerics_1.31.0</span></span>
 <span><span class="co">## [4] BiocParallel_1.33.9 S4Vectors_0.37.4    BiocGenerics_0.45.0</span></span>
 <span><span class="co">## [7] BiocStyle_2.27.1   </span></span>
 <span><span class="co">## </span></span>
