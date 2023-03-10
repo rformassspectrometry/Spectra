@@ -1,5 +1,11 @@
 # Spectra 1.8
 
+## Changes in 1.8.2
+
+- Require to read headers for macOS.
+
+## Changes in 1.8.1
+
 - Extend documentation on `compareSpectra` for GNPS-like scores.
 
 ## Changes in 1.8.0
