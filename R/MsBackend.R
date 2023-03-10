@@ -7,6 +7,8 @@
 #' @aliases uniqueMsLevels,MsBackend-method
 #' @aliases MsBackendMemory-class
 #' @aliases supportsSetBackend
+#' @aliases backendBpparam
+#' @aliases backendInitialize
 #'
 #' @description
 #'
@@ -49,6 +51,11 @@
 #' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
 #'     acquisition number of the spectra to which the object should be
 #'     subsetted.
+#'
+#' @param BPPARAM for `backendBpparam`: parameter object from the
+#'     `BiocParallel` package defining the parallel processing setup.
+#'     Defaults to `BPPARAM = bpparam()`. See [bpparam()] for more
+#'     information.
 #'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
@@ -174,8 +181,9 @@
 #'
 #' @section Backend functions:
 #'
-#' New backend classes **must** extend the base `MsBackend` class and
-#' **have** to implement the following methods:
+#' New backend classes **must** extend the base `MsBackend` class will have to
+#' implement some of the following methods (see the `MsBackend` vignette for
+#' detailed description and examples):
 #'
 #' - `[`: subset the backend. Only subsetting by element (*row*/`i`) is
 #'   allowed. Parameter `i` should support `integer` indices and `logical`
@@ -195,6 +203,16 @@
 #' - `acquisitionNum`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
+#'
+#' - `backendBpparam`: return the parallel processing setup supported by
+#'   the backend class. This function can be used by any higher
+#'   level function to evaluate whether the provided parallel processing
+#'   setup (or the default one returned by `bpparam()`) is supported
+#'   by the backend. Backends not supporting parallel processing (e.g.
+#'   because they contain a connection to a database that can not be
+#'   shared across processes) should extend this method to return only
+#'   `SerialParam()` and hence disable parallel processing for (most)
+#'   methods and functions.
 #'
 #' - `backendInitialize`: initialises the backend. This method is
 #'   supposed to be called rights after creating an instance of the
@@ -805,6 +823,14 @@ setValidity("MsBackend", function(object) {
     if (is.null(msg)) TRUE
     else msg
 })
+
+#' @exportMethod backendBpparam
+#'
+#' @rdname MsBackend
+setMethod("backendBpparam", signature = "MsBackend",
+          function(object, BPPARAM = bpparam()) {
+              BPPARAM
+          })
 
 #' @exportMethod backendInitialize
 #'

@@ -7,7 +7,6 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
-\alias{backendInitialize}
 \alias{backendMerge}
 \alias{bin,numeric-method}
 \alias{containsMz}
@@ -169,8 +168,6 @@
 \alias{show,Spectra-method}
 \title{Internal page for hidden aliases}
 \usage{
-backendInitialize(object, ...)
-
 backendMerge(object, ...)
 
 \S4method{bin}{numeric}(

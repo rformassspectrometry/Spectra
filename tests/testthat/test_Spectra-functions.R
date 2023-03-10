@@ -599,6 +599,28 @@ test_that(".peaksapply works", {
                                                  list(intensity = c(0.1, Inf)))))
     res_4 <- .peaksapply(sps, spectraVariables = c("msLevel", "centroided"))
     expect_equal(res_3, res_4)
+
+    ## processing queue and f.
+    a <- sps[1:10]
+    ref <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = rep(1, 10))
+    res <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = c(3, 3, 3, 3, 2, 2, 2, 2, 1, 1))
+    expect_equal(ref, res)
+    res <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = NULL)
+    expect_equal(ref, res)
+
+    ## no processing queue and f.
+    a@processingQueue <- list()
+    ref <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = rep(1, 10))
+    res <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = c(3, 3, 3, 3, 2, 2, 2, 2, 1, 1))
+    expect_equal(ref, res)
+    res <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = NULL)
+    expect_equal(ref, res)
 })
 
 test_that(".apply_processing_queue works", {

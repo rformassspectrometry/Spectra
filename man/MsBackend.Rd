@@ -13,6 +13,9 @@
 \alias{uniqueMsLevels,MsBackend-method}
 \alias{MsBackendMemory-class}
 \alias{supportsSetBackend}
+\alias{backendBpparam}
+\alias{backendInitialize}
+\alias{backendBpparam,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
@@ -93,6 +96,8 @@
 \alias{MsBackendMzR}
 \title{Mass spectrometry data backends}
 \usage{
+\S4method{backendBpparam}{MsBackend}(object, BPPARAM = bpparam())
+
 \S4method{backendInitialize}{MsBackend}(object, ...)
 
 \S4method{backendMerge}{list}(object, ...)
@@ -255,6 +260,11 @@ MsBackendMzR()
 }
 \arguments{
 \item{object}{Object extending \code{MsBackend}.}
+
+\item{BPPARAM}{for \code{backendBpparam}: parameter object from the
+\code{BiocParallel} package defining the parallel processing setup.
+Defaults to \code{BPPARAM = bpparam()}. See \code{\link[=bpparam]{bpparam()}} for more
+information.}
 
 \item{...}{Additional arguments.}
 
@@ -439,8 +449,9 @@ of m/z or intensity values.
 \section{Backend functions}{
 
 
-New backend classes \strong{must} extend the base \code{MsBackend} class and
-\strong{have} to implement the following methods:
+New backend classes \strong{must} extend the base \code{MsBackend} class will have to
+implement some of the following methods (see the \code{MsBackend} vignette for
+detailed description and examples):
 \itemize{
 \item \code{[}: subset the backend. Only subsetting by element (\emph{row}/\code{i}) is
 allowed. Parameter \code{i} should support \code{integer} indices and \code{logical}
@@ -457,6 +468,15 @@ to be implemented for new classes extending \code{MsBackend}.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
+\item \code{backendBpparam}: return the parallel processing setup supported by
+the backend class. This function can be used by any higher
+level function to evaluate whether the provided parallel processing
+setup (or the default one returned by \code{bpparam()}) is supported
+by the backend. Backends not supporting parallel processing (e.g.
+because they contain a connection to a database that can not be
+shared across processes) should extend this method to return only
+\code{SerialParam()} and hence disable parallel processing for (most)
+methods and functions.
 \item \code{backendInitialize}: initialises the backend. This method is
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
