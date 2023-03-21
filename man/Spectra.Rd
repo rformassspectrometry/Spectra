@@ -462,9 +462,9 @@ unique. This suffix will be used to amend \code{names(y)}, while
 defining a relative, m/z-dependent, maximal accepted difference between
 m/z values for peaks to be matched.}
 
-\item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
-define a constant maximal accepted difference between m/z values for
-peaks to be matched. For \code{containsMz} and \code{filterMzValues} it can also
+\item{tolerance}{For \code{compareSpectra}, \code{containsMz} and \code{filterMzValues}:
+\code{numeric(1)} allowing to define a constant maximal accepted difference
+between m/z values for peaks to be matched. For \code{containsMz} it can also
 be of length equal \code{mz} to specify a different tolerance for each m/z
 value.}
 
@@ -945,12 +945,11 @@ the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
 \item \code{filterMzRange}: filters the object keeping only peaks in each spectrum
 that are within the provided m/z range.
-\item \code{filterMzValues}: filters the object keeping only peaks in each spectrum
+\item \code{filterMzValues}: filters the object keeping \strong{all} peaks in each spectrum
 that match the provided m/z value(s) (if parameter \code{keep = TRUE}, the
 default) or removing them (if parameter \code{keep = FALSE}). The m/z matching
 considers also the absolute \code{tolerance} and m/z-relative \code{ppm} values.
-\code{tolerance} and \code{ppm} can be either of length 1 or equal to the length of
-\code{mz} to define a different matching tolerance for each provided m/z.
+\code{tolerance} and \code{ppm} have to be of length 1.
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).

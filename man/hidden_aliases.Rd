@@ -180,7 +180,8 @@ backendMerge(object, ...)
   size = 1,
   breaks = seq(floor(min(y)), ceiling(max(y)), by = size),
   FUN = max,
-  returnMids = TRUE
+  returnMids = TRUE,
+  .check = TRUE
 )
 
 containsMz(object, ...)

@@ -1439,20 +1439,15 @@ test_that("filterMzValue,Spectra works", {
     expect_true(length(mz(res)[[2L]]) == 0)
     expect_true(length(mz(res)[[3L]]) == 0)
 
-    res <- filterMzValues(sps, mz = c(56, 12), tolerance = c(0.2, 0))
-    expect_equal(mz(res)[[1L]], c(12, 56))
-    expect_equal(unname(mz(res)[[2L]]), 56.1)
-    expect_true(length(mz(res)[[3L]]) == 0)
-
     res <- filterMzValues(sps, mz = c(56, 12), tolerance = c(0.2))
     expect_equal(mz(res)[[1L]], c(12, 56))
     expect_equal(unname(mz(res)[[2L]]), 56.1)
     expect_equal(unname(mz(res)[[3L]]), 12.1)
 
     expect_error(filterMzValues(sps, mz = c(56, 12), tolerance = c(1, 2, 3)),
-                 "length 1 or equal")
+                 "length 1")
     expect_error(filterMzValues(sps, mz = c(56, 12), ppm = c(1, 2, 3)),
-                 "length 1 or equal")
+                 "length 1")
 
     ## remove
     res <- filterMzValues(sps, mz = 56, keep = FALSE)
@@ -1463,6 +1458,35 @@ test_that("filterMzValue,Spectra works", {
 
     res <- filterMzValues(sps, mz = c(1243, 244), keep = FALSE)
     expect_equal(mz(res), mz(sps))
+
+    ## Second set of tests
+    spd$mz <- list(c(12, 14, 45, 45.1, 45.2, 45.3, 56),
+                   c(14.1, 34, 45.1, 45.2, 56.1),
+                   c(12.1, 14.15, 34.1, 45.4))
+    spd$intensity <- list(c(10, 20, 30, 40, 50, 40, 30),
+                          c(11, 21, 31, 100, 100),
+                          c(12, 22, 32, 100))
+    sps <- Spectra(spd)
+    res <- filterMzValues(sps, mz = 45, tolerance = 0.3, keep = FALSE)
+    expect_equal(mz(res)[[1L]], c(12, 14, 56))
+    expect_equal(mz(res)[[2L]], c(14.1, 34, 56.1))
+    expect_equal(mz(res)[[3L]], c(12.1, 14.15, 34.1, 45.4))
+
+    res <- filterMzValues(sps, mz = 45, tolerance = 0.3, keep = TRUE)
+    expect_equal(mz(res)[[1L]], c(45, 45.1, 45.2, 45.3))
+    expect_equal(mz(res)[[2L]], c(45.1, 45.2))
+    expect_equal(mz(res)[[3L]], numeric())
+
+    ## Multiple values
+    res <- filterMzValues(sps, mz = c(56, 45), tolerance = 0.3, keep = FALSE)
+    expect_equal(mz(res)[[1L]], c(12, 14))
+    expect_equal(mz(res)[[2L]], c(14.1, 34))
+    expect_equal(mz(res)[[3L]], c(12.1, 14.15, 34.1, 45.4))
+
+    res <- filterMzValues(sps, mz = c(56, 45), tolerance = 0.3, keep = TRUE)
+    expect_equal(mz(res)[[1L]], c(45, 45.1, 45.2, 45.3, 56))
+    expect_equal(mz(res)[[2L]], c(45.1, 45.2, 56.1))
+    expect_equal(mz(res)[[3L]], numeric())
 })
 
 test_that("dropNaSpectraVariables works with MsBackendMzR", {

@@ -144,16 +144,10 @@ NULL
                                    keep = TRUE, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    idx <- closest(mz, x[, "mz"], tolerance = tolerance, ppm = ppm,
-                   duplicates = "closest", .check = FALSE)
-    idx <- idx[!is.na(idx)]
-    if (keep)
-        x[idx, , drop = FALSE]
-    else {
-        if (length(idx))
-            x[-idx, , drop = FALSE]
-        else x
-    }
+    no_match <- is.na(closest(x[, "mz"], mz, tolerance = tolerance, ppm = ppm,
+                              duplicates = "keep", .check = FALSE))
+    if (keep) x[!no_match, , drop = FALSE]
+    else x[no_match, , drop = FALSE]
 }
 
 #' @description

@@ -1,5 +1,11 @@
 # Spectra 1.8
 
+## Changes in 1.8.3
+
+- Fix issue with `filterMzValues` that would only keep (or remove) the first
+  matching peak instead of all matching peaks (given `ppm` and `tolerance`).
+  Issue [#274](https://github.com/rformassspectrometry/Spectra/issues/274).
+
 ## Changes in 1.8.2
 
 - Require to read headers for macOS.
