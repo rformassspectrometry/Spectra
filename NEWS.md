@@ -5,6 +5,8 @@
 - Fix issue with `filterMzValues` that would only keep (or remove) the first
   matching peak instead of all matching peaks (given `ppm` and `tolerance`).
   Issue [#274](https://github.com/rformassspectrometry/Spectra/issues/274).
+- Add parameter `keep` to `filterMzRange` to support keeping or removing
+  matching peaks.
 
 ## Changes in 1.9.13
 

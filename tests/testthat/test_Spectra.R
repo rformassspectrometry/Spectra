@@ -1451,6 +1451,15 @@ test_that("filterMzRange,Spectra works", {
     expect_equal(mz(res)[[1L]], c(45, 56))
     expect_equal(unname(mz(res)[[2L]]), 56.1)
     expect_true(length(mz(res)[[3L]]) == 0)
+
+    ## Remove
+    res <- filterMzRange(sps, mz = c(200, 400), keep = FALSE)
+    expect_equal(mz(res), mz(sps))
+
+    res <- filterMzRange(sps, mz = c(12, 15), keep = FALSE)
+    expect_equal(mz(res)[[1L]], c(45, 56))
+    expect_equal(mz(res)[[2L]], c(34, 56.1))
+    expect_equal(unname(mz(res)[[3L]]), 34.1)
 })
 
 test_that("filterMzValue,Spectra works", {

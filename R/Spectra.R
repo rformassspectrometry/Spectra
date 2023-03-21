@@ -365,8 +365,10 @@ NULL
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra` (with spectra in their original order).
 #'
-#' - `filterMzRange`: filters the object keeping only peaks in each spectrum
-#'   that are within the provided m/z range.
+#' - `filterMzRange`: filters the object keeping or removing peaks in each
+#'   spectrum that are within the provided m/z range. Whether peaks are
+#'   retained or removed can be configured with parameter `keep` (default
+#'   `keep = TRUE`).
 #'
 #' - `filterMzValues`: filters the object keeping **all** peaks in each
 #'   spectrum that match the provided m/z value(s) (for `keep = TRUE`, the
@@ -772,9 +774,9 @@ NULL
 #' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
 #'
-#' @param keep For `filterMzValues`: `logical(1)` whether the matching peaks
-#'     should be retained (`keep = TRUE`, the default`) or dropped
-#'     (`keep = FALSE`).
+#' @param keep For `filterMzValues` and `filterMzRange`: `logical(1)` whether
+#'     the matching peaks should be retained (`keep = TRUE`, the default`)
+#'     or dropped (`keep = FALSE`).
 #'
 #' @param keepIsotopes For `filterFourierTransformArtefacts`: whether isotope
 #'     peaks should not be removed as fourier artefacts.
@@ -2061,17 +2063,20 @@ setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
 #'
 #' @export
 setMethod("filterMzRange", "Spectra",
-          function(object, mz = numeric(), msLevel. = uniqueMsLevels(object)) {
+          function(object, mz = numeric(), msLevel. = uniqueMsLevels(object),
+                   keep = TRUE) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
               if (!length(mz)) mz <- c(-Inf, Inf)
               else mz <- range(mz)
-              object <- addProcessing(object, .peaks_filter_mz_range,
-                                      mz = mz, msLevel = msLevel.,
+              object <- addProcessing(object, .peaks_filter_mz_range, mz = mz,
+                                      msLevel = msLevel., keep = keep,
                                       spectraVariables = "msLevel")
+              if (keep) keep_or_remove <- "select"
+              else keep_or_remove <- "remove"
               object@processing <- .logging(
-                  object@processing, "Filter: select peaks with an m/z within ",
-                  "[", mz[1L], ", ", mz[2L], "]")
+                  object@processing, "Filter: ", keep_or_remove,
+                  " peaks with an m/z within [", mz[1L], ", ", mz[2L], "]")
               object
           })
 

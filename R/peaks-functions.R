@@ -165,10 +165,13 @@ NULL
 #'
 #' @noRd
 .peaks_filter_mz_range <- function(x, spectrumMsLevel, mz = numeric(),
-                                   msLevel = spectrumMsLevel, ...) {
+                                   msLevel = spectrumMsLevel, keep = TRUE,
+                                   ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    x[between(x[, "mz"], mz), , drop = FALSE]
+    if (keep)
+        x[between(x[, "mz"], mz), , drop = FALSE]
+    else x[!between(x[, "mz"], mz), , drop = FALSE]
 }
 
 #' @description

@@ -326,7 +326,12 @@ estimatePrecursorIntensity(
 
 \S4method{filterMsLevel}{Spectra}(object, msLevel. = integer())
 
-\S4method{filterMzRange}{Spectra}(object, mz = numeric(), msLevel. = uniqueMsLevels(object))
+\S4method{filterMzRange}{Spectra}(
+  object,
+  mz = numeric(),
+  msLevel. = uniqueMsLevels(object),
+  keep = TRUE
+)
 
 \S4method{filterMzValues}{Spectra}(
   object,
@@ -611,8 +616,8 @@ returns a \code{logical} (same length then peaks in the spectrum) whether the
 peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
 only peaks with \code{NA} intensity are removed.}
 
-\item{keep}{For \code{filterMzValues}: \code{logical(1)} whether the matching peaks
-should be retained (\code{keep = TRUE}, the default\verb{) or dropped (}keep = FALSE`).}
+\item{keep}{For \code{filterMzValues} and \code{filterMzRange}: \code{logical(1)} whether
+the matching peaks should be retained (\code{keep = TRUE}, the default\verb{) or dropped (}keep = FALSE`).}
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
@@ -962,8 +967,10 @@ object (with spectra in their original order).
 \item \code{filterMsLevel}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
-\item \code{filterMzRange}: filters the object keeping only peaks in each spectrum
-that are within the provided m/z range.
+\item \code{filterMzRange}: filters the object keeping or removing peaks in each
+spectrum that are within the provided m/z range. Whether peaks are
+retained or removed can be configured with parameter \code{keep} (default
+\code{keep = TRUE}).
 \item \code{filterMzValues}: filters the object keeping \strong{all} peaks in each
 spectrum that match the provided m/z value(s) (for \code{keep = TRUE}, the
 default) or removing \strong{all} of them (for \code{keep = FALSE}). The m/z
