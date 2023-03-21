@@ -326,7 +326,12 @@ estimatePrecursorIntensity(
 
 \S4method{filterMsLevel}{Spectra}(object, msLevel. = integer())
 
-\S4method{filterMzRange}{Spectra}(object, mz = numeric(), msLevel. = uniqueMsLevels(object))
+\S4method{filterMzRange}{Spectra}(
+  object,
+  mz = numeric(),
+  msLevel. = uniqueMsLevels(object),
+  keep = TRUE
+)
 
 \S4method{filterMzValues}{Spectra}(
   object,
@@ -467,9 +472,9 @@ unique. This suffix will be used to amend \code{names(y)}, while
 defining a relative, m/z-dependent, maximal accepted difference between
 m/z values for peaks to be matched.}
 
-\item{tolerance}{For \code{compareSpectra}, \code{containsMz}: \code{numeric(1)} allowing to
-define a constant maximal accepted difference between m/z values for
-peaks to be matched. For \code{containsMz} and \code{filterMzValues} it can also
+\item{tolerance}{For \code{compareSpectra}, \code{containsMz} and \code{filterMzValues}:
+\code{numeric(1)} allowing to define a constant maximal accepted difference
+between m/z values for peaks to be matched. For \code{containsMz} it can also
 be of length equal \code{mz} to specify a different tolerance for each m/z
 value.}
 
@@ -611,8 +616,8 @@ returns a \code{logical} (same length then peaks in the spectrum) whether the
 peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
 only peaks with \code{NA} intensity are removed.}
 
-\item{keep}{For \code{filterMzValues}: \code{logical(1)} whether the matching peaks
-should be retained (\code{keep = TRUE}, the default\verb{) or dropped (}keep = FALSE`).}
+\item{keep}{For \code{filterMzValues} and \code{filterMzRange}: \code{logical(1)} whether
+the matching peaks should be retained (\code{keep = TRUE}, the default\verb{) or dropped (}keep = FALSE`).}
 
 \item{polarity}{for \code{filterPolarity}: \code{integer} specifying the polarity to
 to subset \code{object}.}
@@ -962,14 +967,15 @@ object (with spectra in their original order).
 \item \code{filterMsLevel}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
-\item \code{filterMzRange}: filters the object keeping only peaks in each spectrum
-that are within the provided m/z range.
-\item \code{filterMzValues}: filters the object keeping only peaks in each spectrum
-that match the provided m/z value(s) (if parameter \code{keep = TRUE}, the
-default) or removing them (if parameter \code{keep = FALSE}). The m/z matching
-considers also the absolute \code{tolerance} and m/z-relative \code{ppm} values.
-\code{tolerance} and \code{ppm} can be either of length 1 or equal to the length of
-\code{mz} to define a different matching tolerance for each provided m/z.
+\item \code{filterMzRange}: filters the object keeping or removing peaks in each
+spectrum that are within the provided m/z range. Whether peaks are
+retained or removed can be configured with parameter \code{keep} (default
+\code{keep = TRUE}).
+\item \code{filterMzValues}: filters the object keeping \strong{all} peaks in each
+spectrum that match the provided m/z value(s) (for \code{keep = TRUE}, the
+default) or removing \strong{all} of them (for \code{keep = FALSE}). The m/z
+matching considers also the absolute \code{tolerance} and m/z-relative
+\code{ppm} values. \code{tolerance} and \code{ppm} have to be of length 1.
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
@@ -1412,6 +1418,9 @@ mz(sps_sub)
 sps_sub <- filterMzValues(data, mz = c(103, 104),
     tolerance = 0.3, keep = FALSE)
 mz(sps_sub)
+
+## Note that `filterMzValues` keeps or removes all peaks with a matching
+## m/z given the provided `ppm` and `tolerance` parameters.
 
 ## Filter a Spectra keeping only peaks within a m/z range
 sps_sub <- filterMzRange(data, mz = c(100, 300))
