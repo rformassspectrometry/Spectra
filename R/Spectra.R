@@ -368,12 +368,11 @@ NULL
 #' - `filterMzRange`: filters the object keeping only peaks in each spectrum
 #'   that are within the provided m/z range.
 #'
-#' - `filterMzValues`: filters the object keeping only peaks in each spectrum
-#'   that match the provided m/z value(s) (if parameter `keep = TRUE`, the
-#'   default) or removing them (if parameter `keep = FALSE`). The m/z matching
-#'   considers also the absolute `tolerance` and m/z-relative `ppm` values.
-#'   `tolerance` and `ppm` can be either of length 1 or equal to the length of
-#'   `mz` to define a different matching tolerance for each provided m/z.
+#' - `filterMzValues`: filters the object keeping **all** peaks in each
+#'   spectrum that match the provided m/z value(s) (for `keep = TRUE`, the
+#'   default) or removing **all** of them (for `keep = FALSE`). The m/z
+#'   matching considers also the absolute `tolerance` and m/z-relative
+#'   `ppm` values. `tolerance` and `ppm` have to be of length 1.
 #'
 #' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
@@ -862,9 +861,9 @@ NULL
 #'     should be passed along to the function defined with `FUN`. See function
 #'     description for details.
 #'
-#' @param tolerance For `compareSpectra`, `containsMz`: `numeric(1)` allowing to
-#'     define a constant maximal accepted difference between m/z values for
-#'     peaks to be matched. For `containsMz` and `filterMzValues` it can also
+#' @param tolerance For `compareSpectra`, `containsMz` and `filterMzValues`:
+#'     `numeric(1)` allowing to define a constant maximal accepted difference
+#'     between m/z values for peaks to be matched. For `containsMz` it can also
 #'     be of length equal `mz` to specify a different tolerance for each m/z
 #'     value.
 #'
@@ -1076,6 +1075,9 @@ NULL
 #' sps_sub <- filterMzValues(data, mz = c(103, 104),
 #'     tolerance = 0.3, keep = FALSE)
 #' mz(sps_sub)
+#'
+#' ## Note that `filterMzValues` keeps or removes all peaks with a matching
+#' ## m/z given the provided `ppm` and `tolerance` parameters.
 #'
 #' ## Filter a Spectra keeping only peaks within a m/z range
 #' sps_sub <- filterMzRange(data, mz = c(100, 300))
@@ -2082,10 +2084,10 @@ setMethod("filterMzValues", "Spectra",
               if (!.check_ms_level(object, msLevel.))
                   return(object)
               l <- length(mz)
-              if (!(length(tolerance) == 1 || length(tolerance) == l))
-                  stop("'tolerance' should be of length 1 or equal 'length(mz)'")
-              if (!(length(ppm) == 1 || length(ppm) == l))
-                  stop("'ppm' should be of length 1 or equal 'length(mz)'")
+              if (length(tolerance) != 1)
+                  stop("'tolerance' should be of length 1")
+              if (length(ppm) != 1)
+                  stop("'ppm' should be of length 1")
               if (is.unsorted(mz)) {
                   idx <- order(mz)
                   mz <- mz[idx]
@@ -2150,7 +2152,7 @@ setMethod("filterPrecursorMzRange", "Spectra",
 setMethod("filterPrecursorMzValues", "Spectra",
           function(object, mz = numeric(), ppm = 20, tolerance = 0) {
               object@backend <- filterPrecursorMzValues(
-                  object@backend, mz, ppm = ppm, tolerance = tolerance)
+                  object@backend, sort(mz), ppm = ppm, tolerance = tolerance)
               object@processing <- .logging(
                   object@processing,
                   "Filter: select spectra with precursor m/z matching ",

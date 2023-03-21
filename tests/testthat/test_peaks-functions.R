@@ -220,7 +220,7 @@ test_that(".peaks_match_mz_value works", {
     res <- .peaks_filter_mz_value(p, 1L, mz = 5, tolerance = 1)
     expect_equal(unname(res[, "intensity"]), 2)
     res <- .peaks_filter_mz_value(p, 1L, mz = c(5.5, 599.41), tolerance = 0.1)
-    expect_equal(unname(res[, "intensity"]), c(2, 6))
+    expect_equal(unname(res[, "intensity"]), c(2, 5, 6, 7))
 
     res <- .peaks_filter_mz_value(p, 1L, mz = c(123, 742.2),
                                   tolerance = c(0.2, 1))
