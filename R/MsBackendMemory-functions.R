@@ -7,9 +7,19 @@ MsBackendMemory <- function() {
 
 .df_pdata_column <- function(x, column) {
     idx <- which(colnames(x[[1L]]) == column)
-    if (length(idx)) {
+    if (length(idx))
         lapply(x, `[`, , j = idx)
-    } else stop("No peaks variable \"", column, "\" available")
+    else {
+        if (column %in% c("mz", "intensity"))
+            NumericList(vector("list", length(x)), compress = FALSE)
+        else stop("No peaks variable \"", column, "\" available")
+    }
+}
+
+.df_empty_peaks_data <- function(x) {
+    emat <- matrix(numeric(), ncol = 2, nrow = 0,
+                   dimnames = list(character(), c("mz", "intensity")))
+    replicate(x, emat, simplify = FALSE)
 }
 
 #' Check columns of a DataFrame or data.frame for their data type. If they

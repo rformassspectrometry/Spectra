@@ -1230,9 +1230,10 @@ implementation for our backend will remove any columns in the `@spectraVars`
 data frame not defined in the `spectraVariables` parameter. Special care is
 given to the `"mz"` and `"intensity"` spectra variables: if they are not
 selected, the `@mz` and `@intensity` slots are initialized with empty
-`NumericList` (of length matching the number of spectra). Note also that it
-might not be allowed to remove spectra variables
-some backends might have spectra variables that are not
+`NumericList` (of length matching the number of spectra). Note also that some
+backends might throw an error if a spectra variable required for the backend is
+removed (such as `"dataStorage"` for a `MsBackendMzR` backend, which is
+required by the backend to allow retrieval of m/z and intensity values).
 
 ```{r}
 setMethod(
