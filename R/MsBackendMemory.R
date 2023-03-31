@@ -80,17 +80,12 @@ setMethod("backendInitialize", signature = "MsBackendMemory",
                   peaksVariables <- peaksVariables[ok]
                   ## Get m/z and intensity and put into peaksData
                   p_cols <- intersect(peaksVariables, c("mz", "intensity"))
-                  if (length(p_cols)) {
+                  if (length(p_cols))
                       object@peaksData <- do.call(
                           mapply, c(list(FUN = cbind, SIMPLIFY = FALSE),
                                     data[p_cols]))
-                  } else {
-                      emat <- matrix(
-                          numeric(), ncol = 2, nrow = 0,
-                          dimnames = list(character(), c("mz", "intensity")))
-                      object@peaksData <- replicate(nrow(data), emat,
-                                                    simplify = FALSE)
-                  }
+                  else
+                      object@peaksData <- .df_empty_peaks_data(nrow(data))
                   ## Get any other potential peaks columns and put them
                   ## into peaksDataFrame
                   p_cols <- peaksVariables[!peaksVariables %in%
@@ -360,13 +355,12 @@ setReplaceMethod("mz", "MsBackendMemory", function(object, value) {
 setMethod("peaksData", "MsBackendMemory", function(object,
                                                columns = c("mz", "intensity")) {
     if (length(object)) {
+        cns <- colnames(object@peaksData[[1L]])
+        if (length(columns) == length(cns) && all(cns == columns))
+            return(object@peaksData)
         if (!all(columns %in% peaksVariables(object)))
             stop("Some of the requested peaks variables are not ",
                  "available", call. = FALSE)
-        ## quick return
-        if (length(columns) == 2 &&
-            all(columns == colnames(object@peaksData[[1L]])))
-            return(object@peaksData)
         pcol <- intersect(columns, c("mz", "intensity"))
         pdcol <- setdiff(columns, c("mz", "intensity"))
         ## request columns only from peaksData
@@ -490,7 +484,9 @@ setMethod("selectSpectraVariables", "MsBackendMemory",
               if (length(object@peaksData)) {
                   have <- colnames(object@peaksData[[1L]])
                   keep <- intersect(spectraVariables, have)
-                  if (length(keep) < length(have))
+                  if (!length(keep))
+                      object@peaksData <- .df_empty_peaks_data(length(object))
+                  else if (length(keep) < length(have))
                       object@peaksData <- lapply(object@peaksData, function(z)
                           z[, keep, drop = FALSE])
               }

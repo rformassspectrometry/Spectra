@@ -411,9 +411,11 @@ NULL
 #'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
-#'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
-#'   the values will be dropped, while additional (user defined) spectra
-#'   variables will be completely removed. Returns the filtered `Spectra`.
+#'   be dropped. For mandatory columns (i.e., those listed by
+#'   [coreSpectraVariables()], such as *msLevel*, *rtime* ...) only
+#'   the values will be dropped but not the variable itself. Additional (or
+#'   user defined) spectra variables will be completely removed.
+#'   Returns the filtered `Spectra`.
 #'
 #' - `split`: splits the `Spectra` object based on parameter `f` into a `list`
 #'   of `Spectra` objects.
@@ -1785,13 +1787,15 @@ setMethod("scanIndex", "Spectra", function(object) {
 })
 
 #' @rdname Spectra
-setMethod("selectSpectraVariables", "Spectra",
-          function(object, spectraVariables = spectraVariables(object)) {
-              spectraVariables <- union(spectraVariables, "dataStorage")
-              object@backend <- selectSpectraVariables(
-                  object@backend, spectraVariables = spectraVariables)
-              object
-})
+setMethod(
+    "selectSpectraVariables", "Spectra",
+    function(object, spectraVariables = union(spectraVariables(object),
+                                              peaksVariables(object))) {
+        spectraVariables <- union(spectraVariables, "dataStorage")
+        object@backend <- selectSpectraVariables(
+            object@backend, spectraVariables = spectraVariables)
+        object
+    })
 
 #' @rdname Spectra
 setMethod("smoothed", "Spectra", function(object) {

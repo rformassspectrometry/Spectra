@@ -1,5 +1,10 @@
 # Spectra 1.9
 
+## Changes in 1.9.15
+
+- Fix issue in `MsBackendMemory` failed to return intensity or m/z values when
+  peaks data is empty.
+
 ## Changes in 1.9.14
 
 - Fix issue with `filterMzValues` that would only keep (or remove) the first

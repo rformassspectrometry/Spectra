@@ -265,7 +265,10 @@ estimatePrecursorIntensity(
 
 \S4method{scanIndex}{Spectra}(object)
 
-\S4method{selectSpectraVariables}{Spectra}(object, spectraVariables = spectraVariables(object))
+\S4method{selectSpectraVariables}{Spectra}(
+  object,
+  spectraVariables = union(spectraVariables(object), peaksVariables(object))
+)
 
 \S4method{smoothed}{Spectra}(object)
 
@@ -1004,9 +1007,11 @@ data filtering operations. Note that a \code{reset} call after \code{applyProces
 will not have any effect. See examples below for more information.
 \item \code{selectSpectraVariables}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
-be dropped. For mandatory columns (such as \emph{msLevel}, \emph{rtime} ...) only
-the values will be dropped, while additional (user defined) spectra
-variables will be completely removed. Returns the filtered \code{Spectra}.
+be dropped. For mandatory columns (i.e., those listed by
+\code{\link[=coreSpectraVariables]{coreSpectraVariables()}}, such as \emph{msLevel}, \emph{rtime} ...) only
+the values will be dropped but not the variable itself. Additional (or
+user defined) spectra variables will be completely removed.
+Returns the filtered \code{Spectra}.
 \item \code{split}: splits the \code{Spectra} object based on parameter \code{f} into a \code{list}
 of \code{Spectra} objects.
 \item \code{joinSpectraData}: Individual spectra variables can be directly
