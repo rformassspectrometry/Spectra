@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.15</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
 Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
 [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup
-[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2023-03-21 13:45:32.798898<br><strong>Compiled</strong>: Tue Mar 21 14:06:39 2023</p>
+[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2023-03-31 13:57:36.290992<br><strong>Compiled</strong>: Fri Mar 31 14:23:20 2023</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -1566,9 +1566,11 @@ columns in the <code>@spectraVars</code> data frame not defined in the
 <code>"mz"</code> and <code>"intensity"</code> spectra variables: if
 they are not selected, the <code>@mz</code> and <code>@intensity</code>
 slots are initialized with empty <code>NumericList</code> (of length
-matching the number of spectra). Note also that it might not be allowed
-to remove spectra variables some backends might have spectra variables
-that are not</p>
+matching the number of spectra). Note also that some backends might
+throw an error if a spectra variable required for the backend is removed
+(such as <code>"dataStorage"</code> for a <code>MsBackendMzR</code>
+backend, which is required by the backend to allow retrieval of m/z and
+intensity values).</p>
 <div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span></span>
 <span>    <span class="st">"selectSpectraVariables"</span>, <span class="st">"MsBackendTest"</span>,</span>
@@ -2398,9 +2400,9 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] MsCoreUtils_1.11.5   IRanges_2.33.0       Spectra_1.9.14      </span></span>
-<span><span class="co">## [4] ProtGenerics_1.31.0  BiocParallel_1.33.10 S4Vectors_0.37.4    </span></span>
-<span><span class="co">## [7] BiocGenerics_0.45.2  BiocStyle_2.27.1    </span></span>
+<span><span class="co">## [1] MsCoreUtils_1.11.5   IRanges_2.33.0       Spectra_1.9.15      </span></span>
+<span><span class="co">## [4] ProtGenerics_1.31.0  BiocParallel_1.33.12 S4Vectors_0.37.4    </span></span>
+<span><span class="co">## [7] BiocGenerics_0.45.3  BiocStyle_2.27.1    </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] jsonlite_1.8.4      compiler_4.3.0      BiocManager_1.30.20</span></span>
@@ -2410,13 +2412,13 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [13] knitr_1.42          MASS_7.3-58.3       bookdown_0.33      </span></span>
 <span><span class="co">## [16] desc_1.4.2          rprojroot_2.0.3     bslib_0.4.2        </span></span>
 <span><span class="co">## [19] rlang_1.1.0         cachem_1.0.7        stringi_1.7.12     </span></span>
-<span><span class="co">## [22] xfun_0.37           fs_1.6.1            sass_0.4.5         </span></span>
-<span><span class="co">## [25] memoise_2.0.1       cli_3.6.0           pkgdown_2.0.7.9000 </span></span>
+<span><span class="co">## [22] xfun_0.38           fs_1.6.1            sass_0.4.5         </span></span>
+<span><span class="co">## [25] memoise_2.0.1       cli_3.6.1           pkgdown_2.0.7.9000 </span></span>
 <span><span class="co">## [28] magrittr_2.0.3      digest_0.6.31       clue_0.3-64        </span></span>
-<span><span class="co">## [31] lifecycle_1.0.3     vctrs_0.6.0         evaluate_0.20      </span></span>
+<span><span class="co">## [31] lifecycle_1.0.3     vctrs_0.6.1         evaluate_0.20      </span></span>
 <span><span class="co">## [34] glue_1.6.2          codetools_0.2-19    ragg_1.2.5         </span></span>
-<span><span class="co">## [37] rmarkdown_2.20      purrr_1.0.1         tools_4.3.0        </span></span>
-<span><span class="co">## [40] htmltools_0.5.4</span></span></code></pre>
+<span><span class="co">## [37] rmarkdown_2.21      purrr_1.0.1         tools_4.3.0        </span></span>
+<span><span class="co">## [40] htmltools_0.5.5</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
