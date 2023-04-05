@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
 Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
 [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup
-[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2023-03-31 13:57:36.290992<br><strong>Compiled</strong>: Fri Mar 31 14:23:38 2023</p>
+[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>)<br><strong>Last modified:</strong> 2023-04-05 06:05:58.962455<br><strong>Compiled</strong>: Wed Apr 5 06:37:33 2023</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -647,8 +647,8 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Mar 31 14:23:43 2023]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Mar 31 14:23:43 2023]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Wed Apr  5 06:37:41 2023]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Wed Apr  5 06:37:41 2023]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -683,7 +683,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 31 14:23:43 2023]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Wed Apr  5 06:37:41 2023]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
@@ -775,9 +775,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 31 14:23:43 2023]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 31 14:23:44 2023]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 31 14:23:44 2023]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Wed Apr  5 06:37:41 2023]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Apr  5 06:37:41 2023]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Apr  5 06:37:41 2023]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -808,9 +808,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 31 14:23:43 2023]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 31 14:23:44 2023]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 31 14:23:44 2023]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Wed Apr  5 06:37:41 2023]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Apr  5 06:37:41 2023]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Apr  5 06:37:41 2023]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code>intensity</code> on this object will now
 return intensities that are half of the intensities of the original
@@ -971,9 +971,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Fri Mar 31 14:23:43 2023]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Mar 31 14:23:44 2023]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Mar 31 14:23:44 2023]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Wed Apr  5 06:37:41 2023]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Wed Apr  5 06:37:41 2023]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Apr  5 06:37:41 2023]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code>applyProcessing</code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1310,7 +1310,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1862         1   259.752       931</span></span>
 <span><span class="co">##  ... 33 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar 31 14:23:50 2023]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Wed Apr  5 06:37:49 2023]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
@@ -1554,7 +1554,7 @@ only peak data of 5000 spectra at a time will be loaded into memory.</p>
 <span><span class="co">##  [1] sass_0.4.5          MsCoreUtils_1.11.5  stringi_1.7.12     </span></span>
 <span><span class="co">##  [4] digest_0.6.31       magrittr_2.0.3      evaluate_0.20      </span></span>
 <span><span class="co">##  [7] bookdown_0.33       fastmap_1.1.1       rprojroot_2.0.3    </span></span>
-<span><span class="co">## [10] jsonlite_1.8.4      mzR_2.31.1          BiocManager_1.30.20</span></span>
+<span><span class="co">## [10] jsonlite_1.8.4      mzR_2.33.0          BiocManager_1.30.20</span></span>
 <span><span class="co">## [13] purrr_1.0.1         codetools_0.2-19    textshaping_0.3.6  </span></span>
 <span><span class="co">## [16] jquerylib_0.1.4     cli_3.6.1           rlang_1.1.0        </span></span>
 <span><span class="co">## [19] Biobase_2.59.0      cachem_1.0.7        yaml_2.3.7         </span></span>
