@@ -74,3 +74,15 @@ package providing it) is shown below:
 - `MsBackendWeizMass` (package
   [*MsBackendWeizMass*](https://github.com/rformassspectrometry/MsBackendWeizMass):
   allows to access MS data from WeizMass MS/MS spectral databases.
+
+
+For more information see the package
+[homepage](https://rformassspectrometry.github.io/Spectra).
+
+
+# Contributions
+
+Contributions are highly welcome and should follow the [contribution
+guidelines](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/RforMassSpectrometry.html#contributions).
+Also, please check the coding style guidelines in the [RforMassSpectrometry
+vignette](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/RforMassSpectrometry.html).
