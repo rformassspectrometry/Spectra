@@ -2053,10 +2053,13 @@ setMethod("filterPrecursorCharge", "Spectra",
 
 #' @rdname Spectra
 setMethod("filterPrecursorScan", "Spectra",
-          function(object, acquisitionNum= integer(), f = dataOrigin(object)) {
+          function(object, acquisitionNum = integer(), f = dataOrigin(object)) {
+              if (!all(f %in% unique(dataOrigin(object))))
+                  stop("'f' must be in dataOrigin().")
               object@backend <- filterPrecursorScan(object@backend,
                                                     acquisitionNum,
                                                     f = dataOrigin(object))
+              object@backend <- filterDataOrigin(object@backend, dataOrigin = f)
               object@processing <- .logging(
                   object@processing,
                   "Filter: select parent/children scans for ",
