@@ -1,14 +1,110 @@
+# Spectra 1.9
+
+## Changes in 1.9.15
+
+- Fix issue in `MsBackendMemory` failed to return intensity or m/z values when
+  peaks data is empty.
+
+## Changes in 1.9.14
+
+- Fix issue with `filterMzValues` that would only keep (or remove) the first
+  matching peak instead of all matching peaks (given `ppm` and `tolerance`).
+  Issue [#274](https://github.com/rformassspectrometry/Spectra/issues/274).
+- Add parameter `keep` to `filterMzRange` to support keeping or removing
+  matching peaks.
+
+## Changes in 1.9.13
+
+- Add the `backendBpparam` method that allows to evaluate whether a `MsBackend`
+  supports the provided (or the default) `BiocParallel`-based parallel
+  processing setup.
+- Minor tweaks in the internal `.peaksapply` function to avoid splitting/merging
+  of data if not needed (e.g. if no parallel processing is performed).
+- Minor tweaks in spectra comparison functions to avoid repeated calling of
+  functions in loops.
+
+## Changes in 1.9.12
+
+- Extend the list of available `MsBackend` backends provided by other packages
+  (in the README and in the package vignette).
+
+## Changes in 1.9.11
+
+- Fix headers in `MsBackend` vignette.
+
+## Changes in 1.9.10
+
+- Add `supportsSetBackend` method for `MsBackend` to specify whether a backend
+  supports `setBackend,Spectra`.
+- `setBackend` checks using `supportsSetBackend` whether a backend supports
+  `setBackend`.
+
+## Changes in 1.9.9
+
+- Refactor `setBackend` to only split and merge backends if necessary and
+  to not change `dataOrigin` of the original backend.
+- Support `setBackend` with `MsBackendMemory` for an empty `Spectra` object
+  (issue [#268](https://github.com/rformassspectrometry/Spectra/issues/268)).
+- Disable automatic detection of peak variables for `MsBackendMemory` (issue
+  [#269](https://github.com/rformassspectrometry/Spectra/issues/269)).
+- Fix issue in `Spectra` with empty `character` (issue
+  [#267](https://github.com/rformassspectrometry/Spectra/issues/267)).
+
+## Changes in 1.9.8
+
+- Address comments from Michele Stravs regarding the `MsBackend` vignette.
+- Add additional tests checking for `MsBackend` compliance.
+
+## Changes in 1.9.7
+
+- Add a vignette describing how to build a `MsBackend` from scratch (issue
+  #262).
+- Extend unit test suite to evaluate validity of `MsBackend` implementations.
+
+## Changes in 1.9.6
+
+- Replace `<=` with `between` calls.
+
+## Changes in 1.9.5
+
+- Fix bug in `containsMz()` when `mz` isn't ordered (see #258).
+
+## Changes in 1.9.4
+
+- Fix error when extracting spectra variables from a `MsBackendMzR` of
+  length 0.
+
+## Changes in 1.9.3
+
+- Add `chunkapply` function to split a `Spectra` into chunks and
+  stepwise apply a function `FUN` to each.
+
+## Changes in 1.9.2
+
+- `combineSpectra` on `Spectra` with read-only backends change backend
+  to an `MsBackendMemory` instead of an `MsBackendDataFrame`.
+
+## Changes in 1.9.1
+
+- Expand documentation on `compareSpectra` for GNPS-like similarity
+  scoring.
+
+## Changes in 1.9.0
+
+- Bioconductor 3.17 developmental version.
+
 # Spectra 1.7
 
 ## Changes in 1.7.5
 
-- Force serial processing in some unit tests to avoid potential failures on some
-  Bioconductor build and check servers (under some circumstances).
+- Force serial processing in some unit tests to avoid potential
+  failures on some Bioconductor build and check servers (under some
+  circumstances).
 
 ## Changes in 1.7.4
 
-- Add `MsBackendMemory` backend class providing a more efficient in-memory data
-  representation than `MsBackendDataFrame`.
+- Add `MsBackendMemory` backend class providing a more efficient
+  in-memory data representation than `MsBackendDataFrame`.
 
 ## Changes in 1.7.3
 
@@ -17,20 +113,22 @@
 ## Changes in 1.7.2
 
 - Fix `setBackend` if provided `Spectra` is empty.
-- `backendInitialize,Spectra,MsBackendDataFrame` returns a `Spectra` object
-  with the full provided spectra data.
+- `backendInitialize,Spectra,MsBackendDataFrame` returns a `Spectra`
+  object with the full provided spectra data.
 
 ## Changes in 1.7.1
 
-- Add `uniqueMsLevels` function to allow more efficient, backend-specific,
-  implementations for retrieving unique MS levels from a data set.
+- Add `uniqueMsLevels` function to allow more efficient,
+  backend-specific, implementations for retrieving unique MS levels
+  from a data set.
 
 # Spectra 1.5
 
 ## Changes in 1.5.20
 
-- Add parameters `ppm` and `tolerance` to `PrecursorMzParam` (for neutral loss
-  calculation) and add option `filterPeaks = "removePrecursor"`.
+- Add parameters `ppm` and `tolerance` to `PrecursorMzParam` (for
+  neutral loss calculation) and add option `filterPeaks =
+  "removePrecursor"`.
 
 ## Changes in 1.5.19
 
@@ -45,13 +143,13 @@
 
 - Add `peaksVariables` method and add parameter `columns` (or `...`) to
   `peaksData`.
-- Add `columns` parameter to the `peaksData` method of `MsBackendDataFrame`,
-  `MsBackendMzR` and `MsBackendHdf5peaks`.
+- Add `columns` parameter to the `peaksData` method of
+  `MsBackendDataFrame`, `MsBackendMzR` and `MsBackendHdf5peaks`.
 
 ## Changes in 1.5.16
 
-- Fix issue in `neutralLoss` that would prevent calculation of neutral loss
-  spectra if
+- Fix issue in `neutralLoss` that would prevent calculation of neutral
+  loss spectra if
 
 ## Changes in 1.5.15
 
@@ -59,8 +157,8 @@
 
 ## Changes in 1.5.14
 
-- Add `coreSpectraVariables` function to export the *core* spectra variables and
-  their expected data types.
+- Add `coreSpectraVariables` function to export the *core* spectra
+  variables and their expected data types.
 
 ## Changes in 1.5.13
 
@@ -93,15 +191,15 @@
 
 ## Changes in 1.5.6
 
-- Add `filterPrecursorMzValue` method which allows to filter using multiple
-  precursor m/z values (issue
+- Add `filterPrecursorMzValue` method which allows to filter using
+  multiple precursor m/z values (issue
   [#230](https://github.com/rformassspectrometry/Spectra/issues/230)).
 - Fix unit test suite.
 
 ## Changes in 1.5.5
 
-- Add a testing framework allowing to run standardized unit tests for new
-  `MsBackend` implementations (issue
+- Add a testing framework allowing to run standardized unit tests for
+  new `MsBackend` implementations (issue
   [#186](https://github.com/rformassspectrometry/Spectra/issues/186)).
 
 ## Changes in 1.5.4
@@ -110,17 +208,19 @@
 
 ## Changes in 1.5.3
 
-- Only calculate number of peaks per spectra if the processing queue of the
-  `Spectra` is not empty. Otherwise call the backend's implementation (issue
-  [MsBackendSql #31](https://github.com/rformassspectrometry/MsBackendSql/issues/31)).
+- Only calculate number of peaks per spectra if the processing queue
+  of the `Spectra` is not empty. Otherwise call the backend's
+  implementation (issue [MsBackendSql
+  #31](https://github.com/rformassspectrometry/MsBackendSql/issues/31)).
 
 ## Changes in 1.5.2
 
 - Small documentation update (related to `MsCoreUtils` issue
   [#87](https://github.com/rformassspectrometry/MsCoreUtils/issues/87)).
 - New `countIdentifications()` function.
-- Add `filterFourierTransformArtefacts` function to remove fast fourier artefact
-  peaks seen on e.g. Orbitrap instruments (issue #223).
+- Add `filterFourierTransformArtefacts` function to remove fast
+  fourier artefact peaks seen on e.g. Orbitrap instruments (issue
+  #223).
 
 ## Changes in 1.5.1
 

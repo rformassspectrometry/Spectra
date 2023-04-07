@@ -7,7 +7,6 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
-\alias{backendInitialize}
 \alias{backendMerge}
 \alias{bin,numeric-method}
 \alias{containsMz}
@@ -42,7 +41,6 @@
 \alias{dataStorage<-,MsBackendDataFrame-method}
 \alias{intensity,MsBackendDataFrame-method}
 \alias{intensity<-,MsBackendDataFrame-method}
-\alias{ionCount,MsBackendDataFrame-method}
 \alias{isEmpty,MsBackendDataFrame-method}
 \alias{isolationWindowLowerMz,MsBackendDataFrame-method}
 \alias{isolationWindowLowerMz<-,MsBackendDataFrame-method}
@@ -170,8 +168,6 @@
 \alias{show,Spectra-method}
 \title{Internal page for hidden aliases}
 \usage{
-backendInitialize(object, ...)
-
 backendMerge(object, ...)
 
 \S4method{bin}{numeric}(
@@ -180,7 +176,8 @@ backendMerge(object, ...)
   size = 1,
   breaks = seq(floor(min(y)), ceiling(max(y)), by = size),
   FUN = max,
-  returnMids = TRUE
+  returnMids = TRUE,
+  .check = TRUE
 )
 
 containsMz(object, ...)
@@ -246,8 +243,6 @@ spectrapply(object, ...)
 \S4method{intensity}{MsBackendDataFrame}(object)
 
 \S4method{intensity}{MsBackendDataFrame}(object) <- value
-
-\S4method{ionCount}{MsBackendDataFrame}(object)
 
 \S4method{isEmpty}{MsBackendDataFrame}(x)
 

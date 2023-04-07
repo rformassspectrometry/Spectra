@@ -12,6 +12,10 @@
 \alias{[,MsBackend-method}
 \alias{uniqueMsLevels,MsBackend-method}
 \alias{MsBackendMemory-class}
+\alias{supportsSetBackend}
+\alias{backendBpparam}
+\alias{backendInitialize}
+\alias{backendBpparam,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
@@ -78,6 +82,7 @@
 \alias{spectraNames<-,MsBackend-method}
 \alias{spectraVariables,MsBackend-method}
 \alias{split,MsBackend,ANY-method}
+\alias{supportsSetBackend,MsBackend-method}
 \alias{tic,MsBackend-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
@@ -91,6 +96,8 @@
 \alias{MsBackendMzR}
 \title{Mass spectrometry data backends}
 \usage{
+\S4method{backendBpparam}{MsBackend}(object, BPPARAM = bpparam())
+
 \S4method{backendInitialize}{MsBackend}(object, ...)
 
 \S4method{backendMerge}{list}(object, ...)
@@ -223,6 +230,8 @@
 
 \S4method{split}{MsBackend,ANY}(x, f, drop = FALSE, ...)
 
+\S4method{supportsSetBackend}{MsBackend}(object, ...)
+
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
 \S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
@@ -245,12 +254,17 @@ MsBackendHdf5Peaks()
 
 MsBackendMemory()
 
-\S4method{backendInitialize}{MsBackendMemory}(object, data, ...)
+\S4method{backendInitialize}{MsBackendMemory}(object, data, peaksVariables = c("mz", "intensity"), ...)
 
 MsBackendMzR()
 }
 \arguments{
 \item{object}{Object extending \code{MsBackend}.}
+
+\item{BPPARAM}{for \code{backendBpparam}: parameter object from the
+\code{BiocParallel} package defining the parallel processing setup.
+Defaults to \code{BPPARAM = bpparam()}. See \code{\link[=bpparam]{bpparam()}} for more
+information.}
 
 \item{...}{Additional arguments.}
 
@@ -343,6 +357,12 @@ or set.}
 \item{data}{For \code{backendInitialize}: \code{DataFrame} with spectrum
 metadata/data. This parameter can be empty for \code{MsBackendMzR} backends
 but needs to be provided for \code{MsBackendDataFrame} backends.}
+
+\item{peaksVariables}{For \code{backendInitialize} for \code{MsBackendMemory}:
+\code{character} specifying which of the columns of the provided \code{data}
+contain \emph{peaks variables} (i.e. information for individual mass
+peaks). Defaults to \code{peaksVariables = c("mz", "intensity")}. \code{"mz"}
+and \code{"intensity"} should \strong{always} be specified.}
 }
 \value{
 See documentation of respective function.
@@ -429,25 +449,48 @@ of m/z or intensity values.
 \section{Backend functions}{
 
 
-New backend classes \strong{must} extend the base \code{MsBackend} class and
-\strong{have} to implement the following methods:
+New backend classes \strong{must} extend the base \code{MsBackend} class will have to
+implement some of the following methods (see the \code{MsBackend} vignette for
+detailed description and examples):
 \itemize{
 \item \code{[}: subset the backend. Only subsetting by element (\emph{row}/\code{i}) is
-allowed
+allowed. Parameter \code{i} should support \code{integer} indices and \code{logical}
+and should throw an error if \code{i} is out of bounds. The
+\code{MsCoreUtils::i2index} could be used to check the input \code{i}.
+For \code{i = integer()} an empty backend should be returned.
 \item \code{$}, \verb{$<-}: access or set/add a single spectrum variable (column) in the
-backend.
+backend. Using a \code{value} of \code{NULL} should allow deleting the specified
+spectra variable. An error should be thrown if the spectra variable is not
+available.
 \item \code{[[}, \verb{[[<-}: access or set/add a single spectrum variable (column) in the
 backend. The default implementation uses \code{$}, thus these methods don't have
 to be implemented for new classes extending \code{MsBackend}.
 \item \code{acquisitionNum}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
+\item \code{backendBpparam}: return the parallel processing setup supported by
+the backend class. This function can be used by any higher
+level function to evaluate whether the provided parallel processing
+setup (or the default one returned by \code{bpparam()}) is supported
+by the backend. Backends not supporting parallel processing (e.g.
+because they contain a connection to a database that can not be
+shared across processes) should extend this method to return only
+\code{SerialParam()} and hence disable parallel processing for (most)
+methods and functions.
 \item \code{backendInitialize}: initialises the backend. This method is
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
 for the memory backend or read the spectra header data for the
-\code{MsBackendMzR} backend). This method has to ensure to set the
-spectra variable \code{dataStorage} correctly.
+\code{MsBackendMzR} backend). Parameters can be defined freely for each
+backend, depending on what is needed to initialize the backend. It
+is however suggested to also support a parameter \code{data} that can be
+used to submit the full spectra data as a \code{DataFrame} to the
+backend. This would allow the backend to be also usable for the
+\code{\link[=setBackend]{setBackend()}} function from \code{Spectra}. Note that eventually (for
+\emph{read-only} backends) also the \code{supportsSetBackend} method would
+need to be implemented to return \code{TRUE}.
+The \code{backendInitialize} method has also to ensure to correctly set
+spectra variable \code{dataStorage}.
 \item \code{backendMerge}: merges (combines) \code{MsBackend} objects into a single
 instance. All objects to be merged have to be of the same type (e.g.
 \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
@@ -641,7 +684,9 @@ spectrum within each file. Note that this can be different to the
 \code{acquisitionNum} of the spectrum which is the index of the
 spectrum as reported in the mzML file.
 \item \code{selectSpectraVariables}: reduces the information within the backend to
-the selected spectra variables.
+the selected spectra variables. It is suggested to \strong{not} remove values
+for the \code{"dataStorage"} variable, since this might be required for some
+backends to work properly (such as the \code{MsBackendMzR}).
 \item \code{smoothed},\verb{smoothed<-}: gets or sets whether a spectrum is
 \emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
 to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
@@ -664,6 +709,17 @@ default not returned by the \verb{spectraVariables,Spectra} method).
 parameter \code{f}). The default method for \code{MsBackend} uses \code{\link[=split.default]{split.default()}},
 thus backends extending \code{MsBackend} don't necessarily need to implement
 this method.
+\item \code{supportsSetBackend}: whether a \code{MsBackend} supports the \code{Spectra}
+\code{setBackend} function. For a \code{MsBackend} to support \code{setBackend} it needs
+to have a parameter called \code{data} in its \code{backendInitialize} method that
+support receiving all spectra data as a \code{DataFrame} from another backend
+and to initialize the backend with this data. In general \emph{read-only}
+backends do not support \code{setBackend} hence, the default implementation
+of \code{supportsSetBackend} returns \code{!isReadOnly(object)}. If a read-only
+backend would support the \code{setBackend} and being initialized with a
+\code{DataFrame} an implementation of this method for that backend could
+be defined that returns \code{TRUE} (see also the \code{MsBackend} vignette for
+details and examples).
 \item \code{tic}: gets the total ion current/count (sum of signal of a
 spectrum) for all spectra in \code{object}. By default, the value
 reported in the original raw data file is returned. For an empty
@@ -720,8 +776,20 @@ performance comparison.
 New objects can be created with the \code{MsBackendMemory()} and
 \code{MsBackendDataFrame()} function, respectively. The backend can be
 subsequently initialized with the \code{backendInitialize} method, taking a
-\code{DataFrame} (or \code{data.frame}) with the MS data as parameter. Suggested
-columns of this \code{DataFrame} are:
+\code{DataFrame} (or \code{data.frame}) with the MS data as first parameter \code{data}.
+\code{backendInitialize} for \code{MsBackendMemory} has a second parameter
+\code{peaksVariables} (default \code{peaksVariables = c("mz", "intensity")} that
+allows to specify which of the columns in the provided data frame should
+be considered as a \emph{peaks variable} (i.e. information of an individual
+mass peak) rather than a \emph{spectra variable} (i.e. information of an
+individual spectrum). Note that it is important to also include \code{"mz"} and
+\code{"intensity"} in \code{peaksVariables} as these would otherwise be considered
+to be spectra variables! Also, while it is possible to change the values of
+existing peaks variables using the \verb{$<-} method, this method does \strong{not}
+allow to add new peaks variables to an existing \code{MsBackendMemory}. New
+peaks variables should be added using the \code{backendInitialize} method.
+
+Suggested columns of this \code{DataFrame} are:
 \itemize{
 \item \code{"msLevel"}: \code{integer} with MS levels of the spectra.
 \item \code{"rt"}: \code{numeric} with retention times of the spectra.
@@ -893,7 +961,6 @@ peaksData(be)
 ## List available peaks variables
 peaksVariables(be)
 
-
 ## Use columns to extract specific peaks variables. Below we extract m/z and
 ## intensity values, but in reversed order to the default.
 peaksData(be, columns = c("intensity", "mz"))
@@ -909,9 +976,12 @@ spectraData(be, c("precursorMz", "rtime", "msLevel"))
 ## The `MsBackendMemory` uses a more efficient internal data organization
 ## and allows also adding arbitrary additional peaks variables (annotations)
 ## Below we thus add a column "peak_ann" with arbitrary names/ids for each
-## peak
+## peak and add the name of this column to the `peaksVariables` parameter
+## of the `backendInitialize` method (in addition to `"mz"` and
+## `"intensity"` that should **always** be specified.
 data$peak_ann <- list(c("a", "", "d"), c("", "d", "e", "f"), c("h", "i"))
-be <- backendInitialize(MsBackendMemory(), data)
+be <- backendInitialize(MsBackendMemory(), data,
+    peaksVariables = c("mz", "intensity", "peak_ann"))
 be
 
 spectraVariables(be)
@@ -919,8 +989,19 @@ spectraVariables(be)
 ## peak_ann is also listed as a peaks variable
 peaksVariables(be)
 
-## The additional peaks variable can be accessed using the peaksData function
+## The additional peaks variable can be accessed using the peaksData
+## function
 peaksData(be, "peak_ann")
+
+## The $<- method can be used to replace values of an existing peaks
+## variable. It is important that the number of elements matches the
+## number of peaks per spectrum.
+be$peak_ann <- list(1:3, 1:4, 1:2)
+
+## A peaks variable can again be removed by setting it to NULL
+be$peak_ann <- NULL
+
+peaksVariables(be)
 }
 \author{
 Johannes Rainer, Sebastian Gibb, Laurent Gatto

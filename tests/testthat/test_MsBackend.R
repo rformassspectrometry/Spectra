@@ -62,3 +62,12 @@ test_that("reset,MsBackend works", {
     res <- reset(sciex_mzr)
     expect_equal(res, sciex_mzr)
 })
+
+test_that("backendBpparam,MsBackend works", {
+    expect_equal(backendBpparam(sciex_mzr), bpparam())
+    mcp <- MulticoreParam(2)
+    res <- backendBpparam(sciex_mzr, mcp)
+    expect_equal(res, mcp)
+    res <- backendBpparam(sciex_mzr, SerialParam())
+    expect_equal(res, SerialParam())
+})

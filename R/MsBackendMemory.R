@@ -62,7 +62,7 @@ setMethod("show", "MsBackendMemory", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackendMemory",
-          function(object, data, ...) {
+          function(object, data, peaksVariables = c("mz", "intensity"), ...) {
               if (missing(data)) data <- data.frame()
               if (is(data, "DataFrame"))
                   data <- as(data, "data.frame")
@@ -70,39 +70,38 @@ setMethod("backendInitialize", signature = "MsBackendMemory",
                   stop("'data' has to be a 'DataFrame' or 'data.frame'")
               if (nrow(data)) {
                   data$dataStorage <- "<memory>"
+                  peaksVariables <- intersect(peaksVariables, colnames(data))
                   ## Check for *peaks data* columns
-                  peaks_cols <- .df_peaks_columns_data_frame(data)
+                  ok <- peaksVariables %in% .df_peaks_columns_data_frame(data)
+                  if (any(!ok))
+                      warning("'peaksVariables' ",
+                              paste0(peaksVariables[!ok], collapse = ", "),
+                              " don't have the correct number of elements.")
+                  peaksVariables <- peaksVariables[ok]
                   ## Get m/z and intensity and put into peaksData
-                  p_cols <- intersect(peaks_cols, c("mz", "intensity"))
-                  if (length(p_cols)) {
+                  p_cols <- intersect(peaksVariables, c("mz", "intensity"))
+                  if (length(p_cols))
                       object@peaksData <- do.call(
                           mapply, c(list(FUN = cbind, SIMPLIFY = FALSE),
                                     data[p_cols]))
-                      for (p in p_cols)
-                          data[[p]] <- NULL
-                  } else {
-                      emat <- matrix(
-                          numeric(), ncol = 2, nrow = 0,
-                          dimnames = list(character(), c("mz", "intensity")))
-                      object@peaksData <- replicate(nrow(data), emat,
-                                                    simplify = FALSE)
-                  }
+                  else
+                      object@peaksData <- .df_empty_peaks_data(nrow(data))
                   ## Get any other potential peaks columns and put them
                   ## into peaksDataFrame
-                  p_cols <- peaks_cols[!peaks_cols %in% c("mz", "intensity")]
+                  p_cols <- peaksVariables[!peaksVariables %in%
+                                           c("mz", "intensity")]
                   if (length(p_cols)) {
                       object@peaksDataFrame <- do.call(
                           mapply, c(list(FUN = cbind.data.frame,
                                          SIMPLIFY = FALSE), data[p_cols]))
-                      for (p in p_cols)
-                          data[[p]] <- NULL
                   } else
                       object@peaksDataFrame <- list()
               } else {
                   object@peaksData <- list()
                   object@peaksDataFrame <- list()
               }
-              object@spectraData <- data
+              object@spectraData <- data[, !colnames(data) %in%
+                                           peaksVariables]
               validObject(object)
               object
           })
@@ -334,10 +333,16 @@ setReplaceMethod("mz", "MsBackendMemory", function(object, value) {
     idx <- which(colnames(object@peaksData[[1L]]) == "mz")
     if (length(idx)) {
         for (i in seq_along(object@peaksData)) {
+            if (is.unsorted(value[[i]]))
+                stop("m/z values of each spectrum are expected to be ",
+                     "increasingly sorted ")
             object@peaksData[[i]][, idx] <- value[[i]]
         }
     } else {
         for (i in seq_along(object@peaksData)) {
+            if (is.unsorted(value[[i]]))
+                stop("m/z values of each spectrum are expected to be ",
+                     "increasingly sorted ")
             object@peaksData[[i]] <- cbind(object@peaksData[[i]],
                                            mz = value[[i]])
         }
@@ -350,13 +355,12 @@ setReplaceMethod("mz", "MsBackendMemory", function(object, value) {
 setMethod("peaksData", "MsBackendMemory", function(object,
                                                columns = c("mz", "intensity")) {
     if (length(object)) {
+        cns <- colnames(object@peaksData[[1L]])
+        if (length(columns) == length(cns) && all(cns == columns))
+            return(object@peaksData)
         if (!all(columns %in% peaksVariables(object)))
             stop("Some of the requested peaks variables are not ",
                  "available", call. = FALSE)
-        ## quick return
-        if (length(columns) == 2 &&
-            all(columns == colnames(object@peaksData[[1L]])))
-            return(object@peaksData)
         pcol <- intersect(columns, c("mz", "intensity"))
         pdcol <- setdiff(columns, c("mz", "intensity"))
         ## request columns only from peaksData
@@ -480,7 +484,9 @@ setMethod("selectSpectraVariables", "MsBackendMemory",
               if (length(object@peaksData)) {
                   have <- colnames(object@peaksData[[1L]])
                   keep <- intersect(spectraVariables, have)
-                  if (length(keep) < length(have))
+                  if (!length(keep))
+                      object@peaksData <- .df_empty_peaks_data(length(object))
+                  else if (length(keep) < length(have))
                       object@peaksData <- lapply(object@peaksData, function(z)
                           z[, keep, drop = FALSE])
               }
@@ -544,7 +550,8 @@ setReplaceMethod("spectraData", "MsBackendMemory", function(object, value) {
         if (length(object) && nrow(value) != length(object))
             stop("'value' has to be a 'DataFrame' with ",
                  length(object), " rows.")
-        object <- backendInitialize(new("MsBackendMemory"), value)
+        object <- backendInitialize(new("MsBackendMemory"), value,
+                                    peaksVariables = peaksVariables(object))
     } else stop("'value' is expected to be a 'DataFrame'")
     object
 })
@@ -594,13 +601,17 @@ setMethod("$", "MsBackendMemory", function(x, name) {
 #' @rdname hidden_aliases
 setReplaceMethod("$", "MsBackendMemory", function(x, name, value) {
     lv <- length(value)
-    ## Replace mz or intensity: number of peaks have to match existing data.
-    if (lv && name %in% c("mz", "intensity")) {
+    if (lv && name %in% peaksVariables(x)) {
         if (is.list(value) || inherits(value, "SimpleList")) {
             lns <- lengths(x)
             if (length(value) == length(x) && all(lns == lengths(value))) {
-                for (i in seq_along(value))
-                    x@peaksData[[i]][, name] <- value[[i]]
+                if (name %in% c("mz", "intensity")) {
+                    for (i in seq_along(value))
+                        x@peaksData[[i]][, name] <- value[[i]]
+                } else {
+                    for (i in seq_along(value))
+                        x@peaksDataFrame[[i]][[name]] <- value[[i]]
+                }
                 validObject(x)
                 return(x)
             } else
@@ -609,27 +620,16 @@ setReplaceMethod("$", "MsBackendMemory", function(x, name, value) {
                      "number of peaks per spectrum.")
 
         }
-        else stop("mz and intensity values are expected to be provided as a ",
-                  "list with numeric values")
+        else stop("'", name, "' is a peaks variable and 'value' is thus ",
+                  "expected to be a list of vectors with replacement values")
     }
-    ## Is it a potential peak annotation?
-    if (is.list(value) || inherits(value, "SimpleList")) {
-        lns <- lengths(x)
-        if (length(value) == length(x) && all(lns == lengths(value))) {
-            if (length(x@peaksDataFrame)) {
-                for (i in seq_along(value))
-                    x@peaksDataFrame[[i]][[name]] <- value[[i]]
-            } else {
-                value <- lapply(value, function(z) {
-                    df <- data.frame(z, check.names = FALSE)
-                    colnames(df) <- name
-                    df
-                })
-                x@peaksDataFrame <- value
-            }
-            validObject(x)
-            return(x)
-        }
+    ## Support deleting a peaks variable (except m/z and intensity)
+    if (is.null(value) && name %in% peaksVariables(x) &&
+        !name %in% c("mz", "intensity")) {
+        for (i in seq_along(x@peaksDataFrame))
+            x@peaksDataFrame[[i]][[name]] <- value
+        validObject(x)
+        return(x)
     }
     ## Otherwise just add.
     x@spectraData[[name]] <- value

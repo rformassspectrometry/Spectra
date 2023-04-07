@@ -6,6 +6,9 @@
 #' @aliases MsBackendMzR-class [,MsBackend-method
 #' @aliases uniqueMsLevels,MsBackend-method
 #' @aliases MsBackendMemory-class
+#' @aliases supportsSetBackend
+#' @aliases backendBpparam
+#' @aliases backendInitialize
 #'
 #' @description
 #'
@@ -48,6 +51,11 @@
 #' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
 #'     acquisition number of the spectra to which the object should be
 #'     subsetted.
+#'
+#' @param BPPARAM for `backendBpparam`: parameter object from the
+#'     `BiocParallel` package defining the parallel processing setup.
+#'     Defaults to `BPPARAM = bpparam()`. See [bpparam()] for more
+#'     information.
 #'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
@@ -101,6 +109,12 @@
 #'     filter the object. For `filterPrecursorMzRange`: `numeric(2)` with the
 #'     lower and upper m/z boundary. For `filterPrecursorMzValues`: `numeric`
 #'     with the m/z value(s) to filter the object.
+#'
+#' @param peaksVariables For `backendInitialize` for `MsBackendMemory`:
+#'     `character` specifying which of the columns of the provided `data`
+#'     contain *peaks variables* (i.e. information for individual mass
+#'     peaks). Defaults to `peaksVariables = c("mz", "intensity")`. `"mz"`
+#'     and `"intensity"` should **always** be specified.
 #'
 #' @param ppm For `filterPrecursorMzValues`: `numeric(1)` with the m/z-relative
 #'     maximal acceptable difference for a m/z to be considered matching. See
@@ -167,14 +181,20 @@
 #'
 #' @section Backend functions:
 #'
-#' New backend classes **must** extend the base `MsBackend` class and
-#' **have** to implement the following methods:
+#' New backend classes **must** extend the base `MsBackend` class will have to
+#' implement some of the following methods (see the `MsBackend` vignette for
+#' detailed description and examples):
 #'
 #' - `[`: subset the backend. Only subsetting by element (*row*/`i`) is
-#'   allowed
+#'   allowed. Parameter `i` should support `integer` indices and `logical`
+#'   and should throw an error if `i` is out of bounds. The
+#'   `MsCoreUtils::i2index` could be used to check the input `i`.
+#'   For `i = integer()` an empty backend should be returned.
 #'
 #' - `$`, `$<-`: access or set/add a single spectrum variable (column) in the
-#'   backend.
+#'   backend. Using a `value` of `NULL` should allow deleting the specified
+#'   spectra variable. An error should be thrown if the spectra variable is not
+#'   available.
 #'
 #' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
 #'   backend. The default implementation uses `$`, thus these methods don't have
@@ -184,12 +204,30 @@
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
+#' - `backendBpparam`: return the parallel processing setup supported by
+#'   the backend class. This function can be used by any higher
+#'   level function to evaluate whether the provided parallel processing
+#'   setup (or the default one returned by `bpparam()`) is supported
+#'   by the backend. Backends not supporting parallel processing (e.g.
+#'   because they contain a connection to a database that can not be
+#'   shared across processes) should extend this method to return only
+#'   `SerialParam()` and hence disable parallel processing for (most)
+#'   methods and functions.
+#'
 #' - `backendInitialize`: initialises the backend. This method is
 #'   supposed to be called rights after creating an instance of the
 #'   backend class and should prepare the backend (e.g. set the data
 #'   for the memory backend or read the spectra header data for the
-#'   `MsBackendMzR` backend). This method has to ensure to set the
-#'   spectra variable `dataStorage` correctly.
+#'   `MsBackendMzR` backend). Parameters can be defined freely for each
+#'   backend, depending on what is needed to initialize the backend. It
+#'   is however suggested to also support a parameter `data` that can be
+#'   used to submit the full spectra data as a `DataFrame` to the
+#'   backend. This would allow the backend to be also usable for the
+#'   [setBackend()] function from `Spectra`. Note that eventually (for
+#'   *read-only* backends) also the `supportsSetBackend` method would
+#'   need to be implemented to return `TRUE`.
+#'   The `backendInitialize` method has also to ensure to correctly set
+#'   spectra variable `dataStorage`.
 #'
 #' - `backendMerge`: merges (combines) `MsBackend` objects into a single
 #'   instance. All objects to be merged have to be of the same type (e.g.
@@ -426,7 +464,9 @@
 #'   spectrum as reported in the mzML file.
 #'
 #' - `selectSpectraVariables`: reduces the information within the backend to
-#'   the selected spectra variables.
+#'   the selected spectra variables. It is suggested to **not** remove values
+#'   for the `"dataStorage"` variable, since this might be required for some
+#'   backends to work properly (such as the `MsBackendMzR`).
 #'
 #' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
 #'   *smoothed*. `smoothed` returns a `logical` vector of length equal
@@ -454,6 +494,18 @@
 #'   parameter `f`). The default method for `MsBackend` uses [split.default()],
 #'   thus backends extending `MsBackend` don't necessarily need to implement
 #'   this method.
+#'
+#' - `supportsSetBackend`: whether a `MsBackend` supports the `Spectra`
+#'   `setBackend` function. For a `MsBackend` to support `setBackend` it needs
+#'   to have a parameter called `data` in its `backendInitialize` method that
+#'   support receiving all spectra data as a `DataFrame` from another backend
+#'   and to initialize the backend with this data. In general *read-only*
+#'   backends do not support `setBackend` hence, the default implementation
+#'   of `supportsSetBackend` returns `!isReadOnly(object)`. If a read-only
+#'   backend would support the `setBackend` and being initialized with a
+#'   `DataFrame` an implementation of this method for that backend could
+#'   be defined that returns `TRUE` (see also the `MsBackend` vignette for
+#'   details and examples).
 #'
 #' - `tic`: gets the total ion current/count (sum of signal of a
 #'   spectrum) for all spectra in `object`. By default, the value
@@ -506,8 +558,20 @@
 #' New objects can be created with the `MsBackendMemory()` and
 #' `MsBackendDataFrame()` function, respectively. The backend can be
 #' subsequently initialized with the `backendInitialize` method, taking a
-#' `DataFrame` (or `data.frame`) with the MS data as parameter. Suggested
-#' columns of this `DataFrame` are:
+#' `DataFrame` (or `data.frame`) with the MS data as first parameter `data`.
+#' `backendInitialize` for `MsBackendMemory` has a second parameter
+#' `peaksVariables` (default `peaksVariables = c("mz", "intensity")` that
+#' allows to specify which of the columns in the provided data frame should
+#' be considered as a *peaks variable* (i.e. information of an individual
+#' mass peak) rather than a *spectra variable* (i.e. information of an
+#' individual spectrum). Note that it is important to also include `"mz"` and
+#' `"intensity"` in `peaksVariables` as these would otherwise be considered
+#' to be spectra variables! Also, while it is possible to change the values of
+#' existing peaks variables using the `$<-` method, this method does **not**
+#' allow to add new peaks variables to an existing `MsBackendMemory`. New
+#' peaks variables should be added using the `backendInitialize` method.
+#'
+#' Suggested columns of this `DataFrame` are:
 #'
 #' - `"msLevel"`: `integer` with MS levels of the spectra.
 #' - `"rt"`: `numeric` with retention times of the spectra.
@@ -698,7 +762,6 @@
 #' ## List available peaks variables
 #' peaksVariables(be)
 #'
-#'
 #' ## Use columns to extract specific peaks variables. Below we extract m/z and
 #' ## intensity values, but in reversed order to the default.
 #' peaksData(be, columns = c("intensity", "mz"))
@@ -714,9 +777,12 @@
 #' ## The `MsBackendMemory` uses a more efficient internal data organization
 #' ## and allows also adding arbitrary additional peaks variables (annotations)
 #' ## Below we thus add a column "peak_ann" with arbitrary names/ids for each
-#' ## peak
+#' ## peak and add the name of this column to the `peaksVariables` parameter
+#' ## of the `backendInitialize` method (in addition to `"mz"` and
+#' ## `"intensity"` that should **always** be specified.
 #' data$peak_ann <- list(c("a", "", "d"), c("", "d", "e", "f"), c("h", "i"))
-#' be <- backendInitialize(MsBackendMemory(), data)
+#' be <- backendInitialize(MsBackendMemory(), data,
+#'     peaksVariables = c("mz", "intensity", "peak_ann"))
 #' be
 #'
 #' spectraVariables(be)
@@ -724,8 +790,19 @@
 #' ## peak_ann is also listed as a peaks variable
 #' peaksVariables(be)
 #'
-#' ## The additional peaks variable can be accessed using the peaksData function
+#' ## The additional peaks variable can be accessed using the peaksData
+#' ## function
 #' peaksData(be, "peak_ann")
+#'
+#' ## The $<- method can be used to replace values of an existing peaks
+#' ## variable. It is important that the number of elements matches the
+#' ## number of peaks per spectrum.
+#' be$peak_ann <- list(1:3, 1:4, 1:2)
+#'
+#' ## A peaks variable can again be removed by setting it to NULL
+#' be$peak_ann <- NULL
+#'
+#' peaksVariables(be)
 NULL
 
 setClass(
@@ -746,6 +823,14 @@ setValidity("MsBackend", function(object) {
     if (is.null(msg)) TRUE
     else msg
 })
+
+#' @exportMethod backendBpparam
+#'
+#' @rdname MsBackend
+setMethod("backendBpparam", signature = "MsBackend",
+          function(object, BPPARAM = bpparam()) {
+              BPPARAM
+          })
 
 #' @exportMethod backendInitialize
 #'
@@ -878,7 +963,12 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     svs <- spectraVariables(object)
     svs <- svs[!(svs %in% c("mz", "intensity"))]
     spd <- spectraData(object, columns = svs)
-    keep <- !vapply1l(spd, function(z) all(is.na(z)))
+    keep <- !vapply1l(spd, function(z) {
+        allna <- all(is.na(z))
+        if (length(allna) > 1)
+            FALSE
+        else allna
+    })
     selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
 })
 
@@ -978,8 +1068,7 @@ setMethod("filterPrecursorMzRange", "MsBackend",
           function(object, mz = numeric()) {
               if (length(mz)) {
                   mz <- range(mz)
-                  keep <- which(precursorMz(object) >= mz[1] &
-                                precursorMz(object) <= mz[2])
+                  keep <- which(between(precursorMz(object), mz))
                   object[keep]
               } else object
           })
@@ -1045,8 +1134,7 @@ setMethod("filterRt", "MsBackend",
               if (length(rt)) {
                   rt <- range(rt)
                   sel_ms <- msLevel(object) %in% msLevel.
-                  sel_rt <- rtime(object) >= rt[1] &
-                      rtime(object) <= rt[2] & sel_ms
+                  sel_rt <- between(rtime(object), rt) & sel_ms
                   object[sel_rt | !sel_ms]
               } else object
           })
@@ -1073,9 +1161,11 @@ setReplaceMethod("intensity", "MsBackend", function(object, value) {
 #'
 #' @importMethodsFrom ProtGenerics ionCount
 #'
+#' @importFrom MsCoreUtils vapply1d
+#'
 #' @rdname MsBackend
 setMethod("ionCount", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
 #' @exportMethod isCentroided
@@ -1374,6 +1464,13 @@ setMethod("spectraVariables", "MsBackend", function(object) {
 #' @rdname MsBackend
 setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
     split.default(x, f, drop = drop, ...)
+})
+
+#' @exportMethod supportsSetBackend
+#'
+#' @rdname MsBackend
+setMethod("supportsSetBackend", "MsBackend", function(object, ...) {
+    !isReadOnly(object)
 })
 
 #' @exportMethod tic

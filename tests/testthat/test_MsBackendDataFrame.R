@@ -921,3 +921,7 @@ test_that("[[,[[<-,MsBackendDataFrame works", {
     be[["new_col"]] <- 43
     expect_equal(be$new_col, rep(43, 3))
 })
+
+test_that("supportsSetBackend,MsBackendDataFrame", {
+    expect_true(supportsSetBackend(MsBackendDataFrame()))
+})

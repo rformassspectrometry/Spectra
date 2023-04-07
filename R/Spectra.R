@@ -28,6 +28,10 @@ NULL
 #' `applyProcessing` function. See the *Data manipulation and analysis
 #' methods* section below for more details.
 #'
+#' To apply arbitrary functions to a `Spectra` use the `spectrapply` function
+#' (or directly [chunkapply()] for chunk-wise processing). See description of
+#' the `spectrapply` function below for details.
+#'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
 #' Clarifications regarding scan/acquisition numbers and indices:
@@ -75,12 +79,16 @@ NULL
 #'
 #' The backend of a `Spectra` object can be changed with the `setBackend`
 #' method that takes an instance of the new backend as second parameter
-#' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())` would
-#' for example change the backend or `sps` to the *in-memory*
-#' `MsBackendDataFrame`. Note that it is not possible to change the backend
-#' to a *read-only* backend (such as the [MsBackendMzR()] backend). `setBackend`
-#' changes the `"dataOrigin"` variable of the resulting `Spectra` object to the
-#' `"dataStorage"` variable of the backend before the switch.
+#' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())`
+#' would for example change the backend of `sps` to the *in-memory*
+#' `MsBackendDataFrame`. Changing to a backend is only supported if that
+#' backend has a `data` parameter in its `backendInitialize` method and if
+#' `supportsSetBackend` returns `TRUE` for that backend. `setBackend` will
+#' transfer the full spectra data from the originating backend as a
+#' `DataFrame` to the new backend.
+#' Most *read-only* backends do not support `setBackend`. It is for example
+#' not possible to change the backend to a *read-only* backend (such as
+#' the [MsBackendMzR()] backend).
 #'
 #' The definition of the function is:
 #' `setBackend(object, backend, ..., f = dataStorage(object),
@@ -357,15 +365,16 @@ NULL
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra` (with spectra in their original order).
 #'
-#' - `filterMzRange`: filters the object keeping only peaks in each spectrum
-#'   that are within the provided m/z range.
+#' - `filterMzRange`: filters the object keeping or removing peaks in each
+#'   spectrum that are within the provided m/z range. Whether peaks are
+#'   retained or removed can be configured with parameter `keep` (default
+#'   `keep = TRUE`).
 #'
-#' - `filterMzValues`: filters the object keeping only peaks in each spectrum
-#'   that match the provided m/z value(s) (if parameter `keep = TRUE`, the
-#'   default) or removing them (if parameter `keep = FALSE`). The m/z matching
-#'   considers also the absolute `tolerance` and m/z-relative `ppm` values.
-#'   `tolerance` and `ppm` can be either of length 1 or equal to the length of
-#'   `mz` to define a different matching tolerance for each provided m/z.
+#' - `filterMzValues`: filters the object keeping **all** peaks in each
+#'   spectrum that match the provided m/z value(s) (for `keep = TRUE`, the
+#'   default) or removing **all** of them (for `keep = FALSE`). The m/z
+#'   matching considers also the absolute `tolerance` and m/z-relative
+#'   `ppm` values. `tolerance` and `ppm` have to be of length 1.
 #'
 #' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
@@ -402,9 +411,11 @@ NULL
 #'
 #' - `selectSpectraVariables`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
-#'   be dropped. For mandatory columns (such as *msLevel*, *rtime* ...) only
-#'   the values will be dropped, while additional (user defined) spectra
-#'   variables will be completely removed. Returns the filtered `Spectra`.
+#'   be dropped. For mandatory columns (i.e., those listed by
+#'   [coreSpectraVariables()], such as *msLevel*, *rtime* ...) only
+#'   the values will be dropped but not the variable itself. Additional (or
+#'   user defined) spectra variables will be completely removed.
+#'   Returns the filtered `Spectra`.
 #'
 #' - `split`: splits the `Spectra` object based on parameter `f` into a `list`
 #'   of `Spectra` objects.
@@ -523,7 +534,10 @@ NULL
 #'   information and examples). The `MAPFUN` function should have parameters
 #'   `x`, `y`, `xPrecursorMz` and `yPrecursorMz` as these values are passed to
 #'   the function. In addition to `joinPeaks()` also [joinPeaksGnps()] is
-#'   supported for GNPS-like similarity score calculations.
+#'   supported for GNPS-like similarity score calculations. Note that
+#'   `joinPeaksGnps` should only be used in combination with
+#'   `FUN = MsCoreUtils::gnps` (see [joinPeaksGnps()] for more information and
+#'   details).
 #'   `FUN` is supposed to be a function to compare intensities of (matched)
 #'   peaks of the two spectra that are compared. The function needs to take two
 #'   matrices with columns `"mz"` and `"intensity"` as input and is supposed
@@ -566,27 +580,35 @@ NULL
 #' - `processingLog`: returns a `character` vector with the processing log
 #'   messages.
 #'
-#' - `spectrapply`: apply a given function to each spectrum in a `Spectra`
-#'   object. The `Spectra` is splitted into individual spectra and on each of
-#'   them (i.e. `Spectra` of length 1) the function `FUN` is applied. Additional
-#'   parameters to `FUN` can be passed with the `...` argument. Parameter
-#'   `BPPARAM` allows to enable parallel processing, which however makes only
-#'   sense if `FUN` is computational intense. `spectrapply` returns a `list`
-#'   (same length than `object`) with the result from `FUN`. See examples for
-#'   more details.
-#'   Note that the result and its order depends on the factor `f` used for
-#'   splitting `object` with `split`, i.e. no re-ordering or `unsplit` is
-#'   performed on the result.
+#' - `spectrapply`: apply a given function to each individual spectrum or sets
+#'   of a `Spectra` object. By default, the `Spectra` is split into individual
+#'   spectra (i.e. `Spectra` of length 1) and the function `FUN` is applied to
+#'   each of them. An alternative splitting can be defined with parameter `f`.
+#'   Parameters for `FUN` can be passed using `...`.
+#'   The returned result and its order depend on the function `FUN` and how
+#'   `object` is split (hence on `f`, if provided). Parallel processing is
+#'   supported and can be configured with parameter `BPPARAM`, is however only
+#'   suggested for computational intense `FUN`.
+#'   As an alternative to the (eventual parallel) processing of the full
+#'   `Spectra`, `spectrapply` supports also a chunk-wise processing. For this,
+#'   parameter `chunkSize` needs to be specified. `object` is then split into
+#'   chunks of size `chunkSize` which are then (stepwise) processed by `FUN`.
+#'   This guarantees a lower memory demand (especially for on-disk backends)
+#'   since only the data for one chunk needs to be loaded into memory in each
+#'   iteration. Note that by specifying `chunkSize`, parameters `f` and
+#'   `BPPARAM` will be ignored.
+#'   See also [chunkapply()] or examples below for details on chunk-wise
+#'   processing.
 #'
 #' - `smooth`: smooth individual spectra using a moving window-based approach
-#'    (window size = `2 * halfWindowSize`). Currently, the
-#'    Moving-Average- (`method = "MovingAverage"`),
-#'    Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
-#'    weights depending on the distance of the center and calculated
-#'    `1/2^(-halfWindowSize:halfWindowSize)`) and
-#'    Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
-#'    For details how to choose the correct `halfWindowSize` please see
-#'    [`MsCoreUtils::smooth()`].
+#'   (window size = `2 * halfWindowSize`). Currently, the
+#'   Moving-Average- (`method = "MovingAverage"`),
+#'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
+#'   weights depending on the distance of the center and calculated
+#'   `1/2^(-halfWindowSize:halfWindowSize)`) and
+#'   Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
+#'   For details how to choose the correct `halfWindowSize` please see
+#'   [`MsCoreUtils::smooth()`].
 #'
 #' - `pickPeaks`: picks peaks on individual spectra using a moving window-based
 #'   approach (window size = `2 * halfWindowSize`). For noisy spectra there
@@ -619,6 +641,39 @@ NULL
 #'   Parameter `msLevel.` allows to apply this to only spectra of certain MS
 #'   level(s).
 #'
+#' @section Parallel processing:
+#'
+#' Some `Spectra` functions have build-in parallel processing that can be
+#' configured by passing the parallel processing setup with the `BPPARAM`
+#' function argument (which defaults to `BPPARAM = bpparam()`, thus uses
+#' the default set up). Most functions have an additional parameter `f` that
+#' allows to define how `Spectra` will be split to perform parallel processing.
+#' This parameter `f` defaults to `f = dataStorage(object)` and hence
+#' parallel processing is performed *by file* (if a file-based, on-disk
+#' backend such as `MsBackendMzR` is used). Some `MsBackend` classes might
+#' however not support parallel processing. The `backendBpparam` function
+#' allows to evaluate wheter a `Spectra` (respectively its `MsBackend`)
+#' supports a certain parallel processing setup. Calling
+#' `backendBpparam(sps, BPPARAM = MulticoreParam(3))` on a `Spectra` object
+#' `sps` would return `SerialParam()` in case the backend of the `Spectra`
+#' object does not support parallel processing. All functions listed below
+#' use this same function to eventually disable parallel processing to
+#' avoid failure of a function call.
+#'
+#' The functions with build-in parallel processing capabilities are:
+#'
+#' - `applyProcessing`.
+#' - `combineSpectra`.
+#' - `containsMz` (does not provide a parameter `f`, but performs parallel
+#'   processing separate for `dataStorage`).
+#' - `containsNeutralLoss` (same as `containsMz`).
+#' - `estimatePrecursorIntensity`.
+#' - `setBackend`.
+#' - `Spectra` (that passes the `BPPARAM` to the `backendInitialize` of the
+#'   used `MsBackend`).
+#' - `spectrapply`.
+#'
+#'
 #' @return See individual method description for the return value.
 #'
 #' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
@@ -627,9 +682,12 @@ NULL
 #'
 #' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
 #'     section on creation of `Spectra` objects for details. For `setBackend`:
-#'     instance of [MsBackend-class]. See section on creation of `Spectra`
-#'     objects for details. For `export`: [MsBackend-class] to be used to export
-#'     the data.
+#'     instance of [MsBackend-class] that supports `setBackend` (i.e. for
+#'     which `supportsSetBackend` returns `TRUE`). Such backends have a
+#'     parameter `data` in their `backendInitialize` function that support
+#'     passing the full spectra data to the initialize method. See section on
+#'     creation of `Spectra` objects for details.
+#'     For `export`: [MsBackend-class] to be used to export the data.
 #'
 #' @param binSize For `bin`: `numeric(1)` defining the size for the m/z bins.
 #'     Defaults to `binSize = 1`.
@@ -639,6 +697,9 @@ NULL
 #'     of the [MsBackend-class].
 #'
 #' @param breaks For `bin`: `numeric` defining the m/z breakpoints between bins.
+#'
+#' @param chunkSize For `spectrapply`: size of the chunks into which `Spectra`
+#'     should be split. This parameter overrides parameters `f` and `BPPARAM`.
 #'
 #' @param columns For `spectraData` accessor: optional `character` with column
 #'     names (spectra variables) that should be included in the
@@ -681,6 +742,7 @@ NULL
 #'     details.
 #'     For `bin`: function to aggregate intensity values of peaks falling into
 #'     the same bin. Defaults to `FUN = sum` thus summing up intensities.
+#'     For `spectrapply` and `chunkapply`: function to be applied to `Spectra`.
 #'
 #' @param halfWindowSize
 #' - For `pickPeaks`: `integer(1)`, used in the
@@ -714,9 +776,9 @@ NULL
 #' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
 #'
-#' @param keep For `filterMzValues`: `logical(1)` whether the matching peaks
-#'     should be retained (`keep = TRUE`, the default`) or dropped
-#'     (`keep = FALSE`).
+#' @param keep For `filterMzValues` and `filterMzRange`: `logical(1)` whether
+#'     the matching peaks should be retained (`keep = TRUE`, the default`)
+#'     or dropped (`keep = FALSE`).
 #'
 #' @param keepIsotopes For `filterFourierTransformArtefacts`: whether isotope
 #'     peaks should not be removed as fourier artefacts.
@@ -803,9 +865,9 @@ NULL
 #'     should be passed along to the function defined with `FUN`. See function
 #'     description for details.
 #'
-#' @param tolerance For `compareSpectra`, `containsMz`: `numeric(1)` allowing to
-#'     define a constant maximal accepted difference between m/z values for
-#'     peaks to be matched. For `containsMz` and `filterMzValues` it can also
+#' @param tolerance For `compareSpectra`, `containsMz` and `filterMzValues`:
+#'     `numeric(1)` allowing to define a constant maximal accepted difference
+#'     between m/z values for peaks to be matched. For `containsMz` it can also
 #'     be of length equal `mz` to specify a different tolerance for each m/z
 #'     value.
 #'
@@ -886,6 +948,14 @@ NULL
 #' ## keep all of the data in memory.
 #' sciex_im <- setBackend(sciex, MsBackendMemory())
 #' sciex_im
+#'
+#' ## The `MsBackendMemory()` supports the `setBackend` method:
+#' supportsSetBackend(MsBackendMemory())
+#'
+#' ## Thus, it is possible to change to that backend with `setBackend`. Most
+#' ## read-only backends however don't support that, such as the
+#' ## `MsBackendMzR` and `setBackend` would fail to change to that backend.
+#' supportsSetBackend(MsBackendMzR())
 #'
 #' ## The on-disk object `sciex` is light-weight, because it does not keep the
 #' ## MS peak data in memory. The `sciex_im` object in contrast keeps all the
@@ -1009,6 +1079,9 @@ NULL
 #' sps_sub <- filterMzValues(data, mz = c(103, 104),
 #'     tolerance = 0.3, keep = FALSE)
 #' mz(sps_sub)
+#'
+#' ## Note that `filterMzValues` keeps or removes all peaks with a matching
+#' ## m/z given the provided `ppm` and `tolerance` parameters.
 #'
 #' ## Filter a Spectra keeping only peaks within a m/z range
 #' sps_sub <- filterMzRange(data, mz = c(100, 300))
@@ -1155,6 +1228,14 @@ NULL
 #' ## data (such as `intensity`) are much more efficient than using `lapply`:
 #' res <- lapply(intensity(sciex_im[1:20]), mean)
 #' head(res)
+#'
+#' ## As an alternative, applying a function `FUN` to a `Spectra` can be
+#' ## performed *chunk-wise*. The advantage of this is, that only the data for
+#' ## one chunk at a time needs to be loaded into memory reducing the memory
+#' ## demand. This type of processing can be performed by specifying the size
+#' ## of the chunks (i.e. number of spectra per chunk) with the `chunkSize`
+#' ## parameter
+#' spectrapply(sciex_im[1:20], lengths, chunkSize = 5L)
 #'
 #' ## Calculating the precursor intensity for MS2 spectra:
 #' ##
@@ -1306,9 +1387,13 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            source = MsBackendMzR(),
                                            backend = source,
                                            ..., BPPARAM = bpparam()) {
-    callNextMethod(object = object, processingQueue = processingQueue,
-                   metadata = metadata, source = source, backend = backend,
-                   ..., BPPARAM = BPPARAM)
+    if (!length(object))
+        Spectra(backend, metadata = metadata,
+                processingQueue = processingQueue)
+    else
+        callNextMethod(object = object, processingQueue = processingQueue,
+                       metadata = metadata, source = source, backend = backend,
+                       ..., BPPARAM = BPPARAM)
 })
 
 #' @rdname Spectra
@@ -1318,53 +1403,58 @@ setMethod("Spectra", "ANY", function(object, processingQueue = list(),
                                      backend = source,
                                      ..., BPPARAM = bpparam()) {
     sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
-              backend = backendInitialize(source, object, ...,
-                                          BPPARAM = BPPARAM))
+              backend = backendInitialize(
+                  source, object, ...,
+                  BPPARAM = backendBpparam(source, BPPARAM)))
     if (class(source)[1L] != class(backend)[1L])
-        setBackend(sp, backend, ..., BPPARAM = BPPARAM)
+        setBackend(sp, backend, ..., BPPARAM = backendBpparam(backend, BPPARAM))
     else sp
 })
 
 #' @rdname Spectra
 #'
 #' @exportMethod setBackend
-setMethod("setBackend", c("Spectra", "MsBackend"),
-          function(object, backend, f = dataStorage(object), ...,
-                   BPPARAM = bpparam()) {
-              backend_class <- class(object@backend)
-              if (isReadOnly(backend))
-                  stop(class(backend), " is read-only. Changing backend to a ",
-                       "read-only backend is not supported.")
-              if (!length(object)) {
-                  bknds <- backendInitialize(
-                      backend, data = spectraData(object@backend))
-              } else {
-                  f <- force(factor(f, levels = unique(f)))
-                  if (length(f) != length(object))
-                      stop("length of 'f' has to match the length of 'object'")
-                  data_storage <- object@backend$dataStorage
-                  bknds <- bplapply(
-                      split(object@backend, f = f),
-                      function(z, ...) {
-                          backendInitialize(backend,
-                                            data = spectraData(z), ...,
-                                            BPPARAM = SerialParam())
-                      }, ..., BPPARAM = BPPARAM)
-                  bknds <- backendMerge(bknds)
-                  ## That below ensures the backend is returned in its original
-                  ## order - unsplit does unfortunately not work.
-                  if (is.unsorted(f))
-                      bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-                                                  use.names = FALSE))]
-                  bknds$dataOrigin <- data_storage
-              }
-              object@backend <- bknds
-              object@processing <- .logging(object@processing,
-                                            "Switch backend from ",
-                                            backend_class, " to ",
-                                            class(object@backend))
-              object
-          })
+setMethod(
+    "setBackend", c("Spectra", "MsBackend"),
+    function(object, backend, f = dataStorage(object), ...,
+             BPPARAM = bpparam()) {
+        backend_class <- class(object@backend)
+        BPPARAM <- backendBpparam(object@backend, BPPARAM)
+        if (!supportsSetBackend(backend))
+            stop(class(backend), " does not support 'setBackend'")
+        if (!length(object)) {
+            bknds <- backendInitialize(
+                backend, data = spectraData(object@backend), ...)
+        } else {
+            f <- force(factor(f, levels = unique(f)))
+            if (length(f) != length(object))
+                stop("length of 'f' has to match the length of 'object'")
+            if (length(levels(f)) == 1L) {
+                bknds <- backendInitialize(
+                    backend, data = spectraData(object@backend), ...)
+            } else {
+                bknds <- bplapply(
+                    split(object@backend, f = f),
+                    function(z, ...) {
+                        backendInitialize(backend,
+                                          data = spectraData(z), ...,
+                                          BPPARAM = SerialParam())
+                    }, ..., BPPARAM = BPPARAM)
+                bknds <- backendMerge(bknds)
+                ## That below ensures the backend is returned in its original
+                ## order - unsplit does unfortunately not work.
+                if (is.unsorted(f))
+                    bknds <- bknds[order(unlist(split(seq_along(bknds), f),
+                                                use.names = FALSE))]
+            }
+        }
+        object@backend <- bknds
+        object@processing <- .logging(object@processing,
+                                      "Switch backend from ",
+                                      backend_class, " to ",
+                                      class(object@backend))
+        object
+    })
 
 #' @rdname Spectra
 #'
@@ -1407,8 +1497,13 @@ setMethod("acquisitionNum", "Spectra", function(object)
 #' @rdname Spectra
 setMethod(
     "peaksData", "Spectra",
-    function(object, columns = c("mz", "intensity"), ...) {
-        SimpleList(.peaksapply(object, columns = columns, ...))
+    function(object, columns = c("mz", "intensity"), ..., BPPARAM = bpparam()) {
+        BPPARAM <- backendBpparam(object, BPPARAM)
+        if (is(BPPARAM, "SerialParam"))
+            f <- NULL
+        else f <- factor(dataStorage(object))
+        SimpleList(.peaksapply(object, f = f, columns = columns,
+                               BPPARAM = BPPARAM, ...))
 })
 
 #' @rdname Spectra
@@ -1417,7 +1512,11 @@ setMethod("peaksVariables", "Spectra", function(object)
 
 #' @importFrom methods setAs
 setAs("Spectra", "list", function(from, to) {
-    .peaksapply(from)
+    BPPARAM <- backendBpparam(from)
+    if (is(BPPARAM, "SerialParam"))
+        f <- NULL
+    else f <- factor(dataStorage(from))
+    .peaksapply(from, f = f, BPPARAM = BPPARAM)
 })
 
 setAs("Spectra", "SimpleList", function(from, to) {
@@ -1475,24 +1574,40 @@ setMethod("intensity", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 setMethod("ionCount", "Spectra", function(object) {
+    BPPARAM <- backendBpparam(object)
+    if (is(BPPARAM, "SerialParam"))
+        f <- NULL
+    else f <- factor(dataStorage(object))
     if (length(object))
-        unlist(.peaksapply(object, FUN = function(pks, ...)
-            sum(pks[, 2], na.rm = TRUE)), use.names = FALSE)
+        unlist(.peaksapply(object, f = f, BPPARAM = BPPARAM,
+                           FUN = function(pks, ...)
+                               sum(pks[, 2], na.rm = TRUE)),
+               use.names = FALSE)
     else numeric()
 })
 
 #' @rdname Spectra
 setMethod("isCentroided", "Spectra", function(object, ...) {
+    BPPARAM <- backendBpparam(object)
+    if (is(BPPARAM, "SerialParam"))
+        f <- NULL
+    else f <- factor(dataStorage(object))
     if (length(object))
-        unlist(.peaksapply(object, FUN = .peaks_is_centroided),
+        unlist(.peaksapply(object, f = f, BPPARAM = BPPARAM,
+                           FUN = .peaks_is_centroided),
                use.names = FALSE)
     else logical()
 })
 
 #' @rdname Spectra
 setMethod("isEmpty", "Spectra", function(x) {
+    BPPARAM <- backendBpparam(x)
+    if (is(BPPARAM, "SerialParam"))
+        f <- NULL
+    else f <- factor(dataStorage(x))
     if (length(x))
-        unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks) == 0),
+        unlist(.peaksapply(x, f = f, BPPARAM = BPPARAM,
+                           FUN = function(pks, ...) nrow(pks) == 0),
                use.names = FALSE)
     else logical()
 })
@@ -1540,6 +1655,8 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
     cond_fun <- match.fun(match.arg(which))
     if (all(is.na(mz)))
         return(rep(NA, length(object)))
+    mz <- unique(sort(mz))
+    BPPARAM <- backendBpparam(object@backend, BPPARAM)
     if (is(BPPARAM, "SerialParam"))
         .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
                 condFun = cond_fun, parallel = BPPARAM)
@@ -1559,6 +1676,7 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
 setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
                                                      tolerance = 0, ppm = 20,
                                                      BPPARAM = bpparam()) {
+    BPPARAM <- backendBpparam(object@backend, BPPARAM)
     if (is(BPPARAM, "SerialParam")) {
         .has_mz_each(object, precursorMz(object) - neutralLoss,
                      tolerance = tolerance, ppm = ppm, parallel = BPPARAM)
@@ -1579,12 +1697,18 @@ setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
 #' @importMethodsFrom ProtGenerics spectrapply
 #'
 #' @exportMethod spectrapply
-setMethod("spectrapply", "Spectra", function(object, FUN,
-                                             f = as.factor(seq_along(object)),
-                                             ..., BPPARAM = SerialParam()) {
+setMethod("spectrapply", "Spectra", function(object, FUN, ...,
+                                             chunkSize = integer(),
+                                             f = factor(),
+                                             BPPARAM = SerialParam()) {
     if (missing(FUN))
         FUN <- identity
-    .lapply(object, FUN = FUN, f = f, ..., BPPARAM = BPPARAM)
+    if (length(chunkSize))
+        return(chunkapply(object, FUN, ..., chunkSize = chunkSize))
+    if (!length(f))
+        f <- as.factor(seq_along(object))
+    .lapply(object, FUN = FUN, f = f, ...,
+            BPPARAM = backendBpparam(object@backend, BPPARAM))
 })
 
 #' @rdname Spectra
@@ -1663,13 +1787,15 @@ setMethod("scanIndex", "Spectra", function(object) {
 })
 
 #' @rdname Spectra
-setMethod("selectSpectraVariables", "Spectra",
-          function(object, spectraVariables = spectraVariables(object)) {
-              spectraVariables <- union(spectraVariables, "dataStorage")
-              object@backend <- selectSpectraVariables(
-                  object@backend, spectraVariables = spectraVariables)
-              object
-})
+setMethod(
+    "selectSpectraVariables", "Spectra",
+    function(object, spectraVariables = union(spectraVariables(object),
+                                              peaksVariables(object))) {
+        spectraVariables <- union(spectraVariables, "dataStorage")
+        object@backend <- selectSpectraVariables(
+            object@backend, spectraVariables = spectraVariables)
+        object
+    })
 
 #' @rdname Spectra
 setMethod("smoothed", "Spectra", function(object) {
@@ -1941,16 +2067,20 @@ setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
 #'
 #' @export
 setMethod("filterMzRange", "Spectra",
-          function(object, mz = numeric(), msLevel. = uniqueMsLevels(object)) {
+          function(object, mz = numeric(), msLevel. = uniqueMsLevels(object),
+                   keep = TRUE) {
               if (!.check_ms_level(object, msLevel.))
                   return(object)
-              mz <- range(mz)
-              object <- addProcessing(object, .peaks_filter_mz_range,
-                                      mz = mz, msLevel = msLevel.,
+              if (!length(mz)) mz <- c(-Inf, Inf)
+              else mz <- range(mz)
+              object <- addProcessing(object, .peaks_filter_mz_range, mz = mz,
+                                      msLevel = msLevel., keep = keep,
                                       spectraVariables = "msLevel")
+              if (keep) keep_or_remove <- "select"
+              else keep_or_remove <- "remove"
               object@processing <- .logging(
-                  object@processing, "Filter: select peaks with an m/z within ",
-                  "[", mz[1L], ", ", mz[2L], "]")
+                  object@processing, "Filter: ", keep_or_remove,
+                  " peaks with an m/z within [", mz[1L], ", ", mz[2L], "]")
               object
           })
 
@@ -1963,10 +2093,10 @@ setMethod("filterMzValues", "Spectra",
               if (!.check_ms_level(object, msLevel.))
                   return(object)
               l <- length(mz)
-              if (!(length(tolerance) == 1 || length(tolerance) == l))
-                  stop("'tolerance' should be of length 1 or equal 'length(mz)'")
-              if (!(length(ppm) == 1 || length(ppm) == l))
-                  stop("'ppm' should be of length 1 or equal 'length(mz)'")
+              if (length(tolerance) != 1)
+                  stop("'tolerance' should be of length 1")
+              if (length(ppm) != 1)
+                  stop("'ppm' should be of length 1")
               if (is.unsorted(mz)) {
                   idx <- order(mz)
                   mz <- mz[idx]
@@ -2031,7 +2161,7 @@ setMethod("filterPrecursorMzRange", "Spectra",
 setMethod("filterPrecursorMzValues", "Spectra",
           function(object, mz = numeric(), ppm = 20, tolerance = 0) {
               object@backend <- filterPrecursorMzValues(
-                  object@backend, mz, ppm = ppm, tolerance = tolerance)
+                  object@backend, sort(mz), ppm = ppm, tolerance = tolerance)
               object@processing <- .logging(
                   object@processing,
                   "Filter: select spectra with precursor m/z matching ",
@@ -2075,7 +2205,9 @@ setMethod("filterRt", "Spectra",
               if (length(rt) != 2L || !is.numeric(rt) || rt[1] >= rt[2])
                   stop("Please provide a lower and upper numeric retention",
                        " time range.")
-              suppressWarnings(rt <- range(rt))
+              if (length(rt))
+                  rt <- range(rt)
+              else rt <- c(-Inf, Inf)
               object@backend <- filterRt(object@backend, rt, msLevel.)
               object@processing <- .logging(
                   object@processing,
@@ -2106,8 +2238,6 @@ setMethod("reset", "Spectra", function(object, ...) {
 #' @importMethodsFrom ProtGenerics bin
 #'
 #' @exportMethod bin
-#'
-#' @export
 setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
                                      msLevel. = uniqueMsLevels(x),
                                      FUN = sum) {
@@ -2138,8 +2268,6 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
 #' @importFrom MsCoreUtils ndotproduct
 #'
 #' @importMethodsFrom ProtGenerics compareSpectra
-#'
-#' @export ppm
 #'
 #' @exportMethod compareSpectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
@@ -2174,8 +2302,6 @@ setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
 ## estimateNoise
 
 ## normalize
-
-## peaksapply
 
 #' @rdname Spectra
 #'
@@ -2317,4 +2443,9 @@ coreSpectraVariables <- function() .SPECTRA_DATA_COLUMNS
 #' @rdname Spectra
 setMethod("uniqueMsLevels", "Spectra", function(object, ...) {
     uniqueMsLevels(object@backend, ...)
+})
+
+#' @rdname Spectra
+setMethod("backendBpparam", "Spectra", function(object, BPPARAM = bpparam()) {
+    backendBpparam(object@backend, BPPARAM)
 })

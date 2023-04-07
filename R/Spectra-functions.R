@@ -77,7 +77,8 @@ NULL
 #' @param ... optional additional arguments to `FUN`.
 #'
 #' @param f `factor` or `vector` that can be coerced to one defining how the
-#'     data should be split for parallel processing.
+#'     data should be split for parallel processing. Set to `NULL` to disable
+#'     parallel processing.
 #'
 #' @param columns `character` defining the columns that should be returned. This
 #'     will be passed to the backend's `peaksData` function.
@@ -96,24 +97,32 @@ NULL
                         f = dataStorage(object),
                         columns = c("mz", "intensity"), BPPARAM = bpparam()) {
     len <- length(object)
+    lf <- length(f)
     if (!len)
         return(list())
-    if (length(f) != len)
+    if (lf && lf != len)
         stop("Length of 'f' has to match 'length(object)' (", len, ")")
     if (!is.factor(f))
         f <- factor(f)
     pqueue <- object@processingQueue
     if (!is.null(FUN))
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
-    if (length(levels(f)) > 1 || length(pqueue)) {
-        res <- bplapply(split(object@backend, f), function(z, queue, svars) {
+    ll <- length(levels(f))
+    if (length(pqueue) || ll > 1) {
+        .local <- function(z, queue, svars) {
             if (length(svars))
                 spd <- as.data.frame(spectraData(z, columns = svars))
             else spd <- NULL
             .apply_processing_queue(peaksData(z, columns = columns), spd,
                                     queue = queue)
-        }, queue = pqueue, svars = spectraVariables, BPPARAM = BPPARAM)
-        unsplit(res, f = f, drop = TRUE)
+        }
+        if (ll > 1) {
+            res <- bplapply(split(object@backend, f), .local,
+                            queue = pqueue, svars = spectraVariables,
+                            BPPARAM = BPPARAM)
+            unsplit(res, f = f, drop = TRUE)
+        } else
+            .local(object@backend, pqueue, spectraVariables)
     } else peaksData(object@backend, columns = columns)
 }
 
@@ -168,6 +177,7 @@ applyProcessing <- function(object, f = dataStorage(object),
     if (isReadOnly(object@backend))
         stop(class(object@backend), " is read-only. 'applyProcessing' works ",
              "only with backends that support writing data.")
+    BPPARAM <- backendBpparam(object@backend, BPPARAM)
     if (!is.factor(f))
         f <- factor(f, levels = unique(f))
     if (length(f) != length(object))
@@ -280,14 +290,27 @@ applyProcessing <- function(object, f = dataStorage(object),
 .compare_spectra_chunk <- function(x, y = NULL, MAPFUN = joinPeaks,
                                    tolerance = 0, ppm = 20,
                                    FUN = ndotproduct,
-                                   chunkSize = 10000, ...) {
+                                   chunkSize = 10000, ...,
+                                   BPPARAM = bpparam()) {
     nx <- length(x)
     ny <- length(y)
+    bppx <- backendBpparam(x@backend, BPPARAM)
+    if (is(bppx, "SerialParam"))
+        fx <- NULL
+    else fx <- factor(dataStorage(x))
+    pqvx <- .processingQueueVariables(x)
+    bppy <- backendBpparam(y@backend, BPPARAM)
+    if (is(bppy, "SerialParam"))
+        fy <- NULL
+    else fy <- factor(dataStorage(y))
+    pqvy <- .processingQueueVariables(y)
     if (nx <= chunkSize && ny <= chunkSize) {
-        mat <- .peaks_compare(.peaksapply(x), .peaksapply(y), MAPFUN = MAPFUN,
-                              tolerance = tolerance, ppm = ppm,
-                              FUN = FUN, xPrecursorMz = precursorMz(x),
-                              yPrecursorMz = precursorMz(y), ...)
+        mat <- .peaks_compare(
+            .peaksapply(x, f = fx, spectraVariables = pqvx, BPPARAM = bppx),
+            .peaksapply(y, f = fy, spectraVariables = pqvy, BPPARAM = bppy),
+            MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
+            FUN = FUN, xPrecursorMz = precursorMz(x),
+            yPrecursorMz = precursorMz(y), ...)
         dimnames(mat) <- list(spectraNames(x), spectraNames(y))
         return(mat)
     }
@@ -304,11 +327,19 @@ applyProcessing <- function(object, f = dataStorage(object),
                   dimnames = list(spectraNames(x), spectraNames(y)))
     for (x_chunk in x_chunks) {
         x_buff <- x[x_chunk]
-        x_peaks <- .peaksapply(x_buff)
+        if (length(fx))
+            fxc <- factor(dataStorage(x_buff))
+        else fxc <- NULL
+        x_peaks <- .peaksapply(x_buff, f = fxc, spectraVariables = pqvx,
+                               BPPARAM = bppx)
         for (y_chunk in y_chunks) {
             y_buff <- y[y_chunk]
+            if (length(fy))
+                fyc <- factor(dataStorage(y_buff))
+            else fyc <- NULL
             mat[x_chunk, y_chunk] <- .peaks_compare(
-                x_peaks, .peaksapply(y_buff),
+                x_peaks, .peaksapply(y_buff, f = fyc, spectraVariables = pqvy,
+                                     BPPARAM = bppy),
                 MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
                 FUN = FUN, xPrecursorMz = precursorMz(x_buff),
                 yPrecursorMz = precursorMz(y_buff), ...)
@@ -341,15 +372,19 @@ applyProcessing <- function(object, f = dataStorage(object),
     m <- matrix(NA_real_, nrow = nx, ncol = nx,
                   dimnames = list(spectraNames(x), spectraNames(x)))
 
+    sv <- .processingQueueVariables(x)
     cb <- which(lower.tri(m, diag = TRUE), arr.ind = TRUE)
     pmz <- precursorMz(x)
+    bpp <- SerialParam()
     for (i in seq_len(nrow(cb))) {
         cur <- cb[i, 2L]
         if (i == 1L || cb[i - 1L, 2L] != cur) {
-            py <- px <- peaksData(x[cur])[[1L]]
+            py <- px <- .peaksapply(x[cur], spectraVariables = sv, f = NULL,
+                                    BPPARAM = bpp)[[1L]]
             pmzx <- pmzy <- pmz[cur]
         } else {
-            py <- peaksData(x[cb[i, 1L]])[[1L]]
+            py <- .peaksapply(x[cb[i, 1L]], spectraVariables = sv, f = NULL,
+                              BPPARAM = bpp)[[1L]]
             pmzy <- pmz[cb[i, 1L]]
         }
         map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm,
@@ -371,7 +406,7 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @note
 #'
 #' If the backend of the input `Spectra` is *read-only* we're first converting
-#' that to a `MsBackendDataFrame` to support replacing peak data.
+#' that to a `MsBackendMemory` to support replacing peak data.
 #'
 #' @param x `Spectra`, ideally from a single `$dataStorage`.
 #'
@@ -381,7 +416,7 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' @param FUN `function` to be applied to the list of peak matrices.
 #'
 #' @return `Spectra` of length 1. If the input `Spectra` uses a read-only
-#'     backend that is changed to a `MsBackendDataFrame`.
+#'     backend that is changed to a `MsBackendMemory`.
 #'
 #' @author Johannes Rainer
 #'
@@ -408,9 +443,10 @@ applyProcessing <- function(object, f = dataStorage(object),
     else f <- droplevels(f)
     x_new <- x[match(levels(f), f)]
     if (isReadOnly(x_new@backend))
-        x_new <- setBackend(x_new, MsBackendDataFrame())
+        x_new <- setBackend(x_new, MsBackendMemory())
+    bpp <- SerialParam()
     peaksData(x_new@backend) <- lapply(
-        split(.peaksapply(x, BPPARAM = SerialParam()), f = f), FUN = FUN, ...)
+        split(.peaksapply(x, f = NULL, BPPARAM = bpp), f = f), FUN = FUN, ...)
     x_new@processingQueue <- list()
     validObject(x_new)
     x_new
@@ -464,11 +500,12 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
         f <- factor(f, levels = unique(f))
     if (!is.factor(p))
         p <- factor(p, levels = unique(p))
+    BPPARAM <- backendBpparam(x@backend, BPPARAM)
     if (length(f) != length(x) || length(p) != length(x))
         stop("length of 'f' and 'p' have to match length of 'x'")
     if (isReadOnly(x@backend))
         message("Backend of the input object is read-only, will change that",
-                " to an 'MsBackendDataFrame'")
+                " to an 'MsBackendMemory'")
     if (nlevels(p) > 1) {
         ## We split the workload by storage file. This ensures memory efficiency
         ## for file-based backends.
@@ -611,6 +648,7 @@ estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
     if (is.factor(f))
         f <- as.character(f)
     f <- factor(f, levels = unique(f))
+    BPPARAM <- backendBpparam(x@backend, BPPARAM)
     unlist(bplapply(split(x, f), FUN = .estimate_precursor_intensity, ppm = ppm,
                     tolerance = tolerance, method = method, msLevel = msLevel.,
                     BPPARAM = BPPARAM), use.names = FALSE)
@@ -642,7 +680,7 @@ estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
     pmi <- rep(NA_real_, length(pmz))
     idx_ms2 <- which(!is.na(pmz) & msLevel(x) == msLevel)
     x_ms1 <- filterMsLevel(x, msLevel = msLevel - 1L)
-    pks <- .peaksapply(x_ms1)
+    pks <- .peaksapply(x_ms1, f = NULL, BPPARAM = SerialParam())
     for (i in idx_ms2) {
         rt_i <- rtime(x[i])
         before_idx <- which(rtime(x_ms1) < rt_i)
@@ -686,4 +724,73 @@ estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
     if (length(idx))
         pmi <- pmi[order(idx)]
     pmi
+}
+
+#' @title Apply a function stepwise to chunks of data
+#'
+#' @description
+#'
+#' `chunkapply` splits `x` into chunks and applies the function `FUN` stepwise
+#' to each of these chunks. Depending on the object it is called, this
+#' function might reduce memory demand considerably, if for example only the
+#' full data for a single chunk needs to be loaded into memory at a time (e.g.,
+#' for `Spectra` objects with on-disk or similar backends).
+#'
+#' @param x object to which `FUN` should be applied. Can be any object that
+#'     supports `split`.
+#'
+#' @param FUN the function to apply to `x`.
+#'
+#' @param ... additional parameters to `FUN`.
+#'
+#' @param chunkSize `integer(1)` defining the size of each chunk into which `x`
+#'     should be splitted.
+#'
+#' @param chunks optional `factor` or length equal to `length(x)` defining the
+#'     chunks into which `x` should be splitted.
+#'
+#' @return Depending on `FUN`, but in most cases a vector/result object of
+#'     length equal to `length(x)`.
+#'
+#' @export
+#'
+#' @author Johannes Rainer
+#'
+#' @examples
+#'
+#' ## Apply a function (`sqrt`) to each element in `x`, processed in chunks of
+#' ## size 200.
+#' x <- rnorm(n = 1000, mean = 500)
+#' res <- chunkapply(x, sqrt, chunkSize = 200)
+#' length(res)
+#' head(res)
+#'
+#' ## For such a calculation the vectorized `sqrt` would however be recommended
+#' system.time(sqrt(x))
+#' system.time(chunkapply(x, sqrt, chunkSize = 200))
+#'
+#' ## Simple example splitting a numeric vector into chunks of 200 and
+#' ## aggregating the values within the chunk using the `mean`. Due to the
+#' ## `unsplit` the result has the same length than the input with the mean
+#' ## value repeated.
+#' x <- 1:1000
+#' res <- chunkapply(x, mean, chunkSize = 200)
+#' length(res)
+#' head(res)
+chunkapply <- function(x, FUN, ..., chunkSize = 1000L, chunks = factor()) {
+    lx <- length(x)
+    lc <- length(chunks)
+    if (lx <= length(levels(chunks)) || (!lc & lx <= chunkSize))
+        return(FUN(x, ...))
+    if (lc > 0) {
+        if (lc != lx)
+            stop("Length of 'chunks' does not match length of 'x'")
+    } else chunks <- .chunk_factor(lx, chunkSize = chunkSize)
+    unsplit(lapply(split(x, chunks), FUN, ...), f = chunks)
+}
+
+.chunk_factor <- function(len, chunkSize = 1000L) {
+    if (len <= chunkSize)
+        return(as.factor(rep(1L, len)))
+    as.factor(rep(1:ceiling(len / chunkSize), each = chunkSize)[seq_len(len)])
 }

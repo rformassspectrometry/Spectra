@@ -42,15 +42,32 @@ test_that("backendInitialize,MsBackendMemory works", {
     be <- backendInitialize(be, df)
     expect_equal(be@peaksDataFrame, list())
     expect_true(any(colnames(be@spectraData) == "other_col"))
+    expect_warning(
+        be <- backendInitialize(be, df, peaksVariables = c("mz", "intensity",
+                                                           "other_col")),
+        "other_col")
+    expect_equal(be@peaksDataFrame, list())
+    expect_true(any(colnames(be@spectraData) == "other_col"))
 
     df$other_col <- list(1:3, 1:2, 1:4)
     be <- backendInitialize(be, df)
+    expect_true(any(colnames(be@spectraData) == "other_col"))
+
+    be <- backendInitialize(
+        be, df, peaksVariables = c("mz", "intensity", "other_col"))
     expect_equal(be@peaksDataFrame, list(data.frame(other_col = 1:3),
                                          data.frame(other_col = 1:2),
                                          data.frame(other_col = 1:4)))
 
     df$yet_another_col <- list(c("a", "b", "c"), c("a", "b"), letters[3:6])
     be <- backendInitialize(be, df)
+    expect_equal(be@peaksDataFrame, list())
+    expect_true(all(c("yet_another_col", "other_col") %in%
+                    colnames(be@spectraData)))
+
+    be <- backendInitialize(be, df, peaksVariables = c("mz", "intensity",
+                                                       "other_col",
+                                                       "yet_another_col"))
     expect_equal(be@peaksDataFrame,
                  list(data.frame(other_col = 1:3,
                                  yet_another_col = c("a", "b", "c")),
@@ -58,6 +75,14 @@ test_that("backendInitialize,MsBackendMemory works", {
                                  yet_another_col = c("a", "b")),
                       data.frame(other_col = 1:4,
                                  yet_another_col = letters[3:6])))
+
+    ## backendInitialize with an empty data frame
+    df <- test_df[integer(), ]
+    res <- backendInitialize(MsBackendMemory(), data = df)
+    expect_true(validObject(res))
+    expect_true(length(res) == 0L)
+    expect_equal(res$mz, IRanges::NumericList(compress = FALSE))
+    expect_equal(spectraData(res)$mz, IRanges::NumericList(compress = FALSE))
 })
 
 test_that("show,MsBackendMemory works", {
@@ -110,7 +135,8 @@ test_that("peaksVariables,MsBackendMemory works", {
     expect_equal(res, "mz")
 
     df$peak_ann <- list(c("a", "b"), c("a", "b", "c"))
-    be <- backendInitialize(be, df)
+    be <- backendInitialize(
+        be, df, peaksVariables = c("mz", "intensity", "peak_ann"))
     res <- peaksVariables(be)
     expect_equal(res, c("mz", "peak_ann"))
 })
@@ -135,7 +161,7 @@ test_that("mz,mz<-,MsBackendMemory works", {
     expect_error(mz(be) <- list(1:3), "length of 'object'")
     expect_error(mz(be) <- list(1:3, 1:3, 1:3), "number of peaks")
 
-    vals <- list(c(1.4, 5.2, 1.3), c(6.2, 5.6), c(1.1, 3.3, 4.4, 5.5))
+    vals <- list(c(1.3, 1.4, 5.2), c(5.6, 6.2), c(1.1, 3.3, 4.4, 5.5))
     mz(be) <- vals
     expect_equal(mz(be), IRanges::NumericList(vals, compress = FALSE))
 
@@ -192,7 +218,8 @@ test_that("spectraData,MsBackendMemory works", {
 
     tmp <- test_df
     tmp$pk_anno <- list(c("a", "b", "c"), c("", "d"), letters[12:15])
-    be <- backendInitialize(be, tmp)
+    be <- backendInitialize(
+        be, tmp, peaksVariables = c("mz", "intensity", "pk_anno"))
     expect_true(length(be@peaksDataFrame) == 3)
     res <- spectraData(be)
     expect_equal(res$msLevel, test_df$msLevel)
@@ -240,6 +267,16 @@ test_that("spectraData<-,MsBackendMemory works", {
                                               compress = FALSE))
     expect_error(spectraData(be) <- newDF[1:2, ], "3 rows")
     expect_error(spectraData(be) <- "a", "DataFrame")
+
+    ## With a peaks variable.
+    newDF$peak_ann <- list(c("a", "b", "c"), c("a", "b"), c("a", "b", "c", "d"))
+    be <- backendInitialize(
+        be, newDF, peaksVariables = c("mz", "intensity", "peak_ann"))
+    expect_equal(peaksVariables(be), c("mz", "intensity", "peak_ann"))
+    newDF$peak_ann <- list(1:3, 1:2, 1:4)
+    spectraData(be) <- newDF
+    expect_equal(peaksVariables(be), c("mz", "intensity", "peak_ann"))
+    expect_equal(be$peak_ann, newDF$peak_ann)
 })
 
 test_that("peaksData,MsBackendMemory works", {
@@ -270,7 +307,8 @@ test_that("peaksData,MsBackendMemory works", {
 
     tmp <- test_df
     tmp$pk_ann <- list(letters[1:3], c("", ""), letters[1:4])
-    be <- backendInitialize(be, tmp)
+    be <- backendInitialize(
+        be, tmp, peaksVariables = c("mz", "intensity", "pk_ann"))
     res <- peaksData(be)
     expect_equal(res[[1L]], cbind(mz = test_df$mz[[1L]],
                                   intensity = test_df$intensity[[1L]]))
@@ -293,7 +331,8 @@ test_that("peaksData,MsBackendMemory works", {
     expect_equal(res[[3L]], cbind(pk_ann = tmp$pk_ann[[3L]],
                                   mz = tmp$mz[[3L]]))
     tmp$add_ann <- list(1:3, 1:2, 1:4)
-    be <- backendInitialize(be, tmp)
+    be <- backendInitialize(
+        be, tmp, peaksVariables = c("mz", "intensity", "pk_ann", "add_ann"))
     res <- peaksData(be, c("mz", "pk_ann"))
     expect_equal(res[[1L]], cbind(mz = tmp$mz[[1L]],
                                   pk_ann = tmp$pk_ann[[1L]]))
@@ -364,7 +403,8 @@ test_that("$,MsBackendMemory works", {
 
     tmp <- test_df
     tmp$peak_ann <- list(letters[1:3], letters[1:2], letters[1:4])
-    be <- backendInitialize(be, tmp)
+    be <- backendInitialize(
+        be, tmp, peaksVariables = c("mz", "intensity", "peak_ann"))
     expect_equal(be$peak_ann, tmp$peak_ann)
 })
 
@@ -404,22 +444,31 @@ test_that("$<-,MsBackendMemory works", {
     be$intensity <- vals
     expect_equal(be$intensity, IRanges::NumericList(vals, compress = FALSE))
 
-    ## new peaks annotation
+    ## add new spectra variable
     vals <- list(letters[1:3], letters[1:2], letters[1:4])
     be$peak_anno <- vals
-    expect_true(length(be@peaksDataFrame) == 3)
+    expect_equal(be$peak_anno, vals)
+    expect_equal(be@peaksDataFrame, list())
+
+    ## Add peaks annotation.
+    vals <- list(letters[1:3], letters[1:2], letters[1:4])
+    df <- test_df
+    df$peak_anno <- vals
+    be <- backendInitialize(
+        be, df, peaksVariables = c("mz", "intensity", "peak_anno"))
+    expect_equal(peaksVariables(be), c("mz", "intensity", "peak_anno"))
     expect_equal(be$peak_anno, vals)
 
-    ## add to peaks annotation
-    vals <- list(1:3, 1:2, 1:4)
-    be$add_anno <- vals
-    expect_equal(colnames(be@peaksDataFrame[[1L]]), c("peak_anno", "add_anno"))
-    expect_equal(be$add_anno, vals)
-
     ## replace peaks annotation
-    vals <- list(2:4, 2:3, 2:5)
-    be$add_anno <- vals
-    expect_equal(be$add_anno, vals)
+    new_vals <- list(2:4, 2:3, 2:5)
+    be$peak_anno <- new_vals
+    expect_equal(be$peak_anno, new_vals)
+    expect_equal(be@peaksDataFrame, list(data.frame(peak_anno = 2:4),
+                                         data.frame(peak_anno = 2:3),
+                                         data.frame(peak_anno = 2:5)))
+    ## delete a peaks variable.
+    be$peak_anno <- NULL
+    expect_equal(peaksVariables(be), c("mz", "intensity"))
 
     ## list like data but no peak annotation.
     vals <- list("A", c("B", "C"), c("D", "E", "F"))
@@ -792,6 +841,7 @@ test_that("backendMerge,MsBackendMemory works", {
 
 test_that("selectSpectraVariables,MsBackendMemory works", {
     be <- MsBackendMemory()
+    expect_equal(peaksVariables(be), c("mz", "intensity"))
     expect_error(selectSpectraVariables(be, c("msLevel", "other")),
                  "not available")
 
@@ -799,18 +849,34 @@ test_that("selectSpectraVariables,MsBackendMemory works", {
     expect_error(selectSpectraVariables(be, c("msLevel")), "dataStorage")
     res <- selectSpectraVariables(be, c("msLevel", "dataStorage"))
     expect_equal(colnames(res@spectraData), c("msLevel", "dataStorage"))
-    expect_equal(peaksVariables(res), NULL)
+    expect_equal(peaksVariables(res), c("mz", "intensity"))
+    expect_s4_class(intensity(res), "NumericList")
+    expect_s4_class(mz(res), "NumericList")
+    expect_true(length(res@peaksData) == 3)
+    expect_true(all(vapply(res@peaksData, is.matrix, logical(1))))
+    expect_true(all(vapply(res@peaksData, nrow, integer(1)) == 0))
 
     res <- selectSpectraVariables(be, c("mz", "dataStorage"))
     expect_equal(colnames(res@spectraData), c("dataStorage"))
     expect_equal(peaksVariables(res), "mz")
+    expect_equal(mz(res), mz(be))
+    expect_s4_class(intensity(res), "NumericList")
+    expect_equal(length(intensity(res)), length(mz(res)))
+    expect_true(all(lengths(intensity(res)) == 0))
 
-    be$peak_anno <- list(c("a", "", "b"), c("a", "b"), c("a", "b", "c", "d"))
+    tmp <- test_df
+    tmp$peak_anno <- list(c("a", "", "b"), c("a", "b"), c("a", "b", "c", "d"))
+    be <- backendInitialize(
+        be, tmp, peaksVariables = c("mz", "intensity", "peak_anno"))
+    expect_equal(peaksVariables(be), c("mz", "intensity", "peak_anno"))
     res <- selectSpectraVariables(be, c("msLevel", "dataStorage",
                                         "mz", "intensity"))
     expect_equal(res@peaksDataFrame, list())
 
-    be$second_col <- list(1:3, 1:2, 1:4)
+    tmp$second_col <- list(1:3, 1:2, 1:4)
+    be <- backendInitialize(be, tmp, peaksVariables = c("mz", "intensity",
+                                                        "peak_anno",
+                                                        "second_col"))
     expect_equal(peaksVariables(be), c("mz", "intensity",
                                        "peak_anno", "second_col"))
     res <- selectSpectraVariables(be, c("msLevel", "dataStorage",
@@ -827,4 +893,8 @@ test_that("tic,MsBackendMemory works", {
     expect_equal(tic(be), rep(NA_real_, 3))
     expect_equal(tic(be, initial = FALSE)[1], sum(intensity(be)[[1L]]))
     expect_equal(tic(be, initial = FALSE)[2], sum(intensity(be)[[2L]]))
+})
+
+test_that("supportsSetBackend,MsBackendMemory", {
+    expect_true(supportsSetBackend(MsBackendMemory()))
 })

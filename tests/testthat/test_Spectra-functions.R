@@ -277,7 +277,7 @@ test_that(".combine_spectra works", {
     res <- .combine_spectra(sps, tolerance = 0.1, FUN = combinePeaks)
     expect_true(length(res) == 2)
     expect_true(is(res, "Spectra"))
-    expect_true(class(res@backend) == "MsBackendDataFrame")
+    expect_true(class(res@backend) == "MsBackendMemory")
     expect_true(length(unlist(res$mz)) < length(unlist(sps$mz)))
 })
 
@@ -295,7 +295,7 @@ test_that("combineSpectra works", {
 
     expect_true(is(res, "Spectra"))
     expect_true(length(res) == 2)
-    expect_true(class(res@backend) == "MsBackendDataFrame")
+    expect_true(class(res@backend) == "MsBackendMemory")
     expect_equal(res$dataOrigin, unique(sps$dataStorage))
 
     ## Different f
@@ -599,6 +599,28 @@ test_that(".peaksapply works", {
                                                  list(intensity = c(0.1, Inf)))))
     res_4 <- .peaksapply(sps, spectraVariables = c("msLevel", "centroided"))
     expect_equal(res_3, res_4)
+
+    ## processing queue and f.
+    a <- sps[1:10]
+    ref <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = rep(1, 10))
+    res <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = c(3, 3, 3, 3, 2, 2, 2, 2, 1, 1))
+    expect_equal(ref, res)
+    res <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = NULL)
+    expect_equal(ref, res)
+
+    ## no processing queue and f.
+    a@processingQueue <- list()
+    ref <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = rep(1, 10))
+    res <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = c(3, 3, 3, 3, 2, 2, 2, 2, 1, 1))
+    expect_equal(ref, res)
+    res <- .peaksapply(a, spectraVariables = c("msLevel", "centroided"),
+                       f = NULL)
+    expect_equal(ref, res)
 })
 
 test_that(".apply_processing_queue works", {
@@ -675,4 +697,27 @@ test_that("estimatePrecursorIntensity works", {
     res_second <- estimatePrecursorIntensity(second)
     res_both <- estimatePrecursorIntensity(both)
     expect_equal(res_second, res_both[510:length(res_both)])
+})
+
+test_that(".chunk_factor works", {
+    res <- .chunk_factor(10, chunkSize = 3)
+    expect_equal(res, as.factor(c(1, 1, 1, 2, 2, 2, 3, 3, 3, 4)))
+    res <- .chunk_factor(10)
+    expect_equal(res, as.factor(rep(1L, 10)))
+})
+
+test_that("chunkapply works", {
+    smem <- setBackend(Spectra(sciex_mzr), MsBackendMemory())
+    res <- chunkapply(smem, lengths, chunkSize = 10)
+    expect_equal(res, lengths(smem))
+    a <- smem[1:10]
+    chnks <- as.factor(c(1, 1, 1, 2, 2, 2, 3, 3))
+    expect_error(chunkapply(a, lengths, chunks = chnks), "does not match")
+    chnks <- as.factor(c(1, 1, 1, 2, 2, 2, 3, 3, 3, 4))
+    res <- chunkapply(a, lengths, chunks = chnks)
+    expect_equal(res, lengths(a))
+
+    chnks <- as.factor(c(2, 2, 2, 1, 1, 1, 4, 3, 3, 3))
+    res2 <- chunkapply(a, lengths, chunks = chnks)
+    expect_equal(res2, res)
 })

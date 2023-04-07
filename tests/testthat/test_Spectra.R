@@ -49,6 +49,17 @@ test_that("Spectra,character works", {
     expect_identical(rtime(res), rtime(res_2))
 
     show(res)
+
+    ## Empty character
+    res <- Spectra(character(), backend = MsBackendMzR())
+    expect_s4_class(res, "Spectra")
+    expect_s4_class(res@backend, "MsBackendMzR")
+    expect_true(length(res) == 0)
+
+    res <- Spectra(character(), backend = MsBackendDataFrame())
+    expect_s4_class(res, "Spectra")
+    expect_s4_class(res@backend, "MsBackendDataFrame")
+    expect_true(length(res) == 0)
 })
 
 test_that("setBackend,Spectra works", {
@@ -61,7 +72,18 @@ test_that("setBackend,Spectra works", {
                      res@backend@spectraData$fact)
     expect_identical(rtime(res), rtime(sps))
     expect_identical(dataStorage(res), dataStorage(sps))
-    expect_identical(dataOrigin(res), dataStorage(sps))
+    expect_identical(dataOrigin(res), dataOrigin(sps))
+
+    ## Empty backends
+    e <- sps[integer()]
+    e2 <- setBackend(e, MsBackendDataFrame())
+    expect_true(length(e2) == 0)
+    expect_s4_class(e2@backend, "MsBackendDataFrame")
+    expect_equal(e2$mz, IRanges::NumericList(compress = FALSE))
+    e3 <- setBackend(e, MsBackendMemory())
+    expect_true(length(e3) == 0)
+    expect_s4_class(e3@backend, "MsBackendMemory")
+    expect_equal(e3$mz, IRanges::NumericList(compress = FALSE))
 
     ## Use a different factor.
     res <- setBackend(sps, MsBackendDataFrame(), f = df$fact)
@@ -97,7 +119,7 @@ test_that("setBackend,Spectra works", {
     expect_identical(peaksData(sps), peaksData(res))
 
     ## errors:
-    expect_error(setBackend(sps, MsBackendMzR()), "is read-only")
+    expect_error(setBackend(sps, MsBackendMzR()), "support")
     expect_error(setBackend(sps, MsBackendMzR()), "MsBackendMzR")
 })
 
@@ -1318,6 +1340,10 @@ test_that("spectrapply,Spectra works", {
     res <- spectrapply(sps, FUN = function(x) mean(x$intensity[[1]]))
     expect_equal(unlist(res, use.names = FALSE),
                  vapply(intensity(sps), mean, numeric(1)))
+
+    ## chunkify
+    res <- spectrapply(Spectra(sciex_mzr), lengths, chunkSize = 100)
+    expect_equal(res, lengths(sciex_pks) / 2)
 })
 
 test_that("split,Spectra works", {
@@ -1415,7 +1441,7 @@ test_that("filterMzRange,Spectra works", {
     expect_warning(res <- filterMzRange(sps, msLevel = 1L), "not available")
     expect_equal(mz(res), mz(sps))
 
-    expect_warning(res <- filterMzRange(sps), "Inf")
+    res <- filterMzRange(sps)
     expect_equal(mz(res), mz(sps))
 
     res <- filterMzRange(sps, mz = c(200, 400))
@@ -1425,6 +1451,15 @@ test_that("filterMzRange,Spectra works", {
     expect_equal(mz(res)[[1L]], c(45, 56))
     expect_equal(unname(mz(res)[[2L]]), 56.1)
     expect_true(length(mz(res)[[3L]]) == 0)
+
+    ## Remove
+    res <- filterMzRange(sps, mz = c(200, 400), keep = FALSE)
+    expect_equal(mz(res), mz(sps))
+
+    res <- filterMzRange(sps, mz = c(12, 15), keep = FALSE)
+    expect_equal(mz(res)[[1L]], c(45, 56))
+    expect_equal(mz(res)[[2L]], c(34, 56.1))
+    expect_equal(unname(mz(res)[[3L]]), 34.1)
 })
 
 test_that("filterMzValue,Spectra works", {
@@ -1439,20 +1474,15 @@ test_that("filterMzValue,Spectra works", {
     expect_true(length(mz(res)[[2L]]) == 0)
     expect_true(length(mz(res)[[3L]]) == 0)
 
-    res <- filterMzValues(sps, mz = c(56, 12), tolerance = c(0.2, 0))
-    expect_equal(mz(res)[[1L]], c(12, 56))
-    expect_equal(unname(mz(res)[[2L]]), 56.1)
-    expect_true(length(mz(res)[[3L]]) == 0)
-
     res <- filterMzValues(sps, mz = c(56, 12), tolerance = c(0.2))
     expect_equal(mz(res)[[1L]], c(12, 56))
     expect_equal(unname(mz(res)[[2L]]), 56.1)
     expect_equal(unname(mz(res)[[3L]]), 12.1)
 
     expect_error(filterMzValues(sps, mz = c(56, 12), tolerance = c(1, 2, 3)),
-                 "length 1 or equal")
+                 "length 1")
     expect_error(filterMzValues(sps, mz = c(56, 12), ppm = c(1, 2, 3)),
-                 "length 1 or equal")
+                 "length 1")
 
     ## remove
     res <- filterMzValues(sps, mz = 56, keep = FALSE)
@@ -1463,6 +1493,35 @@ test_that("filterMzValue,Spectra works", {
 
     res <- filterMzValues(sps, mz = c(1243, 244), keep = FALSE)
     expect_equal(mz(res), mz(sps))
+
+    ## Second set of tests
+    spd$mz <- list(c(12, 14, 45, 45.1, 45.2, 45.3, 56),
+                   c(14.1, 34, 45.1, 45.2, 56.1),
+                   c(12.1, 14.15, 34.1, 45.4))
+    spd$intensity <- list(c(10, 20, 30, 40, 50, 40, 30),
+                          c(11, 21, 31, 100, 100),
+                          c(12, 22, 32, 100))
+    sps <- Spectra(spd)
+    res <- filterMzValues(sps, mz = 45, tolerance = 0.3, keep = FALSE)
+    expect_equal(mz(res)[[1L]], c(12, 14, 56))
+    expect_equal(mz(res)[[2L]], c(14.1, 34, 56.1))
+    expect_equal(mz(res)[[3L]], c(12.1, 14.15, 34.1, 45.4))
+
+    res <- filterMzValues(sps, mz = 45, tolerance = 0.3, keep = TRUE)
+    expect_equal(mz(res)[[1L]], c(45, 45.1, 45.2, 45.3))
+    expect_equal(mz(res)[[2L]], c(45.1, 45.2))
+    expect_equal(mz(res)[[3L]], numeric())
+
+    ## Multiple values
+    res <- filterMzValues(sps, mz = c(56, 45), tolerance = 0.3, keep = FALSE)
+    expect_equal(mz(res)[[1L]], c(12, 14))
+    expect_equal(mz(res)[[2L]], c(14.1, 34))
+    expect_equal(mz(res)[[3L]], c(12.1, 14.15, 34.1, 45.4))
+
+    res <- filterMzValues(sps, mz = c(56, 45), tolerance = 0.3, keep = TRUE)
+    expect_equal(mz(res)[[1L]], c(45, 45.1, 45.2, 45.3, 56))
+    expect_equal(mz(res)[[2L]], c(45.1, 45.2, 56.1))
+    expect_equal(mz(res)[[3L]], numeric())
 })
 
 test_that("dropNaSpectraVariables works with MsBackendMzR", {
