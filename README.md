@@ -2,7 +2,7 @@
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check-bioc](https://github.com/RforMassSpectrometry/Spectra/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/RforMassSpectrometry/Spectra/actions?query=workflow%3AR-CMD-check-bioc)
-[![codecov](https://codecov.io/gh/rformassspectrometry/Spectra/branch/devel/graph/badge.svg?token=jy0Mid9gKn)](https://codecov.io/gh/rformassspectrometry/Spectra)
+[![codecov](https://codecov.io/gh/rformassspectrometry/Spectra/branch/main/graph/badge.svg?token=jy0Mid9gKn)](https://codecov.io/gh/rformassspectrometry/Spectra)
 [![license](https://img.shields.io/badge/license-Artistic--2.0-brightgreen.svg)](https://opensource.org/licenses/Artistic-2.0)
 [![years in bioc](http://bioconductor.org/shields/years-in-bioc/Spectra.svg)](https://bioconductor.org/packages/release/bioc/html/Spectra.html)
 [![Ranking by downloads](http://bioconductor.org/shields/downloads/release/Spectra.svg)](https://bioconductor.org/packages/stats/bioc/Spectra/)
@@ -78,6 +78,16 @@ package providing it) is shown below:
 
 For more information see the package
 [homepage](https://rformassspectrometry.github.io/Spectra).
+
+
+# Installation
+
+The package can be installed with
+
+```r
+install.packages("BiocManager")
+BiocManager::install("Spectra")
+```
 
 
 # Contributions
