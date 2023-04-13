@@ -4,6 +4,7 @@
 
 - Fix issue in `MsBackendMemory` failed to return intensity or m/z values when
   peaks data is empty.
+- Fix bug in `filterPrecursorScan()` (see #194 and PR #277).
 
 ## Changes in 1.9.14
 
