@@ -1,3 +1,10 @@
+# Spectra 1.11
+
+## Changes in 1.11.1
+
+- Add example for filtering precursor m/z peaks from fragment spectra to the
+  vignette.
+
 # Spectra 1.9
 
 ## Changes in 1.9.15
