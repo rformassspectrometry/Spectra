@@ -2459,39 +2459,39 @@ reduceSpectra <- function (
 		ms2type = c("DDA","DIA"),
 		setPrecursor = TRUE
 		#isoSubstitutionMat="HMDB_NEUTRAL",
-		#adductNames = MetaboCoreUtils::adductNames (polarity = c("positive", "negative"))) 
+		#adductNames = MetaboCoreUtils::adductNames (polarity = c("positive", "negative")))
 		)
 {
 	print ("Input spectra length:")
 	print (length (querySpectra))
-	spec_list = spectrapply (querySpectra, function (spec) 
-	{	
-	
+	spec_list = spectrapply (querySpectra, function (spec)
+	{
+
 		print (spectraData(spec)$peak_id)
-	
+
 		#' Extract precursor and spectra data
 		spec_mat = rbind(
 			cbind("mz" = precursorMz (spec),"intensity" = precursorIntensity(spec),"tag"='p'),
 			cbind("mz" = unlist(mz(spec)),"intensity" = unlist(intensity(spec)),tag='f')
 		)
 		rownames(spec_mat) <- c(spectraData(spec)$peak_id,unlist(spectraData(spec)$ms2_peak_id))
-		
+
 		#' Remove duplicated fragments (this can also happen when the precursor mass is detected also in MS2)
 		mz_grps = MsCoreUtils::group (as.numeric (spec_mat[,"mz"]), tolerance=0, ppm=ppm)
-		
-		if (sum(mz_grps == mz_grps[1]) > 1) 
+
+		if (sum(mz_grps == mz_grps[1]) > 1)
 		{
 			## parent mz is also in MS2 spectra - update label and remove precursor from spec_mat (first item)
 			spec_mat[(mz_grps == mz_grps[1]),"tag"] = 'p'
 			spec_mat = spec_mat[-1,]
-		}	
+		}
 #		no_dup = tapply (1:length (mz_grps), mz_grps, function (i) {
 #			if (length (i) == 1) { return (i) }
 #			else { return (i[which.max (spec_mat[i,"intensity"])]) }
 #		})
 #		spec_mat = spec_mat[no_dup,]
 		#' Remove isotopes
-		
+
 		iso_grps = MetaboCoreUtils::isotopologues(
 			#cbind (mz = as.numeric (spec_mat[,"mz"]),intensity = as.numeric (spec_mat[,"intensity"])),
 			peaksData (spec)[[1]],
@@ -2502,13 +2502,13 @@ reduceSpectra <- function (
 		first_iso = unlist (sapply (iso_grps, function (i) i[1]))
 		is_iso = which (unlist (iso_grps) != first_iso)
 		spec_mat = spec_mat[union (first_iso,not_iso),,drop = FALSE]
-#if (spectraData(spec)$peak_id == "CP084") { browser() }			
-		if (nrow(spec_mat) < minSize) { return(NULL) }		
-		spec_mat = spec_mat[order (as.numeric(spec_mat[,"mz"])),]		
-		## If MS2 acquisition is "DIA" and 'setPrecursor' is TRUE - then check precursor mass correctness:		
-		if (ms2type == "DIA" & setPrecursor) 
+#if (spectraData(spec)$peak_id == "CP084") { browser() }
+		if (nrow(spec_mat) < minSize) { return(NULL) }
+	spec_mat = spec_mat[order (as.numeric(spec_mat[,"mz"])),]
+		## If MS2 acquisition is "DIA" and 'setPrecursor' is TRUE - then check precursor mass correctness:
+		if (ms2type == "DIA" & setPrecursor)
 		{
-			if (spec_mat[nrow(spec_mat),"tag"] != 'p') 
+			if (spec_mat[nrow(spec_mat),"tag"] != 'p')
 			{
 				spec_mat[spec_mat[,"tag"] == 'p',"tag"] = 'fp'
 				spec_mat[nrow(spec_mat),"tag"] = 'p'
@@ -2516,21 +2516,21 @@ reduceSpectra <- function (
 			## adjust respective values
 			spectraData(spec)$precursorMz <- as.numeric(spec_mat[spec_mat[,"tag"] == 'p',"mz"])
 			spectraData(spec)$precursorIntensity <- as.numeric(spec_mat[spec_mat[,"tag"] == 'p',"intensity"])
-			spectraData(spec)$peak_id <- rownames(spec_mat)[spec_mat[,"tag"] == 'p']			
-		}			
+			spectraData(spec)$peak_id <- rownames(spec_mat)[spec_mat[,"tag"] == 'p']
+		}
 		#' Now removing spectra isotopes through a designated function 'rem_iso'
 			rm_iso <- function(x,...) {
-						
+
 				x[,"mz"] <- as.numeric(spec_mat[,"mz"]) #spec_mat[,"tag"] != 'p'
-				x[,"intensity"] <- as.numeric(spec_mat[,"intensity"]) #spec_mat[,"tag"] != 'p' 
+				x[,"intensity"] <- as.numeric(spec_mat[,"intensity"]) #spec_mat[,"tag"] != 'p'
 				x[,,drop=FALSE]
-			
+
 			}
 #browser()
-## Debug - this for some reason doesn;t work well:		
+## Debug - this for some reason doesn;t work well:
 			test <- addProcessing (spec,rm_iso)
-				
-		## ALt. return a new spectra object based on Spec...						
+
+		## ALt. return a new spectra object based on Spec...
 		spec_data <- spectraData(spec)
 		spec_data$precursorMz <- as.numeric(spec_mat[spec_mat[,"tag"] == 'p',"mz"])
 		spec_data$precursorIntensity <- as.numeric(spec_mat[spec_mat[,"tag"] == 'p',"intensity"])

@@ -514,3 +514,24 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
     }
     x[keep, , drop = FALSE]
 }
+
+#' Function to keep only the monoisotopic peak for groups of (potential)
+#' isotopologues. The peak with the lowest m/z is considered the monoisotopic
+#' peak for each group of isotopologues.
+#'
+#' @importFrom MetaboCoreUtils isotopologues isotopicSubstitionMatrix
+#'
+#' @author Nir Shahaf, Johannes Rainer
+#'
+#' @noRd
+.peaks_deisotope <-
+    function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
+             tolerance = 0, ppm = 10, charge = 1, ...) {
+        iso_grps <- isotopologues(x, substDefinition = substDefinition,
+                                  tolerance = tolerance, ppm = ppm,
+                                  charge = charge)
+        if (length(iso_grps)) {
+            rem <- unique(unlist(lapply(iso_grps, `[`, -1), use.names = FALSE))
+            x[-rem, , drop = FALSE]
+        } else x
+}

@@ -301,3 +301,21 @@ test_that(".peaks_remove_fft_artifact works", {
     res <- .peaks_remove_fft_artifact(pks)
     expect_true(nrow(pks) > nrow(res))
 })
+
+test_that(".peaks_deisotope works", {
+    x <- cbind(mz = c(12.2, 14), intensity = c(11, 23))
+    res <- .peaks_deisotope(x)
+    expect_equal(x, res)
+
+    x <- cbind(mz = c(45, 68, 69, 70), intensity = c(20, 100, 3, 0.23))
+    res <- .peaks_deisotope(x, tolerance = 0.1)
+    expect_equal(res, x[1:2, ])
+
+    ## SWATH spectrum.
+    fl <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML",
+                      package = "msdata")
+    sps <- Spectra(fl)
+    a <- filterMsLevel(sps, 2L)[4L]
+    res <- .peaks_deisotope(peaksData(a)[[1L]])
+    expect_true(nrow(res) < lengths(a))
+})
