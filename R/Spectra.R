@@ -2450,6 +2450,17 @@ setMethod("backendBpparam", "Spectra", function(object, BPPARAM = bpparam()) {
     backendBpparam(object@backend, BPPARAM)
 })
 
+#' @rdname Spectra
+#'
+#' @author Nir Shahaf, Johannes Rainer
+#'
+#' @export
+deisotopeSpectra <-
+    function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
+             tolerance = 0, ppm = 10, charge = 1) {
+    addProcessing(x, .peaks_deisotope, tolerance = tolerance, ppm = ppm,
+                  substDefinition = force(substDefinition), charge = charge)
+}
 
 #' @author NS
 reduceSpectra <- function (

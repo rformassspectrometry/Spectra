@@ -519,7 +519,7 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 #' isotopologues. The peak with the lowest m/z is considered the monoisotopic
 #' peak for each group of isotopologues.
 #'
-#' @importFrom MetaboCoreUtils isotopologues isotopicSubstitionMatrix
+#' @importFrom MetaboCoreUtils isotopologues isotopicSubstitutionMatrix
 #'
 #' @author Nir Shahaf, Johannes Rainer
 #'
