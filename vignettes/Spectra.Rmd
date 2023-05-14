@@ -28,15 +28,15 @@ library(BiocStyle)
 
 # Introduction
 
-The `Spectra` package provides a scalable and flexible infrastructure to
-represent, retrieve and handle mass spectrometry (MS) data. The `Spectra` object
-provides the user with a single standardized interface to access and manipulate
-MS data while supporting, through the concept of exchangeable *backends*, a
-large variety of different ways to store and retrieve mass spectrometry
-data. Such backends range from mzML/mzXML/CDF files, simple flat files, or
-database systems.
+The `r Biocpkg("Spectra")` package provides a scalable and flexible
+infrastructure to represent, retrieve and handle mass spectrometry (MS)
+data. The `Spectra` object provides the user with a single standardized
+interface to access and manipulate MS data while supporting, through the concept
+of exchangeable *backends*, a large variety of different ways to store and
+retrieve mass spectrometry data. Such backends range from mzML/mzXML/CDF files,
+simple flat files, or database systems.
 
-This vignette provides general examples and descriptions for the `Spectra`
+This vignette provides general examples and descriptions for the *Spectra*
 package. Additional information and tutorials are available, such as
 [SpectraTutorials](https://jorainer.github.io/SpectraTutorials/),
 [MetaboAnnotationTutorials](https://jorainer.github.io/MetaboAnnotationTutorials),
@@ -45,9 +45,9 @@ or also in [@rainer_modular_2022].
 
 # Installation
 
-The package can be installed with the `BiocManager` package. To
-install `BiocManager` use `install.packages("BiocManager")` and, after that,
-`BiocManager::install("Spectra")` to install `Spectra`.
+The package can be installed with the *BiocManager* package. To
+install *BiocManager* use `install.packages("BiocManager")` and, after that,
+`BiocManager::install("Spectra")` to install *Spectra*.
 
 
 # General usage
@@ -560,7 +560,7 @@ function, we have to add a parameter to the function that has the same name as
 the spectrum variable we want to access (in our case `precursorMz`).
 
 ```{r set-precursor-mz}
-sps_rep$precursorMz <- c(150, 20, 30, 40)
+sps_rep$precursorMz <- c(170.5, 170.5, 195.1, 195.1)
 
 neutral_loss <- function(x, precursorMz, ...) {
     x[, "mz"] <- precursorMz - x[, "mz"]
@@ -572,7 +572,8 @@ We have then to call `addProcessing` with `spectraVariables = "precursorMz"` to
 specify that this spectra variable is passed along to our function.
 
 ```{r neutral-loss}
-sps_3 <- addProcessing(sps_rep, neutral_loss, spectraVariables = "precursorMz")
+sps_3 <- addProcessing(sps_rep, neutral_loss,
+                       spectraVariables = "precursorMz")
 mz(sps_rep)
 mz(sps_3)
 ```
@@ -605,6 +606,51 @@ spectrum-specific user-defined value to the processing function. This variable
 could simply be added first as a new spectra variable to the `Spectra` object
 and then this variable could be passed along to the function in the same way we
 passed the precursor m/z to our function above.
+
+Another example for spectra processing potentially helpful for spectral matching
+against reference fragment spectra libraries would be a function that removes
+fragment peaks with an m/z matching the precursor m/z of a spectrum. Below we
+define such a function that takes the peaks matrix and the precursor m/z as
+input and evaluates with the `closest` function from the
+`r Biocpkg("MsCoreUtils")` whether the spectrum contains peaks with an m/z value
+matching the one of the precursor (given `tolerance` and `ppm`). The returned
+peaks matrix contains all peaks except those matching the precursor m/z.
+
+```{r}
+library(MsCoreUtils)
+remove_precursor <- function(x, precursorMz, tolerance = 0.1, ppm = 0, ...) {
+    if (!is.na(precursorMz)) {
+        keep <- is.na(closest(x[, "mz"], precursorMz, tolerance = tolerance,
+                             ppm = ppm, .check = FALSE))
+        x[keep, , drop = FALSE]
+    } else x
+}
+```
+
+We can now again add this processing step to our `Spectra` object. As a result,
+peaks matching the precursor m/z (with `tolerance = 0.1` and `ppm = 0`) will be removed.
+
+```{r}
+sps_4 <- addProcessing(sps_rep, remove_precursor,
+                       spectraVariables = "precursorMz")
+
+peaksData(sps_4) |> as.list()
+```
+
+As a reference, the original peak matrices are shown below.
+
+```{r}
+peaksData(sps_rep) |> as.list()
+```
+
+Note that we can also perform a more relaxed matching of m/z values by passing a
+different value for `tolerance` to the function:
+
+```{r}
+sps_4 <- addProcessing(sps_rep, remove_precursor, tolerance = 0.6,
+                       spectraVariables = "precursorMz")
+peaksData(sps_4) |> as.list()
+```
 
 Since all data manipulations above did not change the original intensity or m/z
 values, it is possible to *restore* the original data. This can be done with the
