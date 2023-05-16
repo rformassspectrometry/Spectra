@@ -1586,13 +1586,3 @@ test_that("uniqueMsLevels,Spectra works", {
 
     expect_equal(res, uniqueMsLevels(Spectra(sciex_mzr)))
 })
-
-test_that("deisotopeSpectra works", {
-    fl <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML",
-                      package = "msdata")
-    sps <- Spectra(fl)
-
-    res <- deisotopeSpectra(sps[1:10], ppm = 20)
-    expect_true(length(res@processingQueue) > length(sps@processingQueue))
-    expect_true(all(lengths(res) < lengths(sps[1:10])))
-})

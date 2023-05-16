@@ -552,6 +552,15 @@ NULL
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
+#' - `deisotopeSpectra`: *deisotope* each spectrum keeping only the monoisotopic
+#'   peak for groups of isotopologues. Isotopologues are estimated using the
+#'   [isotopologues()] function from the *MetaboCoreUtils* package. Note that
+#'   the default parameters for isotope prediction/detection have been
+#'   determined using data from the Human Metabolome Database (HMDB) and
+#'   isotopes for elements other than CHNOPS might not be detected. See
+#'   parameter `substDefinition` in the documentation of [isotopologues()] for
+#'   more information.
+#'
 #' - `estimatePrecursorIntensity`: define the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the
 #'   closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
@@ -579,6 +588,13 @@ NULL
 #'
 #' - `processingLog`: returns a `character` vector with the processing log
 #'   messages.
+#'
+#' - `reduceSpectra`: for groups of peaks within highly similar m/z values
+#'   within each spectrum (given `ppm` and `tolerance`), this function keeps
+#'   only the peak with the highest intensity removing all other peaks hence
+#'   *reducing* each spectrum to the highest intensity peaks per *peak group*.
+#'   Peak groups are defined using the [group()] function from the
+#'   *MsCoreUtils* package.
 #'
 #' - `spectrapply`: apply a given function to each individual spectrum or sets
 #'   of a `Spectra` object. By default, the `Spectra` is split into individual
@@ -698,6 +714,15 @@ NULL
 #'
 #' @param breaks For `bin`: `numeric` defining the m/z breakpoints between bins.
 #'
+#' @param by.x A `character(1)` specifying the spectra variable used
+#'     for merging. Default is `"spectrumId"`.
+#'
+#' @param by.y A `character(1)` specifying the column used for
+#'     merging. Set to `by.x` if missing.
+#'
+#' @param charge For `deisotopeSpectra`: expected charge of the ionized
+#'     compounds. See [isotopologues()] for details.
+#'
 #' @param chunkSize For `spectrapply`: size of the chunks into which `Spectra`
 #'     should be split. This parameter overrides parameters `f` and `BPPARAM`.
 #'
@@ -816,9 +841,6 @@ NULL
 #'     For `filterMzValues` and `filterPrecursorMzValues`: `numeric` with the
 #'     m/z values to match peaks or precursor m/z against.
 #'
-#' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
-#'     to be used as filter.
-#'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
 #'
@@ -840,12 +862,16 @@ NULL
 #' @param polarity for `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
-#' @param ppm For `compareSpectra`, `containsMz`, `filterMzValues`: `numeric(1)`
+#' @param ppm For `compareSpectra`, `containsMz`, `deisotopeSpectra`,
+#'     `filterMzValues` and `reduceSpectra`: `numeric(1)`
 #'     defining a relative, m/z-dependent, maximal accepted difference between
-#'     m/z values for peaks to be matched.
+#'     m/z values for peaks to be matched (or grouped).
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
+#'
+#' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
+#'     be used to subset/filter `object`.
 #'
 #' @param SIMPLIFY For `compareSpectra` whether the result matrix should be
 #'     *simplified* to a `numeric` if possible (i.e. if either `x` or `y` is
@@ -865,14 +891,22 @@ NULL
 #'     should be passed along to the function defined with `FUN`. See function
 #'     description for details.
 #'
-#' @param tolerance For `compareSpectra`, `containsMz` and `filterMzValues`:
-#'     `numeric(1)` allowing to define a constant maximal accepted difference
-#'     between m/z values for peaks to be matched. For `containsMz` it can also
-#'     be of length equal `mz` to specify a different tolerance for each m/z
-#'     value.
+#' @param substDefinition For `deisotopeSpectra`: `matrix` or `data.frame`
+#'     with definitions of isotopic substitutions. Uses by default isotopic
+#'     substitutions defined from all compounds in the Human Metabolome
+#'     Database (HMDB). See [isotopologues()] or [isotopicSubstitutionMatrix()]
+#'     for details.
 #'
-#' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
-#'     be used to subset/filter `object`.
+#' @param suffix.y A `character(1)` specifying the suffix to be used
+#'     for making the names of columns in the merged spectra variables
+#'     unique. This suffix will be used to amend `names(y)`, while
+#'     `spectraVariables(x)` will remain unchanged.
+#'
+#' @param tolerance For `compareSpectra`, `containsMz`, `deisotopeSpectra`,
+#'     `filterMzValues` and `reduceSpectra`: `numeric(1)` allowing to define
+#'     a constant maximal accepted difference between m/z values for peaks
+#'     to be matched (or grouped). For `containsMz` it can also be of length
+#'     equal `mz` to specify a different tolerance for each m/z value.
 #'
 #' @param threshold
 #' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
@@ -898,16 +932,8 @@ NULL
 #'
 #' @param y A `Spectra` object. A `DataFrame` for `joinSpectraData()`.
 #'
-#' @param by.x A `character(1)` specifying the spectra variable used
-#'     for merging. Default is `"spectrumId"`.
-#'
-#' @param by.y A `character(1)` specifying the column used for
-#'     merging. Set to `by.x` if missing.
-#'
-#' @param suffix.y A `character(1)` specifying the suffix to be used
-#'     for making the names of columns in the merged spectra variables
-#'     unique. This suffix will be used to amend `names(y)`, while
-#'     `spectraVariables(x)` will remain unchanged.
+#' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
+#'     to be used as filter.
 #'
 #' @param ... Additional arguments.
 #'
@@ -2450,21 +2476,24 @@ setMethod("backendBpparam", "Spectra", function(object, BPPARAM = bpparam()) {
     backendBpparam(object@backend, BPPARAM)
 })
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf, Johannes Rainer
-#'
-#' @export
-deisotopeSpectra <-
-    function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
-             tolerance = 0, ppm = 10, charge = 1) {
-        im <- force(substDefinition)
-    addProcessing(x, .peaks_deisotope, tolerance = tolerance, ppm = ppm,
-                  substDefinition = im, charge = charge)
+cleanSpectra2 <-
+    function(x, ppm = 20, tolerance = 0, charge = 1,
+             substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL")) {
+        fun <- function(x, ...) {
+            x <- .peaks_reduce(x, ...)
+            x <- .peaks_deisotope(x, ...)
+            x
+        }
+        si <- force(substDefinition)
+        ## reduce and deisotope spectra.
+        x <- addProcessing(x, FUN = fun, ppm = ppm, tolerance = tolerance,
+                           charge = charge, substDefinition = si)
+        ## Further processing.
+        x
 }
 
-#' @author NS
-reduceSpectra <- function (
+#' @author Nir Shahaf
+cleanSpectra <- function (
 		querySpectra,
 		minSize=2,
 		ppm=20,

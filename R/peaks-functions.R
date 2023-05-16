@@ -535,3 +535,24 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
             x[-rem, , drop = FALSE]
         } else x
 }
+
+#' Function to *reduce* spectra keeping for each group of peaks with highly
+#' similar m/z values (based on provided `tolerance` and `mz` the one with
+#' the highest intensity. The *groups* of mass peaks are defined using the
+#' `MsCoreUtils::group` function.
+#'
+#' @author Nir Shahaf, Johannes Rainer
+#'
+#' @noRd
+.peaks_reduce <- function(x, tolerance = 0, ppm = 10, ...) {
+    grps <- group(x[, "mz"], tolerance = tolerance, ppm = ppm)
+    l <- length(grps)
+    if (l == grps[l])
+        x
+    else {
+        il <- split(x[, "intensity"], as.factor(grps))
+        idx <- vapply(il, which.max, integer(1), USE.NAMES = FALSE) +
+            c(0, cumsum(lengths(il, use.names = FALSE))[-length(il)])
+        x[idx, , drop = FALSE]
+    }
+}
