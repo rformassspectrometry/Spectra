@@ -301,3 +301,47 @@ test_that(".peaks_remove_fft_artifact works", {
     res <- .peaks_remove_fft_artifact(pks)
     expect_true(nrow(pks) > nrow(res))
 })
+
+test_that(".peaks_deisotope works", {
+    x <- cbind(mz = c(12.2, 14), intensity = c(11, 23))
+    res <- .peaks_deisotope(x)
+    expect_equal(x, res)
+
+    x <- cbind(mz = c(45, 68, 69, 70), intensity = c(20, 100, 3, 0.23))
+    res <- .peaks_deisotope(x, tolerance = 0.1)
+    expect_equal(res, x[1:2, ])
+
+    ## SWATH spectrum.
+    a <- filterMsLevel(sps_dia, 2L)[4L]
+    res <- .peaks_deisotope(peaksData(a)[[1L]])
+    expect_true(nrow(res) < lengths(a))
+})
+
+test_that(".peaks_reduce works", {
+    x <- peaksData(sps_dia[2000])[[1L]]
+    res <- .peaks_reduce(x, tolerance = 0.1)
+    expect_true(is.matrix(res))
+    expect_true(nrow(res) < nrow(x))
+    expect_true(is.numeric(res))
+
+    grp <- group(x[, "mz"], tolerance = 0.1, ppm = 10)
+    xl <- split.data.frame(x, grp)
+    ref <- lapply(xl, function(z) z[which.max(z[, 2]), , drop = FALSE])
+    ref <- do.call(rbind, ref)
+    expect_equal(ref, res)
+
+    res <- .peaks_reduce(x, tolerance = 0, ppm = 0)
+    expect_equal(res, x)
+
+    x <- sciex_pks[[13]]
+    res <- .peaks_reduce(x, tolerance = 0.1)
+    expect_true(is.matrix(res))
+    expect_true(nrow(res) < nrow(x))
+    expect_true(is.numeric(res))
+
+    grp <- group(x[, "mz"], tolerance = 0.1, ppm = 10)
+    xl <- split.data.frame(x, grp)
+    ref <- lapply(xl, function(z) z[which.max(z[, 2]), , drop = FALSE])
+    ref <- do.call(rbind, ref)
+    expect_equal(ref, res)
+})

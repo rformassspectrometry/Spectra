@@ -794,3 +794,25 @@ chunkapply <- function(x, FUN, ..., chunkSize = 1000L, chunks = factor()) {
         return(as.factor(rep(1L, len)))
     as.factor(rep(1:ceiling(len / chunkSize), each = chunkSize)[seq_len(len)])
 }
+
+#' @rdname Spectra
+#'
+#' @author Nir Shahaf, Johannes Rainer
+#'
+#' @export
+deisotopeSpectra <-
+    function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
+             tolerance = 0, ppm = 10, charge = 1) {
+        im <- force(substDefinition)
+    addProcessing(x, .peaks_deisotope, tolerance = tolerance, ppm = ppm,
+                  substDefinition = im, charge = charge)
+}
+
+#' @rdname Spectra
+#'
+#' @author Nir Shahaf, Johannes Rainer
+#'
+#' @export
+reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
+    addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
+}

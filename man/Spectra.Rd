@@ -97,6 +97,7 @@
 \alias{addProcessing,Spectra-method}
 \alias{coreSpectraVariables}
 \alias{backendBpparam,Spectra-method}
+\alias{deisotopeSpectra}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
@@ -419,6 +420,14 @@ coreSpectraVariables()
 \S4method{uniqueMsLevels}{Spectra}(object, ...)
 
 \S4method{backendBpparam}{Spectra}(object, BPPARAM = bpparam())
+
+deisotopeSpectra(
+  x,
+  substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
+  tolerance = 0,
+  ppm = 10,
+  charge = 1
+)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -1629,4 +1638,6 @@ mz(data)
 }
 \author{
 Sebastian Gibb, Johannes Rainer, Laurent Gatto
+
+Nir Shahaf, Johannes Rainer
 }
