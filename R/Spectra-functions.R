@@ -837,7 +837,7 @@ filterUniquePrecursorMz <- function (querySpectra,minSize=3)
 	return(pg_filt)
 }
 
-sps_filt = filterUniquePrecursorMz(sps)
+#sps_filt = filterUniquePrecursorMz(sps)
 
 #' 'filterPrecursorIsotopes'
 #' @author Nir Shahaf
