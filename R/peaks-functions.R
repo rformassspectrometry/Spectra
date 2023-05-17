@@ -517,11 +517,15 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 
 #' Function to keep only the monoisotopic peak for groups of (potential)
 #' isotopologues. The peak with the lowest m/z is considered the monoisotopic
-#' peak for each group of isotopologues.
+#' peak for each group of isotopologues. Isotope peaks are predicted using
+#' the `MetaboCoreUtils::isotopologues` function. See tge respective
+#' documentation for more information on parameters.
 #'
 #' @importFrom MetaboCoreUtils isotopologues isotopicSubstitutionMatrix
 #'
 #' @author Nir Shahaf, Johannes Rainer
+#'
+#' @param x peak `matrix` with m/z and intensity values.
 #'
 #' @noRd
 .peaks_deisotope <-
@@ -540,6 +544,8 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 #' similar m/z values (based on provided `tolerance` and `mz` the one with
 #' the highest intensity. The *groups* of mass peaks are defined using the
 #' `MsCoreUtils::group` function.
+#'
+#' @param x peaks `matrix` with m/z and instensity values.
 #'
 #' @author Nir Shahaf, Johannes Rainer
 #'
