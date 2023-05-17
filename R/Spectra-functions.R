@@ -804,9 +804,9 @@ deisotopeSpectra <-
     function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
              tolerance = 0, ppm = 10, charge = 1) {
         im <- force(substDefinition)
-    addProcessing(x, .peaks_deisotope, tolerance = tolerance, ppm = ppm,
-                  substDefinition = im, charge = charge)
-}
+        addProcessing(x, .peaks_deisotope, tolerance = tolerance, ppm = ppm,
+                      substDefinition = im, charge = charge)
+    }
 
 #' @rdname Spectra
 #'

@@ -559,7 +559,9 @@ NULL
 #'   determined using data from the Human Metabolome Database (HMDB) and
 #'   isotopes for elements other than CHNOPS might not be detected. See
 #'   parameter `substDefinition` in the documentation of [isotopologues()] for
-#'   more information.
+#'   more information. The approach and code to define the parameters for
+#'   isotope prediction is described
+#'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
 #'
 #' - `estimatePrecursorIntensity`: define the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the

@@ -1,5 +1,9 @@
 # Spectra 1.11
 
+## Changes in 1.11.2
+
+- Add `deisotopeSpectra` and `reduceSpectra` functions.
+
 ## Changes in 1.11.1
 
 - Add example for filtering precursor m/z peaks from fragment spectra to the
