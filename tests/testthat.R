@@ -14,6 +14,10 @@ fl <- normalizePath(
     dir(system.file("proteomics", package = "msdata"), full.names = TRUE))
 tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
+fl <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML",
+                  package = "msdata")
+sps_dia <- Spectra(fl)
+
 sciex_hd5 <- backendInitialize(MsBackendHdf5Peaks(),
                                data = spectraData(sciex_mzr),
                                hdf5path = tempdir())
