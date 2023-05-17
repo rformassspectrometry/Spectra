@@ -514,3 +514,45 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
     }
     x[keep, , drop = FALSE]
 }
+
+#' Function to keep only the monoisotopic peak for groups of (potential)
+#' isotopologues. The peak with the lowest m/z is considered the monoisotopic
+#' peak for each group of isotopologues.
+#'
+#' @importFrom MetaboCoreUtils isotopologues isotopicSubstitutionMatrix
+#'
+#' @author Nir Shahaf, Johannes Rainer
+#'
+#' @noRd
+.peaks_deisotope <-
+    function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
+             tolerance = 0, ppm = 10, charge = 1, ...) {
+        iso_grps <- isotopologues(x, substDefinition = substDefinition,
+                                  tolerance = tolerance, ppm = ppm,
+                                  charge = charge)
+        if (length(iso_grps)) {
+            rem <- unique(unlist(lapply(iso_grps, `[`, -1), use.names = FALSE))
+            x[-rem, , drop = FALSE]
+        } else x
+}
+
+#' Function to *reduce* spectra keeping for each group of peaks with highly
+#' similar m/z values (based on provided `tolerance` and `mz` the one with
+#' the highest intensity. The *groups* of mass peaks are defined using the
+#' `MsCoreUtils::group` function.
+#'
+#' @author Nir Shahaf, Johannes Rainer
+#'
+#' @noRd
+.peaks_reduce <- function(x, tolerance = 0, ppm = 10, ...) {
+    grps <- group(x[, "mz"], tolerance = tolerance, ppm = ppm)
+    l <- length(grps)
+    if (l == grps[l])
+        x
+    else {
+        il <- split(x[, "intensity"], as.factor(grps))
+        idx <- vapply(il, which.max, integer(1), USE.NAMES = FALSE) +
+            c(0, cumsum(lengths(il, use.names = FALSE))[-length(il)])
+        x[idx, , drop = FALSE]
+    }
+}
