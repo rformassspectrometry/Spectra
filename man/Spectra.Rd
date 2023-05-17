@@ -7,6 +7,8 @@
 \alias{joinSpectraData}
 \alias{processingLog}
 \alias{estimatePrecursorIntensity}
+\alias{deisotopeSpectra}
+\alias{reduceSpectra}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -125,6 +127,16 @@ estimatePrecursorIntensity(
   f = dataOrigin(x),
   BPPARAM = bpparam()
 )
+
+deisotopeSpectra(
+  x,
+  substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
+  tolerance = 0,
+  ppm = 10,
+  charge = 1
+)
+
+reduceSpectra(x, tolerance = 0, ppm = 10)
 
 \S4method{Spectra}{missing}(
   object,
@@ -471,15 +483,16 @@ for making the names of columns in the merged spectra variables
 unique. This suffix will be used to amend \code{names(y)}, while
 \code{spectraVariables(x)} will remain unchanged.}
 
-\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{filterMzValues}: \code{numeric(1)}
+\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
+\code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)}
 defining a relative, m/z-dependent, maximal accepted difference between
-m/z values for peaks to be matched.}
+m/z values for peaks to be matched (or grouped).}
 
-\item{tolerance}{For \code{compareSpectra}, \code{containsMz} and \code{filterMzValues}:
-\code{numeric(1)} allowing to define a constant maximal accepted difference
-between m/z values for peaks to be matched. For \code{containsMz} it can also
-be of length equal \code{mz} to specify a different tolerance for each m/z
-value.}
+\item{tolerance}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
+\code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)} allowing to define
+a constant maximal accepted difference between m/z values for peaks
+to be matched (or grouped). For \code{containsMz} it can also be of length
+equal \code{mz} to specify a different tolerance for each m/z value.}
 
 \item{method}{\itemize{
 \item For \code{pickPeaks}: \code{character(1)}, the noise estimators that
@@ -499,6 +512,15 @@ previous and next MS1 spectrum (\code{method = "interpolation"}).
 \item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of \code{object}.
 For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
+
+\item{substDefinition}{For \code{deisotopeSpectra}: \code{matrix} or \code{data.frame}
+with definitions of isotopic substitutions. Uses by default isotopic
+substitutions defined from all compounds in the Human Metabolome
+Database (HMDB). See \code{\link[=isotopologues]{isotopologues()}} or \code{\link[=isotopicSubstitutionMatrix]{isotopicSubstitutionMatrix()}}
+for details.}
+
+\item{charge}{For \code{deisotopeSpectra}: expected charge of the ionized
+compounds. See \code{\link[=isotopologues]{isotopologues()}} for details.}
 
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
@@ -1144,6 +1166,14 @@ comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+\item \code{deisotopeSpectra}: \emph{deisotope} each spectrum keeping only the monoisotopic
+peak for groups of isotopologues. Isotopologues are estimated using the
+\code{\link[=isotopologues]{isotopologues()}} function from the \emph{MetaboCoreUtils} package. Note that
+the default parameters for isotope prediction/detection have been
+determined using data from the Human Metabolome Database (HMDB) and
+isotopes for elements other than CHNOPS might not be detected. See
+parameter \code{substDefinition} in the documentation of \code{\link[=isotopologues]{isotopologues()}} for
+more information.
 \item \code{estimatePrecursorIntensity}: define the precursor intensities for MS2
 spectra using the intensity of the matching MS1 peak from the
 closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
@@ -1168,6 +1198,12 @@ filtering to spectra of the specified MS level(s).
 \code{\link[=neutralLoss]{neutralLoss()}} for detailed documentation.
 \item \code{processingLog}: returns a \code{character} vector with the processing log
 messages.
+\item \code{reduceSpectra}: for groups of peaks within highly similar m/z values
+within each spectrum (given \code{ppm} and \code{tolerance}), this function keeps
+only the peak with the highest intensity removing all other peaks hence
+\emph{reducing} each spectrum to the highest intensity peaks per \emph{peak group}.
+Peak groups are defined using the \code{\link[=group]{group()}} function from the
+\emph{MsCoreUtils} package.
 \item \code{spectrapply}: apply a given function to each individual spectrum or sets
 of a \code{Spectra} object. By default, the \code{Spectra} is split into individual
 spectra (i.e. \code{Spectra} of length 1) and the function \code{FUN} is applied to
@@ -1628,5 +1664,7 @@ mz(res)
 mz(data)
 }
 \author{
+Nir Shahaf, Johannes Rainer
+
 Sebastian Gibb, Johannes Rainer, Laurent Gatto
 }

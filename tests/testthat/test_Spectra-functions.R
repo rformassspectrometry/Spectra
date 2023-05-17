@@ -721,3 +721,15 @@ test_that("chunkapply works", {
     res2 <- chunkapply(a, lengths, chunks = chnks)
     expect_equal(res2, res)
 })
+
+test_that("deisotopeSpectra works", {
+    res <- deisotopeSpectra(sps_dia[1:10], ppm = 20)
+    expect_true(length(res@processingQueue) > length(sps_dia@processingQueue))
+    expect_true(all(lengths(res) < lengths(sps_dia[1:10])))
+})
+
+test_that("reduceSpectra works", {
+    res <- reduceSpectra(sps_dia[14], ppm = 20, tolerance = 0.1)
+    expect_true(length(res@processingQueue) > length(sps_dia@processingQueue))
+    expect_true(nrow(peaksData(res)[[1L]]) < nrow(peaksData(sps_dia[14])[[1L]]))
+})
