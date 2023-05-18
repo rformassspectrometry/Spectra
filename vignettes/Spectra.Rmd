@@ -359,6 +359,9 @@ the `?Spectra` help):
   isolation window (m/z range).
 - `filterMsLevel`: filter by MS level.
 - `filterPolarity`: filter by polarity.
+- `filterPrecursorMaxIntensity`: filter spectra keeping, for groups of spectra
+  with similar precursor m/z, the one spectrum with the highest precursor
+  intensity. All MS1 spectra are returned without filtering.
 - `filterPrecursorMzRange`: retain (MSn) spectra with a precursor m/z within the
   provided m/z range.
 - `filterPrecursorMzValues`: retain (MSn) spectra with precursor m/z value

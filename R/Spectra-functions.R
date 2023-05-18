@@ -817,33 +817,41 @@ reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
     addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
 }
 
-#' 'filterUniquePrecursorMz'
+#' @rdname Spectra
+#'
 #' @author Nir Shahaf
-filterUniquePrecursorMz <- function (querySpectra,minSize=3) 
-{
-	pg_filt = querySpectra[which (sapply (mz (querySpectra),length) >= minSize)]
-	## Order by precusrsor mass
-	pg_filt = pg_filt[order (precursorMz (pg_filt))]
-		## Bin by precirsor mass and remove bins duplicated precursor ions (keep higher intensity)
-	pg_mat = cbind ("mz" = precursorMz (pg_filt),"intensity" = precursorIntensity (pg_filt))		
-	mz_grps = MsCoreUtils::group (pg_mat[,"mz"], tolerance=0, ppm=10)
-	if (any (duplicated (mz_grps))) {
-		no_dup = tapply (1:length (mz_grps),mz_grps,function (i) {
-			if (length (i) == 1) { return (i) }
-			else { return (i[which.max (pg_mat[i,"intensity"])]) }
-		})
-		pg_filt = pg_filt[no_dup]
-	} 
-	return(pg_filt)
+#'
+#' @export
+filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 10) {
+    pmz <- precursorMz(x)
+    pmi <- precursorIntensity(x)
+    idx <- order(pmz, na.last = NA)
+    mz_grps <- group(pmz[idx], tolerance = tolerance, ppm = ppm)
+    if (any(duplicated(mz_grps))) {
+        keep <- is.na(pmz)
+        keep[vapply(split(idx, as.factor(mz_grps)),
+                    function(z) {
+                        if (length(z) == 1L) z
+                        else {
+                            ## returns the first if all intensities are NA.
+                            if (length(res <- z[which.max(pmi[z])])) res
+                            else z[1L]
+                        }
+                    }, integer(1L),
+                    USE.NAMES = FALSE)] <- TRUE
+        x <- x[keep]
+    }
+    x@processing <- .logging(
+        x@processing, "Filter: for groups of spectra with similar precursor ",
+        "m/z, keep the one with the highest precursor intensity")
+    x
 }
-
-#sps_filt = filterUniquePrecursorMz(sps)
 
 #' 'filterPrecursorIsotopes'
 #' @author Nir Shahaf
 filterPrecursorIsotopes <- function (querySpectra,ppm=20,isoSubstitutionMat="HMDB_NEUTRAL")
 {
-	## Define matrix based on the spectra object 
+	## Define matrix based on the spectra object
 	pg_mat = cbind ("mz" = precursorMz (querySpectra),"intensity" = precursorIntensity (querySpectra))
 	iso_grps =  MetaboCoreUtils::isotopologues (pg_mat,substDefinition = isotopicSubstitutionMatrix(source = isoSubstitutionMat), ppm = ppm)
 	## find non-isotopologues

@@ -9,6 +9,7 @@
 \alias{estimatePrecursorIntensity}
 \alias{deisotopeSpectra}
 \alias{reduceSpectra}
+\alias{filterPrecursorMaxIntensity}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -137,6 +138,8 @@ deisotopeSpectra(
 )
 
 reduceSpectra(x, tolerance = 0, ppm = 10)
+
+filterPrecursorMaxIntensity(x, tolerance = 0, ppm = 10)
 
 \S4method{Spectra}{missing}(
   object,
@@ -486,13 +489,19 @@ unique. This suffix will be used to amend \code{names(y)}, while
 \item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
 \code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)}
 defining a relative, m/z-dependent, maximal accepted difference between
-m/z values for peaks to be matched (or grouped).}
+m/z values for peaks to be matched (or grouped).
+For \code{filterPrecursorMaxIntensity}: \code{numeric(1)} defining the relative
+maximal accepted difference of precursor m/z values of spectra for
+grouping them into \emph{precursor groups}.}
 
 \item{tolerance}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
 \code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)} allowing to define
 a constant maximal accepted difference between m/z values for peaks
 to be matched (or grouped). For \code{containsMz} it can also be of length
-equal \code{mz} to specify a different tolerance for each m/z value.}
+equal \code{mz} to specify a different tolerance for each m/z value.
+For \code{filterPrecursorMaxIntensity}: \code{numeric(1)} defining the (constant)
+maximal accepted difference of precursor m/z values of spectra for
+grouping them into \emph{precursor groups}.}
 
 \item{method}{\itemize{
 \item For \code{pickPeaks}: \code{character(1)}, the noise estimators that
@@ -1004,6 +1013,14 @@ matching considers also the absolute \code{tolerance} and m/z-relative
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
+\item \code{filterPrecursorMaxIntensity}: filters the \code{Spectra} keeping for groups
+of (MS2) spectra with similar precursor m/z values (given parameters
+\code{ppm} and \code{tolerance}) the one with the highest precursor intensity. The
+function filters only MS2 spectra and returns all MS1 spectra. If
+precursor intensities are \code{NA} for all spectra within a spectra group, the
+first spectrum of that groups is returned.
+Note: some manufacturers don't provide precursor intensities. These can
+however also be estimated with \code{estimatePrecursorIntensity}.
 \item \code{filterPrecursorMzRange} (previously \code{filterPrecursorMz} which is now
 deprecated): retains spectra with a precursor m/z within the
 provided m/z range. See examples for details on selecting spectra with
@@ -1173,7 +1190,9 @@ the default parameters for isotope prediction/detection have been
 determined using data from the Human Metabolome Database (HMDB) and
 isotopes for elements other than CHNOPS might not be detected. See
 parameter \code{substDefinition} in the documentation of \code{\link[=isotopologues]{isotopologues()}} for
-more information.
+more information. The approach and code to define the parameters for
+isotope prediction is described
+\href{https://github.com/EuracBiomedicalResearch/isotopologues}{here}.
 \item \code{estimatePrecursorIntensity}: define the precursor intensities for MS2
 spectra using the intensity of the matching MS1 peak from the
 closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
@@ -1665,6 +1684,8 @@ mz(data)
 }
 \author{
 Nir Shahaf, Johannes Rainer
+
+Nir Shahaf
 
 Sebastian Gibb, Johannes Rainer, Laurent Gatto
 }

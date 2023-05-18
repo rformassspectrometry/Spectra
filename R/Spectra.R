@@ -380,6 +380,15 @@ NULL
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
+#' - `filterPrecursorMaxIntensity`: filters the `Spectra` keeping for groups
+#'   of (MS2) spectra with similar precursor m/z values (given parameters
+#'   `ppm` and `tolerance`) the one with the highest precursor intensity. The
+#'   function filters only MS2 spectra and returns all MS1 spectra. If
+#'   precursor intensities are `NA` for all spectra within a spectra group, the
+#'   first spectrum of that groups is returned.
+#'   Note: some manufacturers don't provide precursor intensities. These can
+#'   however also be estimated with `estimatePrecursorIntensity`.
+#'
 #' - `filterPrecursorMzRange` (previously `filterPrecursorMz` which is now
 #'   deprecated): retains spectra with a precursor m/z within the
 #'   provided m/z range. See examples for details on selecting spectra with
@@ -868,6 +877,9 @@ NULL
 #'     `filterMzValues` and `reduceSpectra`: `numeric(1)`
 #'     defining a relative, m/z-dependent, maximal accepted difference between
 #'     m/z values for peaks to be matched (or grouped).
+#'     For `filterPrecursorMaxIntensity`: `numeric(1)` defining the relative
+#'     maximal accepted difference of precursor m/z values of spectra for
+#'     grouping them into *precursor groups*.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -909,6 +921,9 @@ NULL
 #'     a constant maximal accepted difference between m/z values for peaks
 #'     to be matched (or grouped). For `containsMz` it can also be of length
 #'     equal `mz` to specify a different tolerance for each m/z value.
+#'     For `filterPrecursorMaxIntensity`: `numeric(1)` defining the (constant)
+#'     maximal accepted difference of precursor m/z values of spectra for
+#'     grouping them into *precursor groups*.
 #'
 #' @param threshold
 #' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
