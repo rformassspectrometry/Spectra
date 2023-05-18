@@ -816,3 +816,40 @@ deisotopeSpectra <-
 reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
     addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
 }
+
+#' 'filterUniquePrecursorMz'
+#' @author Nir Shahaf
+filterUniquePrecursorMz <- function (querySpectra,minSize=3) 
+{
+	pg_filt = querySpectra[which (sapply (mz (querySpectra),length) >= minSize)]
+	## Order by precusrsor mass
+	pg_filt = pg_filt[order (precursorMz (pg_filt))]
+		## Bin by precirsor mass and remove bins duplicated precursor ions (keep higher intensity)
+	pg_mat = cbind ("mz" = precursorMz (pg_filt),"intensity" = precursorIntensity (pg_filt))		
+	mz_grps = MsCoreUtils::group (pg_mat[,"mz"], tolerance=0, ppm=10)
+	if (any (duplicated (mz_grps))) {
+		no_dup = tapply (1:length (mz_grps),mz_grps,function (i) {
+			if (length (i) == 1) { return (i) }
+			else { return (i[which.max (pg_mat[i,"intensity"])]) }
+		})
+		pg_filt = pg_filt[no_dup]
+	} 
+	return(pg_filt)
+}
+
+#sps_filt = filterUniquePrecursorMz(sps)
+
+#' 'filterPrecursorIsotopes'
+#' @author Nir Shahaf
+filterPrecursorIsotopes <- function (querySpectra,ppm=20,isoSubstitutionMat="HMDB_NEUTRAL")
+{
+	## Define matrix based on the spectra object 
+	pg_mat = cbind ("mz" = precursorMz (querySpectra),"intensity" = precursorIntensity (querySpectra))
+	iso_grps =  MetaboCoreUtils::isotopologues (pg_mat,substDefinition = isotopicSubstitutionMatrix(source = isoSubstitutionMat), ppm = ppm)
+	## find non-isotopologues
+	not_iso = setdiff (1:nrow (pg_mat), unlist (iso_grps))
+	## find first (monoisotopic) isotopes
+	first_iso = sapply (iso_grps, function (i) i[1])
+	## Return only monoisotopic peaks
+	return (querySpectra[union (first_iso,not_iso)])
+}
