@@ -2,7 +2,8 @@
 
 ## Changes in 1.11.3
 
-
+- Add `filterPrecursorMaxIntensity` function.
+- Add `filterPrecursorIsotopes` function.
 
 ## Changes in 1.11.2
 

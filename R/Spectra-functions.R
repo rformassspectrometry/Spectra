@@ -641,7 +641,7 @@ processingLog <- function(x) {
 #' @export
 #'
 #' @rdname Spectra
-estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
+estimatePrecursorIntensity <- function(x, ppm = 20, tolerance = 0,
                                        method = c("previous", "interpolation"),
                                        msLevel. = 2L, f = dataOrigin(x),
                                        BPPARAM = bpparam()) {
@@ -662,7 +662,7 @@ estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
 #' @importFrom stats approx
 #'
 #' @noRd
-.estimate_precursor_intensity <- function(x, ppm = 10, tolerance = 0,
+.estimate_precursor_intensity <- function(x, ppm = 20, tolerance = 0,
                                           method = c("previous",
                                                      "interpolation"),
                                           msLevel = 2L) {
@@ -802,8 +802,9 @@ chunkapply <- function(x, FUN, ..., chunkSize = 1000L, chunks = factor()) {
 #' @export
 deisotopeSpectra <-
     function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
-             tolerance = 0, ppm = 10, charge = 1) {
+             tolerance = 0, ppm = 20, charge = 1) {
         im <- force(substDefinition)
+        x@processing <- .logging(x@processing, "Deisotope spectra.")
         addProcessing(x, .peaks_deisotope, tolerance = tolerance, ppm = ppm,
                       substDefinition = im, charge = charge)
     }
@@ -813,7 +814,9 @@ deisotopeSpectra <-
 #' @author Nir Shahaf, Johannes Rainer
 #'
 #' @export
-reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
+reduceSpectra <- function(x, tolerance = 0, ppm = 20) {
+    x@processing <- .logging(x@processing, "For groups of peaks with similar ",
+                             "m/z keep the one with the highest intensity.")
     addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
 }
 
@@ -822,7 +825,7 @@ reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
 #' @author Nir Shahaf
 #'
 #' @export
-filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 10) {
+filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 20) {
     pmz <- precursorMz(x)
     pmi <- precursorIntensity(x)
     idx <- order(pmz, na.last = NA)
@@ -847,17 +850,31 @@ filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 10) {
     x
 }
 
-#' 'filterPrecursorIsotopes'
+#' @rdname Spectra
+#'
 #' @author Nir Shahaf
-filterPrecursorIsotopes <- function (querySpectra,ppm=20,isoSubstitutionMat="HMDB_NEUTRAL")
-{
-	## Define matrix based on the spectra object
-	pg_mat = cbind ("mz" = precursorMz (querySpectra),"intensity" = precursorIntensity (querySpectra))
-	iso_grps =  MetaboCoreUtils::isotopologues (pg_mat,substDefinition = isotopicSubstitutionMatrix(source = isoSubstitutionMat), ppm = ppm)
-	## find non-isotopologues
-	not_iso = setdiff (1:nrow (pg_mat), unlist (iso_grps))
-	## find first (monoisotopic) isotopes
-	first_iso = sapply (iso_grps, function (i) i[1])
-	## Return only monoisotopic peaks
-	return (querySpectra[union (first_iso,not_iso)])
+#'
+#' @export
+filterPrecursorIsotopes <-
+    function(x, tolerance = 0, ppm = 20,
+             substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL")) {
+        pmz <- precursorMz(x)
+        idx <- order(pmz, na.last = NA)
+        if (length(idx)) {
+            keep <- rep(TRUE, length(pmz))
+            iso_grps <- isotopologues(
+                cbind(pmz[idx], precursorIntensity(x)[idx]),
+                tolerance = tolerance, ppm = ppm,
+                substDefinition = substDefinition)
+            rem <- unlist(lapply(iso_grps, function(z) z[-1]),
+                          use.names = FALSE)
+            if (length(rem))
+                keep[idx[rem]] <- FALSE
+            x <- x[keep]
+        }
+        x@processing <- .logging(
+            x@processing, "Filter: for groups of spectra for precursors ",
+            "representing potential isotopes keep only the spectrum of the ",
+            "monoisotopic precursor.")
+        x
 }

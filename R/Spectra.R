@@ -314,6 +314,17 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
+#' - `deisotopeSpectra`: *deisotope* each spectrum keeping only the monoisotopic
+#'   peak for groups of isotopologues. Isotopologues are estimated using the
+#'   [isotopologues()] function from the *MetaboCoreUtils* package. Note that
+#'   the default parameters for isotope prediction/detection have been
+#'   determined using data from the Human Metabolome Database (HMDB) and
+#'   isotopes for elements other than CHNOPS might not be detected. See
+#'   parameter `substDefinition` in the documentation of [isotopologues()] for
+#'   more information. The approach and code to define the parameters for
+#'   isotope prediction is described
+#'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
+#'
 #' - `dropNaSpectraVariables`: removes spectra variables (i.e. columns in the
 #'   object's `spectraData` that contain only missing values (`NA`). Note that
 #'   while columns with only `NA`s are removed, a `spectraData` call after
@@ -354,7 +365,22 @@ NULL
 #'   allow to avoid removing of potential `[13]C` isotope peaks (`maxCharge`
 #'   being the maximum charge that should be considered and `isotopeTolerance`
 #'   the absolute acceptable tolerance for matching their m/z).
-#'   See [filterFourierTransformArtefacts()] for details and background.
+#'   See [filterFourierTransformArtefacts()] for details and background and
+#'   `deisitopeSpectra` for an alternative.
+#'
+#' - `filterIntensity`: filters each spectrum keeping only peaks with
+#'   intensities that are within the provided range or match the criteria of
+#'   the provided function. For the former, parameter `intensity` has to be a
+#'   `numeric` defining the intensity range, for the latter a `function` that
+#'   takes the intensity values of the spectrum and returns a `logical` whether
+#'   the peak should be retained or not (see examples below for details) -
+#'   additional parameters to the function can be passed with `...`. To
+#'   remove only peaks with intensities below a certain threshold, say 100, use
+#'   `intensity = c(100, Inf)`. Note: also a single value can be passed with
+#'   the `intensity` parameter in which case an upper limit of `Inf` is used.
+#'   Note that this function removes also peaks with missing intensities
+#'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
+#'   filtering to spectra of the specified MS level(s).
 #'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
@@ -379,6 +405,12 @@ NULL
 #' - `filterPolarity`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
+#'
+#' - `filterPrecursorIsotopes`: group MS2 spectra based on their precursor m/z
+#'   and precursor intensity into predicted isotope groups and keep for each
+#'   only the spectrum representing the monoisotopic precursor. MS1 spectra
+#'   are returned as is. See documentation for `deisotopeSpectra` below for
+#'   details on isotope prediction and parameter description.
 #'
 #' - `filterPrecursorMaxIntensity`: filters the `Spectra` keeping for groups
 #'   of (MS2) spectra with similar precursor m/z values (given parameters
@@ -411,6 +443,13 @@ NULL
 #'   times (in seconds) within (`>=`) `rt[1]` and (`<=`)
 #'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
+#'
+#' - `reduceSpectra`: for groups of peaks within highly similar m/z values
+#'   within each spectrum (given `ppm` and `tolerance`), this function keeps
+#'   only the peak with the highest intensity removing all other peaks hence
+#'   *reducing* each spectrum to the highest intensity peaks per *peak group*.
+#'   Peak groups are defined using the [group()] function from the
+#'   *MsCoreUtils* package.
 #'
 #' - `reset`: restores the data to its original state (as much as possible):
 #'   removes any processing steps from the lazy processing queue and calls
@@ -561,17 +600,6 @@ NULL
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
-#' - `deisotopeSpectra`: *deisotope* each spectrum keeping only the monoisotopic
-#'   peak for groups of isotopologues. Isotopologues are estimated using the
-#'   [isotopologues()] function from the *MetaboCoreUtils* package. Note that
-#'   the default parameters for isotope prediction/detection have been
-#'   determined using data from the Human Metabolome Database (HMDB) and
-#'   isotopes for elements other than CHNOPS might not be detected. See
-#'   parameter `substDefinition` in the documentation of [isotopologues()] for
-#'   more information. The approach and code to define the parameters for
-#'   isotope prediction is described
-#'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
-#'
 #' - `estimatePrecursorIntensity`: define the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the
 #'   closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
@@ -580,32 +608,11 @@ NULL
 #'   intensity values (and retention times) of the matching MS1 peaks from the
 #'   previous and next MS1 spectrum. See below for an example.
 #'
-#' - `filterIntensity`: filters each spectrum keeping only peaks with
-#'   intensities that are within the provided range or match the criteria of
-#'   the provided function. For the former, parameter `intensity` has to be a
-#'   `numeric` defining the intensity range, for the latter a `function` that
-#'   takes the intensity values of the spectrum and returns a `logical` whether
-#'   the peak should be retained or not (see examples below for details) -
-#'   additional parameters to the function can be passed with `...`. To
-#'   remove only peaks with intensities below a certain threshold, say 100, use
-#'   `intensity = c(100, Inf)`. Note: also a single value can be passed with
-#'   the `intensity` parameter in which case an upper limit of `Inf` is used.
-#'   Note that this function removes also peaks with missing intensities
-#'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
-#'   filtering to spectra of the specified MS level(s).
-#'
 #' - `neutralLoss`: calculate neutral loss spectra for fragment spectra. See
 #'   [neutralLoss()] for detailed documentation.
 #'
 #' - `processingLog`: returns a `character` vector with the processing log
 #'   messages.
-#'
-#' - `reduceSpectra`: for groups of peaks within highly similar m/z values
-#'   within each spectrum (given `ppm` and `tolerance`), this function keeps
-#'   only the peak with the highest intensity removing all other peaks hence
-#'   *reducing* each spectrum to the highest intensity peaks per *peak group*.
-#'   Peak groups are defined using the [group()] function from the
-#'   *MsCoreUtils* package.
 #'
 #' - `spectrapply`: apply a given function to each individual spectrum or sets
 #'   of a `Spectra` object. By default, the `Spectra` is split into individual
@@ -879,7 +886,8 @@ NULL
 #'     m/z values for peaks to be matched (or grouped).
 #'     For `filterPrecursorMaxIntensity`: `numeric(1)` defining the relative
 #'     maximal accepted difference of precursor m/z values of spectra for
-#'     grouping them into *precursor groups*.
+#'     grouping them into *precursor groups*. For `filterPrecursorIsotopes`:
+#'     passed directly to the [isotopologues()] function.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -905,11 +913,11 @@ NULL
 #'     should be passed along to the function defined with `FUN`. See function
 #'     description for details.
 #'
-#' @param substDefinition For `deisotopeSpectra`: `matrix` or `data.frame`
-#'     with definitions of isotopic substitutions. Uses by default isotopic
-#'     substitutions defined from all compounds in the Human Metabolome
-#'     Database (HMDB). See [isotopologues()] or [isotopicSubstitutionMatrix()]
-#'     for details.
+#' @param substDefinition For `deisotopeSpectra` and `filterPrecursorIsotopes`:
+#'     `matrix` or `data.frame` with definitions of isotopic substitutions.
+#'     Uses by default isotopic substitutions defined from all compounds in the
+#'     Human Metabolome Database (HMDB). See [isotopologues()] or
+#'     [isotopicSubstitutionMatrix()] for details.
 #'
 #' @param suffix.y A `character(1)` specifying the suffix to be used
 #'     for making the names of columns in the merged spectra variables
@@ -923,7 +931,8 @@ NULL
 #'     equal `mz` to specify a different tolerance for each m/z value.
 #'     For `filterPrecursorMaxIntensity`: `numeric(1)` defining the (constant)
 #'     maximal accepted difference of precursor m/z values of spectra for
-#'     grouping them into *precursor groups*.
+#'     grouping them into *precursor groups*. For `filterPrecursorIsotopes`:
+#'     passed directly to the [isotopologues()] function.
 #'
 #' @param threshold
 #' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak

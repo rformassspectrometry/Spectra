@@ -750,7 +750,7 @@ test_that("filterPrecursorMaxIntensity works", {
     idx <- order(precursorMz(tmp))
     tmp <- tmp[idx]
 
-    grps <- group(precursorMz(tmp), tolerance = 0, ppm = 10)
+    grps <- MsCoreUtils::group(precursorMz(tmp), tolerance = 0, ppm = 20)
     tmpl <- split(tmp, as.factor(grps))
     ref <- lapply(tmpl, function(z) {
         z[which.max(precursorIntensity(z))]
@@ -765,4 +765,29 @@ test_that("filterPrecursorMaxIntensity works", {
     res <- filterPrecursorMaxIntensity(tmp)
     expect_true(length(res) == 8)
     expect_equal(rtime(res), rtime(tmp[c(1, 3, 5, 6, 9, 10, 11, 12)]))
+})
+
+test_that("filterPrecursorIsotopes works", {
+    x <- sps_dda[1:10]
+    x$precursorMz <- c(NA, 803.4, 804.41, 115, NA, 805.41, 116, 123.2, NA, NA)
+    x$precursorIntensity <- c(NA, 100, 42.7, 100, NA, 15.58, 4.7, 100, NA, NA)
+
+    res <- filterPrecursorIsotopes(x, ppm = 40)
+    expect_equal(precursorIntensity(res), c(NA, 100, 100, NA, 100, NA, NA))
+    expect_equal(rtime(res), rtime(x)[c(1, 2, 4, 5, 8, 9, 10)])
+
+    ## single isotopologue group
+    res <- filterPrecursorIsotopes(x, ppm = 20)
+    expect_equal(precursorIntensity(res), c(NA, 100, 100, NA, 4.7, 100, NA, NA))
+    expect_equal(rtime(res), rtime(x)[c(1, 2, 4, 5, 7, 8, 9, 10)])
+
+    ## DDA data will not have isotope peaks
+    x <- filterRt(sps_dda, c(200, 300))
+    x$precursorIntensity <- estimatePrecursorIntensity(x)
+    res <- filterPrecursorIsotopes(x)
+    expect_true(length(res) < length(x))
+
+    x <- filterMsLevel(sps_dda, 1L)
+    res <- filterPrecursorIsotopes(x)
+    expect_equal(rtime(res), rtime(x))
 })
