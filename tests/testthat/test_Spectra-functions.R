@@ -733,3 +733,61 @@ test_that("reduceSpectra works", {
     expect_true(length(res@processingQueue) > length(sps_dia@processingQueue))
     expect_true(nrow(peaksData(res)[[1L]]) < nrow(peaksData(sps_dia[14])[[1L]]))
 })
+
+test_that("filterPrecursorMaxIntensity works", {
+    ms1 <- filterMsLevel(sps_dda, 1L)
+    res <- filterPrecursorMaxIntensity(ms1)
+    expect_equal(rtime(res), rtime(ms1))
+    expect_true(length(res@processing) > length(ms1@processing))
+
+    expect_equal(rtime(filterMsLevel(res, 1L)),
+                 rtime(filterMsLevel(sps_dda, 1L)))
+
+    res <- filterPrecursorMaxIntensity(filterRt(sps_dda, c(200, 300)))
+
+    ## calculate manually:
+    tmp <- filterRt(filterMsLevel(sps_dda, 2L), c(200, 300))
+    idx <- order(precursorMz(tmp))
+    tmp <- tmp[idx]
+
+    grps <- MsCoreUtils::group(precursorMz(tmp), tolerance = 0, ppm = 20)
+    tmpl <- split(tmp, as.factor(grps))
+    ref <- lapply(tmpl, function(z) {
+        z[which.max(precursorIntensity(z))]
+    })
+    ref <- concatenateSpectra(ref)      # maybe run on subset only...
+    expect_equal(sort(rtime(ref)), rtime(filterMsLevel(res, 2L)))
+
+    ## Artificial data.
+    tmp <- sps_dda[1:12]
+    tmp$precursorMz <- c(NA, 13, NA, 5, 5, NA, 13, 5, 3, NA, 13, NA)
+    tmp$precursorIntensity <- c(NA, 4, NA, 3, 200, NA, 8, 100, 23, NA, 400, NA)
+    res <- filterPrecursorMaxIntensity(tmp)
+    expect_true(length(res) == 8)
+    expect_equal(rtime(res), rtime(tmp[c(1, 3, 5, 6, 9, 10, 11, 12)]))
+})
+
+test_that("filterPrecursorIsotopes works", {
+    x <- sps_dda[1:10]
+    x$precursorMz <- c(NA, 803.4, 804.41, 115, NA, 805.41, 116, 123.2, NA, NA)
+    x$precursorIntensity <- c(NA, 100, 42.7, 100, NA, 15.58, 4.7, 100, NA, NA)
+
+    res <- filterPrecursorIsotopes(x, ppm = 40)
+    expect_equal(precursorIntensity(res), c(NA, 100, 100, NA, 100, NA, NA))
+    expect_equal(rtime(res), rtime(x)[c(1, 2, 4, 5, 8, 9, 10)])
+
+    ## single isotopologue group
+    res <- filterPrecursorIsotopes(x, ppm = 20)
+    expect_equal(precursorIntensity(res), c(NA, 100, 100, NA, 4.7, 100, NA, NA))
+    expect_equal(rtime(res), rtime(x)[c(1, 2, 4, 5, 7, 8, 9, 10)])
+
+    ## DDA data will not have isotope peaks
+    x <- filterRt(sps_dda, c(200, 300))
+    x$precursorIntensity <- estimatePrecursorIntensity(x)
+    res <- filterPrecursorIsotopes(x)
+    expect_true(length(res) < length(x))
+
+    x <- filterMsLevel(sps_dda, 1L)
+    res <- filterPrecursorIsotopes(x)
+    expect_equal(rtime(res), rtime(x))
+})
