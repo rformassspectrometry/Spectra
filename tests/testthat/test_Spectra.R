@@ -526,6 +526,8 @@ test_that("peaksData,Spectra works", {
     expect_true(is.data.frame(res[[1L]]))
     expect_equal(res[[1L]][, "ann"], c("b", "c", "d"))
     expect_equal(colnames(res[[1L]]), c("ann", "mz"))
+
+    expect_equal(s$ann[[1L]], c("b", "c", "d"))
 })
 
 test_that("lengths,Spectra works", {

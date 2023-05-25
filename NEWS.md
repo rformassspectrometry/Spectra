@@ -6,6 +6,11 @@
   variables (in addition to `"mz"` and `"intensity"`) are requested. For
   `columns = c("mz", "intensity")` (the default) a `list` of `matrix` is
   returned.
+- `peaksData,Spectra` returns either a `matrix` or `data.frame` and ensures
+  the peak data is correctly subset based on the lazy evaluation processing
+  queue.
+- `$,Spectra` to access peak variables ensures the lazy evaluation queue is
+  applied prior to extracting the values.
 
 ## Changes in 1.11.2
 

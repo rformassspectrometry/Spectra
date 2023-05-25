@@ -872,12 +872,15 @@ level for each spectrum.
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
-\item \code{peaksData}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
-function returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns
-\code{"mz"} and \code{"intensity"} with the m/z and intensity values for all peaks of
-a spectrum. Optional parameter \code{columns} is passed to the backend's
-\code{peaksData} function to allow selection of specific (or additional) peaks
-variables (columns) that should be extracted (if available). Importantly,
+\item \code{peaksData}: gets the \emph{peaks} data for all spectra in \code{object}. Peaks data
+consist of the m/z and intensity values as well as possible additional
+annotations (variables) of all peaks of each spectrum. The function
+returns a \code{\link[=SimpleList]{SimpleList()}} of two dimensional arrays (either \code{matrix} or
+\code{data.frame}), with each array providing the values for the requested
+\emph{peak variables} (by default \code{"mz"} and \code{"intensity"}). Optional parameter
+\code{columns} is passed to the backend's \code{peaksData} function to allow
+selection of specific (or additional) peaks variables (columns) that
+should be extracted (if available). Importantly,
 it is \strong{not} guaranteed that each backend supports this parameter (while
 each backend must support extraction of \code{"mz"} and \code{"intensity"} columns).
 Parameter \code{columns} defaults to \code{c("mz", "intensity")} but any value
@@ -890,8 +893,8 @@ support the parameter \code{columns}.
 the backend. Default peak variables are \code{"mz"} and \code{"intensity"} (which
 all backends need to support and provide), but some backends might provide
 additional variables.
-These variables correspond to the column names of the \code{numeric} \code{matrix}
-representing the peak data (returned by \code{peaksData}).
+These variables correspond to the column names of the peak data array
+returned by \code{peaksData}.
 \item \code{polarity}, \verb{polarity<-}: gets or sets the polarity for each
 spectrum.  \code{polarity} returns an \code{integer} vector (length equal
 to the number of spectra), with \code{0} and \code{1} representing negative

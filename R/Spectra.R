@@ -227,12 +227,15 @@ NULL
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
-#' - `peaksData`: gets the *peaks* matrices for all spectra in `object`. The
-#'   function returns a [SimpleList()] of matrices, each `matrix` with columns
-#'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
-#'   a spectrum. Optional parameter `columns` is passed to the backend's
-#'   `peaksData` function to allow selection of specific (or additional) peaks
-#'   variables (columns) that should be extracted (if available). Importantly,
+#' - `peaksData`: gets the *peaks* data for all spectra in `object`. Peaks data
+#'   consist of the m/z and intensity values as well as possible additional
+#'   annotations (variables) of all peaks of each spectrum. The function
+#'   returns a [SimpleList()] of two dimensional arrays (either `matrix` or
+#'   `data.frame`), with each array providing the values for the requested
+#'   *peak variables* (by default `"mz"` and `"intensity"`). Optional parameter
+#'   `columns` is passed to the backend's `peaksData` function to allow
+#'   selection of specific (or additional) peaks variables (columns) that
+#'   should be extracted (if available). Importantly,
 #'   it is **not** guaranteed that each backend supports this parameter (while
 #'   each backend must support extraction of `"mz"` and `"intensity"` columns).
 #'   Parameter `columns` defaults to `c("mz", "intensity")` but any value
@@ -246,8 +249,8 @@ NULL
 #'   the backend. Default peak variables are `"mz"` and `"intensity"` (which
 #'   all backends need to support and provide), but some backends might provide
 #'   additional variables.
-#'   These variables correspond to the column names of the `numeric` `matrix`
-#'   representing the peak data (returned by `peaksData`).
+#'   These variables correspond to the column names of the peak data array
+#'   returned by `peaksData`.
 #'
 #' - `polarity`, `polarity<-`: gets or sets the polarity for each
 #'   spectrum.  `polarity` returns an `integer` vector (length equal
@@ -1901,8 +1904,13 @@ setMethod("$", "Spectra", function(x, name) {
         mz(x)
     else if (name == "intensity")
         intensity(x)
-    else
-        do.call("$", list(x@backend, name))
+    else {
+        if (length(x@processingQueue) && name %in% peaksVariables(x))
+            .peaksapply(x, FUN = function(z, ...) z[, name],
+                        columns = c("mz", "intensity", name))
+        else
+            do.call("$", list(x@backend, name))
+    }
 })
 
 #' @rdname Spectra
