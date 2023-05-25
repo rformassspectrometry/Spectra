@@ -1,5 +1,12 @@
 # Spectra 1.11
 
+## Changes in 1.11.3
+
+- `peaksData,MsBackendMemory` returns a `data.frame` if additional peak
+  variables (in addition to `"mz"` and `"intensity"`) are requested. For
+  `columns = c("mz", "intensity")` (the default) a `list` of `matrix` is
+  returned.
+
 ## Changes in 1.11.2
 
 - Add `deisotopeSpectra` and `reduceSpectra` functions.

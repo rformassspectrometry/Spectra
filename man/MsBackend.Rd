@@ -648,26 +648,28 @@ and acquisition number (\code{interger}) of the precursor for MS level
 2 and above spectra from the object. Returns a vector of length equal to
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
-\item \code{peaksData} returns a \code{list} with the spectras' peak data, i.e. numeric
-\code{matrix} with peak values. The length of the list is equal to the number
-of spectra in \code{object}. Each element of the list is a \code{numeric} \code{matrix}
+\item \code{peaksData} returns a \code{list} with the spectras' peak data, i.e. m/z and
+intensity values or other \emph{peak variables}. The length of the list is
+equal to the number of spectra in \code{object}. Each element of the list has
+to be a two-dimensional array (\code{matrix} or \code{data.frame})
 with columns depending on the provided \code{columns} parameter (by default
 \code{"mz"} and \code{"intensity"}, but depends on the backend's available
-\code{peaksVariables}). For an empty spectrum, a \code{matrix} with 0 rows and
-columns according to \code{columns} is returned. The optional parameter
-\code{columns}, if supported by the backend, allows to define which peak
-variables should be returned in the \code{numeric} peak \code{matrix}. As a default
-\code{c("mz", "intensity")} should be used.
+\code{peaksVariables}). For an empty spectrum, a \code{matrix} (\code{data.frame}) with
+0 rows and columns according to \code{columns} is returned. The optional
+parameter \code{columns}, if supported by the backend, allows to define which
+peak variables should be returned in the \code{numeric} peak \code{matrix}. As a
+default \code{c("mz", "intensity")} should be used.
 \item \verb{peaksData<-} replaces the peak data (m/z and intensity values) of the
-backend. This method expects a \code{list} of \code{matrix} objects with columns
-\code{"mz"} and \code{"intensity"} that has the same length as the number of
-spectra in the backend. Note that just writeable backends support this
-method.
+backend. This method expects a \code{list} of two dimensional arrays (\code{matrix}
+or \code{data.frame}) with columns representing the peak variables. All
+existing peaks data is expected to be replaced with these new values. The
+length of the \code{list} has to match the number of spectra of \code{object}.
+Note that just writeable backends support this method.
 \item \code{peaksVariables}: lists the available variables for mass peaks. Default
 peak variables are \code{"mz"} and \code{"intensity"} (which all backends need to
 support and provide), but some backends might provide additional variables.
-These variables correspond to the column names of the \code{numeric} \code{matrix}
-representing the peak data (returned by \code{peaksData}).
+All these variables are expected to be returned (if requested) by the
+\code{peaksData} function.
 \item \code{reset} a backend (if supported). This method will be called on the backend
 by the \verb{reset,Spectra} method that is supposed to restore the data to its
 original state (see \verb{reset,Spectra} for more details). The function
@@ -787,7 +789,8 @@ individual spectrum). Note that it is important to also include \code{"mz"} and
 to be spectra variables! Also, while it is possible to change the values of
 existing peaks variables using the \verb{$<-} method, this method does \strong{not}
 allow to add new peaks variables to an existing \code{MsBackendMemory}. New
-peaks variables should be added using the \code{backendInitialize} method.
+peaks variables can at present only be added using the \code{backendInitialize}
+method.
 
 Suggested columns of this \code{DataFrame} are:
 \itemize{
@@ -817,10 +820,11 @@ intensity values for each spectrum.
 
 Additional columns are allowed too.
 
-For the \code{MsBackendMemory}, any column in the provided \code{data.frame} which
-contains a \code{list} of vectors each with length equal to the number of peaks
-for a spectrum will be used as additional \emph{peak variable} (see examples
-below for details).
+The \code{peaksData} function for \code{MsBackendMemory} returns a \code{list} of
+\code{numeric} \code{matrix} by default (with parameter
+\code{columns = c("mz", "intensity")}). If other peak variables are requested,
+a \code{list} of \code{data.frame} is returned (to ensure m/z and intensity values
+are always \code{numeric}).
 
 The \code{MsBackendDataFrame} ignores parameter \code{columns} of the \code{peaksData}
 function and returns \strong{always} m/z and intensity values.

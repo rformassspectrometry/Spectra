@@ -422,28 +422,30 @@
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `peaksData` returns a `list` with the spectras' peak data, i.e. numeric
-#'   `matrix` with peak values. The length of the list is equal to the number
-#'   of spectra in `object`. Each element of the list is a `numeric` `matrix`
+#' - `peaksData` returns a `list` with the spectras' peak data, i.e. m/z and
+#'   intensity values or other *peak variables*. The length of the list is
+#'   equal to the number of spectra in `object`. Each element of the list has
+#'   to be a two-dimensional array (`matrix` or `data.frame`)
 #'   with columns depending on the provided `columns` parameter (by default
 #'   `"mz"` and `"intensity"`, but depends on the backend's available
-#'   `peaksVariables`). For an empty spectrum, a `matrix` with 0 rows and
-#'   columns according to `columns` is returned. The optional parameter
-#'   `columns`, if supported by the backend, allows to define which peak
-#'   variables should be returned in the `numeric` peak `matrix`. As a default
-#'   `c("mz", "intensity")` should be used.
+#'   `peaksVariables`). For an empty spectrum, a `matrix` (`data.frame`) with
+#'   0 rows and columns according to `columns` is returned. The optional
+#'   parameter `columns`, if supported by the backend, allows to define which
+#'   peak variables should be returned in the `numeric` peak `matrix`. As a
+#'   default `c("mz", "intensity")` should be used.
 #'
 #' - `peaksData<-` replaces the peak data (m/z and intensity values) of the
-#'   backend. This method expects a `list` of `matrix` objects with columns
-#'   `"mz"` and `"intensity"` that has the same length as the number of
-#'   spectra in the backend. Note that just writeable backends support this
-#'   method.
+#'   backend. This method expects a `list` of two dimensional arrays (`matrix`
+#'   or `data.frame`) with columns representing the peak variables. All
+#'   existing peaks data is expected to be replaced with these new values. The
+#'   length of the `list` has to match the number of spectra of `object`.
+#'   Note that just writeable backends support this method.
 #'
 #' - `peaksVariables`: lists the available variables for mass peaks. Default
 #'   peak variables are `"mz"` and `"intensity"` (which all backends need to
 #'   support and provide), but some backends might provide additional variables.
-#'   These variables correspond to the column names of the `numeric` `matrix`
-#'   representing the peak data (returned by `peaksData`).
+#'   All these variables are expected to be returned (if requested) by the
+#'   `peaksData` function.
 #'
 #' - `reset` a backend (if supported). This method will be called on the backend
 #'   by the `reset,Spectra` method that is supposed to restore the data to its
@@ -569,7 +571,8 @@
 #' to be spectra variables! Also, while it is possible to change the values of
 #' existing peaks variables using the `$<-` method, this method does **not**
 #' allow to add new peaks variables to an existing `MsBackendMemory`. New
-#' peaks variables should be added using the `backendInitialize` method.
+#' peaks variables can at present only be added using the `backendInitialize`
+#' method.
 #'
 #' Suggested columns of this `DataFrame` are:
 #'
@@ -598,10 +601,11 @@
 #'
 #' Additional columns are allowed too.
 #'
-#' For the `MsBackendMemory`, any column in the provided `data.frame` which
-#' contains a `list` of vectors each with length equal to the number of peaks
-#' for a spectrum will be used as additional *peak variable* (see examples
-#' below for details).
+#' The `peaksData` function for `MsBackendMemory` returns a `list` of
+#' `numeric` `matrix` by default (with parameter
+#' `columns = c("mz", "intensity")`). If other peak variables are requested,
+#' a `list` of `data.frame` is returned (to ensure m/z and intensity values
+#' are always `numeric`).
 #'
 #' The `MsBackendDataFrame` ignores parameter `columns` of the `peaksData`
 #' function and returns **always** m/z and intensity values.
