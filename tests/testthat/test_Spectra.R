@@ -482,6 +482,50 @@ test_that("peaksData,Spectra works", {
     res <- peaksData(sps, columns = c("intensity", "mz", "intensity"))
     expect_equal(res[[1L]][, 1L], res[[1L]][, 3L])
     expect_equal(res[[1L]][, 1L], intensity(sps)[[1L]])
+
+    ## MsBackendMemory with additional peaks variables.
+    tmp <- data.frame(rtime = c(1.1, 1.2, 1.3, 1.4),
+                      msLevel = 1L)
+    tmp$mz <- list(c(13, 14.1, 22, 23, 24, 49),
+                   c(45.1, 56),
+                   c(34.3, 134.4, 344, 443),
+                   c(12.1, 31))
+    tmp$intensity <- list(c(100, 300, 30, 120, 12, 34),
+                          c(345, 234),
+                          c(123, 124, 145, 3),
+                          c(122, 421))
+    tmp$ann <- list(c("a", NA, "b", "c", "d", NA),
+                    c("e", "f"),
+                    c("g", "h", "i", NA),
+                    c("j", "k"))
+    s <- Spectra(tmp, peaksVariables = c("mz", "intensity", "ann"))
+
+    res <- peaksData(s, columns = "ann")
+    expect_true(is.data.frame(res[[1L]]))
+    res <- peaksData(s)
+    expect_true(is.matrix(res[[1L]]))
+    res <- peaksData(s, columns = peaksVariables(s))
+    expect_true(is.data.frame(res[[1L]]))
+
+    ## Filtering.
+    s <- filterMzValues(s, 23, tolerance = 1)
+    ref <- peaksData(s)
+    expect_equal(ref[[1L]][, "mz"], c(22, 23, 24))
+
+    res <- peaksData(s, columns = peaksVariables(s))
+    expect_equal(res[[1L]][, "mz"], c(22, 23, 24))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]][, "ann"], c("b", "c", "d"))
+
+    res <- peaksData(s, columns = c("ann"))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]][, "ann"], c("b", "c", "d"))
+    expect_equal(colnames(res[[1L]]), "ann")
+
+    res <- peaksData(s, columns = c("ann", "mz"))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]][, "ann"], c("b", "c", "d"))
+    expect_equal(colnames(res[[1L]]), c("ann", "mz"))
 })
 
 test_that("lengths,Spectra works", {

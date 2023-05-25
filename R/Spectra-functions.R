@@ -109,6 +109,15 @@ NULL
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
     ll <- length(levels(f))
     if (length(pqueue) || ll > 1) {
+        if (!all(c("mz", "intensity") %in% columns)) {
+            scols <- columns
+            columns <- union(c("mz", "intensity"), columns)
+            pqueue <- c(
+                pqueue, ProcessingStep(
+                            FUN = function(x, scols, ...) {
+                                x[, scols, drop = FALSE]
+                            }, ARGS = list(scols = scols)))
+        }
         .local <- function(z, queue, svars) {
             if (length(svars))
                 spd <- as.data.frame(spectraData(z, columns = svars))
