@@ -6,7 +6,6 @@
 \alias{combineSpectra}
 \alias{joinSpectraData}
 \alias{processingLog}
-\alias{estimatePrecursorIntensity}
 \alias{deisotopeSpectra}
 \alias{reduceSpectra}
 \alias{filterPrecursorMaxIntensity}
@@ -119,16 +118,6 @@ combineSpectra(
 joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
 
 processingLog(x)
-
-estimatePrecursorIntensity(
-  x,
-  ppm = 20,
-  tolerance = 0,
-  method = c("previous", "interpolation"),
-  msLevel. = 2L,
-  f = dataOrigin(x),
-  BPPARAM = bpparam()
-)
 
 deisotopeSpectra(
   x,
@@ -454,7 +443,7 @@ parallelized copying of the spectra data to the new backend. For some
 backends changing this parameter can lead to errors.
 For \code{combineSpectra}: \code{factor} defining the grouping of the spectra that
 should be combined. For \code{spectrapply}: \code{factor} how \code{object} should be
-splitted. For \code{estimatePrecursorIntensity} and \code{filterPrecursorScan}:
+splitted. For \code{filterPrecursorScan}:
 defining which spectra belong to the same original data file (sample).
 Defaults to \code{f = dataOrigin(x)}.}
 
@@ -494,14 +483,11 @@ for making the names of columns in the merged spectra variables
 unique. This suffix will be used to amend \code{names(y)}, while
 \code{spectraVariables(x)} will remain unchanged.}
 
-\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
-\code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)}
-defining a relative, m/z-dependent, maximal accepted difference between
-m/z values for peaks to be matched (or grouped).
-For \code{filterPrecursorMaxIntensity}: \code{numeric(1)} defining the relative
-maximal accepted difference of precursor m/z values of spectra for
-grouping them into \emph{precursor groups}. For \code{filterPrecursorIsotopes}:
-passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.}
+\item{substDefinition}{For \code{deisotopeSpectra} and \code{filterPrecursorIsotopes}:
+\code{matrix} or \code{data.frame} with definitions of isotopic substitutions.
+Uses by default isotopic substitutions defined from all compounds in the
+Human Metabolome Database (HMDB). See \code{\link[=isotopologues]{isotopologues()}} or
+\code{\link[=isotopicSubstitutionMatrix]{isotopicSubstitutionMatrix()}} for details.}
 
 \item{tolerance}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
 \code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)} allowing to define
@@ -513,30 +499,14 @@ maximal accepted difference of precursor m/z values of spectra for
 grouping them into \emph{precursor groups}. For \code{filterPrecursorIsotopes}:
 passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.}
 
-\item{method}{\itemize{
-\item For \code{pickPeaks}: \code{character(1)}, the noise estimators that
-should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
-(\code{method = "MAD"}) and Friedman's Super Smoother
-(\code{method = "SuperSmoother"}) are supported.
-\item For \code{smooth}: \code{character(1)}, the smoothing function that should be used,
-currently, the Moving-Average- (\code{method = "MovingAverage"}),
-Weighted-Moving-Average- (\verb{method = "WeightedMovingAverage")},
-Savitzky-Golay-Smoothing (\code{method = "SavitzkyGolay"}) are supported.
-\item For \code{estimatePrecursorIntensity}: \code{character(1)} defining whether the
-precursor intensity should be estimated on the previous MS1 spectrum
-(\code{method = "previous"}, the default) or based on an interpolation on the
-previous and next MS1 spectrum (\code{method = "interpolation"}).
-}}
-
-\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
-the function should be applied (defaults to all MS levels of \code{object}.
-For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
-
-\item{substDefinition}{For \code{deisotopeSpectra} and \code{filterPrecursorIsotopes}:
-\code{matrix} or \code{data.frame} with definitions of isotopic substitutions.
-Uses by default isotopic substitutions defined from all compounds in the
-Human Metabolome Database (HMDB). See \code{\link[=isotopologues]{isotopologues()}} or
-\code{\link[=isotopicSubstitutionMatrix]{isotopicSubstitutionMatrix()}} for details.}
+\item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
+\code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)}
+defining a relative, m/z-dependent, maximal accepted difference between
+m/z values for peaks to be matched (or grouped).
+For \code{filterPrecursorMaxIntensity}: \code{numeric(1)} defining the relative
+maximal accepted difference of precursor m/z values of spectra for
+grouping them into \emph{precursor groups}. For \code{filterPrecursorIsotopes}:
+passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.}
 
 \item{charge}{For \code{deisotopeSpectra}: expected charge of the ionized
 compounds. See \code{\link[=isotopologues]{isotopologues()}} for details.}
@@ -660,6 +630,10 @@ returns a \code{logical} (same length then peaks in the spectrum) whether the
 peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
 only peaks with \code{NA} intensity are removed.}
 
+\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
+the function should be applied (defaults to all MS levels of \code{object}.
+For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
+
 \item{keep}{For \code{filterMzValues} and \code{filterMzRange}: \code{logical(1)} whether
 the matching peaks should be retained (\code{keep = TRUE}, the default\verb{) or dropped (}keep = FALSE`).}
 
@@ -688,6 +662,17 @@ functions.}
 \item{SIMPLIFY}{For \code{compareSpectra} whether the result matrix should be
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
 of length 1).}
+
+\item{method}{\itemize{
+\item For \code{pickPeaks}: \code{character(1)}, the noise estimators that
+should be used, currently the the \emph{M}edian \emph{A}bsolute \emph{D}eviation
+(\code{method = "MAD"}) and Friedman's Super Smoother
+(\code{method = "SuperSmoother"}) are supported.
+\item For \code{smooth}: \code{character(1)}, the smoothing function that should be used,
+currently, the Moving-Average- (\code{method = "MovingAverage"}),
+Weighted-Moving-Average- (\verb{method = "WeightedMovingAverage")},
+Savitzky-Golay-Smoothing (\code{method = "SavitzkyGolay"}) are supported.
+}}
 
 \item{snr}{For \code{pickPeaks}: \code{double(1)} defining the
 \emph{S}ignal-to-\emph{N}oise-\emph{R}atio. The intensity of a local maximum has to be
@@ -1059,7 +1044,7 @@ function filters only MS2 spectra and returns all MS1 spectra. If
 precursor intensities are \code{NA} for all spectra within a spectra group, the
 first spectrum of that groups is returned.
 Note: some manufacturers don't provide precursor intensities. These can
-however also be estimated with \code{estimatePrecursorIntensity}.
+however also be estimated with \code{\link[=estimatePrecursorIntensity]{estimatePrecursorIntensity()}}.
 \item \code{filterPrecursorMzRange} (previously \code{filterPrecursorMz} which is now
 deprecated): retains spectra with a precursor m/z within the
 provided m/z range. See examples for details on selecting spectra with
@@ -1234,7 +1219,8 @@ closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
 respective MS2 spectrum). With \code{method = "interpolation"} it is also
 possible to calculate the precursor intensity based on an interpolation of
 intensity values (and retention times) of the matching MS1 peaks from the
-previous and next MS1 spectrum. See below for an example.
+previous and next MS1 spectrum. See \code{\link[=estimatePrecursorIntensity]{estimatePrecursorIntensity()}} for
+examples and more details.
 \item \code{neutralLoss}: calculate neutral loss spectra for fragment spectra. See
 \code{\link[=neutralLoss]{neutralLoss()}} for detailed documentation.
 \item \code{processingLog}: returns a \code{character} vector with the processing log
@@ -1651,22 +1637,6 @@ head(res)
 ## of the chunks (i.e. number of spectra per chunk) with the `chunkSize`
 ## parameter
 spectrapply(sciex_im[1:20], lengths, chunkSize = 5L)
-
-## Calculating the precursor intensity for MS2 spectra:
-##
-## Some MS instrument manufacturer don't report the precursor intensities
-## for MS2 spectra. The `estimatePrecursorIntensity` function can be used
-## in these cases to calculate the precursor intensity on MS1 data. Below
-## we load an mzML file from a vendor providing precursor intensities and
-## compare the estimated and reported precursor intensities.
-tmt <- Spectra(msdata::proteomics(full.names = TRUE)[5],
-    backend = MsBackendMzR())
-pmi <- estimatePrecursorIntensity(tmt)
-plot(pmi, precursorIntensity(tmt))
-
-## We can also replace the original precursor intensity values with the
-## newly calculated ones
-tmt$precursorIntensity <- pmi
 
 ## ---- DATA EXPORT ----
 
