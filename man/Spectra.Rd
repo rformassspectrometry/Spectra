@@ -801,7 +801,11 @@ parameter \code{backend}.
 
 \itemize{
 \item \code{$}, \verb{$<-}: gets (or sets) a spectra variable for all spectra in \code{object}.
-See examples for details.
+See examples for details. Note that replacing values of a peaks variable
+is not supported with a non-empty processing queue, i.e. if any filtering
+or data manipulations on the peaks data was performed. In these cases
+\code{\link[=applyProcessing]{applyProcessing()}} needs to be called first to apply all cached data
+operations.
 \item \code{[[}, \verb{[[<-}: access or set/add a single spectrum variable (column) in the
 backend.
 \item \code{acquisitionNum}: returns the acquisition number of each
@@ -925,12 +929,13 @@ of length 1 or equal to the number of spectra in \code{object}.
 header). \code{spectraData} returns a \code{DataFrame}. Note that this
 method does by default \strong{not} return m/z or intensity values.
 \item \verb{spectraData<-}: \strong{replaces} the full spectra data of the \code{Spectra}
-object with the one provided with \code{value}. The use of this function is
-disencouraged, as replacing spectra data with values that are in a
-different can break the linkage with the associated m/z and intensity
-values. If possible, spectra variables (i.e. \emph{columns} of the \code{Spectra})
-should be replaced individually. The \verb{spectraData<-} function expects a
-\code{DataFrame} to be passed as value.
+object with the one provided with \code{value}. The \verb{spectraData<-} function
+expects a \code{DataFrame} to be passed as value with the same number of rows
+as there a spectra in \code{object}. Note that replacing values of
+peaks variables is not supported with a non-empty processing queue, i.e.
+if any filtering or data manipulations on the peaks data was performed.
+In these cases \code{\link[=applyProcessing]{applyProcessing()}} needs to be called first to apply all
+cached data operations and empty the processing queue.
 \item \code{spectraNames}, \verb{spectraNames<-}: gets or sets the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
 available spectra variables (columns, fields or attributes of each

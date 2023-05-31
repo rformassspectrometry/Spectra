@@ -13,6 +13,10 @@
   applied prior to extracting the values.
 - `applyProcessing` correctly subsets and processes all peak variables
   depending on the processing queue.
+- `spectraData<-,Spectra` throws an error if processing queue is not empty and
+  values for peaks variables should be replaced.
+- `$<-,Spectra` throws an error if processing queue is not empty and a peaks
+  variable is going to be replaced.
 
 ## Changes in 1.11.2
 

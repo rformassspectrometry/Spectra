@@ -135,7 +135,11 @@ NULL
 #' @section Accessing spectra data:
 #'
 #' - `$`, `$<-`: gets (or sets) a spectra variable for all spectra in `object`.
-#'   See examples for details.
+#'   See examples for details. Note that replacing values of a peaks variable
+#'   is not supported with a non-empty processing queue, i.e. if any filtering
+#'   or data manipulations on the peaks data was performed. In these cases
+#'   [applyProcessing()] needs to be called first to apply all cached data
+#'   operations.
 #'
 #' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
 #'   backend.
@@ -288,12 +292,13 @@ NULL
 #'   method does by default **not** return m/z or intensity values.
 #'
 #' - `spectraData<-`: **replaces** the full spectra data of the `Spectra`
-#'   object with the one provided with `value`. The use of this function is
-#'   disencouraged, as replacing spectra data with values that are in a
-#'   different can break the linkage with the associated m/z and intensity
-#'   values. If possible, spectra variables (i.e. *columns* of the `Spectra`)
-#'   should be replaced individually. The `spectraData<-` function expects a
-#'   `DataFrame` to be passed as value.
+#'   object with the one provided with `value`. The `spectraData<-` function
+#'   expects a `DataFrame` to be passed as value with the same number of rows
+#'   as there a spectra in `object`. Note that replacing values of
+#'   peaks variables is not supported with a non-empty processing queue, i.e.
+#'   if any filtering or data manipulations on the peaks data was performed.
+#'   In these cases [applyProcessing()] needs to be called first to apply all
+#'   cached data operations and empty the processing queue.
 #'
 #' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
 #'
@@ -1877,15 +1882,22 @@ setMethod(
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
     if (!inherits(value, "DataFrame"))
         stop("'spectraData<-' expects a 'DataFrame' as input.", call. = FALSE)
-    ## TODO
-    ## if processing queue not empty and any colnames in peaks variables:
-    ## - check lengths of object and lengths of peaks variables, if that
-    ##   differs -> error.
-    ## stop("Processing queue is not empty. In order to replace values in 'object' the processing queue has to be applied with the 'applyProcessing' function. Depending on the used backend it might also be required to change the backend to a *writeable* backend e.g. with 'setBackend(object, MsBackendMemory())'.")
-    if (!any(colnames(value) == "mz"))
-        value$mz <- object$mz
-    if (!any(colnames(value) == "intensity"))
-        value$intensity <- object$intensity
+    pvs <- peaksVariables(object)
+    if (length(object@processingQueue) &&
+        any(colnames(value) %in% pvs))
+        stop("Can not replace peaks variables with a non-empty processing ",
+             "queue. Please use 'object <- applyProcessing(object)' to apply ",
+             "and clear the processing queue. Note that 'applyProcessing' ",
+             "requires a *writeable* backend. Use e.g. 'object <- ",
+             "setBackend(object, MsBackendMemory())' if needed.")
+    pvs <- setdiff(pvs, colnames(value))
+    if (length(pvs)) {
+        sd <- spectraData(object, pvs)
+        for (pv in pvs) {
+            value <- do.call("$<-", list(value, name = pv, sd[, pv]))
+        }
+        object@processingQueue <- list()
+    }
     spectraData(object@backend) <- value
     object
 })
@@ -1940,8 +1952,13 @@ setMethod("$", "Spectra", function(x, name) {
 #'
 #' @export
 setReplaceMethod("$", "Spectra", function(x, name, value) {
-    ## TODO: check if name is a peaksVariable and peaks queue not empty. Same
-    ## procedure than for spectraData<-
+    if (length(x@processingQueue) &&
+        any(name %in% peaksVariables(x)))
+        stop("Can not replace peaks variables with a non-empty processing ",
+             "queue. Please use 'object <- applyProcessing(object)' to apply ",
+             "and clear the processing queue. Note that 'applyProcessing' ",
+             "requires a *writeable* backend. Use e.g. 'object <- ",
+             "setBackend(object, MsBackendMemory())' if needed.")
     x@backend <- do.call("$<-", list(x@backend, name, value))
     x
 })

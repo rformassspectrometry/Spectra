@@ -1724,7 +1724,24 @@ test_that("peaks variables and filtering properly works", {
     expect_equal(
         res$pk_ann, list(c(NA_character_), c("A", "B"), c("D", "E", "F")))
 
-    ## TODO: check replacement of peaks variables
+    ## check replacement of peaks variables
     ## spectraData<-
+    spd <- spectraData(sf, columns = union(spectraVariables(sf),
+                                           peaksVariables(sf)))
+    res <- sf
+    expect_error(spectraData(res) <- spd, "non-empty processing queue")
+    spd <- spectraData(sf)              # without peaks variables
+    spectraData(res) <- spd
+    expect_equal(rtime(res), rtime(sf))
+    expect_equal(res$mz, sf$mz)
+    expect_equal(res$intensity, sf$intensity)
+    expect_equal(res$pk_ann, sf$pk_ann)
+    expect_true(length(res@processingQueue) == 0)
+
     ## $<-
+    res <- sf
+    res$rtime <- 1:3
+    expect_equal(res$rtime, 1:3)
+    expect_error(res$pk_ann <- list(c(NA_character_), c("A", "D"),
+                                    c("E", "F", "G")), "non-empty processing")
 })
