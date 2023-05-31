@@ -404,7 +404,8 @@ setReplaceMethod("peaksData", "MsBackendMemory", function(object, value) {
             pcn <- intersect(c("mz", "intensity"), cn)
             if (length(pcn))
                 object@peaksData <- lapply(
-                    value, function(z) base::as.matrix(z[, pcn, drop = FALSE]))
+                    value, function(z) as.matrix(z[, pcn, drop = FALSE],
+                                                 rownames.force = FALSE))
             pcn <- setdiff(cn, c("mz", "intensity"))
             if (length(pcn))
                 object@peaksDataFrame <- lapply(

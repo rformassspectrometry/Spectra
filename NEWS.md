@@ -11,6 +11,8 @@
   queue.
 - `$,Spectra` to access peak variables ensures the lazy evaluation queue is
   applied prior to extracting the values.
+- `applyProcessing` correctly subsets and processes all peak variables
+  depending on the processing queue.
 
 ## Changes in 1.11.2
 

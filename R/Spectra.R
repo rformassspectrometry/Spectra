@@ -240,7 +240,7 @@ NULL
 #'   each backend must support extraction of `"mz"` and `"intensity"` columns).
 #'   Parameter `columns` defaults to `c("mz", "intensity")` but any value
 #'   returned from `peaksVariables` is supported.
-#'   Note also that it is possible to extract the peaks matrices with
+#'   Note also that it is possible to extract the peak data with
 #'   `as(x, "list")` and `as(x, "SimpleList")` as a `list` and `SimpleList`,
 #'   respectively. Note however that, in contrast to `peaksData`, `as` does not
 #'   support the parameter `columns`.
@@ -298,8 +298,11 @@ NULL
 #' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
 #'
 #' - `spectraVariables`: returns a `character` vector with the
-#'   available spectra variables (columns, fields or attributes)
-#'   available in `object`.
+#'   available spectra variables (columns, fields or attributes of each
+#'   spectrum) available in `object`. Note that `spectraVariables` does not
+#'   list the *peak variables* (`"mz"`, `"intensity"` and eventual additional
+#'   annotations for each MS peak). Peak variables are returned by
+#'   `peaksVariables`.
 #'
 #' - `tic`: gets the total ion current/count (sum of signal of a
 #'   spectrum) for all spectra in `object`. By default, the value
@@ -1844,11 +1847,27 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 #' @importMethodsFrom ProtGenerics spectraData
 #'
 #' @exportMethod spectraData
-setMethod("spectraData", "Spectra", function(object,
-                                             columns = spectraVariables(object))
-{
-    spectraData(object@backend, columns = columns)
-})
+setMethod(
+    "spectraData", "Spectra",
+    function(object, columns = spectraVariables(object)) {
+        if (length(object@processingQueue) &&
+            length(pcns <- intersect(columns, peaksVariables(object)))) {
+            scns <- setdiff(columns, pcns)
+            if (length(scns))
+                spd <- spectraData(object@backend, columns = scns)
+            else
+                spd <- make_zero_col_DFrame(nrow = length(object))
+            pkd <- peaksData(object, columns = pcns)
+            for (pcn in pcns) {
+                vals <- lapply(pkd, `[`, , pcn)
+                if (pcn %in% c("mz", "intensity"))
+                    vals <- NumericList(vals, compress = FALSE)
+                spd <- do.call(`[[<-`, list(spd, i = pcn, value = vals))
+            }
+            spd
+        } else
+            spectraData(object@backend, columns = columns)
+    })
 
 #' @rdname Spectra
 #'
@@ -1858,6 +1877,11 @@ setMethod("spectraData", "Spectra", function(object,
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
     if (!inherits(value, "DataFrame"))
         stop("'spectraData<-' expects a 'DataFrame' as input.", call. = FALSE)
+    ## TODO
+    ## if processing queue not empty and any colnames in peaks variables:
+    ## - check lengths of object and lengths of peaks variables, if that
+    ##   differs -> error.
+    ## stop("Processing queue is not empty. In order to replace values in 'object' the processing queue has to be applied with the 'applyProcessing' function. Depending on the used backend it might also be required to change the backend to a *writeable* backend e.g. with 'setBackend(object, MsBackendMemory())'.")
     if (!any(colnames(value) == "mz"))
         value$mz <- object$mz
     if (!any(colnames(value) == "intensity"))
@@ -1879,8 +1903,7 @@ setReplaceMethod("spectraNames", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("spectraVariables", "Spectra", function(object) {
-    svars <- spectraVariables(object@backend)
-    svars[!(svars %in% c("mz", "intensity"))]
+    setdiff(spectraVariables(object@backend), peaksVariables(object@backend))
 })
 
 #' @rdname Spectra
@@ -1898,7 +1921,7 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
 #'
 #' @export
 setMethod("$", "Spectra", function(x, name) {
-    if (!(name %in% c(spectraVariables(x), "mz", "intensity")))
+    if (!(name %in% c(spectraVariables(x@backend), peaksVariables(x@backend))))
         stop("No spectra variable '", name, "' available")
     if (name == "mz")
         mz(x)
@@ -1917,6 +1940,8 @@ setMethod("$", "Spectra", function(x, name) {
 #'
 #' @export
 setReplaceMethod("$", "Spectra", function(x, name, value) {
+    ## TODO: check if name is a peaksVariable and peaks queue not empty. Same
+    ## procedure than for spectraData<-
     x@backend <- do.call("$<-", list(x@backend, name, value))
     x
 })

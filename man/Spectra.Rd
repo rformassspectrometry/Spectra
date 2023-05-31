@@ -885,7 +885,7 @@ it is \strong{not} guaranteed that each backend supports this parameter (while
 each backend must support extraction of \code{"mz"} and \code{"intensity"} columns).
 Parameter \code{columns} defaults to \code{c("mz", "intensity")} but any value
 returned from \code{peaksVariables} is supported.
-Note also that it is possible to extract the peaks matrices with
+Note also that it is possible to extract the peak data with
 \code{as(x, "list")} and \code{as(x, "SimpleList")} as a \code{list} and \code{SimpleList},
 respectively. Note however that, in contrast to \code{peaksData}, \code{as} does not
 support the parameter \code{columns}.
@@ -933,8 +933,11 @@ should be replaced individually. The \verb{spectraData<-} function expects a
 \code{DataFrame} to be passed as value.
 \item \code{spectraNames}, \verb{spectraNames<-}: gets or sets the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
-available spectra variables (columns, fields or attributes)
-available in \code{object}.
+available spectra variables (columns, fields or attributes of each
+spectrum) available in \code{object}. Note that \code{spectraVariables} does not
+list the \emph{peak variables} (\code{"mz"}, \code{"intensity"} and eventual additional
+annotations for each MS peak). Peak variables are returned by
+\code{peaksVariables}.
 \item \code{tic}: gets the total ion current/count (sum of signal of a
 spectrum) for all spectra in \code{object}. By default, the value
 reported in the original raw data file is returned. For an empty

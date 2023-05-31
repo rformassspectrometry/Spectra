@@ -528,6 +528,12 @@ test_that("peaksData,Spectra works", {
     expect_equal(colnames(res[[1L]]), c("ann", "mz"))
 
     expect_equal(s$ann[[1L]], c("b", "c", "d"))
+
+    expect_equal(spectraData(s, "ann")$ann[[1L]], c("b", "c", "d"))
+    expect_equal(spectraData(s, c("rtime", "ann"))$ann[[1L]], c("b", "c", "d"))
+    expect_equal(
+        spectraData(s, c(spectraVariables(s), peaksVariables(s)))$ann[[1L]],
+        c("b", "c", "d"))
 })
 
 test_that("lengths,Spectra works", {
@@ -778,6 +784,13 @@ test_that("spectraVariables,Spectra works", {
     sps <- Spectra(df)
     res <- spectraVariables(sps)
     expect_true(all(c(exp_col, "other_col") %in% res))
+
+    df$mz <- list(c(1.2, 1.4), c(4.5, 5.6, 7.8))
+    df$intensity <- list(c(12, 23.3), c(134.3, 5, 123))
+    df$pk_ann <- list(c("a", "b"), c(NA, NA, NA))
+    sps <- Spectra(df, peaksVariables = c("mz", "intensity", "pk_ann"))
+    res <- spectraVariables(sps)
+    expect_true(!any(peaksVariables(sps) %in% res))
 })
 
 test_that("tic,Spectra works", {
@@ -1631,4 +1644,87 @@ test_that("uniqueMsLevels,Spectra works", {
     expect_equal(res, unique(msLevel(sciex_mzr)))
 
     expect_equal(res, uniqueMsLevels(Spectra(sciex_mzr)))
+})
+
+test_that("peaks variables and filtering properly works", {
+    test_df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
+    test_df$mz <- list(c(1.1, 1.3, 1.5),
+                       c(4.1, 5.1),
+                       c(1.6, 1.7, 1.8, 1.9))
+    test_df$intensity <- list(c(45.1, 34, 12),
+                              c(234.4, 1333),
+                              c(42.1, 34.2, 65, 6))
+    test_df$pk_ann <- list(c(NA, NA, "C12H2"),
+                           c("A", "B"),
+                           c("D", "E", "F", "G"))
+    s <- Spectra(test_df, peaksVariables = c("mz", "intensity", "pk_ann"))
+    expect_equal(peaksVariables(s), c("mz", "intensity", "pk_ann"))
+    expect_true(!any(spectraVariables(s) %in% peaksVariables(s)))
+
+    spd <- spectraData(s)
+    expect_true(!any(colnames(spd) %in% peaksVariables(s)))
+    pkd <- peaksData(s)
+    expect_equal(colnames(pkd[[1]]), c("mz", "intensity"))
+    expect_equal(s$pk_ann, test_df$pk_ann)
+    expect_equal(s$mz, spectraData(s, columns = "mz")$mz)
+    expect_equal(test_df$pk_ann,
+                 spectraData(s, columns = c("rtime", "pk_ann"))$pk_ann)
+
+    ########
+    ## Filter peaks. Have to ensure that ALL peak variables get subset properly
+    sf <- filterIntensity(s, intensity = 34.1)
+    expect_equal(mz(sf),
+                 NumericList(list(c(mz=1.1), c(4.1, 5.1), c(1.6, 1.7, 1.8)),
+                             compress = FALSE))
+    expect_equal(mz(sf), sf$mz)
+
+    ## peaksData
+    expect_equal(lengths(sf), c(1, 2, 3))
+    pkd <- peaksData(sf)
+    expect_true(is.matrix(pkd[[1L]]))
+    expect_equal(colnames(pkd[[1L]]), c("mz", "intensity"))
+    pkd <- peaksData(sf, columns = peaksVariables(sf))
+    expect_true(is.data.frame(pkd[[1L]]))
+    expect_equal(colnames(pkd[[1L]]), c("mz", "intensity", "pk_ann"))
+    expect_equal(pkd[[1L]][, "mz"], 1.1)
+    expect_equal(pkd[[2L]][, "mz"], c(4.1, 5.1))
+    expect_equal(pkd[[3L]][, "mz"], c(1.6, 1.7, 1.8))
+    expect_equal(pkd[[1L]][, "pk_ann"], NA_character_)
+    expect_equal(pkd[[2L]][, "pk_ann"], c("A", "B"))
+    expect_equal(pkd[[3L]][, "pk_ann"], c("D", "E", "F"))
+
+    ## spectraData
+    spd <- spectraData(sf)
+    expect_true(!any(colnames(spd) %in% peaksVariables(sf)))
+
+    spd <- spectraData(sf, columns = c("rtime", "mz"))
+    expect_equal(colnames(spd), c("rtime", "mz"))
+    expect_equal(spectraData(sf, columns = "mz")$mz, sf$mz)
+    spd <- spectraData(sf, columns = "intensity")
+    expect_equal(colnames(spd), "intensity")
+    expect_equal(spd$intensity, sf$intensity)
+    spd <- spectraData(sf, columns = "pk_ann")
+    expect_equal(
+        spd$pk_ann, list(c(NA_character_), c("A", "B"), c("D", "E", "F")))
+    spd <- spectraData(sf, columns = c("intensity", "pk_ann"))
+    expect_equal(colnames(spd), c("intensity", "pk_ann"))
+    expect_equal(
+        spd$pk_ann, list(c(NA_character_), c("A", "B"), c("D", "E", "F")))
+
+    ## check applyProcessing
+    res <- applyProcessing(sf)
+    expect_equal(res$rtime, sf$rtime)
+    expect_equal(res$mz, sf$mz)
+    expect_equal(res@backend$mz, sf$mz)
+    expect_equal(res$intensity, sf$intensity)
+    expect_equal(res@backend$intensity, sf$intensity)
+    expect_equal(res$pk_ann, sf$pk_ann)
+    expect_equal(res@backend$pk_ann, sf$pk_ann)
+    expect_true(is.matrix(res@backend@peaksData[[1L]]))
+    expect_equal(
+        res$pk_ann, list(c(NA_character_), c("A", "B"), c("D", "E", "F")))
+
+    ## TODO: check replacement of peaks variables
+    ## spectraData<-
+    ## $<-
 })

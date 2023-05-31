@@ -379,8 +379,8 @@ test_that("peaksData<-,MsBackendMemory works", {
     expect_equal(peaksData(be), lst)
 
     lst2 <- list(cbind(intensity = 10.1, mz = 1),
-                cbind(intensity = c(12.1, 12.4, 12.4), mz = 1:3),
-                cbind(intensity = 100, mz = 3.1))
+                 cbind(intensity = c(12.1, 12.4, 12.4), mz = 1:3),
+                 cbind(intensity = 100, mz = 3.1))
     peaksData(be) <- lst2
     expect_equal(peaksData(be), lst)
 
