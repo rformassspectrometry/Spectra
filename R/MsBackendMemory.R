@@ -38,6 +38,11 @@ setValidity("MsBackendMemory", function(object) {
     if (length(object@peaksDataFrame) && length(object@peaksData) !=
         length(object@peaksDataFrame))
         msg <- c(msg, "peaksData and peaksDataFrame have different length")
+    if (length(object@peaksData) &&
+        length(colnames(object@peaksData[[1L]]) %in%
+               c("mz", "intensity")) == 1L)
+        msg <- c(msg, paste0("If provided, both \"mz\" and \"intensity\" peak ",
+                             "variables need to be defined."))
     if (is.null(msg)) TRUE
     else msg
 })

@@ -20,6 +20,10 @@ test_that("backendInitialize,MsBackendMemory works", {
     expect_error(backendInitialize(be, data = 4), "has to be a")
 
     df <- test_df
+    df$mz <- NULL
+    expect_error(backendInitialize(be, df, peaksVariables = "intensity"),
+                 "both")
+
     be <- backendInitialize(be, df)
     expect_true(validObject(be))
     expect_equal(be@spectraData[, c("msLevel", "scanIndex")],
@@ -873,13 +877,14 @@ test_that("selectSpectraVariables,MsBackendMemory works", {
     expect_true(all(vapply(res@peaksData, is.matrix, logical(1))))
     expect_true(all(vapply(res@peaksData, nrow, integer(1)) == 0))
 
-    res <- selectSpectraVariables(be, c("mz", "dataStorage"))
+    expect_error(selectSpectraVariables(be, c("mz", "dataStorage")), "both")
+    res <- selectSpectraVariables(be, c("mz", "intensity", "dataStorage"))
     expect_equal(colnames(res@spectraData), c("dataStorage"))
-    expect_equal(peaksVariables(res), "mz")
+    expect_equal(peaksVariables(res), c("mz", "intensity"))
     expect_equal(mz(res), mz(be))
+    expect_s4_class(mz(res), "NumericList")
+    expect_equal(intensity(res), intensity(be))
     expect_s4_class(intensity(res), "NumericList")
-    expect_equal(length(intensity(res)), length(mz(res)))
-    expect_true(all(lengths(intensity(res)) == 0))
 
     tmp <- test_df
     tmp$peak_anno <- list(c("a", "", "b"), c("a", "b"), c("a", "b", "c", "d"))
