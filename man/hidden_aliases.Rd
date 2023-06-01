@@ -61,6 +61,7 @@
 \alias{precursorIntensity,MsBackendDataFrame-method}
 \alias{precursorMz,MsBackendDataFrame-method}
 \alias{peaksData<-,MsBackendDataFrame-method}
+\alias{peaksVariables,MsBackendDataFrame-method}
 \alias{rtime,MsBackendDataFrame-method}
 \alias{rtime<-,MsBackendDataFrame-method}
 \alias{scanIndex,MsBackendDataFrame-method}
@@ -222,7 +223,7 @@ spectrapply(object, ...)
 
 \S4method{acquisitionNum}{MsBackendDataFrame}(object)
 
-\S4method{peaksData}{MsBackendDataFrame}(object, columns = peaksVariables(object))
+\S4method{peaksData}{MsBackendDataFrame}(object, columns = c("mz", "intensity"))
 
 \S4method{centroided}{MsBackendDataFrame}(object)
 
@@ -283,6 +284,8 @@ spectrapply(object, ...)
 \S4method{precursorMz}{MsBackendDataFrame}(object)
 
 \S4method{peaksData}{MsBackendDataFrame}(object) <- value
+
+\S4method{peaksVariables}{MsBackendDataFrame}(object)
 
 \S4method{rtime}{MsBackendDataFrame}(object)
 

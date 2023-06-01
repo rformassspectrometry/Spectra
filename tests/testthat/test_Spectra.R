@@ -470,7 +470,7 @@ test_that("peaksData,Spectra works", {
     ## MsBackendDataFrame
     sps <- Spectra(be)
     expect_error(peaksData(sps, columns = c("mz", "intensity", "other")),
-                 "only support")
+                 "not available")
     res <- peaksData(sps, columns = c("intensity", "mz", "intensity"))
     expect_equal(res[[1L]][, 1L], res[[1L]][, 3L])
     expect_equal(res[[1L]][, 1L], intensity(sps)[[1L]])
@@ -1744,4 +1744,5 @@ test_that("peaks variables and filtering properly works", {
     expect_equal(res$rtime, 1:3)
     expect_error(res$pk_ann <- list(c(NA_character_), c("A", "D"),
                                     c("E", "F", "G")), "non-empty processing")
+
 })

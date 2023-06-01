@@ -142,8 +142,14 @@ test_that(".combine_backend_data_frame works", {
     df2$mz <- list(c(1.1, 1.2), c(1.1, 1.2))
     df2$intensity <- list(c(12.4, 3), c(123.4, 1))
     be2 <- backendInitialize(MsBackendDataFrame(), df2)
-    res <- Spectra:::.combine_backend_data_frame(list(be, be2, be3))
+    res <- .combine_backend_data_frame(list(be, be2, be3))
     expect_equal(lengths(mz(res)), c(0, 0, 0, 2, 2, 0, 0))
+
+    df2$pk_ann <- list(c("a", "b"), c("c", "d"))
+    be4 <- backendInitialize(MsBackendDataFrame(), df2,
+                             peaksVariables = c("mz", "intensity", "pk_ann"))
+    expect_error(.combine_backend_data_frame(list(be, be2, be4)),
+                 "different peaks variables")
 
     ## With different dataStorage
     be$dataStorage <- c("a", "a", "a")
@@ -166,4 +172,29 @@ test_that(".subset_backend_data_frame works", {
     res <- .subset_backend_data_frame(be, 13)
     expect_true(is(res, "MsBackendDataFrame"))
     expect_equal(res$rtime, be$rtime[13])
+})
+
+test_that(".peaks_variables works", {
+    b <- MsBackendDataFrame()
+    expect_equal(.peaks_variables(b), c("mz", "intensity"))
+    b@peaksVariables <- c("a", "b")
+    expect_equal(.peaks_variables(b), c("a", "b"))
+})
+
+test_that(".valid_peaks_variable_columns works", {
+    tmp <- data.frame(rtime = 1:3)
+    tmp$mz <- list(1:3, 1:2, 1:4)
+    tmp$intensity <- list(1:3, 1:2, 1:2)
+    expect_match(.valid_peaks_variable_columns(tmp, c("mz", "intensity")),
+                 "differ")
+    tmp$intensity <- NULL
+    expect_equal(.valid_peaks_variable_columns(tmp, c("mz", "intensity")), NULL)
+    tmp$intensity <- list(1:3, 1:2, 1:4)
+    tmp$other <- list(1:3, 1:2, 1:4)
+    expect_equal(.valid_peaks_variable_columns(
+        tmp, c("mz", "intensity", "other")), NULL)
+    tmp$other <- list("a", "b", "c")
+    expect_match(.valid_peaks_variable_columns(
+        tmp, c("mz", "intensity", "other")), "differ")
+
 })

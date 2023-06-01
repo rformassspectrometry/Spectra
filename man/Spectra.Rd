@@ -1675,6 +1675,35 @@ res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
 
 mz(res)
 mz(data)
+
+## ---- PEAKS VARIABLES AND DATA ----
+
+## Some `MsBackend` classes provide support for arbitrary peaks variables
+## (in addition to the mandatory `"mz"` and `"intensity"` values. Below
+## we create a simple data frame with an additional peak variable `"pk_ann"`
+## and create a `Spectra` with a `MsBackendMemory` for that data.
+## Importantly the number of values (per spectrum) need to be the same
+## for all peak variables.
+
+tmp <- data.frame(msLevel = c(2L, 2L), rtime = c(123.2, 123.5))
+tmp$mz <- list(c(103.1, 110.4, 303.1), c(343.2, 453.1))
+tmp$intensity <- list(c(130.1, 543.1, 40), c(0.9, 0.45))
+tmp$pk_ann <- list(c(NA_character_, "A", "P"), c("B", "P"))
+
+## Create the Spectra. With parameter `peaksVariables` we can define
+## the columns in `tmp` that contain peaks variables.
+sps <- Spectra(tmp, source = MsBackendMemory(),
+    peaksVariables = c("mz", "intensity", "pk_ann"))
+peaksVariables(sps)
+
+## Extract just the m/z and intensity values
+peaksData(sps)[[1L]]
+
+## Extract the full peaks data
+peaksData(sps, columns = peaksVariables(sps))[[1L]]
+
+## Access just the pk_ann variable
+sps$pk_ann
 }
 \author{
 Nir Shahaf, Johannes Rainer

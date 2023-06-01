@@ -17,6 +17,7 @@
   values for peaks variables should be replaced.
 - `$<-,Spectra` throws an error if processing queue is not empty and a peaks
   variable is going to be replaced.
+- Add full support for additional peaks variables to `MsBackendDataFrame`.
 
 ## Changes in 1.11.2
 

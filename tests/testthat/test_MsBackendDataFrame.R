@@ -8,6 +8,7 @@ test_that("backendInitialize,MsBackendDataFrame works", {
     be <- backendInitialize(be)
     expect_true(validObject(be))
     be <- backendInitialize(be, data = DataFrame(msLevel = 2L))
+    expect_equal(be@peaksVariables, character())
     expect_true(validObject(be))
     expect_equal(dataStorage(be), "<memory>")
 
@@ -21,6 +22,7 @@ test_that("backendInitialize,MsBackendDataFrame works", {
     expect_true(validObject(be))
     expect_true(is(be@spectraData$mz, "NumericList"))
     expect_true(is(be@spectraData$intensity, "NumericList"))
+    expect_equal(be@peaksVariables, c("mz", "intensity"))
 
     df$mz <- SimpleList(df$mz)
     df$intensity <- SimpleList(df$intensity)
@@ -37,6 +39,23 @@ test_that("backendInitialize,MsBackendDataFrame works", {
     expect_true(validObject(be))
     expect_true(is(be@spectraData$mz, "NumericList"))
     expect_true(is(be@spectraData$intensity, "NumericList"))
+
+    ## With peaksVariables.
+    df$mz <- NULL
+    expect_error(backendInitialize(be, df), "Both \"mz\"")
+    df$mz <- test_df$mz
+    df$pk_ann <- list(c("a", "b", "c"), c("e", "f"), c("g", "h"))
+    expect_error(backendInitialize(
+        be, df, peaksVariables = c("mz", "intensity", "pk_ann")), "differ")
+    df$pk_ann <- list(c("a", "b", "c"), c("e", "f"), c("g", "h", "i", "j"))
+    be <- backendInitialize(be, df, peaksVariables = c("mz", "intensity",
+                                                       "pk_ann"))
+    expect_equal(be@peaksVariables, c("mz", "intensity", "pk_ann"))
+    expect_equal(peaksVariables(be), c("mz", "intensity", "pk_ann"))
+})
+
+test_that("peaksVariables,MsBackendDataFrame works", {
+    expect_equal(peaksVariables(MsBackendDataFrame()), c("mz", "intensity"))
 })
 
 test_that("backendMerge,MsBackendDataFrame works", {
@@ -300,12 +319,30 @@ test_that("peaksData,MsBackendDataFrame works", {
                                      cbind(mz = 2.1, intensity = 4)))
 
     ## columns parameter
-    expect_error(peaksData(be, columns = c("not there")), "does only support")
+    ## expect_error(peaksData(be, columns = c("not there")), "does only support")
     res <- peaksData(be, columns = c("intensity", "mz", "mz"))
     expect_equal(colnames(res[[1L]]), c("intensity", "mz", "mz"))
     expect_equal(res[[1L]][, 1L], df$intensity[[1L]])
     expect_equal(res[[1L]][, 2L], df$mz[[1L]])
     expect_equal(res[[1L]][, 3L], df$mz[[1L]])
+
+    df$pk_ann <- list(c("a", "b", "c"), "d")
+    df$other <- list(1:3, 4)
+    be <- backendInitialize(
+        be, data = df, peaksVariables = c("mz", "intensity", "pk_ann", "other"))
+    expect_equal(peaksVariables(be), c("mz", "intensity", "pk_ann", "other"))
+    res <- peaksData(be, columns = c("mz", "intensity", "pk_ann"))
+    expect_equal(colnames(res[[1L]]), c("mz", "intensity", "pk_ann"))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]][, "pk_ann"], c("a", "b", "c"))
+
+    res <- peaksData(be, columns = peaksVariables(be))
+    expect_equal(colnames(res[[1L]]), c("mz", "intensity", "pk_ann", "other"))
+    expect_true(is.data.frame(res[[1L]]))
+
+    res <- peaksData(be)
+    expect_equal(colnames(res[[1L]]), c("mz", "intensity"))
+    expect_true(is.matrix(res[[1L]]))
 })
 
 test_that("peaksData<-,MsBackendDataFrame works", {
@@ -317,7 +354,22 @@ test_that("peaksData<-,MsBackendDataFrame works", {
 
     expect_error(peaksData(be) <- 3, "has to be a list")
     expect_error(peaksData(be) <- list(3, 2), "match length")
-    expect_error(peaksData(be) <- list(3, 2, 4), "dimensions")
+    expect_error(peaksData(be) <- list(3, 2, 4), "expected")
+
+    df <- test_df
+    df$pk_ann <- list(c("a", "b", "c"), c("d", "e"), c("f", "g", "h", "i"))
+    be <- backendInitialize(MsBackendDataFrame(), df,
+                            peaksVariables = c("mz", "intensity", "pk_ann"))
+    lst <- peaksData(be, peaksVariables(be))
+    lst[[3L]]$pk_ann <- toupper(lst[[3L]]$pk_ann)
+    peaksData(be) <- lst
+    expect_equal(peaksVariables(be), c("mz", "intensity", "pk_ann"))
+    expect_equal(be@spectraData$pk_ann[[3L]], c("F", "G", "H", "I"))
+    ## remove peak variables
+    lst <- peaksData(be)
+    peaksData(be) <- lst
+    expect_equal(peaksVariables(be), c("mz", "intensity"))
+    expect_false(any(colnames(be@spectraData) == "pk_ann"))
 })
 
 test_that("lengths,MsBackendDataFrame works", {
@@ -601,6 +653,14 @@ test_that("$,$<-,MsBackendDataFrame works", {
     be <- backendInitialize(MsBackendDataFrame(), df)
     be$intensity <- list(c(5, 5, 5), 1:4)
     expect_equal(be$intensity, NumericList(c(5, 5, 5), 1:4, compress = FALSE))
+
+    df$pk_ann <- list(c("a", "b", "c"), c("d", "e", "f", "g"))
+    be <- backendInitialize(MsBackendDataFrame(), df,
+                            peaksVariables = c("mz", "intensity", "pk_ann"))
+    expect_equal(peaksVariables(be), c("mz", "intensity", "pk_ann"))
+    expect_error(be$pk_ann <- list(c("A", "B"), c("D")), "differ")
+    be$pk_ann <- list(c("A", "B", "C"), c("D", "E", "F", "G"))
+    expect_equal(be$pk_ann, list(c("A", "B", "C"), c("D", "E", "F", "G")))
 })
 
 test_that("filterAcquisitionNum,MsBackendDataFrame works", {

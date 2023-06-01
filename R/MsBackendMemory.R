@@ -373,30 +373,21 @@ setMethod(
                 return(lapply(object@peaksDataFrame,
                               function(z) z[, pdcol, drop = FALSE]))
             ## request columns from both
-            mapply(object@peaksData, object@peaksDataFrame, FUN = function(a, b) {
-                data.frame(a[, pcol, drop = FALSE],
-                           b[, pdcol, drop = FALSE])[, columns]
-            }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+            mapply(object@peaksData, object@peaksDataFrame,
+                   FUN = function(a, b) {
+                       data.frame(a[, pcol, drop = FALSE],
+                                  b[, pdcol, drop = FALSE],
+                                  check.names = FALSE)[, columns]
+                   }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
         } else list()
     })
 
 #' @rdname hidden_aliases
 setReplaceMethod("peaksData", "MsBackendMemory", function(object, value) {
     if (length(object)) {
-        if (!(is.list(value) || inherits(value, "SimpleList")))
-            stop("'value' has to be a list-like object")
-        if (length(value) != length(object))
-            stop("Length of 'value' has to match length of 'object'")
-        if (!(is.matrix(value[[1L]]) | is.data.frame(value[[1L]])))
-            stop("'value' is expected to be a 'list' of 'matrix' ",
-                 "or 'data.frame'")
+        .check_peaks_data_value(value, length(object))
         cn <- colnames(value[[1L]])
         lcn <- length(cn)
-        lapply(value, function(z) {
-            cur_cn <- colnames(z)
-            if (lcn != length(cur_cn) || !all(cn == cur_cn))
-                stop("provided matrices don't have the same column names")
-        })
         ## columns mz and intensity go into peaksData.
         if (lcn == 2 && all(cn == c("mz", "intensity")))
             object@peaksData <- lapply(value, base::as.matrix)

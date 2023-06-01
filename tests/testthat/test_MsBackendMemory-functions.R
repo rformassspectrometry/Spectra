@@ -154,3 +154,14 @@ test_that(".df_combine works", {
     be3 <- backendInitialize(be3, test_df)
     expect_error(.df_combine(list(be, be3)), "same type")
 })
+
+test_that(".check_peaks_data_value works", {
+    expect_error(.check_peaks_data_value("a", 3), "list-like")
+    lst <- list("a")
+    expect_error(.check_peaks_data_value(lst, 3), "match length")
+    expect_error(.check_peaks_data_value(lst, 1), "matrix")
+    lst <- list(data.frame(a = 3, b = 4), data.frame(a = 4, d = 4))
+    expect_error(.check_peaks_data_value(lst, 2), "same column")
+    lst <- list(data.frame(a = 3, b = 4), data.frame(a = 4))
+    expect_error(.check_peaks_data_value(lst, 2), "same column")
+})

@@ -14,10 +14,12 @@ NULL
 
 setClass("MsBackendDataFrame",
          contains = "MsBackend",
-         slots = c(spectraData = "DataFrame"),
+         slots = c(spectraData = "DataFrame",
+                   peaksVariables = "character"),
          prototype = prototype(spectraData = DataFrame(),
+                               peaksVariables = c("mz", "intensity"),
                                readonly = FALSE,
-                               version = "0.1"))
+                               version = "0.2"))
 
 setValidity("MsBackendDataFrame", function(object) {
     msg <- .valid_spectra_data_required_columns(object@spectraData)
@@ -27,7 +29,8 @@ setValidity("MsBackendDataFrame", function(object) {
         .valid_column_datatype(object@spectraData, .SPECTRA_DATA_COLUMNS),
         .valid_intensity_column(object@spectraData),
         .valid_mz_column(object@spectraData),
-        .valid_intensity_mz_columns(object@spectraData))
+        .valid_peaks_variable_columns(object@spectraData,
+                                      .peaks_variables(object)))
     if (is.null(msg)) TRUE
     else msg
 })
@@ -52,12 +55,16 @@ setMethod("show", "MsBackendDataFrame", function(object) {
 #'
 #' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackendDataFrame",
-          function(object, data, ...) {
+          function(object, data, peaksVariables = c("mz", "intensity"), ...) {
               if (missing(data)) data <- DataFrame()
               if (is.data.frame(data))
                   data <- DataFrame(data)
               if (!is(data, "DataFrame"))
                   stop("'data' has to be a 'DataFrame'")
+              peaksVariables <- intersect(peaksVariables, colnames(data))
+              if (sum(c("mz", "intensity") %in% peaksVariables) == 1L)
+                  stop("Both \"mz\" and \"intensity\" peak variables ",
+                       "need to be provided.")
               if (nrow(data)) {
                   data$dataStorage <- "<memory>"
                   if (nrow(data) && !is(data$mz, "NumericList"))
@@ -67,7 +74,8 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
                                                     compress = FALSE)
               }
               object@spectraData <- data
-              validObject(object)
+              object@peaksVariables <- peaksVariables
+              validObject(object)       # this checks also for peaks variables.
               object
           })
 
@@ -91,14 +99,21 @@ setMethod("acquisitionNum", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setMethod("peaksData", "MsBackendDataFrame",
-          function(object, columns = peaksVariables(object)) {
-              if (!all(columns %in% c("mz", "intensity")))
-                  stop("'peaksData' for 'MsBackendDataFrame' does only support",
-                       " columns \"mz\" and \"intensity\"", call. = FALSE)
-              lst <- lapply(columns, function(z) do.call(z, list(object)))
+          function(object, columns = c("mz", "intensity")) {
+              na <- columns[!columns %in% peaksVariables(object)]
+              if (length(na))
+                  stop("Peaks variable \"", na, "\" not available.")
+              lst <- lapply(columns, function(z) {
+                  if (z %in% c("mz", "intensity"))
+                      do.call(z, list(object))
+                  else object@spectraData[, z]
+              })
               names(lst) <- columns
-              tmp <- do.call(mapply, c(list(FUN = cbind, SIMPLIFY = FALSE,
-                                            USE.NAMES = FALSE), lst))
+              if (all(columns %in% c("mz", "intensity")))
+                  fun <- cbind
+              else fun <- cbind.data.frame
+              do.call(mapply, c(list(FUN = fun, SIMPLIFY = FALSE,
+                                     USE.NAMES = FALSE), lst))
           })
 
 #' @rdname hidden_aliases
@@ -337,20 +352,28 @@ setMethod("precursorMz", "MsBackendDataFrame", function(object) {
 
 #' @rdname hidden_aliases
 setReplaceMethod("peaksData", "MsBackendDataFrame", function(object, value) {
-    if (!(is.list(value) || inherits(value, "SimpleList")))
-        stop("'value' has to be a list-like object")
-    if (length(value) != length(object))
-        stop("Length of 'value' has to match length of 'object'")
-    vals <- lapply(value, "[", , 1L)
-    if (!is(vals, "NumericList"))
-        vals <- NumericList(vals, compress = FALSE)
-    object@spectraData$mz <- vals
-    vals <- lapply(value, "[", , 2L)
-    if (!is(vals, "NumericList"))
-        vals <- NumericList(vals, compress = FALSE)
-    object@spectraData$intensity <- vals
-    validObject(object)
+    if (length(object)) {
+        .check_peaks_data_value(value, length(object))
+        cns <- colnames(value[[1L]])
+        for (cn in cns) {
+            vals <- lapply(value, "[", , cn)
+            if (cn %in% c("mz", "intensity"))
+                vals <- NumericList(vals, compress = FALSE)
+            object@spectraData[[cn]] <- vals
+        }
+        ## remove eventual old peak variables
+        rem <- setdiff(peaksVariables(object), cns)
+        for (r in rem)
+            object@spectraData[[r]] <- NULL
+        object@peaksVariables <- cns
+        validObject(object)
+    }
     object
+})
+
+#' @rdname hidden_aliases
+setMethod("peaksVariables", "MsBackendDataFrame", function(object) {
+    union(c("mz", "intensity"), .peaks_variables(object))
 })
 
 #' @rdname hidden_aliases
@@ -388,6 +411,8 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
               msg <- .valid_spectra_data_required_columns(object@spectraData)
               if (length(msg))
                   stop(msg)
+              object@peaksVariables <- intersect(object@peaksVariables,
+                                                 colnames(object@spectraData))
               validObject(object)
               object
 })
