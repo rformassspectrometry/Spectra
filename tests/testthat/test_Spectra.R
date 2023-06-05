@@ -1715,13 +1715,20 @@ with_parameters_test_that("peaks variables and filtering properly works", {
     ## check applyProcessing
     res <- applyProcessing(sf)
     expect_equal(res$rtime, sf$rtime)
-    expect_equal(res$mz, sf$mz)
-    expect_equal(res@backend$mz, sf$mz)
-    expect_equal(res$intensity, sf$intensity)
-    expect_equal(res@backend$intensity, sf$intensity)
+    a <- NumericList(lapply(res$mz, unname), compress = FALSE)
+    b <- NumericList(lapply(sf$mz, unname), compress = FALSE)
+    expect_equal(a, b)
+    a <- NumericList(lapply(res@backend$mz, unname), compress = FALSE)
+    expect_equal(a, b)
+    a <- NumericList(lapply(res$intensity, unname), compress = FALSE)
+    b <- NumericList(lapply(sf$intensity, unname), compress = FALSE)
+    expect_equal(a, b)
+    a <- NumericList(lapply(res@backend$intensity, unname), compress = FALSE)
+    expect_equal(a, b)
     expect_equal(res$pk_ann, sf$pk_ann)
     expect_equal(res@backend$pk_ann, sf$pk_ann)
-    expect_true(is.matrix(res@backend@peaksData[[1L]]))
+    if (inherits(bcknd, "MsBackendMemory"))
+        expect_true(is.matrix(res@backend@peaksData[[1L]]))
     expect_equal(
         res$pk_ann, list(c(NA_character_), c("A", "B"), c("D", "E", "F")))
 
@@ -1734,8 +1741,12 @@ with_parameters_test_that("peaks variables and filtering properly works", {
     spd <- spectraData(sf)              # without peaks variables
     spectraData(res) <- spd
     expect_equal(rtime(res), rtime(sf))
-    expect_equal(res$mz, sf$mz)
-    expect_equal(res$intensity, sf$intensity)
+    a <- NumericList(lapply(res$mz, unname), compress = FALSE)
+    b <- NumericList(lapply(sf$mz, unname), compress = FALSE)
+    expect_equal(a, b)
+    a <- NumericList(lapply(res$intensity, unname), compress = FALSE)
+    b <- NumericList(lapply(sf$intensity, unname), compress = FALSE)
+    expect_equal(a, b)
     expect_equal(res$pk_ann, sf$pk_ann)
     expect_true(length(res@processingQueue) == 0)
 
@@ -1746,5 +1757,6 @@ with_parameters_test_that("peaks variables and filtering properly works", {
     expect_error(res$pk_ann <- list(c(NA_character_), c("A", "D"),
                                     c("E", "F", "G")), "non-empty processing")
 }, cases(
-       MsBackendMemory = list(bcknd = MsBackendMemory())
+       MsBackendMemory = list(bcknd = MsBackendMemory()),
+       MsBackendDataFrame = list(bcknd = MsBackendDataFrame())
    ))
