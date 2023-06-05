@@ -1646,7 +1646,7 @@ test_that("uniqueMsLevels,Spectra works", {
     expect_equal(res, uniqueMsLevels(Spectra(sciex_mzr)))
 })
 
-test_that("peaks variables and filtering properly works", {
+with_parameters_test_that("peaks variables and filtering properly works", {
     test_df <- DataFrame(msLevel = c(1L, 2L, 2L), scanIndex = 4:6)
     test_df$mz <- list(c(1.1, 1.3, 1.5),
                        c(4.1, 5.1),
@@ -1657,7 +1657,8 @@ test_that("peaks variables and filtering properly works", {
     test_df$pk_ann <- list(c(NA, NA, "C12H2"),
                            c("A", "B"),
                            c("D", "E", "F", "G"))
-    s <- Spectra(test_df, peaksVariables = c("mz", "intensity", "pk_ann"))
+    s <- Spectra(test_df, source = bcknd,
+                 peaksVariables = c("mz", "intensity", "pk_ann"))
     expect_equal(peaksVariables(s), c("mz", "intensity", "pk_ann"))
     expect_true(!any(spectraVariables(s) %in% peaksVariables(s)))
 
@@ -1744,5 +1745,6 @@ test_that("peaks variables and filtering properly works", {
     expect_equal(res$rtime, 1:3)
     expect_error(res$pk_ann <- list(c(NA_character_), c("A", "D"),
                                     c("E", "F", "G")), "non-empty processing")
-
-})
+}, cases(
+       MsBackendMemory = list(bcknd = MsBackendMemory())
+   ))
