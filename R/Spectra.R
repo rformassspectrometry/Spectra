@@ -502,8 +502,8 @@ NULL
 #' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
-#'   with `FUN`, which defaults to [combinePeaks()]. Please refer to the
-#'   [combinePeaks()] help page for details and options of the actual
+#'   with `FUN`, which defaults to [combinePeaksData()]. Please refer to the
+#'   [combinePeaksData()] help page for details and options of the actual
 #'   combination of peaks across the sets of spectra and to the package vignette
 #'   for examples and alternative ways to aggregate spectra.
 #'   The sets of spectra can be specified with parameter `f`.
@@ -2476,4 +2476,19 @@ setMethod("uniqueMsLevels", "Spectra", function(object, ...) {
 #' @rdname Spectra
 setMethod("backendBpparam", "Spectra", function(object, BPPARAM = bpparam()) {
     backendBpparam(object@backend, BPPARAM)
+})
+
+#' @rdname hidden_aliases
+setMethod("combinePeaks", "list", function(object, ...) {
+    .Deprecated("combinePeaksData", old = "combinePeaks",
+                msg = paste0("'combinePeaks' for lists of peak matrices is ",
+                             "deprecated; please use 'combinePeaksData' ",
+                             "instead."))
+    combinePeaksData(object, ...)
+})
+
+#' @rdname Spectra
+setMethod("combinePeaks", "Spectra", function(object, ...) {
+    x@processing <- .logging(x@processing, "Combining peaks within each ",
+                             "spectrum")
 })

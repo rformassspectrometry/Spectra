@@ -766,15 +766,16 @@ The `Spectra` package provides the `combineSpectra` function that allows to
 *aggregate* multiple spectra into a single one. The main parameters of this
 function are `f`, which defines the grouping of the spectra, and `FUN` which
 allows to define the function that performs the actual aggregation. The default
-aggregation function is `combinePeaks` (see `?combinePeaks` for details) that
-combines multiple spectra into a single spectrum with all peaks from all input
-spectra (with additional paramter `peaks = "union"`), or peaks that are present
-in a certain proportion of input spectra (with parameter `peaks = "intersect"`;
-parameter `minProp` allows to define the minimum required proportion of spectra
-in which a peak needs to be present. Below we use this function to combine the
-spectra for 1-methylhistidine and caffeine into a single spectrum for each
-compound. We use the spectra variable `$name`, that contains the names of the
-compounds, to define which spectra should be grouped together.
+aggregation function is `combinePeaksData` (see `?combinePeaksData` for
+details) that combines multiple spectra into a single spectrum with all peaks
+from all input spectra (with additional paramter `peaks = "union"`), or peaks
+that are present in a certain proportion of input spectra (with parameter
+`peaks = "intersect"`; parameter `minProp` allows to define the minimum
+required proportion of spectra in which a peak needs to be present. Below we
+use this function to combine the spectra for 1-methylhistidine and caffeine
+into a single spectrum for each compound. We use the spectra variable `$name`,
+that contains the names of the compounds, to define which spectra should be
+grouped together.
 
 ```{r}
 sps_agg <- combineSpectra(sps, f = sps$name)
@@ -798,8 +799,8 @@ plotSpectra(sps_agg, main = sps_agg$name)
 This results thus in a single peak for 1-methylhistidine and none for caffeine -
 why? The reason for that is that the difference of the peaks' m/z values is
 larger than the default tolerance used for the peak grouping (the defaults for
-`combinePeaks` is `tolerance = 0` and `ppm = 0`). We could however already see
-in the previous section that the reported peaks' m/z values have a larger
+`combinePeaksData` is `tolerance = 0` and `ppm = 0`). We could however already
+see in the previous section that the reported peaks' m/z values have a larger
 measurement error (most likely because the fragment spectra were measured on
 different instruments with different precision). Thus, we next increase the
 `tolerance` and `ppm` parameters to group also peaks with a larger difference in
@@ -814,9 +815,9 @@ plotSpectra(sps_agg, main = sps_agg$name)
 Whether in a real analysis we would be OK with such a large tolerance is however
 questionable. Note: which m/z and intensity is reported for the aggregated
 spectra can be defined with the parameters `intensityFun` and `mzFun` of
-`combinePeaks` (see `?combinePeaks` for more information).
+`combinePeaksData` (see `?combinePeaksData` for more information).
 
-While the `combinePeaks` function is indeed helpful to combine peaks from
+While the `combinePeaksData` function is indeed helpful to combine peaks from
 different spectra, the `combineSpectra` function would in addition also allow us
 to provide our own, custom, peak aggregation function. As a simple example,
 instead of combining the spectra, we would like to select one of the input

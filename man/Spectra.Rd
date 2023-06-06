@@ -99,6 +99,7 @@
 \alias{addProcessing,Spectra-method}
 \alias{coreSpectraVariables}
 \alias{backendBpparam,Spectra-method}
+\alias{combinePeaks,list-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
@@ -109,7 +110,7 @@ combineSpectra(
   x,
   f = x$dataStorage,
   p = x$dataStorage,
-  FUN = combinePeaks,
+  FUN = combinePeaksData,
   ...,
   BPPARAM = bpparam()
 )
@@ -431,6 +432,8 @@ coreSpectraVariables()
 \S4method{uniqueMsLevels}{Spectra}(object, ...)
 
 \S4method{backendBpparam}{Spectra}(object, BPPARAM = bpparam())
+
+\S4method{combinePeaks}{list}(object, ...)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -1118,8 +1121,8 @@ function (see description of \code{reset} above).
 \item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum
 are used and the peak matrices are combined using the function specified
-with \code{FUN}, which defaults to \code{\link[=combinePeaks]{combinePeaks()}}. Please refer to the
-\code{\link[=combinePeaks]{combinePeaks()}} help page for details and options of the actual
+with \code{FUN}, which defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}. Please refer to the
+\code{\link[=combinePeaksData]{combinePeaksData()}} help page for details and options of the actual
 combination of peaks across the sets of spectra and to the package vignette
 for examples and alternative ways to aggregate spectra.
 The sets of spectra can be specified with parameter \code{f}.
@@ -1173,7 +1176,9 @@ the default parameters for isotope prediction/detection have been
 determined using data from the Human Metabolome Database (HMDB) and
 isotopes for elements other than CHNOPS might not be detected. See
 parameter \code{substDefinition} in the documentation of \code{\link[=isotopologues]{isotopologues()}} for
-more information.
+more information. The approach and code to define the parameters for
+isotope prediction is described
+\href{https://github.com/EuracBiomedicalResearch/isotopologues}{here}.
 \item \code{estimatePrecursorIntensity}: define the precursor intensities for MS2
 spectra using the intensity of the matching MS1 peak from the
 closest MS1 spectrum (i.e. the last MS1 spectrum measured before the

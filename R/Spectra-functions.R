@@ -434,10 +434,11 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' res$mz
 #' res$intensity
 #'
-#' res <- .combine_spectra(sps, FUN = combinePeaks, tolerance = 0.1)
+#' res <- .combine_spectra(sps, FUN = combinePeaksData, tolerance = 0.1)
 #' res$mz
 #' res$intensity
-.combine_spectra <- function(x, f = x$dataStorage, FUN = combinePeaks, ...) {
+.combine_spectra <- function(x, f = x$dataStorage,
+                             FUN = combinePeaksData, ...) {
     if (!is.factor(f))
         f <- factor(f)
     else f <- droplevels(f)
@@ -495,7 +496,7 @@ concatenateSpectra <- function(x, ...) {
 #'
 #' @rdname Spectra
 combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
-                           FUN = combinePeaks, ..., BPPARAM = bpparam()) {
+                           FUN = combinePeaksData, ..., BPPARAM = bpparam()) {
     if (!is.factor(f))
         f <- factor(f, levels = unique(f))
     if (!is.factor(p))

@@ -12,6 +12,8 @@ setGeneric("backendMerge", def = function(object, ...)
     valueClass = "MsBackend")
 #' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
+setGeneric("combinePeaks", function(object, ...)
+           standardGeneric("combinePeaks"))
 #' @rdname hidden_aliases
 setGeneric("containsMz", function(object, ...)
     standardGeneric("containsMz"))
