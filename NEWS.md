@@ -1,5 +1,10 @@
 # Spectra 1.11
 
+## Changes in xxx
+
+- Add `scalePeaks` function (see [issue
+  #291](https://github.com/rformassspectrometry/Spectra/issues/291)).
+
 ## Changes in 1.11.2
 
 - Add `deisotopeSpectra` and `reduceSpectra` functions.

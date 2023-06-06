@@ -733,3 +733,26 @@ test_that("reduceSpectra works", {
     expect_true(length(res@processingQueue) > length(sps_dia@processingQueue))
     expect_true(nrow(peaksData(res)[[1L]]) < nrow(peaksData(sps_dia[14])[[1L]]))
 })
+
+test_that("scalePeaks works", {
+    tmp <- data.frame(msLevel = c(1L, 2L, 2L, 3L), rtime = 1:4)
+    tmp$mz <- list(1:3, 1:2, 1:4, 1:3)
+    tmp$intensity <- list(c(12, 32.2, 12.1), c(34, 35.2),
+                          c(1, 2, 3, 4), c(112, 341, 532))
+    sps <- Spectra(tmp)
+    res <- scalePeaks(sps)
+    expect_true(length(res@processingQueue) > length(sps@processingQueue))
+    expect_true(length(res@processing) > length(sps@processing))
+
+    expect_true(all(sum(intensity(res)) == 1))
+    expect_true(all(unlist(intensity(res) < 1)))
+
+    res <- scalePeaks(sps, by = max)
+    expect_true(all(max(intensity(res)) == 1))
+
+    res <- scalePeaks(sps, by = sum, msLevel = 2)
+    expect_equal(res$intensity[[1L]], sps$intensity[[1L]])
+    expect_true(sum(intensity(res)[[2L]]) == 1)
+    expect_true(sum(intensity(res)[[3L]]) == 1)
+    expect_equal(res$intensity[[4L]], sps$intensity[[4L]])
+})

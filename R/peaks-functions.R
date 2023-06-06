@@ -562,3 +562,12 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
         x[idx, , drop = FALSE]
     }
 }
+
+.peaks_scale_intensities <- function(x, by = sum, spectrumMsLevel,
+                                     msLevel, ...) {
+    if (!spectrumMsLevel %in% msLevel || !nrow(x))
+        return(x)
+    ints <- x[, "intensity"]
+    x[, "intensity"] <- ints / by(ints[!is.na(ints)])
+    x
+}

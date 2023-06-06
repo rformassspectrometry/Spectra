@@ -499,7 +499,7 @@ NULL
 #'   access and it is possible to *revert* the operation with the `reset`
 #'   function (see description of `reset` above).
 #'
-#' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
+#' - `combineSpectra`: combines sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
 #'   with `FUN`, which defaults to [combinePeaks()]. Please refer to the
@@ -522,7 +522,7 @@ NULL
 #'   The function returns a `Spectra` of length equal to the unique levels
 #'   of `f`.
 #'
-#' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
+#' - `compareSpectra`: compares each spectrum in `x` with each spectrum in `y`
 #'   using the function provided with `FUN` (defaults to [ndotproduct()]). If
 #'   `y` is missing, each spectrum in `x` is compared with each other spectrum
 #'   in `x`.
@@ -552,18 +552,18 @@ NULL
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
-#' - `deisotopeSpectra`: *deisotope* each spectrum keeping only the monoisotopic
-#'   peak for groups of isotopologues. Isotopologues are estimated using the
-#'   [isotopologues()] function from the *MetaboCoreUtils* package. Note that
-#'   the default parameters for isotope prediction/detection have been
-#'   determined using data from the Human Metabolome Database (HMDB) and
-#'   isotopes for elements other than CHNOPS might not be detected. See
-#'   parameter `substDefinition` in the documentation of [isotopologues()] for
-#'   more information. The approach and code to define the parameters for
-#'   isotope prediction is described
+#' - `deisotopeSpectra`: *deisotopes* each spectrum keeping only the
+#'   monoisotopic peak for groups of isotopologues. Isotopologues are
+#'   estimated using the [isotopologues()] function from the *MetaboCoreUtils*
+#'   package. Note that the default parameters for isotope
+#'   prediction/detection have been determined using data from the Human
+#'   Metabolome Database (HMDB) and isotopes for elements other than CHNOPS
+#'   might not be detected. See parameter `substDefinition` in the
+#'   documentation of [isotopologues()] for more information. The approach
+#'   and code to define the parameters for isotope prediction is described
 #'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
 #'
-#' - `estimatePrecursorIntensity`: define the precursor intensities for MS2
+#' - `estimatePrecursorIntensity`: defines the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the
 #'   closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
 #'   respective MS2 spectrum). With `method = "interpolation"` it is also
@@ -585,20 +585,28 @@ NULL
 #'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
 #'   filtering to spectra of the specified MS level(s).
 #'
-#' - `neutralLoss`: calculate neutral loss spectra for fragment spectra. See
+#' - `neutralLoss`: calculates neutral loss spectra for fragment spectra. See
 #'   [neutralLoss()] for detailed documentation.
 #'
 #' - `processingLog`: returns a `character` vector with the processing log
 #'   messages.
 #'
-#' - `reduceSpectra`: for groups of peaks within highly similar m/z values
-#'   within each spectrum (given `ppm` and `tolerance`), this function keeps
-#'   only the peak with the highest intensity removing all other peaks hence
-#'   *reducing* each spectrum to the highest intensity peaks per *peak group*.
+#' - `reduceSpectra`: keeps for groups of peaks with similar m/z values in
+#'   (given `ppm` and `tolerance`) in each spectrum only the peak with the
+#'   highest intensity removing all other peaks hence *reducing* each
+#'   spectrum to the highest intensity peaks per *peak group*.
 #'   Peak groups are defined using the [group()] function from the
 #'   *MsCoreUtils* package.
 #'
-#' - `spectrapply`: apply a given function to each individual spectrum or sets
+#' - `scalePeaks`: scales intensities of peaks within each spectrum depending on
+#'   parameter `by`. With `by = sum` (the default) peak intensities are divided
+#'   by the sum of peak intensities within each spectrum. The sum of
+#'   intensities is thus 1 for each spectrum after scaling. Parameter
+#'   `msLevel.` allows to apply the scaling of spectra of a certain MS level.
+#'   With the default `msLevel. = seq_len(4)` spectra for MS levels up to
+#'   level 4 will be scaled.
+#'
+#' - `spectrapply`: applies a given function to each individual spectrum or sets
 #'   of a `Spectra` object. By default, the `Spectra` is split into individual
 #'   spectra (i.e. `Spectra` of length 1) and the function `FUN` is applied to
 #'   each of them. An alternative splitting can be defined with parameter `f`.
@@ -715,6 +723,12 @@ NULL
 #'     of the [MsBackend-class].
 #'
 #' @param breaks For `bin`: `numeric` defining the m/z breakpoints between bins.
+#'
+#' @param by For `scalePeaks`: function to calculate a single `numeric` from
+#'     intensity values of a spectrum by which all intensities (of
+#'     that spectrum) should be divided by. The default `by = sum` will
+#'     divide intensities of each spectrum by the sum of intensities of that
+#'     spectrum.
 #'
 #' @param by.x A `character(1)` specifying the spectra variable used
 #'     for merging. Default is `"spectrumId"`.
