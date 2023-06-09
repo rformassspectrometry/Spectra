@@ -345,3 +345,60 @@ test_that(".peaks_reduce works", {
     ref <- do.call(rbind, ref)
     expect_equal(ref, res)
 })
+
+with_parameters_test_that(".peaks_combine works", {
+    res <- .peaks_combine(x, msLevel = 2L, spectrumMsLevel = 2L)
+    expect_equal(x, res)
+    res <- .peaks_combine(x, msLevel = 1L, spectrumMsLevel = 2L,
+                          tolerance = 0.2)
+    expect_equal(x, res)
+    expect_equal(class(x), class(res))
+
+    res <- .peaks_combine(x, msLevel = 2L, spectrumMsLevel = 2L,
+                          tolerance = 0.1)
+    expect_equal(class(x), class(res))
+    expect_equal(nrow(res), 4)
+    expect_equal(res[1, ], x[1, ])
+    expect_equal(unname(res[2, 1]),
+                 weighted.mean(x[c(2, 3, 4), 1], x[c(2, 3, 4), 2] + 1))
+    expect_equal(unname(res[2, 2]), mean(x[c(2, 3, 4), 2]))
+    expect_equal(res[3, ], x[5, ])
+    expect_equal(unname(res[4, 1]),
+                 weighted.mean(x[6:9, 1], x[6:9, 2] + 1))
+    expect_equal(unname(res[4, 2]), mean(x[6:9, 2]))
+    if (is.data.frame(x))
+        expect_equal(res[, "pk_ann"], c("a", "b", "e", "f"))
+
+    res <- .peaks_combine(x, msLevel = 2L, spectrumMsLevel = 2L,
+                          tolerance = 0.1, weighted = FALSE,
+                          intensityFun = max, mzFun = median)
+    expect_equal(class(x), class(res))
+    expect_equal(nrow(res), 4)
+    expect_equal(res[1, ], x[1, ])
+    expect_equal(unname(res[2, 1]), median(x[2:4, 1]))
+    expect_equal(unname(res[2, 2]), max(x[2:4, 2]))
+    expect_equal(res[3, ], x[5, ])
+    expect_equal(unname(res[4, 1]), median(x[6:9, 1]))
+    expect_equal(unname(res[4, 2]), max(x[6:9, 2]))
+    if (is.data.frame(x))
+        expect_equal(res[, "pk_ann"], c("a", "b", "e", "f"))
+
+},
+cases(
+    matrix = list(
+        x = cbind(mz = c(100.1,
+                         103.1, 103.2, 103.24,
+                         302,
+                         304.2, 304.25, 304.3, 304.35),
+                  intensity = c(100,
+                                300, 600, 100,
+                                30,
+                                45, 46, 0, 46))
+    ),
+    data.frame = list(
+        x = data.frame(mz = c(100.1, 103.1, 103.2, 103.24, 302, 304.2,
+                              304.25, 304.3, 304.35),
+                       intensity = c(100, 300, 600, 100, 30, 45, 46, 0, 46),
+                       pk_ann = c("a", "b", "c", "d", "e", "f", "g", "h", "i"))
+    )
+))

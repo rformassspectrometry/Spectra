@@ -5,6 +5,7 @@ NULL
 #'
 #' @aliases Spectra-class [,Spectra-method
 #' @aliases uniqueMsLevels uniqueMsLevels,Spectra-method
+#' @aliases combinePeaks
 #'
 #' @name Spectra
 #'
@@ -499,6 +500,23 @@ NULL
 #'   access and it is possible to *revert* the operation with the `reset`
 #'   function (see description of `reset` above).
 #'
+#' - `combinePeaks`: combines mass peaks within each spectrum with a difference
+#'   in their m/z values that is smaller than the maximal acceptable difference
+#'   defined by `ppm` and `tolerance`. Parameters `intensityFun` and `mzFun`
+#'   allow to define functions to aggregate the intensity and m/z values for
+#'   each such group of peaks. With `weighted = TRUE` (the default), the m/z
+#'   value of the combined peak is calculated using an intensity-weighted mean
+#'   and parameter `mzFun` is ignored. The [MsCoreUtils::group()] function is
+#'   used for the grouping of mass peaks. Parameter `msLevel.` allows to
+#'   define selected MS levels for which peaks should be combined. This
+#'   function returns a `Spectra` with the same number of spectra than the
+#'   input object, but with eventually combined peaks within each spectrum.
+#'   If additional peak variables (other than `"mz"` and `"intensity"`) are
+#'   present, the values for the first peak (i.e. the peak with the lowest
+#'   m/z value) in each peak group are returned/selected. See also
+#'   `reduceSpectra` for a function to select a single *representative* mass
+#'   peak for each peak group.
+#'
 #' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
@@ -596,7 +614,8 @@ NULL
 #'   only the peak with the highest intensity removing all other peaks hence
 #'   *reducing* each spectrum to the highest intensity peaks per *peak group*.
 #'   Peak groups are defined using the [group()] function from the
-#'   *MsCoreUtils* package.
+#'   *MsCoreUtils* package. See also the `combinePeaks` function for an
+#'   alternative function to combine peaks within each spectrum.
 #'
 #' - `spectrapply`: apply a given function to each individual spectrum or sets
 #'   of a `Spectra` object. By default, the `Spectra` is split into individual
@@ -796,6 +815,10 @@ NULL
 #'     peak should be retained or not. Defaults to `intensity = c(0, Inf)` thus
 #'     only peaks with `NA` intensity are removed.
 #'
+#' @param intensityFun For `combinePeaks`: function to be used to aggregate
+#'     intensities for all peaks in each peak group into a single intensity
+#'     value.
+#'
 #' @param isotopeTolerance For `filterFourierTransformArtefacts`: the m/z
 #'     `tolerance` to be used to define whether peaks might be isotopes of
 #'     the current tested peak.
@@ -842,6 +865,10 @@ NULL
 #'     `numeric(2)` defining the lower and upper m/z boundary.
 #'     For `filterMzValues` and `filterPrecursorMzValues`: `numeric` with the
 #'     m/z values to match peaks or precursor m/z against.
+#'
+#' @param mzFun For `combinePeaks`: function to aggregate m/z values for all
+#'     peaks within each peak group into a single m/z value. This parameter
+#'     is ignored if `weighted = TRUE` (the default).
 #'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
@@ -926,6 +953,10 @@ NULL
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param weighted For `combinePeaks`: `logical(1)` whether m/z values of peaks
+#'     within each peak group should be aggregated into a single m/z value
+#'     using an intensity-weighted mean. Defaults to `weighted = TRUE`.
 #'
 #' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
 #'     (the default) or all provided `mz` have to be present in the spectrum.
@@ -2488,7 +2519,19 @@ setMethod("combinePeaks", "list", function(object, ...) {
 })
 
 #' @rdname Spectra
-setMethod("combinePeaks", "Spectra", function(object, ...) {
-    x@processing <- .logging(x@processing, "Combining peaks within each ",
-                             "spectrum")
+#'
+#' @exportMethod combinePeaks
+setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
+                                              intensityFun = base::mean,
+                                              mzFun = base::mean,
+                                              weighted = TRUE,
+                                              msLevel. = seq_len(4), ...) {
+    object <- addProcessing(
+        object, .peaks_combine, ppm = ppm, tolerance = tolerance,
+        intensityFun = intensityFun, mzFun = mzFun, weighted = weighted,
+        msLevel = msLevel., spectraVariables = "msLevel")
+    object@processing <- .logging(
+        object@processing, "Combining peaks within each spectrum with ppm = ",
+        ppm, " and tolerance = ", tolerance, ".")
+    object
 })

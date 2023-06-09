@@ -1,5 +1,12 @@
 # Spectra 1.11
 
+## Changes in
+
+- Rename `combinePeaks` for lists of peak matrices into `combinePeaksData`.
+- Add `combinePeaks` generics.
+- Add `combinePeaks,Spectra` to combine peaks within each spectrum in a
+  `Spectra`.
+
 ## Changes in 1.11.2
 
 - Add `deisotopeSpectra` and `reduceSpectra` functions.

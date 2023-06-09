@@ -166,6 +166,7 @@
 \alias{$<-,MsBackendMzR-method}
 \alias{export,MsBackendMzR-method}
 \alias{show,Spectra-method}
+\alias{combinePeaks,list-method}
 \title{Internal page for hidden aliases}
 \usage{
 backendMerge(object, ...)
@@ -519,6 +520,8 @@ spectrapply(object, ...)
 )
 
 \S4method{show}{Spectra}(object)
+
+\S4method{combinePeaks}{list}(object, ...)
 }
 \value{
 Not applicable

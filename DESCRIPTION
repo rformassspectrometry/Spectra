@@ -55,7 +55,8 @@ Suggests:
     mzR (>= 2.19.6),
     rhdf5 (>= 2.32.0),
     rmarkdown,
-    vdiffr (>= 1.0.0)
+    vdiffr (>= 1.0.0),
+    patrick
 License: Artistic-2.0
 LazyData: false
 VignetteBuilder: knitr
