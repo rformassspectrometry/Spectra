@@ -258,23 +258,24 @@ test_that(".combine_spectra works", {
     expect_true(length(res) == 1)
     expect_equal(res$mz[[1]], sort(unlist(spd$mz)))
 
-    res <- .combine_spectra(sps, FUN = combinePeaks, tolerance = 0.1)
+    res <- .combine_spectra(sps, FUN = combinePeaksData, tolerance = 0.1)
     expect_true(length(res) == 1)
     expect_equal(res$mz[[1]], c(mean(c(12, 12.1)), mean(c(14, 14.1, 14.15)),
                                 mean(c(34, 34.1)), 45, mean(c(56, 56.1))))
     expect_equal(res$intensity[[1]], c(mean(c(10, 12)), mean(c(20, 11, 22)),
                                        mean(c(21, 32)), 30, mean(c(40, 31))))
-    res <- .combine_spectra(sps, FUN = combinePeaks, tolerance = 0.1,
+    res <- .combine_spectra(sps, FUN = combinePeaksData, tolerance = 0.1,
                             mzFun = max, intensityFun = median)
     expect_true(length(res) == 1)
     expect_equal(res$mz[[1]], c(max(c(12, 12.1)), max(c(14, 14.1, 14.15)),
                                 max(c(34, 34.1)), 45, max(c(56, 56.1))))
-    expect_equal(res$intensity[[1]], c(median(c(10, 12)), median(c(20, 11, 22)),
-                                       median(c(21, 32)), 30, median(c(40, 31))))
+    expect_equal(res$intensity[[1]],
+                 c(median(c(10, 12)), median(c(20, 11, 22)),
+                   median(c(21, 32)), 30, median(c(40, 31))))
 
     ## See if it works with MsBackendMzR
     sps <- Spectra(sciex_mzr)
-    res <- .combine_spectra(sps, tolerance = 0.1, FUN = combinePeaks)
+    res <- .combine_spectra(sps, tolerance = 0.1, FUN = combinePeaksData)
     expect_true(length(res) == 2)
     expect_true(is(res, "Spectra"))
     expect_true(class(res@backend) == "MsBackendMemory")

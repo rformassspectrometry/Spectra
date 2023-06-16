@@ -1586,3 +1586,19 @@ test_that("uniqueMsLevels,Spectra works", {
 
     expect_equal(res, uniqueMsLevels(Spectra(sciex_mzr)))
 })
+
+test_that("combinePeaks,Spectra works", {
+    x <- sps_dia[5:15]
+    res <- combinePeaks(x, msLevel. = 1, tolerance = 0.1)
+    expect_equal(peaksData(x[2]), peaksData(res[2]))
+    expect_equal(lengths(x)[-5], lengths(res)[-5])
+    expect_true(lengths(x)[5] > lengths(res)[5])
+
+    res <- combinePeaks(x, tolerance = 0.1, intensityFun = median,
+                        mzFun = median)
+    expect_true(all(lengths(x) > lengths(res)))
+    res_1 <- .peaks_combine(peaksData(x)[[1L]], tolerance = 0.1, ppm = 20,
+                            intensityFun = median, mzFun = median,
+                            msLevel = 1L, spectrumMsLevel = 1L)
+    expect_equal(res_1, peaksData(res)[[1L]])
+})
