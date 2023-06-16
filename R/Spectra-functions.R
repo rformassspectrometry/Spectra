@@ -447,10 +447,11 @@ applyProcessing <- function(object, f = dataStorage(object),
 #' res$mz
 #' res$intensity
 #'
-#' res <- .combine_spectra(sps, FUN = combinePeaks, tolerance = 0.1)
+#' res <- .combine_spectra(sps, FUN = combinePeaksData, tolerance = 0.1)
 #' res$mz
 #' res$intensity
-.combine_spectra <- function(x, f = x$dataStorage, FUN = combinePeaks, ...) {
+.combine_spectra <- function(x, f = x$dataStorage,
+                             FUN = combinePeaksData, ...) {
     if (!is.factor(f))
         f <- factor(f)
     else f <- droplevels(f)
@@ -508,7 +509,7 @@ concatenateSpectra <- function(x, ...) {
 #'
 #' @rdname Spectra
 combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
-                           FUN = combinePeaks, ..., BPPARAM = bpparam()) {
+                           FUN = combinePeaksData, ..., BPPARAM = bpparam()) {
     if (!is.factor(f))
         f <- factor(f, levels = unique(f))
     if (!is.factor(p))
@@ -828,4 +829,19 @@ deisotopeSpectra <-
 #' @export
 reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
     addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
+}
+
+#' @rdname Spectra
+#'
+#' @author Johannes Rainer
+#'
+#' @export
+scalePeaks <- function(x, by = sum, msLevel. = uniqueMsLevels(x)) {
+    msl <- force(msLevel.)
+    x <- addProcessing(x, .peaks_scale_intensities, msLevel = msl,
+                       by = by, spectraVariables = "msLevel")
+    x@processing <- .logging(
+        x@processing, "Scale peak intensities in spectra of MS level(s) ",
+        paste0(msLevel., collapse = ", "), ".")
+    x
 }

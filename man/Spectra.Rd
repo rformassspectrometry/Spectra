@@ -9,11 +9,13 @@
 \alias{estimatePrecursorIntensity}
 \alias{deisotopeSpectra}
 \alias{reduceSpectra}
+\alias{scalePeaks}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
 \alias{uniqueMsLevels}
 \alias{uniqueMsLevels,Spectra-method}
+\alias{combinePeaks}
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
 \alias{Spectra,character-method}
@@ -99,6 +101,7 @@
 \alias{addProcessing,Spectra-method}
 \alias{coreSpectraVariables}
 \alias{backendBpparam,Spectra-method}
+\alias{combinePeaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
@@ -109,7 +112,7 @@ combineSpectra(
   x,
   f = x$dataStorage,
   p = x$dataStorage,
-  FUN = combinePeaks,
+  FUN = combinePeaksData,
   ...,
   BPPARAM = bpparam()
 )
@@ -137,6 +140,8 @@ deisotopeSpectra(
 )
 
 reduceSpectra(x, tolerance = 0, ppm = 10)
+
+scalePeaks(x, by = sum, msLevel. = uniqueMsLevels(x))
 
 \S4method{Spectra}{missing}(
   object,
@@ -431,6 +436,17 @@ coreSpectraVariables()
 \S4method{uniqueMsLevels}{Spectra}(object, ...)
 
 \S4method{backendBpparam}{Spectra}(object, BPPARAM = bpparam())
+
+\S4method{combinePeaks}{Spectra}(
+  object,
+  tolerance = 0,
+  ppm = 20,
+  intensityFun = base::mean,
+  mzFun = base::mean,
+  weighted = TRUE,
+  msLevel. = uniqueMsLevels(object),
+  ...
+)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -521,6 +537,12 @@ for details.}
 
 \item{charge}{For \code{deisotopeSpectra}: expected charge of the ionized
 compounds. See \code{\link[=isotopologues]{isotopologues()}} for details.}
+
+\item{by}{For \code{scalePeaks}: function to calculate a single \code{numeric} from
+intensity values of a spectrum by which all intensities (of
+that spectrum) should be divided by. The default \code{by = sum} will
+divide intensities of each spectrum by the sum of intensities of that
+spectrum.}
 
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
@@ -679,6 +701,18 @@ the peak that should be considered in the weighted mean calculation.}
 
 \item{descending}{For \code{pickPeaks}: \code{logical}, if \code{TRUE} just values between
 the nearest valleys around the peak centroids are used.}
+
+\item{intensityFun}{For \code{combinePeaks}: function to be used to aggregate
+intensities for all peaks in each peak group into a single intensity
+value.}
+
+\item{mzFun}{For \code{combinePeaks}: function to aggregate m/z values for all
+peaks within each peak group into a single m/z value. This parameter
+is ignored if \code{weighted = TRUE} (the default).}
+
+\item{weighted}{For \code{combinePeaks}: \code{logical(1)} whether m/z values of peaks
+within each peak group should be aggregated into a single m/z value
+using an intensity-weighted mean. Defaults to \code{weighted = TRUE}.}
 }
 \value{
 See individual method description for the return value.
@@ -1126,11 +1160,27 @@ same bin are aggregated using the function provided with parameter \code{FUN}
 the binning operation is applied to the peak data on-the-fly upon data
 access and it is possible to \emph{revert} the operation with the \code{reset}
 function (see description of \code{reset} above).
+\item \code{combinePeaks}: combines mass peaks within each spectrum with a difference
+in their m/z values that is smaller than the maximal acceptable difference
+defined by \code{ppm} and \code{tolerance}. Parameters \code{intensityFun} and \code{mzFun}
+allow to define functions to aggregate the intensity and m/z values for
+each such group of peaks. With \code{weighted = TRUE} (the default), the m/z
+value of the combined peak is calculated using an intensity-weighted mean
+and parameter \code{mzFun} is ignored. The \code{\link[MsCoreUtils:group]{MsCoreUtils::group()}} function is
+used for the grouping of mass peaks. Parameter \code{msLevel.} allows to
+define selected MS levels for which peaks should be combined. This
+function returns a \code{Spectra} with the same number of spectra than the
+input object, but with possibly combined peaks within each spectrum.
+Additional peak variables (other than \code{"mz"} and \code{"intensity"}) are
+dropped (i.e. their values are replaced with \code{NA}) for combined peaks
+unless they are constant across the combined peaks. See also
+\code{reduceSpectra} for a function to select a single \emph{representative}
+mass peak for each peak group.
 \item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum
 are used and the peak matrices are combined using the function specified
-with \code{FUN}, which defaults to \code{\link[=combinePeaks]{combinePeaks()}}. Please refer to the
-\code{\link[=combinePeaks]{combinePeaks()}} help page for details and options of the actual
+with \code{FUN}, which defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}. Please refer to the
+\code{\link[=combinePeaksData]{combinePeaksData()}} help page for details and options of the actual
 combination of peaks across the sets of spectra and to the package vignette
 for examples and alternative ways to aggregate spectra.
 The sets of spectra can be specified with parameter \code{f}.
@@ -1148,7 +1198,7 @@ evaluation queue are applied. Be aware that calling \code{combineSpectra} on a
 hdf5 file(s) will be overwritten.
 The function returns a \code{Spectra} of length equal to the unique levels
 of \code{f}.
-\item \code{compareSpectra}: compare each spectrum in \code{x} with each spectrum in \code{y}
+\item \code{compareSpectra}: compares each spectrum in \code{x} with each spectrum in \code{y}
 using the function provided with \code{FUN} (defaults to \code{\link[=ndotproduct]{ndotproduct()}}). If
 \code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
 in \code{x}.
@@ -1177,17 +1227,17 @@ comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
-\item \code{deisotopeSpectra}: \emph{deisotope} each spectrum keeping only the monoisotopic
-peak for groups of isotopologues. Isotopologues are estimated using the
-\code{\link[=isotopologues]{isotopologues()}} function from the \emph{MetaboCoreUtils} package. Note that
-the default parameters for isotope prediction/detection have been
-determined using data from the Human Metabolome Database (HMDB) and
-isotopes for elements other than CHNOPS might not be detected. See
-parameter \code{substDefinition} in the documentation of \code{\link[=isotopologues]{isotopologues()}} for
-more information. The approach and code to define the parameters for
-isotope prediction is described
+\item \code{deisotopeSpectra}: \emph{deisotopes} each spectrum keeping only the
+monoisotopic peak for groups of isotopologues. Isotopologues are
+estimated using the \code{\link[=isotopologues]{isotopologues()}} function from the \emph{MetaboCoreUtils}
+package. Note that the default parameters for isotope
+prediction/detection have been determined using data from the Human
+Metabolome Database (HMDB) and isotopes for elements other than CHNOPS
+might not be detected. See parameter \code{substDefinition} in the
+documentation of \code{\link[=isotopologues]{isotopologues()}} for more information. The approach
+and code to define the parameters for isotope prediction is described
 \href{https://github.com/EuracBiomedicalResearch/isotopologues}{here}.
-\item \code{estimatePrecursorIntensity}: define the precursor intensities for MS2
+\item \code{estimatePrecursorIntensity}: defines the precursor intensities for MS2
 spectra using the intensity of the matching MS1 peak from the
 closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
 respective MS2 spectrum). With \code{method = "interpolation"} it is also
@@ -1207,17 +1257,25 @@ the \code{intensity} parameter in which case an upper limit of \code{Inf} is use
 Note that this function removes also peaks with missing intensities
 (i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
 filtering to spectra of the specified MS level(s).
-\item \code{neutralLoss}: calculate neutral loss spectra for fragment spectra. See
+\item \code{neutralLoss}: calculates neutral loss spectra for fragment spectra. See
 \code{\link[=neutralLoss]{neutralLoss()}} for detailed documentation.
 \item \code{processingLog}: returns a \code{character} vector with the processing log
 messages.
-\item \code{reduceSpectra}: for groups of peaks within highly similar m/z values
-within each spectrum (given \code{ppm} and \code{tolerance}), this function keeps
-only the peak with the highest intensity removing all other peaks hence
-\emph{reducing} each spectrum to the highest intensity peaks per \emph{peak group}.
+\item \code{reduceSpectra}: keeps for groups of peaks with similar m/z values in
+(given \code{ppm} and \code{tolerance}) in each spectrum only the peak with the
+highest intensity removing all other peaks hence \emph{reducing} each
+spectrum to the highest intensity peaks per \emph{peak group}.
 Peak groups are defined using the \code{\link[=group]{group()}} function from the
-\emph{MsCoreUtils} package.
-\item \code{spectrapply}: apply a given function to each individual spectrum or sets
+\emph{MsCoreUtils} package. See also the \code{combinePeaks} function for an
+alternative function to combine peaks within each spectrum.
+\item \code{scalePeaks}: scales intensities of peaks within each spectrum depending on
+parameter \code{by}. With \code{by = sum} (the default) peak intensities are divided
+by the sum of peak intensities within each spectrum. The sum of
+intensities is thus 1 for each spectrum after scaling. Parameter
+\code{msLevel.} allows to apply the scaling of spectra of a certain MS level.
+By default (\code{msLevel. = uniqueMsLevels(x)}) intensities for all
+spectra will be scaled.
+\item \code{spectrapply}: applies a given function to each individual spectrum or sets
 of a \code{Spectra} object. By default, the \code{Spectra} is split into individual
 spectra (i.e. \code{Spectra} of length 1) and the function \code{FUN} is applied to
 each of them. An alternative splitting can be defined with parameter \code{f}.
@@ -1369,6 +1427,7 @@ head(dataStorage(sciex))
 ## original mzML file name:
 head(dataOrigin(sciex))
 head(dataOrigin(sciex_im))
+
 
 ## ---- ACCESSING AND ADDING DATA ----
 
@@ -1707,6 +1766,8 @@ sps$pk_ann
 }
 \author{
 Nir Shahaf, Johannes Rainer
+
+Johannes Rainer
 
 Sebastian Gibb, Johannes Rainer, Laurent Gatto
 }

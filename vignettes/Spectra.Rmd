@@ -360,29 +360,40 @@ Similar to spectra variables it is also possible to replace values for
 
 Apart from *classical* subsetting operations such as `[` and `split`, a set of
 filter functions are defined for `Spectra` objects (for detailed help please see
-the `?Spectra` help):
+the `?Spectra` help). Filter and subset functions either reduce the number of
+spectra within a `Spectra` object, or affect the number of
+peaks (by either aggregating or subset) within each spectrum. Filter functions
+affecting the total number of spectra are:
 
-- `filterAcquisitionNum`: retain spectra with certain acquisition numbers.
-- `filterDataOrigin`: subset to spectra from specific origins.
-- `filterDataStorage`: subset to spectra from certain data storage files.
-- `filterEmptySpectra`: remove spectra without mass peaks.
-- `filterMzRange`: subset spectra keeping only peaks with an m/z within the
+- `filterAcquisitionNum`: retains spectra with certain acquisition numbers.
+- `filterDataOrigin`: subsets to spectra from specific origins.
+- `filterDataStorage`: subsets to spectra from certain data storage files.
+- `filterEmptySpectra`: removes spectra without mass peaks.
+- `filterMzRange`: subsets spectra keeping only peaks with an m/z within the
   provided m/z range.
-- `filterMzValues`: subset spectra keeping or removing (all) peaks matching
-  provided m/z value(s) (given parameters `ppm` and `tolerance`).
-- `filterIsolationWindow`: keep spectra with the provided `mz` in their
+- `filterIsolationWindow`: keeps spectra with the provided `mz` in their
   isolation window (m/z range).
-- `filterMsLevel`: filter by MS level.
-- `filterPolarity`: filter by polarity.
-- `filterPrecursorMzRange`: retain (MSn) spectra with a precursor m/z within the
-  provided m/z range.
-- `filterPrecursorMzValues`: retain (MSn) spectra with precursor m/z value
+- `filterMsLevel`: filters by MS level.
+- `filterPolarity`: filters by polarity.
+- `filterPrecursorMzRange`: retains (MSn) spectra with a precursor m/z within
+  the provided m/z range.
+- `filterPrecursorMzValues`: retains (MSn) spectra with precursor m/z value
   matching the provided value(s) considering also a `tolerance` and `ppm`.
-- `filterPrecursorCharge`: retain (MSn) spectra with speified
+- `filterPrecursorCharge`: retains (MSn) spectra with speified
   precursor charge(s).
-- `filterPrecursorScan`: retain (parent and children) scans of an acquisition
+- `filterPrecursorScan`: retains (parent and children) scans of an acquisition
   number.
-- `filterRt`: filter based on retention time ranges.
+- `filterRt`: filters based on retention time range.
+
+Filter functions that return the same number of spectra, but affect/subset the
+peaks data (m/z and intensity values) within each spectrum are:
+
+- `combinePeaks`: groups peaks within each spectrum based on similarity of their
+  m/z values and combines these into a single peak per peak group.
+- `filterMzValues`: subsets peaks within each spectrum keeping or removing (all)
+  peaks matching provided m/z value(s) (given parameters `ppm` and `tolerance`).
+- `filterMzRange`: subsets peaks data within each spectrum keeping only peaks
+  with their m/z values within the specified m/z range.
 
 In the example below we select all spectra measured in the second mzML file and
 subsequently filter them to retain spectra measured between 175 and 189 seconds
@@ -781,15 +792,16 @@ The `Spectra` package provides the `combineSpectra` function that allows to
 *aggregate* multiple spectra into a single one. The main parameters of this
 function are `f`, which defines the grouping of the spectra, and `FUN` which
 allows to define the function that performs the actual aggregation. The default
-aggregation function is `combinePeaks` (see `?combinePeaks` for details) that
-combines multiple spectra into a single spectrum with all peaks from all input
-spectra (with additional paramter `peaks = "union"`), or peaks that are present
-in a certain proportion of input spectra (with parameter `peaks = "intersect"`;
-parameter `minProp` allows to define the minimum required proportion of spectra
-in which a peak needs to be present. Below we use this function to combine the
-spectra for 1-methylhistidine and caffeine into a single spectrum for each
-compound. We use the spectra variable `$name`, that contains the names of the
-compounds, to define which spectra should be grouped together.
+aggregation function is `combinePeaksData` (see `?combinePeaksData` for
+details) that combines multiple spectra into a single spectrum with all peaks
+from all input spectra (with additional paramter `peaks = "union"`), or peaks
+that are present in a certain proportion of input spectra (with parameter
+`peaks = "intersect"`; parameter `minProp` allows to define the minimum
+required proportion of spectra in which a peak needs to be present. Below we
+use this function to combine the spectra for 1-methylhistidine and caffeine
+into a single spectrum for each compound. We use the spectra variable `$name`,
+that contains the names of the compounds, to define which spectra should be
+grouped together.
 
 ```{r}
 sps_agg <- combineSpectra(sps, f = sps$name)
@@ -813,8 +825,8 @@ plotSpectra(sps_agg, main = sps_agg$name)
 This results thus in a single peak for 1-methylhistidine and none for caffeine -
 why? The reason for that is that the difference of the peaks' m/z values is
 larger than the default tolerance used for the peak grouping (the defaults for
-`combinePeaks` is `tolerance = 0` and `ppm = 0`). We could however already see
-in the previous section that the reported peaks' m/z values have a larger
+`combinePeaksData` is `tolerance = 0` and `ppm = 0`). We could however already
+see in the previous section that the reported peaks' m/z values have a larger
 measurement error (most likely because the fragment spectra were measured on
 different instruments with different precision). Thus, we next increase the
 `tolerance` and `ppm` parameters to group also peaks with a larger difference in
@@ -829,9 +841,9 @@ plotSpectra(sps_agg, main = sps_agg$name)
 Whether in a real analysis we would be OK with such a large tolerance is however
 questionable. Note: which m/z and intensity is reported for the aggregated
 spectra can be defined with the parameters `intensityFun` and `mzFun` of
-`combinePeaks` (see `?combinePeaks` for more information).
+`combinePeaksData` (see `?combinePeaksData` for more information).
 
-While the `combinePeaks` function is indeed helpful to combine peaks from
+While the `combinePeaksData` function is indeed helpful to combine peaks from
 different spectra, the `combineSpectra` function would in addition also allow us
 to provide our own, custom, peak aggregation function. As a simple example,
 instead of combining the spectra, we would like to select one of the input

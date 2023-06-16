@@ -1,6 +1,6 @@
 # Spectra 1.11
 
-## Changes in 1.11.3
+## Changes in 1.11.6
 
 - `peaksData,MsBackendMemory` returns a `data.frame` if additional peak
   variables (in addition to `"mz"` and `"intensity"`) are requested. For
@@ -18,6 +18,23 @@
 - `$<-,Spectra` throws an error if processing queue is not empty and a peaks
   variable is going to be replaced.
 - Add full support for additional peaks variables to `MsBackendDataFrame`.
+
+## Changes in 1.11.5
+
+- Add `scalePeaks` function (see [issue
+  #291](https://github.com/rformassspectrometry/Spectra/issues/291)).
+
+## Changes in 1.11.4
+
+- Import `uniqueMsLevels` from `ProtGenerics`.
+
+## Changes in 1.11.3
+
+- Rename `combinePeaks` for lists of peak matrices into `combinePeaksData`.
+- Add `combinePeaks` generics.
+- Add `combinePeaks,Spectra` to combine peaks within each spectrum in a
+  `Spectra`.
+>>>>>>> main
 
 ## Changes in 1.11.2
 

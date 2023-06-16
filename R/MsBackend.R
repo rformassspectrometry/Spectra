@@ -1522,6 +1522,8 @@ setReplaceMethod("[[", "MsBackend", function(x, i, j, ..., value) {
 
 #' @exportMethod uniqueMsLevels
 #'
+#' @importMethodsFrom ProtGenerics uniqueMsLevels
+#'
 #' @rdname MsBackend
 setMethod("uniqueMsLevels", "MsBackend", function(object, ...) {
     unique(msLevel(object))
