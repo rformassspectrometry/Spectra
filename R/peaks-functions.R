@@ -571,3 +571,48 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
     x[, "intensity"] <- ints / by(ints[!is.na(ints)])
     x
 }
+
+#' Combine peaks within each peak matrix if the difference of their m/z is
+#' smaller than `tolerance` and `ppm`. Peak grouping is performed with the
+#' `MsCoreUtils::group` function.
+#'
+#' Additional peak variables for combined peaks are dropped (replaced by `NA`)
+#' if their values differ between the combined peaks.
+#'
+#' Note that `weighted = TRUE` overrides `mzFun` using the `weighted.mean`
+#' to calculate the aggregated m/z values.
+#'
+#' @author Johannes Rainer
+#'
+#' @importFrom stats weighted.mean
+#'
+#' @noRd
+.peaks_combine <- function(x, ppm = 20, tolerance = 0,
+                           intensityFun = base::mean, mzFun = base::mean,
+                           weighted = TRUE, spectrumMsLevel,
+                           msLevel = spectrumMsLevel, ...) {
+    if (!spectrumMsLevel %in% msLevel || !length(x))
+        return(x)
+    grps <- group(x[, "mz"], tolerance = tolerance, ppm = ppm)
+    lg <- length(grps)
+    if (grps[lg] == lg)
+        return(x)
+    mzs <- split(x[, "mz"], grps)
+    ints <- split(x[, "intensity"], grps)
+    if (weighted)
+        mzs <- unlist(mapply(
+            mzs, ints, FUN = function(m, i) weighted.mean(m, i + 1),
+            SIMPLIFY = FALSE, USE.NAMES = FALSE), use.names = FALSE)
+    else mzs <- vapply1d(mzs, mzFun)
+    ints <- vapply1d(ints, intensityFun)
+    if (ncol(x) > 2) {
+        lst <- lapply(x[!colnames(x) %in% c("mz", "intensity")], function(z) {
+            z <- lapply(split(z, grps), unique)
+            z[lengths(z) > 1] <- NA
+            unlist(z, use.names = FALSE, recursive = FALSE)
+        })
+        do.call(cbind.data.frame,
+                c(list(mz = mzs, intensity = ints), lst))
+    } else
+        cbind(mz = mzs, intensity = ints)
+}

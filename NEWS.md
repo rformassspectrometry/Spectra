@@ -1,9 +1,16 @@
 # Spectra 1.11
 
-## Changes in xxx
+## Changes in 1.11.4
 
 - Add `scalePeaks` function (see [issue
   #291](https://github.com/rformassspectrometry/Spectra/issues/291)).
+
+## Changes in 1.11.3
+
+- Rename `combinePeaks` for lists of peak matrices into `combinePeaksData`.
+- Add `combinePeaks` generics.
+- Add `combinePeaks,Spectra` to combine peaks within each spectrum in a
+  `Spectra`.
 
 ## Changes in 1.11.2
 

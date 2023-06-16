@@ -15,6 +15,7 @@
 \alias{[,Spectra-method}
 \alias{uniqueMsLevels}
 \alias{uniqueMsLevels,Spectra-method}
+\alias{combinePeaks}
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
 \alias{Spectra,character-method}
@@ -100,6 +101,7 @@
 \alias{addProcessing,Spectra-method}
 \alias{coreSpectraVariables}
 \alias{backendBpparam,Spectra-method}
+\alias{combinePeaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
@@ -110,7 +112,7 @@ combineSpectra(
   x,
   f = x$dataStorage,
   p = x$dataStorage,
-  FUN = combinePeaks,
+  FUN = combinePeaksData,
   ...,
   BPPARAM = bpparam()
 )
@@ -434,6 +436,17 @@ coreSpectraVariables()
 \S4method{uniqueMsLevels}{Spectra}(object, ...)
 
 \S4method{backendBpparam}{Spectra}(object, BPPARAM = bpparam())
+
+\S4method{combinePeaks}{Spectra}(
+  object,
+  tolerance = 0,
+  ppm = 20,
+  intensityFun = base::mean,
+  mzFun = base::mean,
+  weighted = TRUE,
+  msLevel. = uniqueMsLevels(object),
+  ...
+)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -688,6 +701,18 @@ the peak that should be considered in the weighted mean calculation.}
 
 \item{descending}{For \code{pickPeaks}: \code{logical}, if \code{TRUE} just values between
 the nearest valleys around the peak centroids are used.}
+
+\item{intensityFun}{For \code{combinePeaks}: function to be used to aggregate
+intensities for all peaks in each peak group into a single intensity
+value.}
+
+\item{mzFun}{For \code{combinePeaks}: function to aggregate m/z values for all
+peaks within each peak group into a single m/z value. This parameter
+is ignored if \code{weighted = TRUE} (the default).}
+
+\item{weighted}{For \code{combinePeaks}: \code{logical(1)} whether m/z values of peaks
+within each peak group should be aggregated into a single m/z value
+using an intensity-weighted mean. Defaults to \code{weighted = TRUE}.}
 }
 \value{
 See individual method description for the return value.
@@ -1124,11 +1149,27 @@ same bin are aggregated using the function provided with parameter \code{FUN}
 the binning operation is applied to the peak data on-the-fly upon data
 access and it is possible to \emph{revert} the operation with the \code{reset}
 function (see description of \code{reset} above).
-\item \code{combineSpectra}: combines sets of spectra into a single spectrum per set.
+\item \code{combinePeaks}: combines mass peaks within each spectrum with a difference
+in their m/z values that is smaller than the maximal acceptable difference
+defined by \code{ppm} and \code{tolerance}. Parameters \code{intensityFun} and \code{mzFun}
+allow to define functions to aggregate the intensity and m/z values for
+each such group of peaks. With \code{weighted = TRUE} (the default), the m/z
+value of the combined peak is calculated using an intensity-weighted mean
+and parameter \code{mzFun} is ignored. The \code{\link[MsCoreUtils:group]{MsCoreUtils::group()}} function is
+used for the grouping of mass peaks. Parameter \code{msLevel.} allows to
+define selected MS levels for which peaks should be combined. This
+function returns a \code{Spectra} with the same number of spectra than the
+input object, but with possibly combined peaks within each spectrum.
+Additional peak variables (other than \code{"mz"} and \code{"intensity"}) are
+dropped (i.e. their values are replaced with \code{NA}) for combined peaks
+unless they are constant across the combined peaks. See also
+\code{reduceSpectra} for a function to select a single \emph{representative}
+mass peak for each peak group.
+\item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum
 are used and the peak matrices are combined using the function specified
-with \code{FUN}, which defaults to \code{\link[=combinePeaks]{combinePeaks()}}. Please refer to the
-\code{\link[=combinePeaks]{combinePeaks()}} help page for details and options of the actual
+with \code{FUN}, which defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}. Please refer to the
+\code{\link[=combinePeaksData]{combinePeaksData()}} help page for details and options of the actual
 combination of peaks across the sets of spectra and to the package vignette
 for examples and alternative ways to aggregate spectra.
 The sets of spectra can be specified with parameter \code{f}.
@@ -1214,7 +1255,8 @@ messages.
 highest intensity removing all other peaks hence \emph{reducing} each
 spectrum to the highest intensity peaks per \emph{peak group}.
 Peak groups are defined using the \code{\link[=group]{group()}} function from the
-\emph{MsCoreUtils} package.
+\emph{MsCoreUtils} package. See also the \code{combinePeaks} function for an
+alternative function to combine peaks within each spectrum.
 \item \code{scalePeaks}: scales intensities of peaks within each spectrum depending on
 parameter \code{by}. With \code{by = sum} (the default) peak intensities are divided
 by the sum of peak intensities within each spectrum. The sum of
@@ -1374,6 +1416,7 @@ head(dataStorage(sciex))
 ## original mzML file name:
 head(dataOrigin(sciex))
 head(dataOrigin(sciex_im))
+
 
 ## ---- ACCESSING AND ADDING DATA ----
 
