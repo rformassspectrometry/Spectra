@@ -567,8 +567,8 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 #' smaller than `tolerance` and `ppm`. Peak grouping is performed with the
 #' `MsCoreUtils::group` function.
 #'
-#' If peak annotations are present, i.e. `x` has more than 2 columns: peak
-#' annotations from the **first** peak in each group are used.
+#' Eventually present peak annotations are dropped (replaced by `NA`) for peaks
+#' that are combined.
 #'
 #' Note that `weighted = TRUE` overrides `mzFun` using the `weighted.mean`
 #' to calculate the aggregated m/z values.
@@ -589,6 +589,7 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
     if (grps[lg] == lg)
         return(x)
     mzs <- split(x[, "mz"], grps)
+    mrg <- lengths(mzs) > 1L
     ints <- split(x[, "intensity"], grps)
     if (weighted)
         mzs <- unlist(mapply(
@@ -597,10 +598,14 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
     else mzs <- vapply1d(mzs, mzFun)
     ints <- vapply1d(ints, intensityFun)
     if (ncol(x) > 2) {
-        xnew <- x[match(seq_len(grps[lg]), grps), , drop = FALSE]
-        xnew[, "mz"] <- mzs
-        xnew[, "intensity"] <- ints
-        xnew
+        idx <- match(seq_len(grps[lg]), grps)
+        lst <- lapply(x[!colnames(x) %in% c("mz", "intensity")], function(z) {
+            z <- z[idx]
+            z[mrg] <- NA
+            z
+        })
+        do.call(cbind.data.frame,
+                c(list(mz = mzs, intensity = ints), lst))
     } else
         cbind(mz = mzs, intensity = ints)
 }

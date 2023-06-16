@@ -362,12 +362,15 @@ with_parameters_test_that(".peaks_combine works", {
     expect_equal(unname(res[2, 1]),
                  weighted.mean(x[c(2, 3, 4), 1], x[c(2, 3, 4), 2] + 1))
     expect_equal(unname(res[2, 2]), mean(x[c(2, 3, 4), 2]))
-    expect_equal(res[3, ], x[5, ])
+    a <- res[3, , drop = FALSE]
+    b <- x[5, , drop = FALSE]
+    rownames(a) <- rownames(b) <- NULL
+    expect_equal(a, b)
     expect_equal(unname(res[4, 1]),
                  weighted.mean(x[6:9, 1], x[6:9, 2] + 1))
     expect_equal(unname(res[4, 2]), mean(x[6:9, 2]))
     if (is.data.frame(x))
-        expect_equal(res[, "pk_ann"], c("a", "b", "e", "f"))
+        expect_equal(res[, "pk_ann"], c("a", NA_character_, "e", NA_character_))
 
     res <- .peaks_combine(x, msLevel = 2L, spectrumMsLevel = 2L,
                           tolerance = 0.1, weighted = FALSE,
@@ -377,11 +380,14 @@ with_parameters_test_that(".peaks_combine works", {
     expect_equal(res[1, ], x[1, ])
     expect_equal(unname(res[2, 1]), median(x[2:4, 1]))
     expect_equal(unname(res[2, 2]), max(x[2:4, 2]))
-    expect_equal(res[3, ], x[5, ])
+    a <- res[3, , drop = FALSE]
+    b <- x[5, , drop = FALSE]
+    rownames(a) <- rownames(b) <- NULL
+    expect_equal(a, b)
     expect_equal(unname(res[4, 1]), median(x[6:9, 1]))
     expect_equal(unname(res[4, 2]), max(x[6:9, 2]))
     if (is.data.frame(x))
-        expect_equal(res[, "pk_ann"], c("a", "b", "e", "f"))
+        expect_equal(res[, "pk_ann"], c("a", NA_character_, "e", NA_character_))
 
 },
 cases(

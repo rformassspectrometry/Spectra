@@ -510,12 +510,11 @@ NULL
 #'   used for the grouping of mass peaks. Parameter `msLevel.` allows to
 #'   define selected MS levels for which peaks should be combined. This
 #'   function returns a `Spectra` with the same number of spectra than the
-#'   input object, but with eventually combined peaks within each spectrum.
-#'   If additional peak variables (other than `"mz"` and `"intensity"`) are
-#'   present, the values for the first peak (i.e. the peak with the lowest
-#'   m/z value) in each peak group are returned/selected. See also
-#'   `reduceSpectra` for a function to select a single *representative* mass
-#'   peak for each peak group.
+#'   input object, but with possibly combined peaks within each spectrum.
+#'   Additional peak variables (other than `"mz"` and `"intensity"`) are
+#'   dropped (i.e. their values are replaced with `NA`) for combined peaks. See
+#'   also `reduceSpectra` for a function to select a single *representative*
+#'   mass peak for each peak group.
 #'
 #' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
