@@ -1,6 +1,10 @@
 # Spectra 1.11
 
-## Changes in
+## Changes in 1.11.4
+
+- Import `uniqueMsLevels` from `ProtGenerics`.
+
+## Changes in 1.11.3
 
 - Rename `combinePeaks` for lists of peak matrices into `combinePeaksData`.
 - Add `combinePeaks` generics.
