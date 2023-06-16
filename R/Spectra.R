@@ -512,8 +512,9 @@ NULL
 #'   function returns a `Spectra` with the same number of spectra than the
 #'   input object, but with possibly combined peaks within each spectrum.
 #'   Additional peak variables (other than `"mz"` and `"intensity"`) are
-#'   dropped (i.e. their values are replaced with `NA`) for combined peaks. See
-#'   also `reduceSpectra` for a function to select a single *representative*
+#'   dropped (i.e. their values are replaced with `NA`) for combined peaks
+#'   unless they are constant across the combined peaks. See also
+#'   `reduceSpectra` for a function to select a single *representative*
 #'   mass peak for each peak group.
 #'
 #' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
@@ -2524,11 +2525,12 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
                                               intensityFun = base::mean,
                                               mzFun = base::mean,
                                               weighted = TRUE,
-                                              msLevel. = seq_len(4), ...) {
+                                              msLevel. = uniqueMsLevels(object),
+                                              ...) {
     object <- addProcessing(
         object, .peaks_combine, ppm = ppm, tolerance = tolerance,
         intensityFun = intensityFun, mzFun = mzFun, weighted = weighted,
-        msLevel = msLevel., spectraVariables = "msLevel")
+        msLevel = force(msLevel.), spectraVariables = "msLevel")
     object@processing <- .logging(
         object@processing, "Combining peaks within each spectrum with ppm = ",
         ppm, " and tolerance = ", tolerance, ".")

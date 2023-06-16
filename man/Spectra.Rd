@@ -441,7 +441,7 @@ coreSpectraVariables()
   intensityFun = base::mean,
   mzFun = base::mean,
   weighted = TRUE,
-  msLevel. = seq_len(4),
+  msLevel. = uniqueMsLevels(object),
   ...
 )
 }
@@ -1152,8 +1152,9 @@ define selected MS levels for which peaks should be combined. This
 function returns a \code{Spectra} with the same number of spectra than the
 input object, but with possibly combined peaks within each spectrum.
 Additional peak variables (other than \code{"mz"} and \code{"intensity"}) are
-dropped (i.e. their values are replaced with \code{NA}) for combined peaks. See
-also \code{reduceSpectra} for a function to select a single \emph{representative}
+dropped (i.e. their values are replaced with \code{NA}) for combined peaks
+unless they are constant across the combined peaks. See also
+\code{reduceSpectra} for a function to select a single \emph{representative}
 mass peak for each peak group.
 \item \code{combineSpectra}: combine sets of spectra into a single spectrum per set.
 For each spectrum group (set), spectra variables from the first spectrum

@@ -370,7 +370,7 @@ with_parameters_test_that(".peaks_combine works", {
                  weighted.mean(x[6:9, 1], x[6:9, 2] + 1))
     expect_equal(unname(res[4, 2]), mean(x[6:9, 2]))
     if (is.data.frame(x))
-        expect_equal(res[, "pk_ann"], c("a", NA_character_, "e", NA_character_))
+        expect_equal(res[, "pk_ann"], c("a", "b", "e", NA_character_))
 
     res <- .peaks_combine(x, msLevel = 2L, spectrumMsLevel = 2L,
                           tolerance = 0.1, weighted = FALSE,
@@ -387,7 +387,7 @@ with_parameters_test_that(".peaks_combine works", {
     expect_equal(unname(res[4, 1]), median(x[6:9, 1]))
     expect_equal(unname(res[4, 2]), max(x[6:9, 2]))
     if (is.data.frame(x))
-        expect_equal(res[, "pk_ann"], c("a", NA_character_, "e", NA_character_))
+        expect_equal(res[, "pk_ann"], c("a", "b", "e", NA_character_))
 
 },
 cases(
@@ -405,6 +405,6 @@ cases(
         x = data.frame(mz = c(100.1, 103.1, 103.2, 103.24, 302, 304.2,
                               304.25, 304.3, 304.35),
                        intensity = c(100, 300, 600, 100, 30, 45, 46, 0, 46),
-                       pk_ann = c("a", "b", "c", "d", "e", "f", "g", "h", "i"))
+                       pk_ann = c("a", "b", "b", "b", "e", "f", "g", "h", "i"))
     )
 ))
