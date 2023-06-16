@@ -603,8 +603,8 @@ NULL
 #'   by the sum of peak intensities within each spectrum. The sum of
 #'   intensities is thus 1 for each spectrum after scaling. Parameter
 #'   `msLevel.` allows to apply the scaling of spectra of a certain MS level.
-#'   With the default `msLevel. = seq_len(4)` spectra for MS levels up to
-#'   level 4 will be scaled.
+#'   By default (`msLevel. = uniqueMsLevels(x)`) intensities for all
+#'   spectra will be scaled.
 #'
 #' - `spectrapply`: applies a given function to each individual spectrum or sets
 #'   of a `Spectra` object. By default, the `Spectra` is split into individual

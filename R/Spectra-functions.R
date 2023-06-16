@@ -822,8 +822,9 @@ reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
 #' @author Johannes Rainer
 #'
 #' @export
-scalePeaks <- function(x, by = sum, msLevel. = seq_len(4)) {
-    x <- addProcessing(x, .peaks_scale_intensities, msLevel = msLevel.,
+scalePeaks <- function(x, by = sum, msLevel. = uniqueMsLevels(x)) {
+    msl <- force(msLevel.)
+    x <- addProcessing(x, .peaks_scale_intensities, msLevel = msl,
                        by = by, spectraVariables = "msLevel")
     x@processing <- .logging(
         x@processing, "Scale peak intensities in spectra of MS level(s) ",

@@ -139,7 +139,7 @@ deisotopeSpectra(
 
 reduceSpectra(x, tolerance = 0, ppm = 10)
 
-scalePeaks(x, by = sum, msLevel. = seq_len(4))
+scalePeaks(x, by = sum, msLevel. = uniqueMsLevels(x))
 
 \S4method{Spectra}{missing}(
   object,
@@ -1220,8 +1220,8 @@ parameter \code{by}. With \code{by = sum} (the default) peak intensities are div
 by the sum of peak intensities within each spectrum. The sum of
 intensities is thus 1 for each spectrum after scaling. Parameter
 \code{msLevel.} allows to apply the scaling of spectra of a certain MS level.
-With the default \code{msLevel. = seq_len(4)} spectra for MS levels up to
-level 4 will be scaled.
+By default (\code{msLevel. = uniqueMsLevels(x)}) intensities for all
+spectra will be scaled.
 \item \code{spectrapply}: applies a given function to each individual spectrum or sets
 of a \code{Spectra} object. By default, the \code{Spectra} is split into individual
 spectra (i.e. \code{Spectra} of length 1) and the function \code{FUN} is applied to

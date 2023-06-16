@@ -750,7 +750,7 @@ test_that("scalePeaks works", {
     res <- scalePeaks(sps, by = max)
     expect_true(all(max(intensity(res)) == 1))
 
-    res <- scalePeaks(sps, by = sum, msLevel = 2)
+    res <- scalePeaks(sps, by = sum, msLevel. = 2)
     expect_equal(res$intensity[[1L]], sps$intensity[[1L]])
     expect_true(sum(intensity(res)[[2L]]) == 1)
     expect_true(sum(intensity(res)[[3L]]) == 1)
