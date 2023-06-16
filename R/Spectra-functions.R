@@ -817,3 +817,18 @@ deisotopeSpectra <-
 reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
     addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
 }
+
+#' @rdname Spectra
+#'
+#' @author Johannes Rainer
+#'
+#' @export
+scalePeaks <- function(x, by = sum, msLevel. = uniqueMsLevels(x)) {
+    msl <- force(msLevel.)
+    x <- addProcessing(x, .peaks_scale_intensities, msLevel = msl,
+                       by = by, spectraVariables = "msLevel")
+    x@processing <- .logging(
+        x@processing, "Scale peak intensities in spectra of MS level(s) ",
+        paste0(msLevel., collapse = ", "), ".")
+    x
+}

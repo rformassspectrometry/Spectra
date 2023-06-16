@@ -346,6 +346,20 @@ test_that(".peaks_reduce works", {
     expect_equal(ref, res)
 })
 
+test_that(".peaks_scale_intensities works", {
+    x <- cbind(mz = 1:3, intensity = c(20, 23, 14))
+    res <- .peaks_scale_intensities(x, spectrumMsLevel = 1L, msLevel = 1L)
+    expect_equal(res[, 2], x[, 2] / sum(x[, 2]))
+
+    res <- .peaks_scale_intensities(x, by = max, spectrumMsLevel = 1L,
+                                    msLevel = 1L)
+    expect_equal(res[, 2], x[, 2] / max(x[, 2]))
+
+    res <- .peaks_scale_intensities(x, by = sum, spectrumMsLevel = 1L,
+                                    msLevel = 2L)
+    expect_equal(res, x)
+})
+
 with_parameters_test_that(".peaks_combine works", {
     res <- .peaks_combine(x, msLevel = 2L, spectrumMsLevel = 2L)
     expect_equal(x, res)
