@@ -1,6 +1,6 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 1.11.4
+Version: 1.11.5
 Description: The Spectra package defines an efficient infrastructure
    for storing and handling mass spectrometry spectra and functionality to
    subset, process, visualize and compare spectra data. It provides different
@@ -33,7 +33,7 @@ Depends:
     R (>= 4.0.0),
     S4Vectors,
     BiocParallel,
-    ProtGenerics (>= 1.29.1)
+    ProtGenerics (>= 1.33.1)
 Imports:
     methods,
     IRanges,
