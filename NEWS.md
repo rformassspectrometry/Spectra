@@ -34,7 +34,6 @@
 - Add `combinePeaks` generics.
 - Add `combinePeaks,Spectra` to combine peaks within each spectrum in a
   `Spectra`.
->>>>>>> main
 
 ## Changes in 1.11.2
 
