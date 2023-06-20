@@ -616,3 +616,35 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
     } else
         cbind(mz = mzs, intensity = ints)
 }
+
+#' Keeps all peaks except those matching the precursor m/z with `tolerance`
+#' and `ppm`.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.peaks_filter_precursor_ne <- function(x, ppm = 20, tolerance = 0,
+                                       precursorMz, spectrumMsLevel,
+                                       msLevel = spectrumMsLevel) {
+    if (!spectrumMsLevel %in% msLevel || !nrow(x))
+        return(x)
+    keep <- is.na(closest(x[, "mz"], precursorMz,
+                          ppm = ppm, tolerance = tolerance))
+    x[keep, , drop = FALSE]
+}
+
+#' Keeps peaks with an m/z smaller than the precursor m/z. `tolerance` and
+#' `ppm` are subtracted from the precursor m/z to ensure that also the
+#' precursor m/z is removed.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.peaks_filter_precursor_below <- function(x, ppm = 20, tolerance = 0,
+                                          precursorMz, spectrumMsLevel,
+                                          msLevel = spectrumMsLevel) {
+    if (!spectrumMsLevel %in% msLevel || !nrow(x))
+        return(x)
+    pmz <- precursorMz - tolerance - ppm(precursorMz, ppm = ppm)
+    x[x[, "mz"] < pmz, , drop = FALSE]
+}

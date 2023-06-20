@@ -2256,6 +2256,39 @@ setMethod("filterPrecursorCharge", "Spectra",
           })
 
 #' @rdname Spectra
+setMethod("filterPrecursorPeaks", "Spectra",
+          function(object, mz = numeric(), tolerance = 0, ppm = 20,
+                   msLevel. = uniqueMsLevels(object), remove = c("==", ">=")) {
+              if (!.check_ms_level(object, msLevel.))
+                  return(object)
+              l <- length(mz)
+              if (length(tolerance) != 1)
+                  stop("'tolerance' should be of length 1")
+              if (length(ppm) != 1)
+                  stop("'ppm' should be of length 1")
+              ## filter peaks which:
+              ## - "!=": keep all peaks except those with an m/z similar to the
+              ##         precursor m/z
+              ## - "<": keep all peaks with an m/z < than the precursor m/z
+              ## Maybe don't implement the others yet.
+              ## LLLLL
+              ## object <- addProcessing(object, .peaks_filter_mz_value,
+              ##                         mz = mz, tolerance = tolerance,
+              ##                         ppm = ppm, msLevel = msLevel.,
+              ##                         keep = keep, spectraVariables = "msLevel")
+              ## if (length(mz) <= 3)
+              ##     what <- paste0(format(mz, digits = 4), collapse = ", ")
+              ## else what <- ""
+              ## if (keep)
+              ##     keep_or_remove <- "select"
+              ## else keep_or_remove <- "remove"
+              ## object@processing <- .logging(
+              ##     object@processing, "Filter: ", keep_or_remove,
+              ##     " peaks matching provided m/z values ", what)
+              ## object
+          })
+
+#' @rdname Spectra
 setMethod("filterPrecursorScan", "Spectra",
           function(object, acquisitionNum = integer(), f = dataOrigin(object)) {
               if (!all(f %in% unique(dataOrigin(object))))
