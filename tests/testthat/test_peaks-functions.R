@@ -438,3 +438,32 @@ test_that(".peaks_filter_precursor_ne works", {
                                       precursorMz = 14.2, tolerance = 0.1)
     expect_equal(res, x[-c(2, 3, 4), ])
 })
+
+test_that(".peaks_filter_precursor_keep_below works", {
+    x <- cbind(mz = c(13.4, 14.1, 14.2, 14.24, 17.3, 120.1),
+               intensity = 1:6)
+    res <- .peaks_filter_precursor_keep_below(
+        x, spectrumMsLevel = 2L, msLevel = 1L)
+    expect_equal(res, x)
+    res <- .peaks_filter_precursor_keep_below(
+        x, spectrumMsLevel = 2L, msLevel = NA)
+    expect_equal(res, x)
+    res <- .peaks_filter_precursor_keep_below(
+        x, spectrumMsLevel = NA, msLevel = 1L)
+    expect_equal(res, x)
+
+    res <- .peaks_filter_precursor_keep_below(
+        x, spectrumMsLevel = 1L, msLevel = 1L,
+        precursorMz = 20)
+    expect_equal(res[, "intensity"], 1:5)
+
+    res <- .peaks_filter_precursor_keep_below(
+        x, spectrumMsLevel = 1L, msLevel = 1L,
+        precursorMz = 14.2)
+    expect_equal(res[, "intensity"], 1:2)
+
+    res <- .peaks_filter_precursor_keep_below(
+        x, spectrumMsLevel = 1L, msLevel = 1L,
+        precursorMz = 14.2, tolerance = 0.1)
+    expect_equal(unname(res[, "intensity"]), 1)
+})

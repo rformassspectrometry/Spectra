@@ -640,9 +640,9 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
 #' @author Johannes Rainer
 #'
 #' @noRd
-.peaks_filter_precursor_below <- function(x, ppm = 20, tolerance = 0,
-                                          precursorMz, spectrumMsLevel,
-                                          msLevel = spectrumMsLevel) {
+.peaks_filter_precursor_keep_below <- function(x, ppm = 20, tolerance = 0,
+                                               precursorMz, spectrumMsLevel,
+                                               msLevel = spectrumMsLevel) {
     if (!spectrumMsLevel %in% msLevel || !nrow(x))
         return(x)
     pmz <- precursorMz - tolerance - ppm(precursorMz, ppm = ppm)
