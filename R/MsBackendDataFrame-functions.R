@@ -70,7 +70,7 @@ NULL
 }
 
 .peaks_variables <- function(x) {
-    if (any(slotNames(x) == "peaksVariables")) {
+    if (.hasSlot(x, "peaksVariables")) {
         x@peaksVariables
     } else c("mz", "intensity")
 }
