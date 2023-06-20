@@ -239,7 +239,7 @@ NULL
 #'   `data.frame`), with each array providing the values for the requested
 #'   *peak variables* (by default `"mz"` and `"intensity"`). Optional parameter
 #'   `columns` is passed to the backend's `peaksData` function to allow
-#'   selection of specific (or additional) peaks variables (columns) that
+#'   the selection of specific (or additional) peaks variables (columns) that
 #'   should be extracted (if available). Importantly,
 #'   it is **not** guaranteed that each backend supports this parameter (while
 #'   each backend must support extraction of `"mz"` and `"intensity"` columns).
@@ -1932,12 +1932,15 @@ setMethod(
     function(object, columns = spectraVariables(object)) {
         if (length(object@processingQueue) &&
             length(pcns <- intersect(columns, peaksVariables(object)))) {
+            ## If user requests peaks variables we need to ensure that the
+            ## processing queue is executed.
             scns <- setdiff(columns, pcns)
             if (length(scns))
                 spd <- spectraData(object@backend, columns = scns)
             else
                 spd <- make_zero_col_DFrame(nrow = length(object))
             pkd <- peaksData(object, columns = pcns)
+            ## Add individual peaks variables to the `DataFrame`.
             for (pcn in pcns) {
                 vals <- lapply(pkd, `[`, , pcn)
                 if (pcn %in% c("mz", "intensity"))

@@ -917,7 +917,7 @@ returns a \code{\link[=SimpleList]{SimpleList()}} of two dimensional arrays (eit
 \code{data.frame}), with each array providing the values for the requested
 \emph{peak variables} (by default \code{"mz"} and \code{"intensity"}). Optional parameter
 \code{columns} is passed to the backend's \code{peaksData} function to allow
-selection of specific (or additional) peaks variables (columns) that
+the selection of specific (or additional) peaks variables (columns) that
 should be extracted (if available). Importantly,
 it is \strong{not} guaranteed that each backend supports this parameter (while
 each backend must support extraction of \code{"mz"} and \code{"intensity"} columns).
