@@ -3,7 +3,7 @@
 ## Changes in 1.11.6
 
 - Add `filterPrecursorPeaks` to allow filtering peaks within each spectrum
-  relative to the precursor m/z of the spectrum.
+  with m/z values relative to the precursor m/z of the spectrum.
 
 ## Changes in 1.11.5
 

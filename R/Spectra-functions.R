@@ -219,7 +219,7 @@ applyProcessing <- function(object, f = dataStorage(object),
         return(TRUE)
     if (!is.numeric(msLevel))
         stop("'msLevel' must be numeric")
-    if (!any(msLevel(object) %in% msLevel)) {
+    if (!any(uniqueMsLevels(object) %in% msLevel)) {
         warning("Specified MS levels ", paste0(msLevel, collapse = ","),
                 " not available in 'object'")
         FALSE
@@ -831,4 +831,35 @@ scalePeaks <- function(x, by = sum, msLevel. = uniqueMsLevels(x)) {
         x@processing, "Scale peak intensities in spectra of MS level(s) ",
         paste0(msLevel., collapse = ", "), ".")
     x
+}
+
+#' @rdname Spectra
+#'
+#' @export
+filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
+                                 mz = c("==", ">="),
+                                 msLevel. = uniqueMsLevels(object)) {
+    if (!inherits(object, "Spectra"))
+        stop("'object' is expected to be an instance of class 'Spectra'.")
+    if (!.check_ms_level(object, msLevel.))
+        return(object)
+    if (length(tolerance) != 1)
+        stop("'tolerance' should be of length 1")
+    if (length(ppm) != 1)
+        stop("'ppm' should be of length 1")
+    mz <- match.arg(mz)
+    if (mz == "==") {
+        FUN <- .peaks_filter_precursor_ne
+        msg <- "matching precursor m/z."
+    } else {
+        FUN <- .peaks_filter_precursor_keep_below
+        msg <- "above precursor."
+    }
+    object <- addProcessing(
+        object, FUN, tolerance = tolerance, ppm = ppm,
+        msLevel = msLevel.,
+        spectraVariables = c("msLevel", "precursorMz"))
+    object@processing <- .logging(
+        object@processing, "Filter: remove peaks ", msg)
+    object
 }

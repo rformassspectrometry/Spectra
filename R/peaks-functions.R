@@ -628,8 +628,9 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
                                        msLevel = spectrumMsLevel) {
     if (!spectrumMsLevel %in% msLevel || !nrow(x))
         return(x)
-    keep <- is.na(closest(x[, "mz"], precursorMz,
-                          ppm = ppm, tolerance = tolerance))
+    keep <- is.na(closest(x[, "mz"], precursorMz, ppm = ppm,
+                          tolerance = tolerance, duplicates = "keep",
+                          .check = FALSE))
     x[keep, , drop = FALSE]
 }
 

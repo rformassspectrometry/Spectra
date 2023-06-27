@@ -379,6 +379,10 @@ peaks data (m/z and intensity values) within each spectrum are:
   peaks matching provided m/z value(s) (given parameters `ppm` and `tolerance`).
 - `filterMzRange`: subsets peaks data within each spectrum keeping only peaks
   with their m/z values within the specified m/z range.
+- `filterPrecursorPeaks`: removes peaks with either an m/z value matching the
+  precursor m/z of the respective spectrum (with parameter `mz = "=="`) or peaks
+  with an m/z value larger or equal to the precursor m/z (with parameter
+  `mz = ">="`).
 
 In the example below we select all spectra measured in the second mzML file and
 subsequently filter them to retain spectra measured between 175 and 189 seconds
