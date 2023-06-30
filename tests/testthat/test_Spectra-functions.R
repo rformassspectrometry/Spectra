@@ -791,8 +791,9 @@ test_that("filterPrecursorIsotopes works", {
     x <- filterMsLevel(sps_dda, 1L)
     res <- filterPrecursorIsotopes(x)
     expect_equal(rtime(res), rtime(x))
+})
 
-    test_that("scalePeaks works", {
+test_that("scalePeaks works", {
     tmp <- data.frame(msLevel = c(1L, 2L, 2L, 3L), rtime = 1:4)
     tmp$mz <- list(1:3, 1:2, 1:4, 1:3)
     tmp$intensity <- list(c(12, 32.2, 12.1), c(34, 35.2),

@@ -950,6 +950,8 @@ filterPrecursorIsotopes <-
         x
 }
 
+#' @rdname Spectra
+#'
 #' @author Johannes Rainer
 #'
 #' @export

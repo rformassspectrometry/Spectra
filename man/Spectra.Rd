@@ -10,6 +10,7 @@
 \alias{reduceSpectra}
 \alias{filterPrecursorMaxIntensity}
 \alias{filterPrecursorIsotopes}
+\alias{scalePeaks}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -139,6 +140,8 @@ filterPrecursorIsotopes(
   ppm = 20,
   substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL")
 )
+
+scalePeaks(x, by = sum, msLevel. = uniqueMsLevels(x))
 
 \S4method{Spectra}{missing}(
   object,
@@ -524,6 +527,16 @@ passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.}
 \item{charge}{For \code{deisotopeSpectra}: expected charge of the ionized
 compounds. See \code{\link[=isotopologues]{isotopologues()}} for details.}
 
+\item{by}{For \code{scalePeaks}: function to calculate a single \code{numeric} from
+intensity values of a spectrum by which all intensities (of
+that spectrum) should be divided by. The default \code{by = sum} will
+divide intensities of each spectrum by the sum of intensities of that
+spectrum.}
+
+\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
+the function should be applied (defaults to all MS levels of \code{object}.
+For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
+
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
 
@@ -643,10 +656,6 @@ returns a \code{logical} (same length then peaks in the spectrum) whether the
 peak should be retained or not. Defaults to \code{intensity = c(0, Inf)} thus
 only peaks with \code{NA} intensity are removed.}
 
-\item{msLevel.}{\code{integer} defining the MS level(s) of the spectra to which
-the function should be applied (defaults to all MS levels of \code{object}.
-For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
-
 \item{keep}{For \code{filterMzValues} and \code{filterMzRange}: \code{logical(1)} whether
 the matching peaks should be retained (\code{keep = TRUE}, the default\verb{) or dropped (}keep = FALSE`).}
 
@@ -708,12 +717,6 @@ is ignored if \code{weighted = TRUE} (the default).}
 \item{weighted}{For \code{combinePeaks}: \code{logical(1)} whether m/z values of peaks
 within each peak group should be aggregated into a single m/z value
 using an intensity-weighted mean. Defaults to \code{weighted = TRUE}.}
-
-\item{by}{For \code{scalePeaks}: function to calculate a single \code{numeric} from
-intensity values of a spectrum by which all intensities (of
-that spectrum) should be divided by. The default \code{by = sum} will
-divide intensities of each spectrum by the sum of intensities of that
-spectrum.}
 }
 \value{
 See individual method description for the return value.
@@ -1745,6 +1748,8 @@ mz(data)
 Nir Shahaf, Johannes Rainer
 
 Nir Shahaf
+
+Johannes Rainer
 
 Sebastian Gibb, Johannes Rainer, Laurent Gatto
 }
