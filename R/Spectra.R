@@ -315,6 +315,18 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
+#' - `deisotopeSpectra`: *deisotopes* each spectrum keeping only the
+#'   monoisotopic peak for groups of isotopologues. Isotopologues are
+#'   estimated using the [isotopologues()] function from the
+#'   *MetaboCoreUtils* package. Note that
+#'   the default parameters for isotope prediction/detection have been
+#'   determined using data from the Human Metabolome Database (HMDB) and
+#'   isotopes for elements other than CHNOPS might not be detected. See
+#'   parameter `substDefinition` in the documentation of [isotopologues()] for
+#'   more information. The approach and code to define the parameters for
+#'   isotope prediction is described
+#'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
+#'
 #' - `dropNaSpectraVariables`: removes spectra variables (i.e. columns in the
 #'   object's `spectraData` that contain only missing values (`NA`). Note that
 #'   while columns with only `NA`s are removed, a `spectraData` call after
@@ -346,7 +358,7 @@ NULL
 #'   Returns the filtered `Spectra` object (with spectra in their
 #'   original order).
 #'
-#' - `filterFourierTransformArtefacts`: remove (Orbitrap) fast fourier
+#' - `filterFourierTransformArtefacts`: removes (Orbitrap) fast fourier
 #'   artefact peaks from spectra (see examples below). The function iterates
 #'   through all intensity ordered peaks in a spectrum and removes all peaks
 #'   with an m/z within +/- `halfWindowSize` of the current peak if their
@@ -355,7 +367,22 @@ NULL
 #'   allow to avoid removing of potential `[13]C` isotope peaks (`maxCharge`
 #'   being the maximum charge that should be considered and `isotopeTolerance`
 #'   the absolute acceptable tolerance for matching their m/z).
-#'   See [filterFourierTransformArtefacts()] for details and background.
+#'   See [filterFourierTransformArtefacts()] for details and background and
+#'   `deisitopeSpectra` for an alternative.
+#'
+#' - `filterIntensity`: filters each spectrum keeping only peaks with
+#'   intensities that are within the provided range or match the criteria of
+#'   the provided function. For the former, parameter `intensity` has to be a
+#'   `numeric` defining the intensity range, for the latter a `function` that
+#'   takes the intensity values of the spectrum and returns a `logical` whether
+#'   the peak should be retained or not (see examples below for details) -
+#'   additional parameters to the function can be passed with `...`. To
+#'   remove only peaks with intensities below a certain threshold, say 100, use
+#'   `intensity = c(100, Inf)`. Note: also a single value can be passed with
+#'   the `intensity` parameter in which case an upper limit of `Inf` is used.
+#'   Note that this function removes also peaks with missing intensities
+#'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
+#'   filtering to spectra of the specified MS level(s).
 #'
 #' - `filterIsolationWindow`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
@@ -381,6 +408,21 @@ NULL
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
+#' - `filterPrecursorIsotopes`: groups MS2 spectra based on their precursor m/z
+#'   and precursor intensity into predicted isotope groups and keep for each
+#'   only the spectrum representing the monoisotopic precursor. MS1 spectra
+#'   are returned as is. See documentation for `deisotopeSpectra` below for
+#'   details on isotope prediction and parameter description.
+#'
+#' - `filterPrecursorMaxIntensity`: filters the `Spectra` keeping for groups
+#'   of (MS2) spectra with similar precursor m/z values (given parameters
+#'   `ppm` and `tolerance`) the one with the highest precursor intensity. The
+#'   function filters only MS2 spectra and returns all MS1 spectra. If
+#'   precursor intensities are `NA` for all spectra within a spectra group, the
+#'   first spectrum of that groups is returned.
+#'   Note: some manufacturers don't provide precursor intensities. These can
+#'   however also be estimated with [estimatePrecursorIntensity()].
+#'
 #' - `filterPrecursorMzRange` (previously `filterPrecursorMz` which is now
 #'   deprecated): retains spectra with a precursor m/z within the
 #'   provided m/z range. See examples for details on selecting spectra with
@@ -403,6 +445,13 @@ NULL
 #'   times (in seconds) within (`>=`) `rt[1]` and (`<=`)
 #'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
+#'
+#' - `reduceSpectra`: for groups of peaks within highly similar m/z values
+#'   within each spectrum (given `ppm` and `tolerance`), this function keeps
+#'   only the peak with the highest intensity removing all other peaks hence
+#'   *reducing* each spectrum to the highest intensity peaks per *peak group*.
+#'   Peak groups are defined using the [group()] function from the
+#'   *MsCoreUtils* package.
 #'
 #' - `reset`: restores the data to its original state (as much as possible):
 #'   removes any processing steps from the lazy processing queue and calls
@@ -517,7 +566,7 @@ NULL
 #'   `reduceSpectra` for a function to select a single *representative*
 #'   mass peak for each peak group.
 #'
-#' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
+#' - `combineSpectra`: combines sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
 #'   with `FUN`, which defaults to [combinePeaksData()]. Please refer to the
@@ -587,21 +636,8 @@ NULL
 #'   respective MS2 spectrum). With `method = "interpolation"` it is also
 #'   possible to calculate the precursor intensity based on an interpolation of
 #'   intensity values (and retention times) of the matching MS1 peaks from the
-#'   previous and next MS1 spectrum. See below for an example.
-#'
-#' - `filterIntensity`: filters each spectrum keeping only peaks with
-#'   intensities that are within the provided range or match the criteria of
-#'   the provided function. For the former, parameter `intensity` has to be a
-#'   `numeric` defining the intensity range, for the latter a `function` that
-#'   takes the intensity values of the spectrum and returns a `logical` whether
-#'   the peak should be retained or not (see examples below for details) -
-#'   additional parameters to the function can be passed with `...`. To
-#'   remove only peaks with intensities below a certain threshold, say 100, use
-#'   `intensity = c(100, Inf)`. Note: also a single value can be passed with
-#'   the `intensity` parameter in which case an upper limit of `Inf` is used.
-#'   Note that this function removes also peaks with missing intensities
-#'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
-#'   filtering to spectra of the specified MS level(s).
+#'   previous and next MS1 spectrum. See [estimatePrecursorIntensity()] for
+#'   examples and more details.
 #'
 #' - `neutralLoss`: calculates neutral loss spectra for fragment spectra. See
 #'   [neutralLoss()] for detailed documentation.
@@ -645,7 +681,7 @@ NULL
 #'   See also [chunkapply()] or examples below for details on chunk-wise
 #'   processing.
 #'
-#' - `smooth`: smooth individual spectra using a moving window-based approach
+#' - `smooth`: smooths individual spectra using a moving window-based approach
 #'   (window size = `2 * halfWindowSize`). Currently, the
 #'   Moving-Average- (`method = "MovingAverage"`),
 #'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
@@ -790,7 +826,7 @@ NULL
 #'     backends changing this parameter can lead to errors.
 #'     For `combineSpectra`: `factor` defining the grouping of the spectra that
 #'     should be combined. For `spectrapply`: `factor` how `object` should be
-#'     splitted. For `estimatePrecursorIntensity` and `filterPrecursorScan`:
+#'     splitted. For `filterPrecursorScan`:
 #'     defining which spectra belong to the same original data file (sample).
 #'     Defaults to `f = dataOrigin(x)`.
 #'
@@ -863,10 +899,6 @@ NULL
 #'   currently, the Moving-Average- (`method = "MovingAverage"`),
 #'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
 #'   Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
-#' - For `estimatePrecursorIntensity`: `character(1)` defining whether the
-#'   precursor intensity should be estimated on the previous MS1 spectrum
-#'   (`method = "previous"`, the default) or based on an interpolation on the
-#'   previous and next MS1 spectrum (`method = "interpolation"`).
 #'
 #' @param metadata For `Spectra`: optional `list` with metadata information.
 #'
@@ -909,6 +941,10 @@ NULL
 #'     `filterMzValues` and `reduceSpectra`: `numeric(1)`
 #'     defining a relative, m/z-dependent, maximal accepted difference between
 #'     m/z values for peaks to be matched (or grouped).
+#'     For `filterPrecursorMaxIntensity`: `numeric(1)` defining the relative
+#'     maximal accepted difference of precursor m/z values of spectra for
+#'     grouping them into *precursor groups*. For `filterPrecursorIsotopes`:
+#'     passed directly to the [isotopologues()] function.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
@@ -934,11 +970,11 @@ NULL
 #'     should be passed along to the function defined with `FUN`. See function
 #'     description for details.
 #'
-#' @param substDefinition For `deisotopeSpectra`: `matrix` or `data.frame`
-#'     with definitions of isotopic substitutions. Uses by default isotopic
-#'     substitutions defined from all compounds in the Human Metabolome
-#'     Database (HMDB). See [isotopologues()] or [isotopicSubstitutionMatrix()]
-#'     for details.
+#' @param substDefinition For `deisotopeSpectra` and `filterPrecursorIsotopes`:
+#'     `matrix` or `data.frame` with definitions of isotopic substitutions.
+#'     Uses by default isotopic substitutions defined from all compounds in the
+#'     Human Metabolome Database (HMDB). See [isotopologues()] or
+#'     [isotopicSubstitutionMatrix()] for details.
 #'
 #' @param suffix.y A `character(1)` specifying the suffix to be used
 #'     for making the names of columns in the merged spectra variables
@@ -950,6 +986,10 @@ NULL
 #'     a constant maximal accepted difference between m/z values for peaks
 #'     to be matched (or grouped). For `containsMz` it can also be of length
 #'     equal `mz` to specify a different tolerance for each m/z value.
+#'     For `filterPrecursorMaxIntensity`: `numeric(1)` defining the (constant)
+#'     maximal accepted difference of precursor m/z values of spectra for
+#'     grouping them into *precursor groups*. For `filterPrecursorIsotopes`:
+#'     passed directly to the [isotopologues()] function.
 #'
 #' @param threshold
 #' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
@@ -1310,22 +1350,6 @@ NULL
 #' ## of the chunks (i.e. number of spectra per chunk) with the `chunkSize`
 #' ## parameter
 #' spectrapply(sciex_im[1:20], lengths, chunkSize = 5L)
-#'
-#' ## Calculating the precursor intensity for MS2 spectra:
-#' ##
-#' ## Some MS instrument manufacturer don't report the precursor intensities
-#' ## for MS2 spectra. The `estimatePrecursorIntensity` function can be used
-#' ## in these cases to calculate the precursor intensity on MS1 data. Below
-#' ## we load an mzML file from a vendor providing precursor intensities and
-#' ## compare the estimated and reported precursor intensities.
-#' tmt <- Spectra(msdata::proteomics(full.names = TRUE)[5],
-#'     backend = MsBackendMzR())
-#' pmi <- estimatePrecursorIntensity(tmt)
-#' plot(pmi, precursorIntensity(tmt))
-#'
-#' ## We can also replace the original precursor intensity values with the
-#' ## newly calculated ones
-#' tmt$precursorIntensity <- pmi
 #'
 #' ## ---- DATA EXPORT ----
 #'

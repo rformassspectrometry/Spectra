@@ -1,5 +1,10 @@
 # Spectra 1.11
 
+## Changes in 1.11.6
+
+- Add `filterPrecursorMaxIntensity` function.
+- Add `filterPrecursorIsotopes` function.
+
 ## Changes in 1.11.5
 
 - Add `scalePeaks` function (see [issue
