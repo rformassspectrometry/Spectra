@@ -40,6 +40,9 @@
     <loc>https://rformassspectrometry.github.io/Spectra/reference/countIdentifications.html</loc>
   </url>
   <url>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/estimatePrecursorIntensity.html</loc>
+  </url>
+  <url>
     <loc>https://rformassspectrometry.github.io/Spectra/reference/filterFourierTransformArtefacts.html</loc>
   </url>
   <url>
