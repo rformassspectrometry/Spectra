@@ -5,6 +5,7 @@ NULL
 #'
 #' @aliases Spectra-class [,Spectra-method
 #' @aliases uniqueMsLevels uniqueMsLevels,Spectra-method
+#' @aliases combinePeaks
 #'
 #' @name Spectra
 #'
@@ -314,9 +315,10 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
-#' - `deisotopeSpectra`: *deisotope* each spectrum keeping only the monoisotopic
-#'   peak for groups of isotopologues. Isotopologues are estimated using the
-#'   [isotopologues()] function from the *MetaboCoreUtils* package. Note that
+#' - `deisotopeSpectra`: *deisotopes* each spectrum keeping only the
+#'   monoisotopic peak for groups of isotopologues. Isotopologues are
+#'   estimated using the [isotopologues()] function from the
+#'   *MetaboCoreUtils* package. Note that
 #'   the default parameters for isotope prediction/detection have been
 #'   determined using data from the Human Metabolome Database (HMDB) and
 #'   isotopes for elements other than CHNOPS might not be detected. See
@@ -356,7 +358,7 @@ NULL
 #'   Returns the filtered `Spectra` object (with spectra in their
 #'   original order).
 #'
-#' - `filterFourierTransformArtefacts`: remove (Orbitrap) fast fourier
+#' - `filterFourierTransformArtefacts`: removes (Orbitrap) fast fourier
 #'   artefact peaks from spectra (see examples below). The function iterates
 #'   through all intensity ordered peaks in a spectrum and removes all peaks
 #'   with an m/z within +/- `halfWindowSize` of the current peak if their
@@ -406,7 +408,7 @@ NULL
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
-#' - `filterPrecursorIsotopes`: group MS2 spectra based on their precursor m/z
+#' - `filterPrecursorIsotopes`: groups MS2 spectra based on their precursor m/z
 #'   and precursor intensity into predicted isotope groups and keep for each
 #'   only the spectrum representing the monoisotopic precursor. MS1 spectra
 #'   are returned as is. See documentation for `deisotopeSpectra` below for
@@ -547,11 +549,28 @@ NULL
 #'   access and it is possible to *revert* the operation with the `reset`
 #'   function (see description of `reset` above).
 #'
-#' - `combineSpectra`: combine sets of spectra into a single spectrum per set.
+#' - `combinePeaks`: combines mass peaks within each spectrum with a difference
+#'   in their m/z values that is smaller than the maximal acceptable difference
+#'   defined by `ppm` and `tolerance`. Parameters `intensityFun` and `mzFun`
+#'   allow to define functions to aggregate the intensity and m/z values for
+#'   each such group of peaks. With `weighted = TRUE` (the default), the m/z
+#'   value of the combined peak is calculated using an intensity-weighted mean
+#'   and parameter `mzFun` is ignored. The [MsCoreUtils::group()] function is
+#'   used for the grouping of mass peaks. Parameter `msLevel.` allows to
+#'   define selected MS levels for which peaks should be combined. This
+#'   function returns a `Spectra` with the same number of spectra than the
+#'   input object, but with possibly combined peaks within each spectrum.
+#'   Additional peak variables (other than `"mz"` and `"intensity"`) are
+#'   dropped (i.e. their values are replaced with `NA`) for combined peaks
+#'   unless they are constant across the combined peaks. See also
+#'   `reduceSpectra` for a function to select a single *representative*
+#'   mass peak for each peak group.
+#'
+#' - `combineSpectra`: combines sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
-#'   with `FUN`, which defaults to [combinePeaks()]. Please refer to the
-#'   [combinePeaks()] help page for details and options of the actual
+#'   with `FUN`, which defaults to [combinePeaksData()]. Please refer to the
+#'   [combinePeaksData()] help page for details and options of the actual
 #'   combination of peaks across the sets of spectra and to the package vignette
 #'   for examples and alternative ways to aggregate spectra.
 #'   The sets of spectra can be specified with parameter `f`.
@@ -570,7 +589,7 @@ NULL
 #'   The function returns a `Spectra` of length equal to the unique levels
 #'   of `f`.
 #'
-#' - `compareSpectra`: compare each spectrum in `x` with each spectrum in `y`
+#' - `compareSpectra`: compares each spectrum in `x` with each spectrum in `y`
 #'   using the function provided with `FUN` (defaults to [ndotproduct()]). If
 #'   `y` is missing, each spectrum in `x` is compared with each other spectrum
 #'   in `x`.
@@ -600,7 +619,18 @@ NULL
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
 #'   is *simplified* to a `numeric` if length of `x` or `y` is one.
 #'
-#' - `estimatePrecursorIntensity`: define the precursor intensities for MS2
+#' - `deisotopeSpectra`: *deisotopes* each spectrum keeping only the
+#'   monoisotopic peak for groups of isotopologues. Isotopologues are
+#'   estimated using the [isotopologues()] function from the *MetaboCoreUtils*
+#'   package. Note that the default parameters for isotope
+#'   prediction/detection have been determined using data from the Human
+#'   Metabolome Database (HMDB) and isotopes for elements other than CHNOPS
+#'   might not be detected. See parameter `substDefinition` in the
+#'   documentation of [isotopologues()] for more information. The approach
+#'   and code to define the parameters for isotope prediction is described
+#'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
+#'
+#' - `estimatePrecursorIntensity`: defines the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the
 #'   closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
 #'   respective MS2 spectrum). With `method = "interpolation"` it is also
@@ -609,13 +639,29 @@ NULL
 #'   previous and next MS1 spectrum. See [estimatePrecursorIntensity()] for
 #'   examples and more details.
 #'
-#' - `neutralLoss`: calculate neutral loss spectra for fragment spectra. See
+#' - `neutralLoss`: calculates neutral loss spectra for fragment spectra. See
 #'   [neutralLoss()] for detailed documentation.
 #'
 #' - `processingLog`: returns a `character` vector with the processing log
 #'   messages.
 #'
-#' - `spectrapply`: apply a given function to each individual spectrum or sets
+#' - `reduceSpectra`: keeps for groups of peaks with similar m/z values in
+#'   (given `ppm` and `tolerance`) in each spectrum only the peak with the
+#'   highest intensity removing all other peaks hence *reducing* each
+#'   spectrum to the highest intensity peaks per *peak group*.
+#'   Peak groups are defined using the [group()] function from the
+#'   *MsCoreUtils* package. See also the `combinePeaks` function for an
+#'   alternative function to combine peaks within each spectrum.
+#'
+#' - `scalePeaks`: scales intensities of peaks within each spectrum depending on
+#'   parameter `by`. With `by = sum` (the default) peak intensities are divided
+#'   by the sum of peak intensities within each spectrum. The sum of
+#'   intensities is thus 1 for each spectrum after scaling. Parameter
+#'   `msLevel.` allows to apply the scaling of spectra of a certain MS level.
+#'   By default (`msLevel. = uniqueMsLevels(x)`) intensities for all
+#'   spectra will be scaled.
+#'
+#' - `spectrapply`: applies a given function to each individual spectrum or sets
 #'   of a `Spectra` object. By default, the `Spectra` is split into individual
 #'   spectra (i.e. `Spectra` of length 1) and the function `FUN` is applied to
 #'   each of them. An alternative splitting can be defined with parameter `f`.
@@ -635,7 +681,7 @@ NULL
 #'   See also [chunkapply()] or examples below for details on chunk-wise
 #'   processing.
 #'
-#' - `smooth`: smooth individual spectra using a moving window-based approach
+#' - `smooth`: smooths individual spectra using a moving window-based approach
 #'   (window size = `2 * halfWindowSize`). Currently, the
 #'   Moving-Average- (`method = "MovingAverage"`),
 #'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
@@ -733,6 +779,12 @@ NULL
 #'
 #' @param breaks For `bin`: `numeric` defining the m/z breakpoints between bins.
 #'
+#' @param by For `scalePeaks`: function to calculate a single `numeric` from
+#'     intensity values of a spectrum by which all intensities (of
+#'     that spectrum) should be divided by. The default `by = sum` will
+#'     divide intensities of each spectrum by the sum of intensities of that
+#'     spectrum.
+#'
 #' @param by.x A `character(1)` specifying the spectra variable used
 #'     for merging. Default is `"spectrumId"`.
 #'
@@ -813,6 +865,10 @@ NULL
 #'     peak should be retained or not. Defaults to `intensity = c(0, Inf)` thus
 #'     only peaks with `NA` intensity are removed.
 #'
+#' @param intensityFun For `combinePeaks`: function to be used to aggregate
+#'     intensities for all peaks in each peak group into a single intensity
+#'     value.
+#'
 #' @param isotopeTolerance For `filterFourierTransformArtefacts`: the m/z
 #'     `tolerance` to be used to define whether peaks might be isotopes of
 #'     the current tested peak.
@@ -855,6 +911,10 @@ NULL
 #'     `numeric(2)` defining the lower and upper m/z boundary.
 #'     For `filterMzValues` and `filterPrecursorMzValues`: `numeric` with the
 #'     m/z values to match peaks or precursor m/z against.
+#'
+#' @param mzFun For `combinePeaks`: function to aggregate m/z values for all
+#'     peaks within each peak group into a single m/z value. This parameter
+#'     is ignored if `weighted = TRUE` (the default).
 #'
 #' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
 #'     to filter for.
@@ -948,6 +1008,10 @@ NULL
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
+#' @param weighted For `combinePeaks`: `logical(1)` whether m/z values of peaks
+#'     within each peak group should be aggregated into a single m/z value
+#'     using an intensity-weighted mean. Defaults to `weighted = TRUE`.
+#'
 #' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
 #'     (the default) or all provided `mz` have to be present in the spectrum.
 #'
@@ -1025,6 +1089,7 @@ NULL
 #' ## original mzML file name:
 #' head(dataOrigin(sciex))
 #' head(dataOrigin(sciex_im))
+#'
 #'
 #' ## ---- ACCESSING AND ADDING DATA ----
 #'
@@ -2481,4 +2546,32 @@ setMethod("uniqueMsLevels", "Spectra", function(object, ...) {
 #' @rdname Spectra
 setMethod("backendBpparam", "Spectra", function(object, BPPARAM = bpparam()) {
     backendBpparam(object@backend, BPPARAM)
+})
+
+#' @rdname hidden_aliases
+setMethod("combinePeaks", "list", function(object, ...) {
+    .Deprecated("combinePeaksData", old = "combinePeaks",
+                msg = paste0("'combinePeaks' for lists of peak matrices is ",
+                             "deprecated; please use 'combinePeaksData' ",
+                             "instead."))
+    combinePeaksData(object, ...)
+})
+
+#' @rdname Spectra
+#'
+#' @exportMethod combinePeaks
+setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
+                                              intensityFun = base::mean,
+                                              mzFun = base::mean,
+                                              weighted = TRUE,
+                                              msLevel. = uniqueMsLevels(object),
+                                              ...) {
+    object <- addProcessing(
+        object, .peaks_combine, ppm = ppm, tolerance = tolerance,
+        intensityFun = intensityFun, mzFun = mzFun, weighted = weighted,
+        msLevel = force(msLevel.), spectraVariables = "msLevel")
+    object@processing <- .logging(
+        object@processing, "Combining peaks within each spectrum with ppm = ",
+        ppm, " and tolerance = ", tolerance, ".")
+    object
 })

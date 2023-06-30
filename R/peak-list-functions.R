@@ -13,12 +13,13 @@ NULL
 #'
 #' @description
 #'
-#' `combinePeaks` aggregates provided peak matrices into a single peak matrix.
-#' Peaks are grouped by their m/z values with the `group()` function from the
-#' `MsCoreUtils` package. In brief, all peaks in all provided spectra are first
-#' ordered by their m/z and consecutively grouped into one group if the
-#' (pairwise) difference between them is smaller than specified with parameter
-#' `tolerance` and `ppm` (see [group()] for grouping details and examples).
+#' `combinePeaksData` aggregates provided peak matrices into a single peak
+#' matrix. Peaks are grouped by their m/z values with the `group()` function
+#' from the `MsCoreUtils` package. In brief, all peaks in all provided
+#' spectra are first ordered by their m/z and consecutively grouped into one
+#' group if the (pairwise) difference between them is smaller than specified
+#' with parameter `tolerance` and `ppm` (see [group()] for grouping details
+#' and examples).
 #'
 #' The m/z and intensity values for the resulting peak matrix are calculated
 #' using the `mzFun` and `intensityFun` on the grouped m/z and intensity values.
@@ -147,7 +148,7 @@ NULL
 #' ## Combine the spectra. With `tolerance = 0` and `ppm = 0` only peaks with
 #' ## **identical** m/z are combined. The result will be a single spectrum
 #' ## containing the *union* of mass peaks from the individual input spectra.
-#' p <- combinePeaks(list(p1, p2, p3))
+#' p <- combinePeaksData(list(p1, p2, p3))
 #'
 #' ## Plot the spectra before and after combining
 #' par(mfrow = c(2, 1), mar = c(4.3, 4, 1, 1))
@@ -160,7 +161,7 @@ NULL
 #' ## The peaks were not merged, because their m/z differs too much.
 #'
 #' ## Combine spectra with `tolerance = 0.05`. This will merge all triplets.
-#' p <- combinePeaks(list(p1, p2, p3), tolerance = 0.05)
+#' p <- combinePeaksData(list(p1, p2, p3), tolerance = 0.05)
 #'
 #' ## Plot the spectra before and after combining
 #' par(mfrow = c(2, 1), mar = c(4.3, 4, 1, 1))
@@ -172,7 +173,7 @@ NULL
 #'     col = "black")
 #'
 #' ## With `intensityFun = max` the maximal intensity per peak is reported.
-#' p <- combinePeaks(list(p1, p2, p3), tolerance = 0.05,
+#' p <- combinePeaksData(list(p1, p2, p3), tolerance = 0.05,
 #'     intensityFun = max)
 #'
 #' ## Create *consensus*/representative spectrum from a set of spectra
@@ -182,23 +183,23 @@ NULL
 #' p3 <- cbind(mz = c(12.1, 44.9, 63), intensity = c(12, 22, 32))
 #'
 #' ## No mass peaks identical thus consensus peaks are empty
-#' combinePeaks(list(p1, p2, p3), peaks = "intersect")
+#' combinePeaksData(list(p1, p2, p3), peaks = "intersect")
 #'
 #' ## Reducing the minProp to 0.2. The consensus spectrum will contain all
 #' ## peaks
-#' combinePeaks(list(p1, p2, p3), peaks = "intersect", minProp = 0.2)
+#' combinePeaksData(list(p1, p2, p3), peaks = "intersect", minProp = 0.2)
 #'
 #' ## With a tolerance of 0.1 mass peaks can be matched across spectra
-#' combinePeaks(list(p1, p2, p3), peaks = "intersect", tolerance = 0.1)
+#' combinePeaksData(list(p1, p2, p3), peaks = "intersect", tolerance = 0.1)
 #'
 #' ## Report the minimal m/z and intensity
-#' combinePeaks(list(p1, p2, p3), peaks = "intersect", tolerance = 0.1,
+#' combinePeaksData(list(p1, p2, p3), peaks = "intersect", tolerance = 0.1,
 #'     intensityFun = min, mzFun = min)
-combinePeaks <- function(x, intensityFun = base::mean,
-                         mzFun = base::mean, weighted = FALSE,
-                         tolerance = 0, ppm = 0, timeDomain = FALSE,
-                         peaks = c("union", "intersect"), main = integer(),
-                         minProp = 0.5, ...) {
+combinePeaksData <- function(x, intensityFun = base::mean,
+                             mzFun = base::mean, weighted = FALSE,
+                             tolerance = 0, ppm = 0, timeDomain = FALSE,
+                             peaks = c("union", "intersect"), main = integer(),
+                             minProp = 0.5, ...) {
     peaks <- match.arg(peaks)
     lenx <- length(x)
     if (lenx == 1)
