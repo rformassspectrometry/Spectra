@@ -639,10 +639,69 @@ processingLog <- function(x) {
     x@processing
 }
 
+#' @title Estimate Precursor Intensities
+#'
+#' @description
+#' Some MS instrument manufacturers don't provide precursor intensities for
+#' fragment spectra. These can however be estimated, given that also MS1
+#' spectra are available. The `estimatePrecursorIntensity` defines the
+#' precursor intensities for MS2 spectra using the intensity of the matching
+#' MS1 peak from the closest MS1 spectrum (i.e. the last MS1 spectrum measured
+#' before the respective MS2 spectrum). With `method = "interpolation"` it is
+#' also possible to calculate the precursor intensity based on an interpolation
+#' of intensity values (and retention times) of the matching MS1 peaks from the
+#' previous and next MS1 spectrum. See below for an example.
+#'
+#' @param x `Spectra` with MS1 and MS2 spectra.
+#'
+#' @param ppm `numeric(1)` with the maximal allowed relative difference of m/z
+#'     values between the precursor m/z of a spectrum and the m/z of the
+#'     respective ion on the MS1 scan.
+#'
+#' @param tolerance `numeric(1)` with the maximal allowed difference of m/z
+#'     values between the precursor m/z of a spectrum and the m/z of the
+#'     respective ion on the MS1 scan.
+#'
+#' @param method `character(1)` defining whether the precursor intensity
+#'     should be estimated on the previous MS1 spectrum (`method = "previous"`,
+#'     the default) or based on an interpolation on the previous and next
+#'     MS1 spectrum (`method = "interpolation"`).
+#'
+#' @param msLevel. `integer(1)` the MS level for which precursor intensities
+#'     should be estimated. Defaults to `2L`.
+#'
+#' @param f `factor` (or vector to be coerced to `factor`) defining which
+#'     spectra belong to the same original data file (sample).
+#'     Defaults to `f = dataOrigin(x)`.
+#'
+#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
+#'     information. This is passed directly to the [backendInitialize()] method
+#'     of the [MsBackend-class].
+#'
+#' @author Johannes Rainer with feedback and suggestions from Corey Broeckling
+#'
 #' @export
 #'
-#' @rdname Spectra
-estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
+#' @rdname estimatePrecursorIntensity
+#'
+#' @examples
+#'
+#' #' ## Calculating the precursor intensity for MS2 spectra:
+#' ##
+#' ## Some MS instrument manufacturer don't report the precursor intensities
+#' ## for MS2 spectra. The `estimatePrecursorIntensity` function can be used
+#' ## in these cases to calculate the precursor intensity on MS1 data. Below
+#' ## we load an mzML file from a vendor providing precursor intensities and
+#' ## compare the estimated and reported precursor intensities.
+#' tmt <- Spectra(msdata::proteomics(full.names = TRUE)[5],
+#'     backend = MsBackendMzR())
+#' pmi <- estimatePrecursorIntensity(tmt)
+#' plot(pmi, precursorIntensity(tmt))
+#'
+#' ## We can also replace the original precursor intensity values with the
+#' ## newly calculated ones
+#' tmt$precursorIntensity <- pmi
+estimatePrecursorIntensity <- function(x, ppm = 20, tolerance = 0,
                                        method = c("previous", "interpolation"),
                                        msLevel. = 2L, f = dataOrigin(x),
                                        BPPARAM = bpparam()) {
@@ -663,7 +722,7 @@ estimatePrecursorIntensity <- function(x, ppm = 10, tolerance = 0,
 #' @importFrom stats approx
 #'
 #' @noRd
-.estimate_precursor_intensity <- function(x, ppm = 10, tolerance = 0,
+.estimate_precursor_intensity <- function(x, ppm = 20, tolerance = 0,
                                           method = c("previous",
                                                      "interpolation"),
                                           msLevel = 2L) {
@@ -803,8 +862,9 @@ chunkapply <- function(x, FUN, ..., chunkSize = 1000L, chunks = factor()) {
 #' @export
 deisotopeSpectra <-
     function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
-             tolerance = 0, ppm = 10, charge = 1) {
+             tolerance = 0, ppm = 20, charge = 1) {
         im <- force(substDefinition)
+        x@processing <- .logging(x@processing, "Deisotope spectra.")
         addProcessing(x, .peaks_deisotope, tolerance = tolerance, ppm = ppm,
                       substDefinition = im, charge = charge)
     }
@@ -814,8 +874,80 @@ deisotopeSpectra <-
 #' @author Nir Shahaf, Johannes Rainer
 #'
 #' @export
-reduceSpectra <- function(x, tolerance = 0, ppm = 10) {
+reduceSpectra <- function(x, tolerance = 0, ppm = 20) {
+    x@processing <- .logging(x@processing, "For groups of peaks with similar ",
+                             "m/z keep the one with the highest intensity.")
     addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
+}
+
+#' @rdname Spectra
+#'
+#' @author Nir Shahaf
+#'
+#' @export
+filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 20) {
+    pmz <- precursorMz(x)
+    pmi <- precursorIntensity(x)
+    if (any(!is.na(pmz)) && all(is.na(pmi)))
+        message("Most/all precursor intensities are 'NA'. Please add ",
+                "(estimated) precursor intensities to 'x' (see ",
+                "'?estimatePrecursorIntensity' for more information and ",
+                "examples.")
+    idx <- order(pmz, na.last = NA)
+    mz_grps <- group(pmz[idx], tolerance = tolerance, ppm = ppm)
+    if (any(duplicated(mz_grps))) {
+        keep <- is.na(pmz)
+        keep[vapply(split(idx, as.factor(mz_grps)),
+                    function(z) {
+                        if (length(z) == 1L) z
+                        else {
+                            ## returns the first if all intensities are NA.
+                            if (length(res <- z[which.max(pmi[z])])) res
+                            else z[1L]
+                        }
+                    }, integer(1L),
+                    USE.NAMES = FALSE)] <- TRUE
+        x <- x[keep]
+    }
+    x@processing <- .logging(
+        x@processing, "Filter: for groups of spectra with similar precursor ",
+        "m/z, keep the one with the highest precursor intensity")
+    x
+}
+
+#' @rdname Spectra
+#'
+#' @author Nir Shahaf
+#'
+#' @export
+filterPrecursorIsotopes <-
+    function(x, tolerance = 0, ppm = 20,
+             substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL")) {
+        pmz <- precursorMz(x)
+        pmi <- precursorIntensity(x)
+        if (any(!is.na(pmz)) && all(is.na(pmi)))
+            message("Most/all precursor intensities are 'NA'. Please add ",
+                    "(estimated) precursor intensities to 'x' (see ",
+                    "'?estimatePrecursorIntensity' for more information and ",
+                    "examples.")
+        idx <- order(pmz, na.last = NA)
+        if (length(idx)) {
+            keep <- rep(TRUE, length(pmz))
+            iso_grps <- isotopologues(
+                cbind(pmz[idx], pmi[idx]),
+                tolerance = tolerance, ppm = ppm,
+                substDefinition = substDefinition)
+            rem <- unlist(lapply(iso_grps, function(z) z[-1]),
+                          use.names = FALSE)
+            if (length(rem))
+                keep[idx[rem]] <- FALSE
+            x <- x[keep]
+        }
+        x@processing <- .logging(
+            x@processing, "Filter: for groups of spectra for precursors ",
+            "representing potential isotopes keep only the spectrum of the ",
+            "monoisotopic precursor.")
+        x
 }
 
 #' @rdname Spectra

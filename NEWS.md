@@ -1,9 +1,14 @@
 # Spectra 1.11
 
-## Changes in 1.11.6
+## Changes in 1.11.7
 
 - Add `filterPrecursorPeaks` to allow filtering peaks within each spectrum
   with m/z values relative to the precursor m/z of the spectrum.
+
+## Changes in 1.11.6
+
+- Add `filterPrecursorMaxIntensity` function.
+- Add `filterPrecursorIsotopes` function.
 
 ## Changes in 1.11.5
 
