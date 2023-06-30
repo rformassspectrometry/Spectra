@@ -375,6 +375,13 @@ affecting the total number of spectra are:
   isolation window (m/z range).
 - `filterMsLevel`: filters by MS level.
 - `filterPolarity`: filters by polarity.
+- `filterPrecursorIsotopes`: identifies precursor ions (from fragment spectra)
+  that could represent isotopes of the same molecule. For each of these spectra
+  groups only the spectrum of the monoisotopic precursor ion is returned. MS1
+  spectra are returned without filtering.
+- `filterPrecursorMaxIntensity`: filters spectra keeping, for groups of spectra
+  with similar precursor m/z, the one spectrum with the highest precursor
+  intensity. All MS1 spectra are returned without filtering.
 - `filterPrecursorMzRange`: retains (MSn) spectra with a precursor m/z within
   the provided m/z range.
 - `filterPrecursorMzValues`: retains (MSn) spectra with precursor m/z value
@@ -390,10 +397,16 @@ peaks data (m/z and intensity values) within each spectrum are:
 
 - `combinePeaks`: groups peaks within each spectrum based on similarity of their
   m/z values and combines these into a single peak per peak group.
-- `filterMzValues`: subsets peaks within each spectrum keeping or removing (all)
-  peaks matching provided m/z value(s) (given parameters `ppm` and `tolerance`).
+- `deisotopeSpectra`: deisotopes each individual spectrum keeping only the
+  monoisotopic peak for peaks groups of potential isotopologues.
+- `filterIntensity`: filter each spectrum keeping only peaks with intensities
+  meeting certain criteria.
 - `filterMzRange`: subsets peaks data within each spectrum keeping only peaks
   with their m/z values within the specified m/z range.
+- `filterMzValues`: subsets peaks within each spectrum keeping or removing (all)
+  peaks matching provided m/z value(s) (given parameters `ppm` and `tolerance`).
+- `reduceSpectra`: filters individual spectra keeping only the largest peak for
+  groups of peaks with similar m/z values.
 
 In the example below we select all spectra measured in the second mzML file and
 subsequently filter them to retain spectra measured between 175 and 189 seconds
