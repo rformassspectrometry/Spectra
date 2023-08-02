@@ -1,5 +1,13 @@
 # Spectra 1.11
 
+## Changes in 1.11.7
+
+- Fix in `compareSpectra` to also pass parameters `ppm` and `tolerance` to
+  the peak similarity calculation functions `FUN`: this allows to use custom
+  similarity function with integrated mapping of peaks.
+- Add `joinPeaksNone` to skip the peak matching in `compareSpectra` if the
+  similarity scoring function performs its own peak matching.
+
 ## Changes in 1.11.6
 
 - Add `filterPrecursorMaxIntensity` function.

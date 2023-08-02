@@ -612,7 +612,8 @@ NULL
 #'   the spectra's precursor m/z values are passed to the function as parameters
 #'   `xPrecursorMz` (precursor m/z of the `x` peak matrix) and `yPrecursorMz`
 #'   (precursor m/z of the `y` peak matrix). Additional parameters to functions
-#'   `FUN` and `MAPFUN` can be passed with `...`.
+#'   `FUN` and `MAPFUN` can be passed with `...`. Parameters `ppm` and
+#'   `tolerance` are passed to both `MAPFUN` and `FUN`.
 #'   The function returns a `matrix` with the results of `FUN` for each
 #'   comparison, number of rows equal to `length(x)` and number of columns
 #'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
