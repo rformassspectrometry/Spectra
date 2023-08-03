@@ -7,6 +7,8 @@
   similarity function with integrated mapping of peaks.
 - Add `joinPeaksNone` to skip the peak matching in `compareSpectra` if the
   similarity scoring function performs its own peak matching.
+- Only use parallel processing in `setBackend,Spectra` if both backends support
+  it.
 
 ## Changes in 1.11.6
 
