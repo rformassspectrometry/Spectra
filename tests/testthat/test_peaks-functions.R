@@ -101,6 +101,16 @@ test_that(".peaks_bin works", {
     expect_equal(res[, 2], c(1, 5, 1, 0, 1, 13, 8, 1, 3, 0, 6, 15, 1, 0, 0))
 })
 
+test_that("joinPeaksNone works", {
+    x <- cbind(c(31.34, 50.14, 60.3, 120.9, 230, 514.13, 874.1),
+               1:7)
+    y <- cbind(c(12, 31.35, 70.3, 120.9 + ppm(120.9, 5),
+                 230 + ppm(230, 10), 315, 514.14, 901, 1202),
+               1:9)
+    res <- joinPeaksNone(x, y, ppm = 20)
+    expect_equal(res, list(x = x, y = y))
+})
+
 test_that("joinPeaks works", {
     x <- cbind(c(31.34, 50.14, 60.3, 120.9, 230, 514.13, 874.1),
                1:7)

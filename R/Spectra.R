@@ -623,7 +623,8 @@ NULL
 #'   the spectra's precursor m/z values are passed to the function as parameters
 #'   `xPrecursorMz` (precursor m/z of the `x` peak matrix) and `yPrecursorMz`
 #'   (precursor m/z of the `y` peak matrix). Additional parameters to functions
-#'   `FUN` and `MAPFUN` can be passed with `...`.
+#'   `FUN` and `MAPFUN` can be passed with `...`. Parameters `ppm` and
+#'   `tolerance` are passed to both `MAPFUN` and `FUN`.
 #'   The function returns a `matrix` with the results of `FUN` for each
 #'   comparison, number of rows equal to `length(x)` and number of columns
 #'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
@@ -1529,6 +1530,7 @@ setMethod(
              BPPARAM = bpparam()) {
         backend_class <- class(object@backend)
         BPPARAM <- backendBpparam(object@backend, BPPARAM)
+        BPPARAM <- backendBpparam(backend, BPPARAM)
         if (!supportsSetBackend(backend))
             stop(class(backend), " does not support 'setBackend'")
         if (!length(object)) {
@@ -1538,7 +1540,7 @@ setMethod(
             f <- force(factor(f, levels = unique(f)))
             if (length(f) != length(object))
                 stop("length of 'f' has to match the length of 'object'")
-            if (length(levels(f)) == 1L) {
+            if (length(levels(f)) == 1L || inherits(BPPARAM, "SerialParam")) {
                 bknds <- backendInitialize(
                     backend, data = spectraData(object@backend), ...)
             } else {

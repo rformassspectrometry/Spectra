@@ -392,7 +392,7 @@ applyProcessing <- function(object, f = dataStorage(object),
                       .check = FALSE,...)
         m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
             FUN(map[[1L]], map[[2L]], xPrecursorMz = pmzx,
-                yPrecursorMz = pmzy, ...)
+                yPrecursorMz = pmzy, ppm = ppm, tolerance = tolerance, ...)
     }
     m
 }
