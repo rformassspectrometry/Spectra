@@ -1,5 +1,10 @@
 # Spectra 1.10
 
+## Changes is 1.10.2
+
+- Fix `setBackend,Spectra` to disable parallel processing if not both backends
+  support that.
+
 ## Changes is 1.10.1
 
 - Add example for filtering precursor m/z peaks from fragment spectra to the

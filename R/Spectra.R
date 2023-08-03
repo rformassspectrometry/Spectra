@@ -1420,6 +1420,7 @@ setMethod(
              BPPARAM = bpparam()) {
         backend_class <- class(object@backend)
         BPPARAM <- backendBpparam(object@backend, BPPARAM)
+        BPPARAM <- backendBpparam(backend, BPPARAM)
         if (!supportsSetBackend(backend))
             stop(class(backend), " does not support 'setBackend'")
         if (!length(object)) {
@@ -1429,7 +1430,7 @@ setMethod(
             f <- force(factor(f, levels = unique(f)))
             if (length(f) != length(object))
                 stop("length of 'f' has to match the length of 'object'")
-            if (length(levels(f)) == 1L) {
+            if (length(levels(f)) == 1L || inherits(BPPARAM, "SerialParam")) {
                 bknds <- backendInitialize(
                     backend, data = spectraData(object@backend), ...)
             } else {
