@@ -236,7 +236,7 @@ NULL
 #'   between `x` and `y` are returned by `type = "inner"`, i.e. only
 #'   peaks present in both spectra are reported.
 #'
-#' - `joinPeaksGnps` matches/maps peaks between spectra with the same approach
+#' - `joinPeaksGnps`: matches/maps peaks between spectra with the same approach
 #'   used in GNPS: peaks are considered matching if a) the
 #'   difference in their m/z values is smaller than defined by `tolerance`
 #'   and `ppm` (this is the same as `joinPeaks`) **and** b) the difference of
@@ -249,6 +249,12 @@ NULL
 #'   scores, [gnps()] should be called on the aligned peak matrices (i.e.
 #'   `compareSpectra` should be called with `MAPFUN = joinPeaksGnps` and
 #'   `FUN = MsCoreUtils::gnps`).
+#'
+#' - `joinPeaksNone`: does not perform any peak matching but simply returns
+#'   the peak matrices in a `list`. This function should be used with the
+#'   `MAPFUN` parameter of [compareSpectra()] if the spectra similarity
+#'   function used (parameter `FUN` of `compareSpectra`) performs its own
+#'   peak matching and does hence not expect matched peak matrices as an input.
 #'
 #' @section Implementation notes:
 #'
@@ -361,6 +367,13 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
                      yPrecursorMz = yPrecursorMz, tolerance = tolerance,
                      ppm = ppm, type = type, ...)
     list(x = x[map[[1L]], , drop = FALSE], y = y[map[[2L]], , drop = FALSE])
+}
+
+#' @export
+#'
+#' @rdname joinPeaks
+joinPeaksNone <- function(x, y, ...) {
+    list(x = x, y = y)
 }
 
 #' @importFrom MsCoreUtils localMaxima noise refineCentroids

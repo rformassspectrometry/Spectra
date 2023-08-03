@@ -1269,7 +1269,8 @@ to return a single numeric as result. In addition to the two peak matrices
 the spectra's precursor m/z values are passed to the function as parameters
 \code{xPrecursorMz} (precursor m/z of the \code{x} peak matrix) and \code{yPrecursorMz}
 (precursor m/z of the \code{y} peak matrix). Additional parameters to functions
-\code{FUN} and \code{MAPFUN} can be passed with \code{...}.
+\code{FUN} and \code{MAPFUN} can be passed with \code{...}. Parameters \code{ppm} and
+\code{tolerance} are passed to both \code{MAPFUN} and \code{FUN}.
 The function returns a \code{matrix} with the results of \code{FUN} for each
 comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from

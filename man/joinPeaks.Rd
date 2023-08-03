@@ -3,6 +3,7 @@
 \name{joinPeaks}
 \alias{joinPeaks}
 \alias{joinPeaksGnps}
+\alias{joinPeaksNone}
 \title{Join (map) peaks of two spectra}
 \usage{
 joinPeaks(x, y, type = "outer", tolerance = 0, ppm = 10, ...)
@@ -17,6 +18,8 @@ joinPeaksGnps(
   type = "outer",
   ...
 )
+
+joinPeaksNone(x, y, ...)
 }
 \arguments{
 \item{x}{\code{matrix} with two columns \code{"mz"} and \code{"intensity"} containing the
@@ -66,7 +69,7 @@ from the left spectrum (\code{x}) will be matched with peaks in \code{y}. Peaks 
 same as \code{type = "left"} only for \code{y}. Only peaks that can be matched
 between \code{x} and \code{y} are returned by \code{type = "inner"}, i.e. only
 peaks present in both spectra are reported.
-\item \code{joinPeaksGnps} matches/maps peaks between spectra with the same approach
+\item \code{joinPeaksGnps}: matches/maps peaks between spectra with the same approach
 used in GNPS: peaks are considered matching if a) the
 difference in their m/z values is smaller than defined by \code{tolerance}
 and \code{ppm} (this is the same as \code{joinPeaks}) \strong{and} b) the difference of
@@ -79,6 +82,11 @@ results are the same as with \code{\link[=joinPeaks]{joinPeaks()}}. To calculate
 scores, \code{\link[=gnps]{gnps()}} should be called on the aligned peak matrices (i.e.
 \code{compareSpectra} should be called with \code{MAPFUN = joinPeaksGnps} and
 \code{FUN = MsCoreUtils::gnps}).
+\item \code{joinPeaksNone}: does not perform any peak matching but simply returns
+the peak matrices in a \code{list}. This function should be used with the
+\code{MAPFUN} parameter of \code{\link[=compareSpectra]{compareSpectra()}} if the spectra similarity
+function used (parameter \code{FUN} of \code{compareSpectra}) performs its own
+peak matching and does hence not expect matched peak matrices as an input.
 }
 }
 \section{Implementation notes}{
