@@ -1,5 +1,10 @@
 # Spectra 1.11
 
+## Changes in 1.11.8
+
+- Add an example to the vignette describing how spectral similarity scores from
+  the *msentropy* package can be used with `compareSpectra`.
+
 ## Changes in 1.11.7
 
 - Fix in `compareSpectra` to also pass parameters `ppm` and `tolerance` to
