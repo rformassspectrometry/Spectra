@@ -419,6 +419,9 @@ NULL
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
+#' - `filterPrecursorCharge`: retains spectra with the defined precursor
+#'   charge(s).
+#'
 #' - `filterPrecursorIsotopes`: groups MS2 spectra based on their precursor m/z
 #'   and precursor intensity into predicted isotope groups and keep for each
 #'   only the spectrum representing the monoisotopic precursor. MS1 spectra
@@ -443,8 +446,16 @@ NULL
 #'   of the provided m/z values (given `ppm` and `tolerance`). Spectra with
 #'   missing precursor m/z value (e.g. MS1 spectra) are dropped.
 #'
-#' - `filterPrecursorCharge`: retains spectra with the defined precursor
-#'   charge(s).
+#' - `filterPrecursorPeaks`: removes peaks from each spectrum in `object` with
+#'   an m/z equal or larger than the m/z of the precursor, depending on the
+#'   value of parameter `mz`: for `mz = ==" (the default) peaks with matching
+#'   m/z (considering an absolute and relative acceptable difference depending
+#'   on `tolerance` and `ppm`, respectively) are removed. For `mz = ">="` all
+#'   peaks with an m/z larger or equal to the precursor m/z (minus `tolerance`
+#'   and the `ppm` of the precursor m/z) are removed. Parameter `msLevel.`
+#'   allows to restrict the filter to certain MS levels (by default the filter
+#'   is applied to all MS levels). Note that no peaks are removed if the
+#'   precursor m/z is `NA` (e.g. typically for MS1 spectra).
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
@@ -615,7 +626,9 @@ NULL
 #'   supported for GNPS-like similarity score calculations. Note that
 #'   `joinPeaksGnps` should only be used in combination with
 #'   `FUN = MsCoreUtils::gnps` (see [joinPeaksGnps()] for more information and
-#'   details).
+#'   details). Use `MAPFUN = joinPeaksNone` to disable internal peak
+#'   matching/mapping if a similarity scoring function is used that performs
+#'   the matching internally.
 #'   `FUN` is supposed to be a function to compare intensities of (matched)
 #'   peaks of the two spectra that are compared. The function needs to take two
 #'   matrices with columns `"mz"` and `"intensity"` as input and is supposed
@@ -629,7 +642,9 @@ NULL
 #'   comparison, number of rows equal to `length(x)` and number of columns
 #'   equal `length(y)` (i.e. element in row 2 and column 3 is the result from
 #'   the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE` the `matrix`
-#'   is *simplified* to a `numeric` if length of `x` or `y` is one.
+#'   is *simplified* to a `numeric` if length of `x` or `y` is one. See also
+#'   the vignette for additional examples, such as using spectral entropy
+#'   similarity in the scoring.
 #'
 #' - `deisotopeSpectra`: *deisotopes* each spectrum keeping only the
 #'   monoisotopic peak for groups of isotopologues. Isotopologues are

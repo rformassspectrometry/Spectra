@@ -815,3 +815,21 @@ test_that("scalePeaks works", {
     expect_true(sum(intensity(res)[[3L]]) == 1)
     expect_equal(res$intensity[[4L]], sps$intensity[[4L]])
 })
+
+test_that("filterPrecursorPeaks,Spectra works", {
+    x <- Spectra(tmt_mzr[5:15])
+    expect_error(filterPrecursorPeaks(4), "instance of class")
+    expect_error(filterPrecursorPeaks(x, tolerance = c(3, 4)), "length 1")
+    expect_error(filterPrecursorPeaks(x, ppm = c(12.3, 24.4)), "length 1")
+    expect_warning(res <- filterPrecursorPeaks(x, msLevel. = 5), "available")
+    expect_equal(res, x)
+
+    res <- filterPrecursorPeaks(x, mz = "==", tolerance = 0.2)
+    expect_true(length(res@processing) > 0)
+    expect_true(lengths(res)[1L] < lengths(x)[1L])
+
+    res <- filterPrecursorPeaks(x, mz = ">=")
+    expect_true(all(lengths(res)[msLevel(x) > 1L] <
+                    lengths(x)[msLevel(x) > 1L]))
+    expect_equal(lengths(res)[msLevel(x) == 1L], lengths(x)[msLevel(x) == 1L])
+})

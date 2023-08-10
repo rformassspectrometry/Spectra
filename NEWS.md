@@ -1,6 +1,6 @@
 # Spectra 1.11
 
-## Changes in 1.11.8
+## Changes in 1.11.10
 
 - `peaksData,MsBackendMemory` returns a `data.frame` if additional peak
   variables (in addition to `"mz"` and `"intensity"`) are requested. For
@@ -18,6 +18,16 @@
 - `$<-,Spectra` throws an error if processing queue is not empty and a peaks
   variable is going to be replaced.
 - Add full support for additional peaks variables to `MsBackendDataFrame`.
+
+## Changes in 1.11.9
+
+- Add `filterPrecursorPeaks` to allow filtering peaks within each spectrum
+  with m/z values relative to the precursor m/z of the spectrum.
+
+## Changes in 1.11.8
+
+- Add an example to the vignette describing how spectral similarity scores from
+  the *msentropy* package can be used with `compareSpectra`.
 
 ## Changes in 1.11.7
 
