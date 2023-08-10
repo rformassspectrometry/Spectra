@@ -8,7 +8,7 @@ vignette: >
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
     %\VignettePackage{Spectra}
-    %\VignetteDepends{Spectra,mzR,BiocStyle,msdata}
+    %\VignetteDepends{Spectra,mzR,BiocStyle,msdata,msentropy}
 bibliography: references.bib
 ---
 
@@ -877,17 +877,18 @@ plotSpectra(sps_agg, main = sps_agg$name)
 ## Comparing spectra
 
 Spectra can be compared with the `compareSpectra` function, that allows to
-calculate similarities between spectra using a variety of methods. However,
-peaks from the compared spectra have to be first matched before similarities can
-be calculated. `compareSpectra` uses by default the [joinPeaks()] function from
-the `r Biocpkg("MsCoreUtils")` package but supports also other mapping functions
-to be passed with the `MAPFUN` parameter (see `?joinPeaks` man page in
-`MsCoreUtils` for more details). The similarity calculation function can be
-specified with the `FUN` parameter and defaults to [ndotproduct()], the
-normalized dot-product. For more details, see also [@rainer_modular_2022] or the
-[SpectraTutorials](https://jorainer.github.io/SpectraTutorials) tutorial. Note
-also that GNPS-like scores can be calculated with `MAPFUN = joinPeaksGnps` and
-`FUN = MsCoreUtils::gnps`.
+calculate similarities between spectra using a variety of
+methods. `compareSpectra` implements similarity scoring as a two-step approach:
+first the peaks from the pair of spectra that should be compared are matched
+(mapped) against each other and then a similarity score is calculated on
+these. The `MAPFUN` parameter of `compareSpectra` defines the function to match
+(or map) the peaks between the spectra and parameter `FUN` specifies the
+function to calculate the similarity. By default, `compareSpectra` uses `MAPFUN
+= joinPeaks` (see `?joinPeaks` for a description and alternative options) and
+`FUN = ndotproduct` (the normalized dot-product spectra similarity
+score). Parameters to configure these functions can be passed to
+`compareSpectra` as additional parameter (such as e.g. `ppm` to define the
+m/z-relative tolerance for peak matching in `joinPeaks`).
 
 Below we calculate pairwise similarities between all spectra in `sps` accepting
 a 50 ppm difference of peaks' m/z values for being considered matching.
@@ -896,10 +897,43 @@ a 50 ppm difference of peaks' m/z values for being considered matching.
 compareSpectra(sps, ppm = 50)
 ```
 
-The resulting matrix represents the result from the pairwise comparison. As
-expected, the first two and the last two spectra are similar, albeit only
-moderately while the spectra from 1-Methylhistidine don't share any similarity
-with those of Caffeine.
+The resulting matrix provides the similarity scores from the pairwise
+comparison. As expected, the first two and the last two spectra are similar,
+albeit only moderately, while the spectra from 1-Methylhistidine don't share any
+similarity with those of Caffeine. Similarities *between* `Spectra` objects can
+be calculated with calls in the form of `compareSpectra(a, b)` with `a` and `b`
+being the two `Spectra` objects to compare. As a result a *n x m* matrix will be
+returned with *n* (rows) being the spectra in `a` and *m* (columns) being the
+spectra in `b`.
+
+The above similarity was calculated with the default (normalized) dot-product,
+but also other similarity scores can be used instead. Either one of the other
+metrics provided by the `r Biocpkg( "MsCoreUtils")` could be used (see
+`?MsCoreUtils::distance` for a list of available options) or any other external
+or user-provided similarity scoring function. As an example, we use below the
+spectral entropy similarity score introduced in [@y_spectral_2021] and provided
+with the
+[*msentropy*](https://cran.r-project.org/web/packages/msentropy/index.html)
+package. Since this `msentropy_similarity` function performs also the mapping of
+the peaks between the compared spectra internally (along with some spectra
+cleaning), we have to disable that in the `compareSpectra` function using
+`MAPFUN = joinPeaksNone`. To configure the similarity scoring we can pass all
+additional parameters of the `msentropy_similarity` (see
+`?msentropy_similarity`) to the `compareSpectra` call. We use
+`ms2_tolerance_in_ppm = 50` to set the tolerance for m/z-relative peak matching
+(equivalent to `ppm = 50` used above) and `ms2_tolerance_in_da = -1` to disable
+absolute tolerance matching.
+
+```{r}
+library(msentropy)
+compareSpectra(sps, MAPFUN = joinPeaksNone, FUN = msentropy_similarity,
+               ms2_tolerance_in_ppm = 50, ms2_tolerance_in_da = -1)
+```
+
+Note also that GNPS-like scores can be calculated with `MAPFUN = joinPeaksGnps`
+and `FUN = MsCoreUtils::gnps`. For additional information and examples see also
+[@rainer_modular_2022] or the
+[SpectraTutorials](https://jorainer.github.io/SpectraTutorials) tutorial.
 
 Another way of comparing spectra would be to *bin* the spectra and to cluster
 them based on similar intensity values. Spectra binning ensures that the binned

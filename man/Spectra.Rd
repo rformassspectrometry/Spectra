@@ -1262,7 +1262,9 @@ the function. In addition to \code{joinPeaks()} also \code{\link[=joinPeaksGnps]
 supported for GNPS-like similarity score calculations. Note that
 \code{joinPeaksGnps} should only be used in combination with
 \code{FUN = MsCoreUtils::gnps} (see \code{\link[=joinPeaksGnps]{joinPeaksGnps()}} for more information and
-details).
+details). Use \code{MAPFUN = joinPeaksNone} to disable internal peak
+matching/mapping if a similarity scoring function is used that performs
+the matching internally.
 \code{FUN} is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
 matrices with columns \code{"mz"} and \code{"intensity"} as input and is supposed
@@ -1276,7 +1278,9 @@ The function returns a \code{matrix} with the results of \code{FUN} for each
 comparison, number of rows equal to \code{length(x)} and number of columns
 equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
 the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
-is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one. See also
+the vignette for additional examples, such as using spectral entropy
+similarity in the scoring.
 \item \code{deisotopeSpectra}: \emph{deisotopes} each spectrum keeping only the
 monoisotopic peak for groups of isotopologues. Isotopologues are
 estimated using the \code{\link[=isotopologues]{isotopologues()}} function from the \emph{MetaboCoreUtils}
