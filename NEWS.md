@@ -1,5 +1,10 @@
 # Spectra 1.11
 
+## Changes in 1.11.9
+
+- Add `filterPrecursorPeaks` to allow filtering peaks within each spectrum
+  with m/z values relative to the precursor m/z of the spectrum.
+
 ## Changes in 1.11.8
 
 - Add an example to the vignette describing how spectral similarity scores from

@@ -408,6 +408,9 @@ NULL
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
+#' - `filterPrecursorCharge`: retains spectra with the defined precursor
+#'   charge(s).
+#'
 #' - `filterPrecursorIsotopes`: groups MS2 spectra based on their precursor m/z
 #'   and precursor intensity into predicted isotope groups and keep for each
 #'   only the spectrum representing the monoisotopic precursor. MS1 spectra
@@ -432,8 +435,16 @@ NULL
 #'   of the provided m/z values (given `ppm` and `tolerance`). Spectra with
 #'   missing precursor m/z value (e.g. MS1 spectra) are dropped.
 #'
-#' - `filterPrecursorCharge`: retains spectra with the defined precursor
-#'   charge(s).
+#' - `filterPrecursorPeaks`: removes peaks from each spectrum in `object` with
+#'   an m/z equal or larger than the m/z of the precursor, depending on the
+#'   value of parameter `mz`: for `mz = ==" (the default) peaks with matching
+#'   m/z (considering an absolute and relative acceptable difference depending
+#'   on `tolerance` and `ppm`, respectively) are removed. For `mz = ">="` all
+#'   peaks with an m/z larger or equal to the precursor m/z (minus `tolerance`
+#'   and the `ppm` of the precursor m/z) are removed. Parameter `msLevel.`
+#'   allows to restrict the filter to certain MS levels (by default the filter
+#'   is applied to all MS levels). Note that no peaks are removed if the
+#'   precursor m/z is `NA` (e.g. typically for MS1 spectra).
 #'
 #' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered

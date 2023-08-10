@@ -11,6 +11,7 @@
 \alias{filterPrecursorMaxIntensity}
 \alias{filterPrecursorIsotopes}
 \alias{scalePeaks}
+\alias{filterPrecursorPeaks}
 \alias{Spectra}
 \alias{Spectra-class}
 \alias{[,Spectra-method}
@@ -142,6 +143,14 @@ filterPrecursorIsotopes(
 )
 
 scalePeaks(x, by = sum, msLevel. = uniqueMsLevels(x))
+
+filterPrecursorPeaks(
+  object,
+  tolerance = 0,
+  ppm = 20,
+  mz = c("==", ">="),
+  msLevel. = uniqueMsLevels(object)
+)
 
 \S4method{Spectra}{missing}(
   object,
@@ -537,6 +546,12 @@ spectrum.}
 the function should be applied (defaults to all MS levels of \code{object}.
 For \code{filterMsLevel}: the MS level to which \code{object} should be subsetted.}
 
+\item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
+filter the object. For \code{filterPrecursorMz} and \code{filterMzRange}:
+\code{numeric(2)} defining the lower and upper m/z boundary.
+For \code{filterMzValues} and \code{filterPrecursorMzValues}: \code{numeric} with the
+m/z values to match peaks or precursor m/z against.}
+
 \item{processingQueue}{For \code{Spectra}: optional \code{list} of
 \linkS4class{ProcessingStep} objects.}
 
@@ -567,12 +582,6 @@ with \code{object} being the \code{Spectra} object are supported.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
-
-\item{mz}{For \code{filterIsolationWindow}: \code{numeric(1)} with the m/z value to
-filter the object. For \code{filterPrecursorMz} and \code{filterMzRange}:
-\code{numeric(2)} defining the lower and upper m/z boundary.
-For \code{filterMzValues} and \code{filterPrecursorMzValues}: \code{numeric} with the
-m/z values to match peaks or precursor m/z against.}
 
 \item{which}{for \code{containsMz}: either \code{"any"} or \code{"all"} defining whether any
 (the default) or all provided \code{mz} have to be present in the spectrum.}
@@ -1067,6 +1076,8 @@ matching considers also the absolute \code{tolerance} and m/z-relative
 \item \code{filterPolarity}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
+\item \code{filterPrecursorCharge}: retains spectra with the defined precursor
+charge(s).
 \item \code{filterPrecursorIsotopes}: groups MS2 spectra based on their precursor m/z
 and precursor intensity into predicted isotope groups and keep for each
 only the spectrum representing the monoisotopic precursor. MS1 spectra
@@ -1087,8 +1098,9 @@ a precursor m/z for a target m/z accepting a small difference in \emph{ppm}.
 \item \code{filterPrecursorMzValues}: retains spectra with precursor m/z matching any
 of the provided m/z values (given \code{ppm} and \code{tolerance}). Spectra with
 missing precursor m/z value (e.g. MS1 spectra) are dropped.
-\item \code{filterPrecursorCharge}: retains spectra with the defined precursor
-charge(s).
+\item \code{filterPrecursorPeaks}: removes peaks from each spectrum in \code{object} with
+an m/z equal or larger than the m/z of the precursor, depending on the
+value of parameter \code{mz}: for \verb{mz = ==" (the default) peaks with matching m/z (considering an absolute and relative acceptable difference depending on }tolerance\code{and}ppm\verb{, respectively) are removed. For }mz = ">="\verb{all peaks with an m/z larger or equal to the precursor m/z (minus}tolerance\verb{and the}ppm\verb{of the precursor m/z) are removed. Parameter}msLevel.\verb{allows to restrict the filter to certain MS levels (by default the filter is applied to all MS levels). Note that no peaks are removed if the precursor m/z is}NA` (e.g. typically for MS1 spectra).
 \item \code{filterPrecursorScan}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra} (with spectra in their original order). Parameter \code{f} allows to
