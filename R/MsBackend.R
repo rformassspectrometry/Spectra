@@ -224,8 +224,8 @@
 #'   used to submit the full spectra data as a `DataFrame` to the
 #'   backend. This would allow the backend to be also usable for the
 #'   [setBackend()] function from `Spectra`. Note that eventually (for
-#'   *read-only* backends) also the `supportsSetBackend` method would
-#'   need to be implemented to return `TRUE`.
+#'   *read-only* backends) also the `supportsSetBackend` method would need
+#'   to be implemented to return `TRUE`.
 #'   The `backendInitialize` method has also to ensure to correctly set
 #'   spectra variable `dataStorage`.
 #'
@@ -422,28 +422,30 @@
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `peaksData` returns a `list` with the spectras' peak data, i.e. numeric
-#'   `matrix` with peak values. The length of the list is equal to the number
-#'   of spectra in `object`. Each element of the list is a `numeric` `matrix`
+#' - `peaksData` returns a `list` with the spectras' peak data, i.e. m/z and
+#'   intensity values or other *peak variables*. The length of the list is
+#'   equal to the number of spectra in `object`. Each element of the list has
+#'   to be a two-dimensional array (`matrix` or `data.frame`)
 #'   with columns depending on the provided `columns` parameter (by default
 #'   `"mz"` and `"intensity"`, but depends on the backend's available
-#'   `peaksVariables`). For an empty spectrum, a `matrix` with 0 rows and
-#'   columns according to `columns` is returned. The optional parameter
-#'   `columns`, if supported by the backend, allows to define which peak
-#'   variables should be returned in the `numeric` peak `matrix`. As a default
-#'   `c("mz", "intensity")` should be used.
+#'   `peaksVariables`). For an empty spectrum, a `matrix` (`data.frame`) with
+#'   0 rows and columns according to `columns` is returned. The optional
+#'   parameter `columns`, if supported by the backend, allows to define which
+#'   peak variables should be returned in the `numeric` peak `matrix`. As a
+#'   default `c("mz", "intensity")` should be used.
 #'
 #' - `peaksData<-` replaces the peak data (m/z and intensity values) of the
-#'   backend. This method expects a `list` of `matrix` objects with columns
-#'   `"mz"` and `"intensity"` that has the same length as the number of
-#'   spectra in the backend. Note that just writeable backends support this
-#'   method.
+#'   backend. This method expects a `list` of two dimensional arrays (`matrix`
+#'   or `data.frame`) with columns representing the peak variables. All
+#'   existing peaks data is expected to be replaced with these new values. The
+#'   length of the `list` has to match the number of spectra of `object`.
+#'   Note that only writeable backends need to support this method.
 #'
 #' - `peaksVariables`: lists the available variables for mass peaks. Default
 #'   peak variables are `"mz"` and `"intensity"` (which all backends need to
 #'   support and provide), but some backends might provide additional variables.
-#'   These variables correspond to the column names of the `numeric` `matrix`
-#'   representing the peak data (returned by `peaksData`).
+#'   All these variables are expected to be returned (if requested) by the
+#'   `peaksData` function.
 #'
 #' - `reset` a backend (if supported). This method will be called on the backend
 #'   by the `reset,Spectra` method that is supposed to restore the data to its
@@ -544,10 +546,7 @@
 #' way the data is organized internally, provides much faster access to the
 #' full peak data (i.e. the numerical matrices of m/z and intensity values).
 #' Also subsetting and access to any spectra variable (except `"mz"` and
-#' `"intensity"` is fastest for the `MsBackendMemory`. Finally, the
-#' `MsBackendMemory` supports also arbitrary peak annotations while the
-#' `MsBackendDataFrame` does not have support for such additional peak
-#' variables.
+#' `"intensity"`) is fastest for the `MsBackendMemory`.
 #'
 #' Thus, for most use cases, the `MsBackendMemory` provides a higher
 #' performance and flexibility than the `MsBackendDataFrame` and should thus be
@@ -556,20 +555,17 @@
 #' performance comparison.
 #'
 #' New objects can be created with the `MsBackendMemory()` and
-#' `MsBackendDataFrame()` function, respectively. The backend can be
+#' `MsBackendDataFrame()` function, respectively. Both backends can be
 #' subsequently initialized with the `backendInitialize` method, taking a
-#' `DataFrame` (or `data.frame`) with the MS data as first parameter `data`.
-#' `backendInitialize` for `MsBackendMemory` has a second parameter
-#' `peaksVariables` (default `peaksVariables = c("mz", "intensity")` that
-#' allows to specify which of the columns in the provided data frame should
-#' be considered as a *peaks variable* (i.e. information of an individual
-#' mass peak) rather than a *spectra variable* (i.e. information of an
-#' individual spectrum). Note that it is important to also include `"mz"` and
-#' `"intensity"` in `peaksVariables` as these would otherwise be considered
-#' to be spectra variables! Also, while it is possible to change the values of
-#' existing peaks variables using the `$<-` method, this method does **not**
-#' allow to add new peaks variables to an existing `MsBackendMemory`. New
-#' peaks variables should be added using the `backendInitialize` method.
+#' `DataFrame` (or `data.frame`) with the (full) MS data as first parameter
+#' `data`. The second parameter `peaksVariables` allows to define which columns
+#' in `data` contain *peak variables* such as the m/z and intensity values of
+#' individual peaks per spectrum. The default for this parameter is
+#' `peaksVariables = c("mz", "intensity")`. Note that it is not supported to
+#' provide either `"mz"` or `"intensity"`, if provided, both need to be
+#' present in the data frame. Alternatively, the function also supports a data
+#' frame without m/z and intensity values, in which case a `Spectra` without
+#' mass peaks is created.
 #'
 #' Suggested columns of this `DataFrame` are:
 #'
@@ -598,13 +594,12 @@
 #'
 #' Additional columns are allowed too.
 #'
-#' For the `MsBackendMemory`, any column in the provided `data.frame` which
-#' contains a `list` of vectors each with length equal to the number of peaks
-#' for a spectrum will be used as additional *peak variable* (see examples
-#' below for details).
+#' The `peaksData` function for `MsBackendMemory` and `MsBackendDataFrame`
+#' returns a `list` of `numeric` `matrix` by default (with parameter
+#' `columns = c("mz", "intensity")`). If other peak variables are requested,
+#' a `list` of `data.frame` is returned (ensuring m/z and intensity values
+#' are always `numeric`).
 #'
-#' The `MsBackendDataFrame` ignores parameter `columns` of the `peaksData`
-#' function and returns **always** m/z and intensity values.
 #'
 #' @section `MsBackendMzR`, on-disk MS data backend:
 #'
@@ -650,6 +645,7 @@
 #' The `MsBackendMzR` ignores parameter `columns` of the `peaksData`
 #' function and returns **always** m/z and intensity values.
 #'
+#'
 #' @section `MsBackendHdf5Peaks`, on-disk MS data backend:
 #'
 #' The `MsBackendHdf5Peaks` keeps, similar to the `MsBackendMzR`, peak data
@@ -680,6 +676,7 @@
 #'
 #' The `MsBackendHdf5Peaks` ignores parameter `columns` of the `peaksData`
 #' function and returns **always** m/z and intensity values.
+#'
 #'
 #' @section Implementation notes:
 #'

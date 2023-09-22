@@ -1,5 +1,24 @@
 # Spectra 1.11
 
+## Changes in 1.11.10
+
+- `peaksData,MsBackendMemory` returns a `data.frame` if additional peak
+  variables (in addition to `"mz"` and `"intensity"`) are requested. For
+  `columns = c("mz", "intensity")` (the default) a `list` of `matrix` is
+  returned.
+- `peaksData,Spectra` returns either a `matrix` or `data.frame` and ensures
+  the peak data is correctly subset based on the lazy evaluation processing
+  queue.
+- `$,Spectra` to access peak variables ensures the lazy evaluation queue is
+  applied prior to extracting the values.
+- `applyProcessing` correctly subsets and processes all peak variables
+  depending on the processing queue.
+- `spectraData<-,Spectra` throws an error if processing queue is not empty and
+  values for peaks variables should be replaced.
+- `$<-,Spectra` throws an error if processing queue is not empty and a peaks
+  variable is going to be replaced.
+- Add full support for additional peaks variables to `MsBackendDataFrame`.
+
 ## Changes in 1.11.9
 
 - Add `filterPrecursorPeaks` to allow filtering peaks within each spectrum

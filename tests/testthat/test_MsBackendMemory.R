@@ -20,6 +20,11 @@ test_that("backendInitialize,MsBackendMemory works", {
     expect_error(backendInitialize(be, data = 4), "has to be a")
 
     df <- test_df
+    df$mz <- NULL
+    expect_error(backendInitialize(be, df, peaksVariables = "intensity"),
+                 "both")
+
+    df$mz <- test_df$mz
     be <- backendInitialize(be, df)
     expect_true(validObject(be))
     expect_equal(be@spectraData[, c("msLevel", "scanIndex")],
@@ -31,11 +36,6 @@ test_that("backendInitialize,MsBackendMemory works", {
                                            intensity = df$intensity[[2L]]))
     expect_equal(be@peaksData[[3L]], cbind(mz = df$mz[[3L]],
                                            intensity = df$intensity[[3L]]))
-
-    df$mz <- NULL
-    be <- backendInitialize(be, df)
-    expect_true(validObject(be))
-    expect_equal(be@peaksData[[1L]], cbind(intensity = df$intensity[[1L]]))
 
     df <- test_df
     df$other_col <- list(1:3, 1:4, 1:3)
@@ -118,6 +118,7 @@ test_that("spectraVariables,MsBackendMemory works", {
 
     df <- data.frame(new_col = "a")
     df$mz <- list(1:3)
+    df$intensity <- list(4:6)
     be <- backendInitialize(be, df)
     res <- spectraVariables(be)
     expect_equal(res, c(names(coreSpectraVariables()), "new_col"))
@@ -130,15 +131,16 @@ test_that("peaksVariables,MsBackendMemory works", {
 
     df <- data.frame(msLevel = 1:2)
     df$mz <- list(1:2, 1:3)
+    df$intensity <- list(2:3, 4:6)
     be <- backendInitialize(be, df)
     res <- peaksVariables(be)
-    expect_equal(res, "mz")
+    expect_equal(res, c("mz", "intensity"))
 
     df$peak_ann <- list(c("a", "b"), c("a", "b", "c"))
     be <- backendInitialize(
         be, df, peaksVariables = c("mz", "intensity", "peak_ann"))
     res <- peaksVariables(be)
-    expect_equal(res, c("mz", "peak_ann"))
+    expect_equal(res, c("mz", "intensity", "peak_ann"))
 })
 
 test_that("lengths,MsBackendMemory works", {
@@ -166,11 +168,10 @@ test_that("mz,mz<-,MsBackendMemory works", {
     expect_equal(mz(be), IRanges::NumericList(vals, compress = FALSE))
 
     tmp <- test_df
-    tmp$mz <- NULL
     be <- backendInitialize(be, tmp)
     mz(be) <- vals
     expect_equal(mz(be), IRanges::NumericList(vals, compress = FALSE))
-    expect_equal(colnames(be@peaksData[[1L]]), c("intensity", "mz"))
+    expect_equal(colnames(be@peaksData[[1L]]), c("mz", "intensity"))
 })
 
 test_that("intensity,intensity<-,MsBackendMemory works", {
@@ -192,7 +193,8 @@ test_that("intensity,intensity<-,MsBackendMemory works", {
 
     tmp <- test_df
     tmp$intensity <- NULL
-    be <- backendInitialize(be, tmp)
+    expect_error(backendInitialize(be, tmp), "both")
+    be <- backendInitialize(be, test_df)
     intensity(be) <- vals
     expect_equal(intensity(be), IRanges::NumericList(vals, compress = FALSE))
     expect_equal(colnames(be@peaksData[[1L]]), c("mz", "intensity"))
@@ -294,6 +296,7 @@ test_that("peaksData,MsBackendMemory works", {
                                   intensity = test_df$intensity[[3L]]))
     expect_error(peaksData(be, "other"), "not available")
     res <- peaksData(be, c("intensity", "mz"))
+    expect_true(is.matrix(res[[1L]]))
     expect_equal(res[[1L]], cbind(intensity = test_df$intensity[[1L]],
                                   mz = test_df$mz[[1L]]))
     expect_equal(res[[2L]], cbind(intensity = test_df$intensity[[2L]],
@@ -317,41 +320,46 @@ test_that("peaksData,MsBackendMemory works", {
     expect_equal(res[[3L]], cbind(mz = test_df$mz[[3L]],
                                   intensity = test_df$intensity[[3L]]))
     res <- peaksData(be, c("mz", "pk_ann"))
-    expect_equal(res[[1L]], cbind(mz = tmp$mz[[1L]],
-                                  pk_ann = tmp$pk_ann[[1L]]))
-    expect_equal(res[[2L]], cbind(mz = tmp$mz[[2L]],
-                                  pk_ann = tmp$pk_ann[[2L]]))
-    expect_equal(res[[3L]], cbind(mz = tmp$mz[[3L]],
-                                  pk_ann = tmp$pk_ann[[3L]]))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]], data.frame(mz = tmp$mz[[1L]],
+                                       pk_ann = tmp$pk_ann[[1L]]))
+    expect_equal(res[[2L]], data.frame(mz = tmp$mz[[2L]],
+                                       pk_ann = tmp$pk_ann[[2L]]))
+    expect_equal(res[[3L]], data.frame(mz = tmp$mz[[3L]],
+                                       pk_ann = tmp$pk_ann[[3L]]))
     res <- peaksData(be, c("pk_ann", "mz"))
-    expect_equal(res[[1L]], cbind(pk_ann = tmp$pk_ann[[1L]],
-                                  mz = tmp$mz[[1L]]))
-    expect_equal(res[[2L]], cbind(pk_ann = tmp$pk_ann[[2L]],
-                                  mz = tmp$mz[[2L]]))
-    expect_equal(res[[3L]], cbind(pk_ann = tmp$pk_ann[[3L]],
-                                  mz = tmp$mz[[3L]]))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]], data.frame(pk_ann = tmp$pk_ann[[1L]],
+                                       mz = tmp$mz[[1L]]))
+    expect_equal(res[[2L]], data.frame(pk_ann = tmp$pk_ann[[2L]],
+                                       mz = tmp$mz[[2L]]))
+    expect_equal(res[[3L]], data.frame(pk_ann = tmp$pk_ann[[3L]],
+                                       mz = tmp$mz[[3L]]))
     tmp$add_ann <- list(1:3, 1:2, 1:4)
     be <- backendInitialize(
         be, tmp, peaksVariables = c("mz", "intensity", "pk_ann", "add_ann"))
     res <- peaksData(be, c("mz", "pk_ann"))
-    expect_equal(res[[1L]], cbind(mz = tmp$mz[[1L]],
-                                  pk_ann = tmp$pk_ann[[1L]]))
-    expect_equal(res[[2L]], cbind(mz = tmp$mz[[2L]],
-                                  pk_ann = tmp$pk_ann[[2L]]))
-    expect_equal(res[[3L]], cbind(mz = tmp$mz[[3L]],
-                                  pk_ann = tmp$pk_ann[[3L]]))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]], data.frame(mz = tmp$mz[[1L]],
+                                       pk_ann = tmp$pk_ann[[1L]]))
+    expect_equal(res[[2L]], data.frame(mz = tmp$mz[[2L]],
+                                       pk_ann = tmp$pk_ann[[2L]]))
+    expect_equal(res[[3L]], data.frame(mz = tmp$mz[[3L]],
+                                       pk_ann = tmp$pk_ann[[3L]]))
     res <- peaksData(be, c("add_ann", "pk_ann"))
-    expect_equal(res[[1L]], cbind(add_ann = tmp$add_ann[[1L]],
-                                  pk_ann = tmp$pk_ann[[1L]]))
-    expect_equal(res[[2L]], cbind(add_ann = tmp$add_ann[[2L]],
-                                  pk_ann = tmp$pk_ann[[2L]]))
-    expect_equal(res[[3L]], cbind(add_ann = tmp$add_ann[[3L]],
-                                  pk_ann = tmp$pk_ann[[3L]]))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]], data.frame(add_ann = tmp$add_ann[[1L]],
+                                       pk_ann = tmp$pk_ann[[1L]]))
+    expect_equal(res[[2L]], data.frame(add_ann = tmp$add_ann[[2L]],
+                                       pk_ann = tmp$pk_ann[[2L]]))
+    expect_equal(res[[3L]], data.frame(add_ann = tmp$add_ann[[3L]],
+                                       pk_ann = tmp$pk_ann[[3L]]))
 
     res <- peaksData(be, "pk_ann")
-    expect_equal(res[[1L]], cbind(pk_ann = tmp$pk_ann[[1L]]))
-    expect_equal(res[[2L]], cbind(pk_ann = tmp$pk_ann[[2L]]))
-    expect_equal(res[[3L]], cbind(pk_ann = tmp$pk_ann[[3L]]))
+    expect_true(is.data.frame(res[[1L]]))
+    expect_equal(res[[1L]], data.frame(pk_ann = tmp$pk_ann[[1L]]))
+    expect_equal(res[[2L]], data.frame(pk_ann = tmp$pk_ann[[2L]]))
+    expect_equal(res[[3L]], data.frame(pk_ann = tmp$pk_ann[[3L]]))
 })
 
 test_that("peaksData<-,MsBackendMemory works", {
@@ -373,8 +381,8 @@ test_that("peaksData<-,MsBackendMemory works", {
     expect_equal(peaksData(be), lst)
 
     lst2 <- list(cbind(intensity = 10.1, mz = 1),
-                cbind(intensity = c(12.1, 12.4, 12.4), mz = 1:3),
-                cbind(intensity = 100, mz = 3.1))
+                 cbind(intensity = c(12.1, 12.4, 12.4), mz = 1:3),
+                 cbind(intensity = 100, mz = 3.1))
     peaksData(be) <- lst2
     expect_equal(peaksData(be), lst)
 
@@ -386,6 +394,17 @@ test_that("peaksData<-,MsBackendMemory works", {
     expect_equal(be@peaksDataFrame, list(data.frame(add_col = 15),
                                          data.frame(add_col = 5:7),
                                          data.frame(add_col = 100)))
+
+    lst2 <- list(
+        data.frame(intensity = 10.1, mz = 1, add_col = 15),
+        data.frame(intensity = c(12.1, 12.4, 12.4), mz = 1:3, add_col = 5:7),
+        data.frame(intensity = 100, mz = 3.1, add_col = 100))
+    peaksData(be) <- lst2
+    expect_equal(peaksData(be), lst)
+    expect_equal(be@peaksDataFrame, list(data.frame(add_col = 15),
+                                         data.frame(add_col = 5:7),
+                                         data.frame(add_col = 100)))
+
 })
 
 test_that("$,MsBackendMemory works", {
@@ -856,13 +875,14 @@ test_that("selectSpectraVariables,MsBackendMemory works", {
     expect_true(all(vapply(res@peaksData, is.matrix, logical(1))))
     expect_true(all(vapply(res@peaksData, nrow, integer(1)) == 0))
 
-    res <- selectSpectraVariables(be, c("mz", "dataStorage"))
+    expect_error(selectSpectraVariables(be, c("mz", "dataStorage")), "both")
+    res <- selectSpectraVariables(be, c("mz", "intensity", "dataStorage"))
     expect_equal(colnames(res@spectraData), c("dataStorage"))
-    expect_equal(peaksVariables(res), "mz")
+    expect_equal(peaksVariables(res), c("mz", "intensity"))
     expect_equal(mz(res), mz(be))
+    expect_s4_class(mz(res), "NumericList")
+    expect_equal(intensity(res), intensity(be))
     expect_s4_class(intensity(res), "NumericList")
-    expect_equal(length(intensity(res)), length(mz(res)))
-    expect_true(all(lengths(intensity(res)) == 0))
 
     tmp <- test_df
     tmp$peak_anno <- list(c("a", "", "b"), c("a", "b"), c("a", "b", "c", "d"))

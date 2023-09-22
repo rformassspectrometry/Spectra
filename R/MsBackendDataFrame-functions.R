@@ -69,6 +69,26 @@ NULL
     NULL
 }
 
+.peaks_variables <- function(x) {
+    if (.hasSlot(x, "peaksVariables")) {
+        x@peaksVariables
+    } else c("mz", "intensity")
+}
+
+.valid_peaks_variable_columns <- function(x, pvars) {
+    lens <- lapply(pvars, function(z) lengths(x[[z]]))
+    names(lens) <- pvars
+    lens <- lens[lengths(lens) > 0]
+    if (length(lens) > 1) {
+        for (i in 2:length(lens))
+            if (any(lens[[1L]] != lens[[i]]))
+                return(paste0("Number of values per spectra differ for peak ",
+                              "variables \"", names(lens)[1L], "\" and \"",
+                              names(lens)[i], "\"."))
+    }
+    NULL
+}
+
 .valid_intensity_mz_columns <- function(x) {
     ## Don't want to have that tested on all on-disk objects.
     if (length(x$intensity) && length(x$mz))
@@ -198,7 +218,13 @@ MsBackendDataFrame <- function() {
         return(objects[[1]])
     if (!all(vapply1c(objects, class) == class(objects[[1]])))
         stop("Can only merge backends of the same type: ", class(objects[[1]]))
-    res <- objects[[1]]
+    pvars <- lapply(objects, peaksVariables)
+    for (i in 2:length(pvars))
+        if (length(pvars[[i]]) != length(pvars[[1L]]) ||
+            any(pvars[[i]] != pvars[[1L]]))
+            stop("Provided backends have different peaks variables. Can only ",
+                 "merge backends with the same set of peaks variables.")
+    res <- objects[[1L]]
     suppressWarnings(
         res@spectraData <- do.call(
             rbindFill, lapply(objects, function(z) z@spectraData))

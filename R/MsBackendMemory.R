@@ -38,6 +38,11 @@ setValidity("MsBackendMemory", function(object) {
     if (length(object@peaksDataFrame) && length(object@peaksData) !=
         length(object@peaksDataFrame))
         msg <- c(msg, "peaksData and peaksDataFrame have different length")
+    if (length(object@peaksData) &&
+        length(colnames(object@peaksData[[1L]]) %in%
+               c("mz", "intensity")) == 1L)
+        msg <- c(msg, paste0("If provided, both \"mz\" and \"intensity\" peak ",
+                             "variables need to be defined."))
     if (is.null(msg)) TRUE
     else msg
 })
@@ -352,57 +357,51 @@ setReplaceMethod("mz", "MsBackendMemory", function(object, value) {
 })
 
 #' @rdname hidden_aliases
-setMethod("peaksData", "MsBackendMemory", function(object,
-                                               columns = c("mz", "intensity")) {
-    if (length(object)) {
-        cns <- colnames(object@peaksData[[1L]])
-        if (length(columns) == length(cns) && all(cns == columns))
-            return(object@peaksData)
-        if (!all(columns %in% peaksVariables(object)))
-            stop("Some of the requested peaks variables are not ",
-                 "available", call. = FALSE)
-        pcol <- intersect(columns, c("mz", "intensity"))
-        pdcol <- setdiff(columns, c("mz", "intensity"))
-        ## request columns only from peaksData
-        if (length(pcol) & !length(pdcol))
-            return(lapply(object@peaksData,
-                          function(z) z[, pcol, drop = FALSE]))
-        ## request columns only from peaksDataFrame
-        if (length(pdcol) & !length(pcol))
-            return(lapply(object@peaksDataFrame,
-                          function(z) as.matrix(z[, pdcol, drop = FALSE])))
-        ## request columns from both
-        mapply(object@peaksData, object@peaksDataFrame, FUN = function(a, b) {
-            as.matrix(cbind(a[, pcol, drop = FALSE],
-                            b[, pdcol, drop = FALSE])[, columns])
-        }, SIMPLIFY = FALSE)
-    } else list()
-})
+setMethod(
+    "peaksData", "MsBackendMemory", function(object,
+                                             columns = c("mz", "intensity")) {
+        if (length(object)) {
+            cns <- colnames(object@peaksData[[1L]])
+            if (length(columns) == length(cns) && all(cns == columns))
+                return(object@peaksData)
+            if (!all(columns %in% peaksVariables(object)))
+                stop("Some of the requested peaks variables are not ",
+                     "available", call. = FALSE)
+            pcol <- intersect(columns, c("mz", "intensity"))
+            pdcol <- setdiff(columns, c("mz", "intensity"))
+            ## request columns only from peaksData
+            if (length(pcol) & !length(pdcol))
+                return(lapply(object@peaksData,
+                              function(z) z[, pcol, drop = FALSE]))
+            ## request columns only from peaksDataFrame
+            if (length(pdcol) & !length(pcol))
+                return(lapply(object@peaksDataFrame,
+                              function(z) z[, pdcol, drop = FALSE]))
+            ## request columns from both
+            mapply(object@peaksData, object@peaksDataFrame,
+                   FUN = function(a, b) {
+                       data.frame(a[, pcol, drop = FALSE],
+                                  b[, pdcol, drop = FALSE],
+                                  check.names = FALSE)[, columns]
+                   }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+        } else list()
+    })
 
 #' @rdname hidden_aliases
 setReplaceMethod("peaksData", "MsBackendMemory", function(object, value) {
     if (length(object)) {
-        if (!(is.list(value) || inherits(value, "SimpleList")))
-            stop("'value' has to be a list-like object")
-        if (length(value) != length(object))
-            stop("Length of 'value' has to match length of 'object'")
-        if (!is.matrix(value[[1L]]))
-            stop("'value' is expected to be a 'list' of 'matrix'")
+        .check_peaks_data_value(value, length(object))
         cn <- colnames(value[[1L]])
         lcn <- length(cn)
-        lapply(value, function(z) {
-            cur_cn <- colnames(z)
-            if (lcn != length(cur_cn) || !all(cn == cur_cn))
-                stop("provided matrices don't have the same column names")
-        })
         ## columns mz and intensity go into peaksData.
         if (lcn == 2 && all(cn == c("mz", "intensity")))
-            object@peaksData <- value
+            object@peaksData <- lapply(value, base::as.matrix)
         else {
             pcn <- intersect(c("mz", "intensity"), cn)
             if (length(pcn))
                 object@peaksData <- lapply(
-                    value, function(z) z[, pcn, drop = FALSE])
+                    value, function(z) as.matrix(z[, pcn, drop = FALSE],
+                                                 rownames.force = FALSE))
             pcn <- setdiff(cn, c("mz", "intensity"))
             if (length(pcn))
                 object@peaksDataFrame <- lapply(

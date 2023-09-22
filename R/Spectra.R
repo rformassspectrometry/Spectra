@@ -136,7 +136,11 @@ NULL
 #' @section Accessing spectra data:
 #'
 #' - `$`, `$<-`: gets (or sets) a spectra variable for all spectra in `object`.
-#'   See examples for details.
+#'   See examples for details. Note that replacing values of a peaks variable
+#'   is not supported with a non-empty processing queue, i.e. if any filtering
+#'   or data manipulations on the peaks data was performed. In these cases
+#'   [applyProcessing()] needs to be called first to apply all cached data
+#'   operations.
 #'
 #' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
 #'   backend.
@@ -228,17 +232,20 @@ NULL
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
-#' - `peaksData`: gets the *peaks* matrices for all spectra in `object`. The
-#'   function returns a [SimpleList()] of matrices, each `matrix` with columns
-#'   `"mz"` and `"intensity"` with the m/z and intensity values for all peaks of
-#'   a spectrum. Optional parameter `columns` is passed to the backend's
-#'   `peaksData` function to allow selection of specific (or additional) peaks
-#'   variables (columns) that should be extracted (if available). Importantly,
+#' - `peaksData`: gets the *peaks* data for all spectra in `object`. Peaks data
+#'   consist of the m/z and intensity values as well as possible additional
+#'   annotations (variables) of all peaks of each spectrum. The function
+#'   returns a [SimpleList()] of two dimensional arrays (either `matrix` or
+#'   `data.frame`), with each array providing the values for the requested
+#'   *peak variables* (by default `"mz"` and `"intensity"`). Optional parameter
+#'   `columns` is passed to the backend's `peaksData` function to allow
+#'   the selection of specific (or additional) peaks variables (columns) that
+#'   should be extracted (if available). Importantly,
 #'   it is **not** guaranteed that each backend supports this parameter (while
 #'   each backend must support extraction of `"mz"` and `"intensity"` columns).
 #'   Parameter `columns` defaults to `c("mz", "intensity")` but any value
 #'   returned from `peaksVariables` is supported.
-#'   Note also that it is possible to extract the peaks matrices with
+#'   Note also that it is possible to extract the peak data with
 #'   `as(x, "list")` and `as(x, "SimpleList")` as a `list` and `SimpleList`,
 #'   respectively. Note however that, in contrast to `peaksData`, `as` does not
 #'   support the parameter `columns`.
@@ -247,8 +254,8 @@ NULL
 #'   the backend. Default peak variables are `"mz"` and `"intensity"` (which
 #'   all backends need to support and provide), but some backends might provide
 #'   additional variables.
-#'   These variables correspond to the column names of the `numeric` `matrix`
-#'   representing the peak data (returned by `peaksData`).
+#'   These variables correspond to the column names of the peak data array
+#'   returned by `peaksData`.
 #'
 #' - `polarity`, `polarity<-`: gets or sets the polarity for each
 #'   spectrum.  `polarity` returns an `integer` vector (length equal
@@ -286,18 +293,22 @@ NULL
 #'   method does by default **not** return m/z or intensity values.
 #'
 #' - `spectraData<-`: **replaces** the full spectra data of the `Spectra`
-#'   object with the one provided with `value`. The use of this function is
-#'   disencouraged, as replacing spectra data with values that are in a
-#'   different can break the linkage with the associated m/z and intensity
-#'   values. If possible, spectra variables (i.e. *columns* of the `Spectra`)
-#'   should be replaced individually. The `spectraData<-` function expects a
-#'   `DataFrame` to be passed as value.
+#'   object with the one provided with `value`. The `spectraData<-` function
+#'   expects a `DataFrame` to be passed as value with the same number of rows
+#'   as there a spectra in `object`. Note that replacing values of
+#'   peaks variables is not supported with a non-empty processing queue, i.e.
+#'   if any filtering or data manipulations on the peaks data was performed.
+#'   In these cases [applyProcessing()] needs to be called first to apply all
+#'   cached data operations and empty the processing queue.
 #'
 #' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
 #'
 #' - `spectraVariables`: returns a `character` vector with the
-#'   available spectra variables (columns, fields or attributes)
-#'   available in `object`.
+#'   available spectra variables (columns, fields or attributes of each
+#'   spectrum) available in `object`. Note that `spectraVariables` does not
+#'   list the *peak variables* (`"mz"`, `"intensity"` and eventual additional
+#'   annotations for each MS peak). Peak variables are returned by
+#'   `peaksVariables`.
 #'
 #' - `tic`: gets the total ion current/count (sum of signal of a
 #'   spectrum) for all spectra in `object`. By default, the value
@@ -1396,6 +1407,35 @@ NULL
 #'
 #' mz(res)
 #' mz(data)
+#'
+#' ## ---- PEAKS VARIABLES AND DATA ----
+#'
+#' ## Some `MsBackend` classes provide support for arbitrary peaks variables
+#' ## (in addition to the mandatory `"mz"` and `"intensity"` values. Below
+#' ## we create a simple data frame with an additional peak variable `"pk_ann"`
+#' ## and create a `Spectra` with a `MsBackendMemory` for that data.
+#' ## Importantly the number of values (per spectrum) need to be the same
+#' ## for all peak variables.
+#'
+#' tmp <- data.frame(msLevel = c(2L, 2L), rtime = c(123.2, 123.5))
+#' tmp$mz <- list(c(103.1, 110.4, 303.1), c(343.2, 453.1))
+#' tmp$intensity <- list(c(130.1, 543.1, 40), c(0.9, 0.45))
+#' tmp$pk_ann <- list(c(NA_character_, "A", "P"), c("B", "P"))
+#'
+#' ## Create the Spectra. With parameter `peaksVariables` we can define
+#' ## the columns in `tmp` that contain peaks variables.
+#' sps <- Spectra(tmp, source = MsBackendMemory(),
+#'     peaksVariables = c("mz", "intensity", "pk_ann"))
+#' peaksVariables(sps)
+#'
+#' ## Extract just the m/z and intensity values
+#' peaksData(sps)[[1L]]
+#'
+#' ## Extract the full peaks data
+#' peaksData(sps, columns = peaksVariables(sps))[[1L]]
+#'
+#' ## Access just the pk_ann variable
+#' sps$pk_ann
 NULL
 
 #' The Spectra class
@@ -1928,11 +1968,30 @@ setReplaceMethod("smoothed", "Spectra", function(object, value) {
 #' @importMethodsFrom ProtGenerics spectraData
 #'
 #' @exportMethod spectraData
-setMethod("spectraData", "Spectra", function(object,
-                                             columns = spectraVariables(object))
-{
-    spectraData(object@backend, columns = columns)
-})
+setMethod(
+    "spectraData", "Spectra",
+    function(object, columns = spectraVariables(object)) {
+        if (length(object@processingQueue) &&
+            length(pcns <- intersect(columns, peaksVariables(object)))) {
+            ## If user requests peaks variables we need to ensure that the
+            ## processing queue is executed.
+            scns <- setdiff(columns, pcns)
+            if (length(scns))
+                spd <- spectraData(object@backend, columns = scns)
+            else
+                spd <- make_zero_col_DFrame(nrow = length(object))
+            pkd <- peaksData(object, columns = pcns)
+            ## Add individual peaks variables to the `DataFrame`.
+            for (pcn in pcns) {
+                vals <- lapply(pkd, `[`, , pcn)
+                if (pcn %in% c("mz", "intensity"))
+                    vals <- NumericList(vals, compress = FALSE)
+                spd <- do.call(`[[<-`, list(spd, i = pcn, value = vals))
+            }
+            spd
+        } else
+            spectraData(object@backend, columns = columns)
+    })
 
 #' @rdname Spectra
 #'
@@ -1942,10 +2001,22 @@ setMethod("spectraData", "Spectra", function(object,
 setReplaceMethod("spectraData", "Spectra", function(object, value) {
     if (!inherits(value, "DataFrame"))
         stop("'spectraData<-' expects a 'DataFrame' as input.", call. = FALSE)
-    if (!any(colnames(value) == "mz"))
-        value$mz <- object$mz
-    if (!any(colnames(value) == "intensity"))
-        value$intensity <- object$intensity
+    pvs <- peaksVariables(object)
+    if (length(object@processingQueue) &&
+        any(colnames(value) %in% pvs))
+        stop("Can not replace peaks variables with a non-empty processing ",
+             "queue. Please use 'object <- applyProcessing(object)' to apply ",
+             "and clear the processing queue. Note that 'applyProcessing' ",
+             "requires a *writeable* backend. Use e.g. 'object <- ",
+             "setBackend(object, MsBackendMemory())' if needed.")
+    pvs <- setdiff(pvs, colnames(value))
+    if (length(pvs)) {
+        sd <- spectraData(object, pvs)
+        for (pv in pvs) {
+            value <- do.call("$<-", list(value, name = pv, sd[, pv]))
+        }
+        object@processingQueue <- list()
+    }
     spectraData(object@backend) <- value
     object
 })
@@ -1963,8 +2034,7 @@ setReplaceMethod("spectraNames", "Spectra", function(object, value) {
 
 #' @rdname Spectra
 setMethod("spectraVariables", "Spectra", function(object) {
-    svars <- spectraVariables(object@backend)
-    svars[!(svars %in% c("mz", "intensity"))]
+    setdiff(spectraVariables(object@backend), peaksVariables(object@backend))
 })
 
 #' @rdname Spectra
@@ -1982,20 +2052,32 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
 #'
 #' @export
 setMethod("$", "Spectra", function(x, name) {
-    if (!(name %in% c(spectraVariables(x), "mz", "intensity")))
+    if (!(name %in% c(spectraVariables(x@backend), peaksVariables(x@backend))))
         stop("No spectra variable '", name, "' available")
     if (name == "mz")
         mz(x)
     else if (name == "intensity")
         intensity(x)
-    else
-        do.call("$", list(x@backend, name))
+    else {
+        if (length(x@processingQueue) && name %in% peaksVariables(x))
+            .peaksapply(x, FUN = function(z, ...) z[, name],
+                        columns = c("mz", "intensity", name))
+        else
+            do.call("$", list(x@backend, name))
+    }
 })
 
 #' @rdname Spectra
 #'
 #' @export
 setReplaceMethod("$", "Spectra", function(x, name, value) {
+    if (length(x@processingQueue) &&
+        any(name %in% peaksVariables(x)))
+        stop("Can not replace peaks variables with a non-empty processing ",
+             "queue. Please use 'object <- applyProcessing(object)' to apply ",
+             "and clear the processing queue. Note that 'applyProcessing' ",
+             "requires a *writeable* backend. Use e.g. 'object <- ",
+             "setBackend(object, MsBackendMemory())' if needed.")
     x@backend <- do.call("$<-", list(x@backend, name, value))
     x
 })

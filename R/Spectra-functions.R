@@ -109,6 +109,15 @@ NULL
         pqueue <- c(pqueue, ProcessingStep(FUN, ARGS = list(...)))
     ll <- length(levels(f))
     if (length(pqueue) || ll > 1) {
+        if (!all(c("mz", "intensity") %in% columns)) {
+            scols <- columns
+            columns <- union(c("mz", "intensity"), columns)
+            pqueue <- c(
+                pqueue, ProcessingStep(
+                            FUN = function(x, scols, ...) {
+                                x[, scols, drop = FALSE]
+                            }, ARGS = list(scols = scols)))
+        }
         .local <- function(z, queue, svars) {
             if (length(svars))
                 spd <- as.data.frame(spectraData(z, columns = svars))
@@ -183,14 +192,18 @@ applyProcessing <- function(object, f = dataStorage(object),
     if (length(f) != length(object))
         stop("length 'f' has to be equal to the length of 'object' (",
              length(object), ")")
-    bknds <- bplapply(split(object@backend, f = f), function(z, queue, svars) {
-        if (length(svars))
-            spd <- as.data.frame(spectraData(z, columns = svars))
-        else spd <- NULL
-        peaksData(z) <- .apply_processing_queue(peaksData(z), spd, queue)
-        z
-    }, queue = object@processingQueue,
-    svars = .processingQueueVariables(object), BPPARAM = BPPARAM)
+    pv <- peaksVariables(object)
+    bknds <- bplapply(
+        split(object@backend, f = f), function(z, queue, pv, svars) {
+            if (length(svars))
+                spd <- as.data.frame(spectraData(z, columns = svars))
+            else spd <- NULL
+            peaksData(z) <- .apply_processing_queue(
+                peaksData(z, columns = pv), spd, queue)
+            z
+        }, queue = object@processingQueue, pv = pv,
+        svars = .processingQueueVariables(object),
+        BPPARAM = BPPARAM)
     bknds <- backendMerge(bknds)
     if (is.unsorted(f))
         bknds <- bknds[order(unlist(split(seq_along(bknds), f),

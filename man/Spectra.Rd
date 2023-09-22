@@ -848,7 +848,11 @@ parameter \code{backend}.
 
 \itemize{
 \item \code{$}, \verb{$<-}: gets (or sets) a spectra variable for all spectra in \code{object}.
-See examples for details.
+See examples for details. Note that replacing values of a peaks variable
+is not supported with a non-empty processing queue, i.e. if any filtering
+or data manipulations on the peaks data was performed. In these cases
+\code{\link[=applyProcessing]{applyProcessing()}} needs to be called first to apply all cached data
+operations.
 \item \code{[[}, \verb{[[<-}: access or set/add a single spectrum variable (column) in the
 backend.
 \item \code{acquisitionNum}: returns the acquisition number of each
@@ -919,17 +923,20 @@ level for each spectrum.
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
-\item \code{peaksData}: gets the \emph{peaks} matrices for all spectra in \code{object}. The
-function returns a \code{\link[=SimpleList]{SimpleList()}} of matrices, each \code{matrix} with columns
-\code{"mz"} and \code{"intensity"} with the m/z and intensity values for all peaks of
-a spectrum. Optional parameter \code{columns} is passed to the backend's
-\code{peaksData} function to allow selection of specific (or additional) peaks
-variables (columns) that should be extracted (if available). Importantly,
+\item \code{peaksData}: gets the \emph{peaks} data for all spectra in \code{object}. Peaks data
+consist of the m/z and intensity values as well as possible additional
+annotations (variables) of all peaks of each spectrum. The function
+returns a \code{\link[=SimpleList]{SimpleList()}} of two dimensional arrays (either \code{matrix} or
+\code{data.frame}), with each array providing the values for the requested
+\emph{peak variables} (by default \code{"mz"} and \code{"intensity"}). Optional parameter
+\code{columns} is passed to the backend's \code{peaksData} function to allow
+the selection of specific (or additional) peaks variables (columns) that
+should be extracted (if available). Importantly,
 it is \strong{not} guaranteed that each backend supports this parameter (while
 each backend must support extraction of \code{"mz"} and \code{"intensity"} columns).
 Parameter \code{columns} defaults to \code{c("mz", "intensity")} but any value
 returned from \code{peaksVariables} is supported.
-Note also that it is possible to extract the peaks matrices with
+Note also that it is possible to extract the peak data with
 \code{as(x, "list")} and \code{as(x, "SimpleList")} as a \code{list} and \code{SimpleList},
 respectively. Note however that, in contrast to \code{peaksData}, \code{as} does not
 support the parameter \code{columns}.
@@ -937,8 +944,8 @@ support the parameter \code{columns}.
 the backend. Default peak variables are \code{"mz"} and \code{"intensity"} (which
 all backends need to support and provide), but some backends might provide
 additional variables.
-These variables correspond to the column names of the \code{numeric} \code{matrix}
-representing the peak data (returned by \code{peaksData}).
+These variables correspond to the column names of the peak data array
+returned by \code{peaksData}.
 \item \code{polarity}, \verb{polarity<-}: gets or sets the polarity for each
 spectrum.  \code{polarity} returns an \code{integer} vector (length equal
 to the number of spectra), with \code{0} and \code{1} representing negative
@@ -969,16 +976,20 @@ of length 1 or equal to the number of spectra in \code{object}.
 header). \code{spectraData} returns a \code{DataFrame}. Note that this
 method does by default \strong{not} return m/z or intensity values.
 \item \verb{spectraData<-}: \strong{replaces} the full spectra data of the \code{Spectra}
-object with the one provided with \code{value}. The use of this function is
-disencouraged, as replacing spectra data with values that are in a
-different can break the linkage with the associated m/z and intensity
-values. If possible, spectra variables (i.e. \emph{columns} of the \code{Spectra})
-should be replaced individually. The \verb{spectraData<-} function expects a
-\code{DataFrame} to be passed as value.
+object with the one provided with \code{value}. The \verb{spectraData<-} function
+expects a \code{DataFrame} to be passed as value with the same number of rows
+as there a spectra in \code{object}. Note that replacing values of
+peaks variables is not supported with a non-empty processing queue, i.e.
+if any filtering or data manipulations on the peaks data was performed.
+In these cases \code{\link[=applyProcessing]{applyProcessing()}} needs to be called first to apply all
+cached data operations and empty the processing queue.
 \item \code{spectraNames}, \verb{spectraNames<-}: gets or sets the spectra names.
 \item \code{spectraVariables}: returns a \code{character} vector with the
-available spectra variables (columns, fields or attributes)
-available in \code{object}.
+available spectra variables (columns, fields or attributes of each
+spectrum) available in \code{object}. Note that \code{spectraVariables} does not
+list the \emph{peak variables} (\code{"mz"}, \code{"intensity"} and eventual additional
+annotations for each MS peak). Peak variables are returned by
+\code{peaksVariables}.
 \item \code{tic}: gets the total ion current/count (sum of signal of a
 spectrum) for all spectra in \code{object}. By default, the value
 reported in the original raw data file is returned. For an empty
@@ -1760,6 +1771,35 @@ res <- Spectra(backendInitialize(MsBackendMzR(), fls[1]))
 
 mz(res)
 mz(data)
+
+## ---- PEAKS VARIABLES AND DATA ----
+
+## Some `MsBackend` classes provide support for arbitrary peaks variables
+## (in addition to the mandatory `"mz"` and `"intensity"` values. Below
+## we create a simple data frame with an additional peak variable `"pk_ann"`
+## and create a `Spectra` with a `MsBackendMemory` for that data.
+## Importantly the number of values (per spectrum) need to be the same
+## for all peak variables.
+
+tmp <- data.frame(msLevel = c(2L, 2L), rtime = c(123.2, 123.5))
+tmp$mz <- list(c(103.1, 110.4, 303.1), c(343.2, 453.1))
+tmp$intensity <- list(c(130.1, 543.1, 40), c(0.9, 0.45))
+tmp$pk_ann <- list(c(NA_character_, "A", "P"), c("B", "P"))
+
+## Create the Spectra. With parameter `peaksVariables` we can define
+## the columns in `tmp` that contain peaks variables.
+sps <- Spectra(tmp, source = MsBackendMemory(),
+    peaksVariables = c("mz", "intensity", "pk_ann"))
+peaksVariables(sps)
+
+## Extract just the m/z and intensity values
+peaksData(sps)[[1L]]
+
+## Extract the full peaks data
+peaksData(sps, columns = peaksVariables(sps))[[1L]]
+
+## Access just the pk_ann variable
+sps$pk_ann
 }
 \author{
 Nir Shahaf, Johannes Rainer
