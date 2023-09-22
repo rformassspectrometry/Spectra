@@ -561,7 +561,11 @@
 #' `data`. The second parameter `peaksVariables` allows to define which columns
 #' in `data` contain *peak variables* such as the m/z and intensity values of
 #' individual peaks per spectrum. The default for this parameter is
-#' `peaksVariables = c("mz", "intensity")`.
+#' `peaksVariables = c("mz", "intensity")`. Note that it is not supported to
+#' provide either `"mz"` or `"intensity"`, if provided, both need to be
+#' present in the data frame. Alternatively, the function also supports a data
+#' frame without m/z and intensity values, in which case a `Spectra` without
+#' mass peaks is created.
 #'
 #' Suggested columns of this `DataFrame` are:
 #'

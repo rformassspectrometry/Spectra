@@ -62,6 +62,8 @@ setMethod("backendInitialize", signature = "MsBackendDataFrame",
               if (!is(data, "DataFrame"))
                   stop("'data' has to be a 'DataFrame'")
               peaksVariables <- intersect(peaksVariables, colnames(data))
+              ## support either no m/z or intensity values provided, or both
+              ## have to be specified.
               if (sum(c("mz", "intensity") %in% peaksVariables) == 1L)
                   stop("Both \"mz\" and \"intensity\" peak variables ",
                        "need to be provided.")

@@ -779,7 +779,11 @@ subsequently initialized with the \code{backendInitialize} method, taking a
 \code{data}. The second parameter \code{peaksVariables} allows to define which columns
 in \code{data} contain \emph{peak variables} such as the m/z and intensity values of
 individual peaks per spectrum. The default for this parameter is
-\code{peaksVariables = c("mz", "intensity")}.
+\code{peaksVariables = c("mz", "intensity")}. Note that it is not supported to
+provide either \code{"mz"} or \code{"intensity"}, if provided, both need to be
+present in the data frame. Alternatively, the function also supports a data
+frame without m/z and intensity values, in which case a \code{Spectra} without
+mass peaks is created.
 
 Suggested columns of this \code{DataFrame} are:
 \itemize{
