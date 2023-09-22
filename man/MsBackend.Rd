@@ -764,7 +764,7 @@ using the \code{mz} and \code{intensity} methods) is faster for the
 way the data is organized internally, provides much faster access to the
 full peak data (i.e. the numerical matrices of m/z and intensity values).
 Also subsetting and access to any spectra variable (except \code{"mz"} and
-\code{"intensity"} is fastest for the \code{MsBackendMemory}.
+\code{"intensity"}) is fastest for the \code{MsBackendMemory}.
 
 Thus, for most use cases, the \code{MsBackendMemory} provides a higher
 performance and flexibility than the \code{MsBackendDataFrame} and should thus be
@@ -812,7 +812,7 @@ Additional columns are allowed too.
 The \code{peaksData} function for \code{MsBackendMemory} and \code{MsBackendDataFrame}
 returns a \code{list} of \code{numeric} \code{matrix} by default (with parameter
 \code{columns = c("mz", "intensity")}). If other peak variables are requested,
-a \code{list} of \code{data.frame} is returned (to ensure m/z and intensity values
+a \code{list} of \code{data.frame} is returned (ensuring m/z and intensity values
 are always \code{numeric}).
 }
 

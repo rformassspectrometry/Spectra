@@ -546,7 +546,7 @@
 #' way the data is organized internally, provides much faster access to the
 #' full peak data (i.e. the numerical matrices of m/z and intensity values).
 #' Also subsetting and access to any spectra variable (except `"mz"` and
-#' `"intensity"` is fastest for the `MsBackendMemory`.
+#' `"intensity"`) is fastest for the `MsBackendMemory`.
 #'
 #' Thus, for most use cases, the `MsBackendMemory` provides a higher
 #' performance and flexibility than the `MsBackendDataFrame` and should thus be
@@ -593,7 +593,7 @@
 #' The `peaksData` function for `MsBackendMemory` and `MsBackendDataFrame`
 #' returns a `list` of `numeric` `matrix` by default (with parameter
 #' `columns = c("mz", "intensity")`). If other peak variables are requested,
-#' a `list` of `data.frame` is returned (to ensure m/z and intensity values
+#' a `list` of `data.frame` is returned (ensuring m/z and intensity values
 #' are always `numeric`).
 #'
 #'
