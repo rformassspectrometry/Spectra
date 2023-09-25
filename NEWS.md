@@ -1,5 +1,11 @@
 # Spectra 1.11
 
+## Changes in 1.11.11
+
+- Fix issue with `filterFourierTransformArtefacts` function (see [issue
+  #302](https://github.com/rformassspectrometry/Spectra/issues/302)). Thanks
+  Adriano Rutz for reporting.
+
 ## Changes in 1.11.10
 
 - `peaksData,MsBackendMemory` returns a `data.frame` if additional peak

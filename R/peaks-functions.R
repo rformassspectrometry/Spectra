@@ -480,7 +480,7 @@ joinPeaksNone <- function(x, y, ...) {
                                        threshold = 0.2,
                                        keepIsotopes = TRUE,
                                        maxCharge = 5,
-                                       isotopeTolerance = 0.005) {
+                                       isotopeTolerance = 0.005, ...) {
     neutron   <- 1.0033548378 # really C12, C13 difference
     iso_dist  <- neutron / seq(from = 1, by = 1, to = maxCharge)
     ## just calculate isotopes that are in the halfWindowSize
@@ -638,7 +638,7 @@ joinPeaksNone <- function(x, y, ...) {
 #' @noRd
 .peaks_filter_precursor_ne <- function(x, ppm = 20, tolerance = 0,
                                        precursorMz, spectrumMsLevel,
-                                       msLevel = spectrumMsLevel) {
+                                       msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !nrow(x))
         return(x)
     keep <- is.na(closest(x[, "mz"], precursorMz, ppm = ppm,
@@ -656,7 +656,7 @@ joinPeaksNone <- function(x, y, ...) {
 #' @noRd
 .peaks_filter_precursor_keep_below <- function(x, ppm = 20, tolerance = 0,
                                                precursorMz, spectrumMsLevel,
-                                               msLevel = spectrumMsLevel) {
+                                               msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !nrow(x))
         return(x)
     pmz <- precursorMz - tolerance - ppm(precursorMz, ppm = ppm)
