@@ -1,11 +1,17 @@
 # Spectra 1.10
 
-## Changes is 1.10.2
+## Changes in 1.10.3
+
+- Fix issue with `filterFourierTransformArtefacts` function (see [issue
+  #302](https://github.com/rformassspectrometry/Spectra/issues/302)). Thanks
+  Adriano Rutz for reporting.
+
+## Changes in 1.10.2
 
 - Fix `setBackend,Spectra` to disable parallel processing if not both backends
   support that.
 
-## Changes is 1.10.1
+## Changes in 1.10.1
 
 - Add example for filtering precursor m/z peaks from fragment spectra to the
   vignette.

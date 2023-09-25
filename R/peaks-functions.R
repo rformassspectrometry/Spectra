@@ -210,7 +210,7 @@ NULL
 #'
 #' @noRd
 .peaks_is_centroided <- function(x, spectrumMsLevel, centroided = NA,
-                                 k = 0.025, qtl = 0.9) {
+                                 k = 0.025, qtl = 0.9, ...) {
     .qtl <- quantile(x[, 2], qtl)
     x <- x[x[, 2] > .qtl, 1]
     quantile(diff(x), 0.25) > k
@@ -467,7 +467,7 @@ joinPeaksGnps <- function(x, y, xPrecursorMz = NA_real_,
                                        threshold = 0.2,
                                        keepIsotopes = TRUE,
                                        maxCharge = 5,
-                                       isotopeTolerance = 0.005) {
+                                       isotopeTolerance = 0.005, ...) {
     neutron   <- 1.0033548378 # really C12, C13 difference
     iso_dist  <- neutron / seq(from = 1, by = 1, to = maxCharge)
     ## just calculate isotopes that are in the halfWindowSize
