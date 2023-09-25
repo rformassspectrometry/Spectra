@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11.11</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.11" id="spectra-111">Spectra 1.11<a class="anchor" aria-label="anchor" href="#spectra-111"></a></h2>
 <div class="section level3">
-<h3 id="changes-in-1-11">Changes in 1.11.10<a class="anchor" aria-label="anchor" href="#changes-in-1-11"></a></h3>
+<h3 id="changes-in-1-11">Changes in 1.11.11<a class="anchor" aria-label="anchor" href="#changes-in-1-11"></a></h3>
+<ul><li>Fix issue with <code>filterFourierTransformArtefacts</code> function (see <a href="https://github.com/rformassspectrometry/Spectra/issues/302" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/302" class="external-link">#302</a>). Thanks Adriano Rutz for reporting.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-in-1-11-1">Changes in 1.11.10<a class="anchor" aria-label="anchor" href="#changes-in-1-11-1"></a></h3>
 <ul><li>
 <code>peaksData,MsBackendMemory</code> returns a <code>data.frame</code> if additional peak variables (in addition to <code>"mz"</code> and <code>"intensity"</code>) are requested. For <code>columns = c("mz", "intensity")</code> (the default) a <code>list</code> of <code>matrix</code> is returned.</li>
 <li>
@@ -72,44 +76,44 @@
 <li>Add full support for additional peaks variables to <code>MsBackendDataFrame</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-1">Changes in 1.11.9<a class="anchor" aria-label="anchor" href="#changes-in-1-11-1"></a></h3>
+<h3 id="changes-in-1-11-2">Changes in 1.11.9<a class="anchor" aria-label="anchor" href="#changes-in-1-11-2"></a></h3>
 <ul><li>Add <code>filterPrecursorPeaks</code> to allow filtering peaks within each spectrum with m/z values relative to the precursor m/z of the spectrum.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-2">Changes in 1.11.8<a class="anchor" aria-label="anchor" href="#changes-in-1-11-2"></a></h3>
+<h3 id="changes-in-1-11-3">Changes in 1.11.8<a class="anchor" aria-label="anchor" href="#changes-in-1-11-3"></a></h3>
 <ul><li>Add an example to the vignette describing how spectral similarity scores from the <em>msentropy</em> package can be used with <code>compareSpectra</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-3">Changes in 1.11.7<a class="anchor" aria-label="anchor" href="#changes-in-1-11-3"></a></h3>
+<h3 id="changes-in-1-11-4">Changes in 1.11.7<a class="anchor" aria-label="anchor" href="#changes-in-1-11-4"></a></h3>
 <ul><li>Fix in <code>compareSpectra</code> to also pass parameters <code>ppm</code> and <code>tolerance</code> to the peak similarity calculation functions <code>FUN</code>: this allows to use custom similarity function with integrated mapping of peaks.</li>
 <li>Add <code>joinPeaksNone</code> to skip the peak matching in <code>compareSpectra</code> if the similarity scoring function performs its own peak matching.</li>
 <li>Only use parallel processing in <code>setBackend,Spectra</code> if both backends support it.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-4">Changes in 1.11.6<a class="anchor" aria-label="anchor" href="#changes-in-1-11-4"></a></h3>
+<h3 id="changes-in-1-11-5">Changes in 1.11.6<a class="anchor" aria-label="anchor" href="#changes-in-1-11-5"></a></h3>
 <ul><li>Add <code>filterPrecursorMaxIntensity</code> function.</li>
 <li>Add <code>filterPrecursorIsotopes</code> function.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-5">Changes in 1.11.5<a class="anchor" aria-label="anchor" href="#changes-in-1-11-5"></a></h3>
+<h3 id="changes-in-1-11-6">Changes in 1.11.5<a class="anchor" aria-label="anchor" href="#changes-in-1-11-6"></a></h3>
 <ul><li>Add <code>scalePeaks</code> function (see <a href="https://github.com/rformassspectrometry/Spectra/issues/291" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/291" class="external-link">#291</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-6">Changes in 1.11.4<a class="anchor" aria-label="anchor" href="#changes-in-1-11-6"></a></h3>
+<h3 id="changes-in-1-11-7">Changes in 1.11.4<a class="anchor" aria-label="anchor" href="#changes-in-1-11-7"></a></h3>
 <ul><li>Import <code>uniqueMsLevels</code> from <code>ProtGenerics</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-7">Changes in 1.11.3<a class="anchor" aria-label="anchor" href="#changes-in-1-11-7"></a></h3>
+<h3 id="changes-in-1-11-8">Changes in 1.11.3<a class="anchor" aria-label="anchor" href="#changes-in-1-11-8"></a></h3>
 <ul><li>Rename <code>combinePeaks</code> for lists of peak matrices into <code>combinePeaksData</code>.</li>
 <li>Add <code>combinePeaks</code> generics.</li>
 <li>Add <code>combinePeaks,Spectra</code> to combine peaks within each spectrum in a <code>Spectra</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-8">Changes in 1.11.2<a class="anchor" aria-label="anchor" href="#changes-in-1-11-8"></a></h3>
+<h3 id="changes-in-1-11-9">Changes in 1.11.2<a class="anchor" aria-label="anchor" href="#changes-in-1-11-9"></a></h3>
 <ul><li>Add <code>deisotopeSpectra</code> and <code>reduceSpectra</code> functions.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-11-9">Changes in 1.11.1<a class="anchor" aria-label="anchor" href="#changes-in-1-11-9"></a></h3>
+<h3 id="changes-in-1-11-10">Changes in 1.11.1<a class="anchor" aria-label="anchor" href="#changes-in-1-11-10"></a></h3>
 <ul><li>Add example for filtering precursor m/z peaks from fragment spectra to the vignette.</li>
 </ul></div>
 </div>
