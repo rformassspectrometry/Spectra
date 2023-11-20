@@ -71,7 +71,7 @@ test_that(".peaks_bin works", {
     int <- c(0, 1, 2, 3, 1, 0, 0, 0, 0, 1, 3, 10, 6, 2, 1, 0, 1, 2, 0,
              0, 1, 5, 10, 5, 1)
     x <- cbind(mz = 1:length(int), intensity = int)
-    # x <- [, x[,"intensity"] != 0] ## this does not fix the test, bit confused by that.
+    # x_nozero <- [x[,"intensity"] != 0, ] ## this does not fix the test, bit confused by that.
 
     brks <- seq(min(x), max(x), by = 1L)
     brks <- MsCoreUtils:::.fix_breaks(brks, range(x))
