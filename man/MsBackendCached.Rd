@@ -9,14 +9,14 @@
 \alias{spectraVariables,MsBackendCached-method}
 \alias{spectraData,MsBackendCached-method}
 \alias{spectraData<-,MsBackendCached-method}
-\alias{[,MsBackendCached,ANY,ANY,ANY-method}
+\alias{[,MsBackendCached-method}
 \alias{$,MsBackendCached-method}
 \alias{$<-,MsBackendCached-method}
 \alias{selectSpectraVariables,MsBackendCached-method}
 \alias{show,MsBackendCached-method}
 \alias{acquisitionNum,MsBackendCached-method}
 \alias{centroided,MsBackendCached-method}
-\alias{centroided<-,MsBackendCached,ANY-method}
+\alias{centroided<-,MsBackendCached-method}
 \alias{collisionEnergy,MsBackendCached-method}
 \alias{collisionEnergy<-,MsBackendCached-method}
 \alias{dataOrigin,MsBackendCached-method}
@@ -42,7 +42,7 @@
 \alias{rtime<-,MsBackendCached-method}
 \alias{scanIndex,MsBackendCached-method}
 \alias{smoothed,MsBackendCached-method}
-\alias{smoothed<-,MsBackendCached,ANY-method}
+\alias{smoothed<-,MsBackendCached-method}
 \title{Base MsBackend class providing data caching mechanism}
 \usage{
 MsBackendCached()
@@ -65,7 +65,7 @@ MsBackendCached()
 
 \S4method{spectraData}{MsBackendCached}(object) <- value
 
-\S4method{[}{MsBackendCached,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendCached}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackendCached}(x, name)
 
@@ -79,7 +79,7 @@ MsBackendCached()
 
 \S4method{centroided}{MsBackendCached}(object)
 
-\S4method{centroided}{MsBackendCached,ANY}(object) <- value
+\S4method{centroided}{MsBackendCached}(object) <- value
 
 \S4method{collisionEnergy}{MsBackendCached}(object)
 
@@ -131,7 +131,7 @@ MsBackendCached()
 
 \S4method{smoothed}{MsBackendCached}(object)
 
-\S4method{smoothed}{MsBackendCached,ANY}(object) <- value
+\S4method{smoothed}{MsBackendCached}(object) <- value
 }
 \arguments{
 \item{object}{A \code{MsBackendCached} object.}

@@ -30,7 +30,7 @@
 \alias{peaksData,Spectra-method}
 \alias{peaksVariables,Spectra-method}
 \alias{centroided,Spectra-method}
-\alias{centroided<-,Spectra,ANY-method}
+\alias{centroided<-,Spectra-method}
 \alias{collisionEnergy,Spectra-method}
 \alias{collisionEnergy<-,Spectra-method}
 \alias{dataOrigin,Spectra-method}
@@ -65,7 +65,7 @@
 \alias{scanIndex,Spectra-method}
 \alias{selectSpectraVariables,Spectra-method}
 \alias{smoothed,Spectra-method}
-\alias{smoothed<-,Spectra,ANY-method}
+\alias{smoothed<-,Spectra-method}
 \alias{spectraData,Spectra-method}
 \alias{spectraData<-,Spectra-method}
 \alias{spectraNames,Spectra-method}
@@ -74,9 +74,8 @@
 \alias{tic,Spectra-method}
 \alias{$,Spectra-method}
 \alias{$<-,Spectra-method}
-\alias{[[,Spectra,ANY,ANY-method}
-\alias{[[<-,Spectra,ANY,ANY,ANY-method}
-\alias{[,Spectra,ANY,ANY,ANY-method}
+\alias{[[,Spectra-method}
+\alias{[[<-,Spectra-method}
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterDataOrigin,Spectra-method}
@@ -206,7 +205,7 @@ filterPrecursorPeaks(
 
 \S4method{centroided}{Spectra}(object)
 
-\S4method{centroided}{Spectra,ANY}(object) <- value
+\S4method{centroided}{Spectra}(object) <- value
 
 \S4method{collisionEnergy}{Spectra}(object)
 
@@ -299,7 +298,7 @@ filterPrecursorPeaks(
 
 \S4method{smoothed}{Spectra}(object)
 
-\S4method{smoothed}{Spectra,ANY}(object) <- value
+\S4method{smoothed}{Spectra}(object) <- value
 
 \S4method{spectraData}{Spectra}(object, columns = spectraVariables(object))
 
@@ -317,11 +316,11 @@ filterPrecursorPeaks(
 
 \S4method{$}{Spectra}(x, name) <- value
 
-\S4method{[[}{Spectra,ANY,ANY}(x, i, j, ...)
+\S4method{[[}{Spectra}(x, i, j, ...)
 
-\S4method{[[}{Spectra,ANY,ANY,ANY}(x, i, j, ...) <- value
+\S4method{[[}{Spectra}(x, i, j, ...) <- value
 
-\S4method{[}{Spectra,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
 
 \S4method{filterAcquisitionNum}{Spectra}(
   object,
