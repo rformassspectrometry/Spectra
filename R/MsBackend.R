@@ -212,7 +212,9 @@
 #'   because they contain a connection to a database that can not be
 #'   shared across processes) should extend this method to return only
 #'   `SerialParam()` and hence disable parallel processing for (most)
-#'   methods and functions.
+#'   methods and functions. See also `backendParallelFactor` for a
+#'   function to provide a default splitting of the backend for parallel
+#'   processing.
 #'
 #' - `backendInitialize`: initialises the backend. This method is
 #'   supposed to be called rights after creating an instance of the
@@ -232,6 +234,15 @@
 #' - `backendMerge`: merges (combines) `MsBackend` objects into a single
 #'   instance. All objects to be merged have to be of the same type (e.g.
 #'   [MsBackendDataFrame()]).
+#'
+#' - `backendParallelFactor`: returns a `factor` defining a default
+#'   (preferred) way how the backend can be split for parallel processing for
+#'   all peak data accessor functions.
+#'   The default implementation returns a factor of length 0 (`factor()`)
+#'   providing thus no default splitting. A `backendParallelFactor` for
+#'   `MsBackendMzR` on the other hand returns `factor(dataStorage(object))`
+#'   hence enabling a default splitting of the object by original data
+#'   file.
 #'
 #' - `dataOrigin`: gets a `character` of length equal to the number of spectra
 #'   in `object` with the *data origin* of each spectrum. This could e.g. be
@@ -847,6 +858,13 @@ setMethod("backendMerge", "list", function(object, ...) {
 #' @rdname MsBackend
 setMethod("backendMerge", "MsBackend", function(object, ...) {
     stop("Not implemented for ", class(object), ".")
+})
+
+#' @exportMethod backendParallelFactor
+#'
+#' @rdname MsBackend
+setMethod("backendParallelFactor", "MsBackend", function(object, ...) {
+    factor()
 })
 
 #' @rdname MsBackend

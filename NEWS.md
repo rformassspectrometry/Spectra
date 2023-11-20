@@ -1,3 +1,11 @@
+# Spectra 1.13
+
+## Changes in 1.13.1
+
+- Add slot `processingChunkSize` to `Spectra` and related accessor methods to
+  enable chunk-wise processing of peaks data for methods `mz`, `intensity`,
+  `peaksData` and others. This fixes out-of-memory errors for large data files.
+
 # Spectra 1.11
 
 ## Changes in 1.11.11

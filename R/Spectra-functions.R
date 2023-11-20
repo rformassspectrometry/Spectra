@@ -77,8 +77,8 @@ NULL
 #' @param ... optional additional arguments to `FUN`.
 #'
 #' @param f `factor` or `vector` that can be coerced to one defining how the
-#'     data should be split for parallel processing. Set to `NULL` to disable
-#'     parallel processing.
+#'     data should be split for parallel processing. Set to `NULL` or
+#'     `factor()` to disable splitting and parallel processing.
 #'
 #' @param columns `character` defining the columns that should be returned. This
 #'     will be passed to the backend's `peaksData` function.
@@ -94,7 +94,7 @@ NULL
 #' @noRd
 .peaksapply <- function(object, FUN = NULL, ...,
                         spectraVariables = .processingQueueVariables(object),
-                        f = dataStorage(object),
+                        f = .parallel_processing_factor(object),
                         columns = c("mz", "intensity"), BPPARAM = bpparam()) {
     len <- length(object)
     lf <- length(f)
@@ -460,7 +460,8 @@ applyProcessing <- function(object, f = dataStorage(object),
         x_new <- setBackend(x_new, MsBackendMemory())
     bpp <- SerialParam()
     peaksData(x_new@backend) <- lapply(
-        split(.peaksapply(x, f = NULL, BPPARAM = bpp), f = f), FUN = FUN, ...)
+        split(.peaksapply(x, f = factor(), BPPARAM = bpp), f = f),
+        FUN = FUN, ...)
     x_new@processingQueue <- list()
     validObject(x_new)
     x_new
@@ -1007,4 +1008,40 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
     object@processing <- .logging(
         object@processing, "Filter: remove peaks ", msg)
     object
+}
+
+#' @title Define a factor for parallel access to peaks data
+#'
+#' @description
+#'
+#' Define a factor to split a `Spectra` for parallel processing based on
+#' parallel processing setup,
+#'
+#' If `processingChunkSize(x)` is defined and its value is smaller then
+#' `length(x)`, a factor depending on this chunk size is returned.
+#' Otherwise `backendParallelFactor(x)` is returned.
+#'
+#' Properties/considerations:
+#' - in-memory backends: don't split if not requested by the user (e.g. by
+#'   specifying `f` or `chunkSize`.
+#' - on-disk backends: file-based backends, such as `MsBackendMzR`: perform
+#'   per file parallel processing if `f` or `chunkSize` is not defined.
+#'   Other on-disk backends: only if requested by the user.
+#'
+#' @param x `Spectra` object.
+#'
+#' @param chunkSize `integer` defining the size of chunks into which `x` should
+#'     be split.
+#'
+#' @return `factor` with the desired way how to split `x` for chunk-wise
+#'     processing (or `factor()` to disable).
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.parallel_processing_factor <- function(x, chunkSize = processingChunkSize(x)) {
+    lx <- length(x)
+    if (is.finite(chunkSize) && chunkSize < lx)
+        .chunk_factor(lx, chunkSize = chunkSize)
+    else backendParallelFactor(x@backend)
 }

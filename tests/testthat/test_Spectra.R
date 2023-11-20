@@ -1776,3 +1776,10 @@ test_that("combinePeaks,Spectra works", {
                             msLevel = 1L, spectrumMsLevel = 1L)
     expect_equal(res_1, peaksData(res)[[1L]])
 })
+
+test_that("processingChunkSize works", {
+    expect_equal(processingChunkSize(sps_dia), Inf)
+    tmp <- sps_dia
+    processingChunkSize(tmp) <- 10
+    expect_equal(processingChunkSize(tmp), 10)
+})

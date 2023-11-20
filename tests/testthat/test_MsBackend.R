@@ -71,3 +71,7 @@ test_that("backendBpparam,MsBackend works", {
     res <- backendBpparam(sciex_mzr, SerialParam())
     expect_equal(res, SerialParam())
 })
+
+test_that("backendParallelFactor,MsBackend works", {
+    expect_equal(backendParallelFactor(MsBackendMemory()), factor())
+})

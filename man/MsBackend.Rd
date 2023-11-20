@@ -19,6 +19,7 @@
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
 \alias{backendMerge,MsBackend-method}
+\alias{backendParallelFactor,MsBackend-method}
 \alias{export,MsBackend-method}
 \alias{acquisitionNum,MsBackend-method}
 \alias{peaksData,MsBackend-method}
@@ -103,6 +104,8 @@
 \S4method{backendMerge}{list}(object, ...)
 
 \S4method{backendMerge}{MsBackend}(object, ...)
+
+\S4method{backendParallelFactor}{MsBackend}(object, ...)
 
 \S4method{export}{MsBackend}(object, ...)
 
@@ -476,7 +479,9 @@ by the backend. Backends not supporting parallel processing (e.g.
 because they contain a connection to a database that can not be
 shared across processes) should extend this method to return only
 \code{SerialParam()} and hence disable parallel processing for (most)
-methods and functions.
+methods and functions. See also \code{backendParallelFactor} for a
+function to provide a default splitting of the backend for parallel
+processing.
 \item \code{backendInitialize}: initialises the backend. This method is
 supposed to be called rights after creating an instance of the
 backend class and should prepare the backend (e.g. set the data
@@ -494,6 +499,14 @@ spectra variable \code{dataStorage}.
 \item \code{backendMerge}: merges (combines) \code{MsBackend} objects into a single
 instance. All objects to be merged have to be of the same type (e.g.
 \code{\link[=MsBackendDataFrame]{MsBackendDataFrame()}}).
+\item \code{backendParallelFactor}: returns a \code{factor} defining a default
+(preferred) way how the backend can be split for parallel processing for
+all peak data accessor functions.
+The default implementation returns a factor of length 0 (\code{factor()})
+providing thus no default splitting. A \code{backendParallelFactor} for
+\code{MsBackendMzR} on the other hand returns \code{factor(dataStorage(object))}
+hence enabling a default splitting of the object by original data
+file.
 \item \code{dataOrigin}: gets a \code{character} of length equal to the number of spectra
 in \code{object} with the \emph{data origin} of each spectrum. This could e.g. be
 the mzML file from which the data was read.

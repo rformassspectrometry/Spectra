@@ -1408,18 +1408,32 @@ object does not support parallel processing. All functions listed below
 use this same function to eventually disable parallel processing to
 avoid failure of a function call.
 
-The functions with build-in parallel processing capabilities are:
+Functions supporting parameter \code{f} to define how to split the \code{Spectra}
+to perform parallel processing:
 \itemize{
 \item \code{applyProcessing}.
 \item \code{combineSpectra}.
-\item \code{containsMz} (does not provide a parameter \code{f}, but performs parallel
-processing separate for \code{dataStorage}).
-\item \code{containsNeutralLoss} (same as \code{containsMz}).
 \item \code{estimatePrecursorIntensity}.
 \item \code{setBackend}.
 \item \code{Spectra} (that passes the \code{BPPARAM} to the \code{backendInitialize} of the
 used \code{MsBackend}).
 \item \code{spectrapply}.
+}
+
+Functions that perform parallel processing \emph{natively}, i.e., without a
+parameter \code{f} but based on eventually set \emph{chunk size} with
+\code{processingChunkSize}. \code{Specta} with a \code{MsBackendMzR} backend also perform
+by default per-file parallel processing for these functions.
+\itemize{
+\item \code{containsMz} (does not provide a parameter \code{f}, but performs parallel
+processing separate for \code{dataStorage}).
+\item \code{containsNeutralLoss} (same as \code{containsMz}).
+\item \code{peaksData}.
+\item \code{intensity}.
+\item \code{ionCount}.
+\item \code{isCentroided}.
+\item \code{isEmpty}.
+\item \code{mz}.
 }
 }
 

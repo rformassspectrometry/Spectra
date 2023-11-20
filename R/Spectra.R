@@ -768,19 +768,31 @@ NULL
 #' use this same function to eventually disable parallel processing to
 #' avoid failure of a function call.
 #'
-#' The functions with build-in parallel processing capabilities are:
+#' Functions supporting parameter `f` to define how to split the `Spectra`
+#' to perform parallel processing:
 #'
 #' - `applyProcessing`.
 #' - `combineSpectra`.
-#' - `containsMz` (does not provide a parameter `f`, but performs parallel
-#'   processing separate for `dataStorage`).
-#' - `containsNeutralLoss` (same as `containsMz`).
 #' - `estimatePrecursorIntensity`.
 #' - `setBackend`.
 #' - `Spectra` (that passes the `BPPARAM` to the `backendInitialize` of the
 #'   used `MsBackend`).
 #' - `spectrapply`.
 #'
+#' Functions that perform parallel processing *natively*, i.e., without a
+#' parameter `f` but based on eventually set *chunk size* with
+#' `processingChunkSize`. `Specta` with a `MsBackendMzR` backend also perform
+#' by default per-file parallel processing for these functions.
+#'
+#' - `containsMz` (does not provide a parameter `f`, but performs parallel
+#'   processing separate for `dataStorage`).
+#' - `containsNeutralLoss` (same as `containsMz`).
+#' - `peaksData`.
+#' - `intensity`.
+#' - `ionCount`.
+#' - `isCentroided`.
+#' - `isEmpty`.
+#' - `mz`.
 #'
 #' @return See individual method description for the return value.
 #'
@@ -1474,9 +1486,11 @@ setClass(
         processing = "character",
         ## metadata
         metadata = "list",
+        processingChunkSize = "numeric",
         version = "character"
     ),
-    prototype = prototype(version = "0.2")
+    prototype = prototype(version = "0.2",
+                          processingChunkSize = Inf)
 )
 
 setValidity("Spectra", function(object) {
@@ -1654,10 +1668,7 @@ setMethod(
     "peaksData", "Spectra",
     function(object, columns = c("mz", "intensity"), ..., BPPARAM = bpparam()) {
         BPPARAM <- backendBpparam(object, BPPARAM)
-        if (is(BPPARAM, "SerialParam"))
-            f <- NULL
-        else f <- factor(dataStorage(object))
-        SimpleList(.peaksapply(object, f = f, columns = columns,
+        SimpleList(.peaksapply(object, columns = columns,
                                BPPARAM = BPPARAM, ...))
 })
 
@@ -1668,10 +1679,7 @@ setMethod("peaksVariables", "Spectra", function(object)
 #' @importFrom methods setAs
 setAs("Spectra", "list", function(from, to) {
     BPPARAM <- backendBpparam(from)
-    if (is(BPPARAM, "SerialParam"))
-        f <- NULL
-    else f <- factor(dataStorage(from))
-    .peaksapply(from, f = f, BPPARAM = BPPARAM)
+    .peaksapply(from, BPPARAM = BPPARAM)
 })
 
 setAs("Spectra", "SimpleList", function(from, to) {
@@ -1721,7 +1729,8 @@ setMethod("dropNaSpectraVariables", "Spectra", function(object) {
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {
-    if (length(object@processingQueue))
+    if (length(object@processingQueue) ||
+        is.finite(processingChunkSize(object)))
         NumericList(.peaksapply(object, FUN = function(z, ...) z[, 2], ...),
                     compress = FALSE)
     else intensity(object@backend) # Disables also parallel proc. (issue #44)
@@ -1730,11 +1739,8 @@ setMethod("intensity", "Spectra", function(object, ...) {
 #' @rdname Spectra
 setMethod("ionCount", "Spectra", function(object) {
     BPPARAM <- backendBpparam(object)
-    if (is(BPPARAM, "SerialParam"))
-        f <- NULL
-    else f <- factor(dataStorage(object))
     if (length(object))
-        unlist(.peaksapply(object, f = f, BPPARAM = BPPARAM,
+        unlist(.peaksapply(object, BPPARAM = BPPARAM,
                            FUN = function(pks, ...)
                                sum(pks[, 2], na.rm = TRUE)),
                use.names = FALSE)
@@ -1744,11 +1750,8 @@ setMethod("ionCount", "Spectra", function(object) {
 #' @rdname Spectra
 setMethod("isCentroided", "Spectra", function(object, ...) {
     BPPARAM <- backendBpparam(object)
-    if (is(BPPARAM, "SerialParam"))
-        f <- NULL
-    else f <- factor(dataStorage(object))
     if (length(object))
-        unlist(.peaksapply(object, f = f, BPPARAM = BPPARAM,
+        unlist(.peaksapply(object, BPPARAM = BPPARAM,
                            FUN = .peaks_is_centroided),
                use.names = FALSE)
     else logical()
@@ -1757,11 +1760,8 @@ setMethod("isCentroided", "Spectra", function(object, ...) {
 #' @rdname Spectra
 setMethod("isEmpty", "Spectra", function(x) {
     BPPARAM <- backendBpparam(x)
-    if (is(BPPARAM, "SerialParam"))
-        f <- NULL
-    else f <- factor(dataStorage(x))
     if (length(x))
-        unlist(.peaksapply(x, f = f, BPPARAM = BPPARAM,
+        unlist(.peaksapply(x, BPPARAM = BPPARAM,
                            FUN = function(pks, ...) nrow(pks) == 0),
                use.names = FALSE)
     else logical()
@@ -1812,6 +1812,7 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
         return(rep(NA, length(object)))
     mz <- unique(sort(mz))
     BPPARAM <- backendBpparam(object@backend, BPPARAM)
+    ## TODO: fix to use .peaksapply instead.
     if (is(BPPARAM, "SerialParam"))
         .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
                 condFun = cond_fun, parallel = BPPARAM)
@@ -1832,6 +1833,7 @@ setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
                                                      tolerance = 0, ppm = 20,
                                                      BPPARAM = bpparam()) {
     BPPARAM <- backendBpparam(object@backend, BPPARAM)
+    ## TODO: FIX me to use chunk size.
     if (is(BPPARAM, "SerialParam")) {
         .has_mz_each(object, precursorMz(object) - neutralLoss,
                      tolerance = tolerance, ppm = ppm, parallel = BPPARAM)
@@ -1876,7 +1878,8 @@ setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
 #' @rdname Spectra
 setMethod("mz", "Spectra", function(object, ...) {
-    if (length(object@processingQueue))
+    if (length(object@processingQueue) ||
+        is.finite(processingChunkSize(object)))
         NumericList(.peaksapply(object, FUN = function(z, ...) z[, 1], ...),
                     compress = FALSE)
     else mz(object@backend) # Disables also parallel processing (issue #44)
@@ -1887,7 +1890,7 @@ setMethod("mz", "Spectra", function(object, ...) {
 #' @exportMethod lengths
 setMethod("lengths", "Spectra", function(x, use.names = FALSE) {
     if (length(x)) {
-        if (length(x@processingQueue))
+        if (length(x@processingQueue) || is.finite(processingChunkSize(x)))
             unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks)),
                    use.names = use.names)
         else lengths(x@backend, use.names = use.names)
@@ -2674,3 +2677,18 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
         ppm, " and tolerance = ", tolerance, ".")
     object
 })
+
+#' @export
+processingChunkSize <- function(x) {
+    if (.hasSlot(x, "processingChunkSize"))
+        x@processingChunkSize
+    else Inf
+}
+
+#' @export
+`processingChunkSize<-` <- function(x, value) {
+    if (!.hasSlot(x, "processingChunkSize"))
+        x <- updateObject(x)
+    x@processingChunkSize <- value
+    x
+}
