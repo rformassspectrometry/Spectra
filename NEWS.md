@@ -1,5 +1,11 @@
 # Spectra 1.11
 
+## Changes in 1.11.12
+
+- Fix issue with `bin` function (see 
+  [issue #302](https://github.com/rformassspectrometry/Spectra/issues/303)). 
+  Addition of `zero.rm` parameter to prevent creation of *empty* bins. 
+
 ## Changes in 1.11.11
 
 - Fix issue with `filterFourierTransformArtefacts` function (see [issue

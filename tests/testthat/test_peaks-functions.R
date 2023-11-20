@@ -99,6 +99,15 @@ test_that(".peaks_bin works", {
                                 spectrumMsLevel = 1L)
     expect_equal(res[, 1], mids)
     expect_equal(res[, 2], c(1, 5, 1, 0, 1, 13, 8, 1, 3, 0, 6, 15, 1, 0, 0))
+
+    breaks <- seq(0, 1000, by = 0.01)
+    mids <- (breaks[-length(breaks)] + breaks[-1L]) / 2
+    res_true <- Spectra:::.peaks_bin(sciex_pks[[1]], breaks = breaks, mids = mids,
+                                spectrumMsLevel = 1L, zero.rm =  TRUE)
+    res_false <- Spectra:::.peaks_bin(sciex_pks[[1]], breaks = breaks, mids = mids,
+                                      spectrumMsLevel = 1L, zero.rm =  FALSE)
+    expect_true(all(res_true[,"intensity"] != 0))
+    expect_false(all(res_false == res_true))
 })
 
 test_that("joinPeaksNone works", {
