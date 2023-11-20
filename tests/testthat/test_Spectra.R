@@ -1107,7 +1107,7 @@ test_that("bin,Spectra works", {
     pks <- peaksData(sps)
     res <- bin(sps, binSize = 2, zero.rm = FALSE)
     expect_true(length(res@processingQueue) == 1)
-    res1 <- bin(sps, msLevel = 1, binSize = 2)
+    res1 <- bin(sps, msLevel = 1, binSize = 2, zero.rm = FALSE)
 
     expect_identical(peaksData(res1)[res1$msLevel == 2],
                      pks[sps$msLevel == 2])
