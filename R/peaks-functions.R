@@ -180,6 +180,11 @@ NULL
 #'
 #' @param mids mid points. This parameter is mandatory.
 #'
+#' @param zero.rm `logical`  indicating whether to remove bins with zero
+#'     intensity. Defaults to `TRUE`, meaning the function will discard bins
+#'     created with an intensity of 0 to enhance memory efficiency.
+#'
+#'
 #' @inheritParams .peaks_remove
 #'
 #' @return `matrix` with columns `"mz"` and `"intensity"`
@@ -191,12 +196,15 @@ NULL
                                     by = binSize),
                        agg_fun = sum,
                        mids,
-                       msLevel = spectrumMsLevel, ...) {
+                       msLevel = spectrumMsLevel, zero.rm = TRUE, ...) {
     if (!(spectrumMsLevel %in% msLevel))
         return(x)
     bins <- MsCoreUtils::bin(x[, 2], x[, 1], size = binSize, breaks = breaks,
                              FUN = agg_fun, returnMids = FALSE)
-    cbind(mz = mids, intensity = bins)
+    if (zero.rm) {
+        keep <- which(bins != 0)
+        cbind(mz = mids[keep], intensity = bins[keep])
+    } else cbind(mz = mids, intensity = bins)
 }
 
 #' @importFrom stats quantile
