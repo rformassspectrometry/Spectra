@@ -1105,7 +1105,7 @@ test_that("filterRt,Spectra works", {
 test_that("bin,Spectra works", {
     sps <- Spectra(tmt_mzr)
     pks <- peaksData(sps)
-    res <- bin(sps, binSize = 2)
+    res <- bin(sps, binSize = 2, zero.rm = FALSE)
     expect_true(length(res@processingQueue) == 1)
     res1 <- bin(sps, msLevel = 1, binSize = 2)
 
