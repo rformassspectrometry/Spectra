@@ -101,13 +101,13 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.18/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre],
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.19/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre],
 Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
 [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Jan Stanstrup
 [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb]<br><strong>Last modified:</strong> 2023-09-25
-12:24:44.910164<br><strong>Compiled</strong>: Mon Sep 25 12:44:31
+[ctb]<br><strong>Last modified:</strong> 2023-11-20
+14:01:38.062964<br><strong>Compiled</strong>: Mon Nov 20 14:34:17
 2023</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -138,7 +138,7 @@ user. In addition this separation allows to define new, alternative,
 data representations and integrate them seamlessly into a
 <code>Spectra</code>-based data analysis workflow.</p>
 <p>This concept is an extension of the of <em>in-memory</em> and
-<em>on-disk</em> data representations from the <em><a href="https://bioconductor.org/packages/3.18/MSnbase" class="external-link">MSnbase</a></em>
+<em>on-disk</em> data representations from the <em><a href="https://bioconductor.org/packages/3.19/MSnbase" class="external-link">MSnbase</a></em>
 package <span class="citation">(Gatto, Gibb, and Rainer
 2020)</span>.</p>
 <div class="section level3">
@@ -180,12 +180,12 @@ Backends can also be <em>partially</em> read-only, such as the
 <code>MsBackendMzR</code>. This backend allows for example to change
 spectra variables, but not the peaks data (i.e. the m/z and intensity
 values). Also, backends for purely read-only resources could extend the
-<code>MsBackendCached</code> from the <em><a href="https://bioconductor.org/packages/3.18/Spectra" class="external-link">Spectra</a></em>
+<code>MsBackendCached</code> from the <em><a href="https://bioconductor.org/packages/3.19/Spectra" class="external-link">Spectra</a></em>
 package to enable support for modifying (or adding) spectra variables.
 Any changes to spectra variables will be internally cached by the
 <code>MsBackendCached</code> without the need of them being propagating
 to the underlying data resource (see for example the
-<code>MsBackendMassbankSql</code> from the <em><a href="https://bioconductor.org/packages/3.18/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>
+<code>MsBackendMassbankSql</code> from the <em><a href="https://bioconductor.org/packages/3.19/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>
 package).</li>
 </ul>
 </div>
@@ -290,7 +290,7 @@ rows of the <code>spectraVars</code> slot matches the length of the
 <p>Note that a <em>backend</em> class does not necessarily need to
 contain all the data like the one from our example. Backends such as the
 <code>MsBackendMzR</code> for example retrieve the data on the fly from
-the raw MS data files or the <code>MsBackendSql</code> from the <em><a href="https://bioconductor.org/packages/3.18/MsBackendSql" class="external-link">MsBackendSql</a></em>
+the raw MS data files or the <code>MsBackendSql</code> from the <em><a href="https://bioconductor.org/packages/3.19/MsBackendSql" class="external-link">MsBackendSql</a></em>
 a SQL database.</p>
 <div class="section level3">
 <h3 id="required-methods">Required methods<a class="anchor" aria-label="anchor" href="#required-methods"></a>
@@ -520,11 +520,11 @@ however not always have to be the case. The
 <code>backendInitialize</code> method of the <code>MsBackendMzR</code>
 backend takes for example the file names of the raw mzML, mzXML or CDF
 files as input and initializes the backend by importing part of the data
-from these. Also the backends defined by the <em><a href="https://bioconductor.org/packages/3.18/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
-or <em><a href="https://bioconductor.org/packages/3.18/MsBackendMsp" class="external-link">MsBackendMsp</a></em>
+from these. Also the backends defined by the <em><a href="https://bioconductor.org/packages/3.19/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
+or <em><a href="https://bioconductor.org/packages/3.19/MsBackendMsp" class="external-link">MsBackendMsp</a></em>
 packages work in the same way and thus allow to import MS data from
 these specific file formats. The <code>backendInitialize</code> method
-of the backend defined in the <em><a href="https://bioconductor.org/packages/3.18/MsBackendSql" class="external-link">MsBackendSql</a></em>
+of the backend defined in the <em><a href="https://bioconductor.org/packages/3.19/MsBackendSql" class="external-link">MsBackendSql</a></em>
 on the other hand takes only the connection to a database containing the
 data as input and performs some sanity checks on the data but does not
 load the data into the backend. Any subsequent data access is handled by
@@ -599,7 +599,7 @@ spectra variables within the backend object.</p>
 </h4>
 <p>The <code>spectraData</code> method should return the
 <strong>full</strong> spectra data within a backend as a
-<code>DataFrame</code> object (defined in the <em><a href="https://bioconductor.org/packages/3.18/S4Vectors" class="external-link">S4Vectors</a></em>
+<code>DataFrame</code> object (defined in the <em><a href="https://bioconductor.org/packages/3.19/S4Vectors" class="external-link">S4Vectors</a></em>
 package). The second parameter <code>columns</code> allows to define the
 names of the spectra variables that should be returned in the
 <code>DataFrame</code>. Each row in this data frame should represent one
@@ -1361,7 +1361,7 @@ read-only MS data resource might even extend the
 <code>MsBackendCached</code> backend defined in the <code>Spectra</code>
 package that provides a mechanism to cache (spectra variable) data in a
 <code>data.frame</code> within the object. The
-<code>MsBackendMassbankSql</code> implemented in the <em><a href="https://bioconductor.org/packages/3.18/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>
+<code>MsBackendMassbankSql</code> implemented in the <em><a href="https://bioconductor.org/packages/3.19/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>
 package extends for example this backend and thus allows modifying some
 spectra variables without changing the original data in the MassBank SQL
 database.</p>
@@ -2015,7 +2015,7 @@ don’t necessary have to. This method will be called by the
 <code>reset,Spectra</code> method and is supposed to restore the data to
 its original state. The default implementation for
 <code>MsBackend</code> shown below simply returns the backend as-is. The
-<code>MsBackendSql</code> backend from the <em><a href="https://bioconductor.org/packages/3.18/MsBackendSql" class="external-link">MsBackendSql</a></em>
+<code>MsBackendSql</code> backend from the <em><a href="https://bioconductor.org/packages/3.19/MsBackendSql" class="external-link">MsBackendSql</a></em>
 package in contrast re-initializes the data using the data from the
 database.</p>
 <div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
@@ -2052,7 +2052,7 @@ method for the <code>MsBackendMzR</code> backend is shown below.</p>
 <span>                    MoreArgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>format <span class="op">=</span> <span class="va">format</span>, copy <span class="op">=</span> <span class="va">copy</span><span class="op">)</span>,</span>
 <span>                    BPPARAM <span class="op">=</span> <span class="va">BPPARAM</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>See alternatively also the <em><a href="https://bioconductor.org/packages/3.18/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
+<p>See alternatively also the <em><a href="https://bioconductor.org/packages/3.19/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
 package for an implementation for the <code>MsBackendMgf</code>
 backend.</p>
 </div>
@@ -2355,8 +2355,8 @@ method (<code>backendInitialize</code>) would need to be implemented for
 the new class: this new <code>backendInitialize</code> would then call
 the code to import the data from the new file format and store it within
 the available slots of the <code>MsBackendMemory</code> object. Examples
-would be the backends provided by the <em><a href="https://bioconductor.org/packages/3.18/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
-and <em><a href="https://bioconductor.org/packages/3.18/MsBackendMsp" class="external-link">MsBackendMsp</a></em>
+would be the backends provided by the <em><a href="https://bioconductor.org/packages/3.19/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
+and <em><a href="https://bioconductor.org/packages/3.19/MsBackendMsp" class="external-link">MsBackendMsp</a></em>
 classes.</p>
 </div>
 </div>
@@ -2379,8 +2379,8 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 </h2>
 <div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
-<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<pre><code><span><span class="co">## R Under development (unstable) (2023-11-14 r85524)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">## Running under: Ubuntu 22.04.3 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
@@ -2403,25 +2403,25 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] MsCoreUtils_1.13.1  IRanges_2.35.2      Spectra_1.11.11    </span></span>
-<span><span class="co">## [4] ProtGenerics_1.33.1 BiocParallel_1.35.4 S4Vectors_0.39.2   </span></span>
-<span><span class="co">## [7] BiocGenerics_0.47.0 BiocStyle_2.29.2   </span></span>
+<span><span class="co">## [1] MsCoreUtils_1.15.1  IRanges_2.37.0      Spectra_1.11.11    </span></span>
+<span><span class="co">## [4] ProtGenerics_1.35.0 BiocParallel_1.37.0 S4Vectors_0.41.1   </span></span>
+<span><span class="co">## [7] BiocGenerics_0.49.1 BiocStyle_2.31.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] jsonlite_1.8.7        compiler_4.3.1        BiocManager_1.30.22  </span></span>
-<span><span class="co">##  [4] stringr_1.5.0         parallel_4.3.1        cluster_2.1.4        </span></span>
-<span><span class="co">##  [7] jquerylib_0.1.4       systemfonts_1.0.4     textshaping_0.3.6    </span></span>
-<span><span class="co">## [10] yaml_2.3.7            fastmap_1.1.1         R6_2.5.1             </span></span>
-<span><span class="co">## [13] knitr_1.44            MASS_7.3-60           bookdown_0.35        </span></span>
-<span><span class="co">## [16] desc_1.4.2            rprojroot_2.0.3       bslib_0.5.1          </span></span>
-<span><span class="co">## [19] rlang_1.1.1           cachem_1.0.8          stringi_1.7.12       </span></span>
-<span><span class="co">## [22] xfun_0.40             fs_1.6.3              sass_0.4.7           </span></span>
-<span><span class="co">## [25] memoise_2.0.1         cli_3.6.1             pkgdown_2.0.7.9000   </span></span>
-<span><span class="co">## [28] magrittr_2.0.3        digest_0.6.33         MetaboCoreUtils_1.9.2</span></span>
-<span><span class="co">## [31] clue_0.3-65           lifecycle_1.0.3       vctrs_0.6.3          </span></span>
-<span><span class="co">## [34] evaluate_0.21         glue_1.6.2            codetools_0.2-19     </span></span>
-<span><span class="co">## [37] ragg_1.2.5            rmarkdown_2.25        purrr_1.0.2          </span></span>
-<span><span class="co">## [40] tools_4.3.1           htmltools_0.5.6</span></span></code></pre>
+<span><span class="co">##  [1] jsonlite_1.8.7         compiler_4.4.0         BiocManager_1.30.22   </span></span>
+<span><span class="co">##  [4] stringr_1.5.1          parallel_4.4.0         cluster_2.1.4         </span></span>
+<span><span class="co">##  [7] jquerylib_0.1.4        systemfonts_1.0.5      textshaping_0.3.7     </span></span>
+<span><span class="co">## [10] yaml_2.3.7             fastmap_1.1.1          R6_2.5.1              </span></span>
+<span><span class="co">## [13] knitr_1.45             MASS_7.3-60.1          bookdown_0.36         </span></span>
+<span><span class="co">## [16] desc_1.4.2             rprojroot_2.0.4        bslib_0.5.1           </span></span>
+<span><span class="co">## [19] rlang_1.1.2            cachem_1.0.8           stringi_1.8.1         </span></span>
+<span><span class="co">## [22] xfun_0.41              fs_1.6.3               sass_0.4.7            </span></span>
+<span><span class="co">## [25] memoise_2.0.1          cli_3.6.1              pkgdown_2.0.7.9000    </span></span>
+<span><span class="co">## [28] magrittr_2.0.3         digest_0.6.33          MetaboCoreUtils_1.11.0</span></span>
+<span><span class="co">## [31] clue_0.3-65            lifecycle_1.0.4        vctrs_0.6.4           </span></span>
+<span><span class="co">## [34] evaluate_0.23          glue_1.6.2             codetools_0.2-19      </span></span>
+<span><span class="co">## [37] ragg_1.2.6             rmarkdown_2.25         purrr_1.0.2           </span></span>
+<span><span class="co">## [40] tools_4.4.0            htmltools_0.5.7</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
