@@ -1045,3 +1045,18 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
         .chunk_factor(lx, chunkSize = chunkSize)
     else backendParallelFactor(x@backend)
 }
+
+#' @export
+processingChunkSize <- function(x) {
+    if (.hasSlot(x, "processingChunkSize"))
+        x@processingChunkSize
+    else Inf
+}
+
+#' @export
+`processingChunkSize<-` <- function(x, value) {
+    if (!.hasSlot(x, "processingChunkSize"))
+        x <- updateObject(x)
+    x@processingChunkSize <- value
+    x
+}

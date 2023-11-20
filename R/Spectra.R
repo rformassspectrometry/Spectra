@@ -2677,18 +2677,3 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
         ppm, " and tolerance = ", tolerance, ".")
     object
 })
-
-#' @export
-processingChunkSize <- function(x) {
-    if (.hasSlot(x, "processingChunkSize"))
-        x@processingChunkSize
-    else Inf
-}
-
-#' @export
-`processingChunkSize<-` <- function(x, value) {
-    if (!.hasSlot(x, "processingChunkSize"))
-        x <- updateObject(x)
-    x@processingChunkSize <- value
-    x
-}
