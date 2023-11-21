@@ -749,24 +749,48 @@ NULL
 #'   Parameter `msLevel.` allows to apply this to only spectra of certain MS
 #'   level(s).
 #'
+#'
 #' @section Parallel processing:
+#'
+#' Parallel processing
+#' - improved performance (but only if operation is computationally intense)
+#' - lower memory demand for on-disk backends.
 #'
 #' Some `Spectra` functions have build-in parallel processing that can be
 #' configured by passing the parallel processing setup with the `BPPARAM`
 #' function argument (which defaults to `BPPARAM = bpparam()`, thus uses
-#' the default set up). Most functions have an additional parameter `f` that
-#' allows to define how `Spectra` will be split to perform parallel processing.
-#' This parameter `f` defaults to `f = dataStorage(object)` and hence
-#' parallel processing is performed *by file* (if a file-based, on-disk
-#' backend such as `MsBackendMzR` is used). Some `MsBackend` classes might
-#' however not support parallel processing. The `backendBpparam` function
-#' allows to evaluate wheter a `Spectra` (respectively its `MsBackend`)
-#' supports a certain parallel processing setup. Calling
-#' `backendBpparam(sps, BPPARAM = MulticoreParam(3))` on a `Spectra` object
-#' `sps` would return `SerialParam()` in case the backend of the `Spectra`
-#' object does not support parallel processing. All functions listed below
-#' use this same function to eventually disable parallel processing to
-#' avoid failure of a function call.
+#' the default set up). For data manipulation operations (that modify a
+#' spectrum's peaks data) parallel processing can be performed for chunks
+#' of spectra. The size of these chunks can be set for a `Spectra` object
+#' with the function `processingChunkSize`, e.g. with
+#' `processingChunkSize(sps) <- 1000` any data manipulation operation such
+#' as `filterIntensity` or `bin` will be performed in parallel for sets of
+#' 1000 spectra in each iteration. The default for `processingChunkSize` is
+#' `Inf`, hence no such data splitting and parallel processing is performed.
+#' Since only the peaks data of spectra in one chunk are loaded into memory
+#' at a time, this parallel processing results, for on-disk backends,
+#' also in a lower memory footprint enabling thus the analysis also of
+#' large data sets on computers with limited available memory. However,
+#' for `Spectra` that use an in-memory backend, the overhead of the
+#' required splitting and combining of the data can, for some operation,
+#' have a negative impact on performance. Alternatively to this default
+#' chunk-wise processing, some functions have a parameter `f` that
+#' allows to define how `Spectra` will be split to perform parallel
+#' processing. This parameter `f` defaults to
+#' `f = backendParallelFactor(object)` that will, depending on the used
+#' `MsBackend`, return a `factor` defining how to best split the `Spectra`
+#' and perform parallel processing. In-memory backends will return an
+#' empty factor (`factor()`) hence disabling splitting and parallel
+#' processing, while e.g. the `MsBackendMzR` backend returns a factor
+#' representing `dataStorage`, hence parallel processing will be performed
+#' by default on a per-file basis.
+#' Finally, some backends might not support parallel processing at all.
+#' For these, the `backendBpparam` function will always return a
+#' `SerialParam()` independently on how parallel processing was defined.
+#'
+#' TODO:
+#' - reconsider backendBpparam.
+#'
 #'
 #' Functions supporting parameter `f` to define how to split the `Spectra`
 #' to perform parallel processing:
