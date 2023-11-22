@@ -106,7 +106,12 @@
 \alias{combinePeaks,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
-applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
+applyProcessing(
+  object,
+  f = processingChunkFactor(object),
+  BPPARAM = bpparam(),
+  ...
+)
 
 concatenateSpectra(x, ...)
 
@@ -748,6 +753,9 @@ and \code{\link[=MsBackendHdf5Peaks]{MsBackendHdf5Peaks()}}) it is possible to a
 \code{applyProcessing} function. See the \emph{Data manipulation and analysis
 methods} section below for more details.
 
+For more information on parallel or chunk-wise processing (especially
+helpful for very large data sets) see \code{\link[=processingChunkSize]{processingChunkSize()}}.
+
 To apply arbitrary functions to a \code{Spectra} use the \code{spectrapply} function
 (or directly \code{\link[=chunkapply]{chunkapply()}} for chunk-wise processing). See description of
 the \code{spectrapply} function below for details.
@@ -1385,55 +1393,6 @@ will be passed to the function. If the spectrum is in profile mode,
 ranges of successive non-0 peaks <= \code{threshold} are set to 0.
 Parameter \code{msLevel.} allows to apply this to only spectra of certain MS
 level(s).
-}
-}
-
-\section{Parallel processing}{
-
-
-Some \code{Spectra} functions have build-in parallel processing that can be
-configured by passing the parallel processing setup with the \code{BPPARAM}
-function argument (which defaults to \code{BPPARAM = bpparam()}, thus uses
-the default set up). Most functions have an additional parameter \code{f} that
-allows to define how \code{Spectra} will be split to perform parallel processing.
-This parameter \code{f} defaults to \code{f = dataStorage(object)} and hence
-parallel processing is performed \emph{by file} (if a file-based, on-disk
-backend such as \code{MsBackendMzR} is used). Some \code{MsBackend} classes might
-however not support parallel processing. The \code{backendBpparam} function
-allows to evaluate wheter a \code{Spectra} (respectively its \code{MsBackend})
-supports a certain parallel processing setup. Calling
-\code{backendBpparam(sps, BPPARAM = MulticoreParam(3))} on a \code{Spectra} object
-\code{sps} would return \code{SerialParam()} in case the backend of the \code{Spectra}
-object does not support parallel processing. All functions listed below
-use this same function to eventually disable parallel processing to
-avoid failure of a function call.
-
-Functions supporting parameter \code{f} to define how to split the \code{Spectra}
-to perform parallel processing:
-\itemize{
-\item \code{applyProcessing}.
-\item \code{combineSpectra}.
-\item \code{estimatePrecursorIntensity}.
-\item \code{setBackend}.
-\item \code{Spectra} (that passes the \code{BPPARAM} to the \code{backendInitialize} of the
-used \code{MsBackend}).
-\item \code{spectrapply}.
-}
-
-Functions that perform parallel processing \emph{natively}, i.e., without a
-parameter \code{f} but based on eventually set \emph{chunk size} with
-\code{processingChunkSize}. \code{Specta} with a \code{MsBackendMzR} backend also perform
-by default per-file parallel processing for these functions.
-\itemize{
-\item \code{containsMz} (does not provide a parameter \code{f}, but performs parallel
-processing separate for \code{dataStorage}).
-\item \code{containsNeutralLoss} (same as \code{containsMz}).
-\item \code{peaksData}.
-\item \code{intensity}.
-\item \code{ionCount}.
-\item \code{isCentroided}.
-\item \code{isEmpty}.
-\item \code{mz}.
 }
 }
 

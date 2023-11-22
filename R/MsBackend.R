@@ -9,6 +9,8 @@
 #' @aliases supportsSetBackend
 #' @aliases backendBpparam
 #' @aliases backendInitialize
+#' @aliases backendParallelFactor,MsBackendMzR-method
+#' @aliases backendParallelFactor,MsBackendHdf5Peaks-method
 #'
 #' @description
 #'
@@ -213,7 +215,7 @@
 #'   shared across processes) should extend this method to return only
 #'   `SerialParam()` and hence disable parallel processing for (most)
 #'   methods and functions. See also `backendParallelFactor` for a
-#'   function to provide a default splitting of the backend for parallel
+#'   function to provide a preferred splitting of the backend for parallel
 #'   processing.
 #'
 #' - `backendInitialize`: initialises the backend. This method is
@@ -235,14 +237,13 @@
 #'   instance. All objects to be merged have to be of the same type (e.g.
 #'   [MsBackendDataFrame()]).
 #'
-#' - `backendParallelFactor`: returns a `factor` defining a default
-#'   (preferred) way how the backend can be split for parallel processing for
-#'   all peak data accessor functions.
+#' - `backendParallelFactor`: returns a `factor` defining an optimal
+#'   (preferred) way how the backend can be split for parallel processing
+#'   used for all peak data accessor or data manipulation functions.
 #'   The default implementation returns a factor of length 0 (`factor()`)
 #'   providing thus no default splitting. A `backendParallelFactor` for
 #'   `MsBackendMzR` on the other hand returns `factor(dataStorage(object))`
-#'   hence enabling a default splitting of the object by original data
-#'   file.
+#'   hence suggesting to split the object by data file.
 #'
 #' - `dataOrigin`: gets a `character` of length equal to the number of spectra
 #'   in `object` with the *data origin* of each spectrum. This could e.g. be

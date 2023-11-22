@@ -40,7 +40,9 @@ This vignette provides general examples and descriptions for the *Spectra*
 package. Additional information and tutorials are available, such as
 [SpectraTutorials](https://jorainer.github.io/SpectraTutorials/),
 [MetaboAnnotationTutorials](https://jorainer.github.io/MetaboAnnotationTutorials),
-or also in [@rainer_modular_2022].
+or also in [@rainer_modular_2022]. For information how to handle and (parallel)
+process large-scale data sets see the *Large-scale data handling and processing
+with Spectra* vignette.
 
 
 # Installation
@@ -1097,38 +1099,6 @@ keeps the information about the originating files:
 ```{r new-datastorage}
 head(dataStorage(sps_sciex))
 head(basename(dataOrigin(sps_sciex)))
-```
-
-## Parallel processing notes
-
-Most functions on `Spectra` support (and use) parallel processing out of the
-box. Peak data access and manipulation methods perform by default parallel
-processing on a per-file basis (i.e. using the `dataStorage` variable as
-splitting factor). `Spectra` uses `r Biocpkg("BiocParallel")` for
-parallel processing and all functions use the default registered parallel
-processing setup of that package (see `?bpparam()` for more information).
-
-Note however that some backends (e.g. those using connections to SQL databases
-such as `MsBackendMassbank`, `MsBackendSql`) do not support parallel processing
-because the database connection can not be shared across processes. The
-`backendBpparam` function allows to evaluate whether a `Spectra` object (or in
-fact its used `MsBackend` class) supports a certain parallel processing setup.
-Calling `backendBpparam` on a `Spectra` with a backend that does not support
-parallel processing would (should) return `SerialParam()`, always. Below we
-create an empty `Spectra` object and test whether that supports parallel
-processing.
-
-```{r}
-tmp <- Spectra()
-backendBpparam(tmp)
-```
-
-The backend (in this case a `MsBackendMemory` thus supports parallel processing.
-We can also specifically test this for individual backends (and parallel
-setups):
-
-```{r}
-backendBpparam(MsBackendDataFrame(), SnowParam(2))
 ```
 
 

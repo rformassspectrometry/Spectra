@@ -80,8 +80,8 @@ NULL
 #'     data should be split for parallel processing. Set to `NULL` or
 #'     `factor()` to disable splitting and parallel processing.
 #'
-#' @param columns `character` defining the columns that should be returned. This
-#'     will be passed to the backend's `peaksData` function.
+#' @param columns `character` defining the columns that should be returned.
+#'     This will be passed to the backend's `peaksData` function.
 #'
 #' @param BPPARAM parallel processing setup.
 #'
@@ -91,11 +91,40 @@ NULL
 #'
 #' @importMethodsFrom BiocParallel bplapply
 #'
+#' @note
+#'
+#' Who's calling `.peaksapply`:
+#'
+#' In *Spectra.R*:
+#'
+#' - `peaksData`: would pass optional parameter `f` down.
+#' - `as,Spectra,list`.
+#' - `intensity`: would pass optional parameter `f` down.
+#' - `ionCount`.
+#' - `isCentroided`.
+#' - `isEmpty`.
+#' - `mz`: would pass optional parameter `f` down.
+#' - `lengths`.
+#' - `$`.
+#' - `bin`.
+#'
+#' In *Spectra-functions.R*:
+#'
+#' - `.compare_spectra_chunk`: has its own `chunkSize` parameter and ignores
+#'   any other splitting. Does also some weird internal chunking by
+#'   `dataStorage` that we might want to skip/disable (or use
+#'   `backendParallelFactor` instead).
+#' - `.compare_spectra_self`: does not do any splitting.
+#' - `.combine_spectra`: uses `f = x$dataStorage` to split. Needs to be fixed.
+#' - `.estimate_precursor_intensity`: disables parallel/chunk wise processing.
+#'   But it's invoked splitting based on `dataOrigin`, so, should be OK.
+#'
 #' @noRd
 .peaksapply <- function(object, FUN = NULL, ...,
                         spectraVariables = .processingQueueVariables(object),
                         f = .parallel_processing_factor(object),
-                        columns = c("mz", "intensity"), BPPARAM = bpparam()) {
+                        columns = c("mz", "intensity"),
+                        BPPARAM = backendBpparam(object)) {
     len <- length(object)
     lf <- length(f)
     if (!len)
@@ -179,36 +208,44 @@ NULL
 #' @export applyProcessing
 #'
 #' @rdname Spectra
-applyProcessing <- function(object, f = dataStorage(object),
+applyProcessing <- function(object, f = processingChunkFactor(object),
                             BPPARAM = bpparam(), ...) {
-    if (!length(object@processingQueue))
+    queue <- object@processingQueue
+    if (!length(queue))
         return(object)
     if (isReadOnly(object@backend))
         stop(class(object@backend), " is read-only. 'applyProcessing' works ",
              "only with backends that support writing data.")
     BPPARAM <- backendBpparam(object@backend, BPPARAM)
-    if (!is.factor(f))
-        f <- factor(f, levels = unique(f))
-    if (length(f) != length(object))
-        stop("length 'f' has to be equal to the length of 'object' (",
-             length(object), ")")
+    svars <- .processingQueueVariables(object)
     pv <- peaksVariables(object)
-    bknds <- bplapply(
-        split(object@backend, f = f), function(z, queue, pv, svars) {
-            if (length(svars))
-                spd <- as.data.frame(spectraData(z, columns = svars))
-            else spd <- NULL
-            peaksData(z) <- .apply_processing_queue(
-                peaksData(z, columns = pv), spd, queue)
-            z
-        }, queue = object@processingQueue, pv = pv,
-        svars = .processingQueueVariables(object),
-        BPPARAM = BPPARAM)
-    bknds <- backendMerge(bknds)
-    if (is.unsorted(f))
-        bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-                                    use.names = FALSE))]
-    object@backend <- bknds
+    if (length(f)) {
+        if (!is.factor(f))
+            f <- factor(f, levels = unique(f))
+        if (length(f) != length(object))
+            stop("length 'f' has to be equal to the length of 'object' (",
+                 length(object), ")")
+        bknds <- bplapply(
+            split(object@backend, f = f), function(z, queue, pv, svars) {
+                if (length(svars))
+                    spd <- as.data.frame(spectraData(z, columns = svars))
+                else spd <- NULL
+                peaksData(z) <- .apply_processing_queue(
+                    peaksData(z, columns = pv), spd, queue)
+                z
+            }, queue = queue, pv = pv, svars = svars, BPPARAM = BPPARAM)
+        bknds <- backendMerge(bknds)
+        if (is.unsorted(f))
+            bknds <- bknds[order(unlist(split(seq_along(bknds), f),
+                                        use.names = FALSE))]
+        object@backend <- bknds
+    } else {
+        if (length(svars))
+            spd <- as.data.frame(spectraData(object@backend, columns = svars))
+        else spd <- NULL
+        peaksData(object@backend) <- .apply_processing_queue(
+            peaksData(object@backend, columns = pv), spd, queue)
+    }
     object@processing <- .logging(object@processing,
                                   "Applied processing queue with ",
                                   length(object@processingQueue),
@@ -310,12 +347,12 @@ applyProcessing <- function(object, f = dataStorage(object),
     bppx <- backendBpparam(x@backend, BPPARAM)
     if (is(bppx, "SerialParam"))
         fx <- NULL
-    else fx <- factor(dataStorage(x))
+    else fx <- backendParallelFactor(x@backend)
     pqvx <- .processingQueueVariables(x)
     bppy <- backendBpparam(y@backend, BPPARAM)
     if (is(bppy, "SerialParam"))
         fy <- NULL
-    else fy <- factor(dataStorage(y))
+    else fy <- backendParallelFactor(y@backend)
     pqvy <- .processingQueueVariables(y)
     if (nx <= chunkSize && ny <= chunkSize) {
         mat <- .peaks_compare(
@@ -341,14 +378,14 @@ applyProcessing <- function(object, f = dataStorage(object),
     for (x_chunk in x_chunks) {
         x_buff <- x[x_chunk]
         if (length(fx))
-            fxc <- factor(dataStorage(x_buff))
+            fxc <- backendParallelFactor(x_buff@backend)
         else fxc <- NULL
         x_peaks <- .peaksapply(x_buff, f = fxc, spectraVariables = pqvx,
                                BPPARAM = bppx)
         for (y_chunk in y_chunks) {
             y_buff <- y[y_chunk]
             if (length(fy))
-                fyc <- factor(dataStorage(y_buff))
+                fyc <- backendParallelFactor(y_buff@backend)
             else fyc <- NULL
             mat[x_chunk, y_chunk] <- .peaks_compare(
                 x_peaks, .peaksapply(y_buff, f = fyc, spectraVariables = pqvy,
@@ -1019,9 +1056,11 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #'
 #' If `processingChunkSize(x)` is defined and its value is smaller then
 #' `length(x)`, a factor depending on this chunk size is returned.
-#' Otherwise `backendParallelFactor(x)` is returned.
+#' Otherwise `backendParallelFactor(x)` is returned which is the optimal
+#' splitting for parallel processing suggested by the backend.
 #'
 #' Properties/considerations:
+#'
 #' - in-memory backends: don't split if not requested by the user (e.g. by
 #'   specifying `f` or `chunkSize`.
 #' - on-disk backends: file-based backends, such as `MsBackendMzR`: perform
@@ -1046,6 +1085,75 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
     else backendParallelFactor(x@backend)
 }
 
+#' @title Parallel and chunk-wise processing of `Spectra`
+#'
+#' @description
+#'
+#' Many operations on `Spectra` objects, specifically those working with
+#' the actual MS data (peaks data), allow a chunk-wise processing in which
+#' the `Spectra` is splitted into smaller parts (chunks) that are
+#' iteratively processed. This enables parallel processing of the data (by
+#' data chunk) and also reduces the memory demand  since only the MS data
+#' of the currently processed subset is loaded into memory and processed.
+#' This chunk-wise processing, which is by default disabled, can be enabled
+#' by setting the processing chunk size of a `Spectra` with the
+#' `processingChunkSize` function to a value which is smaller than the
+#' length of the `Spectra` object. Setting `processingChunkSize(sps) <- 1000`
+#' will cause any data manipulation operation on the `sps`, such as
+#' `filterIntensity` or `bin`, to be performed eventually in parallel for
+#' sets of 1000 spectra in each iteration.
+#'
+#' Such chunk-wise processing is specifically useful for `Spectra` objects
+#' using an *on-disk* backend or for very large experiments. For small data
+#' sets or `Spectra` using an in-memory backend, a direct processing might
+#' however be more efficient. Setting the chunk size to `Inf` will disable
+#' the chunk-wise processing.
+#'
+#' For some backends a certain type of splitting and chunk-wise processing
+#' might be preferable. The `MsBackendMzR` backend for example needs to load
+#' the MS data from the original (mzML) files, hence chunk-wise processing
+#' on a per-file basis would be ideal. The [backendParallelFactor()] function
+#' for `MsBackend` allows backends to suggest a preferred splitting of the
+#' data by returning a `factor` defining the respective data chunks. The
+#' `MsBackendMzR` returns for example a `factor` based on the *dataStorage*
+#' spectra variable. A `factor` of length 0 is returned if no particular
+#' preferred splitting should be performed. The suggested chunk definition
+#' will be used if no finite `processingChunkSize` is defined. Setting
+#' the `processingChunkSize` overrides `backendParallelFactor`.
+#'
+#' See the *Large-scale data handling and processing with Spectra* for more
+#' information and examples.
+#'
+#' Functions to configure parallel or chunk-wise processing:
+#'
+#' - `processingChunkSize`: allows to get or set the size of the chunks for
+#'   parallel processing or chunk-wise processing of a `Spectra` in general.
+#'   With a value of `Inf` (the default) no chunk-wise processing will be
+#'   performed.
+#'
+#' - `processingChunkFactor`: returns a `factor` defining the chunks into
+#'   which a `Spectra` will be split for chunk-wise (parallel) processing.
+#'   A `factor` of length 0 indicates that no chunk-wise processing will be
+#'   performed.
+#'
+#' @note
+#'
+#' Some backends might not support parallel processing at all.
+#' For these, the `backendBpparam` function will always return a
+#' `SerialParam()` independently on how parallel processing was defined.
+#'
+#' @param x `Spectra`.
+#'
+#' @param value `integer(1)` defining the chunk size.
+#'
+#' @return `processingChunkSize` returns the currenlty defined processing
+#'     chunk size (or `Inf` if it is not defined). `processingChunkFactor`
+#'     returns a `factor` defining the chunks into which `x` will be split
+#'     for (parallel) chunk-wise processing or a `factor` of length 0 if
+#'     no splitting is defined.
+#'
+#' @author Johannes Rainer
+#'
 #' @export
 processingChunkSize <- function(x) {
     if (.hasSlot(x, "processingChunkSize"))
@@ -1053,10 +1161,23 @@ processingChunkSize <- function(x) {
     else Inf
 }
 
+#' @rdname processingChunkSize
+#'
 #' @export
 `processingChunkSize<-` <- function(x, value) {
+    if (length(value) != 1L)
+        stop("'value' has to be of length 1")
     if (!.hasSlot(x, "processingChunkSize"))
         x <- updateObject(x)
     x@processingChunkSize <- value
     x
+}
+
+#' @rdname processingChunkSize
+#'
+#' @export
+processingChunkFactor <- function(x) {
+    if (!inherits(x, "Spectra"))
+        stop("'x' is supposed to be a 'Spectra' object")
+    .parallel_processing_factor(x)
 }
