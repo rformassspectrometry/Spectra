@@ -1020,6 +1020,10 @@ NULL
 #' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
 #'     to be used as filter.
 #'
+#' @param zero.rm `logical`. For `bin`: indicating whether to remove bins with
+#'     zero intensity. Defaults to `TRUE`, meaning the function will discard
+#'     bins created with an intensity of 0 to enhance memory efficiency.
+#'
 #' @param ... Additional arguments.
 #'
 #' @author Sebastian Gibb, Johannes Rainer, Laurent Gatto
@@ -2401,7 +2405,7 @@ setMethod("reset", "Spectra", function(object, ...) {
 #' @exportMethod bin
 setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
                                      msLevel. = uniqueMsLevels(x),
-                                     FUN = sum) {
+                                     FUN = sum, zero.rm = TRUE) {
     if (!.check_ms_level(x, msLevel.))
         return(x)
     if (!length(breaks)) {
@@ -2413,7 +2417,7 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
     }
     mids <- (breaks[-length(breaks)] + breaks[-1L]) / 2
     x <- addProcessing(x, .peaks_bin, breaks = breaks, mids = mids,
-                       agg_fun = FUN, msLevel = msLevel.,
+                       agg_fun = FUN, msLevel = msLevel., zero.rm = zero.rm,
                        spectraVariables = "msLevel")
     x@processing <- .logging(x@processing,
                              "Spectra of MS level(s) ",

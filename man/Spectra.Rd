@@ -392,7 +392,14 @@ filterPrecursorPeaks(
 
 \S4method{reset}{Spectra}(object, ...)
 
-\S4method{bin}{Spectra}(x, binSize = 1L, breaks = NULL, msLevel. = uniqueMsLevels(x), FUN = sum)
+\S4method{bin}{Spectra}(
+  x,
+  binSize = 1L,
+  breaks = NULL,
+  msLevel. = uniqueMsLevels(x),
+  FUN = sum,
+  zero.rm = TRUE
+)
 
 \S4method{compareSpectra}{Spectra,Spectra}(
   x,
@@ -690,6 +697,10 @@ be used to subset/filter \code{object}.}
 Defaults to \code{binSize = 1}.}
 
 \item{breaks}{For \code{bin}: \code{numeric} defining the m/z breakpoints between bins.}
+
+\item{zero.rm}{\code{logical}. For \code{bin}: indicating whether to remove bins with
+zero intensity. Defaults to \code{TRUE}, meaning the function will discard
+bins created with an intensity of 0 to enhance memory efficiency.}
 
 \item{MAPFUN}{For \code{compareSpectra}: function to map/match peaks between the
 two compared spectra. See \code{\link[=joinPeaks]{joinPeaks()}} for more information and possible

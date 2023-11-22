@@ -14,9 +14,9 @@
 
 ## Changes in 1.13.1
 
-- Add slot `processingChunkSize` to `Spectra` and related accessor methods to
-  enable chunk-wise processing of peaks data for methods `mz`, `intensity`,
-  `peaksData` and others. This fixes out-of-memory errors for large data files.
+- Fix issue with `bin` function (see
+  [issue #302](https://github.com/rformassspectrometry/Spectra/issues/303)).
+  Addition of `zero.rm` parameter to prevent creation of *empty* bins.
 
 # Spectra 1.11
 
