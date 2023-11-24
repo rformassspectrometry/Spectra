@@ -18,7 +18,7 @@ processingChunkFactor(x)
 \item{value}{\code{integer(1)} defining the chunk size.}
 }
 \value{
-\code{processingChunkSize} returns the currenlty defined processing
+\code{processingChunkSize} returns the currently defined processing
 chunk size (or \code{Inf} if it is not defined). \code{processingChunkFactor}
 returns a \code{factor} defining the chunks into which \code{x} will be split
 for (parallel) chunk-wise processing or a \code{factor} of length 0 if

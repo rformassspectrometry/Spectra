@@ -72,9 +72,10 @@ The resulting `Spectra` uses a `MsBackendMzR` for data representation. This
 backend does only load general spectra data into memory while the *full* MS data
 (i.e., the *m/z* and intensity values of the individual mass peaks) is only
 loaded when requested or needed. In contrast to an *in-memory* backend, the
-memory footprint of this backend is thus lower. Below we create a `Spectra` that
-keeps the full data in memory by changing the backend to a `MsBackendMemory`
-backend and compare the sizes of both objects.
+memory footprint of this backend is thus lower.
+
+Below we create a `Spectra` that keeps the full data in memory by changing the
+backend to a `MsBackendMemory` backend and compare the sizes of both objects.
 
 ```{r}
 sps_mem <- setBackend(sps_mzr, MsBackendMemory())
@@ -172,6 +173,10 @@ Note that this chunk-wise processing only affects functions that involve actual
 peak data.  Subset operations that only reduce the number of spectra (such as
 `filterRt` or `[`) bypass this mechanism and are applied immediately to the
 data.
+
+For an evaluation of chunk-wise processing see also this
+[issue](https://github.com/rformassspectrometry/Spectra/issues/304#issuecomment-1825699576)
+on the *Spectra* github repository.
 
 
 # Notes and suggestions for parallel or chunk-wise processing

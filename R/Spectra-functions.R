@@ -1146,7 +1146,7 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #'
 #' @param value `integer(1)` defining the chunk size.
 #'
-#' @return `processingChunkSize` returns the currenlty defined processing
+#' @return `processingChunkSize` returns the currently defined processing
 #'     chunk size (or `Inf` if it is not defined). `processingChunkFactor`
 #'     returns a `factor` defining the chunks into which `x` will be split
 #'     for (parallel) chunk-wise processing or a `factor` of length 0 if
