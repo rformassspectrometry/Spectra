@@ -210,7 +210,13 @@ filterPrecursorPeaks(
 
 \S4method{acquisitionNum}{Spectra}(object)
 
-\S4method{peaksData}{Spectra}(object, columns = c("mz", "intensity"), ..., BPPARAM = bpparam())
+\S4method{peaksData}{Spectra}(
+  object,
+  columns = c("mz", "intensity"),
+  f = processingChunkFactor(object),
+  ...,
+  BPPARAM = bpparam()
+)
 
 \S4method{peaksVariables}{Spectra}(object)
 
@@ -230,7 +236,7 @@ filterPrecursorPeaks(
 
 \S4method{dropNaSpectraVariables}{Spectra}(object)
 
-\S4method{intensity}{Spectra}(object, ...)
+\S4method{intensity}{Spectra}(object, f = processingChunkFactor(object), ...)
 
 \S4method{ionCount}{Spectra}(object)
 
@@ -280,7 +286,7 @@ filterPrecursorPeaks(
 
 \S4method{msLevel}{Spectra}(object)
 
-\S4method{mz}{Spectra}(object, ...)
+\S4method{mz}{Spectra}(object, f = processingChunkFactor(object), ...)
 
 \S4method{lengths}{Spectra}(x, use.names = FALSE)
 
@@ -488,7 +494,9 @@ For \code{combineSpectra}: \code{factor} defining the grouping of the spectra th
 should be combined. For \code{spectrapply}: \code{factor} how \code{object} should be
 splitted. For \code{filterPrecursorScan}:
 defining which spectra belong to the same original data file (sample).
-Defaults to \code{f = dataOrigin(x)}.}
+Defaults to \code{f = dataOrigin(x)}.
+For \code{intensity}, \code{mz} and \code{peaksData}: factor defining how data should
+be chunk-wise loaded an processed. Defaults to \code{\link[=processingChunkFactor]{processingChunkFactor()}}.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method

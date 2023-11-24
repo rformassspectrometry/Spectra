@@ -215,6 +215,12 @@ chunk-wise) processing. These functions are:
 - `estimatePrecursorIntensity`: parameter `f` (defaults to `dataOrigin(x)`)
   defines the splitting and processing. This should represent the original data
   files the spectra data derives from.
+- `intensity`: parameter `f` (defaults to `processingChunkFactor(object)`)
+  defines if and how the data should be split for parallel processing.
+- `mz`: parameter `f` (defaults to `processingChunkFactor(object)`)
+  defines if and how the data should be split for parallel processing.
+- `peaksData`: parameter `f` (defaults to `processingChunkFactor(object)`)
+  defines if and how the data should be split for parallel processing.
 - `setBackend`: parameter `f` (defaults to `processingChunkFactor(object)`)
   defines if and how the data should be split for parallel processing.
 
@@ -223,12 +229,9 @@ on the `processingChunkFactor`:
 
 - `containsMz`.
 - `containsNeutralLoss`.
-- `intensity`.
 - `ionCount`.
 - `isCentroided`.
 - `isEmpty`.
-- `mz`.
-- `peaksData`.
 
 
 

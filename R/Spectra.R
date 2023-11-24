@@ -827,6 +827,8 @@ NULL
 #'     splitted. For `filterPrecursorScan`:
 #'     defining which spectra belong to the same original data file (sample).
 #'     Defaults to `f = dataOrigin(x)`.
+#'     For `intensity`, `mz` and `peaksData`: factor defining how data should
+#'     be chunk-wise loaded an processed. Defaults to [processingChunkFactor()].
 #'
 #' @param FUN For `addProcessing`: function to be applied to the peak matrix
 #'     of each spectrum in `object`. For `compareSpectra`: function to compare
@@ -1630,8 +1632,8 @@ setMethod("acquisitionNum", "Spectra", function(object)
 #' @rdname Spectra
 setMethod(
     "peaksData", "Spectra",
-    function(object, columns = c("mz", "intensity"), ..., BPPARAM = bpparam()) {
-        f <- .parallel_processing_factor(object)
+    function(object, columns = c("mz", "intensity"),
+             f = processingChunkFactor(object), ..., BPPARAM = bpparam()) {
         if (length(object@processingQueue) || length(f))
             SimpleList(.peaksapply(object, columns = columns, f = f))
         else SimpleList(peaksData(object@backend, columns = columns))
@@ -1692,8 +1694,9 @@ setMethod("dropNaSpectraVariables", "Spectra", function(object) {
 })
 
 #' @rdname Spectra
-setMethod("intensity", "Spectra", function(object, ...) {
-    f <- .parallel_processing_factor(object)
+setMethod("intensity", "Spectra", function(object,
+                                           f = processingChunkFactor(object),
+                                           ...) {
     if (length(object@processingQueue) || length(f))
         NumericList(.peaksapply(object, FUN = function(z, ...) z[, 2],
                                 f = f, ...), compress = FALSE)
@@ -1835,8 +1838,8 @@ setMethod("length", "Spectra", function(x) length(x@backend))
 setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
 
 #' @rdname Spectra
-setMethod("mz", "Spectra", function(object, ...) {
-    f <- .parallel_processing_factor(object)
+setMethod("mz", "Spectra", function(object, f = processingChunkFactor(object),
+                                    ...) {
     if (length(object@processingQueue) || length(f))
         NumericList(.peaksapply(object, FUN = function(z, ...) z[, 1],
                                 f = f, ...), compress = FALSE)
