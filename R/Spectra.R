@@ -1547,7 +1547,7 @@ setMethod("Spectra", "ANY", function(object, processingQueue = list(),
 #' @exportMethod setBackend
 setMethod(
     "setBackend", c("Spectra", "MsBackend"),
-    function(object, backend, f = dataStorage(object), ...,
+    function(object, backend, f = processingChunkFactor(object), ...,
              BPPARAM = bpparam()) {
         backend_class <- class(object@backend)
         BPPARAM <- backendBpparam(object@backend, BPPARAM)
@@ -1558,13 +1558,11 @@ setMethod(
             bknds <- backendInitialize(
                 backend, data = spectraData(object@backend), ...)
         } else {
-            f <- force(factor(f, levels = unique(f)))
-            if (length(f) != length(object))
-                stop("length of 'f' has to match the length of 'object'")
-            if (length(levels(f)) == 1L || inherits(BPPARAM, "SerialParam")) {
-                bknds <- backendInitialize(
-                    backend, data = spectraData(object@backend), ...)
-            } else {
+            if (!is.factor(f))
+                f <- force(factor(f, levels = unique(f)))
+            if (length(f) && length(levels(f) > 1)) {
+                if (length(f) != length(object))
+                    stop("length of 'f' has to match the length of 'object'")
                 bknds <- bplapply(
                     split(object@backend, f = f),
                     function(z, ...) {
@@ -1578,6 +1576,9 @@ setMethod(
                 if (is.unsorted(f))
                     bknds <- bknds[order(unlist(split(seq_along(bknds), f),
                                                 use.names = FALSE))]
+            } else {
+                bknds <- backendInitialize(
+                    backend, data = spectraData(object@backend), ...)
             }
         }
         object@backend <- bknds
@@ -1689,13 +1690,6 @@ setMethod("dropNaSpectraVariables", "Spectra", function(object) {
     object@backend <- dropNaSpectraVariables(object@backend)
     object
 })
-
-test_fun <- function(x) {
-    if (length(x) || length(bla <- sqrt(x))) {
-        cat(bla)
-    } else cat("other")
-}
-
 
 #' @rdname Spectra
 setMethod("intensity", "Spectra", function(object, ...) {

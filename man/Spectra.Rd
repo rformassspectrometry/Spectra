@@ -194,7 +194,13 @@ filterPrecursorPeaks(
   BPPARAM = bpparam()
 )
 
-\S4method{setBackend}{Spectra,MsBackend}(object, backend, f = dataStorage(object), ..., BPPARAM = bpparam())
+\S4method{setBackend}{Spectra,MsBackend}(
+  object,
+  backend,
+  f = processingChunkFactor(object),
+  ...,
+  BPPARAM = bpparam()
+)
 
 \S4method{c}{Spectra}(x, ...)
 

@@ -1,0 +1,234 @@
+---
+title: "Large-scale data handling and processing with Spectra"
+output:
+    BiocStyle::html_document:
+        toc_float: true
+vignette: >
+    %\VignetteIndexEntry{Large-scale data handling and processing with Spectra}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+    %\VignettePackage{Spectra}
+    %\VignetteDepends{Spectra,mzR,BiocStyle,msdata}
+bibliography: references.bib
+---
+
+```{r style, echo = FALSE, results = 'asis', message=FALSE}
+BiocStyle::markdown()
+```
+
+**Package**: `r Biocpkg("Spectra")`<br />
+**Authors**: `r packageDescription("Spectra")[["Author"]] `<br />
+**Last modified:** `r file.info("Spectra.Rmd")$mtime`<br />
+**Compiled**: `r date()`
+
+```{r, echo = FALSE, message = FALSE}
+library(Spectra)
+library(BiocStyle)
+```
+
+
+# Introduction
+
+The `r Biocpkg("Spectra")` package supports handling and processing of also very
+large mass spectrometry (MS) data sets. Through dedicated backends, that only
+load MS data when requested/needed, the memory demand can be minimized. Examples
+for such backends are the `MsBackendMzR` and the `MsBackendOfflineSql` (defined
+in the `r Biocpkg("MsBackendSql")` package). In addition, `Spectra` supports
+chunk-wise data processing, hence only parts of the data are loaded into memory
+and processed at a time. In this document we provide information on how large
+scale data can be best processed with the *Spectra* package.
+
+
+# Memory requirements of different data representations
+
+The *Spectra* package separates functionality to process and analyze MS data
+(implemented for the `Spectra` class) from the code that defines how and where
+the MS data is stored. For the latter, different implementations of the
+`MsBackend` class are available, that either are optimized for performance (such
+as the `MsBackendMemory` and `MsBackendDataFrame`) or for low memory requirement
+(such as the `MsBackendMzR`, or the `MsBackendOfflineSql` implemented in the
+`r Biocpkg("MsBackendSql")` package, that through the smallest possible memory
+footprint enables also the analysis of very large data sets). Below we load MS
+data from 4 test files into a `Spectra` using a `MsBackendMzR` backend.
+
+```{r}
+library(Spectra)
+
+#' Define the file names from which to import the data
+fls <- c(
+    system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata"),
+    system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML", package = "msdata"),
+    system.file("sciex", "20171016_POOL_POS_1_105-134.mzML",
+                package = "msdata"),
+    system.file("sciex", "20171016_POOL_POS_3_105-134.mzML",
+                package = "msdata"))
+
+#' Creating a Spectra object representing the MS data
+sps_mzr <- Spectra(fls, source = MsBackendMzR())
+sps_mzr
+```
+
+The resulting `Spectra` uses a `MsBackendMzR` for data representation. This
+backend does only load general spectra data into memory while the *full* MS data
+(i.e., the *m/z* and intensity values of the individual mass peaks) is only
+loaded when requested or needed. In contrast to an *in-memory* backend, the
+memory footprint of this backend is thus lower. Below we create a `Spectra` that
+keeps the full data in memory by changing the backend to a `MsBackendMemory`
+backend and compare the sizes of both objects.
+
+```{r}
+sps_mem <- setBackend(sps_mzr, MsBackendMemory())
+
+print(object.size(sps_mzr), units = "MB")
+print(object.size(sps_mem), units = "MB")
+```
+
+Keeping the full data in memory requires thus considerably more memory.
+
+We next disable parallel processing for *Spectra* to allow an unbiased
+estimation of memory usage.
+
+```{r}
+#' Disable parallel processing globally
+register(SerialParam())
+```
+
+
+# Chunk-wise and parallel processing
+
+Operations on peaks data are the most time and memory demanding tasks. These
+generally apply a function to, or modify the *m/z* and/or intensity
+values. Among these functions are for example functions that filter, remove or
+combine mass peaks (such as `filterMzRange`, `filterIntensity` or
+`combinePeaks`) or functions that perform calculations on the peaks data (such
+as `bin` or `pickPeaks`) or also functions that provide information on, or
+summarize spectra (such as `lengths` or `ionCount`). For all these functions,
+the peaks data needs to be present in memory and on-disk backends, such as the
+`MsBackendMzR`, need thus to first import the data from their data
+storage. However, loading the full peaks data at once into memory might not be
+possible for large data sets. Loading and processing the data in smaller chunks
+would however reduce the memory demand and hence allow to process also such data
+sets. For the `MsBackendMzR` and `MsBackendHdf5Peaks` backends the data is
+automatically split and processed by the data storage files. For all other
+backends chunk-wise processing can be enabled by defining the
+`processingChunkSize` of a `Spectra`, i.e. the number of spectra for which peaks
+data should be loaded and processed in each iteration. The
+`processingChunkFactor` function can be used to evaluate how the data will be
+split. Below we use this function to evaluate how chunk-wise processing would be
+performed with the two `Spectra` objects.
+
+```{r}
+processingChunkFactor(sps_mem)
+```
+
+For the `Spectra` with the in-memory backend an empty `factor()` is returned,
+thus, no chunk-wise processing will be performed. We next evaluate whether the
+`Spectra` with the `MsBackendMzR` on-disk backend would use chunk-wise
+processing.
+
+```{r}
+processingChunkFactor(sps_mzr) |> table()
+```
+
+The data would thus be split and processed by the original file, from which the
+data is imported. We next specifically define the chunk-size for both `Spectra`
+with the `processingChunkSize` function.
+
+```{r}
+processingChunkSize(sps_mem) <- 3000
+processingChunkFactor(sps_mem) |> table()
+```
+
+After setting the chunk size, also the `Spectra` with the in-memory backend
+would use chunk-wise processing. We repeat with the other `Spectra` object:
+
+```{r}
+processingChunkSize(sps_mzr) <- 3000
+processingChunkFactor(sps_mzr) |> table()
+```
+
+The `Spectra` with the `MsBackendMzR` backend would now split the data in about
+equally sized arbitrary chunks and no longer by original data file. Setting
+`processingChunkSize` thus overrides any splitting suggested by the backend.
+
+After having set a `processingChunkSize`, any operation involving peaks data
+will by default be performed in a chunk-wise manner. Thus, calling `ionCount` on
+our `Spectra` will now split the data in chunks of 3000 spectra and sum the
+intensities (per spectrum) chunk by chunk.
+
+```{r}
+tic <- ionCount(sps_mem)
+```
+
+While chunk-wise processing reduces the memory demand of operations, the
+splitting and merging of the data and results can negatively impact
+performance. Thus, small data sets or `Spectra` with in-memory backends
+will generally not benefit from this type of processing. For computationally
+intense operation on the other hand, chunk-wise processing has the advantage,
+that chunks can (and will) be processed in parallel (depending on the parallel
+processing setup).
+
+Note that this chunk-wise processing only affects functions that involve actual
+peak data.  Subset operations that only reduce the number of spectra (such as
+`filterRt` or `[`) bypass this mechanism and are applied immediately to the
+data.
+
+
+# Notes and suggestions for parallel or chunk-wise processing
+
+- Estimating memory usage in R tends to be difficult, but for MS data sets with
+  more than about 100 samples or whenever processing tends to take longer than
+  expected it is suggested to enable chunk-wise processing (if not already used,
+  as with `MsBackendMzR`).
+
+- `Spectra` uses the `r Biocpkg("BiocParallel")` package for parallel
+  processing. The parallel processing setup can be configured globally by
+  *registering* the preferred setup using the `register` function (e.g.
+  `register(SnowParam(4))` to use socket-based parallel processing on Windows
+  using 4 different R processes). Parallel processing can be disabled by setting
+  `register(SerialParam())`.
+
+- Chunk-wise processing will by default run in parallel, depending on the
+  configured parallel processing setup.
+
+- Parallel processing (and also chunk-wise processing) have a computational
+  overhead, because the data needs to be split and merged. Thus, for some
+  operations or data sets avoiding this mechanism can be more efficient
+  (e.g. for in-memory backends or small data sets).
+
+
+# `Spectra` functions supporting or using parallel processing
+
+Some functions allow to configure parallel processing using a dedicated
+parameter that allows to define how to split the data for parallel (or
+chunk-wise) processing. These functions are:
+
+- `applyProcessing`: parameter `f` (defaults to `processingChunkFactor(object)`)
+  can be used to define how to split and process the data in parallel.
+- `combineSpectra`: parameter `p` (defaults to `x$dataStorage`) defines how the
+  data should be split and processed in parallel.
+- `estimatePrecursorIntensity`: parameter `f` (defaults to `dataOrigin(x)`)
+  defines the splitting and processing. This should represent the original data
+  files the spectra data derives from.
+- `setBackend`: parameter `f` (defaults to `processingChunkFactor(object)`)
+  defines if and how the data should be split for parallel processing.
+
+Functions that perform chunk-wise (parallel) processing *natively*, i.e., based
+on the `processingChunkFactor`:
+
+- `containsMz`.
+- `containsNeutralLoss`.
+- `intensity`.
+- `ionCount`.
+- `isCentroided`.
+- `isEmpty`.
+- `mz`.
+- `peaksData`.
+
+
+
+# Session information
+
+```{r si}
+sessionInfo()
+```
