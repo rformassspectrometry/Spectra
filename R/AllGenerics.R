@@ -11,6 +11,9 @@ setGeneric("backendMerge", def = function(object, ...)
     standardGeneric("backendMerge"),
     valueClass = "MsBackend")
 #' @rdname hidden_aliases
+setGeneric("backendParallelFactor", def = function(object, ...)
+    standardGeneric("backendParallelFactor"))
+#' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
 setGeneric("combinePeaks", function(object, ...)
            standardGeneric("combinePeaks"))

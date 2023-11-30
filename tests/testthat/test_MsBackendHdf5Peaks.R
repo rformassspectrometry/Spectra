@@ -403,3 +403,9 @@ test_that("dropNaSpectraVariables works with MsBackendHdf5", {
     expect_true(length(spectraVariables(res)) <
                 length(spectraVariables(sciex_hd5)))
 })
+
+test_that("backendParallelFactor,MsBackendHdf5Peaks", {
+    expect_equal(backendParallelFactor(sciex_hd5),
+                 factor(dataStorage(sciex_hd5),
+                        levels = unique(dataStorage(sciex_hd5))))
+})

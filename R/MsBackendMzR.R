@@ -210,3 +210,7 @@ setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
                     MoreArgs = list(format = format, copy = copy),
                     BPPARAM = BPPARAM)
 })
+
+setMethod("backendParallelFactor", "MsBackendMzR", function(object) {
+    factor(dataStorage(object), levels = unique(dataStorage(object)))
+})

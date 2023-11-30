@@ -8,6 +8,7 @@
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
 \alias{backendMerge}
+\alias{backendParallelFactor}
 \alias{bin,numeric-method}
 \alias{containsMz}
 \alias{containsNeutralLoss}
@@ -171,6 +172,8 @@
 \title{Internal page for hidden aliases}
 \usage{
 backendMerge(object, ...)
+
+backendParallelFactor(object, ...)
 
 \S4method{bin}{numeric}(
   x,

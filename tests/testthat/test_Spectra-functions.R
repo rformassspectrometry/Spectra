@@ -833,3 +833,31 @@ test_that("filterPrecursorPeaks,Spectra works", {
                     lengths(x)[msLevel(x) > 1L]))
     expect_equal(lengths(res)[msLevel(x) == 1L], lengths(x)[msLevel(x) == 1L])
 })
+
+test_that("processingChunkSize works", {
+    s <- Spectra()
+    expect_equal(processingChunkSize(s), Inf)
+    processingChunkSize(s) <- 1000
+    expect_equal(processingChunkSize(s), 1000)
+    expect_error(processingChunkSize(s) <- c(1, 2), "length 1")
+    expect_error(processingChunkSize(s) <- "A", "character")
+})
+
+test_that("processingChunkFactor works", {
+    s <- Spectra()
+    expect_equal(processingChunkFactor(s), factor())
+    tmp <- Spectra(sciex_mzr)
+
+    expect_equal(length(processingChunkFactor(tmp)), length(tmp))
+    expect_true(is.factor(processingChunkFactor(tmp)))
+
+    processingChunkSize(tmp) <- 1000
+    res <- processingChunkFactor(tmp)
+    expect_true(is.factor(res))
+    expect_true(length(res) == length(tmp))
+    expect_equal(levels(res), c("1", "2"))
+
+    expect_equal(.parallel_processing_factor(tmp), processingChunkFactor(tmp))
+
+    expect_error(processingChunkFactor("a"), "Spectra")
+})

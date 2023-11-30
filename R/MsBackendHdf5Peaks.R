@@ -306,3 +306,7 @@ setMethod("backendMerge", "MsBackendHdf5Peaks", function(object, ...) {
     validObject(res)
     res
 })
+
+setMethod("backendParallelFactor", "MsBackendHdf5Peaks", function(object) {
+    factor(dataStorage(object), levels = unique(dataStorage(object)))
+})

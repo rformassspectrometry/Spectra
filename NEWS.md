@@ -1,5 +1,17 @@
 # Spectra 1.13
 
+## Changes in 1.13.2
+
+- Add possibility to enable and perform chunk-wise (parallel) processing to
+  `Spectra`: add functions `processingChunkSize`, `backendParallelFactor` and
+  `processingChunkFactor` to set or get definition of chunks for parallel
+  processing. All functions working on peaks data use this mechanism which
+  is implemented in the internal `.peaksapply` function. The `Spectra` object
+  gains a new slot `"processingChunkSize"` that is used to define the
+  size of the processing chunks for the `Spectra`. See also [issue
+  #304](https://github.com/rformassspectrometry/Spectra/issues/304).
+  This ensures processing also of very large data sets.
+
 ## Changes in 1.13.1
 
 - Fix issue with `bin` function (see

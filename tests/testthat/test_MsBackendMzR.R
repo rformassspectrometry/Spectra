@@ -564,3 +564,9 @@ test_that("dropNaSpectraVariables works with MsBackendMzR", {
 test_that("supportsSetBackend,MsBackendMzR", {
     expect_false(supportsSetBackend(MsBackendMzR()))
 })
+
+test_that("backendParallelFactor,MsBackendMzR", {
+    expect_equal(backendParallelFactor(sciex_mzr),
+                 factor(dataStorage(sciex_mzr),
+                        levels = unique(dataStorage(sciex_mzr))))
+})

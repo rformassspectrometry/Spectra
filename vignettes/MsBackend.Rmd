@@ -96,12 +96,21 @@ General conventions for MS data of a `Spectra` are:
 
 ## Notes on parallel processing
 
-The default parallel processing of `Spectra` splits backends by their
-`dataStorage` and performs the processing in parallel on the subsets. Not all
-backends will support such parallel processing (or any parallel processing) and
-thus unexpected errors might occur (depending on the user's settings). A new
-function allowing to evaluate the parallel processing capabilities of a backend
-will be added to help avoiding such issues.
+For parallel processing, `Spectra` splits the backend based on a defined
+`factor` and processes each in parallel (or *in serial* if a `SerialParam` is
+used). The splitting `factor` can be defined for `Spectra` by setting the
+parameter `processingChunkSize`. Alternatively, through the
+`backendParallelFactor` function the backend can also *suggest* a `factor` that
+should/could be used for splitting and parallel processing. The default
+implementation for `backendParallelFactor` is to return an empty `factor`
+(`factor()`) hence not suggesting any preferred
+splitting. `backendParallelFactor` for `MsBackendMzR` on the other hand returns
+a `factor` based on the data files the data is stored in (i.e. based on the
+`dataStorage` of the MS data).
+
+Besides parallel processing, this chunk-wise processing can also reduce the
+memory demand for operations, because only the peak data of the current chunk
+needs to be realized in memory.
 
 
 # API
@@ -1559,6 +1568,20 @@ setMethod("backendBpparam", signature = "MsBackend",
               ## Return SerialParam() instead to disable parallel processing
               BPPARAM
           })
+
+```
+
+### `backendParallelFactor`
+
+The `backendParallelFactor` allows a backend to suggest a preferred way how the
+backend could be split for parallel processing. See also the notes on parallel
+processing above for more information. The default implementation returns
+`factor()` (i.e. a `factor` of length 0) hence not suggesting any splitting:
+
+```{r}
+setMethod("backendParallelFactor", "MsBackend", function(object, ...) {
+    factor()
+})
 
 ```
 
