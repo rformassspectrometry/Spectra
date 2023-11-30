@@ -3,7 +3,7 @@
 related metadata.
 It supports multiple data backends, e.g. in-memory (MsBackendMemory,
 MsBackendDataFrame()), on-disk as mzML (MsBackendMzR()) or HDF5
-(MsBackendHdf5Peaks())."><title>The Spectra class to manage and access MS data — applyProcessing • Spectra</title><!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png"><link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png"><link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png"><link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png"><link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png"><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="The Spectra class to manage and access MS data — applyProcessing"><meta property="og:description" content="The Spectra class encapsules spectral mass spectrometry data and
+(MsBackendHdf5Peaks())."><title>The Spectra class to manage and access MS data — applyProcessing • Spectra</title><!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png"><link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png"><link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png"><link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png"><link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png"><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="The Spectra class to manage and access MS data — applyProcessing"><meta property="og:description" content="The Spectra class encapsules spectral mass spectrometry data and
 related metadata.
 It supports multiple data backends, e.g. in-memory (MsBackendMemory,
 MsBackendDataFrame()), on-disk as mzML (MsBackendMzR()) or HDF5
@@ -18,7 +18,7 @@ MsBackendDataFrame()), on-disk as mzML (MsBackendMzR()) or HDF5
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,7 @@ MsBackendDataFrame()), on-disk as mzML (MsBackendMzR()) or HDF5
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/MsBackend.html">Creating new `MsBackend` classes</a>
+    <a class="dropdown-item" href="../articles/Spectra-large-scale.html">Large-scale data handling and processing with Spectra</a>
   </div>
 </li>
 <li class="nav-item">
@@ -72,7 +73,12 @@ related metadata.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre><code>applyProcessing(object, f = dataStorage(object), BPPARAM = bpparam(), ...)
+    <div class="sourceCode"><pre><code>applyProcessing(
+  object,
+  f = processingChunkFactor(object),
+  BPPARAM = bpparam(),
+  ...
+)
 
 concatenateSpectra(x, ...)
 
@@ -160,7 +166,13 @@ Spectra(
 )
 
 # S4 method for Spectra,MsBackend
-setBackend(object, backend, f = dataStorage(object), ..., BPPARAM = bpparam())
+setBackend(
+  object,
+  backend,
+  f = processingChunkFactor(object),
+  ...,
+  BPPARAM = bpparam()
+)
 
 # S4 method for Spectra
 c(x, ...)
@@ -175,7 +187,13 @@ export(object, backend, ...)
 acquisitionNum(object)
 
 # S4 method for Spectra
-peaksData(object, columns = c("mz", "intensity"), ..., BPPARAM = bpparam())
+peaksData(
+  object,
+  columns = c("mz", "intensity"),
+  f = processingChunkFactor(object),
+  ...,
+  BPPARAM = bpparam()
+)
 
 # S4 method for Spectra
 peaksVariables(object)
@@ -205,7 +223,7 @@ dataStorage(object)
 dropNaSpectraVariables(object)
 
 # S4 method for Spectra
-intensity(object, ...)
+intensity(object, f = processingChunkFactor(object), ...)
 
 # S4 method for Spectra
 ionCount(object)
@@ -270,7 +288,7 @@ length(x)
 msLevel(object)
 
 # S4 method for Spectra
-mz(object, ...)
+mz(object, f = processingChunkFactor(object), ...)
 
 # S4 method for Spectra
 lengths(x, use.names = FALSE)
@@ -535,7 +553,9 @@ For <code>combineSpectra</code>: <code>factor</code> defining the grouping of th
 should be combined. For <code>spectrapply</code>: <code>factor</code> how <code>object</code> should be
 splitted. For <code>filterPrecursorScan</code>:
 defining which spectra belong to the same original data file (sample).
-Defaults to <code>f = dataOrigin(x)</code>.</p></dd>
+Defaults to <code>f = dataOrigin(x)</code>.
+For <code>intensity</code>, <code>mz</code> and <code>peaksData</code>: factor defining how data should
+be chunk-wise loaded an processed. Defaults to <code><a href="processingChunkSize.html">processingChunkFactor()</a></code>.</p></dd>
 
 
 <dt>BPPARAM</dt>
@@ -926,6 +946,8 @@ to the data storage (such as the <code><a href="MsBackend.html">MsBackendMemory(
 and <code><a href="MsBackend.html">MsBackendHdf5Peaks()</a></code>) it is possible to apply to queue with the
 <code>applyProcessing</code> function. See the <em>Data manipulation and analysis
 methods</em> section below for more details.</p>
+<p>For more information on parallel or chunk-wise processing (especially
+helpful for very large data sets) see <code><a href="processingChunkSize.html">processingChunkSize()</a></code>.</p>
 <p>To apply arbitrary functions to a <code>Spectra</code> use the <code>spectrapply</code> function
 (or directly <code><a href="chunkapply.html">chunkapply()</a></code> for chunk-wise processing). See description of
 the <code>spectrapply</code> function below for details.</p>
@@ -1540,38 +1562,6 @@ Parameter <code>msLevel.</code> allows to apply this to only spectra of certain 
 level(s).</p></li>
 </ul></div>
     <div class="section level2">
-    <h2 id="parallel-processing">Parallel processing<a class="anchor" aria-label="anchor" href="#parallel-processing"></a></h2>
-    
-
-
-<p>Some <code>Spectra</code> functions have build-in parallel processing that can be
-configured by passing the parallel processing setup with the <code>BPPARAM</code>
-function argument (which defaults to <code>BPPARAM = bpparam()</code>, thus uses
-the default set up). Most functions have an additional parameter <code>f</code> that
-allows to define how <code>Spectra</code> will be split to perform parallel processing.
-This parameter <code>f</code> defaults to <code>f = dataStorage(object)</code> and hence
-parallel processing is performed <em>by file</em> (if a file-based, on-disk
-backend such as <code>MsBackendMzR</code> is used). Some <code>MsBackend</code> classes might
-however not support parallel processing. The <code>backendBpparam</code> function
-allows to evaluate wheter a <code>Spectra</code> (respectively its <code>MsBackend</code>)
-supports a certain parallel processing setup. Calling
-<code>backendBpparam(sps, BPPARAM = MulticoreParam(3))</code> on a <code>Spectra</code> object
-<code>sps</code> would return <code>SerialParam()</code> in case the backend of the <code>Spectra</code>
-object does not support parallel processing. All functions listed below
-use this same function to eventually disable parallel processing to
-avoid failure of a function call.</p>
-<p>The functions with build-in parallel processing capabilities are:</p><ul><li><p><code>applyProcessing</code>.</p></li>
-<li><p><code>combineSpectra</code>.</p></li>
-<li><p><code>containsMz</code> (does not provide a parameter <code>f</code>, but performs parallel
-processing separate for <code>dataStorage</code>).</p></li>
-<li><p><code>containsNeutralLoss</code> (same as <code>containsMz</code>).</p></li>
-<li><p><code>estimatePrecursorIntensity</code>.</p></li>
-<li><p><code>setBackend</code>.</p></li>
-<li><p><code>Spectra</code> (that passes the <code>BPPARAM</code> to the <code>backendInitialize</code> of the
-used <code>MsBackend</code>).</p></li>
-<li><p><code>spectrapply</code>.</p></li>
-</ul></div>
-    <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Nir Shahaf, Johannes Rainer</p>
 <p>Nir Shahaf</p>
@@ -1652,7 +1642,7 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1862         1   259.752       931</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Nov 20 16:25:50 2023] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Nov 30 09:41:14 2023] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory()` supports the `setBackend` method:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="MsBackend.html">supportsSetBackend</a></span><span class="op">(</span><span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -1668,9 +1658,9 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-in"><span><span class="co">## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span></span></span>
 <span class="r-in"><span><span class="co">## data in memory and its size is thus much larger.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sciex</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 395808 bytes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 395976 bytes</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sciex_im</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55802160 bytes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55802328 bytes</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The spectra variable `dataStorage` returns for each spectrum the location</span></span></span>
 <span class="r-in"><span><span class="co">## where the data is stored. For in-memory objects:</span></span></span>
@@ -1931,7 +1921,7 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         2       1.2        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Mon Nov 20 16:25:51 2023] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Thu Nov 30 09:41:16 2023] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Below we combine the `data` and `sciex_im` objects into a single one.</span></span></span>
 <span class="r-in"><span><span class="va">data_comb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">sciex_im</span><span class="op">)</span></span></span>
@@ -1957,7 +1947,7 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-in"><span><span class="fu"><a href="hidden_aliases.html">filterPrecursorMzRange</a></span><span class="op">(</span><span class="va">data_filt</span>, mz <span class="op">=</span> <span class="fl">543.23</span> <span class="op">+</span> <span class="fu"><a href="hidden_aliases.html">ppm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">543.23</span>, <span class="fl">543.23</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 0 spectra in a MsBackendMemory backend:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2354323, 543.2354323] [Mon Nov 20 16:25:51 2023] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2354323, 543.2354323] [Thu Nov 30 09:41:16 2023] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Filter a Spectra keeping only peaks matching certain m/z values</span></span></span>
 <span class="r-in"><span><span class="va">sps_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="hidden_aliases.html">filterMzValues</a></span><span class="op">(</span><span class="va">data</span>, mz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">103</span>, <span class="fl">104</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
@@ -2032,16 +2022,16 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 10 rows and 3 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                spectrumId      var1        var2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               &lt;character&gt; &lt;numeric&gt; &lt;character&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  sample=1 period=1 cy.. -0.112285           a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sample=1 period=1 cy..  0.152287           n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  sample=1 period=1 cy.. -0.480170           r</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  sample=1 period=1 cy..  0.250752           q</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  sample=1 period=1 cy..  1.703705           e</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  sample=1 period=1 cy.. -0.606802           i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  sample=1 period=1 cy..  0.422513           d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  sample=1 period=1 cy..  0.933096           b</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  sample=1 period=1 cy.. -1.123188           z</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 sample=1 period=1 cy..  0.979179           y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  sample=1 period=1 cy.. -0.400790           w</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sample=1 period=1 cy..  1.185081           e</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  sample=1 period=1 cy.. -0.921541           i</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  sample=1 period=1 cy.. -0.320894           u</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  sample=1 period=1 cy.. -0.524618           y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  sample=1 period=1 cy.. -0.591002           m</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  sample=1 period=1 cy.. -0.309102           o</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  sample=1 period=1 cy.. -0.807303           a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  sample=1 period=1 cy..  1.704241           j</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 sample=1 period=1 cy.. -1.320271           b</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sciex2</span> <span class="op">&lt;-</span> <span class="fu">joinSpectraData</span><span class="op">(</span><span class="va">sciex1</span>, <span class="va">spv</span>, by.y <span class="op">=</span> <span class="st">"spectrumId"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -2070,14 +2060,14 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                &lt;character&gt; &lt;numeric&gt; &lt;character&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   sample=1 period=1 cy..        NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   sample=1 period=1 cy..        NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   sample=1 period=1 cy.. -0.112285           a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   sample=1 period=1 cy..  0.152287           n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   sample=1 period=1 cy.. -0.480170           r</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   sample=1 period=1 cy.. -0.400790           w</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   sample=1 period=1 cy..  1.185081           e</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   sample=1 period=1 cy.. -0.921541           i</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...                    ...       ...         ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   sample=1 period=1 cy..  0.422513           d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  sample=1 period=1 cy..  0.933096           b</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11  sample=1 period=1 cy.. -1.123188           z</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  sample=1 period=1 cy..  0.979179           y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   sample=1 period=1 cy.. -0.309102           o</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  sample=1 period=1 cy.. -0.807303           a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  sample=1 period=1 cy..  1.704241           j</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  sample=1 period=1 cy.. -1.320271           b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13  sample=1 period=1 cy..        NA          NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Removing fourier transform artefacts seen in Orbitra data.</span></span></span>
@@ -2099,7 +2089,7 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Mon Nov 20 16:25:51 2023] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Thu Nov 30 09:41:16 2023] </span>
 <span class="r-in"><span><span class="fu"><a href="spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">fft_spectrum</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">264.5</span>, <span class="fl">265.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5e6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="Spectra-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -2121,8 +2111,8 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 2 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Mon Nov 20 16:25:51 2023]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Mon Nov 20 16:25:51 2023] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Thu Nov 30 09:41:16 2023]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Thu Nov 30 09:41:16 2023] </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">fft_spectrum_filtered</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 297</span>
 <span class="r-in"><span><span class="fu"><a href="spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">fft_spectrum_filtered</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">264.5</span>, <span class="fl">265.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5e6</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -2144,7 +2134,7 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Nov 20 16:25:51 2023] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Thu Nov 30 09:41:16 2023] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get the intensities of the first and second spectrum.</span></span></span>
 <span class="r-in"><span><span class="fu">intensity</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
@@ -2201,9 +2191,9 @@ used <code>MsBackend</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         2       1.2        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Mon Nov 20 16:25:51 2023]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Mon Nov 20 16:25:52 2023]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Mon Nov 20 16:25:52 2023] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Thu Nov 30 09:41:16 2023]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Thu Nov 30 09:41:16 2023]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Thu Nov 30 09:41:16 2023] </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">res_rest</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4 3</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">)</span></span></span>

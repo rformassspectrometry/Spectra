@@ -7,6 +7,9 @@
     <loc>https://rformassspectrometry.github.io/Spectra/articles/MsBackend.html</loc>
   </url>
   <url>
+    <loc>https://rformassspectrometry.github.io/Spectra/articles/Spectra-large-scale.html</loc>
+  </url>
+  <url>
     <loc>https://rformassspectrometry.github.io/Spectra/articles/Spectra.html</loc>
   </url>
   <url>
@@ -59,6 +62,9 @@
   </url>
   <url>
     <loc>https://rformassspectrometry.github.io/Spectra/reference/plotMzDelta.html</loc>
+  </url>
+  <url>
+    <loc>https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.html</loc>
   </url>
   <url>
     <loc>https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.html</loc>
