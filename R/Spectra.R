@@ -1454,7 +1454,7 @@ setClass(
         processingChunkSize = "numeric",
         version = "character"
     ),
-    prototype = prototype(version = "0.2",
+    prototype = prototype(version = "0.3",
                           processingChunkSize = Inf)
 )
 
