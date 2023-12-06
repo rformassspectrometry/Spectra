@@ -1,5 +1,10 @@
 # Spectra 1.13
 
+## Changes in 1.13.3
+
+- Fix issue in `setBackend` that might cause chunk-wise processing to be not
+  run.
+
 ## Changes in 1.13.2
 
 - Add possibility to enable and perform chunk-wise (parallel) processing to

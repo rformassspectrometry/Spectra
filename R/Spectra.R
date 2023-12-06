@@ -1551,7 +1551,7 @@ setMethod(
     "setBackend", c("Spectra", "MsBackend"),
     function(object, backend, f = processingChunkFactor(object), ...,
              BPPARAM = bpparam()) {
-        backend_class <- class(object@backend)
+        backend_class <- class(object@backend)[1L]
         BPPARAM <- backendBpparam(object@backend, BPPARAM)
         BPPARAM <- backendBpparam(backend, BPPARAM)
         if (!supportsSetBackend(backend))
@@ -1562,7 +1562,7 @@ setMethod(
         } else {
             if (!is.factor(f))
                 f <- force(factor(f, levels = unique(f)))
-            if (length(f) && length(levels(f) > 1)) {
+            if (length(f) && (length(levels(f)) > 1)) {
                 if (length(f) != length(object))
                     stop("length of 'f' has to match the length of 'object'")
                 bknds <- bplapply(
