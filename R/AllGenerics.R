@@ -27,6 +27,9 @@ setGeneric("containsNeutralLoss", function(object, ...)
 setGeneric("dropNaSpectraVariables", function(object, ...)
     standardGeneric("dropNaSpectraVariables"))
 #' @rdname hidden_aliases
+setGeneric("entropy", function(object, ...)
+  standardGeneric("entropy"))
+#' @rdname hidden_aliases
 setGeneric("export", function(object, ...)
     standardGeneric("export"))
 setGeneric("filterFourierTransformArtefacts", function(object, ...)
