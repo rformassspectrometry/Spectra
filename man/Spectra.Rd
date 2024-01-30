@@ -104,6 +104,8 @@
 \alias{coreSpectraVariables}
 \alias{backendBpparam,Spectra-method}
 \alias{combinePeaks,Spectra-method}
+\alias{entropy,Spectra-method}
+\alias{entropy,ANY-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(
@@ -480,6 +482,10 @@ coreSpectraVariables()
   msLevel. = uniqueMsLevels(object),
   ...
 )
+
+\S4method{entropy}{Spectra}(object, normalized = TRUE)
+
+\S4method{entropy}{ANY}(object, ...)
 }
 \arguments{
 \item{object}{For \code{Spectra}: either a \code{DataFrame} or \code{missing}. See section
@@ -756,6 +762,9 @@ is ignored if \code{weighted = TRUE} (the default).}
 \item{weighted}{For \code{combinePeaks}: \code{logical(1)} whether m/z values of peaks
 within each peak group should be aggregated into a single m/z value
 using an intensity-weighted mean. Defaults to \code{weighted = TRUE}.}
+
+\item{normalized}{for \code{entropy}: \code{logical(1)} whether the normalized entropy
+should be calculated (default). See also \code{\link[=nentropy]{nentropy()}} for details.}
 }
 \value{
 See individual method description for the return value.
@@ -1335,6 +1344,9 @@ might not be detected. See parameter \code{substDefinition} in the
 documentation of \code{\link[=isotopologues]{isotopologues()}} for more information. The approach
 and code to define the parameters for isotope prediction is described
 \href{https://github.com/EuracBiomedicalResearch/isotopologues}{here}.
+\item \code{entropy}: calculates the entropy of each spectra based on the metrics
+suggested by Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
+See also \code{\link[=nentropy]{nentropy()}} in the \emph{MsCoreUtils} package for details.
 \item \code{estimatePrecursorIntensity}: defines the precursor intensities for MS2
 spectra using the intensity of the matching MS1 peak from the
 closest MS1 spectrum (i.e. the last MS1 spectrum measured before the

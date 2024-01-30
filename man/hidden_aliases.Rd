@@ -13,6 +13,7 @@
 \alias{containsMz}
 \alias{containsNeutralLoss}
 \alias{dropNaSpectraVariables}
+\alias{entropy}
 \alias{export}
 \alias{filterMzRange}
 \alias{filterMzValues}
@@ -190,6 +191,8 @@ containsMz(object, ...)
 containsNeutralLoss(object, ...)
 
 dropNaSpectraVariables(object, ...)
+
+entropy(object, ...)
 
 export(object, ...)
 

@@ -1788,16 +1788,15 @@ test_that("entropy,Spectra works", {
   sps <- Spectra()
   res <- entropy(sps)
   expect_identical(res, numeric())
-  
+
   df <- DataFrame(msLevel = c(1L, 2L), centroided = TRUE)
-  df$intensity <- list(c(5, 9, 3), c(9, 8, 2))
   df$mz <- list(1:3, 1:3)
+  df$intensity <- list(c(5, 9, 3), c(9, 8, 2))
   sps <- Spectra(df)
-  
-  res <- entropy(sps)
-  expect_identical(res, c(17, 19))
-  
-  sps <- replaceIntensitiesBelow(sps, threshold = 4)
-  res <- entropy(sps)
-  expect_identical(res, c(14, 17))
+
+  res <- entropy(sps, normalized = TRUE)
+  expect_identical(res, vapply(df$intensity, MsCoreUtils::nentropy, numeric(1)))
+
+  res <- entropy(sps, normalized = FALSE)
+  expect_identical(res, vapply(df$intensity, MsCoreUtils::entropy, numeric(1)))
 })

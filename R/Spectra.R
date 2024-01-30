@@ -659,9 +659,10 @@ NULL
 #'   documentation of [isotopologues()] for more information. The approach
 #'   and code to define the parameters for isotope prediction is described
 #'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
-#'   
-#' - `entropy`: calculates the entropy of each spectra based on the metrics suggested by 
-#'    Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
+#'
+#' - `entropy`: calculates the entropy of each spectra based on the metrics
+#'    suggested by Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
+#'   See also [nentropy()] in the *MsCoreUtils* package for details.
 #'
 #' - `estimatePrecursorIntensity`: defines the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the
@@ -927,6 +928,9 @@ NULL
 #'
 #' @param neutralLoss for `containsNeutralLoss`: `numeric(1)` defining the value
 #'     which should be subtracted from the spectrum's precursor m/z.
+#'
+#' @param normalized for `entropy`: `logical(1)` whether the normalized entropy
+#'     should be calculated (default). See also [nentropy()] for details.
 #'
 #' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
 #'     on creation of `Spectra` objects for details. For all other methods a
@@ -2647,12 +2651,19 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #' @rdname Spectra
 #'
 #' @importFrom MsCoreUtils entropy nentropy
+#'
+#' @export
 setMethod("entropy", "Spectra", function(object, normalized = TRUE) {
-  if (normalized) entropy_fun <- nentropy
-  else entropy_fun <- entropy
-  unlist(.peaksapply(
-    object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])), 
-    use.names = FALSE
-  )
+    if (length(object)) {
+    if (normalized) entropy_fun <- nentropy
+    else entropy_fun <- entropy
+    unlist(.peaksapply(
+        object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])),
+        use.names = FALSE
+        )
+    } else numeric()
 })
-
+#' @rdname Spectra
+setMethod("entropy", "ANY", function(object, ...) {
+    MsCoreUtils::entropy(object)
+})
