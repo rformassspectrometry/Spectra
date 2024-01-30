@@ -2646,11 +2646,13 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 
 #' @rdname Spectra
 #'
-#' @importFrom MsCoreUtils entropy
+#' @importFrom MsCoreUtils entropy nentropy
 setMethod("entropy", "Spectra", function(object, normalized = TRUE) {
-  if (length(object))
-    unlist(.peaksapply(
-      object, FUN = function(pks, ...) entropy(pks[, "intensity"], na.rm = TRUE)),
-      use.names = FALSE)
-  else numeric()
+  if (normalized) entropy_fun <- nentropy
+  else entropy_fun <- entropy
+  unlist(.peaksapply(
+    object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])), 
+    use.names = FALSE
+  ))
 })
+
