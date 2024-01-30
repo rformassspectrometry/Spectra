@@ -2653,6 +2653,6 @@ setMethod("entropy", "Spectra", function(object, normalized = TRUE) {
   unlist(.peaksapply(
     object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])), 
     use.names = FALSE
-  ))
+  )
 })
 
