@@ -659,6 +659,9 @@ NULL
 #'   documentation of [isotopologues()] for more information. The approach
 #'   and code to define the parameters for isotope prediction is described
 #'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
+#'   
+#' - `entropy`: calculates the entropy of each spectra based on the metrics suggested by 
+#'    Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
 #'
 #' - `estimatePrecursorIntensity`: defines the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the
@@ -2639,3 +2642,17 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
         ppm, " and tolerance = ", tolerance, ".")
     object
 })
+
+
+#' @rdname Spectra
+#'
+#' @importFrom MsCoreUtils entropy nentropy
+setMethod("entropy", "Spectra", function(object, normalized = TRUE) {
+  if (normalized) entropy_fun <- nentropy
+  else entropy_fun <- entropy
+  unlist(.peaksapply(
+    object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])), 
+    use.names = FALSE
+  )
+})
+
