@@ -2416,6 +2416,7 @@ setMethod("reset", "Spectra", function(object, ...) {
 
 #' @rdname Spectra
 #' @importFrom MsCoreUtils between
+#' @export
 setMethod("filterRanges", "Spectra",
           function(object, spectraVariables, ranges, ...){
               if (is.logical(spectraVariables))
