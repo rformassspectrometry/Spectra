@@ -1664,7 +1664,7 @@ plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 ## in `spectraData`.
 spectraVariables <- c("rtime", "precursorMz", "peaksCount")
 ranges <- c(30, 350, 200,500, 350, 600)
-filt_spectra <- filterRanges(data, spectraVariables = spectraVariables,
+filt_spectra <- filterRanges(sciex, spectraVariables = spectraVariables,
                 ranges = ranges)
 
 ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----

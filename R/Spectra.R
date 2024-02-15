@@ -1270,7 +1270,7 @@ NULL
 #' ## in `spectraData`.
 #' spectraVariables <- c("rtime", "precursorMz", "peaksCount")
 #' ranges <- c(30, 350, 200,500, 350, 600)
-#' filt_spectra <- filterRanges(data, spectraVariables = spectraVariables,
+#' filt_spectra <- filterRanges(sciex, spectraVariables = spectraVariables,
 #'                 ranges = ranges)
 #'
 #' ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
@@ -2424,10 +2424,11 @@ setMethod("filterRanges", "Spectra",
               if (length(spectraVariables) != length(ranges) / 2)
                   stop("Length of 'spectraVariables' must be half the length ",
                        "of 'ranges'")
-              if (is.character(spectraVariables))
+              if (is.character(spectraVariables)){
                   if(!all(spectraVariables %in% spectraVariables(object)))
-                  stop("'spectraVariables' need to correspond to colnames of",
-                  "the 'spectraData' of the object")
+                      stop("'spectraVariables' need to correspond to colnames of",
+                           "the 'spectraData' of the object")
+              }
               query <- spectraData(object)[, spectraVariables]
               nc <- ncol(query)
 
