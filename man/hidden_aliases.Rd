@@ -19,6 +19,7 @@
 \alias{filterMzValues}
 \alias{filterPrecursorMzValues}
 \alias{filterPrecursorMzRange}
+\alias{filterRanges}
 \alias{isReadOnly}
 \alias{peaksData}
 \alias{peaksData<-}
@@ -34,6 +35,7 @@
 \alias{acquisitionNum,MsBackendDataFrame-method}
 \alias{peaksData,MsBackendDataFrame-method}
 \alias{centroided,MsBackendDataFrame-method}
+\alias{centroided<-,MsBackendDataFrame,ANY-method}
 \alias{centroided<-,MsBackendDataFrame-method}
 \alias{collisionEnergy,MsBackendDataFrame-method}
 \alias{collisionEnergy<-,MsBackendDataFrame-method}
@@ -69,6 +71,7 @@
 \alias{scanIndex,MsBackendDataFrame-method}
 \alias{selectSpectraVariables,MsBackendDataFrame-method}
 \alias{smoothed,MsBackendDataFrame-method}
+\alias{smoothed<-,MsBackendDataFrame,ANY-method}
 \alias{smoothed<-,MsBackendDataFrame-method}
 \alias{spectraData,MsBackendDataFrame-method}
 \alias{spectraData<-,MsBackendDataFrame-method}
@@ -78,6 +81,7 @@
 \alias{tic,MsBackendDataFrame-method}
 \alias{$,MsBackendDataFrame-method}
 \alias{$<-,MsBackendDataFrame-method}
+\alias{[,MsBackendDataFrame,ANY,ANY,ANY-method}
 \alias{split,MsBackendDataFrame,ANY-method}
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
 \alias{backendInitialize,MsBackendHdf5Peaks-method}
@@ -95,12 +99,14 @@
 \alias{spectraData,MsBackendHdf5Peaks-method}
 \alias{spectraData<-,MsBackendHdf5Peaks-method}
 \alias{$<-,MsBackendHdf5Peaks-method}
+\alias{[,MsBackendHdf5Peaks,ANY,ANY,ANY-method}
 \alias{[,MsBackendHdf5Peaks-method}
 \alias{backendMerge,MsBackendHdf5Peaks-method}
 \alias{show,MsBackendMemory-method}
 \alias{backendMerge,MsBackendMemory-method}
 \alias{acquisitionNum,MsBackendMemory-method}
 \alias{centroided,MsBackendMemory-method}
+\alias{centroided<-,MsBackendMemory,ANY-method}
 \alias{centroided<-,MsBackendMemory-method}
 \alias{collisionEnergy,MsBackendMemory-method}
 \alias{collisionEnergy<-,MsBackendMemory-method}
@@ -137,6 +143,7 @@
 \alias{scanIndex,MsBackendMemory-method}
 \alias{selectSpectraVariables,MsBackendMemory-method}
 \alias{smoothed,MsBackendMemory-method}
+\alias{smoothed<-,MsBackendMemory,ANY-method}
 \alias{smoothed<-,MsBackendMemory-method}
 \alias{spectraData,MsBackendMemory-method}
 \alias{spectraData<-,MsBackendMemory-method}
@@ -147,7 +154,7 @@
 \alias{tic,MsBackendMemory-method}
 \alias{$,MsBackendMemory-method}
 \alias{$<-,MsBackendMemory-method}
-\alias{[,MsBackendMemory-method}
+\alias{[,MsBackendMemory,ANY,ANY,ANY-method}
 \alias{split,MsBackendMemory,ANY-method}
 \alias{filterAcquisitionNum,MsBackendMemory-method}
 \alias{backendInitialize,MsBackendMzR-method}
@@ -204,6 +211,8 @@ filterPrecursorMzValues(object, ...)
 
 filterPrecursorMzRange(object, ...)
 
+filterRanges(object, ...)
+
 isReadOnly(object, ...)
 
 peaksData(object, ...)
@@ -234,7 +243,7 @@ spectrapply(object, ...)
 
 \S4method{centroided}{MsBackendDataFrame}(object)
 
-\S4method{centroided}{MsBackendDataFrame}(object) <- value
+\S4method{centroided}{MsBackendDataFrame,ANY}(object) <- value
 
 \S4method{collisionEnergy}{MsBackendDataFrame}(object)
 
@@ -304,7 +313,7 @@ spectrapply(object, ...)
 
 \S4method{smoothed}{MsBackendDataFrame}(object)
 
-\S4method{smoothed}{MsBackendDataFrame}(object) <- value
+\S4method{smoothed}{MsBackendDataFrame,ANY}(object) <- value
 
 \S4method{spectraData}{MsBackendDataFrame}(object, columns = spectraVariables(object))
 
@@ -322,7 +331,7 @@ spectrapply(object, ...)
 
 \S4method{$}{MsBackendDataFrame}(x, name) <- value
 
-\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{split}{MsBackendDataFrame,ANY}(x, f, drop = FALSE, ...)
 
@@ -370,7 +379,7 @@ spectrapply(object, ...)
 
 \S4method{$}{MsBackendHdf5Peaks}(x, name) <- value
 
-\S4method{[}{MsBackendHdf5Peaks}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendHdf5Peaks,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{backendMerge}{MsBackendHdf5Peaks}(object, ...)
 
@@ -382,7 +391,7 @@ spectrapply(object, ...)
 
 \S4method{centroided}{MsBackendMemory}(object)
 
-\S4method{centroided}{MsBackendMemory}(object) <- value
+\S4method{centroided}{MsBackendMemory,ANY}(object) <- value
 
 \S4method{collisionEnergy}{MsBackendMemory}(object)
 
@@ -454,7 +463,7 @@ spectrapply(object, ...)
 
 \S4method{smoothed}{MsBackendMemory}(object)
 
-\S4method{smoothed}{MsBackendMemory}(object) <- value
+\S4method{smoothed}{MsBackendMemory,ANY}(object) <- value
 
 \S4method{spectraData}{MsBackendMemory}(object, columns = spectraVariables(object))
 
@@ -474,7 +483,7 @@ spectrapply(object, ...)
 
 \S4method{$}{MsBackendMemory}(x, name) <- value
 
-\S4method{[}{MsBackendMemory}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendMemory,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{split}{MsBackendMemory,ANY}(x, f, drop = FALSE, ...)
 

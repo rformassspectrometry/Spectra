@@ -1,5 +1,10 @@
 # Spectra 1.13
 
+## Changes in 1.13.5
+
+- Add `filterRanges` function to allow to filter the spectra object based on 
+  ranges of any variables of the `spectraData`. 
+
 ## Changes in 1.13.4
 
 - Add `entropy` and `nentropy` functions to allow to calculate the (normalized) 

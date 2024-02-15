@@ -28,6 +28,7 @@
 \alias{peaksVariables,MsBackend-method}
 \alias{centroided,MsBackend-method}
 \alias{centroided<-,MsBackend-method}
+\alias{centroided<-,MsBackend,ANY-method}
 \alias{collisionEnergy,MsBackend-method}
 \alias{collisionEnergy<-,MsBackend-method}
 \alias{dataOrigin,MsBackend-method}
@@ -78,6 +79,7 @@
 \alias{scanIndex,MsBackend-method}
 \alias{selectSpectraVariables,MsBackend-method}
 \alias{smoothed,MsBackend-method}
+\alias{smoothed<-,MsBackend,ANY-method}
 \alias{smoothed<-,MsBackend-method}
 \alias{spectraData,MsBackend-method}
 \alias{spectraData<-,MsBackend-method}
@@ -87,10 +89,11 @@
 \alias{split,MsBackend,ANY-method}
 \alias{supportsSetBackend,MsBackend-method}
 \alias{tic,MsBackend-method}
+\alias{[,MsBackend,ANY,ANY,ANY-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
-\alias{[[,MsBackend-method}
-\alias{[[<-,MsBackend-method}
+\alias{[[,MsBackend,ANY,ANY-method}
+\alias{[[<-,MsBackend,ANY,ANY-method}
 \alias{MsBackendDataFrame}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{MsBackendHdf5Peaks}
@@ -119,7 +122,7 @@
 
 \S4method{centroided}{MsBackend}(object)
 
-\S4method{centroided}{MsBackend}(object) <- value
+\S4method{centroided}{MsBackend,ANY}(object) <- value
 
 \S4method{collisionEnergy}{MsBackend}(object)
 
@@ -221,7 +224,7 @@
 
 \S4method{smoothed}{MsBackend}(object)
 
-\S4method{smoothed}{MsBackend}(object) <- value
+\S4method{smoothed}{MsBackend,ANY}(object) <- value
 
 \S4method{spectraData}{MsBackend}(object, columns = spectraVariables(object))
 
@@ -239,15 +242,15 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackend}(x, name)
 
 \S4method{$}{MsBackend}(x, name) <- value
 
-\S4method{[[}{MsBackend}(x, i, j, ...)
+\S4method{[[}{MsBackend,ANY,ANY}(x, i, j, ...)
 
-\S4method{[[}{MsBackend}(x, i, j, ...) <- value
+\S4method{[[}{MsBackend,ANY,ANY}(x, i, j, ...) <- value
 
 \S4method{uniqueMsLevels}{MsBackend}(object, ...)
 

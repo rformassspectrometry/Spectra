@@ -30,7 +30,7 @@
 \alias{peaksData,Spectra-method}
 \alias{peaksVariables,Spectra-method}
 \alias{centroided,Spectra-method}
-\alias{centroided<-,Spectra-method}
+\alias{centroided<-,Spectra,ANY-method}
 \alias{collisionEnergy,Spectra-method}
 \alias{collisionEnergy<-,Spectra-method}
 \alias{dataOrigin,Spectra-method}
@@ -65,7 +65,7 @@
 \alias{scanIndex,Spectra-method}
 \alias{selectSpectraVariables,Spectra-method}
 \alias{smoothed,Spectra-method}
-\alias{smoothed<-,Spectra-method}
+\alias{smoothed<-,Spectra,ANY-method}
 \alias{spectraData,Spectra-method}
 \alias{spectraData<-,Spectra-method}
 \alias{spectraNames,Spectra-method}
@@ -74,8 +74,9 @@
 \alias{tic,Spectra-method}
 \alias{$,Spectra-method}
 \alias{$<-,Spectra-method}
-\alias{[[,Spectra-method}
-\alias{[[<-,Spectra-method}
+\alias{[[,Spectra,ANY,ANY-method}
+\alias{[[<-,Spectra,ANY,ANY-method}
+\alias{[,Spectra,ANY,ANY,ANY-method}
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterDataOrigin,Spectra-method}
@@ -94,6 +95,7 @@
 \alias{filterPrecursorScan,Spectra-method}
 \alias{filterRt,Spectra-method}
 \alias{reset,Spectra-method}
+\alias{filterRanges,Spectra-method}
 \alias{bin,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
@@ -224,7 +226,7 @@ filterPrecursorPeaks(
 
 \S4method{centroided}{Spectra}(object)
 
-\S4method{centroided}{Spectra}(object) <- value
+\S4method{centroided}{Spectra,ANY}(object) <- value
 
 \S4method{collisionEnergy}{Spectra}(object)
 
@@ -317,7 +319,7 @@ filterPrecursorPeaks(
 
 \S4method{smoothed}{Spectra}(object)
 
-\S4method{smoothed}{Spectra}(object) <- value
+\S4method{smoothed}{Spectra,ANY}(object) <- value
 
 \S4method{spectraData}{Spectra}(object, columns = spectraVariables(object))
 
@@ -335,11 +337,11 @@ filterPrecursorPeaks(
 
 \S4method{$}{Spectra}(x, name) <- value
 
-\S4method{[[}{Spectra}(x, i, j, ...)
+\S4method{[[}{Spectra,ANY,ANY}(x, i, j, ...)
 
-\S4method{[[}{Spectra}(x, i, j, ...) <- value
+\S4method{[[}{Spectra,ANY,ANY}(x, i, j, ...) <- value
 
-\S4method{[}{Spectra}(x, i, j, ..., drop = FALSE)
+\S4method{[}{Spectra,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{filterAcquisitionNum}{Spectra}(
   object,
@@ -405,6 +407,8 @@ filterPrecursorPeaks(
 \S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
 
 \S4method{reset}{Spectra}(object, ...)
+
+\S4method{filterRanges}{Spectra}(object, spectraVariables, ranges, ...)
 
 \S4method{bin}{Spectra}(
   x,
@@ -626,11 +630,16 @@ should be split. This parameter overrides parameters \code{f} and \code{BPPARAM}
 
 \item{use.names}{For \code{lengths}: ignored.}
 
-\item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
+\item{spectraVariables}{\itemize{
+\item For \code{selectSpectraVariables}: \code{character} with the
 names of the spectra variables to which the backend should be subsetted.
-For \code{addProcessing}: \code{character} with additional spectra variables that
+\item For \code{addProcessing}: \code{character} with additional spectra variables that
 should be passed along to the function defined with \code{FUN}. See function
-description for details.}
+description for details.
+\item For \code{filterRanges}: A \code{character} or \code{integer} vector specifying the
+column from \code{spectraVariables(object)} that correspond to the ranges
+provided. The order must match the order of the parameter \code{ranges}.
+}}
 
 \item{initial}{For \code{tic}: \code{logical(1)} whether the initially
 reported total ion current should be reported, or whether the
@@ -712,6 +721,9 @@ subsetted.}
 
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
+
+\item{ranges}{for \code{filterRanges}: A \code{numeric} vector of paired values that
+define the ranges to filter the spectra data.}
 
 \item{binSize}{For \code{bin}: \code{numeric(1)} defining the size for the m/z bins.
 Defaults to \code{binSize = 1}.}
@@ -1163,6 +1175,8 @@ defaults to \code{f = dataOrigin(object)}).
 times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
 \code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
 original order).
+\item \code{filterRanges}: allows filtering of the \code{Spectra} object
+based on specified ranges for \emph{any} values of \code{spectraVariables(object)}.
 \item \code{reduceSpectra}: for groups of peaks within highly similar m/z values
 within each spectrum (given \code{ppm} and \code{tolerance}), this function keeps
 only the peak with the highest intensity removing all other peaks hence
@@ -1645,6 +1659,13 @@ fft_spectrum_filtered <- filterFourierTransformArtefacts(fft_spectrum,
 fft_spectrum_filtered
 length(mz(fft_spectrum_filtered)[[1]])
 plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
+
+## using filterRanges to filter spectra object based on variables available
+## in `spectraData`.
+spectraVariables <- c("rtime", "precursorMz", "peaksCount")
+ranges <- c(30, 350, 200,500, 350, 600)
+filt_spectra <- filterRanges(data, spectraVariables = spectraVariables,
+                ranges = ranges)
 
 ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 
