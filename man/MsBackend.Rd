@@ -93,7 +93,7 @@
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
 \alias{[[,MsBackend,ANY,ANY-method}
-\alias{[[<-,MsBackend,ANY,ANY-method}
+\alias{[[<-,MsBackend,ANY,ANY,ANY-method}
 \alias{MsBackendDataFrame}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{MsBackendHdf5Peaks}
@@ -250,7 +250,7 @@
 
 \S4method{[[}{MsBackend,ANY,ANY}(x, i, j, ...)
 
-\S4method{[[}{MsBackend,ANY,ANY}(x, i, j, ...) <- value
+\S4method{[[}{MsBackend,ANY,ANY,ANY}(x, i, j, ...) <- value
 
 \S4method{uniqueMsLevels}{MsBackend}(object, ...)
 

@@ -471,8 +471,10 @@ NULL
 #'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
-#' - `filterRanges`: allows filtering of the `Spectra` object
-#'    based on specified ranges for *any* values of `spectraVariables(object)`.
+#' - `filterRanges`: allows filtering of the `Spectra` object based on
+#'    specified ranges for *as many* and *any* values of
+#'    `spectraVariables(object)` wanted whether already existing, future-added
+#'    or user-specific. See the example below for more details.
 #'
 #' - `reduceSpectra`: for groups of peaks within highly similar m/z values
 #'   within each spectrum (given `ppm` and `tolerance`), this function keeps
@@ -959,8 +961,10 @@ NULL
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
 #'
-#' @param ranges for `filterRanges`: A `numeric` vector of paired values that
-#'     define the ranges to filter the spectra data.
+#' @param ranges for `filterRanges`: A `numeric` vector of paired values (upper
+#'     and lower boundary) that that define the ranges to filter the spectra
+#'     data. These paired values need to be in the same order as the
+#'     `spectraVariables` parameter.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
@@ -983,9 +987,9 @@ NULL
 #' - For `addProcessing`: `character` with additional spectra variables that
 #'     should be passed along to the function defined with `FUN`. See function
 #'     description for details.
-#' - For `filterRanges`: A `character` or `integer` vector specifying the
-#'      column from `spectraVariables(object)` that correspond to the ranges
-#'      provided. The order must match the order of the parameter `ranges`.
+#' - For `filterRanges`: A `character` vector specifying the column from
+#'     `spectraData(object)` that correspond to the ranges provided. The order
+#'     must match the order of the parameter `ranges`.
 #'
 #' @param substDefinition For `deisotopeSpectra` and `filterPrecursorIsotopes`:
 #'     `matrix` or `data.frame` with definitions of isotopic substitutions.
@@ -1266,10 +1270,19 @@ NULL
 #' length(mz(fft_spectrum_filtered)[[1]])
 #' plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 #'
-#' ## using filterRanges to filter spectra object based on variables available
+#' ## Using filterRanges to filter spectra object based on variables available
 #' ## in `spectraData`.
+#' ## First determine the variable on which to base the filtering:
 #' spectraVariables <- c("rtime", "precursorMz", "peaksCount")
+#' ## Note that ANY variables can be chosen here, and as many as wanted.
+#'
+#' ## Defining the ranges (pairs of values with lower and upper boundary) to be
+#' ## used for the individual spectra variables. The first two values will be
+#' ## used for the first spectra variable (e.g. rtime here), the next two for the
+#' ## second (e.g. precursorMz here) and so on:
 #' ranges <- c(30, 350, 200,500, 350, 600)
+#'
+#' ## Input the parameters within the filterRanges function:
 #' filt_spectra <- filterRanges(sciex, spectraVariables = spectraVariables,
 #'                 ranges = ranges)
 #'
@@ -2419,19 +2432,18 @@ setMethod("reset", "Spectra", function(object, ...) {
 #' @export
 setMethod("filterRanges", "Spectra",
           function(object, spectraVariables, ranges, ...){
-              if (is.logical(spectraVariables))
-                  spectraVariables <- which(spectraVariables)
-              if (length(spectraVariables) != length(ranges) / 2)
-                  stop("Length of 'spectraVariables' must be half the length ",
-                       "of 'ranges'")
               if (is.character(spectraVariables)){
                   if(!all(spectraVariables %in% spectraVariables(object)))
                       stop("'spectraVariables' need to correspond to colnames of",
                            "the 'spectraData' of the object")
-              }
-              query <- spectraData(object)[, spectraVariables]
-              nc <- ncol(query)
+              } else
+                  stop("'spectraVariables' needs to be a character")
+              if (length(spectraVariables) != length(ranges) / 2)
+                  stop("Length of 'spectraVariables' must be half the length ",
+                       "of 'ranges'")
 
+              query <- spectraData(object, columns = spectraVariables)
+              nc <- ncol(query)
               within_ranges <- vapply(seq_len(nc), function(i) {
                   pairs <-  c(ranges[2*i - 1], ranges[2*i])
                   between(query[[i]], pairs)
@@ -2444,9 +2456,6 @@ setMethod("filterRanges", "Spectra",
                                             ranges[seq(ranges)%% 2 == 0], ", ",
                                             ranges[seq(ranges)%% 2 != 0], "]"
                                             )
-              message("Started with ", length(object),
-                      " spectra, after filtering ", length(idc),
-                      " spectra are left")
               object <- object[idc]
           })
 

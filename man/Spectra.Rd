@@ -75,7 +75,7 @@
 \alias{$,Spectra-method}
 \alias{$<-,Spectra-method}
 \alias{[[,Spectra,ANY,ANY-method}
-\alias{[[<-,Spectra,ANY,ANY-method}
+\alias{[[<-,Spectra,ANY,ANY,ANY-method}
 \alias{[,Spectra,ANY,ANY,ANY-method}
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
@@ -339,7 +339,7 @@ filterPrecursorPeaks(
 
 \S4method{[[}{Spectra,ANY,ANY}(x, i, j, ...)
 
-\S4method{[[}{Spectra,ANY,ANY}(x, i, j, ...) <- value
+\S4method{[[}{Spectra,ANY,ANY,ANY}(x, i, j, ...) <- value
 
 \S4method{[}{Spectra,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
@@ -636,9 +636,9 @@ names of the spectra variables to which the backend should be subsetted.
 \item For \code{addProcessing}: \code{character} with additional spectra variables that
 should be passed along to the function defined with \code{FUN}. See function
 description for details.
-\item For \code{filterRanges}: A \code{character} or \code{integer} vector specifying the
-column from \code{spectraVariables(object)} that correspond to the ranges
-provided. The order must match the order of the parameter \code{ranges}.
+\item For \code{filterRanges}: A \code{character} vector specifying the column from
+\code{spectraData(object)} that correspond to the ranges provided. The order
+must match the order of the parameter \code{ranges}.
 }}
 
 \item{initial}{For \code{tic}: \code{logical(1)} whether the initially
@@ -722,8 +722,10 @@ subsetted.}
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
 
-\item{ranges}{for \code{filterRanges}: A \code{numeric} vector of paired values that
-define the ranges to filter the spectra data.}
+\item{ranges}{for \code{filterRanges}: A \code{numeric} vector of paired values (upper
+and lower boundary) that that define the ranges to filter the spectra
+data. These paired values need to be in the same order as the
+\code{spectraVariables} parameter.}
 
 \item{binSize}{For \code{bin}: \code{numeric(1)} defining the size for the m/z bins.
 Defaults to \code{binSize = 1}.}
@@ -1175,8 +1177,10 @@ defaults to \code{f = dataOrigin(object)}).
 times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
 \code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
 original order).
-\item \code{filterRanges}: allows filtering of the \code{Spectra} object
-based on specified ranges for \emph{any} values of \code{spectraVariables(object)}.
+\item \code{filterRanges}: allows filtering of the \code{Spectra} object based on
+specified ranges for \emph{as many} and \emph{any} values of
+\code{spectraVariables(object)} wanted whether already existing, future-added
+or user-specific. See the example below for more details.
 \item \code{reduceSpectra}: for groups of peaks within highly similar m/z values
 within each spectrum (given \code{ppm} and \code{tolerance}), this function keeps
 only the peak with the highest intensity removing all other peaks hence
@@ -1660,10 +1664,19 @@ fft_spectrum_filtered
 length(mz(fft_spectrum_filtered)[[1]])
 plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
-## using filterRanges to filter spectra object based on variables available
+## Using filterRanges to filter spectra object based on variables available
 ## in `spectraData`.
+## First determine the variable on which to base the filtering:
 spectraVariables <- c("rtime", "precursorMz", "peaksCount")
+## Note that ANY variables can be chosen here, and as many as wanted.
+
+## Defining the ranges (pairs of values with lower and upper boundary) to be
+## used for the individual spectra variables. The first two values will be
+## used for the first spectra variable (e.g. rtime here), the next two for the
+## second (e.g. precursorMz here) and so on:
 ranges <- c(30, 350, 200,500, 350, 600)
+
+## Input the parameters within the filterRanges function:
 filt_spectra <- filterRanges(sciex, spectraVariables = spectraVariables,
                 ranges = ranges)
 

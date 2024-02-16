@@ -1808,8 +1808,8 @@ test_that("filterRanges works", {
                                  ranges = c(30, 350, 200,500, 350, 600))
     logical_test <- spectraVariables(sps_dia) %in% c("rtime", "precursorMz",
                                                      "peaksCount")
-    filt_spectra2 <- filterRanges(sps_dia, spectraVariables = logical_test,
-                                  ranges = c(30, 350, 200,500, 350, 600))
+    expect_error(filterRanges(sps_dia, spectraVariables = logical_test,
+                                  ranges = c(30, 350, 200,500, 350, 600)))
     expect_true(length(sps_dia) > length(filt_spectra))
     expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
                                                              "precursorMz",
