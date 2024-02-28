@@ -95,6 +95,7 @@
 \alias{filterRt,Spectra-method}
 \alias{reset,Spectra-method}
 \alias{filterRanges,Spectra-method}
+\alias{filterValues,Spectra-method}
 \alias{bin,Spectra-method}
 \alias{compareSpectra,Spectra,Spectra-method}
 \alias{compareSpectra,Spectra,missing-method}
@@ -409,6 +410,8 @@ filterPrecursorPeaks(
 
 \S4method{filterRanges}{Spectra}(object, spectraVariables, ranges, ...)
 
+\S4method{filterValues}{Spectra}(object, spectraVariables, values, ppm = 0, tolerance = Inf, ...)
+
 \S4method{bin}{Spectra}(
   x,
   binSize = 1L,
@@ -557,7 +560,11 @@ equal \code{mz} to specify a different tolerance for each m/z value.
 For \code{filterPrecursorMaxIntensity}: \code{numeric(1)} defining the (constant)
 maximal accepted difference of precursor m/z values of spectra for
 grouping them into \emph{precursor groups}. For \code{filterPrecursorIsotopes}:
-passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.}
+passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.
+For \code{filterValues}: \code{numeric} of any length allowing to define
+a maximal accepted difference between user input \code{values} and the
+spectraVariables values. If it is not the length of \code{spectraVariables},
+\code{tolerance[1]} will be recycled.}
 
 \item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
 \code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)}
@@ -566,7 +573,11 @@ m/z values for peaks to be matched (or grouped).
 For \code{filterPrecursorMaxIntensity}: \code{numeric(1)} defining the relative
 maximal accepted difference of precursor m/z values of spectra for
 grouping them into \emph{precursor groups}. For \code{filterPrecursorIsotopes}:
-passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.}
+passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.
+For \code{filterValues}: \code{numeric} of any length allowing to define
+a maximal accepted difference between user input \code{values} and the
+\code{spectraVariables} values.If it is not the length of \code{spectraVariables},
+\code{ppm[1]} will be recycled.}
 
 \item{charge}{For \code{deisotopeSpectra}: expected charge of the ionized
 compounds. See \code{\link[=isotopologues]{isotopologues()}} for details.}
@@ -635,9 +646,10 @@ names of the spectra variables to which the backend should be subsetted.
 \item For \code{addProcessing}: \code{character} with additional spectra variables that
 should be passed along to the function defined with \code{FUN}. See function
 description for details.
-\item For \code{filterRanges}: A \code{character} vector specifying the column from
-\code{spectraData(object)} that correspond to the ranges provided. The order
-must match the order of the parameter \code{ranges}.
+\item For \code{filterRanges} and \code{filterValues}: A \code{character} vector specifying the
+column from \code{spectraData(object)} that correspond to the
+\code{ranges}/\code{values} provided. The order must match the order of the
+parameter \code{ranges}/\code{values}.
 }}
 
 \item{initial}{For \code{tic}: \code{logical(1)} whether the initially
@@ -722,9 +734,13 @@ subsetted.}
 be used to subset/filter \code{object}.}
 
 \item{ranges}{for \code{filterRanges}: A \code{numeric} vector of paired values (upper
-and lower boundary) that that define the ranges to filter the spectra
-data. These paired values need to be in the same order as the
+and lower boundary) that define the ranges to filter the Spectra data.
+These paired values need to be in the same order as the
 \code{spectraVariables} parameter.}
+
+\item{values}{for \code{filterValues}: A \code{numeric} vector that define the values
+to filter the Spectra data. These values need to be in the same order as
+the \code{spectraVariables} parameter.}
 
 \item{binSize}{For \code{bin}: \code{numeric(1)} defining the size for the m/z bins.
 Defaults to \code{binSize = 1}.}
@@ -1180,6 +1196,11 @@ original order).
 specified ranges for \emph{as many} and \emph{any} values of
 \code{spectraVariables(object)} wanted whether already existing, future-added
 or user-specific. See the example below for more details.
+\item \code{filterValues}: allows filtering of the \code{Spectra} object based
+similarities of \emph{as many} and \emph{any} values of \code{spectraVariables(object)}
+to user defined \code{values} (given \code{tolerance}/\code{ppm}). These
+\code{spectraVariables} can be already existing, future-added or user-specific.
+See the example below for more details.
 \item \code{reduceSpectra}: for groups of peaks within highly similar m/z values
 within each spectrum (given \code{ppm} and \code{tolerance}), this function keeps
 only the peak with the highest intensity removing all other peaks hence
@@ -1665,19 +1686,40 @@ plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
 ## Using filterRanges to filter spectra object based on variables available
 ## in `spectraData`.
-## First determine the variable on which to base the filtering:
+## First, determine the variable(s) on which to base the filtering:
 spectraVariables <- c("rtime", "precursorMz", "peaksCount")
 ## Note that ANY variables can be chosen here, and as many as wanted.
 
-## Defining the ranges (pairs of values with lower and upper boundary) to be
+## Define the ranges (pairs of values with lower and upper boundary) to be
 ## used for the individual spectra variables. The first two values will be
-## used for the first spectra variable (e.g. rtime here), the next two for the
-## second (e.g. precursorMz here) and so on:
+## used for the first spectra variable (e.g., rtime here), the next two for
+## the second (e.g. precursorMz here) and so on:
 ranges <- c(30, 350, 200,500, 350, 600)
 
 ## Input the parameters within the filterRanges function:
 filt_spectra <- filterRanges(sciex, spectraVariables = spectraVariables,
                 ranges = ranges)
+
+## Using filterValues in a similar way to a filter spectra object based on
+## variables available in `spectraData`. However, this time not based on
+## ranges but similarities to user input single values with given
+## tolerance/ppm
+## First determine the variable(s) on which to base the filtering:
+spectraVariables <- c("rtime", "precursorMz")
+## Note that ANY variables can be chosen here, and as many as wanted.
+
+## Define the values that will be used to filter the spectra based on their
+## similarities to their respective spectraVariables.
+## The first values in the parameters values, tolerance and ppm will be
+## used for the first spectra variable (e.g. rtime here), the next for the
+## second (e.g. precursorMz here) and so on:
+values <- c(350, 400)
+tolerance <- c(100, 0)
+ppm <- c(0,50)
+
+## Input the parameters within the filterValues function:
+filt_spectra <- filterValues(sciex, spectraVariables = spectraVariables,
+                values = values, tolerance = tolerance, ppm = ppm)
 
 ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 

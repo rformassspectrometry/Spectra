@@ -47,7 +47,9 @@
 \alias{filterPrecursorMzValues,MsBackend-method}
 \alias{filterPrecursorCharge,MsBackend-method}
 \alias{filterPrecursorScan,MsBackend-method}
+\alias{filterRanges,MsBackend-method}
 \alias{filterRt,MsBackend-method}
+\alias{filterValues,MsBackend-method}
 \alias{intensity,MsBackend-method}
 \alias{intensity<-,MsBackend-method}
 \alias{ionCount,MsBackend-method}
@@ -159,7 +161,11 @@
 
 \S4method{filterPrecursorScan}{MsBackend}(object, acquisitionNum = integer(), f = dataOrigin(object))
 
+\S4method{filterRanges}{MsBackend}(object, spectraVariables, ranges)
+
 \S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
+
+\S4method{filterValues}{MsBackend}(object, spectraVariables, values, ppm = 0, tolerance = Inf)
 
 \S4method{intensity}{MsBackend}(object)
 
@@ -315,11 +321,16 @@ to subset \code{object}.}
 
 \item{ppm}{For \code{filterPrecursorMzValues}: \code{numeric(1)} with the m/z-relative
 maximal acceptable difference for a m/z to be considered matching. See
-\code{\link[=closest]{closest()}} for details.}
+\code{\link[=closest]{closest()}} for details.
+For \code{filterValues}: \code{numeric} with relative, value-specific
+parts-per-million (PPM) tolerance values that are added to \code{tolerance}
+(see below). Default is 0.}
 
 \item{tolerance}{For \code{filterPrecursorMzValues}: \code{numeric(1)} with the
 maximal absolute acceptable difference for a m/z value to be considered
-matching. See \code{\link[=closest]{closest()}} for details.}
+matching. See \code{\link[=closest]{closest()}} for details. For \code{filterValues}: \code{numeric}
+accepted tolerance between the \code{values} and the spectra variables.
+Defaults to \code{tolerance = Inf}.}
 
 \item{z}{For \code{filterPrecursorCharge}: \code{integer()} with the precursor charges
 to be used as filter.}
@@ -333,17 +344,27 @@ subsetted.}
 the spectra derive to avoid selecting spectra from different
 samples/files. Defaults to \code{f = dataOrigin(object)}.}
 
+\item{spectraVariables}{For \code{selectSpectraVariables}, \code{filterRanges} and
+\code{filterValues}: \code{character} with the names of the spectra variables to
+which the backend should be subsetted.}
+
+\item{ranges}{for \code{filterRanges}: A \code{numeric} vector of paired values (upper
+and lower boundary) that define the ranges to filter the \code{object}.
+These paired values need to be in the same order as the
+\code{spectraVariables} parameter (see below).}
+
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
 
 \item{msLevel.}{same as \code{msLevel} above.}
 
+\item{values}{for \code{filterValues}: A \code{numeric} vector that define the values
+to filter the \code{object}. These values need to be in the same order as the
+\code{spectraVariables} parameter.}
+
 \item{x}{Object extending \code{MsBackend}.}
 
 \item{use.names}{For \code{lengths}: whether spectrum names should be used.}
-
-\item{spectraVariables}{For \code{selectSpectraVariables}: \code{character} with the
-names of the spectra variables to which the backend should be subsetted.}
 
 \item{drop}{For \code{[}: not considered.}
 
@@ -602,8 +623,19 @@ define the origin of the spectra (i.e. the original data file) to ensure
 related spectra from the same file/sample are selected and retained.
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
+\item \code{filterRanges}: allows filtering of the \code{Spectra} object based on
+specified ranges for \emph{as many} and \emph{any} values of
+\code{spectraVariables(object)} wanted whether already existing, future-added
+or user-specific. Implementation of this method is optional since a
+default implementation for \code{MsBackend} is available.
 \item \code{filterRt}: retains spectra of MS level \code{msLevel} with retention times
 within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
+Implementation of this method is optional since a default implementation
+for \code{MsBackend} is available.
+\item \code{filterValues}: allows filtering of the \code{Spectra} object based
+similarities of \emph{as many} and \emph{any} values of \code{spectraVariables(object)}
+to user defined \code{values} (given \code{tolerance}/\code{ppm}). These
+\code{spectraVariables} can be already existing, future-added or user-specific.
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{intensity}: gets the intensity values from the spectra. Returns

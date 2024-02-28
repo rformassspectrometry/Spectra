@@ -2,8 +2,9 @@
 
 ## Changes in 1.13.5
 
-- Add `filterRanges` function to allow to filter the spectra object based on 
-  ranges of any variables of the `spectraData`. 
+- Add `filterRanges()` and `filterValues()` functions to allow filtering of a
+Spectra object based on ranges or similarities of any existing `spectraData`
+variables. 
 
 ## Changes in 1.13.4
 

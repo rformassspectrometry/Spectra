@@ -121,6 +121,9 @@
 #' @param ppm For `filterPrecursorMzValues`: `numeric(1)` with the m/z-relative
 #'     maximal acceptable difference for a m/z to be considered matching. See
 #'     [closest()] for details.
+#'     For `filterValues`: `numeric` with relative, value-specific
+#'     parts-per-million (PPM) tolerance values that are added to `tolerance`
+#'     (see below). Default is 0.
 #'
 #' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
 #'     to be used as filter.
@@ -136,20 +139,32 @@
 #' @param polarity For `filterPolarity`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
+#' @param ranges for `filterRanges`: A `numeric` vector of paired values (upper
+#'     and lower boundary) that define the ranges to filter the `object`.
+#'     These paired values need to be in the same order as the
+#'     `spectraVariables` parameter (see below).
+#'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
-#' @param spectraVariables For `selectSpectraVariables`: `character` with the
-#'     names of the spectra variables to which the backend should be subsetted.
+#' @param spectraVariables For `selectSpectraVariables`, `filterRanges` and
+#'     `filterValues`: `character` with the names of the spectra variables to
+#'     which the backend should be subsetted.
 #'
 #' @param tolerance For `filterPrecursorMzValues`: `numeric(1)` with the
 #'     maximal absolute acceptable difference for a m/z value to be considered
-#'     matching. See [closest()] for details.
+#'     matching. See [closest()] for details. For `filterValues`: `numeric`
+#'     accepted tolerance between the `values` and the spectra variables.
+#'     Defaults to `tolerance = Inf`.
 #'
 #' @param use.names For `lengths`: whether spectrum names should be used.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param values for `filterValues`: A `numeric` vector that define the values
+#'     to filter the `object`. These values need to be in the same order as the
+#'     `spectraVariables` parameter.
 #'
 #' @param x Object extending `MsBackend`.
 #'
@@ -357,10 +372,23 @@
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
+#' - `filterRanges`: allows filtering of the `Spectra` object based on
+#'    specified ranges for *as many* and *any* values of
+#'    `spectraVariables(object)` wanted whether already existing, future-added
+#'    or user-specific. Implementation of this method is optional since a
+#'    default implementation for `MsBackend` is available.
+#'
 #' - `filterRt`: retains spectra of MS level `msLevel` with retention times
 #'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
-#'   Implementation of this method is optional since a default implementation
-#'   for `MsBackend` is available.
+#'    Implementation of this method is optional since a default implementation
+#'    for `MsBackend` is available.
+#'
+#' - `filterValues`: allows filtering of the `Spectra` object based
+#'    similarities of *as many* and *any* values of `spectraVariables(object)`
+#'    to user defined `values` (given `tolerance`/`ppm`). These
+#'    `spectraVariables` can be already existing, future-added or user-specific.
+#'    Implementation of this method is optional since a default implementation
+#'    for `MsBackend` is available.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
@@ -1140,6 +1168,37 @@ setMethod("filterPrecursorScan", "MsBackend",
               } else object
           })
 
+#' @exportMethod filterRanges
+#'
+#' @importFrom MsCoreUtils between
+#'
+#' @rdname MsBackend
+setMethod("filterRanges", "MsBackend",
+          function(object, spectraVariables, ranges){
+              if (is.character(spectraVariables)){
+                  if(!all(spectraVariables %in% spectraVariables(object)))
+                      stop("One or more values passed with parameter ",
+                           "'spectraVariables' are not available as spectra ",
+                           "variables in object. Use the 'spectraVariables()' ",
+                           "function to list possible values.")
+              } else
+                  stop("The 'spectraVariables' parameter needs to be a ",
+                       "character")
+              if (length(spectraVariables) != length(ranges) / 2)
+                  stop("Length of 'ranges' needs to be twice the length of ",
+                       "the parameter 'spectraVariables' and define the lower ",
+                       "and upper bound for values of each spectra variable ",
+                       "defined with parameter 'spectraVariables'.")
+              query <- spectraData(object, columns = spectraVariables)
+              nc <- ncol(query)
+              within_ranges <- vapply(seq_len(nc), function(i) {
+                  pairs <-  c(ranges[2*i - 1], ranges[2*i])
+                  between(query[[i]], pairs)
+              }, logical(nrow(query)))
+              keep <- which(rowSums(within_ranges, na.rm = FALSE) == nc)
+              object <- object[keep]
+          })
+
 #' @exportMethod filterRt
 #'
 #' @importMethodsFrom ProtGenerics filterRt
@@ -1153,6 +1212,46 @@ setMethod("filterRt", "MsBackend",
                   sel_rt <- between(rtime(object), rt) & sel_ms
                   object[sel_rt | !sel_ms]
               } else object
+          })
+
+#' @exportMethod filterValues
+#'
+#' @importFrom MsCoreUtils ppm
+#'
+#' @rdname MsBackend
+setMethod("filterValues", "MsBackend",
+          function(object, spectraVariables, values, ppm = 0, tolerance = Inf){
+              nsv <- length(spectraVariables)
+              if (is.character(spectraVariables)){
+                  if(!all(spectraVariables %in% spectraVariables(object)))
+                      stop("One or more values passed with parameter ",
+                           "'spectraVariables' are not available as spectra ",
+                           "variables in object. Use the 'spectraVariables()' ",
+                           "function to list possible values.")
+              } else
+                  stop("'spectraVariables' needs to be a character")
+              if (nsv != length(values))
+                  stop("Length of 'values' needs to be same length as the ",
+                       "parameter 'spectraVariables' and define .")
+              if (length(ppm) != nsv){
+                  ppm <- rep(ppm[1], nsv)
+                  warning("Length of 'ppm' does not match the amount of ",
+                          "'spectravariables', the first value of the vector ",
+                          "will be recycled")
+              }
+              if (length(tolerance) != nsv){
+                  tolerance <- rep(tolerance[1], nsv)
+                  warning("Length of 'tolerance' does not match the amount of ",
+                          "'spectravariables', the first value of the vector ",
+                          "will be recycled")
+              }
+
+              ## create ranges
+              lower_bounds <- values - (tolerance + ppm(values, ppm))
+              upper_bounds <- values + (tolerance + ppm(values, ppm))
+              ranges <- c(rbind(lower_bounds, upper_bounds))
+
+              object <- filterRanges(object, spectraVariables, ranges)
           })
 
 #' @exportMethod intensity

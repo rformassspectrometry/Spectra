@@ -476,6 +476,12 @@ NULL
 #'    `spectraVariables(object)` wanted whether already existing, future-added
 #'    or user-specific. See the example below for more details.
 #'
+#' - `filterValues`: allows filtering of the `Spectra` object based
+#'    similarities of *as many* and *any* values of `spectraVariables(object)`
+#'    to user defined `values` (given `tolerance`/`ppm`). These
+#'    `spectraVariables` can be already existing, future-added or user-specific.
+#'    See the example below for more details.
+#'
 #' - `reduceSpectra`: for groups of peaks within highly similar m/z values
 #'   within each spectrum (given `ppm` and `tolerance`), this function keeps
 #'   only the peak with the highest intensity removing all other peaks hence
@@ -957,13 +963,17 @@ NULL
 #'     maximal accepted difference of precursor m/z values of spectra for
 #'     grouping them into *precursor groups*. For `filterPrecursorIsotopes`:
 #'     passed directly to the [isotopologues()] function.
+#'     For `filterValues`: `numeric` of any length allowing to define
+#'     a maximal accepted difference between user input `values` and the
+#'     `spectraVariables` values.If it is not the length of `spectraVariables`,
+#'     `ppm[1]` will be recycled.
 #'
 #' @param processingQueue For `Spectra`: optional `list` of
 #'     [ProcessingStep-class] objects.
 #'
 #' @param ranges for `filterRanges`: A `numeric` vector of paired values (upper
-#'     and lower boundary) that that define the ranges to filter the spectra
-#'     data. These paired values need to be in the same order as the
+#'     and lower boundary) that define the ranges to filter the Spectra data.
+#'     These paired values need to be in the same order as the
 #'     `spectraVariables` parameter.
 #'
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
@@ -987,9 +997,10 @@ NULL
 #' - For `addProcessing`: `character` with additional spectra variables that
 #'     should be passed along to the function defined with `FUN`. See function
 #'     description for details.
-#' - For `filterRanges`: A `character` vector specifying the column from
-#'     `spectraData(object)` that correspond to the ranges provided. The order
-#'     must match the order of the parameter `ranges`.
+#' - For `filterRanges` and `filterValues`: A `character` vector specifying the
+#'     column from `spectraData(object)` that correspond to the
+#'     `ranges`/`values` provided. The order must match the order of the
+#'     parameter `ranges`/`values`.
 #'
 #' @param substDefinition For `deisotopeSpectra` and `filterPrecursorIsotopes`:
 #'     `matrix` or `data.frame` with definitions of isotopic substitutions.
@@ -1011,6 +1022,10 @@ NULL
 #'     maximal accepted difference of precursor m/z values of spectra for
 #'     grouping them into *precursor groups*. For `filterPrecursorIsotopes`:
 #'     passed directly to the [isotopologues()] function.
+#'     For `filterValues`: `numeric` of any length allowing to define
+#'     a maximal accepted difference between user input `values` and the
+#'     spectraVariables values. If it is not the length of `spectraVariables`,
+#'     `tolerance[1]` will be recycled.
 #'
 #' @param threshold
 #' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
@@ -1028,6 +1043,10 @@ NULL
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
+#'
+#' @param values for `filterValues`: A `numeric` vector that define the values
+#'     to filter the Spectra data. These values need to be in the same order as
+#'     the `spectraVariables` parameter.
 #'
 #' @param weighted For `combinePeaks`: `logical(1)` whether m/z values of peaks
 #'     within each peak group should be aggregated into a single m/z value
@@ -1272,19 +1291,40 @@ NULL
 #'
 #' ## Using filterRanges to filter spectra object based on variables available
 #' ## in `spectraData`.
-#' ## First determine the variable on which to base the filtering:
+#' ## First, determine the variable(s) on which to base the filtering:
 #' spectraVariables <- c("rtime", "precursorMz", "peaksCount")
 #' ## Note that ANY variables can be chosen here, and as many as wanted.
 #'
-#' ## Defining the ranges (pairs of values with lower and upper boundary) to be
+#' ## Define the ranges (pairs of values with lower and upper boundary) to be
 #' ## used for the individual spectra variables. The first two values will be
-#' ## used for the first spectra variable (e.g. rtime here), the next two for the
-#' ## second (e.g. precursorMz here) and so on:
+#' ## used for the first spectra variable (e.g., rtime here), the next two for
+#' ## the second (e.g. precursorMz here) and so on:
 #' ranges <- c(30, 350, 200,500, 350, 600)
 #'
 #' ## Input the parameters within the filterRanges function:
 #' filt_spectra <- filterRanges(sciex, spectraVariables = spectraVariables,
 #'                 ranges = ranges)
+#'
+#' ## Using filterValues in a similar way to a filter spectra object based on
+#' ## variables available in `spectraData`. However, this time not based on
+#' ## ranges but similarities to user input single values with given
+#' ## tolerance/ppm
+#' ## First determine the variable(s) on which to base the filtering:
+#' spectraVariables <- c("rtime", "precursorMz")
+#' ## Note that ANY variables can be chosen here, and as many as wanted.
+#'
+#' ## Define the values that will be used to filter the spectra based on their
+#' ## similarities to their respective spectraVariables.
+#' ## The first values in the parameters values, tolerance and ppm will be
+#' ## used for the first spectra variable (e.g. rtime here), the next for the
+#' ## second (e.g. precursorMz here) and so on:
+#' values <- c(350, 400)
+#' tolerance <- c(100, 0)
+#' ppm <- c(0,50)
+#'
+#' ## Input the parameters within the filterValues function:
+#' filt_spectra <- filterValues(sciex, spectraVariables = spectraVariables,
+#'                 values = values, tolerance = tolerance, ppm = ppm)
 #'
 #' ## ---- DATA MANIPULATIONS AND OTHER OPERATIONS ----
 #'
@@ -2426,39 +2466,32 @@ setMethod("reset", "Spectra", function(object, ...) {
     object
 })
 
-
 #' @rdname Spectra
-#' @importFrom MsCoreUtils between
-#' @export
 setMethod("filterRanges", "Spectra",
-          function(object, spectraVariables, ranges, ...){
-              if (is.character(spectraVariables)){
-                  if(!all(spectraVariables %in% spectraVariables(object)))
-                      stop("'spectraVariables' need to correspond to colnames of",
-                           "the 'spectraData' of the object")
-              } else
-                  stop("'spectraVariables' needs to be a character")
-              if (length(spectraVariables) != length(ranges) / 2)
-                  stop("Length of 'spectraVariables' must be half the length ",
-                       "of 'ranges'")
-
-              query <- spectraData(object, columns = spectraVariables)
-              nc <- ncol(query)
-              within_ranges <- vapply(seq_len(nc), function(i) {
-                  pairs <-  c(ranges[2*i - 1], ranges[2*i])
-                  between(query[[i]], pairs)
-              }, logical(nrow(query)))
-
-              idc <- which(rowSums(within_ranges, na.rm = FALSE) == nc)
+          function(object, spectraVariables, ranges,...){
+              object@backend <- filterRanges(object@backend, spectraVariables,
+                                             ranges)
               object@processing <- .logging(object@processing,
                                             "Filter: select spectra with a ",
                                             spectraVariables, " within: [",
                                             ranges[seq(ranges)%% 2 == 0], ", ",
                                             ranges[seq(ranges)%% 2 != 0], "]"
                                             )
-              object <- object[idc]
-          })
+              object
+              })
 
+#' @rdname Spectra
+setMethod("filterValues", "Spectra",
+          function(object, spectraVariables, values, ppm = 0, tolerance = Inf,
+                   ...){
+              object@backend <- filterValues(object@backend, spectraVariables,
+                                             values, ppm, tolerance)
+              object@processing <- .logging(object@processing,
+                                            "Filter: select spectra with a ",
+                                            spectraVariables, " similar to: ",
+                                            values)
+              object
+              })
 
 #### ---------------------------------------------------------------------------
 ##
