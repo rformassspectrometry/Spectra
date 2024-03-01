@@ -7,7 +7,6 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
-\alias{backendMerge}
 \alias{backendParallelFactor}
 \alias{bin,numeric-method}
 \alias{containsMz}
@@ -15,20 +14,10 @@
 \alias{dropNaSpectraVariables}
 \alias{entropy}
 \alias{export}
-\alias{filterMzRange}
-\alias{filterMzValues}
-\alias{filterPrecursorMzValues}
-\alias{filterPrecursorMzRange}
-\alias{isReadOnly}
-\alias{peaksData}
-\alias{peaksData<-}
-\alias{peaksVariables}
 \alias{pickPeaks}
 \alias{replaceIntensitiesBelow}
 \alias{reset}
 \alias{selectSpectraVariables}
-\alias{setBackend}
-\alias{spectrapply}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendMerge,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
@@ -172,8 +161,6 @@
 \alias{combinePeaks,list-method}
 \title{Internal page for hidden aliases}
 \usage{
-backendMerge(object, ...)
-
 backendParallelFactor(object, ...)
 
 \S4method{bin}{numeric}(
@@ -196,22 +183,6 @@ entropy(object, ...)
 
 export(object, ...)
 
-filterMzRange(object, ...)
-
-filterMzValues(object, ...)
-
-filterPrecursorMzValues(object, ...)
-
-filterPrecursorMzRange(object, ...)
-
-isReadOnly(object, ...)
-
-peaksData(object, ...)
-
-peaksData(object) <- value
-
-peaksVariables(object, ...)
-
 pickPeaks(object, ...)
 
 replaceIntensitiesBelow(object, threshold = min, ...)
@@ -219,10 +190,6 @@ replaceIntensitiesBelow(object, threshold = min, ...)
 reset(object, ...)
 
 selectSpectraVariables(object, ...)
-
-setBackend(object, backend, ...)
-
-spectrapply(object, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 

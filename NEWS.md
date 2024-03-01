@@ -1,8 +1,12 @@
 # Spectra 1.13
 
+## Changes in 1.13.5
+
+- Move generics to `ProtGenerics`. Requires `ProtGenerics` version 1.35.3.
+
 ## Changes in 1.13.4
 
-- Add `entropy` and `nentropy` functions to allow to calculate the (normalized) 
+- Add `entropy` and `nentropy` functions to allow to calculate the (normalized)
   entropy for each spectrum.
 
 ## Changes in 1.13.3

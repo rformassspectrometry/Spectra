@@ -843,12 +843,16 @@ setMethod("backendBpparam", signature = "MsBackend",
 
 #' @exportMethod backendInitialize
 #'
+#' @importMethodsFrom ProtGenerics backendInitialize
+#'
 #' @rdname MsBackend
 setMethod("backendInitialize", signature = "MsBackend", function(object, ...) {
     validObject(object)
     object
 })
 
+#' @importMethodsFrom ProtGenerics backendMerge
+#'
 #' @rdname MsBackend
 setMethod("backendMerge", "list", function(object, ...) {
     backendMerge(object[[1]], object[-1])
@@ -885,6 +889,8 @@ setMethod("acquisitionNum", "MsBackend", function(object) {
 
 #' @exportMethod peaksData
 #'
+#' @importMethodsFrom ProtGenerics peaksData
+#'
 #' @rdname MsBackend
 setMethod("peaksData", "MsBackend", function(object,
                                              columns = c("mz", "intensity")) {
@@ -892,6 +898,8 @@ setMethod("peaksData", "MsBackend", function(object,
 })
 
 #' @exportMethod peaksVariables
+#'
+#' @importMethodsFrom ProtGenerics peaksVariables
 #'
 #' @rdname MsBackend
 setMethod("peaksVariables", "MsBackend", function(object) {
@@ -1079,6 +1087,8 @@ setMethod("filterPolarity", "MsBackend",
 
 #' @exportMethod filterPrecursorMzRange
 #'
+#' @importMethodsFrom ProtGenerics filterPrecursorMzRange
+#'
 #' @rdname MsBackend
 setMethod("filterPrecursorMzRange", "MsBackend",
           function(object, mz = numeric()) {
@@ -1098,6 +1108,8 @@ setMethod("filterPrecursorMz", "MsBackend",
           })
 
 #' @exportMethod filterPrecursorMzValues
+#'
+#' @importMethodsFrom ProtGenerics filterPrecursorMzValues
 #'
 #' @rdname MsBackend
 setMethod("filterPrecursorMzValues", "MsBackend",
@@ -1262,6 +1274,8 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackend", function(object,
 
 #' @exportMethod isReadOnly
 #'
+#' @importMethodsFrom ProtGenerics isReadOnly
+#'
 #' @rdname MsBackend
 setMethod("isReadOnly", "MsBackend", function(object) {
     object@readonly
@@ -1362,6 +1376,7 @@ setMethod("precursorMz", "MsBackend", function(object) {
 
 #' @exportMethod peaksData<-
 #'
+#' @importMethodsFrom ProtGenerics peaksData<-
 #' @rdname MsBackend
 setReplaceMethod("peaksData", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
