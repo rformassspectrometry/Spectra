@@ -1623,6 +1623,8 @@ setMethod("Spectra", "ANY", function(object, processingQueue = list(),
 
 #' @rdname Spectra
 #'
+#' @importMethodsFrom ProtGenerics setBackend
+#'
 #' @exportMethod setBackend
 setMethod(
     "setBackend", c("Spectra", "MsBackend"),
@@ -2304,6 +2306,8 @@ setMethod("filterMsLevel", "Spectra", function(object, msLevel. = integer()) {
 
 #' @rdname Spectra
 #'
+#' @importMethodsFrom ProtGenerics filterMzRange
+#'
 #' @export
 setMethod("filterMzRange", "Spectra",
           function(object, mz = numeric(), msLevel. = uniqueMsLevels(object),
@@ -2324,6 +2328,8 @@ setMethod("filterMzRange", "Spectra",
           })
 
 #' @rdname Spectra
+#'
+#' @importMethodsFrom ProtGenerics filterMzValues
 #'
 #' @export
 setMethod("filterMzValues", "Spectra",

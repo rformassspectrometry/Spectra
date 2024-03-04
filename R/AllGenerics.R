@@ -3,13 +3,6 @@ NULL
 
 setGeneric("backendBpparam", def = function(object, ...)
     standardGeneric("backendBpparam"))
-setGeneric("backendInitialize", def = function(object, ...)
-    standardGeneric("backendInitialize"),
-    valueClass = "MsBackend")
-#' @rdname hidden_aliases
-setGeneric("backendMerge", def = function(object, ...)
-    standardGeneric("backendMerge"),
-    valueClass = "MsBackend")
 #' @rdname hidden_aliases
 setGeneric("backendParallelFactor", def = function(object, ...)
     standardGeneric("backendParallelFactor"))
@@ -59,14 +52,6 @@ setGeneric("isReadOnly", function(object, ...)
 setGeneric("neutralLoss", function(object, param, ...)
     standardGeneric("neutralLoss"))
 #' @rdname hidden_aliases
-setGeneric("peaksData", function(object, ...) standardGeneric("peaksData"))
-#' @rdname hidden_aliases
-setGeneric("peaksData<-", function(object, value)
-    standardGeneric("peaksData<-"))
-#' @rdname hidden_aliases
-setGeneric("peaksVariables", function(object, ...)
-    standardGeneric("peaksVariables"))
-#' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
 setGeneric("plotSpectraMirror", function(x, y, ...)
@@ -80,12 +65,7 @@ setGeneric("reset", function(object, ...)
 #' @rdname hidden_aliases
 setGeneric("selectSpectraVariables", function(object, ...)
     standardGeneric("selectSpectraVariables"))
-#' @rdname hidden_aliases
-setGeneric("setBackend", function(object, backend, ...)
-    standardGeneric("setBackend"))
 setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
-#' @rdname hidden_aliases
-setGeneric("spectrapply", function(object, ...) standardGeneric("spectrapply"))
 
 #' @title Mapping between spectra variables and data file fields
 #'
