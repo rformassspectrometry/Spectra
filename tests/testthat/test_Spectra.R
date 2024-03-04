@@ -1106,11 +1106,6 @@ test_that("filterRanges, Spectra works", {
                                                      "peaksCount")
     expect_error(filterRanges(sps_dia, spectraVariables = logical_test,
                               ranges = c(30, 350, 200,500, 350, 600)))
-    # tests does not accept missing parameters
-    expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
-                                                            "precursorMz",
-                                                            "peaksCount")))
-    expect_error(filterRanges(sps_dia, ranges = c(30, 350, 200,500, 350, 600)))
     # test too many variables
     expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
                                                             "precursorMz",
@@ -1134,6 +1129,12 @@ test_that("filterRanges, Spectra works", {
     range_fct <- filterRanges(sps_dia, spectraVariables = "precursorMz",
                               ranges = c(200,500))
     expect_equal(length(spe_fct), length(range_fct))
+    # test any condition
+    ranges <- c(30, 60, 200, 250)
+    filt_spectra <- filterRanges(sps_dia, spectraVariables = c("rtime", "rtime"),
+                    ranges = ranges, condition = "any")
+    expect_true(all(range(rtime(filt_spectra)) <= 250 &
+                        range(rtime(filt_spectra)) >= 30))
 })
 
 test_that("filterValues, Spectra works", {
@@ -1164,6 +1165,14 @@ test_that("filterValues, Spectra works", {
     values_fct <- filterValues(sps_dia, spectraVariables = "precursorMz",
                                values = 300, ppm = 20, tolerance = 10)
     expect_equal(length(spe_fct), length(values_fct))
+
+    # test any
+    values <- c(200, 400)
+    filt_spectra <- filterValues(sps_dia, spectraVariables = c("rtime", "rtime"),
+                                 values = values, condition = "any",
+                                 tolerance = 100)
+    expect_true(all(range(rtime(filt_spectra)) <= 500 &
+                        range(rtime(filt_spectra)) >= 100))
 })
 
 #### ---------------------------------------------------------------------------
