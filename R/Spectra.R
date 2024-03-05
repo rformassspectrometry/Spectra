@@ -824,6 +824,10 @@ NULL
 #'     `c("mz", "value")` but any values returned by `peaksVariables(object)`
 #'     with `object` being the `Spectra` object are supported.
 #'
+#' @param condition For `filterRanges` and `filterValues` (default "all") can
+#'     be used to can be used to specify whether "all" conditions must match
+#'    or if "any" condition can match the `values`/`ranges` input.
+#'
 #' @param dataOrigin For `filterDataOrigin`: `character` to define which
 #'     spectra to keep.
 #'     For `filterAcquisitionNum`: optionally specify if filtering should occurr

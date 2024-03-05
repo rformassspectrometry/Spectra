@@ -68,8 +68,8 @@
 #'     backend provides.
 #'
 #' @param condition For `filterRanges` and `filterValues` (default "all") can
-#'     be used to can be used to specify whether `all` conditions must match
-#'    or if any condition can match the `values`/`ranges` input.
+#'     be used to can be used to specify whether "all" conditions must match
+#'    or if "any" condition can match the `values`/`ranges` input.
 #'
 #' @param data For `backendInitialize`: `DataFrame` with spectrum
 #'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
