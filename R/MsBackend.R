@@ -1194,6 +1194,7 @@ setMethod("filterPrecursorScan", "MsBackend",
 
 #' @exportMethod filterRanges
 #'
+#' @importMethodsFrom ProtGenerics filterRanges
 #' @importFrom MsCoreUtils between
 #'
 #' @rdname MsBackend
@@ -1250,6 +1251,8 @@ setMethod("filterRt", "MsBackend",
           })
 
 #' @exportMethod filterValues
+#'
+#' @importMethodsFrom ProtGenerics filterValues
 #'
 #' @importFrom MsCoreUtils ppm
 #'
