@@ -368,8 +368,8 @@ These paired values need to be in the same order as the
 \code{spectraVariables} parameter (see below).}
 
 \item{condition}{For \code{filterRanges} and \code{filterValues} (default "all") can
-be used to can be used to specify whether \code{all} conditions must match
-or if any condition can match the \code{values}/\code{ranges} input.}
+be used to can be used to specify whether "all" conditions must match
+or if "any" condition can match the \code{values}/\code{ranges} input.}
 
 \item{rt}{for \code{filterRt}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}

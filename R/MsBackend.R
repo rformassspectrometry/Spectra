@@ -1203,6 +1203,9 @@ setMethod("filterRanges", "MsBackend",
                    condition = c("all", "any")){
               if (!length(spectraVariables) || !length(ranges))
                   return(object)
+              if (!is.numeric(ranges))
+                  stop("filterRanges only support filtering for numerical ",
+                  "'spectraVariables'")
               condition <- match.arg(condition)
               if (length(condition) > 1 |
                   !all(condition %in% c("all", "any")))
@@ -1260,6 +1263,9 @@ setMethod("filterRt", "MsBackend",
 setMethod("filterValues", "MsBackend",
           function(object, spectraVariables = character(), values = numeric(),
                    ppm = 0, tolerance = 0, condition = c("all", "any")){
+              if (!is.numeric(values))
+                  stop("filterValues only support filtering for numerical ",
+                       "'spectraVariables'")
               nsv <- length(spectraVariables)
               if (is.character(spectraVariables)){
                   if(!all(spectraVariables %in% spectraVariables(object)))

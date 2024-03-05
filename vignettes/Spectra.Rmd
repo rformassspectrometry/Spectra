@@ -393,7 +393,17 @@ affecting the total number of spectra are:
   precursor charge(s).
 - `filterPrecursorScan`: retains (parent and children) scans of an acquisition
   number.
+- `filterRanges`: retains spectra within user defined `ranges` for one or more
+  available `spectraVariables` in object. if multiple ranges/spectra variables
+  are defined, the `condition` parameter (default "all") can be used to specify
+  whether all conditions must match or if any condition can match.
 - `filterRt`: filters based on retention time range.
+- `filterValues`: retains spectra with numerical values similar to the user
+  input `values` for one or more available `spectraVariables` in object given
+  acceptable differences (parameters tolerance and ppm). If multiple
+  values/spectra variables are defined, the `condition` parameter (default
+  "all") can be used to specify whether all conditions must match or if any
+  condition can match.
 
 Filter functions that return the same number of spectra, but affect/subset the
 peaks data (m/z and intensity values) within each spectrum are:
@@ -415,9 +425,48 @@ peaks data (m/z and intensity values) within each spectrum are:
 - `reduceSpectra`: filters individual spectra keeping only the largest peak for
   groups of peaks with similar m/z values.
 
-In the example below we select all spectra measured in the second mzML file and
-subsequently filter them to retain spectra measured between 175 and 189 seconds
-in the measurement run.
+In this example, we use the filterValues function to retain spectra with a base
+peak m/z close to 100 (+/- 30 ppm) and a retention time around 230 (+/- 5 s).
+
+```{r}
+sps_sub <- filterValues(sps_sciex, spectraVariables = c("basePeakMZ", "rtime"),
+                        values = c(123.089,230), tolerance = c(0,5), 
+                        ppm = c(30, 0), condition = "all")
+length(sps_sub)
+```
+
+Then, we demonstrate the usage of the `filterRanges` function to filter spectra
+based on ranges of values for variables such as base peak m/z, peak count, and
+retention time. 
+
+```{r}
+sps_ranges <- filterRanges(sps_sciex,
+                           spectraVariables = c("basePeakMZ","peaksCount",
+                                                "rtime"),
+                           ranges = c(123.09,124, 3500, 3520, 259, 260),
+                           condition = "all")
+length(sps_ranges)
+```
+
+Only one spectrum matches all the ranges. Another option for filterValues and
+filterRanges is to use the parameter condition = "any", which retains spectra
+that match any one of the conditions instead of having to match all of them.
+Let's run the code oncwe again but change the condition parameter this time:
+
+```{r}
+sps_ranges <- filterRanges(sps_sciex,
+                           spectraVariables = c("basePeakMZ",
+                                                "peaksCount", "rtime"),
+                           ranges = c(123.09,124, 3500, 3520, 259, 260), 
+                           condition = "any")
+length(sps_ranges)
+```
+
+We can see many more spectra passed the filtering step this time. 
+
+In the example below we use specific functions to select all spectra measured
+in the second mzML file and subsequently filter them to retain spectra measured
+between 175 and 189 seconds in the measurement run. 
 
 ```{r filterfile-filterrt}
 fls <- unique(dataOrigin(sps_sciex))

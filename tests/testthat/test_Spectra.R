@@ -1106,6 +1106,10 @@ test_that("filterRanges, Spectra works", {
                                                      "peaksCount")
     expect_error(filterRanges(sps_dia, spectraVariables = logical_test,
                               ranges = c(30, 350, 200,500, 350, 600)))
+    # do not accept values other than numerical
+    fls <- unique(dataOrigin(sps_dia))
+    expect_error(filterValues(sps_dia, spectraVariables = "dataOrigin",
+                 values = c(fls[1], fls[1])))
     # test too many variables
     expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
                                                             "precursorMz",
@@ -1138,7 +1142,11 @@ test_that("filterRanges, Spectra works", {
 })
 
 test_that("filterValues, Spectra works", {
-    # Not testing folr the same sanity checks as filterRanges
+    # Not testing for the same sanity checks as filterRanges
+    ## expect error
+    fls <- unique(dataOrigin(sps_dia))
+    expect_error(filterValues(sps_dia, spectraVariables = "dataOrigin",
+                 values = fls[1]))
     ## test recycling
     filt_spectra <- filterValues(sps_dia, spectraVariables = c("rtime",
                                                                "precursorMz",

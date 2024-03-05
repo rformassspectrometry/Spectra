@@ -18,7 +18,6 @@
 \alias{filterMzValues}
 \alias{filterPrecursorMzValues}
 \alias{filterPrecursorMzRange}
-\alias{isReadOnly}
 \alias{pickPeaks}
 \alias{replaceIntensitiesBelow}
 \alias{reset}
@@ -195,8 +194,6 @@ filterMzValues(object, ...)
 filterPrecursorMzValues(object, ...)
 
 filterPrecursorMzRange(object, ...)
-
-isReadOnly(object, ...)
 
 pickPeaks(object, ...)
 

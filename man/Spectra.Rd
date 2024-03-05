@@ -750,6 +750,10 @@ and lower boundary) that define the ranges to filter the \code{object}.
 These paired values need to be in the same order as the
 \code{spectraVariables} parameter (see below).}
 
+\item{condition}{For \code{filterRanges} and \code{filterValues} (default "all") can
+be used to can be used to specify whether "all" conditions must match
+or if "any" condition can match the \code{values}/\code{ranges} input.}
+
 \item{values}{for \code{filterValues}: A \code{numeric} vector that define the values
 to filter the Spectra data. These values need to be in the same order as
 the \code{spectraVariables} parameter.}
