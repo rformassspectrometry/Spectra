@@ -14,10 +14,6 @@
 \alias{dropNaSpectraVariables}
 \alias{entropy}
 \alias{export}
-\alias{filterMzRange}
-\alias{filterMzValues}
-\alias{filterPrecursorMzValues}
-\alias{filterPrecursorMzRange}
 \alias{pickPeaks}
 \alias{replaceIntensitiesBelow}
 \alias{reset}
@@ -186,14 +182,6 @@ dropNaSpectraVariables(object, ...)
 entropy(object, ...)
 
 export(object, ...)
-
-filterMzRange(object, ...)
-
-filterMzValues(object, ...)
-
-filterPrecursorMzValues(object, ...)
-
-filterPrecursorMzRange(object, ...)
 
 pickPeaks(object, ...)
 

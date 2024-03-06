@@ -27,18 +27,6 @@ setGeneric("export", function(object, ...)
     standardGeneric("export"))
 setGeneric("filterFourierTransformArtefacts", function(object, ...)
     standardGeneric("filterFourierTransformArtefacts"))
-#' @rdname hidden_aliases
-setGeneric("filterMzRange", function(object, ...)
-    standardGeneric("filterMzRange"))
-#' @rdname hidden_aliases
-setGeneric("filterMzValues", function(object, ...)
-    standardGeneric("filterMzValues"))
-#' @rdname hidden_aliases
-setGeneric("filterPrecursorMzValues", function(object, ...)
-    standardGeneric("filterPrecursorMzValues"))
-#' @rdname hidden_aliases
-setGeneric("filterPrecursorMzRange", function(object, ...)
-    standardGeneric("filterPrecursorMzRange"))
 #' @rdname neutralLoss
 setGeneric("neutralLoss", function(object, param, ...)
     standardGeneric("neutralLoss"))
