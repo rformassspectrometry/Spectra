@@ -1110,12 +1110,12 @@ test_that("filterRanges, Spectra works", {
     # do not accept values other than numerical
     fls <- unique(dataOrigin(sps_dia))
     expect_error(filterRanges(sps_dia, spectraVariables = "dataOrigin",
-                 values = c(fls[1], fls[1])), "numerical")
+                 ranges = c(fls[1], fls[1])), "numerical")
     # test too many variables
     expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
                                                             "precursorMz",
                                                             "peaksCount",
-                                                            "lowMz"),
+                                                            "lowMZ"),
                               ranges = c(30, 350, 200,500, 350, 600)), "Length")
     # test too many ranges
     expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
