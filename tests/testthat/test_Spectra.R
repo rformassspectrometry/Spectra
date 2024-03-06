@@ -1136,10 +1136,10 @@ test_that("filterRanges, Spectra works", {
     range_fct <- filterRanges(sps_dia, spectraVariables = "precursorMz",
                               ranges = c(200,500))
     expect_equal(length(spe_fct), length(range_fct))
-    # test any condition
+    # test any match
     ranges <- c(30, 60, 200, 250)
     filt_spectra <- filterRanges(sps_dia, spectraVariables = c("rtime", "rtime"),
-                    ranges = ranges, condition = "any")
+                    ranges = ranges, match = "any")
     expect_true(all(range(rtime(filt_spectra)) <= 250 &
                         range(rtime(filt_spectra)) >= 30))
 })
@@ -1180,7 +1180,7 @@ test_that("filterValues, Spectra works", {
     # test any
     values <- c(200, 400)
     filt_spectra <- filterValues(sps_dia, spectraVariables = c("rtime", "rtime"),
-                                 values = values, condition = "any",
+                                 values = values, match = "any",
                                  tolerance = 100)
     expect_true(all(range(rtime(filt_spectra)) <= 500 &
                         range(rtime(filt_spectra)) >= 100))
