@@ -412,7 +412,7 @@ filterPrecursorPeaks(
   object,
   spectraVariables = character(),
   ranges = numeric(),
-  condition = c("all", "any")
+  match = c("all", "any")
 )
 
 \S4method{filterValues}{Spectra}(
@@ -421,7 +421,7 @@ filterPrecursorPeaks(
   values = numeric(),
   ppm = 0,
   tolerance = 0,
-  condition = c("all", "any")
+  match = c("all", "any")
 )
 
 \S4method{bin}{Spectra}(
@@ -575,8 +575,9 @@ grouping them into \emph{precursor groups}. For \code{filterPrecursorIsotopes}:
 passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.
 For \code{filterValues}: \code{numeric} of any length allowing to define
 a maximal accepted difference between user input \code{values} and the
-spectraVariables values. If it is not the length of \code{spectraVariables},
-\code{tolerance[1]} will be recycled. Default is \code{tolerance = 0}}
+spectraVariables values. If it is not equal to the length of the
+value provided with parameter \code{spectraVariables}, \code{tolerance[1]} will be
+recycled. Default is \code{tolerance = 0}}
 
 \item{ppm}{For \code{compareSpectra}, \code{containsMz}, \code{deisotopeSpectra},
 \code{filterMzValues} and \code{reduceSpectra}: \code{numeric(1)}
@@ -588,8 +589,9 @@ grouping them into \emph{precursor groups}. For \code{filterPrecursorIsotopes}:
 passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.
 For \code{filterValues}: \code{numeric} of any length allowing to define
 a maximal accepted difference between user input \code{values} and the
-\code{spectraVariables} values. If it is not the length of \code{spectraVariables},
-\code{ppm[1]} will be recycled.}
+\code{spectraVariables} values.  If it is not equal to the length of the
+value provided with parameter \code{spectraVariables}, \code{ppm[1]} will be
+recycled.}
 
 \item{charge}{For \code{deisotopeSpectra}: expected charge of the ionized
 compounds. See \code{\link[=isotopologues]{isotopologues()}} for details.}
@@ -658,10 +660,10 @@ names of the spectra variables to which the backend should be subsetted.
 \item For \code{addProcessing}: \code{character} with additional spectra variables that
 should be passed along to the function defined with \code{FUN}. See function
 description for details.
-\item For \code{filterRanges} and \code{filterValues}: A \code{character} vector specifying the
-column from \code{spectraData(object)} that correspond to the
-\code{ranges}/\code{values} provided. The order must match the order of the
-parameter \code{ranges}/\code{values}.
+\item For \code{filterRanges} and \code{filterValues}: \code{character} vector specifying the
+column(s) from \code{spectraData(object)} on which to filter the data and
+that correspond to the the names of the spectra variables that should be
+used for the filtering.
 }}
 
 \item{initial}{For \code{tic}: \code{logical(1)} whether the initially
@@ -750,9 +752,10 @@ and lower boundary) that define the ranges to filter the \code{object}.
 These paired values need to be in the same order as the
 \code{spectraVariables} parameter (see below).}
 
-\item{condition}{For \code{filterRanges} and \code{filterValues} (default "all") can
-be used to can be used to specify whether "all" conditions must match
-or if "any" condition can match the \code{values}/\code{ranges} input.}
+\item{match}{For \code{filterRanges} and \code{filterValues}: \code{character(1) }
+defining whether the condition has to match for all provided
+\code{ranges}/\code{values} (\code{match = "all"}; the default), or for any of them
+(\code{match = "any"}) for spectra to be retained.}
 
 \item{values}{for \code{filterValues}: A \code{numeric} vector that define the values
 to filter the Spectra data. These values need to be in the same order as
@@ -1209,20 +1212,22 @@ times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
 \code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
 original order).
 \item \code{filterRanges}: allows filtering of the \code{Spectra} object based on user
-defined ranges (parameter \code{ranges}) for one or more available spectra
-variables in object (spectra variable names can be specified with
+defined \emph{numeric} ranges (parameter \code{ranges}) for one or more available
+spectra variables in object (spectra variable names can be specified with
 parameter \code{spectraVariables}). Spectra for which the value of a spectra
 variable is within it's defined range are retained. If multiple
-ranges/spectra variables are defined, the \code{condition} parameter
-(default "all") can be used to specify whether all conditions must match
-or if any condition can match.
+ranges/spectra variables are defined, the \code{match} parameter can be used
+to specify whether all conditions (\code{match = "all"}; the default) or if
+any of the conditions must match (\code{match = "any"}; all spectra for which
+values are within any of the provided ranges are retained).
 \item \code{filterValues}: allows filtering of the \code{Spectra} object based on
-similarities of values of one or more \code{spectraVariables(object)}
+similarities of \emph{numeric} values of one or more \code{spectraVariables(object)}
 (parameter \code{spectraVariables}) to provided values (parameter \code{values})
 given acceptable differences (parameters tolerance and ppm). If multiple
-values/spectra variables are defined, the \code{condition} parameter
-(default "all") can be used to specify whether all conditions must match
-or if any condition can match.
+values/spectra variables are defined, the \code{match} parameter can be used
+to specify whether all conditions (\code{match = "all"}; the default) or if
+any of the conditions must match (\code{match = "any"}; all spectra for which
+values are within any of the provided ranges are retained).
 \item \code{reduceSpectra}: for groups of peaks within highly similar m/z values
 within each spectrum (given \code{ppm} and \code{tolerance}), this function keeps
 only the peak with the highest intensity removing all other peaks hence
@@ -1727,7 +1732,7 @@ filt_spectra <- filterRanges(sciex, spectraVariables = sv,
 sv <- c("rtime", "rtime")
 ranges <- c(30, 100, 200, 300)
 filt_spectra <- filterRanges(sciex, spectraVariables = sv,
-                ranges = ranges, condition = "any")
+                ranges = ranges, match = "any")
 
 ## Using filterValues in a similar way to a filter spectra object based on
 ## variables available in `spectraData`. However, this time not based on

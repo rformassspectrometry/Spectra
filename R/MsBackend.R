@@ -67,9 +67,10 @@
 #'     `peaksVariables(object)` and depends on what *peaks variables* the
 #'     backend provides.
 #'
-#' @param condition For `filterRanges` and `filterValues` (default "all") can
-#'     be used to can be used to specify whether "all" conditions must match
-#'    or if "any" condition can match the `values`/`ranges` input.
+#' @param match For `filterRanges` and `filterValues`: `character(1) `
+#'     defining whether the condition has to match for all provided
+#'     `ranges`/`values` (`match = "all"`; the default), or for any of them
+#'     (`match = "any"`) for spectra to be retained.
 #'
 #' @param data For `backendInitialize`: `DataFrame` with spectrum
 #'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
@@ -125,10 +126,11 @@
 #' @param ppm For `filterPrecursorMzValues`: `numeric(1)` with the m/z-relative
 #'     maximal acceptable difference for a m/z to be considered matching. See
 #'     [closest()] for details.
-#'     For `filterValues`: `numeric` with relative, value-specific
-#'     parts-per-million (PPM) tolerance values that are added to `tolerance`
-#'     (see below). Default is 0. If it is not the length of `spectraVariables`,
-#'     `ppm[1]` will be recycled.
+#'     For `filterValues`: `numeric` of any length allowing to define
+#'     a maximal accepted difference between user input `values` and the
+#'     `spectraVariables` values.  If it is not equal to the length of the
+#'     value provided with parameter `spectraVariables`, `ppm[1]` will be
+#'     recycled.
 #'
 #' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
 #'     to be used as filter.
@@ -152,16 +154,20 @@
 #' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
-#' @param spectraVariables For `selectSpectraVariables`, `filterRanges` and
-#'     `filterValues`: `character` with the names of the spectra variables to
-#'     which the backend should be subsetted.
+#' @param spectraVariables For `selectSpectraVariables`: `character` with the
+#'     names of the spectra variables to which the backend should be subsetted.
+#'     For `filterRanges` and `filterValues`: `character` vector specifying the
+#'     column(s) from `spectraData(object)` on which to filter the data and
+#'     that correspond to the the names of the spectra variables that should be
+#'     used for the filtering.
 #'
 #' @param tolerance For `filterPrecursorMzValues`: `numeric(1)` with the
 #'     maximal absolute acceptable difference for a m/z value to be considered
 #'     matching. See [closest()] for details. For `filterValues`: `numeric`
 #'     accepted tolerance between the `values` and the spectra variables.
-#'     Defaults to `tolerance = 0`. If it is not the length of
-#'     `spectraVariables`, `tolerance[1]` will be recycled.
+#'     Defaults to `tolerance = 0`. If it is not equal to the length of the
+#'     value provided with parameter `spectraVariables`, `tolerance[1]` will
+#'     be recycled.
 #'
 #' @param use.names For `lengths`: whether spectrum names should be used.
 #'
@@ -379,14 +385,16 @@
 #'   for `MsBackend` is available.
 #'
 #' - `filterRanges`: allows filtering of the `Spectra` object based on user
-#'    defined ranges (parameter `ranges`) for one or more available spectra
-#'    variables in object (spectra variable names can be specified with
+#'    defined *numeric* ranges (parameter `ranges`) for one or more available
+#'    spectra variables in object (spectra variable names can be specified with
 #'    parameter `spectraVariables`). Spectra for which the value of a spectra
 #'    variable is within it's defined range are retained. If multiple
-#'    ranges/spectra variables are defined, the `condition` parameter
-#'    (default "all") can be used to specify whether all conditions must match
-#'    or if any condition can match. Implementation of this method is optional
-#'    since a default implementation for `MsBackend` is available.
+#'    ranges/spectra variables are defined, the `match` parameter can be used
+#'    to specify whether all conditions (`match = "all"`; the default) or if
+#'    any of the conditions must match (`match = "any"`; all spectra for which
+#'    values are within any of the provided ranges are retained).
+#'    Implementation of this method is optional since a default implementation
+#'    for `MsBackend` is available.
 #'
 #' - `filterRt`: retains spectra of MS level `msLevel` with retention times
 #'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
@@ -394,13 +402,15 @@
 #'    for `MsBackend` is available.
 #'
 #' - `filterValues`: allows filtering of the `Spectra` object based on
-#'    similarities of values of one or more `spectraVariables(object)`
+#'    similarities of *numeric* values of one or more `spectraVariables(object)`
 #'    (parameter `spectraVariables`) to provided values (parameter `values`)
 #'    given acceptable differences (parameters tolerance and ppm). If multiple
-#'    values/spectra variables are defined, the `condition` parameter
-#'    (default "all") can be used to specify whether all conditions must match
-#'    or if any condition can match. Implementation of this method is optional
-#'    since a default implementation for `MsBackend` is available.
+#'    values/spectra variables are defined, the `match` parameter can be used
+#'    to specify whether all conditions (`match = "all"`; the default) or if
+#'    any of the conditions must match (`match = "any"`; all spectra for which
+#'    values are within any of the provided ranges are retained).
+#'    Implementation of this method is optional since a default implementation
+#'    for `MsBackend` is available.
 #'
 #' - `intensity`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
@@ -1200,17 +1210,13 @@ setMethod("filterPrecursorScan", "MsBackend",
 #' @rdname MsBackend
 setMethod("filterRanges", "MsBackend",
           function(object, spectraVariables = character(), ranges = numeric(),
-                   condition = c("all", "any")){
+                   match = c("all", "any")){
               if (!length(spectraVariables) || !length(ranges))
                   return(object)
               if (!is.numeric(ranges))
                   stop("filterRanges only support filtering for numerical ",
                   "'spectraVariables'")
-              condition <- match.arg(condition)
-              if (length(condition) > 1 |
-                  !all(condition %in% c("all", "any")))
-                  stop("'condition' has to be either \"",
-                                       "all\" or \"any\"!")
+              match <- match.arg(match)
               if (is.character(spectraVariables)){
                   if(!all(spectraVariables %in% spectraVariables(object)))
                       stop("One or more values passed with parameter ",
@@ -1231,7 +1237,7 @@ setMethod("filterRanges", "MsBackend",
                   pairs <-  c(ranges[2*i - 1], ranges[2*i])
                   between(query[[i]], pairs)
               }, logical(nrow(query)))
-              if (condition == "all")
+              if (match == "all")
                   keep <- which(rowSums(within_ranges, na.rm = FALSE) == nc)
               else
                   keep <- which(rowSums(within_ranges, na.rm = FALSE) > 0)
@@ -1262,7 +1268,7 @@ setMethod("filterRt", "MsBackend",
 #' @rdname MsBackend
 setMethod("filterValues", "MsBackend",
           function(object, spectraVariables = character(), values = numeric(),
-                   ppm = 0, tolerance = 0, condition = c("all", "any")){
+                   ppm = 0, tolerance = 0, match = c("all", "any")){
               if (!is.numeric(values))
                   stop("filterValues only support filtering for numerical ",
                        "'spectraVariables'")
@@ -1281,13 +1287,13 @@ setMethod("filterValues", "MsBackend",
               if (length(ppm) != nsv){
                   ppm <- rep(ppm[1], nsv)
                   warning("Length of 'ppm' does not match the amount of ",
-                          "'spectravariables', the first value of the vector ",
+                          "'spectraVariables', the first value of the vector ",
                           "will be recycled")
               }
               if (length(tolerance) != nsv){
                   tolerance <- rep(tolerance[1], nsv)
                   warning("Length of 'tolerance' does not match the amount of ",
-                          "'spectravariables', the first value of the vector ",
+                          "'spectraVariables', the first value of the vector ",
                           "will be recycled.")
               }
 
@@ -1297,7 +1303,7 @@ setMethod("filterValues", "MsBackend",
               ranges <- c(rbind(lower_bounds, upper_bounds))
 
               object <- filterRanges(object, spectraVariables, ranges,
-                                     condition)
+                                     match)
           })
 
 #' @exportMethod intensity
