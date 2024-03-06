@@ -1105,29 +1105,32 @@ test_that("filterRanges, Spectra works", {
     logical_test <- spectraVariables(sps_dia) %in% c("rtime", "precursorMz",
                                                      "peaksCount")
     expect_error(filterRanges(sps_dia, spectraVariables = logical_test,
-                              ranges = c(30, 350, 200,500, 350, 600)))
+                              ranges = c(30, 350, 200,500, 350, 600)),
+                 "character")
     # do not accept values other than numerical
     fls <- unique(dataOrigin(sps_dia))
-    expect_error(filterValues(sps_dia, spectraVariables = "dataOrigin",
-                 values = c(fls[1], fls[1])))
+    expect_error(filterRanges(sps_dia, spectraVariables = "dataOrigin",
+                 values = c(fls[1], fls[1])), "numerical")
     # test too many variables
     expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
                                                             "precursorMz",
                                                             "peaksCount",
                                                             "lowMz"),
-                              ranges = c(30, 350, 200,500, 350, 600)))
+                              ranges = c(30, 350, 200,500, 350, 600)), "Length")
     # test too many ranges
     expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
                                                             "precursorMz",
                                                             "peaksCount"),
-                              ranges = c(30, 350, 200,500, 350, 600, 20, 800)))
+                              ranges = c(30, 350, 200,500, 350, 600, 20, 800)),
+                 "Length")
     expect_true(length(sps_dia) > length(filt_spectra))
     # test does not accept variables not in spectraData
     expect_error(filterRanges(sps_dia, spectraVariables = c("rtime",
                                                             "precursorMz",
                                                             "peaksCount",
                                                             "fakeVar"),
-                              ranges = c(30, 350, 200,500, 350, 600, 20, 800)))
+                              ranges = c(30, 350, 200,500, 350, 600, 20, 800)),
+                 "not available")
     # test same results as specific filtering functions
     spe_fct <- filterPrecursorMzRange(sps_dia, c(200,500))
     range_fct <- filterRanges(sps_dia, spectraVariables = "precursorMz",
@@ -1146,7 +1149,7 @@ test_that("filterValues, Spectra works", {
     ## expect error
     fls <- unique(dataOrigin(sps_dia))
     expect_error(filterValues(sps_dia, spectraVariables = "dataOrigin",
-                 values = fls[1]))
+                 values = fls[1]), "numerical")
     ## test recycling
     filt_spectra <- filterValues(sps_dia, spectraVariables = c("rtime",
                                                                "precursorMz",
@@ -1167,7 +1170,7 @@ test_that("filterValues, Spectra works", {
                                                               "precursorMz",
                                                               "peaksCount"),
                                 values = c(200, 400, 350),
-                                tolerance = 100))
+                                tolerance = 100), "recycled")
     #' test same results as filterPrecursorMzValues
     spe_fct <- filterPrecursorMzValues(sps_dia, mz = 300, ppm = 20, tolerance = 10)
     values_fct <- filterValues(sps_dia, spectraVariables = "precursorMz",
