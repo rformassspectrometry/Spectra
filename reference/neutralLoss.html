@@ -58,7 +58,7 @@ removed.
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -234,6 +234,8 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-in"><span><span class="va">DF</span><span class="op">$</span><span class="va">intensity</span> <span class="op">&lt;-</span> <span class="fu">IRanges</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">NumericList</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>,</span></span>
 <span class="r-in"><span>                                     compress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sps</span> <span class="op">&lt;-</span> <span class="fu"><a href="Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">DF</span>, backend <span class="op">=</span> <span class="fu"><a href="MsBackend.html">MsBackendDataFrame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.integer()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.numeric()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Calculate neutral loss spectra for all MS2 spectra, keeping MS1 and MS3</span></span></span>
 <span class="r-in"><span><span class="co">## spectra unchanged.</span></span></span>
@@ -247,6 +249,8 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[5]] 15 53 299 300</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[6]] 34 56 100 200 204 309</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.integer()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.numeric()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] -46 1 17 27</span>
@@ -260,6 +264,8 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-in"><span><span class="va">sps_nl</span> <span class="op">&lt;-</span> <span class="fu">neutralLoss</span><span class="op">(</span><span class="va">sps</span>, <span class="fu">PrecursorMzParam</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    filterPeaks <span class="op">=</span> <span class="st">"abovePrecursor"</span>, msLevel <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.integer()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.numeric()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] 1 17 27</span>
@@ -274,6 +280,8 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-in"><span><span class="va">sps_nl</span> <span class="op">&lt;-</span> <span class="fu">neutralLoss</span><span class="op">(</span><span class="va">sps</span>, <span class="fu">PrecursorMzParam</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    filterPeaks <span class="op">=</span> <span class="st">"removePrecursor"</span>, tolerance <span class="op">=</span> <span class="fl">1</span>, ppm <span class="op">=</span> <span class="fl">10</span>, msLevel <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.integer()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.numeric()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] -46 17 27</span>
@@ -286,6 +294,8 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-in"><span><span class="va">sps</span><span class="op">$</span><span class="va">precursorMz</span> <span class="op">&lt;-</span> <span class="cn">NA_real_</span></span></span>
 <span class="r-in"><span><span class="va">sps_nl</span> <span class="op">&lt;-</span> <span class="fu">neutralLoss</span><span class="op">(</span><span class="va">sps</span>, <span class="fu">PrecursorMzParam</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.integer()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.numeric()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] numeric(0)</span>

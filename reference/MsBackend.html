@@ -66,7 +66,7 @@ See below for more details about individual backends."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -233,7 +233,25 @@ filterPrecursorCharge(object, z = integer())
 filterPrecursorScan(object, acquisitionNum = integer(), f = dataOrigin(object))
 
 # S4 method for MsBackend
+filterRanges(
+  object,
+  spectraVariables = character(),
+  ranges = numeric(),
+  match = c("all", "any")
+)
+
+# S4 method for MsBackend
 filterRt(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
+
+# S4 method for MsBackend
+filterValues(
+  object,
+  spectraVariables = character(),
+  values = numeric(),
+  ppm = 0,
+  tolerance = 0,
+  match = c("all", "any")
+)
 
 # S4 method for MsBackend
 intensity(object)
@@ -463,13 +481,22 @@ to subset <code>object</code>.</p></dd>
 <dt>ppm</dt>
 <dd><p>For <code>filterPrecursorMzValues</code>: <code>numeric(1)</code> with the m/z-relative
 maximal acceptable difference for a m/z to be considered matching. See
-<code>closest()</code> for details.</p></dd>
+<code>closest()</code> for details.
+For <code>filterValues</code>: <code>numeric</code> of any length allowing to define
+a maximal accepted difference between user input <code>values</code> and the
+<code>spectraVariables</code> values.  If it is not equal to the length of the
+value provided with parameter <code>spectraVariables</code>, <code>ppm[1]</code> will be
+recycled.</p></dd>
 
 
 <dt>tolerance</dt>
 <dd><p>For <code>filterPrecursorMzValues</code>: <code>numeric(1)</code> with the
 maximal absolute acceptable difference for a m/z value to be considered
-matching. See <code>closest()</code> for details.</p></dd>
+matching. See <code>closest()</code> for details. For <code>filterValues</code>: <code>numeric</code>
+accepted tolerance between the <code>values</code> and the spectra variables.
+Defaults to <code>tolerance = 0</code>. If it is not equal to the length of the
+value provided with parameter <code>spectraVariables</code>, <code>tolerance[1]</code> will
+be recycled.</p></dd>
 
 
 <dt>z</dt>
@@ -490,6 +517,29 @@ the spectra derive to avoid selecting spectra from different
 samples/files. Defaults to <code>f = dataOrigin(object)</code>.</p></dd>
 
 
+<dt>spectraVariables</dt>
+<dd><p>For <code>selectSpectraVariables</code>: <code>character</code> with the
+names of the spectra variables to which the backend should be subsetted.
+For <code>filterRanges</code> and <code>filterValues</code>: <code>character</code> vector specifying the
+column(s) from <code>spectraData(object)</code> on which to filter the data and
+that correspond to the the names of the spectra variables that should be
+used for the filtering.</p></dd>
+
+
+<dt>ranges</dt>
+<dd><p>for <code>filterRanges</code>: A <code>numeric</code> vector of paired values (upper
+and lower boundary) that define the ranges to filter the <code>object</code>.
+These paired values need to be in the same order as the
+<code>spectraVariables</code> parameter (see below).</p></dd>
+
+
+<dt>match</dt>
+<dd><p>For <code>filterRanges</code> and <code>filterValues</code>: <code>character(1) </code>
+defining whether the condition has to match for all provided
+<code>ranges</code>/<code>values</code> (<code>match = "all"</code>; the default), or for any of them
+(<code>match = "any"</code>) for spectra to be retained.</p></dd>
+
+
 <dt>rt</dt>
 <dd><p>for <code>filterRt</code>: <code>numeric(2)</code> defining the retention time range to
 be used to subset/filter <code>object</code>.</p></dd>
@@ -499,17 +549,18 @@ be used to subset/filter <code>object</code>.</p></dd>
 <dd><p>same as <code>msLevel</code> above.</p></dd>
 
 
+<dt>values</dt>
+<dd><p>for <code>filterValues</code>: A <code>numeric</code> vector that define the values
+to filter the <code>object</code>. <code>values</code> needs to be of same length than
+parameter <code>spectraVariables</code> and in the same order.</p></dd>
+
+
 <dt>x</dt>
 <dd><p>Object extending <code>MsBackend</code>.</p></dd>
 
 
 <dt>use.names</dt>
 <dd><p>For <code>lengths</code>: whether spectrum names should be used.</p></dd>
-
-
-<dt>spectraVariables</dt>
-<dd><p>For <code>selectSpectraVariables</code>: <code>character</code> with the
-names of the spectra variables to which the backend should be subsetted.</p></dd>
 
 
 <dt>drop</dt>
@@ -739,8 +790,29 @@ define the origin of the spectra (i.e. the original data file) to ensure
 related spectra from the same file/sample are selected and retained.
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
+<li><p><code>filterRanges</code>: allows filtering of the <code>Spectra</code> object based on user
+defined <em>numeric</em> ranges (parameter <code>ranges</code>) for one or more available
+spectra variables in object (spectra variable names can be specified with
+parameter <code>spectraVariables</code>). Spectra for which the value of a spectra
+variable is within it's defined range are retained. If multiple
+ranges/spectra variables are defined, the <code>match</code> parameter can be used
+to specify whether all conditions (<code>match = "all"</code>; the default) or if
+any of the conditions must match (<code>match = "any"</code>; all spectra for which
+values are within any of the provided ranges are retained).
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
 <li><p><code>filterRt</code>: retains spectra of MS level <code>msLevel</code> with retention times
 within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>) <code>rt[2]</code>.
+Implementation of this method is optional since a default implementation
+for <code>MsBackend</code> is available.</p></li>
+<li><p><code>filterValues</code>: allows filtering of the <code>Spectra</code> object based on
+similarities of <em>numeric</em> values of one or more <code>spectraVariables(object)</code>
+(parameter <code>spectraVariables</code>) to provided values (parameter <code>values</code>)
+given acceptable differences (parameters tolerance and ppm). If multiple
+values/spectra variables are defined, the <code>match</code> parameter can be used
+to specify whether all conditions (<code>match = "all"</code>; the default) or if
+any of the conditions must match (<code>match = "any"</code>; all spectra for which
+values are within any of the provided ranges are retained).
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code>intensity</code>: gets the intensity values from the spectra. Returns
@@ -1182,6 +1254,8 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
 <span class="r-in"><span><span class="va">data</span><span class="op">$</span><span class="va">peak_ann</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">""</span>, <span class="st">"d"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"d"</span>, <span class="st">"e"</span>, <span class="st">"f"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"h"</span>, <span class="st">"i"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu">backendInitialize</span><span class="op">(</span><span class="fu">MsBackendMemory</span><span class="op">(</span><span class="op">)</span>, <span class="va">data</span>,</span></span>
 <span class="r-in"><span>    peaksVariables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mz"</span>, <span class="st">"intensity"</span>, <span class="st">"peak_ann"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.integer()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Direct call of 'as.data.frame.integer()' is deprecated.  Use 'as.data.frame.vector()' or 'as.data.frame()' instead</span>
 <span class="r-in"><span><span class="va">be</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MsBackendMemory with 3 spectra</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     msLevel     rtime scanIndex</span>
