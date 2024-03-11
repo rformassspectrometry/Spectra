@@ -21,20 +21,20 @@ NULL
 #' @details
 #'
 #' The `Spectra` class uses by default a lazy data manipulation strategy,
-#' i.e. data manipulations such as performed with `replaceIntensitiesBelow` are
-#' not applied immediately to the data, but applied on-the-fly to the spectrum
-#' data once it is retrieved. For some backends that allow to write data back
-#' to the data storage (such as the [MsBackendMemory()], [MsBackendDataFrame()]
-#' and [MsBackendHdf5Peaks()]) it is possible to apply to queue with the
-#' `applyProcessing` function. See the *Data manipulation and analysis
-#' methods* section below for more details.
+#' i.e. data manipulations such as performed with `replaceIntensitiesBelow()`
+#' are not applied immediately to the data, but applied on-the-fly to the
+#' spectrum data once it is retrieved. For some backends that allow to write
+#' data back to the data storage (such as the [MsBackendMemory()],
+#' [MsBackendDataFrame()] and [MsBackendHdf5Peaks()]) it is possible to apply
+#' to queue with the `applyProcessing` function. See the *Data manipulation and
+#' analysis *methods* section below for more details.
 #'
 #' For more information on parallel or chunk-wise processing (especially
 #' helpful for very large data sets) see [processingChunkSize()].
 #'
-#' To apply arbitrary functions to a `Spectra` use the `spectrapply` function
+#' To apply arbitrary functions to a `Spectra` use the `spectrapply()` function
 #' (or directly [chunkapply()] for chunk-wise processing). See description of
-#' the `spectrapply` function below for details.
+#' the `spectrapply()` function below for details.
 #'
 #' For details on plotting spectra, see [plotSpectra()].
 #'
@@ -57,7 +57,7 @@ NULL
 #'
 #' @section Creation of objects, conversion, changing the backend and export:
 #'
-#' `Spectra` classes can be created with the `Spectra` constructor function
+#' `Spectra` classes can be created with the `Spectra()` constructor function
 #' which supports the following formats:
 #'
 #' - parameter `object` is a `data.frame` or `DataFrame` containing the
@@ -81,16 +81,16 @@ NULL
 #' [backendInitialize()] method. Parameter `backend` allows to specify which
 #' [MsBackend-class] should be used for data storage.
 #'
-#' The backend of a `Spectra` object can be changed with the `setBackend`
+#' The backend of a `Spectra` object can be changed with the `setBackend()`
 #' method that takes an instance of the new backend as second parameter
 #' `backend`. A call to `setBackend(sps, backend = MsBackendDataFrame())`
 #' would for example change the backend of `sps` to the *in-memory*
 #' `MsBackendDataFrame`. Changing to a backend is only supported if that
 #' backend has a `data` parameter in its `backendInitialize` method and if
-#' `supportsSetBackend` returns `TRUE` for that backend. `setBackend` will
+#' `supportsSetBackend()` returns `TRUE` for that backend. `setBackend()` will
 #' transfer the full spectra data from the originating backend as a
 #' `DataFrame` to the new backend.
-#' Most *read-only* backends do not support `setBackend`. It is for example
+#' Most *read-only* backends do not support `setBackend()`. It is for example
 #' not possible to change the backend to a *read-only* backend (such as
 #' the [MsBackendMzR()] backend).
 #'
@@ -114,11 +114,12 @@ NULL
 #' - parameter `BPPARAM`: setup for the parallel processing. See [bpparam()] for
 #'   details.
 #'
-#' Data from a `Spectra` object can be **exported** to a file with the `export`
-#' function. The actual export of the data has to be performed by the `export`
-#' method of the [MsBackend] class defined with the mandatory parameter
-#' `backend`. Note however that not all backend classes support export of data.
-#' From the `MsBackend` classes in the `Spectra` package currently only the
+#' Data from a `Spectra` object can be **exported** to a file with the
+#' `export()` function. The actual export of the data has to be performed by
+#' the `export` method of the [MsBackend] class defined with the mandatory
+#' parameter `backend`. Note however that not all backend classes support
+#' export of data. From the `MsBackend` classes in the `Spectra` package\
+#' currently only the
 #' `MsBackendMzR` backend supports data export (to mzML/mzXML file(s));
 #' see the help page of the [MsBackend-class] for information on its arguments
 #' or the examples below or the vignette for examples.
@@ -148,100 +149,100 @@ NULL
 #' - `[[`, `[[<-`: access or set/add a single spectrum variable (column) in the
 #'   backend.
 #'
-#' - `acquisitionNum`: returns the acquisition number of each
+#' - `acquisitionNum()`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `centroided`, `centroided<-`: gets or sets the centroiding
-#'   information of the spectra. `centroided` returns a `logical`
+#' - `centroided()`, `centroided<-`: gets or sets the centroiding
+#'   information of the spectra. `centroided()` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
 #'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
-#'   if it is undefined. See also `isCentroided` for estimating from
+#'   if it is undefined. See also `isCentroided()` for estimating from
 #'   the spectrum data whether the spectrum is centroided. `value`
 #'   for `centroided<-` is either a single `logical` or a `logical` of
 #'   length equal to the number of spectra in `object`.
 #'
-#' - `collisionEnergy`, `collisionEnergy<-`: gets or sets the
-#'   collision energy for all spectra in `object`. `collisionEnergy`
+#' - `collisionEnergy()`, `collisionEnergy<-`: gets or sets the
+#'   collision energy for all spectra in `object`. `collisionEnergy()`
 #'   returns a `numeric` with length equal to the number of spectra
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `coreSpectraVariables`: returns the *core* spectra variables along with
+#' - `coreSpectraVariables()`: returns the *core* spectra variables along with
 #'   their expected data type.
 #'
-#' - `dataOrigin`, `dataOrigin<-`: gets or sets the *data origin* for each
-#'   spectrum. `dataOrigin` returns a `character` vector (same length than
+#' - `dataOrigin()`, `dataOrigin<-`: gets or sets the *data origin* for each
+#'   spectrum. `dataOrigin()` returns a `character` vector (same length than
 #'   `object`) with the origin of the spectra. `dataOrigin<-` expects a
 #'   `character` vector (same length than `object`) with the replacement
 #'   values for the data origin of each spectrum.
 #'
-#' - `dataStorage`: returns a `character` vector (same length than `object`)
+#' - `dataStorage()`: returns a `character` vector (same length than `object`)
 #'   with the data storage location of each spectrum.
 #'
-#' - `intensity`: gets the intensity values from the spectra. Returns
+#' - `intensity()`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the list is equal to the number of
 #'   `spectra` in `object`.
 #'
-#' - `ionCount`: returns a `numeric` with the sum of intensities for
+#' - `ionCount()`: returns a `numeric` with the sum of intensities for
 #'   each spectrum. If the spectrum is empty (see `isEmpty`),
 #'   `NA_real_` is returned.
 #'
-#' - `isCentroided`: a heuristic approach assessing if the spectra in
+#' - `isCentroided()`: a heuristic approach assessing if the spectra in
 #'   `object` are in profile or centroided mode. The function takes
 #'   the `qtl`th quantile top peaks, then calculates the difference
 #'   between adjacent m/z value and returns `TRUE` if the first
-#'   quartile is greater than `k`. (See `Spectra:::.isCentroided` for
+#'   quartile is greater than `k`. (See `Spectra:::.isCentroided()` for
 #'   the code.)
 #'
-#' - `isEmpty`: checks whether a spectrum in `object` is empty
+#' - `isEmpty()`: checks whether a spectrum in `object` is empty
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the
+#' - `isolationWindowLowerMz()`, `isolationWindowLowerMz<-`: gets or sets the
 #'   lower m/z boundary of the isolation window.
 #'
-#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
+#' - `isolationWindowTargetMz()`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the
+#' - `isolationWindowUpperMz()`, `isolationWindowUpperMz<-`: gets or sets the
 #'   upper m/z boundary of the isolation window.
 #'
-#' - `containsMz`: checks for each of the spectra whether they contain mass
+#' - `containsMz()`: checks for each of the spectra whether they contain mass
 #'   peaks with an m/z equal to `mz` (given acceptable difference as defined by
 #'   parameters `tolerance` and `ppm` - see [common()] for details). Parameter
 #'   `which` allows to define whether any (`which = "any"`, the default) or
 #'   all (`which = "all"`) of the `mz` have to match. The function returns
 #'   `NA` if `mz` is of length 0 or is `NA`.
 #'
-#' - `containsNeutralLoss`: checks for each spectrum in `object` if it has a
+#' - `containsNeutralLoss()`: checks for each spectrum in `object` if it has a
 #'   peak with an m/z value equal to its precursor m/z - `neutralLoss` (given
 #'   acceptable difference as defined by parameters `tolerance` and `ppm`).
 #'   Returns `NA` for MS1 spectra (or spectra without a precursor m/z).
 #'
-#' - `length`: gets the number of spectra in the object.
+#' - `length()`: gets the number of spectra in the object.
 #'
-#' - `lengths`: gets the number of peaks (m/z-intensity values) per
+#' - `lengths()`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum. Returns an `integer` vector (length equal to the
 #'   number of spectra). For empty spectra, `0` is returned.
 #'
-#' - `msLevel`: gets the spectra's MS level. Returns an integer vector (names
+#' - `msLevel()`: gets the spectra's MS level. Returns an integer vector (names
 #'   being spectrum names, length equal to the number of spectra) with the MS
 #'   level for each spectrum.
 #'
-#' - `mz`: gets the mass-to-charge ratios (m/z) from the
+#' - `mz()`: gets the mass-to-charge ratios (m/z) from the
 #'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
-#' - `peaksData`: gets the *peaks* data for all spectra in `object`. Peaks data
-#'   consist of the m/z and intensity values as well as possible additional
+#' - `peaksData()`: gets the *peaks* data for all spectra in `object`. Peaks
+#'   data consist of the m/z and intensity values as well as possible additional
 #'   annotations (variables) of all peaks of each spectrum. The function
 #'   returns a [SimpleList()] of two dimensional arrays (either `matrix` or
 #'   `data.frame`), with each array providing the values for the requested
 #'   *peak variables* (by default `"mz"` and `"intensity"`). Optional parameter
-#'   `columns` is passed to the backend's `peaksData` function to allow
+#'   `columns` is passed to the backend's `peaksData()` function to allow
 #'   the selection of specific (or additional) peaks variables (columns) that
 #'   should be extracted (if available). Importantly,
 #'   it is **not** guaranteed that each backend supports this parameter (while
@@ -253,46 +254,46 @@ NULL
 #'   respectively. Note however that, in contrast to `peaksData`, `as` does not
 #'   support the parameter `columns`.
 #'
-#' - `peaksVariables`: lists the available variables for mass peaks provided by
+#' - `peaksVariables()`: lists the available variables for mass peaks provided by
 #'   the backend. Default peak variables are `"mz"` and `"intensity"` (which
 #'   all backends need to support and provide), but some backends might provide
 #'   additional variables.
 #'   These variables correspond to the column names of the peak data array
-#'   returned by `peaksData`.
+#'   returned by `peaksData()`.
 #'
-#' - `polarity`, `polarity<-`: gets or sets the polarity for each
-#'   spectrum.  `polarity` returns an `integer` vector (length equal
+#' - `polarity()`, `polarity<-`: gets or sets the polarity for each
+#'   spectrum.  `polarity()` returns an `integer` vector (length equal
 #'   to the number of spectra), with `0` and `1` representing negative
 #'   and positive polarities, respectively. `polarity<-` expects an
 #'   `integer` vector of length 1 or equal to the number of spectra.
 #'
-#' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
-#'   `precScanNum`, `precAcquisitionNum`: gets the charge (`integer`),
+#' - `precursorCharge()`, `precursorIntensity()`, `precursorMz()`,
+#'   `precScanNum()`, `precAcquisitionNum()`: gets the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
 #'   and acquisition number (`interger`) of the precursor for MS level >
 #'   2 spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `rtime`, `rtime<-`: gets or sets the retention times (in seconds)
-#'   for each spectrum.  `rtime` returns a `numeric` vector (length
+#' - `rtime()`, `rtime<-`: gets or sets the retention times (in seconds)
+#'   for each spectrum.  `rtime()` returns a `numeric` vector (length
 #'   equal to the number of spectra) with the retention time for each
 #'   spectrum.  `rtime<-` expects a numeric vector with length equal
 #'   to the number of spectra.
 #'
-#' - `scanIndex`: returns an `integer` vector with the *scan index*
+#' - `scanIndex()`: returns an `integer` vector with the *scan index*
 #'   for each spectrum. This represents the relative index of the
 #'   spectrum within each file. Note that this can be different to the
 #'   `acquisitionNum` of the spectrum which represents the index of the
 #'   spectrum during acquisition/measurement (as reported in the mzML file).
 #'
-#' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
-#'   *smoothed*. `smoothed` returns a `logical` vector of length equal
+#' - `smoothed()`,`smoothed<-`: gets or sets whether a spectrum is
+#'   *smoothed*. `smoothed()` returns a `logical` vector of length equal
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraData`: gets general spectrum metadata (annotation, also called
-#'   header). `spectraData` returns a `DataFrame`. Note that this
+#' - `spectraData()`: gets general spectrum metadata (annotation, also called
+#'   header). `spectraData()` returns a `DataFrame`. Note that this
 #'   method does by default **not** return m/z or intensity values.
 #'
 #' - `spectraData<-`: **replaces** the full spectra data of the `Spectra`
@@ -304,21 +305,21 @@ NULL
 #'   In these cases [applyProcessing()] needs to be called first to apply all
 #'   cached data operations and empty the processing queue.
 #'
-#' - `spectraNames`, `spectraNames<-`: gets or sets the spectra names.
+#' - `spectraNames()`, `spectraNames<-`: gets or sets the spectra names.
 #'
-#' - `spectraVariables`: returns a `character` vector with the
+#' - `spectraVariables()`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes of each
-#'   spectrum) available in `object`. Note that `spectraVariables` does not
+#'   spectrum) available in `object`. Note that `spectraVariables()` does not
 #'   list the *peak variables* (`"mz"`, `"intensity"` and eventual additional
 #'   annotations for each MS peak). Peak variables are returned by
-#'   `peaksVariables`.
+#'   `peaksVariables()`.
 #'
-#' - `tic`: gets the total ion current/count (sum of signal of a
+#' - `tic()`: gets the total ion current/count (sum of signal of a
 #'   spectrum) for all spectra in `object`. By default, the value
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `0` is returned.
 #'
-#' - `uniqueMsLevels`: get the unique MS levels available in `object`. This
+#' - `uniqueMsLevels()`: get the unique MS levels available in `object`. This
 #'   function is supposed to be more efficient than `unique(msLevel(object))`.
 #'
 #' @section Data subsetting, filtering and merging:
@@ -329,7 +330,7 @@ NULL
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
 #'
-#' - `deisotopeSpectra`: *deisotopes* each spectrum keeping only the
+#' - `deisotopeSpectra()`: *deisotopes* each spectrum keeping only the
 #'   monoisotopic peak for groups of isotopologues. Isotopologues are
 #'   estimated using the [isotopologues()] function from the
 #'   *MetaboCoreUtils* package. Note that
@@ -341,38 +342,38 @@ NULL
 #'   isotope prediction is described
 #'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
 #'
-#' - `dropNaSpectraVariables`: removes spectra variables (i.e. columns in the
+#' - `dropNaSpectraVariables()`: removes spectra variables (i.e. columns in the
 #'   object's `spectraData` that contain only missing values (`NA`). Note that
-#'   while columns with only `NA`s are removed, a `spectraData` call after
-#'   `dropNaSpectraVariables` might still show columns containing `NA` values
+#'   while columns with only `NA`s are removed, a `spectraData()` call after
+#'   `dropNaSpectraVariables()` might still show columns containing `NA` values
 #'   for *core* spectra variables.
 #'
-#' - `filterAcquisitionNum`: filters the object keeping only spectra matching
+#' - `filterAcquisitionNum()`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
 #'   `dataStorage` is also provided, `object` is subsetted to the spectra with
 #'   an acquisition number equal to `n` **in spectra with matching dataOrigin
 #'   or dataStorage values** retaining all other spectra.
 #'   Returns the filtered `Spectra`.
 #'
-#' - `filterDataOrigin`: filters the object retaining spectra matching the
+#' - `filterDataOrigin()`: filters the object retaining spectra matching the
 #'   provided `dataOrigin`. Parameter `dataOrigin` has to be of type
 #'   `character` and needs to match exactly the data origin value of the
 #'   spectra to subset.
 #'   Returns the filtered `Spectra` object (with spectra ordered according to
 #'   the provided `dataOrigin` parameter).
 #'
-#' - `filterDataStorage`: filters the object retaining spectra stored in the
+#' - `filterDataStorage()`: filters the object retaining spectra stored in the
 #'   specified `dataStorage`. Parameter `dataStorage` has to be of type
 #'   `character` and needs to match exactly the data storage value of the
 #'   spectra to subset.
 #'   Returns the filtered `Spectra` object (with spectra ordered according to
 #'   the provided `dataStorage` parameter).
 #'
-#' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
+#' - `filterEmptySpectra()`: removes empty spectra (i.e. spectra without peaks).
 #'   Returns the filtered `Spectra` object (with spectra in their
 #'   original order).
 #'
-#' - `filterFourierTransformArtefacts`: removes (Orbitrap) fast fourier
+#' - `filterFourierTransformArtefacts()`: removes (Orbitrap) fast fourier
 #'   artefact peaks from spectra (see examples below). The function iterates
 #'   through all intensity ordered peaks in a spectrum and removes all peaks
 #'   with an m/z within +/- `halfWindowSize` of the current peak if their
@@ -382,9 +383,9 @@ NULL
 #'   being the maximum charge that should be considered and `isotopeTolerance`
 #'   the absolute acceptable tolerance for matching their m/z).
 #'   See [filterFourierTransformArtefacts()] for details and background and
-#'   `deisitopeSpectra` for an alternative.
+#'   `deisitopeSpectra()` for an alternative.
 #'
-#' - `filterIntensity`: filters each spectrum keeping only peaks with
+#' - `filterIntensity()`: filters each spectrum keeping only peaks with
 #'   intensities that are within the provided range or match the criteria of
 #'   the provided function. For the former, parameter `intensity` has to be a
 #'   `numeric` defining the intensity range, for the latter a `function` that
@@ -398,40 +399,40 @@ NULL
 #'   (i.e. an intensity of `NA`). Parameter `msLevel.` allows to restrict the
 #'   filtering to spectra of the specified MS level(s).
 #'
-#' - `filterIsolationWindow`: retains spectra that contain `mz` in their
+#' - `filterIsolationWindow()`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` <= `mz`
 #'   and `isolationWindowUpperMz` >= `mz`. Returns the filtered `Spectra`
 #'   object (with spectra in their original order).
 #'
-#' - `filterMsLevel`: filters object by MS level keeping only spectra matching
+#' - `filterMsLevel()`: filters object by MS level keeping only spectra matching
 #'   the MS level specified with argument `msLevel`. Returns the filtered
 #'   `Spectra` (with spectra in their original order).
 #'
-#' - `filterMzRange`: filters the object keeping or removing peaks in each
+#' - `filterMzRange()`: filters the object keeping or removing peaks in each
 #'   spectrum that are within the provided m/z range. Whether peaks are
 #'   retained or removed can be configured with parameter `keep` (default
 #'   `keep = TRUE`).
 #'
-#' - `filterMzValues`: filters the object keeping **all** peaks in each
+#' - `filterMzValues()`: filters the object keeping **all** peaks in each
 #'   spectrum that match the provided m/z value(s) (for `keep = TRUE`, the
 #'   default) or removing **all** of them (for `keep = FALSE`). The m/z
 #'   matching considers also the absolute `tolerance` and m/z-relative
 #'   `ppm` values. `tolerance` and `ppm` have to be of length 1.
 #'
-#' - `filterPolarity`: filters the object keeping only spectra matching the
+#' - `filterPolarity()`: filters the object keeping only spectra matching the
 #'   provided polarity. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
-#' - `filterPrecursorCharge`: retains spectra with the defined precursor
+#' - `filterPrecursorCharge()`: retains spectra with the defined precursor
 #'   charge(s).
 #'
-#' - `filterPrecursorIsotopes`: groups MS2 spectra based on their precursor m/z
+#' - `filterPrecursorIsotopes()`: groups MS2 spectra based on their precursor m/z
 #'   and precursor intensity into predicted isotope groups and keep for each
 #'   only the spectrum representing the monoisotopic precursor. MS1 spectra
-#'   are returned as is. See documentation for `deisotopeSpectra` below for
+#'   are returned as is. See documentation for `deisotopeSpectra()` below for
 #'   details on isotope prediction and parameter description.
 #'
-#' - `filterPrecursorMaxIntensity`: filters the `Spectra` keeping for groups
+#' - `filterPrecursorMaxIntensity()`: filters the `Spectra` keeping for groups
 #'   of (MS2) spectra with similar precursor m/z values (given parameters
 #'   `ppm` and `tolerance`) the one with the highest precursor intensity. The
 #'   function filters only MS2 spectra and returns all MS1 spectra. If
@@ -440,16 +441,16 @@ NULL
 #'   Note: some manufacturers don't provide precursor intensities. These can
 #'   however also be estimated with [estimatePrecursorIntensity()].
 #'
-#' - `filterPrecursorMzRange` (previously `filterPrecursorMz` which is now
+#' - `filterPrecursorMzRange()` (previously `filterPrecursorMz()` which is now
 #'   deprecated): retains spectra with a precursor m/z within the
 #'   provided m/z range. See examples for details on selecting spectra with
 #'   a precursor m/z for a target m/z accepting a small difference in *ppm*.
 #'
-#' - `filterPrecursorMzValues`: retains spectra with precursor m/z matching any
+#' - `filterPrecursorMzValues()`: retains spectra with precursor m/z matching any
 #'   of the provided m/z values (given `ppm` and `tolerance`). Spectra with
 #'   missing precursor m/z value (e.g. MS1 spectra) are dropped.
 #'
-#' - `filterPrecursorPeaks`: removes peaks from each spectrum in `object` with
+#' - `filterPrecursorPeaks()`: removes peaks from each spectrum in `object` with
 #'   an m/z equal or larger than the m/z of the precursor, depending on the
 #'   value of parameter `mz`: for `mz = ==" (the default) peaks with matching
 #'   m/z (considering an absolute and relative acceptable difference depending
@@ -460,18 +461,18 @@ NULL
 #'   is applied to all MS levels). Note that no peaks are removed if the
 #'   precursor m/z is `NA` (e.g. typically for MS1 spectra).
 #'
-#' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
+#' - `filterPrecursorScan()`: retains parent (e.g. MS1) and children scans (e.g.
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'   `Spectra` (with spectra in their original order). Parameter `f` allows to
 #'   define which spectra belong to the same sample or original data file (
 #'   defaults to `f = dataOrigin(object)`).
 #'
-#' - `filterRt`: retains spectra of MS level `msLevel` with retention
+#' - `filterRt()`: retains spectra of MS level `msLevel` with retention
 #'   times (in seconds) within (`>=`) `rt[1]` and (`<=`)
 #'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
 #'   original order).
 #'
-#' - `filterRanges`: allows filtering of the `Spectra` object based on user
+#' - `filterRanges()`: allows filtering of the `Spectra` object based on user
 #'    defined *numeric* ranges (parameter `ranges`) for one or more available
 #'    spectra variables in object (spectra variable names can be specified with
 #'    parameter `spectraVariables`). Spectra for which the value of a spectra
@@ -481,7 +482,7 @@ NULL
 #'    any of the conditions must match (`match = "any"`; all spectra for which
 #'    values are within any of the provided ranges are retained).
 #'
-#' - `filterValues`: allows filtering of the `Spectra` object based on
+#' - `filterValues()`: allows filtering of the `Spectra` object based on
 #'    similarities of *numeric* values of one or more `spectraVariables(object)`
 #'    (parameter `spectraVariables`) to provided values (parameter `values`)
 #'    given acceptable differences (parameters tolerance and ppm). If multiple
@@ -490,20 +491,20 @@ NULL
 #'    any of the conditions must match (`match = "any"`; all spectra for which
 #'    values are within any of the provided ranges are retained).
 #'
-#' - `reduceSpectra`: for groups of peaks within highly similar m/z values
+#' - `reduceSpectra()`: for groups of peaks within highly similar m/z values
 #'   within each spectrum (given `ppm` and `tolerance`), this function keeps
 #'   only the peak with the highest intensity removing all other peaks hence
 #'   *reducing* each spectrum to the highest intensity peaks per *peak group*.
 #'   Peak groups are defined using the [group()] function from the
 #'   *MsCoreUtils* package.
 #'
-#' - `reset`: restores the data to its original state (as much as possible):
+#' - `reset()`: restores the data to its original state (as much as possible):
 #'   removes any processing steps from the lazy processing queue and calls
-#'   `reset` on the backend which, depending on the backend, can also undo e.g.
+#'   `reset()` on the backend which, depending on the backend, can also undo e.g.
 #'   data filtering operations. Note that a `reset` call after `applyProcessing`
 #'   will not have any effect. See examples below for more information.
 #'
-#' - `selectSpectraVariables`: reduces the information within the object to
+#' - `selectSpectraVariables()`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
 #'   be dropped. For mandatory columns (i.e., those listed by
 #'   [coreSpectraVariables()], such as *msLevel*, *rtime* ...) only
@@ -511,10 +512,10 @@ NULL
 #'   user defined) spectra variables will be completely removed.
 #'   Returns the filtered `Spectra`.
 #'
-#' - `split`: splits the `Spectra` object based on parameter `f` into a `list`
+#' - `split()`: splits the `Spectra` object based on parameter `f` into a `list`
 #'   of `Spectra` objects.
 #'
-#' - `joinSpectraData`: Individual spectra variables can be directly
+#' - `joinSpectraData()`: Individual spectra variables can be directly
 #'    added with the `$<-` or `[[<-` syntax. The `joinSpectraData()`
 #'    function allows to merge a `DataFrame` to the existing spectra
 #'    data. This function diverges from the [merge()] method in two
@@ -534,7 +535,7 @@ NULL
 #'      functions.
 #'
 #' Several `Spectra` objects can be concatenated into a single object with the
-#' `c` or the `concatenateSpectra` function. Concatenation will fail if the
+#' `c()` or the `concatenateSpectra()` function. Concatenation will fail if the
 #' processing queue of any of the `Spectra` objects is not empty or if
 #' different backends are used in the `Spectra` objects. The spectra variables
 #' of the resulting `Spectra` object is the union of the spectra variables of
@@ -549,13 +550,13 @@ NULL
 #' applied on-the-fly to spectra data each time it is accessed. This lazy
 #' execution guarantees the same functionality for `Spectra` objects with
 #' any backend, i.e. backends supporting to save changes to spectrum data
-#' ([MsBackendMemory], [MsBackendDataFrame()] or [MsBackendHdf5Peaks()]) as
+#' ([MsBackendMemory()], [MsBackendDataFrame()] or [MsBackendHdf5Peaks()]) as
 #' well as read-only backends (such as the [MsBackendMzR()]).
 #' Note that for the former it is possible to apply the processing queue and
 #' write the modified peak data back to the data storage with the
-#' `applyProcessing` function.
+#' `applyProcessing()` function.
 #'
-#' - `addProcessing`: adds an arbitrary function that should be applied to the
+#' - `addProcessing()`: adds an arbitrary function that should be applied to the
 #'   peaks matrix of every spectrum in `object`. The function (can be passed
 #'   with parameter `FUN`) is expected to take a peaks matrix as input and to
 #'   return a peaks matrix. A peaks matrix is a numeric matrix with two columns,
@@ -572,7 +573,7 @@ NULL
 #'   submitted to the function as a parameter called `spectrumMsLevel`).
 #'   Examples are provided in the package vignette.
 #'
-#' - `applyProcessing`: for `Spectra` objects that use a **writeable** backend
+#' - `applyProcessing()`: for `Spectra` objects that use a **writeable** backend
 #'   only: apply all steps from the lazy processing queue to the peak data and
 #'   write it back to the data storage. Parameter `f` allows to specify how
 #'   `object` should be split for parallel processing. This should either be
@@ -580,7 +581,7 @@ NULL
 #'   parallel processing alltogether. Other partitionings might result in
 #'   errors (especially if a `MsBackendHdf5Peaks` backend is used).
 #'
-#' - `bin`: aggregates individual spectra into discrete (m/z) bins. Binning is
+#' - `bin()`: aggregates individual spectra into discrete (m/z) bins. Binning is
 #'   performed only on spectra of the specified MS level(s) (parameter
 #'   `msLevel`, by default all MS levels of `x`). The bins can be defined with
 #'   parameter `breaks` which by default are equally sized bins, with size
@@ -590,10 +591,10 @@ NULL
 #'   same bin are aggregated using the function provided with parameter `FUN`
 #'   (defaults to `FUN = sum`, i.e. all intensities are summed up). Note that
 #'   the binning operation is applied to the peak data on-the-fly upon data
-#'   access and it is possible to *revert* the operation with the `reset`
-#'   function (see description of `reset` above).
+#'   access and it is possible to *revert* the operation with the `reset()`
+#'   function (see description of `reset()` above).
 #'
-#' - `combinePeaks`: combines mass peaks within each spectrum with a difference
+#' - `combinePeaks()`: combines mass peaks within each spectrum with a difference
 #'   in their m/z values that is smaller than the maximal acceptable difference
 #'   defined by `ppm` and `tolerance`. Parameters `intensityFun` and `mzFun`
 #'   allow to define functions to aggregate the intensity and m/z values for
@@ -607,10 +608,10 @@ NULL
 #'   Additional peak variables (other than `"mz"` and `"intensity"`) are
 #'   dropped (i.e. their values are replaced with `NA`) for combined peaks
 #'   unless they are constant across the combined peaks. See also
-#'   `reduceSpectra` for a function to select a single *representative*
+#'   `reduceSpectra()` for a function to select a single *representative*
 #'   mass peak for each peak group.
 #'
-#' - `combineSpectra`: combines sets of spectra into a single spectrum per set.
+#' - `combineSpectra()`: combines sets of spectra into a single spectrum per set.
 #'   For each spectrum group (set), spectra variables from the first spectrum
 #'   are used and the peak matrices are combined using the function specified
 #'   with `FUN`, which defaults to [combinePeaksData()]. Please refer to the
@@ -624,7 +625,7 @@ NULL
 #'   processing is applied for `Spectra` with file-based backends (such as the
 #'   [MsBackendMzR()]).
 #'   Prior combination of the spectra all processings queued in the lazy
-#'   evaluation queue are applied. Be aware that calling `combineSpectra` on a
+#'   evaluation queue are applied. Be aware that calling `combineSpectra()` on a
 #'   `Spectra` object with certain backends that allow modifications might
 #'   **overwrite** the original data. This does not happen with a
 #'   `MsBackendMemory` or `MsBackendDataFrame` backend, but with a
@@ -633,7 +634,7 @@ NULL
 #'   The function returns a `Spectra` of length equal to the unique levels
 #'   of `f`.
 #'
-#' - `compareSpectra`: compares each spectrum in `x` with each spectrum in `y`
+#' - `compareSpectra()`: compares each spectrum in `x` with each spectrum in `y`
 #'   using the function provided with `FUN` (defaults to [ndotproduct()]). If
 #'   `y` is missing, each spectrum in `x` is compared with each other spectrum
 #'   in `x`.
@@ -668,7 +669,7 @@ NULL
 #'   the vignette for additional examples, such as using spectral entropy
 #'   similarity in the scoring.
 #'
-#' - `deisotopeSpectra`: *deisotopes* each spectrum keeping only the
+#' - `deisotopeSpectra()`: *deisotopes* each spectrum keeping only the
 #'   monoisotopic peak for groups of isotopologues. Isotopologues are
 #'   estimated using the [isotopologues()] function from the *MetaboCoreUtils*
 #'   package. Note that the default parameters for isotope
@@ -679,11 +680,11 @@ NULL
 #'   and code to define the parameters for isotope prediction is described
 #'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
 #'
-#' - `entropy`: calculates the entropy of each spectra based on the metrics
+#' - `entropy()`: calculates the entropy of each spectra based on the metrics
 #'    suggested by Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
 #'   See also [nentropy()] in the *MsCoreUtils* package for details.
 #'
-#' - `estimatePrecursorIntensity`: defines the precursor intensities for MS2
+#' - `estimatePrecursorIntensity()`: defines the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the
 #'   closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
 #'   respective MS2 spectrum). With `method = "interpolation"` it is also
@@ -692,21 +693,21 @@ NULL
 #'   previous and next MS1 spectrum. See [estimatePrecursorIntensity()] for
 #'   examples and more details.
 #'
-#' - `neutralLoss`: calculates neutral loss spectra for fragment spectra. See
+#' - `neutralLoss()`: calculates neutral loss spectra for fragment spectra. See
 #'   [neutralLoss()] for detailed documentation.
 #'
-#' - `processingLog`: returns a `character` vector with the processing log
+#' - `processingLog()`: returns a `character` vector with the processing log
 #'   messages.
 #'
-#' - `reduceSpectra`: keeps for groups of peaks with similar m/z values in
+#' - `reduceSpectra()`: keeps for groups of peaks with similar m/z values in
 #'   (given `ppm` and `tolerance`) in each spectrum only the peak with the
 #'   highest intensity removing all other peaks hence *reducing* each
 #'   spectrum to the highest intensity peaks per *peak group*.
 #'   Peak groups are defined using the [group()] function from the
-#'   *MsCoreUtils* package. See also the `combinePeaks` function for an
+#'   *MsCoreUtils* package. See also the `combinePeaks()` function for an
 #'   alternative function to combine peaks within each spectrum.
 #'
-#' - `scalePeaks`: scales intensities of peaks within each spectrum depending on
+#' - `scalePeaks()`: scales intensities of peaks within each spectrum depending on
 #'   parameter `by`. With `by = sum` (the default) peak intensities are divided
 #'   by the sum of peak intensities within each spectrum. The sum of
 #'   intensities is thus 1 for each spectrum after scaling. Parameter
@@ -714,7 +715,7 @@ NULL
 #'   By default (`msLevel. = uniqueMsLevels(x)`) intensities for all
 #'   spectra will be scaled.
 #'
-#' - `spectrapply`: applies a given function to each individual spectrum or sets
+#' - `spectrapply()`: applies a given function to each individual spectrum or sets
 #'   of a `Spectra` object. By default, the `Spectra` is split into individual
 #'   spectra (i.e. `Spectra` of length 1) and the function `FUN` is applied to
 #'   each of them. An alternative splitting can be defined with parameter `f`.
@@ -724,7 +725,7 @@ NULL
 #'   supported and can be configured with parameter `BPPARAM`, is however only
 #'   suggested for computational intense `FUN`.
 #'   As an alternative to the (eventual parallel) processing of the full
-#'   `Spectra`, `spectrapply` supports also a chunk-wise processing. For this,
+#'   `Spectra`, `spectrapply()` supports also a chunk-wise processing. For this,
 #'   parameter `chunkSize` needs to be specified. `object` is then split into
 #'   chunks of size `chunkSize` which are then (stepwise) processed by `FUN`.
 #'   This guarantees a lower memory demand (especially for on-disk backends)
@@ -734,7 +735,7 @@ NULL
 #'   See also [chunkapply()] or examples below for details on chunk-wise
 #'   processing.
 #'
-#' - `smooth`: smooths individual spectra using a moving window-based approach
+#' - `smooth()`: smooths individual spectra using a moving window-based approach
 #'   (window size = `2 * halfWindowSize`). Currently, the
 #'   Moving-Average- (`method = "MovingAverage"`),
 #'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
@@ -744,7 +745,7 @@ NULL
 #'   For details how to choose the correct `halfWindowSize` please see
 #'   [`MsCoreUtils::smooth()`].
 #'
-#' - `pickPeaks`: picks peaks on individual spectra using a moving window-based
+#' - `pickPeaks()`: picks peaks on individual spectra using a moving window-based
 #'   approach (window size = `2 * halfWindowSize`). For noisy spectra there
 #'   are currently two different noise estimators available,
 #'   the *M*edian *A*bsolute *D*eviation (`method = "MAD"`) and
@@ -762,7 +763,7 @@ NULL
 #'   If the ratio of the signal to the highest intensity of the peak is below
 #'   `threshold` it will be ignored for the weighted average.
 #'
-#' - `replaceIntensitiesBelow`: replaces intensities below a specified
+#' - `replaceIntensitiesBelow()`: replaces intensities below a specified
 #'   threshold with the provided `value`. Parameter `threshold` can be either
 #'   a single numeric value or a function which is applied to all non-`NA`
 #'   intensities of each spectrum to determine a threshold value for each
@@ -778,20 +779,20 @@ NULL
 #'
 #' @return See individual method description for the return value.
 #'
-#' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
+#' @param acquisitionNum for `filterPrecursorScan()`: `integer` with the
 #'     acquisition number of the spectra to which the object should be
 #'     subsetted.
 #'
-#' @param backend For `Spectra`: [MsBackend-class] to be used as backend. See
-#'     section on creation of `Spectra` objects for details. For `setBackend`:
+#' @param backend For `Spectra()`: [MsBackend-class] to be used as backend. See
+#'     section on creation of `Spectra` objects for details. For `setBackend()`:
 #'     instance of [MsBackend-class] that supports `setBackend` (i.e. for
 #'     which `supportsSetBackend` returns `TRUE`). Such backends have a
-#'     parameter `data` in their `backendInitialize` function that support
+#'     parameter `data` in their `backendInitialize()` function that support
 #'     passing the full spectra data to the initialize method. See section on
 #'     creation of `Spectra` objects for details.
-#'     For `export`: [MsBackend-class] to be used to export the data.
+#'     For `export()`: [MsBackend-class] to be used to export the data.
 #'
-#' @param binSize For `bin`: `numeric(1)` defining the size for the m/z bins.
+#' @param binSize For `bin()`: `numeric(1)` defining the size for the m/z bins.
 #'     Defaults to `binSize = 1`.
 #'
 #' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
@@ -800,7 +801,7 @@ NULL
 #'
 #' @param breaks For `bin`: `numeric` defining the m/z breakpoints between bins.
 #'
-#' @param by For `scalePeaks`: function to calculate a single `numeric` from
+#' @param by For `scalePeaks()`: function to calculate a single `numeric` from
 #'     intensity values of a spectrum by which all intensities (of
 #'     that spectrum) should be divided by. The default `by = sum` will
 #'     divide intensities of each spectrum by the sum of intensities of that
@@ -812,67 +813,68 @@ NULL
 #' @param by.y A `character(1)` specifying the column used for
 #'     merging. Set to `by.x` if missing.
 #'
-#' @param charge For `deisotopeSpectra`: expected charge of the ionized
+#' @param charge For `deisotopeSpectra()`: expected charge of the ionized
 #'     compounds. See [isotopologues()] for details.
 #'
-#' @param chunkSize For `spectrapply`: size of the chunks into which `Spectra`
+#' @param chunkSize For `spectrapply()`: size of the chunks into which `Spectra`
 #'     should be split. This parameter overrides parameters `f` and `BPPARAM`.
 #'
-#' @param columns For `spectraData` accessor: optional `character` with column
-#'     names (spectra variables) that should be included in the
+#' @param columns For `spectraData()` accessor: optional `character` with
+#'     column names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
-#'     For `peaksData` accessor: optional `character` with requested columns in
-#'     the individual `matrix` of the returned `list`. Defaults to
+#'     For `peaksData()` accessor: optional `character` with requested columns
+#'     in the individual `matrix` of the returned `list`. Defaults to
 #'     `c("mz", "value")` but any values returned by `peaksVariables(object)`
 #'     with `object` being the `Spectra` object are supported.
 #'
-#' @param match For `filterRanges` and `filterValues`: `character(1) `
+#' @param match For `filterRanges()` and `filterValues()`: `character(1) `
 #'     defining whether the condition has to match for all provided
 #'     `ranges`/`values` (`match = "all"`; the default), or for any of them
 #'     (`match = "any"`) for spectra to be retained.
 #'
-#' @param dataOrigin For `filterDataOrigin`: `character` to define which
+#' @param dataOrigin For `filterDataOrigin()`: `character` to define which
 #'     spectra to keep.
-#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
+#'     For `filterAcquisitionNum()`: optionally specify if filtering should occurr
 #'     only for spectra of selected `dataOrigin`.
 #'
-#' @param dataStorage For `filterDataStorage`: `character` to define which
+#' @param dataStorage For `filterDataStorage()`: `character` to define which
 #'     spectra to keep.
-#'     For `filterAcquisitionNum`: optionally specify if filtering should occur
+#'     For `filterAcquisitionNum()`: optionally specify if filtering should occur
 #'     only for spectra of selected `dataStorage`.
 #'
-#' @param descending For `pickPeaks`: `logical`, if `TRUE` just values between
+#' @param descending For `pickPeaks()`: `logical`, if `TRUE` just values between
 #'     the nearest valleys around the peak centroids are used.
 #
-#' @param drop For `[`, `split`: not considered.
+#' @param drop For `[`, `split()`: not considered.
 #'
-#' @param f For `split`: factor defining how to split `x`. See [base::split()]
-#'     for details. For `setBackend`: factor defining how to split the data for
+#' @param f For `split()`: factor defining how to split `x`. See [base::split()]
+#'     for details. For `setBackend()`: factor defining how to split the data for
 #'     parallelized copying of the spectra data to the new backend. For some
 #'     backends changing this parameter can lead to errors.
-#'     For `combineSpectra`: `factor` defining the grouping of the spectra that
-#'     should be combined. For `spectrapply`: `factor` how `object` should be
-#'     splitted. For `filterPrecursorScan`:
-#'     defining which spectra belong to the same original data file (sample).
-#'     Defaults to `f = dataOrigin(x)`.
-#'     For `intensity`, `mz` and `peaksData`: factor defining how data should
-#'     be chunk-wise loaded an processed. Defaults to [processingChunkFactor()].
+#'     For `combineSpectra()`: `factor` defining the grouping of the spectra that
+#'     should be combined. For `spectrapply()`: `factor` how `object` should be
+#'     splitted. For `filterPrecursorScan()`: defining which spectra belong to
+#'     the same original data file (sample): Defaults to `f = dataOrigin(x)`.
+#'     For `intensity()`, `mz()` and `peaksData()`: factor defining how data
+#'     should be chunk-wise loaded an processed. Defaults to
+#'     [processingChunkFactor()].
 #'
-#' @param FUN For `addProcessing`: function to be applied to the peak matrix
-#'     of each spectrum in `object`. For `compareSpectra`: function to compare
+#' @param FUN For `addProcessing()`: function to be applied to the peak matrix
+#'     of each spectrum in `object`. For `compareSpectra()`: function to compare
 #'     intensities of peaks between two spectra with each other.
-#'     For `combineSpectra`: function to combine the (peak matrices) of the
+#'     For `combineSpectra()`: function to combine the (peak matrices) of the
 #'     spectra. See section *Data manipulations* and examples below for more
 #'     details.
-#'     For `bin`: function to aggregate intensity values of peaks falling into
-#'     the same bin. Defaults to `FUN = sum` thus summing up intensities.
-#'     For `spectrapply` and `chunkapply`: function to be applied to `Spectra`.
+#'     For `bin()`: function to aggregate intensity values of peaks falling
+#'     into the same bin. Defaults to `FUN = sum` thus summing up intensities.
+#'     For `spectrapply()` and `chunkapply()`: function to be applied to
+#'     `Spectra`.
 #'
 #' @param halfWindowSize
-#' - For `pickPeaks`: `integer(1)`, used in the
+#' - For `pickPeaks()`: `integer(1)`, used in the
 #'   identification of the mass peaks: a local maximum has to be the maximum
 #'   in the window from `(i - halfWindowSize):(i + halfWindowSize)`.
-#' - For `smooth`: `integer(1)`, used in the smoothing algorithm, the window
+#' - For `smooth()`: `integer(1)`, used in the smoothing algorithm, the window
 #'   reaches from `(i - halfWindowSize):(i + halfWindowSize)`.
 #' - For `filterFourierTransformArtefacts`: `numeric(1)` defining the m/z window
 #'   left and right of a peak where to remove fourier transform artefacts.
@@ -881,205 +883,209 @@ NULL
 #'
 #' @param j For `[`: not supported.
 #'
-#' @param initial For `tic`: `logical(1)` whether the initially
+#' @param initial For `tic()`: `logical(1)` whether the initially
 #'     reported total ion current should be reported, or whether the
 #'     total ion current should be (re)calculated on the actual data
-#'     (`initial = FALSE`, same as `ionCount`).
+#'     (`initial = FALSE`, same as `ionCount()`).
 #'
-#' @param intensity For `filterIntensity`: `numeric` of length 1 or 2 defining
-#'     either the lower or the lower and upper intensity limit for the
+#' @param intensity For `filterIntensity()`: `numeric` of length 1 or 2
+#'     defining either the lower or the lower and upper intensity limit for the
 #'     filtering, or a `function` that takes the intensities as input and
 #'     returns a `logical` (same length then peaks in the spectrum) whether the
 #'     peak should be retained or not. Defaults to `intensity = c(0, Inf)` thus
 #'     only peaks with `NA` intensity are removed.
 #'
-#' @param intensityFun For `combinePeaks`: function to be used to aggregate
+#' @param intensityFun For `combinePeaks()`: function to be used to aggregate
 #'     intensities for all peaks in each peak group into a single intensity
 #'     value.
 #'
-#' @param isotopeTolerance For `filterFourierTransformArtefacts`: the m/z
+#' @param isotopeTolerance For `filterFourierTransformArtefacts()`: the m/z
 #'     `tolerance` to be used to define whether peaks might be isotopes of
 #'     the current tested peak.
 #'
-#' @param k For `pickPeaks`: `integer(1)`, number of values left and right of
+#' @param k For `pickPeaks()`: `integer(1)`, number of values left and right of
 #'  the peak that should be considered in the weighted mean calculation.
 #'
-#' @param keep For `filterMzValues` and `filterMzRange`: `logical(1)` whether
-#'     the matching peaks should be retained (`keep = TRUE`, the default`)
-#'     or dropped (`keep = FALSE`).
+#' @param keep For `filterMzValues()` and `filterMzRange()`: `logical(1)`
+#'     whether  the matching peaks should be retained (`keep = TRUE`, the
+#'     default) or dropped (`keep = FALSE`).
 #'
-#' @param keepIsotopes For `filterFourierTransformArtefacts`: whether isotope
+#' @param keepIsotopes For `filterFourierTransformArtefacts()`: whether isotope
 #'     peaks should not be removed as fourier artefacts.
 #'
-#' @param maxCharge For `filterFourierTransformArtefacts`: the maximum charge
+#' @param maxCharge For `filterFourierTransformArtefacts()`: the maximum charge
 #'     to be considered for isotopes.
 #'
-#' @param MAPFUN For `compareSpectra`: function to map/match peaks between the
+#' @param MAPFUN For `compareSpectra()`: function to map/match peaks between the
 #'     two compared spectra. See [joinPeaks()] for more information and possible
 #'     functions.
 #'
 #' @param method
-#' - For `pickPeaks`: `character(1)`, the noise estimators that
+#' - For `pickPeaks()`: `character(1)`, the noise estimators that
 #'   should be used, currently the the *M*edian *A*bsolute *D*eviation
 #'   (`method = "MAD"`) and Friedman's Super Smoother
 #'   (`method = "SuperSmoother"`) are supported.
-#' - For `smooth`: `character(1)`, the smoothing function that should be used,
+#' - For `smooth()`: `character(1)`, the smoothing function that should be used,
 #'   currently, the Moving-Average- (`method = "MovingAverage"`),
 #'   Weighted-Moving-Average- (`method = "WeightedMovingAverage")`,
 #'   Savitzky-Golay-Smoothing (`method = "SavitzkyGolay"`) are supported.
 #'
-#' @param metadata For `Spectra`: optional `list` with metadata information.
+#' @param metadata For `Spectra()`: optional `list` with metadata information.
 #'
 #' @param msLevel. `integer` defining the MS level(s) of the spectra to which
 #'     the function should be applied (defaults to all MS levels of `object`.
-#'     For `filterMsLevel`: the MS level to which `object` should be subsetted.
+#'     For `filterMsLevel()`: the MS level to which `object` should be subsetted.
 #'
-#' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
-#'     filter the object. For `filterPrecursorMz` and `filterMzRange`:
+#' @param mz For `filterIsolationWindow()`: `numeric(1)` with the m/z value to
+#'     filter the object. For `filterPrecursorMz()` and `filterMzRange()`:
 #'     `numeric(2)` defining the lower and upper m/z boundary.
-#'     For `filterMzValues` and `filterPrecursorMzValues`: `numeric` with the
-#'     m/z values to match peaks or precursor m/z against.
+#'     For `filterMzValues()` and `filterPrecursorMzValues()`: `numeric` with
+#'     the m/z values to match peaks or precursor m/z against.
 #'
-#' @param mzFun For `combinePeaks`: function to aggregate m/z values for all
+#' @param mzFun For `combinePeaks()`: function to aggregate m/z values for all
 #'     peaks within each peak group into a single m/z value. This parameter
 #'     is ignored if `weighted = TRUE` (the default).
 #'
-#' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
-#'     to filter for.
+#' @param n for `filterAcquisitionNum()`: `integer` with the acquisition
+#'     numbers to filter for.
 #'
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
 #'
-#' @param neutralLoss for `containsNeutralLoss`: `numeric(1)` defining the value
-#'     which should be subtracted from the spectrum's precursor m/z.
+#' @param neutralLoss for `containsNeutralLoss()`: `numeric(1)` defining the
+#'     value which should be subtracted from the spectrum's precursor m/z.
 #'
-#' @param normalized for `entropy`: `logical(1)` whether the normalized entropy
-#'     should be calculated (default). See also [nentropy()] for details.
+#' @param normalized for `entropy()`: `logical(1)` whether the normalized
+#'     entropy should be calculated (default). See also [nentropy()] for
+#'     details.
 #'
-#' @param object For `Spectra`: either a `DataFrame` or `missing`. See section
-#'     on creation of `Spectra` objects for details. For all other methods a
-#'     `Spectra` object.
+#' @param object For `Spectra()`: either a `DataFrame` or `missing`. See
+#'     section on creation of `Spectra` objects for details. For all other
+#'     methods a `Spectra` object.
 #'
-#' @param p For `combineSpectra`: `factor` defining how to split the input
+#' @param p For `combineSpectra()`: `factor` defining how to split the input
 #'     `Spectra` for parallel processing. Defaults to `x$dataStorage`, i.e.,
 #'     depending on the used backend, per-file parallel processing will be
 #'     performed.
 #'
-#' @param polarity for `filterPolarity`: `integer` specifying the polarity to
+#' @param polarity for `filterPolarity()`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
-#' @param ppm For `compareSpectra`, `containsMz`, `deisotopeSpectra`,
-#'     `filterMzValues` and `reduceSpectra`: `numeric(1)`
+#' @param ppm For `compareSpectra()`, `containsMz()`, `deisotopeSpectra()`,
+#'     `filterMzValues()` and `reduceSpectra()`: `numeric(1)`
 #'     defining a relative, m/z-dependent, maximal accepted difference between
 #'     m/z values for peaks to be matched (or grouped).
-#'     For `filterPrecursorMaxIntensity`: `numeric(1)` defining the relative
+#'     For `filterPrecursorMaxIntensity()`: `numeric(1)` defining the relative
 #'     maximal accepted difference of precursor m/z values of spectra for
-#'     grouping them into *precursor groups*. For `filterPrecursorIsotopes`:
+#'     grouping them into *precursor groups*. For `filterPrecursorIsotopes()`:
 #'     passed directly to the [isotopologues()] function.
-#'     For `filterValues`: `numeric` of any length allowing to define
+#'     For `filterValues()`: `numeric` of any length allowing to define
 #'     a maximal accepted difference between user input `values` and the
 #'     `spectraVariables` values.  If it is not equal to the length of the
 #'     value provided with parameter `spectraVariables`, `ppm[1]` will be
 #'     recycled.
 #'
-#' @param processingQueue For `Spectra`: optional `list` of
+#' @param processingQueue For `Spectra()`: optional `list` of
 #'     [ProcessingStep-class] objects.
 #'
-#' @param ranges for `filterRanges`: A `numeric` vector of paired values (upper
-#'     and lower boundary) that define the ranges to filter the `object`.
+#' @param ranges for `filterRanges()`: A `numeric` vector of paired values
+#'     (upper and lower boundary) that define the ranges to filter the `object`.
 #'     These paired values need to be in the same order as the
 #'     `spectraVariables` parameter (see below).
 #'
-#' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
+#' @param rt for `filterRt()`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
-#' @param SIMPLIFY For `compareSpectra` whether the result matrix should be
+#' @param SIMPLIFY For `compareSpectra()` whether the result matrix should be
 #'     *simplified* to a `numeric` if possible (i.e. if either `x` or `y` is
 #'     of length 1).
 #'
-#' @param snr For `pickPeaks`: `double(1)` defining the
+#' @param snr For `pickPeaks()`: `double(1)` defining the
 #'     *S*ignal-to-*N*oise-*R*atio. The intensity of a local maximum has to be
 #'     higher than `snr * noise` to be considered as peak.
 #'
-#' @param source For `Spectra`: instance of [MsBackend-class] that can be used
+#' @param source For `Spectra()`: instance of [MsBackend-class] that can be used
 #'     to import spectrum data from the provided files. See section *Creation
 #'     of objects, conversion and changing the backend* for more details.
 #'
 #' @param spectraVariables
-#' - For `selectSpectraVariables`: `character` with the
+#' - For `selectSpectraVariables()`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
-#' - For `addProcessing`: `character` with additional spectra variables that
+#' - For `addProcessing()`: `character` with additional spectra variables that
 #'     should be passed along to the function defined with `FUN`. See function
 #'     description for details.
-#' - For `filterRanges` and `filterValues`: `character` vector specifying the
-#'     column(s) from `spectraData(object)` on which to filter the data and
+#' - For `filterRanges()` and `filterValues()`: `character` vector specifying
+#'     the column(s) from `spectraData(object)` on which to filter the data and
 #'     that correspond to the the names of the spectra variables that should be
 #'     used for the filtering.
 #'
-#' @param substDefinition For `deisotopeSpectra` and `filterPrecursorIsotopes`:
-#'     `matrix` or `data.frame` with definitions of isotopic substitutions.
-#'     Uses by default isotopic substitutions defined from all compounds in the
-#'     Human Metabolome Database (HMDB). See [isotopologues()] or
-#'     [isotopicSubstitutionMatrix()] for details.
+#' @param substDefinition For `deisotopeSpectra()` and
+#'     `filterPrecursorIsotopes()`: `matrix` or `data.frame` with definitions
+#'     of isotopic substitutions. Uses by default isotopic substitutions
+#'     defined from all compounds in the Human Metabolome Database (HMDB). See
+#'     [isotopologues()] or [isotopicSubstitutionMatrix()] for details.
 #'
 #' @param suffix.y A `character(1)` specifying the suffix to be used
 #'     for making the names of columns in the merged spectra variables
 #'     unique. This suffix will be used to amend `names(y)`, while
 #'     `spectraVariables(x)` will remain unchanged.
 #'
-#' @param tolerance For `compareSpectra`, `containsMz`, `deisotopeSpectra`,
-#'     `filterMzValues` and `reduceSpectra`: `numeric(1)` allowing to define
-#'     a constant maximal accepted difference between m/z values for peaks
-#'     to be matched (or grouped). For `containsMz` it can also be of length
-#'     equal `mz` to specify a different tolerance for each m/z value.
-#'     For `filterPrecursorMaxIntensity`: `numeric(1)` defining the (constant)
-#'     maximal accepted difference of precursor m/z values of spectra for
-#'     grouping them into *precursor groups*. For `filterPrecursorIsotopes`:
-#'     passed directly to the [isotopologues()] function.
-#'     For `filterValues`: `numeric` of any length allowing to define
+#' @param tolerance For `compareSpectra()`, `containsMz()`,
+#'     `deisotopeSpectra()`, `filterMzValues()` and `reduceSpectra()`:
+#'     `numeric(1)` allowing to define a constant maximal accepted difference
+#'     between m/z values for peaks to be matched (or grouped). For
+#'     `containsMz` it can also be of length equal `mz` to specify a different
+#'     tolerance for each m/z value.
+#'     For `filterPrecursorMaxIntensity()`: `numeric(1)` defining the
+#'     (constant) maximal accepted difference of precursor m/z values of
+#'     spectra for grouping them into *precursor groups*. For
+#'     `filterPrecursorIsotopes()`: passed directly to the [isotopologues()]
+#'     function. For `filterValues()`: `numeric` of any length allowing to define
 #'     a maximal accepted difference between user input `values` and the
 #'     spectraVariables values. If it is not equal to the length of the
 #'     value provided with parameter `spectraVariables`, `tolerance[1]` will be
 #'     recycled. Default is `tolerance = 0`
 #'
 #' @param threshold
-#' - For `pickPeaks`: a `double(1)` defining the proportion of the maximal peak
-#'      intensity. Just values above are used for the weighted mean calculation.
-#' - For `replaceIntensitiesBelow`: a `numeric(1)` defining the threshold or
+#' - For `pickPeaks()`: a `double(1)` defining the proportion of the maximal
+#'   peak intensity. Just values above are used for the weighted mean
+#'   calculation.
+#' - For `replaceIntensitiesBelow()`: a `numeric(1)` defining the threshold or
 #'   a `function` to calculate the threshold for each spectrum on its intensity
 #'   values. Defaults to `threshold = min`.
-#' - For `filterFourierTransformArtefacts`: the relative intensity (to a peak)
+#' - For `filterFourierTransformArtefacts()`: the relative intensity (to a peak)
 #'   below which peaks are considered fourier artefacts. Defaults to
 #'   `threshold = 0.2` hence removing peaks that have an intensity below 0.2
 #'   times the intensity of the tested peak (within the selected
 #'   `halfWindowSize`).
 #'
-#' @param use.names For `lengths`: ignored.
+#' @param use.names For `lengths()`: ignored.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
-#' @param values for `filterValues`: A `numeric` vector that define the values
-#'     to filter the Spectra data. These values need to be in the same order as
-#'     the `spectraVariables` parameter.
+#' @param values for `filterValues()`: A `numeric` vector that define the
+#'     values to filter the Spectra data. These values need to be in the same
+#'     order as the `spectraVariables` parameter.
 #'
-#' @param weighted For `combinePeaks`: `logical(1)` whether m/z values of peaks
-#'     within each peak group should be aggregated into a single m/z value
-#'     using an intensity-weighted mean. Defaults to `weighted = TRUE`.
+#' @param weighted For `combinePeaks()`: `logical(1)` whether m/z values of
+#'     peaks within each peak group should be aggregated into a single m/z
+#'     value using an intensity-weighted mean. Defaults to `weighted = TRUE`.
 #'
-#' @param which for `containsMz`: either `"any"` or `"all"` defining whether any
-#'     (the default) or all provided `mz` have to be present in the spectrum.
+#' @param which for `containsMz()`: either `"any"` or `"all"` defining whether
+#'     any (the default) or all provided `mz` have to be present in the
+#'     spectrum.
 #'
 #' @param x A `Spectra` object.
 #'
 #' @param y A `Spectra` object. A `DataFrame` for `joinSpectraData()`.
 #'
-#' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
-#'     to be used as filter.
+#' @param z For `filterPrecursorCharge()`: `integer()` with the precursor
+#'     charges to be used as filter.
 #'
-#' @param zero.rm `logical`. For `bin`: indicating whether to remove bins with
-#'     zero intensity. Defaults to `TRUE`, meaning the function will discard
-#'     bins created with an intensity of 0 to enhance memory efficiency.
+#' @param zero.rm `logical`. For `bin()`: indicating whether to remove bins
+#'     with zero intensity. Defaults to `TRUE`, meaning the function will
+#'     discard bins created with an intensity of 0 to enhance memory efficiency.
 #'
 #' @param ... Additional arguments.
 #'
@@ -1253,7 +1259,7 @@ NULL
 #'     tolerance = 0.3, keep = FALSE)
 #' mz(sps_sub)
 #'
-#' ## Note that `filterMzValues` keeps or removes all peaks with a matching
+#' ## Note that `filterMzValues()` keeps or removes all peaks with a matching
 #' ## m/z given the provided `ppm` and `tolerance` parameters.
 #'
 #' ## Filter a Spectra keeping only peaks within a m/z range
@@ -1320,7 +1326,7 @@ NULL
 #' filt_spectra <- filterRanges(sciex, spectraVariables = sv,
 #'                 ranges = ranges)
 #'
-#' ## Using `filterRanges` to filter spectra object with multiple ranges for
+#' ## Using `filterRanges()` to filter spectra object with multiple ranges for
 #' ## the same `spectraVariable` (e.g, here rtime)
 #' sv <- c("rtime", "rtime")
 #' ranges <- c(30, 100, 200, 300)
@@ -1372,7 +1378,7 @@ NULL
 #' lengths(mz(res))
 #' lengths(mz(data))
 #'
-#' ## In addition it is possible to pass a function to `filterIntensity`: in
+#' ## In addition it is possible to pass a function to `filterIntensity()`: in
 #' ## the example below we want to keep only peaks that have an intensity which
 #' ## is larger than one third of the maximal peak intensity in that spectrum.
 #' keep_peaks <- function(x, prop = 3) {
@@ -1391,16 +1397,16 @@ NULL
 #'
 #' ## Since data manipulation operations are by default not directly applied to
 #' ## the data but only added to the internal lazy evaluation queue, it is also
-#' ## possible to remove these data manipulations with the `reset` function:
+#' ## possible to remove these data manipulations with the `reset()` function:
 #' res_rest <- reset(res)
 #' res_rest
 #' lengths(mz(res_rest))
 #' lengths(mz(res))
 #' lengths(mz(data))
 #'
-#' ## `reset` after a `applyProcessing` can not restore the data, because the
-#' ## data in the backend was changed. Similarly, `reset` after any filter
-#' ## operations can not restore data for a `Spectra` with a
+#' ## `reset()` after a `applyProcessing()` can not restore the data, because
+#' ## the data in the backend was changed. Similarly, `reset()` after any
+#' ## filter operations can not restore data for a `Spectra` with a
 #' ## `MsBackendMemory` or `MsBackendDataFrame`.
 #' res_2 <- applyProcessing(res)
 #' res_rest <- reset(res_2)
@@ -1442,7 +1448,7 @@ NULL
 #' head(res)
 #'
 #' ## It is however important to note that dedicated methods to access the
-#' ## data (such as `intensity`) are much more efficient than using `lapply`:
+#' ## data (such as `intensity`) are much more efficient than using `lapply()`:
 #' res <- lapply(intensity(sciex_im[1:20]), mean)
 #' head(res)
 #'

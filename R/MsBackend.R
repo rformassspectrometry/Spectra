@@ -50,54 +50,54 @@
 #'
 #' See below for more details about individual backends.
 #'
-#' @param acquisitionNum for `filterPrecursorScan`: `integer` with the
+#' @param acquisitionNum for `filterPrecursorScan()`: `integer` with the
 #'     acquisition number of the spectra to which the object should be
 #'     subsetted.
 #'
-#' @param BPPARAM for `backendBpparam`: parameter object from the
+#' @param BPPARAM for `backendBpparam()`: parameter object from the
 #'     `BiocParallel` package defining the parallel processing setup.
 #'     Defaults to `BPPARAM = bpparam()`. See [bpparam()] for more
 #'     information.
 #'
-#' @param columns For `spectraData` accessor: optional `character` with column
-#'     names (spectra variables) that should be included in the
+#' @param columns For `spectraData()` accessor: optional `character` with
+#'     column names (spectra variables) that should be included in the
 #'     returned `DataFrame`. By default, all columns are returned.
-#'     For `peaksData` accessor: optional `character` with requested columns in
-#'     the individual `matrix` of the returned `list`. Defaults to
+#'     For `peaksData()` accessor: optional `character` with requested columns
+#'     in the individual `matrix` of the returned `list`. Defaults to
 #'     `peaksVariables(object)` and depends on what *peaks variables* the
 #'     backend provides.
 #'
-#' @param match For `filterRanges` and `filterValues`: `character(1) `
+#' @param match For `filterRanges()` and `filterValues()`: `character(1) `
 #'     defining whether the condition has to match for all provided
 #'     `ranges`/`values` (`match = "all"`; the default), or for any of them
 #'     (`match = "any"`) for spectra to be retained.
 #'
-#' @param data For `backendInitialize`: `DataFrame` with spectrum
+#' @param data For `backendInitialize()`: `DataFrame` with spectrum
 #'     metadata/data. This parameter can be empty for `MsBackendMzR` backends
 #'     but needs to be provided for `MsBackendDataFrame` backends.
 #'
-#' @param dataOrigin For `filterDataOrigin`: `character` to define which
+#' @param dataOrigin For `filterDataOrigin()`: `character` to define which
 #'     spectra to keep.
-#'     For `filterAcquisitionNum`: optionally specify if filtering should occurr
-#'     only for spectra of selected `dataOrigin`.
+#'     For `filterAcquisitionNum()`: optionally specify if filtering should
+#'     occur only for spectra of selected `dataOrigin`.
 #'
-#' @param dataStorage For `filterDataStorage`: `character` to define which
+#' @param dataStorage For `filterDataStorage()`: `character` to define which
 #'     spectra to keep.
-#'     For `filterAcquisitionNum`: optionally specify if filtering should occur
+#'     For `filterAcquisitionNum()`: optionally specify if filtering should occur
 #'     only for spectra of selected `dataStorage`.
 #'
 #' @param drop For `[`: not considered.
 #'
 #' @param f `factor` defining the grouping to split `x`. See [split()]. For
-#'     `filterPrecursorScan`: factor defining from which original data files
+#'     `filterPrecursorScan()`: factor defining from which original data files
 #'     the spectra derive to avoid selecting spectra from different
 #'     samples/files. Defaults to `f = dataOrigin(object)`.
 #'
-#' @param file For `filterFile`: index or name of the file(s) to which the data
-#'     should be subsetted. For `export`: `character` of length 1 or equal to
-#'     the number of spectra.
+#' @param file For `filterFile()`: index or name of the file(s) to which the
+#'     data should be subsetted. For `export()`: `character` of length 1 or
+#'     equal to the number of spectra.
 #'
-#' @param initial For `tic`: `logical(1)` whether the initially
+#' @param initial For `tic()`: `logical(1)` whether the initially
 #'     reported total ion current should be reported, or whether the
 #'     total ion current should be (re)calculated on the actual data
 #'     (`initial = FALSE`).
@@ -107,75 +107,75 @@
 #' @param j For `[`: not supported.
 #'
 #' @param msLevel `integer` defining the MS level of the spectra to which the
-#'     function should be applied. For `filterMsLevel`: the MS level to which
+#'     function should be applied. For `filterMsLevel()`: the MS level to which
 #'     `object` should be subsetted.
 #'
 #' @param msLevel. same as `msLevel` above.
 #'
-#' @param mz For `filterIsolationWindow`: `numeric(1)` with the m/z value to
-#'     filter the object. For `filterPrecursorMzRange`: `numeric(2)` with the
-#'     lower and upper m/z boundary. For `filterPrecursorMzValues`: `numeric`
+#' @param mz For `filterIsolationWindow()`: `numeric(1)` with the m/z value to
+#'     filter the object. For `filterPrecursorMzRange()`: `numeric(2)` with the
+#'     lower and upper m/z boundary. For `filterPrecursorMzValues()`: `numeric`
 #'     with the m/z value(s) to filter the object.
 #'
-#' @param peaksVariables For `backendInitialize` for `MsBackendMemory`:
+#' @param peaksVariables For `backendInitialize()` for `MsBackendMemory`:
 #'     `character` specifying which of the columns of the provided `data`
 #'     contain *peaks variables* (i.e. information for individual mass
 #'     peaks). Defaults to `peaksVariables = c("mz", "intensity")`. `"mz"`
 #'     and `"intensity"` should **always** be specified.
 #'
-#' @param ppm For `filterPrecursorMzValues`: `numeric(1)` with the m/z-relative
-#'     maximal acceptable difference for a m/z to be considered matching. See
-#'     [closest()] for details.
-#'     For `filterValues`: `numeric` of any length allowing to define
+#' @param ppm For `filterPrecursorMzValues()`: `numeric(1)` with the
+#'     m/z-relative maximal acceptable difference for a m/z to be considered
+#'     matching. See [closest()] for details.
+#'     For `filterValues()`: `numeric` of any length allowing to define
 #'     a maximal accepted difference between user input `values` and the
 #'     `spectraVariables` values.  If it is not equal to the length of the
 #'     value provided with parameter `spectraVariables`, `ppm[1]` will be
 #'     recycled.
 #'
-#' @param z For `filterPrecursorCharge`: `integer()` with the precursor charges
-#'     to be used as filter.
+#' @param z For `filterPrecursorCharge()`: `integer()` with the precursor
+#'     charges to be used as filter.
 #'
-#' @param n for `filterAcquisitionNum`: `integer` with the acquisition numbers
-#'     to filter for.
+#' @param n for `filterAcquisitionNum()`: `integer` with the acquisition
+#'     numbers to filter for.
 #'
 #' @param name For `$` and `$<-`: the name of the spectra variable to return
 #'     or set.
 #'
 #' @param object Object extending `MsBackend`.
 #'
-#' @param polarity For `filterPolarity`: `integer` specifying the polarity to
+#' @param polarity For `filterPolarity()`: `integer` specifying the polarity to
 #'     to subset `object`.
 #'
-#' @param ranges for `filterRanges`: A `numeric` vector of paired values (upper
-#'     and lower boundary) that define the ranges to filter the `object`.
+#' @param ranges for `filterRanges()`: A `numeric` vector of paired values
+#'     (upper and lower boundary) that define the ranges to filter the `object`.
 #'     These paired values need to be in the same order as the
 #'     `spectraVariables` parameter (see below).
 #'
-#' @param rt for `filterRt`: `numeric(2)` defining the retention time range to
-#'     be used to subset/filter `object`.
+#' @param rt for `filterRt()`: `numeric(2)` defining the retention time range
+#'     to be used to subset/filter `object`.
 #'
-#' @param spectraVariables For `selectSpectraVariables`: `character` with the
+#' @param spectraVariables For `selectSpectraVariables()`: `character` with the
 #'     names of the spectra variables to which the backend should be subsetted.
-#'     For `filterRanges` and `filterValues`: `character` vector specifying the
-#'     column(s) from `spectraData(object)` on which to filter the data and
+#'     For `filterRanges()` and `filterValues()`: `character` vector specifying
+#'     the column(s) from `spectraData(object)` on which to filter the data and
 #'     that correspond to the the names of the spectra variables that should be
 #'     used for the filtering.
 #'
-#' @param tolerance For `filterPrecursorMzValues`: `numeric(1)` with the
+#' @param tolerance For `filterPrecursorMzValues()`: `numeric(1)` with the
 #'     maximal absolute acceptable difference for a m/z value to be considered
-#'     matching. See [closest()] for details. For `filterValues`: `numeric`
+#'     matching. See [closest()] for details. For `filterValues()`: `numeric`
 #'     accepted tolerance between the `values` and the spectra variables.
 #'     Defaults to `tolerance = 0`. If it is not equal to the length of the
 #'     value provided with parameter `spectraVariables`, `tolerance[1]` will
 #'     be recycled.
 #'
-#' @param use.names For `lengths`: whether spectrum names should be used.
+#' @param use.names For `lengths()`: whether spectrum names should be used.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
-#' @param values for `filterValues`: A `numeric` vector that define the values
-#'     to filter the `object`. `values` needs to be of same length than
+#' @param values for `filterValues()`: A `numeric` vector that define the
+#'     values to filter the `object`. `values` needs to be of same length than
 #'     parameter `spectraVariables` and in the same order.
 #'
 #' @param x Object extending `MsBackend`.
@@ -229,11 +229,11 @@
 #'   backend. The default implementation uses `$`, thus these methods don't have
 #'   to be implemented for new classes extending `MsBackend`.
 #'
-#' - `acquisitionNum`: returns the acquisition number of each
+#' - `acquisitionNum()`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `backendBpparam`: return the parallel processing setup supported by
+#' - `backendBpparam()`: return the parallel processing setup supported by
 #'   the backend class. This function can be used by any higher
 #'   level function to evaluate whether the provided parallel processing
 #'   setup (or the default one returned by `bpparam()`) is supported
@@ -245,7 +245,7 @@
 #'   function to provide a preferred splitting of the backend for parallel
 #'   processing.
 #'
-#' - `backendInitialize`: initialises the backend. This method is
+#' - `backendInitialize()`: initialises the backend. This method is
 #'   supposed to be called rights after creating an instance of the
 #'   backend class and should prepare the backend (e.g. set the data
 #'   for the memory backend or read the spectra header data for the
@@ -260,11 +260,11 @@
 #'   The `backendInitialize` method has also to ensure to correctly set
 #'   spectra variable `dataStorage`.
 #'
-#' - `backendMerge`: merges (combines) `MsBackend` objects into a single
+#' - `backendMerge()`: merges (combines) `MsBackend` objects into a single
 #'   instance. All objects to be merged have to be of the same type (e.g.
 #'   [MsBackendDataFrame()]).
 #'
-#' - `backendParallelFactor`: returns a `factor` defining an optimal
+#' - `backendParallelFactor()`: returns a `factor` defining an optimal
 #'   (preferred) way how the backend can be split for parallel processing
 #'   used for all peak data accessor or data manipulation functions.
 #'   The default implementation returns a factor of length 0 (`factor()`)
@@ -272,36 +272,36 @@
 #'   `MsBackendMzR` on the other hand returns `factor(dataStorage(object))`
 #'   hence suggesting to split the object by data file.
 #'
-#' - `dataOrigin`: gets a `character` of length equal to the number of spectra
-#'   in `object` with the *data origin* of each spectrum. This could e.g. be
-#'   the mzML file from which the data was read.
+#' - `dataOrigin()`: gets a `character` of length equal to the number of
+#'   spectra in `object` with the *data origin* of each spectrum. This could
+#'   e.g. be the mzML file from which the data was read.
 #'
-#' - `dataStorage`: gets a `character` of length equal to the number of spectra
-#'   in `object` with the data storage of each spectrum. Note that a
+#' - `dataStorage()`: gets a `character` of length equal to the number of
+#'   spectra in `object` with the data storage of each spectrum. Note that a
 #'   `dataStorage` of `NA_character_` is not supported.
 #'
-#' - `dropNaSpectraVariables`: removes spectra variables (i.e. columns in the
+#' - `dropNaSpectraVariables()`: removes spectra variables (i.e. columns in the
 #'   object's `spectraData` that contain only missing values (`NA`). Note that
-#'   while columns with only `NA`s are removed, a `spectraData` call after
-#'   `dropNaSpectraVariables` might still show columns containing `NA` values
+#'   while columns with only `NA`s are removed, a `spectraData()` call after
+#'   `dropNaSpectraVariables()` might still show columns containing `NA` values
 #'   for *core* spectra variables.
 #'
-#' - `centroided`, `centroided<-`: gets or sets the centroiding
-#'   information of the spectra. `centroided` returns a `logical`
+#' - `centroided()`, `centroided<-`: gets or sets the centroiding
+#'   information of the spectra. `centroided()` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
 #'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
-#'   if it is undefined. See also `isCentroided` for estimating from
+#'   if it is undefined. See also `isCentroided()` for estimating from
 #'   the spectrum data whether the spectrum is centroided.  `value`
 #'   for `centroided<-` is either a single `logical` or a `logical` of
 #'   length equal to the number of spectra in `object`.
 #'
-#' - `collisionEnergy`, `collisionEnergy<-`: gets or sets the
-#'   collision energy for all spectra in `object`. `collisionEnergy`
+#' - `collisionEnergy()`, `collisionEnergy<-`: gets or sets the
+#'   collision energy for all spectra in `object`. `collisionEnergy()`
 #'   returns a `numeric` with length equal to the number of spectra
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `export`: exports data from a `Spectra` class to a file. This method is
+#' - `export()`: exports data from a `Spectra` class to a file. This method is
 #'   called by the `export,Spectra` method that passes itself as a second
 #'   argument to the function. The `export,MsBackend` implementation is thus
 #'   expected to take a `Spectra` class as second argument from which all data
@@ -313,78 +313,78 @@
 #'   *mzML* or *mzXML* format. See the documentation for the `MsBackendMzR`
 #'   class below for more information.
 #'
-#' - `filterAcquisitionNum`: filters the object keeping only spectra matching
+#' - `filterAcquisitionNum()`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
 #'   `dataStorage` is also provided, `object` is subsetted to the spectra with
 #'   an acquisition number equal to `n` **in spectra with matching dataOrigin
 #'   or dataStorage values** retaining all other spectra.
 #'
-#' - `filterDataOrigin`: filters the object retaining spectra matching the
+#' - `filterDataOrigin()`: filters the object retaining spectra matching the
 #'   provided `dataOrigin`. Parameter `dataOrigin` has to be of type
 #'   `character` and needs to match exactly the data origin value of the
 #'   spectra to subset.
-#'   `filterDataOrigin` should return the data ordered by the provided
+#'   `filterDataOrigin()` should return the data ordered by the provided
 #'   `dataOrigin` parameter, i.e. if `dataOrigin = c("2", "1")` was provided,
 #'   the spectra in the resulting object should be ordered accordingly (first
 #'   spectra from data origin `"2"` and then from `"1"`).
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterDataStorage`: filters the object retaining spectra matching the
+#' - `filterDataStorage()`: filters the object retaining spectra matching the
 #'   provided `dataStorage`. Parameter `dataStorage` has to be of type
 #'   `character` and needs to match exactly the data storage value of the
 #'   spectra to subset.
-#'   `filterDataStorage` should return the data ordered by the provided
+#'   `filterDataStorage()` should return the data ordered by the provided
 #'   `dataStorage` parameter, i.e. if `dataStorage = c("2", "1")` was provided,
 #'   the spectra in the resulting object should be ordered accordingly (first
 #'   spectra from data storage `"2"` and then from `"1"`).
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterEmptySpectra`: removes empty spectra (i.e. spectra without peaks).
+#' - `filterEmptySpectra()`: removes empty spectra (i.e. spectra without peaks).
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterFile`: retains data of files matching the file index or file name
+#' - `filterFile()`: retains data of files matching the file index or file name
 #'    provided with parameter `file`.
 #'
-#' - `filterIsolationWindow`: retains spectra that contain `mz` in their
+#' - `filterIsolationWindow()`: retains spectra that contain `mz` in their
 #'   isolation window m/z range (i.e. with an `isolationWindowLowerMz` `<=` `mz`
 #'   and `isolationWindowUpperMz` `>=` `mz`.
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterMsLevel`: retains spectra of MS level `msLevel`.
+#' - `filterMsLevel()`: retains spectra of MS level `msLevel`.
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterPolarity`: retains spectra of polarity `polarity`.
+#' - `filterPolarity()`: retains spectra of polarity `polarity`.
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterPrecursorMzRange` (previously `filterPrecursorMz`): retains spectra
-#'   with a precursor m/z within the provided m/z range.
+#' - `filterPrecursorMzRange()` (previously `filterPrecursorMz`): retains
+#'   spectra with a precursor m/z within the provided m/z range.
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterPrecursorMzValues`: retains spectra with a precursor m/z matching
+#' - `filterPrecursorMzValues()`: retains spectra with a precursor m/z matching
 #'   any of the provided m/z values (given `ppm` and `tolerance`).
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterPrecursorCharge`: retains spectra with the defined precursor
+#' - `filterPrecursorCharge()`: retains spectra with the defined precursor
 #'   charge(s).
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterPrecursorScan`: retains parent (e.g. MS1) and children scans (e.g.
+#' - `filterPrecursorScan()`: retains parent (e.g. MS1) and children scans (e.g.
 #'    MS2) of acquisition number `acquisitionNum`. Parameter `f` is supposed to
 #'   define the origin of the spectra (i.e. the original data file) to ensure
 #'   related spectra from the same file/sample are selected and retained.
 #'   Implementation of this method is optional since a default implementation
 #'   for `MsBackend` is available.
 #'
-#' - `filterRanges`: allows filtering of the `Spectra` object based on user
+#' - `filterRanges()`: allows filtering of the `Spectra` object based on user
 #'    defined *numeric* ranges (parameter `ranges`) for one or more available
 #'    spectra variables in object (spectra variable names can be specified with
 #'    parameter `spectraVariables`). Spectra for which the value of a spectra
@@ -396,12 +396,12 @@
 #'    Implementation of this method is optional since a default implementation
 #'    for `MsBackend` is available.
 #'
-#' - `filterRt`: retains spectra of MS level `msLevel` with retention times
+#' - `filterRt()`: retains spectra of MS level `msLevel` with retention times
 #'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
 #'    Implementation of this method is optional since a default implementation
 #'    for `MsBackend` is available.
 #'
-#' - `filterValues`: allows filtering of the `Spectra` object based on
+#' - `filterValues()`: allows filtering of the `Spectra` object based on
 #'    similarities of *numeric* values of one or more `spectraVariables(object)`
 #'    (parameter `spectraVariables`) to provided values (parameter `values`)
 #'    given acceptable differences (parameters tolerance and ppm). If multiple
@@ -412,7 +412,7 @@
 #'    Implementation of this method is optional since a default implementation
 #'    for `MsBackend` is available.
 #'
-#' - `intensity`: gets the intensity values from the spectra. Returns
+#' - `intensity()`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
@@ -423,44 +423,44 @@
 #'   peaks in each spectrum (i.e. the `lengths(x)`). Note that just
 #'   writeable backends support this method.
 #'
-#' - `ionCount`: returns a `numeric` with the sum of intensities for
+#' - `ionCount()`: returns a `numeric` with the sum of intensities for
 #'   each spectrum. If the spectrum is empty (see `isEmpty`),
 #'   `NA_real_` is returned.
 #'
-#' - `isCentroided`: a heuristic approach assessing if the spectra in
+#' - `isCentroided()`: a heuristic approach assessing if the spectra in
 #'   `object` are in profile or centroided mode. The function takes
 #'   the `qtl` th quantile top peaks, then calculates the difference
 #'   between adjacent m/z value and returns `TRUE` if the first
 #'   quartile is greater than `k`. (See `Spectra:::.peaks_is_centroided` for
 #'   the code.)
 #'
-#' - `isEmpty`: checks whether a spectrum in `object` is empty
+#' - `isEmpty()`: checks whether a spectrum in `object` is empty
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the
+#' - `isolationWindowLowerMz()`, `isolationWindowLowerMz<-`: gets or sets the
 #'   lower m/z boundary of the isolation window.
 #'
-#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
+#' - `isolationWindowTargetMz()`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the
+#' - `isolationWindowUpperMz()`, `isolationWindowUpperMz<-`: gets or sets the
 #'   upper m/z boundary of the isolation window.
 #'
-#' - `isReadOnly`: returns a `logical(1)` whether the backend is *read
+#' - `isReadOnly()`: returns a `logical(1)` whether the backend is *read
 #'   only* or does allow also to write/update data.
 #'
-#' - `length`: returns the number of spectra in the object.
+#' - `length()`: returns the number of spectra in the object.
 #'
-#' - `lengths`: gets the number of peaks (m/z-intensity values) per
+#' - `lengths()`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum.  Returns an `integer` vector (length equal to the
 #'   number of spectra). For empty spectra, `0` is returned.
 #'
-#' - `msLevel`: gets the spectra's MS level. Returns an `integer`
+#' - `msLevel()`: gets the spectra's MS level. Returns an `integer`
 #'   vector (of length equal to the number of spectra) with the MS
 #'   level for each spectrum (or `NA_integer_` if not available).
 #'
-#' - `mz`: gets the mass-to-charge ratios (m/z) from the
+#' - `mz()`: gets the mass-to-charge ratios (m/z) from the
 #'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
@@ -470,21 +470,21 @@
 #'   identical to the number of peaks in each spectrum (i.e. the
 #'   `lengths(x)`). Note that just writeable backends support this method.
 #'
-#' - `polarity`, `polarity<-`: gets or sets the polarity for each
-#'   spectrum.  `polarity` returns an `integer` vector (length equal
+#' - `polarity()`, `polarity<-`: gets or sets the polarity for each
+#'   spectrum.  `polarity()` returns an `integer` vector (length equal
 #'   to the number of spectra), with `0` and `1` representing negative
 #'   and positive polarities, respectively. `polarity<-` expects an
 #'   integer vector of length 1 or equal to the number of spectra.
 #'
-#' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
-#'   `precScanNum`, `precAcquisitionNum`: get the charge (`integer`),
+#' - `precursorCharge()`, `precursorIntensity()`, `precursorMz()`,
+#'   `precScanNum()`, `precAcquisitionNum()`: get the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
 #'   and acquisition number (`interger`) of the precursor for MS level
 #'   2 and above spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `peaksData` returns a `list` with the spectras' peak data, i.e. m/z and
+#' - `peaksData()` returns a `list` with the spectras' peak data, i.e. m/z and
 #'   intensity values or other *peak variables*. The length of the list is
 #'   equal to the number of spectra in `object`. Each element of the list has
 #'   to be a two-dimensional array (`matrix` or `data.frame`)
@@ -503,80 +503,80 @@
 #'   length of the `list` has to match the number of spectra of `object`.
 #'   Note that only writeable backends need to support this method.
 #'
-#' - `peaksVariables`: lists the available variables for mass peaks. Default
+#' - `peaksVariables()`: lists the available variables for mass peaks. Default
 #'   peak variables are `"mz"` and `"intensity"` (which all backends need to
 #'   support and provide), but some backends might provide additional variables.
 #'   All these variables are expected to be returned (if requested) by the
 #'   `peaksData` function.
 #'
-#' - `reset` a backend (if supported). This method will be called on the backend
-#'   by the `reset,Spectra` method that is supposed to restore the data to its
-#'   original state (see `reset,Spectra` for more details). The function
+#' - `reset()` a backend (if supported). This method will be called on the
+#'   backend by the `reset,Spectra` method that is supposed to restore the data
+#'   to its original state (see `reset,Spectra` for more details). The function
 #'   returns the *reset* backend. The default implementation for `MsBackend`
 #'   returns the backend as-is.
 #'
-#' - `rtime`, `rtime<-`: gets or sets the retention times for each
-#'   spectrum (in seconds). `rtime` returns a `numeric` vector (length equal to
-#'   the number of spectra) with the retention time for each spectrum.
+#' - `rtime()`, `rtime<-`: gets or sets the retention times for each
+#'   spectrum (in seconds). `rtime()` returns a `numeric` vector (length equal
+#'   to the number of spectra) with the retention time for each spectrum.
 #'   `rtime<-` expects a numeric vector with length equal to the
 #'   number of spectra.
 #'
-#' - `scanIndex`: returns an `integer` vector with the *scan index*
+#' - `scanIndex()`: returns an `integer` vector with the *scan index*
 #'   for each spectrum. This represents the relative index of the
 #'   spectrum within each file. Note that this can be different to the
-#'   `acquisitionNum` of the spectrum which is the index of the
+#'   `acquisitionNum()` of the spectrum which is the index of the
 #'   spectrum as reported in the mzML file.
 #'
-#' - `selectSpectraVariables`: reduces the information within the backend to
+#' - `selectSpectraVariables()`: reduces the information within the backend to
 #'   the selected spectra variables. It is suggested to **not** remove values
 #'   for the `"dataStorage"` variable, since this might be required for some
 #'   backends to work properly (such as the `MsBackendMzR`).
 #'
-#' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
-#'   *smoothed*. `smoothed` returns a `logical` vector of length equal
+#' - `smoothed()`,`smoothed<-`: gets or sets whether a spectrum is
+#'   *smoothed*. `smoothed()` returns a `logical` vector of length equal
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraData`, `spectraData<-`: gets or sets general spectrum
-#'   metadata (annotation, also called header).  `spectraData` returns
+#' - `spectraData()`, `spectraData<-`: gets or sets general spectrum
+#'   metadata (annotation, also called header).  `spectraData()` returns
 #'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
-#'   of rows as there are spectra in `object`. Note that `spectraData` has to
+#'   of rows as there are spectra in `object`. Note that `spectraData()` has to
 #'   return the full data, i.e. also the m/z and intensity values (as a `list`
 #'   or `SimpleList` in columns `"mz"` and `"intensity"`.
 #'
-#' - `spectraNames`: returns a `character` vector with the names of
+#' - `spectraNames()`: returns a `character` vector with the names of
 #'   the spectra in `object` or `NULL` if not set. `spectraNames<-` allows to
 #'   set spectra names (if the object is not read-only).
 #'
-#' - `spectraVariables`: returns a `character` vector with the
+#' - `spectraVariables()`: returns a `character` vector with the
 #'   available spectra variables (columns, fields or attributes)
 #'   available in `object`. This should return **all** spectra variables which
 #'   are present in `object`, also `"mz"` and `"intensity"` (which are by
 #'   default not returned by the `spectraVariables,Spectra` method).
 #'
-#' - `split`: splits the backend into a `list` of backends (depending on
+#' - `split()`: splits the backend into a `list` of backends (depending on
 #'   parameter `f`). The default method for `MsBackend` uses [split.default()],
 #'   thus backends extending `MsBackend` don't necessarily need to implement
 #'   this method.
 #'
-#' - `supportsSetBackend`: whether a `MsBackend` supports the `Spectra`
-#'   `setBackend` function. For a `MsBackend` to support `setBackend` it needs
-#'   to have a parameter called `data` in its `backendInitialize` method that
-#'   support receiving all spectra data as a `DataFrame` from another backend
-#'   and to initialize the backend with this data. In general *read-only*
-#'   backends do not support `setBackend` hence, the default implementation
-#'   of `supportsSetBackend` returns `!isReadOnly(object)`. If a read-only
-#'   backend would support the `setBackend` and being initialized with a
-#'   `DataFrame` an implementation of this method for that backend could
+#' - `supportsSetBackend()`: whether a `MsBackend` supports the `Spectra`
+#'   `setBackend()` function. For a `MsBackend` to support `setBackend()` it
+#'   needs to have a parameter called `data` in its `backendInitialize` method
+#'   that support receiving all spectra data as a `DataFrame` from another
+#'   backend and to initialize the backend with this data. In general
+#'   *read-only* backends do not support `setBackend` hence, the default
+#'   implementation of `supportsSetBackend` returns `!isReadOnly(object)`. If
+#'   a read-only backend would support the `setBackend` and being initialized
+#'   with a `DataFrame` an implementation of this method for that backend could
 #'   be defined that returns `TRUE` (see also the `MsBackend` vignette for
 #'   details and examples).
 #'
-#' - `tic`: gets the total ion current/count (sum of signal of a
+#' - `tic()`: gets the total ion current/count (sum of signal of a
 #'   spectrum) for all spectra in `object`. By default, the value
 #'   reported in the original raw data file is returned. For an empty
 #'   spectrum, `NA_real_` is returned.
 #'
-#' - `uniqueMsLevels`: gets the unique MS levels of all spectra in `object`.
+#' - `uniqueMsLevels()`: gets the unique MS levels of all spectra in `object`.
 #'   The default implementation calls `unique(msLevel(object))` but more
 #'   efficient implementations could be defined for specific backends.
 #'
@@ -656,7 +656,7 @@
 #'
 #' Additional columns are allowed too.
 #'
-#' The `peaksData` function for `MsBackendMemory` and `MsBackendDataFrame`
+#' The `peaksData()` function for `MsBackendMemory` and `MsBackendDataFrame`
 #' returns a `list` of `numeric` `matrix` by default (with parameter
 #' `columns = c("mz", "intensity")`). If other peak variables are requested,
 #' a `list` of `data.frame` is returned (ensuring m/z and intensity values
@@ -736,7 +736,7 @@
 #'
 #' For details see examples on the [Spectra()] help page.
 #'
-#' The `MsBackendHdf5Peaks` ignores parameter `columns` of the `peaksData`
+#' The `MsBackendHdf5Peaks` ignores parameter `columns` of the `peaksData()`
 #' function and returns **always** m/z and intensity values.
 #'
 #'
