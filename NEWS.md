@@ -1,5 +1,11 @@
 # Spectra 1.13
 
+## Changes in 1.13.6
+
+- Add `filterRanges()` and `filterValues()` functions to allow filtering of a
+  Spectra object based on ranges or similarities of any existing `spectraData`
+  variables.
+
 ## Changes in 1.13.5
 
 - Move generics to `ProtGenerics`. Requires `ProtGenerics` version 1.35.3.
