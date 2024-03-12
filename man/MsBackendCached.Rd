@@ -136,23 +136,23 @@ MsBackendCached()
 \arguments{
 \item{object}{A \code{MsBackendCached} object.}
 
-\item{data}{For \code{backendInitialize}: (optional) \code{data.frame} with cached
+\item{data}{For \code{backendInitialize()}: (optional) \code{data.frame} with cached
 values. The number of rows (and their order) has to match the number of
 spectra.}
 
-\item{nspectra}{For \code{backendInitialize}: \code{integer} with the number of
+\item{nspectra}{For \code{backendInitialize()}: \code{integer} with the number of
 spectra.}
 
-\item{spectraVariables}{For \code{backendInitialize}: \code{character} with the names
+\item{spectraVariables}{For \code{backendInitialize()}: \code{character} with the names
 of the spectra variables that are provided by the extending backend.
-For \code{selectSpectraVariables}: \code{character} specifying the spectra
+For \code{selectSpectraVariables()}: \code{character} specifying the spectra
 variables to keep.}
 
 \item{...}{ignored}
 
 \item{x}{A \code{MsBackendCached} object.}
 
-\item{columns}{For \code{spectraData}: \code{character} with the names of the spectra
+\item{columns}{For \code{spectraData()}: \code{character} with the names of the spectra
 variables to retrieve.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
@@ -166,7 +166,7 @@ method description or expected data type.}
 
 \item{name}{For \verb{$<-}: the name of the spectra variable to set.}
 
-\item{use.names}{For \code{lengths}: whether spectrum names should be used.}
+\item{use.names}{For \code{lengths()}: whether spectrum names should be used.}
 }
 \value{
 See documentation of respective function.
@@ -187,8 +187,8 @@ replacement operation with \verb{$<-} will add the specified values to a local
 values (increasing obviously the memory demand of the object).
 
 Any data accessor functions of the extending \code{MsBackend} class (such as \code{$}
-or \code{msLevel} or \code{spectraData}) should first use \code{callNextMethod} to call the
-respective accessor of \code{MsBackendCached} that will evaluate if the
+or \code{msLevel()} or \code{spectraData()}) should first use \code{callNextMethod()} to
+call the respective accessor of \code{MsBackendCached} that will evaluate if the
 requested spectra variable(s) are in the local cache and return these. If
 the requested spectra variables are neither in the local cache, nor
 listed in the \verb{@spectraVariables} slot (which defines all spectra variables
@@ -200,11 +200,11 @@ spectra variables} then missing values of the correct data type are returned.
 
 Classes extending the \code{MsBackendCached} need to
 \itemize{
-\item call the \code{backendInitialize} method of this class in their own
-\code{backendInitialize} method and set at least the number of spectra with
+\item call the \code{backendInitialize()} method of this class in their own
+\code{backendInitialize()} method and set at least the number of spectra with
 the \code{nspectra} parameter and the \code{spectraVariables} that are available to
 the (extending) backend class.
-\item implement the \code{spectraData} method that also calls the \code{spectraData}
+\item implement the \code{spectraData()} method that also calls the \code{spectraData()}
 method from \code{MsBackendCached} to also retrieve cached values (e.g. using
 \code{res <- callNextMethod()} at the beginning of the \code{spectraData} function).
 The \verb{spectraData,MsBackendCached} method will return \code{NULL} if the
@@ -242,14 +242,14 @@ that can be retrieved from the data base or original data files).
 \section{Available methods}{
 
 \itemize{
-\item \code{acquisitionNum}: returns the acquisition number of each
+\item \code{acquisitionNum()}: returns the acquisition number of each
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
-\item \code{backendInitialize}: \emph{initializes} the backend. The method takes parameters
-\code{data} (\code{data.frame} with cached data), \code{nspectra} (\code{integer} defining the
-number of spectra) and \code{spectraVariables} (\code{character} with the spectra
-variables that are provided by the extending backend.
-\item \code{centroided}, \verb{centroided<-}: gets or sets the centroiding
+\item \code{backendInitialize()}: \emph{initializes} the backend. The method takes
+parameters \code{data} (\code{data.frame} with cached data), \code{nspectra} (\code{integer}
+defining the number of spectra) and \code{spectraVariables} (\code{character} with
+the spectra variables that are provided by the extending backend.
+\item \code{centroided()}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
 spectrum is centroided, \code{FALSE} if it is in profile mode and \code{NA}
@@ -257,76 +257,76 @@ if it is undefined. See also \code{isCentroided} for estimating from
 the spectrum data whether the spectrum is centroided.  \code{value}
 for \verb{centroided<-} is either a single \code{logical} or a \code{logical} of
 length equal to the number of spectra in \code{object}.
-\item \code{collisionEnergy}, \verb{collisionEnergy<-}: gets or sets the
-collision energy for all spectra in \code{object}. \code{collisionEnergy}
+\item \code{collisionEnergy()}, \verb{collisionEnergy<-}: gets or sets the
+collision energy for all spectra in \code{object}. \code{collisionEnergy()}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \verb{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
-\item \code{dataOrigin}: gets a \code{character} of length equal to the number of spectra
+\item \code{dataOrigin()}: gets a \code{character} of length equal to the number of spectra
 in \code{object} with the \emph{data origin} of each spectrum. This could e.g. be
 the mzML file from which the data was read.
-\item \code{intensity}: gets the intensity values from the spectra. Returns
+\item \code{intensity()}: gets the intensity values from the spectra. Returns
 a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
-\item \code{ionCount}: returns a \code{numeric} with the sum of intensities for
-each spectrum. If the spectrum is empty (see \code{isEmpty}),
+\item \code{ionCount()}: returns a \code{numeric} with the sum of intensities for
+each spectrum. If the spectrum is empty (see \code{isEmpty()}),
 \code{NA_real_} is returned.
-\item \code{isEmpty}: checks whether a spectrum in \code{object} is empty
+\item \code{isEmpty()}: checks whether a spectrum in \code{object} is empty
 (i.e. does not contain any peaks). Returns a \code{logical} vector of
 length equal number of spectra.
-\item \code{isolationWindowLowerMz}, \verb{isolationWindowLowerMz<-}: gets or sets the
+\item \code{isolationWindowLowerMz()}, \verb{isolationWindowLowerMz<-}: gets or sets the
 lower m/z boundary of the isolation window.
-\item \code{isolationWindowTargetMz}, \verb{isolationWindowTargetMz<-}: gets or sets the
+\item \code{isolationWindowTargetMz()}, \verb{isolationWindowTargetMz<-}: gets or sets the
 target m/z of the isolation window.
-\item \code{isolationWindowUpperMz}, \verb{isolationWindowUpperMz<-}: gets or sets the
+\item \code{isolationWindowUpperMz()}, \verb{isolationWindowUpperMz<-}: gets or sets the
 upper m/z boundary of the isolation window.
-\item \code{length}: returns the number of spectra (i.e. the \verb{@nspectra}).
-\item \code{lengths}: gets the number of peaks (m/z-intensity values) per
+\item \code{length()}: returns the number of spectra (i.e. the \verb{@nspectra}).
+\item \code{lengths()}: gets the number of peaks (m/z-intensity values) per
 spectrum.  Returns an \code{integer} vector (length equal to the
 number of spectra). For empty spectra, \code{0} is returned.
-\item \code{msLevel}: gets the spectra's MS level. Returns an \code{integer}
+\item \code{msLevel()}: gets the spectra's MS level. Returns an \code{integer}
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
-\item \code{mz}: gets the mass-to-charge ratios (m/z) from the
+\item \code{mz()}: gets the mass-to-charge ratios (m/z) from the
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
-\item \code{polarity}, \verb{polarity<-}: gets or sets the polarity for each
+\item \code{polarity()}, \verb{polarity<-}: gets or sets the polarity for each
 spectrum.  \code{polarity} returns an \code{integer} vector (length equal
 to the number of spectra), with \code{0} and \code{1} representing negative
 and positive polarities, respectively. \verb{polarity<-} expects an
 integer vector of length 1 or equal to the number of spectra.
-\item \code{precursorCharge}, \code{precursorIntensity}, \code{precursorMz},
-\code{precScanNum}, \code{precAcquisitionNum}: get the charge (\code{integer}),
+\item \code{precursorCharge()}, \code{precursorIntensity()}, \code{precursorMz()},
+\code{precScanNum()}, \code{precAcquisitionNum()}: get the charge (\code{integer}),
 intensity (\code{numeric}), m/z (\code{numeric}), scan index (\code{integer})
 and acquisition number (\code{interger}) of the precursor for MS level
 2 and above spectra from the object. Returns a vector of length equal to
 the number of spectra in \code{object}. \code{NA} are reported for MS1
 spectra of if no precursor information is available.
-\item \code{rtime}, \verb{rtime<-}: gets or sets the retention times for each
-spectrum (in seconds). \code{rtime} returns a \code{numeric} vector (length equal to
-the number of spectra) with the retention time for each spectrum.
+\item \code{rtime()}, \verb{rtime<-}: gets or sets the retention times for each
+spectrum (in seconds). \code{rtime()} returns a \code{numeric} vector (length equal
+to the number of spectra) with the retention time for each spectrum.
 \verb{rtime<-} expects a numeric vector with length equal to the
 number of spectra.
-\item \code{scanIndex}: returns an \code{integer} vector with the \emph{scan index}
+\item \code{scanIndex()}: returns an \code{integer} vector with the \emph{scan index}
 for each spectrum. This represents the relative index of the
 spectrum within each file. Note that this can be different to the
-\code{acquisitionNum} of the spectrum which is the index of the
+\code{acquisitionNum()} of the spectrum which is the index of the
 spectrum as reported in the mzML file.
-\item \code{selectSpectraVariables}: subset the object to specified spectra variables.
-This will eventually remove spectra variables listed in \verb{@spectraVariables}
-and will also drop columns from the local cache if not among
-\code{spectraVariables}.
-\item \code{smoothed},\verb{smoothed<-}: gets or sets whether a spectrum is
-\emph{smoothed}. \code{smoothed} returns a \code{logical} vector of length equal
+\item \code{selectSpectraVariables()}: subset the object to specified spectra
+variables. This will eventually remove spectra variables listed in
+\verb{@spectraVariables} and will also drop columns from the local cache if
+not among \code{spectraVariables}.
+\item \code{smoothed()},\verb{smoothed<-}: gets or sets whether a spectrum is
+\emph{smoothed}. \code{smoothed()} returns a \code{logical} vector of length equal
 to the number of spectra. \verb{smoothed<-} takes a \code{logical} vector
 of length 1 or equal to the number of spectra in \code{object}.
-\item \code{spectraVariables}: returns the available spectra variables, i.e. the
+\item \code{spectraVariables()}: returns the available spectra variables, i.e. the
 unique set of \emph{core spectra variables}, cached spectra variables and
 spectra variables defined in the \verb{@spectraVariables} slot (i.e. spectra
 variables thought to be provided by the extending \code{MsBackend} instance).
-\item \code{spectraData}: returns a \code{DataFrame} with cached spectra variablers or
+\item \code{spectraData()}: returns a \code{DataFrame} with cached spectra variablers or
 initialized \emph{core spectra variables}. Parameter \code{spectraVariables} allows
 to specify the variables to retrieve. The function returns \code{NULL} if the
 requested variables are not cached and are not provided by the extending

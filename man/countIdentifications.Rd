@@ -12,7 +12,7 @@ countIdentifications(
 )
 }
 \arguments{
-\item{object}{An instance of class \code{Spectra()} that contains
+\item{object}{An instance of class \code{Spectra} that contains
 identification data, as defined by the \code{sequence} argument.}
 
 \item{identification}{\code{character(1)} with the name of the spectra

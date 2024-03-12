@@ -12,11 +12,11 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #' This help page lists functions that convert MS/MS spectra to neutral loss
 #' spectra. The main function for this is `neutralLoss` and the specific
 #' algorithm to be used is defined (and configured) with dedicated *parameter*
-#' objects (paramer `param` of the `neutralLoss` function).
+#' objects (paramer `param` of the `neutralLoss()` function).
 #'
 #' The parameter objects for the different algorithms are:
 #'
-#' - `PrecursorMzParam`: calculates neutral loss spectra as in Aisporna
+#' - `PrecursorMzParam()`: calculates neutral loss spectra as in Aisporna
 #'   *et al.* 2022 by subtracting the (fragment's) peak m/z value from the
 #'   precursor m/z value of each spectrum (precursor m/z - fragment m/z).
 #'   Parameter `msLevel` allows to restrict calculation of neutral loss
@@ -46,7 +46,7 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #' returned (i.e. spectra without peaks) since it is not possible to calcualte
 #' the neutral loss spectra.
 #'
-#' @param filterPeaks For `PrecursorMzParam`: `character(1)` or `function`
+#' @param filterPeaks For `PrecursorMzParam()`: `character(1)` or `function`
 #'     defining if and how fragment peaks should be filtered before calculation.
 #'     Pre-defined options are: `"none"` (keep all peaks), `"abovePrecursor"`
 #'     (removes all fragment peaks with an m/z >= precursor m/z),

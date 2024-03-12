@@ -164,7 +164,7 @@ in the previous code block uses the default `MsBackendMemory`).
 
 As detailed above `Spectra` objects can contain an arbitrary number of
 properties of a spectrum (so called *spectra variables*). The available
-variables can be listed with the `spectraVariables` method:
+variables can be listed with the `spectraVariables()` method:
 
 ```{r spectravariables}
 spectraVariables(sps)
@@ -175,8 +175,8 @@ The two `Spectra` contain a different set of variables: besides `"msLevel"`,
 `"polarity"`, `"id"` and `"name"`, that were specified for the `Spectra` object
 `sps`, it contains more variables such as `"rtime"`, `"acquisitionNum"` and
 `"scanIndex"`. These are part of the *core variables* defining a spectrum and
-for all of these accessor methods exist. Below we use `msLevel` and `rtime` to
-access the MS levels and retention times for the spectra in `sps`.
+for all of these accessor methods exist. Below we use `msLevel()` and `rtime()`
+to access the MS levels and retention times for the spectra in `sps`.
 
 ```{r mslevel-sps}
 msLevel(sps)
@@ -222,45 +222,45 @@ sps$splash <- c(
 ```
 
 This new spectra variable will now be listed as an additional variable in the
-result of the `spectraVariables` function and we can directly access its
+result of the `spectraVariables()` function and we can directly access its
 content with `sps$splash`.
 
 Each spectrum can have a different number of mass peaks, each consisting of a
 mass-to-charge (m/z) and associated intensity value. These can be extracted with
-the `mz` or `intensity` functions, each of which return a `list` of `numeric`
-values.
+the `mz()` or `intensity()` functions, each of which return a `list` of
+`numeric` values.
 
 ```{r mz-intensity}
 mz(sps)
 intensity(sps)
 ```
 
-Peak data can also be extracted with the `peaksData` function that returns a
+Peak data can also be extracted with the `peaksData()` function that returns a
 list of numerical matrices with *peak variables* such as m/z and intensity
 values. Which peak variables are available in a `Spectra` object can be
-determined with the `peaksVariables` function.
+determined with the `peaksVariables()` function.
 
 ```{r}
 peaksVariables(sps)
 ```
 
-These can be passed to the `peaksData` function with parameter `columns` to
-extract the peak variables of interest. By default `peaksData` extracts m/z and
-intensity values.
+These can be passed to the `peaksData()` function with parameter `columns` to
+extract the peak variables of interest. By default `peaksData()` extracts m/z
+and intensity values.
 
 ```{r peaks}
 pks <- peaksData(sps)
 pks[[1]]
 ```
 
-Note that we would get the same result by using the `as` method to coerce a
+Note that we would get the same result by using the `as()` method to coerce a
 `Spectra` object to a `list` or `SimpleList`:
 
 ```{r as}
 as(sps, "SimpleList")
 ```
 
-The `spectraData` function returns a `DataFrame` with the full data for each
+The `spectraData()` function returns a `DataFrame` with the full data for each
 spectrum (except m/z and intensity values), or with selected spectra variables
 (which can be specified with the `columns` parameter). Below we extract the
 spectra data for variables `"msLevel"`, `"id"` and `"name"`.
@@ -273,8 +273,8 @@ spectraData(sps, columns = c("msLevel", "id", "name"))
 or samples, in a single list. Specific variables have thus to be used to define
 the originating file from which they were extracted or the sample in which they
 were measured. The *data origin* of each spectrum can be extracted with the
-`dataOrigin` function. For `sps`, the `Spectra` created from a `DataFrame`, this
-will be `NA` because we did not specify the data origin:
+`dataOrigin()` function. For `sps`, the `Spectra` created from a `DataFrame`,
+this will be `NA` because we did not specify the data origin:
 
 ```{r dataOrigin-sps}
 dataOrigin(sps)
@@ -304,8 +304,9 @@ allowing to add peaks variables will be available. Below we thus first extract
 the full data (including peaks variables) from the `sps` spectra object and add
 a column `"peak_anno"` with *peak annotations* for each individual
 peak. Importantly, for peak variables, a value needs to be assigned to each
-individual peak, even it it is `NA` (the `lengths` of the new peak variable must
-match `lengths` of `mz` or `intensity`, i.e. the number of peaks per spectrum).
+individual peak, even it it is `NA` (the `lengths()` of the new peak variable
+must match `lengths()` of `mz` or `intensity`, i.e. the number of peaks per
+spectrum).
 
 ```{r}
 ## Extract the full data from a spectrum
@@ -320,10 +321,10 @@ lengths(spd$peak_anno)
 lengths(spd$mz)
 ```
 
-The parameter `peaksVariables` (currently only available for the
-`backendInitialize` method of `MsBackendMemory` and `MsBackendDataFrame`) allows
-to define which of the columns from an input data contain peaks variables (in
-our case `"mz"`, `"intensity"` and the additional `"peak_anno"` column).
+The parameter `peaksVariables()` (currently only available for the
+`backendInitialize()` method of `MsBackendMemory` and `MsBackendDataFrame`)
+allows to define which of the columns from an input data contain peaks variables
+(in our case `"mz"`, `"intensity"` and the additional `"peak_anno"` column).
 
 ```{r}
 sps2 <- Spectra(spd, backend = MsBackendMemory(),
@@ -331,16 +332,16 @@ sps2 <- Spectra(spd, backend = MsBackendMemory(),
 peaksVariables(sps2)
 ```
 
-Full peak data can be extracted with the `peaksData` function that has a second
-parameter `columns` allowing to define which peak variables to return. Below we
-extract the peak data for the second spectrum.
+Full peak data can be extracted with the `peaksData()` function that has a
+second parameter `columns` allowing to define which peak variables to
+return. Below we extract the peak data for the second spectrum.
 
 ```{r}
 peaksData(sps2, columns = peaksVariables(sps2))[[2L]]
 ```
 
-We can also use the `peaksData` to extract the values for individual peak
-variables.
+We can also use the `peaksData()` function to extract the values for individual
+peak variables.
 
 ```{r}
 ## Peak annotations for the first spectrum
@@ -361,39 +362,39 @@ Similar to spectra variables it is also possible to replace values for
 
 ## Filtering, subsetting and merging
 
-Apart from *classical* subsetting operations such as `[` and `split`, a set of
+Apart from *classical* subsetting operations such as `[` and `split()`, a set of
 filter functions are defined for `Spectra` objects (for detailed help please see
 the `?Spectra` help). Filter and subset functions either reduce the number of
 spectra within a `Spectra` object, or affect the number of
 peaks (by either aggregating or subset) within each spectrum. Filter functions
-affecting the total number of spectra are:
+affecting the total number of spectra are (in alphabetic order):
 
-- `filterAcquisitionNum`: retains spectra with certain acquisition numbers.
-- `filterDataOrigin`: subsets to spectra from specific origins.
-- `filterDataStorage`: subsets to spectra from certain data storage files.
-- `filterEmptySpectra`: removes spectra without mass peaks.
-- `filterMzRange`: subsets spectra keeping only peaks with an m/z within the
+- `filterAcquisitionNum()`: retains spectra with certain acquisition numbers.
+- `filterDataOrigin()`: subsets to spectra from specific origins.
+- `filterDataStorage()`: subsets to spectra from certain data storage files.
+- `filterEmptySpectra()`: removes spectra without mass peaks.
+- `filterMzRange()`: subsets spectra keeping only peaks with an m/z within the
   provided m/z range.
-- `filterIsolationWindow`: keeps spectra with the provided `mz` in their
+- `filterIsolationWindow()`: keeps spectra with the provided `mz` in their
   isolation window (m/z range).
-- `filterMsLevel`: filters by MS level.
-- `filterPolarity`: filters by polarity.
-- `filterPrecursorIsotopes`: identifies precursor ions (from fragment spectra)
+- `filterMsLevel()`: filters by MS level.
+- `filterPolarity()`: filters by polarity.
+- `filterPrecursorIsotopes()`: identifies precursor ions (from fragment spectra)
   that could represent isotopes of the same molecule. For each of these spectra
   groups only the spectrum of the monoisotopic precursor ion is returned. MS1
   spectra are returned without filtering.
-- `filterPrecursorMaxIntensity`: filters spectra keeping, for groups of spectra
-  with similar precursor m/z, the one spectrum with the highest precursor
-  intensity. All MS1 spectra are returned without filtering.
-- `filterPrecursorMzRange`: retains (MSn) spectra with a precursor m/z within
+- `filterPrecursorMaxIntensity()`: filters spectra keeping, for groups of
+  spectra with similar precursor m/z, the one spectrum with the highest
+  precursor intensity. All MS1 spectra are returned without filtering.
+- `filterPrecursorMzRange()`: retains (MSn) spectra with a precursor m/z within
   the provided m/z range.
-- `filterPrecursorMzValues`: retains (MSn) spectra with precursor m/z value
+- `filterPrecursorMzValues(()`: retains (MSn) spectra with precursor m/z value
   matching the provided value(s) considering also a `tolerance` and `ppm`.
-- `filterPrecursorCharge`: retains (MSn) spectra with speified
+- `filterPrecursorCharge()`: retains (MSn) spectra with specified
   precursor charge(s).
-- `filterPrecursorScan`: retains (parent and children) scans of an acquisition
+- `filterPrecursorScan()`: retains (parent and children) scans of an acquisition
   number.
-- `filterRanges`: allows filtering of the `Spectra` object based on user
+- `filterRanges()`: allows filtering of the `Spectra` object based on user
   defined *numeric* ranges (parameter `ranges`) for one or more available
   spectra variables in object (spectra variable names can be specified with
   parameter `spectraVariables`). Spectra for which the value of a spectra
@@ -402,8 +403,8 @@ affecting the total number of spectra are:
   to specify whether all conditions (`match = "all"`; the default) or if
   any of the conditions must match (`match = "any"`; all spectra for which
   values are within any of the provided ranges are retained).
-- `filterRt`: filters based on retention time range.
-- `filterValues`: allows filtering of the `Spectra` object based on
+- `filterRt()`: filters based on retention time range.
+- `filterValues()`: allows filtering of the `Spectra` object based on
   similarities of *numeric* values of one or more `spectraVariables(object)`
   (parameter `spectraVariables`) to provided values (parameter `values`)
   given acceptable differences (parameters tolerance and ppm). If multiple
@@ -415,36 +416,38 @@ affecting the total number of spectra are:
 Filter functions that return the same number of spectra, but affect/subset the
 peaks data (m/z and intensity values) within each spectrum are:
 
-- `combinePeaks`: groups peaks within each spectrum based on similarity of their
-  m/z values and combines these into a single peak per peak group.
-- `deisotopeSpectra`: deisotopes each individual spectrum keeping only the
+- `combinePeaks()`: groups peaks within each spectrum based on similarity of
+  their m/z values and combines these into a single peak per peak group.
+- `deisotopeSpectra()`: deisotopes each individual spectrum keeping only the
   monoisotopic peak for peaks groups of potential isotopologues.
-- `filterIntensity`: filter each spectrum keeping only peaks with intensities
+- `filterIntensity()`: filter each spectrum keeping only peaks with intensities
   meeting certain criteria.
-- `filterMzRange`: subsets peaks data within each spectrum keeping only peaks
+- `filterMzRange()`: subsets peaks data within each spectrum keeping only peaks
   with their m/z values within the specified m/z range.
-- `filterPrecursorPeaks`: removes peaks with either an m/z value matching the
+- `filterPrecursorPeaks()`: removes peaks with either an m/z value matching the
   precursor m/z of the respective spectrum (with parameter `mz = "=="`) or peaks
   with an m/z value larger or equal to the precursor m/z (with parameter
   `mz = ">="`).
-- `filterMzValues`: subsets peaks within each spectrum keeping or removing (all)
-  peaks matching provided m/z value(s) (given parameters `ppm` and `tolerance`).
-- `reduceSpectra`: filters individual spectra keeping only the largest peak for
-  groups of peaks with similar m/z values.
+- `filterMzValues()`: subsets peaks within each spectrum keeping or removing
+  (all) peaks matching provided m/z value(s) (given parameters `ppm` and
+  `tolerance`).
+- `reduceSpectra()`: filters individual spectra keeping only the largest peak
+  for groups of peaks with similar m/z values.
 
-In this example, we use the `filterValues` function to retain spectra with a base
-peak m/z close to 100 (+/- 30 ppm) and a retention time around 230 (+/- 5 s).
+In this example, we use the `filterValues()` function to retain spectra with a
+base peak m/z close to 100 (+/- 30 ppm) and a retention time around 230 (+/- 5
+s).
 
 ```{r}
 sps_sub <- filterValues(sps_sciex, spectraVariables = c("basePeakMZ", "rtime"),
-                        values = c(123.089, 230), tolerance = c(0,5), 
+                        values = c(123.089, 230), tolerance = c(0,5),
                         ppm = c(30, 0), match = "all")
 length(sps_sub)
 ```
 
-Then, we demonstrate the usage of the `filterRanges` function to filter spectra
-based on ranges of values for variables such as base peak m/z, peak count, and
-retention time. 
+Then, we demonstrate the usage of the `filterRanges()` function to filter
+spectra based on ranges of values for variables such as base peak m/z, peak
+count, and retention time.
 
 ```{r}
 sps_ranges <- filterRanges(sps_sciex,
@@ -455,25 +458,25 @@ sps_ranges <- filterRanges(sps_sciex,
 length(sps_ranges)
 ```
 
-Only one spectrum matches all the ranges. Another option for `filterValues` and
-`filterRanges` is to use the parameter `match = "any"`, which retains spectra
-that match any one of the conditions instead of having to match all of them.
-Let's run the code once again but change the match parameter this time:
+Only one spectrum matches all the ranges. Another option for `filterValues()`
+and `filterRanges()` is to use the parameter `match = "any"`, which retains
+spectra that match any one of the conditions instead of having to match all of
+them.  Let's run the code once again but change the match parameter this time:
 
 ```{r}
 sps_ranges <- filterRanges(sps_sciex,
                            spectraVariables = c("basePeakMZ",
                                                 "peaksCount", "rtime"),
-                           ranges = c(123.09, 124, 3500, 3520, 259, 260), 
+                           ranges = c(123.09, 124, 3500, 3520, 259, 260),
                            match = "any")
 length(sps_ranges)
 ```
 
-We can see many more spectra passed the filtering step this time. 
+We can see many more spectra passed the filtering step this time.
 
 In the example below we use specific functions to select all spectra measured
 in the second mzML file and subsequently filter them to retain spectra measured
-between 175 and 189 seconds in the measurement run. 
+between 175 and 189 seconds in the measurement run.
 
 ```{r filterfile-filterrt}
 fls <- unique(dataOrigin(sps_sciex))
@@ -508,10 +511,10 @@ backends could *translate* the filter function into a SQL condition to
 perform the subsetting already within the database).
 
 Multiple `Spectra` objects can also be combined into a single `Spectra` with the
-`c` or the `concatenateSpectra` function. The resulting `Spectra` object will
-contain an union of the spectra variables of the individual objects. Below we
-combine the `Spectra` object `sps` with an additional object containing another
-MS2 spectrum for Caffeine.
+`c()` or the `concatenateSpectra()` function. The resulting `Spectra` object
+will contain an union of the spectra variables of the individual objects. Below
+we combine the `Spectra` object `sps` with an additional object containing
+another MS2 spectrum for Caffeine.
 
 ```{r caf}
 caf_df <- DataFrame(msLevel = 2L, name = "Caffeine",
@@ -550,7 +553,7 @@ sps$instrument
 Sometimes not all spectra variables might be required (e.g. also because many of
 them are empty). This might be specifically interesting also for `Spectra`
 containing the data from very large experiments, because it can significantly
-reduce the object's size in memory. In such cases the `selectSpectraVariables`
+reduce the object's size in memory. In such cases the `selectSpectraVariables()`
 function can be used to retain only specified spectra variables.
 
 
@@ -559,7 +562,7 @@ function can be used to retain only specified spectra variables.
 Some analyses require manipulation of the mass peak data (i.e. the m/z and/or
 intensity values). One example would be to remove all peaks from a spectrum that
 have an intensity lower than a certain threshold. Below we perform such an
-operation with the `replaceIntensitiesBelow` function to replace peak
+operation with the `replaceIntensitiesBelow()` function to replace peak
 intensities below 10 in each spectrum in `sps` with a value of 0.
 
 ```{r replaceintensities}
@@ -573,7 +576,7 @@ intensity(sps_rep)
 ```
 
 Zero-intensity peaks (and peaks with missing intensities) can then be removed
-with the `filterIntensity` function specifying a lower required intensity level
+with the `filterIntensity()` function specifying a lower required intensity level
 or optionally also an upper intensity limit.
 
 ```{r clean}
@@ -584,15 +587,15 @@ sps_rep <- filterIntensity(sps_rep, intensity = c(0.1, Inf))
 intensity(sps_rep)
 ```
 
-The `filterIntensity` supports also a user-provided function to be passed with
+The `filterIntensity()` supports also a user-provided function to be passed with
 parameter `intensity` which would allow e.g. to remove peaks smaller than the
 median peak intensity of a spectrum. See examples in the `?filterIntensity` help
 page for details.
 
 Note that any data manipulations on `Spectra` objects are not immediately
 applied to the peak data. They are added to a so called *processing queue* which
-is applied each time peak data is accessed (with the `peaksData`, `mz` or
-`intensity` functions). Thanks to this processing queue data manipulation
+is applied each time peak data is accessed (with the `peaksData()`, `mz()` or
+`intensity()` functions). Thanks to this processing queue data manipulation
 operations are also possible for *read-only* backends (e.g. mzML-file based
 backends or database-based backends). The information about the number of such
 processing steps can be seen below (next to *Lazy evaluation queue*).
@@ -624,7 +627,7 @@ sps_2
 ```
 
 Object `sps_2` has now 3 processing steps in its lazy evaluation queue. Calling
-`intensity` on this object will now return intensities that are half of the
+`intensity()` on this object will now return intensities that are half of the
 intensities of the original objects `sps`.
 
 ```{r custom-processing}
@@ -633,7 +636,7 @@ intensity(sps_rep)
 ```
 
 Alternatively we could define a function that returns the maximum peak from each
-spectrum (note: we use the `unname` function to remove any names from the
+spectrum (note: we use the `unname()` function to remove any names from the
 results):
 
 ```{r return-max-peak}
@@ -647,19 +650,20 @@ intensity(sps_2)
 ```
 
 Each spectrum in `sps_2` thus contains only a single peak. The parameter
-`spectraVariables` of the `addProcessing` function allows in addition to define
-spectra variables that should be passed (in addition to the peaks matrix) to the
-user-provided function. This would enable for example to calculate *neutral
-loss* spectra from a `Spectra` by subtracting the precursor m/z from each m/z of
-a spectrum (note that there would also be a dedicated `neutralLoss` function to
-perform this operation more efficiently). Our tool example does not have
-precursor m/z values defined, thus we first set them to arbitrary values. Then
-we define a function `neutral_loss` that calculates the difference between the
-precursor m/z and the fragment peak's m/z. In addition we need to ensure the
-peaks in the resulting spectra are ordered by (the delta) m/z values. Note that,
-in order to be able to access the precursor m/z of the spectrum within our
-function, we have to add a parameter to the function that has the same name as
-the spectrum variable we want to access (in our case `precursorMz`).
+`spectraVariables` of the `addProcessing()` function allows in addition to
+define spectra variables that should be passed (in addition to the peaks matrix)
+to the user-provided function. This would enable for example to calculate
+*neutral loss* spectra from a `Spectra` by subtracting the precursor m/z from
+each m/z of a spectrum (note that there would also be a dedicated
+`neutralLoss()` function to perform this operation more efficiently). Our tool
+example does not have precursor m/z values defined, thus we first set them to
+arbitrary values. Then we define a function `neutral_loss` that calculates the
+difference between the precursor m/z and the fragment peak's m/z. In addition we
+need to ensure the peaks in the resulting spectra are ordered by (the delta) m/z
+values. Note that, in order to be able to access the precursor m/z of the
+spectrum within our function, we have to add a parameter to the function that
+has the same name as the spectrum variable we want to access (in our case
+`precursorMz`).
 
 ```{r set-precursor-mz}
 sps_rep$precursorMz <- c(170.5, 170.5, 195.1, 195.1)
@@ -670,8 +674,8 @@ neutral_loss <- function(x, precursorMz, ...) {
 }
 ```
 
-We have then to call `addProcessing` with `spectraVariables = "precursorMz"` to
-specify that this spectra variable is passed along to our function.
+We have then to call `addProcessing()` with `spectraVariables = "precursorMz"`
+to specify that this spectra variable is passed along to our function.
 
 ```{r neutral-loss}
 sps_3 <- addProcessing(sps_rep, neutral_loss,
@@ -683,7 +687,7 @@ mz(sps_3)
 As we can see, the precursor m/z was subtracted from each m/z of the respective
 spectrum. A better version of the function, that only calculates neutral loss
 spectra for MS level 2 spectra would be the `neutral_loss` function below. Since
-we are accessing also the spectrum's MS level we have to call `addProcessing`
+we are accessing also the spectrum's MS level we have to call `addProcessing()`
 adding also the spectra variable `msLevel` to the `spectraVariables`
 parameter. Note however that the `msLevel` spectra variable **is by default
 renamed** to `spectrumMsLevel` prior passing it to the function. We have thus to
@@ -713,7 +717,7 @@ Another example for spectra processing potentially helpful for spectral matching
 against reference fragment spectra libraries would be a function that removes
 fragment peaks with an m/z matching the precursor m/z of a spectrum. Below we
 define such a function that takes the peaks matrix and the precursor m/z as
-input and evaluates with the `closest` function from the
+input and evaluates with the `closest()` function from the
 `r Biocpkg("MsCoreUtils")` whether the spectrum contains peaks with an m/z value
 matching the one of the precursor (given `tolerance` and `ppm`). The returned
 peaks matrix contains all peaks except those matching the precursor m/z.
@@ -730,7 +734,8 @@ remove_precursor <- function(x, precursorMz, tolerance = 0.1, ppm = 0, ...) {
 ```
 
 We can now again add this processing step to our `Spectra` object. As a result,
-peaks matching the precursor m/z (with `tolerance = 0.1` and `ppm = 0`) will be removed.
+peaks matching the precursor m/z (with `tolerance = 0.1` and `ppm = 0`) will be
+removed.
 
 ```{r}
 sps_4 <- addProcessing(sps_rep, remove_precursor,
@@ -756,9 +761,9 @@ peaksData(sps_4) |> as.list()
 
 Since all data manipulations above did not change the original intensity or m/z
 values, it is possible to *restore* the original data. This can be done with the
-`reset` function which will empty the lazy evaluation queue and call the `reset`
-method on the storage backend. Below we call `reset` on the `sps_2` object and
-hence restore the data to its original state.
+`reset()` function which will empty the lazy evaluation queue and call the
+`reset()` method on the storage backend. Below we call `reset()` on the `sps_2`
+object and hence restore the data to its original state.
 
 ```{r reset}
 sps_2_rest <- reset(sps_2)
@@ -770,8 +775,8 @@ intensity(sps)
 Finally, for `Spectra` that use a *writeable* backend, such as the
 `MsBackendMemory`, `MsBackendDataFrame` or `MsBackendHdf5Peaks`, it is possible
 to apply the processing queue to the peak data and write that back to the data
-storage with the `applyProcessing` function. Below we use this to make all data
-manipulations on peak data of the `sps_rep` object persistent.
+storage with the `applyProcessing()` function. Below we use this to make all
+data manipulations on peak data of the `sps_rep` object persistent.
 
 ```{r applyProcessing}
 length(sps_rep@processingQueue)
@@ -781,20 +786,20 @@ length(sps_rep@processingQueue)
 sps_rep
 ```
 
-Before `applyProcessing` the lazy evaluation queue contained 2 processing steps,
-which were then applied to the peak data and *written* to the data storage. Note
-that calling `reset` **after** `applyProcessing` can no longer *restore* the
-data.
+Before `applyProcessing()` the lazy evaluation queue contained 2 processing
+steps, which were then applied to the peak data and *written* to the data
+storage. Note that calling `reset()` **after** `applyProcessing()` can no longer
+*restore* the data.
 
 
 ## Visualizing `Spectra`
 
 The `Spectra` package provides the following functions to visualize spectra
 data:
-- `plotSpectra`: plot each spectrum in `Spectra` in its own panel.
-- `plotSpectraOverlay`: plot multiple spectra into the **same** plot.
+- `plotSpectra()`: plot each spectrum in `Spectra` in its own panel.
+- `plotSpectraOverlay()`: plot multiple spectra into the **same** plot.
 
-Below we use `plotSpectra` to plot the 4 spectra from the `sps` object using
+Below we use `plotSpectra()` to plot the 4 spectra from the `sps` object using
 their names (as provided in spectra variable `"name"`) as plot titles.
 
 ```{r plotspectra, fig.width = 8, fig.height = 8}
@@ -831,8 +836,8 @@ plotSpectra(sps, main = sps$name, labels = mzLabel,
 
 Sometimes it might be of interest to plot multiple spectra into the **same**
 plot (e.g. to directly compare peaks from multiple spectra). This can be done
-with `plotSpectraOverlay` which we use below to create an *overlay-plot* of our
-4 example spectra, using a different color for each spectrum.
+with `plotSpectraOverlay()` which we use below to create an *overlay-plot* of
+our 4 example spectra, using a different color for each spectrum.
 
 ```{r plotspectraoverlay, fig.width = 6, fig.height = 6}
 cols <- c("#E41A1C80", "#377EB880", "#4DAF4A80", "#984EA380")
@@ -840,7 +845,7 @@ plotSpectraOverlay(sps, lwd = 2, col = cols)
 legend("topleft", col = cols, legend = sps$name, pch = 15)
 ```
 
-Lastly, `plotSpectraMirror` allows to plot two spectra against each other as a
+Lastly, `plotSpectraMirror()` allows to plot two spectra against each other as a
 *mirror plot* which is ideal to visualize spectra comparison results. Below we
 plot a spectrum of 1-Methylhistidine against one of Caffeine.
 
@@ -864,11 +869,11 @@ See also `?plotSpectra` for more plotting options and examples.
 
 ## Aggregating spectra data
 
-The `Spectra` package provides the `combineSpectra` function that allows to
+The `Spectra` package provides the `combineSpectra()` function that allows to
 *aggregate* multiple spectra into a single one. The main parameters of this
 function are `f`, which defines the grouping of the spectra, and `FUN` which
 allows to define the function that performs the actual aggregation. The default
-aggregation function is `combinePeaksData` (see `?combinePeaksData` for
+aggregation function is `combinePeaksData()` (see `?combinePeaksData` for
 details) that combines multiple spectra into a single spectrum with all peaks
 from all input spectra (with additional paramter `peaks = "union"`), or peaks
 that are present in a certain proportion of input spectra (with parameter
@@ -901,7 +906,7 @@ plotSpectra(sps_agg, main = sps_agg$name)
 This results thus in a single peak for 1-methylhistidine and none for caffeine -
 why? The reason for that is that the difference of the peaks' m/z values is
 larger than the default tolerance used for the peak grouping (the defaults for
-`combinePeaksData` is `tolerance = 0` and `ppm = 0`). We could however already
+`combinePeaksData()` is `tolerance = 0` and `ppm = 0`). We could however already
 see in the previous section that the reported peaks' m/z values have a larger
 measurement error (most likely because the fragment spectra were measured on
 different instruments with different precision). Thus, we next increase the
@@ -917,17 +922,17 @@ plotSpectra(sps_agg, main = sps_agg$name)
 Whether in a real analysis we would be OK with such a large tolerance is however
 questionable. Note: which m/z and intensity is reported for the aggregated
 spectra can be defined with the parameters `intensityFun` and `mzFun` of
-`combinePeaksData` (see `?combinePeaksData` for more information).
+`combinePeaksData()` (see `?combinePeaksData` for more information).
 
-While the `combinePeaksData` function is indeed helpful to combine peaks from
-different spectra, the `combineSpectra` function would in addition also allow us
-to provide our own, custom, peak aggregation function. As a simple example,
+While the `combinePeaksData()` function is indeed helpful to combine peaks from
+different spectra, the `combineSpectra()` function would in addition also allow
+us to provide our own, custom, peak aggregation function. As a simple example,
 instead of combining the spectra, we would like to select one of the input
-spectra as *representative* spectrum for grouped input spectra. `combineSpectra`
-supports any function that takes a list of peak matrices as input and returns a
-single peak matrix as output. We thus define below a function that calculates
-the total signal (TIC) for each input peak matrix, and returns the one peak
-matrix with the largest TIC.
+spectra as *representative* spectrum for grouped input
+spectra. `combineSpectra()` supports any function that takes a list of peak
+matrices as input and returns a single peak matrix as output. We thus define
+below a function that calculates the total signal (TIC) for each input peak
+matrix, and returns the one peak matrix with the largest TIC.
 
 ```{r}
 #' function to select and return the peak matrix with the largest tic from
@@ -939,7 +944,7 @@ maxTic <- function(x, ...) {
 }
 ```
 
-We can now use this function with `combineSpectra` to select for each compound
+We can now use this function with `combineSpectra()` to select for each compound
 the spectrum with the largest TIC.
 
 ```{r, fig.width = 4, fig.height = 8}
@@ -950,19 +955,19 @@ plotSpectra(sps_agg, main = sps_agg$name)
 
 ## Comparing spectra
 
-Spectra can be compared with the `compareSpectra` function, that allows to
+Spectra can be compared with the `compareSpectra()` function, that allows to
 calculate similarities between spectra using a variety of
-methods. `compareSpectra` implements similarity scoring as a two-step approach:
-first the peaks from the pair of spectra that should be compared are matched
-(mapped) against each other and then a similarity score is calculated on
-these. The `MAPFUN` parameter of `compareSpectra` defines the function to match
-(or map) the peaks between the spectra and parameter `FUN` specifies the
-function to calculate the similarity. By default, `compareSpectra` uses `MAPFUN
-= joinPeaks` (see `?joinPeaks` for a description and alternative options) and
-`FUN = ndotproduct` (the normalized dot-product spectra similarity
+methods. `compareSpectra()` implements similarity scoring as a two-step
+approach: first the peaks from the pair of spectra that should be compared are
+matched (mapped) against each other and then a similarity score is calculated on
+these. The `MAPFUN` parameter of `compareSpectra()` defines the function to
+match (or map) the peaks between the spectra and parameter `FUN` specifies the
+function to calculate the similarity. By default, `compareSpectra()` uses
+`MAPFUN = joinPeaks` (see `?joinPeaks` for a description and alternative
+options) and `FUN = ndotproduct` (the normalized dot-product spectra similarity
 score). Parameters to configure these functions can be passed to
-`compareSpectra` as additional parameter (such as e.g. `ppm` to define the
-m/z-relative tolerance for peak matching in `joinPeaks`).
+`compareSpectra()` as additional parameter (such as e.g. `ppm` to define the
+m/z-relative tolerance for peak matching in `joinPeaks()`).
 
 Below we calculate pairwise similarities between all spectra in `sps` accepting
 a 50 ppm difference of peaks' m/z values for being considered matching.
@@ -988,12 +993,12 @@ or user-provided similarity scoring function. As an example, we use below the
 spectral entropy similarity score introduced in [@y_spectral_2021] and provided
 with the
 [*msentropy*](https://cran.r-project.org/web/packages/msentropy/index.html)
-package. Since this `msentropy_similarity` function performs also the mapping of
-the peaks between the compared spectra internally (along with some spectra
-cleaning), we have to disable that in the `compareSpectra` function using
+package. Since this `msentropy_similarity()` function performs also the mapping
+of the peaks between the compared spectra internally (along with some spectra
+cleaning), we have to disable that in the `compareSpectra()` function using
 `MAPFUN = joinPeaksNone`. To configure the similarity scoring we can pass all
-additional parameters of the `msentropy_similarity` (see
-`?msentropy_similarity`) to the `compareSpectra` call. We use
+additional parameters of the `msentropy_similarity()` (see
+`?msentropy_similarity`) to the `compareSpectra()` call. We use
 `ms2_tolerance_in_ppm = 50` to set the tolerance for m/z-relative peak matching
 (equivalent to `ppm = 50` used above) and `ms2_tolerance_in_da = -1` to disable
 absolute tolerance matching.
@@ -1049,7 +1054,7 @@ intmat <- intmat[, !zeros]
 intmat
 ```
 
-The associated m/z values for the bins can be extracted with `mz` from the
+The associated m/z values for the bins can be extracted with `mz()` from the
 binned `Spectra` object. Below we use these as column names for the intensity
 matrix.
 
@@ -1070,7 +1075,7 @@ clustered together.
 
 ## Exporting spectra
 
-Spectra data can be exported with the `export` method. This method takes the
+Spectra data can be exported with the `export()` method. This method takes the
 `Spectra` that is supposed to be exported and the backend (parameter `backend`)
 which should be used to export the data and additional parameters for the export
 function of this backend. The backend thus defines the format of the exported
@@ -1092,7 +1097,7 @@ The backend classes currently supporting data export and its format are:
 In the example below we use the `MsBackendMzR` to export all spectra from the
 variable `sps` to an mzML file. We thus pass the data, the backend that should
 be used for the export and the file name of the result file (a temporary file)
-to the `export` function (see also the help page of the `export,MsBackendMzR`
+to the `export()` function (see also the help page of the `export,MsBackendMzR`
 function for additional supported parameters).
 
 ```{r export}
@@ -1123,15 +1128,15 @@ export(sps, MsBackendMzR(), file = fls[c(1, 2, 1, 2)])
 ```
 
 A more realistic use case for mzML export would be to export MS data after
-processing, such as smoothing (using the `smooth` function) and centroiding
-(using the `pickPeaks` function) of raw profile-mode MS data.
+processing, such as smoothing (using the `smooth()` function) and centroiding
+(using the `pickPeaks()` function) of raw profile-mode MS data.
 
 
 ## Changing backends
 
 In the previous sections we learned already that a `Spectra` object can use
 different backends for the actual data handling. It is also possible to
-change the backend of a `Spectra` to a different one with the `setBackend`
+change the backend of a `Spectra` to a different one with the `setBackend()`
 function. We could for example change the (`MsBackendMzR`) backend of the
 `sps_sciex` object to a `MsBackendMemory` backend to enable use of the data
 even without the need to keep the original mzML files. Below we change the
@@ -1171,7 +1176,7 @@ could be used instead. The default backends are:
 
 - `MsBackendMemory`: the *default* backend to store data in memory. Due to its
   design the `MsBackendMemory` provides fast access to the peaks matrices (using
-  the `peaksData` function) and is also optimized for fast access to spectra
+  the `peaksData()` function) and is also optimized for fast access to spectra
   variables and subsetting. Since all data is kept in memory, this backend has a
   relatively large memory footprint (depending on the data) and is thus not
   suggested for very large MS experiments.
@@ -1252,7 +1257,7 @@ large data sets. Most of the functionality do not require to keep the full MS
 data in memory (specifically, the peaks data, i.e., m/z and intensity values,
 which represent the largest chunk of data for MS experiments). For some
 functions however the peaks data needs to be loaded into memory. One such
-example is the `lengths` function to determine the number of peaks per spectra
+example is the `lengths()` function to determine the number of peaks per spectra
 that is calculated (on the fly) by evaluating the number of rows of the peaks
 matrix. Backends such as the `MsBackendMzR` perform by default any data
 processing separately (and eventually in parallel) by data file and it should
@@ -1261,12 +1266,12 @@ backend. For other backends (such as the
 [`MsBackendSql`](https://github.com/RforMassSpectrometry/MsBackendSql) or the
 [`MsBackendMassbankSql`](https://github.com/RforMassSpectrometry/MsBackendMassbank))
 it is however advised to process the data in a *chunk-wise* manner using the
-`spectrapply` function with parameter `chunkSize`. This will split the original
-`Spectra` object into chunks of size `chunkSize` and applies the function
-separately to each chunk. That way only data from one chunk will eventually be
-loaded into memory in each iteration enabling to process also very large
-`Spectra` objects on computers with limited hardware resources. Instead of a
-`lengths(sps)` call, the number of peaks per spectra could also be determined
+`spectrapply()` function with parameter `chunkSize`. This will split the
+original `Spectra` object into chunks of size `chunkSize` and applies the
+function separately to each chunk. That way only data from one chunk will
+eventually be loaded into memory in each iteration enabling to process also very
+large `Spectra` objects on computers with limited hardware resources. Instead of
+a `lengths(sps)` call, the number of peaks per spectra could also be determined
 (in a less memory demanding way) with `spectrapply(sps, lengths, chunkSize =
 5000L)`. In that way only peak data of 5000 spectra at a time will be loaded
 into memory.

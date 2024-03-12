@@ -1,5 +1,11 @@
 # Spectra 1.13
 
+## Changes in 1.13.7
+
+- Move generics `backendBpparam()`, `backendParallelFactor()` and
+  `supportsSetBackend()` to *ProtGenerics*. Required *ProtGenerics* version
+  1.35.4 or higher.
+
 ## Changes in 1.13.6
 
 - Add `filterRanges()` and `filterValues()` functions to allow filtering of a

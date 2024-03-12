@@ -18,8 +18,8 @@ processingChunkFactor(x)
 \item{value}{\code{integer(1)} defining the chunk size.}
 }
 \value{
-\code{processingChunkSize} returns the currently defined processing
-chunk size (or \code{Inf} if it is not defined). \code{processingChunkFactor}
+\code{processingChunkSize()} returns the currently defined processing
+chunk size (or \code{Inf} if it is not defined). \code{processingChunkFactor()}
 returns a \code{factor} defining the chunks into which \code{x} will be split
 for (parallel) chunk-wise processing or a \code{factor} of length 0 if
 no splitting is defined.
@@ -33,10 +33,10 @@ data chunk) and also reduces the memory demand  since only the MS data
 of the currently processed subset is loaded into memory and processed.
 This chunk-wise processing, which is by default disabled, can be enabled
 by setting the processing chunk size of a \code{Spectra} with the
-\code{processingChunkSize} function to a value which is smaller than the
+\code{processingChunkSize()} function to a value which is smaller than the
 length of the \code{Spectra} object. Setting \code{processingChunkSize(sps) <- 1000}
 will cause any data manipulation operation on the \code{sps}, such as
-\code{filterIntensity} or \code{bin}, to be performed eventually in parallel for
+\code{filterIntensity()} or \code{bin()}, to be performed eventually in parallel for
 sets of 1000 spectra in each iteration.
 
 Such chunk-wise processing is specifically useful for \code{Spectra} objects
@@ -54,7 +54,7 @@ data by returning a \code{factor} defining the respective data chunks. The
 \code{MsBackendMzR} returns for example a \code{factor} based on the \emph{dataStorage}
 spectra variable. A \code{factor} of length 0 is returned if no particular
 preferred splitting should be performed. The suggested chunk definition
-will be used if no finite \code{processingChunkSize} is defined. Setting
+will be used if no finite \code{processingChunkSize()} is defined. Setting
 the \code{processingChunkSize} overrides \code{backendParallelFactor}.
 
 See the \emph{Large-scale data handling and processing with Spectra} for more
@@ -62,11 +62,11 @@ information and examples.
 
 Functions to configure parallel or chunk-wise processing:
 \itemize{
-\item \code{processingChunkSize}: allows to get or set the size of the chunks for
+\item \code{processingChunkSize()}: allows to get or set the size of the chunks for
 parallel processing or chunk-wise processing of a \code{Spectra} in general.
 With a value of \code{Inf} (the default) no chunk-wise processing will be
 performed.
-\item \code{processingChunkFactor}: returns a \code{factor} defining the chunks into
+\item \code{processingChunkFactor()}: returns a \code{factor} defining the chunks into
 which a \code{Spectra} will be split for chunk-wise (parallel) processing.
 A \code{factor} of length 0 indicates that no chunk-wise processing will be
 performed.
@@ -74,7 +74,7 @@ performed.
 }
 \note{
 Some backends might not support parallel processing at all.
-For these, the \code{backendBpparam} function will always return a
+For these, the \code{backendBpparam()} function will always return a
 \code{SerialParam()} independently on how parallel processing was defined.
 }
 \author{

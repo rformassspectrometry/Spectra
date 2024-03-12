@@ -21,8 +21,8 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #' values (increasing obviously the memory demand of the object).
 #'
 #' Any data accessor functions of the extending `MsBackend` class (such as `$`
-#' or `msLevel` or `spectraData`) should first use `callNextMethod` to call the
-#' respective accessor of `MsBackendCached` that will evaluate if the
+#' or `msLevel()` or `spectraData()`) should first use `callNextMethod()` to
+#' call the respective accessor of `MsBackendCached` that will evaluate if the
 #' requested spectra variable(s) are in the local cache and return these. If
 #' the requested spectra variables are neither in the local cache, nor
 #' listed in the `@spectraVariables` slot (which defines all spectra variables
@@ -33,12 +33,12 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'
 #' Classes extending the `MsBackendCached` need to
 #'
-#' - call the `backendInitialize` method of this class in their own
-#'   `backendInitialize` method and set at least the number of spectra with
+#' - call the `backendInitialize()` method of this class in their own
+#'   `backendInitialize()` method and set at least the number of spectra with
 #'   the `nspectra` parameter and the `spectraVariables` that are available to
 #'   the (extending) backend class.
 #'
-#' - implement the `spectraData` method that also calls the `spectraData`
+#' - implement the `spectraData()` method that also calls the `spectraData()`
 #'   method from `MsBackendCached` to also retrieve cached values (e.g. using
 #'   `res <- callNextMethod()` at the beginning of the `spectraData` function).
 #'   The `spectraData,MsBackendCached` method will return `NULL` if the
@@ -75,16 +75,16 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'
 #' @section Available methods:
 #'
-#' - `acquisitionNum`: returns the acquisition number of each
+#' - `acquisitionNum()`: returns the acquisition number of each
 #'   spectrum. Returns an `integer` of length equal to the number of
 #'   spectra (with `NA_integer_` if not available).
 #'
-#' - `backendInitialize`: *initializes* the backend. The method takes parameters
-#'   `data` (`data.frame` with cached data), `nspectra` (`integer` defining the
-#'   number of spectra) and `spectraVariables` (`character` with the spectra
-#'   variables that are provided by the extending backend.
+#' - `backendInitialize()`: *initializes* the backend. The method takes
+#'   parameters `data` (`data.frame` with cached data), `nspectra` (`integer`
+#'   defining the number of spectra) and `spectraVariables` (`character` with
+#'   the spectra variables that are provided by the extending backend.
 #'
-#' - `centroided`, `centroided<-`: gets or sets the centroiding
+#' - `centroided()`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided` returns a `logical`
 #'   vector of length equal to the number of spectra with `TRUE` if a
 #'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
@@ -93,95 +93,95 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   for `centroided<-` is either a single `logical` or a `logical` of
 #'   length equal to the number of spectra in `object`.
 #'
-#' - `collisionEnergy`, `collisionEnergy<-`: gets or sets the
-#'   collision energy for all spectra in `object`. `collisionEnergy`
+#' - `collisionEnergy()`, `collisionEnergy<-`: gets or sets the
+#'   collision energy for all spectra in `object`. `collisionEnergy()`
 #'   returns a `numeric` with length equal to the number of spectra
 #'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
 #'   `numeric` of length equal to the number of spectra in `object`.
 #'
-#' - `dataOrigin`: gets a `character` of length equal to the number of spectra
+#' - `dataOrigin()`: gets a `character` of length equal to the number of spectra
 #'   in `object` with the *data origin* of each spectrum. This could e.g. be
 #'   the mzML file from which the data was read.
 #'
-#' - `intensity`: gets the intensity values from the spectra. Returns
+#' - `intensity()`: gets the intensity values from the spectra. Returns
 #'   a [NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
-#' - `ionCount`: returns a `numeric` with the sum of intensities for
-#'   each spectrum. If the spectrum is empty (see `isEmpty`),
+#' - `ionCount()`: returns a `numeric` with the sum of intensities for
+#'   each spectrum. If the spectrum is empty (see `isEmpty()`),
 #'   `NA_real_` is returned.
 #'
-#' - `isEmpty`: checks whether a spectrum in `object` is empty
+#' - `isEmpty()`: checks whether a spectrum in `object` is empty
 #'   (i.e. does not contain any peaks). Returns a `logical` vector of
 #'   length equal number of spectra.
 #'
-#' - `isolationWindowLowerMz`, `isolationWindowLowerMz<-`: gets or sets the
+#' - `isolationWindowLowerMz()`, `isolationWindowLowerMz<-`: gets or sets the
 #'   lower m/z boundary of the isolation window.
 #'
-#' - `isolationWindowTargetMz`, `isolationWindowTargetMz<-`: gets or sets the
+#' - `isolationWindowTargetMz()`, `isolationWindowTargetMz<-`: gets or sets the
 #'   target m/z of the isolation window.
 #'
-#' - `isolationWindowUpperMz`, `isolationWindowUpperMz<-`: gets or sets the
+#' - `isolationWindowUpperMz()`, `isolationWindowUpperMz<-`: gets or sets the
 #'   upper m/z boundary of the isolation window.
 #'
-#' - `length`: returns the number of spectra (i.e. the `@nspectra`).
+#' - `length()`: returns the number of spectra (i.e. the `@nspectra`).
 #'
-#' - `lengths`: gets the number of peaks (m/z-intensity values) per
+#' - `lengths()`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum.  Returns an `integer` vector (length equal to the
 #'   number of spectra). For empty spectra, `0` is returned.
 #'
-#' - `msLevel`: gets the spectra's MS level. Returns an `integer`
+#' - `msLevel()`: gets the spectra's MS level. Returns an `integer`
 #'   vector (of length equal to the number of spectra) with the MS
 #'   level for each spectrum (or `NA_integer_` if not available).
 #'
-#' - `mz`: gets the mass-to-charge ratios (m/z) from the
+#' - `mz()`: gets the mass-to-charge ratios (m/z) from the
 #'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
-#' - `polarity`, `polarity<-`: gets or sets the polarity for each
+#' - `polarity()`, `polarity<-`: gets or sets the polarity for each
 #'   spectrum.  `polarity` returns an `integer` vector (length equal
 #'   to the number of spectra), with `0` and `1` representing negative
 #'   and positive polarities, respectively. `polarity<-` expects an
 #'   integer vector of length 1 or equal to the number of spectra.
 #'
-#' - `precursorCharge`, `precursorIntensity`, `precursorMz`,
-#'   `precScanNum`, `precAcquisitionNum`: get the charge (`integer`),
+#' - `precursorCharge()`, `precursorIntensity()`, `precursorMz()`,
+#'   `precScanNum()`, `precAcquisitionNum()`: get the charge (`integer`),
 #'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
 #'   and acquisition number (`interger`) of the precursor for MS level
 #'   2 and above spectra from the object. Returns a vector of length equal to
 #'   the number of spectra in `object`. `NA` are reported for MS1
 #'   spectra of if no precursor information is available.
 #'
-#' - `rtime`, `rtime<-`: gets or sets the retention times for each
-#'   spectrum (in seconds). `rtime` returns a `numeric` vector (length equal to
-#'   the number of spectra) with the retention time for each spectrum.
+#' - `rtime()`, `rtime<-`: gets or sets the retention times for each
+#'   spectrum (in seconds). `rtime()` returns a `numeric` vector (length equal
+#'   to the number of spectra) with the retention time for each spectrum.
 #'   `rtime<-` expects a numeric vector with length equal to the
 #'   number of spectra.
 #'
-#' - `scanIndex`: returns an `integer` vector with the *scan index*
+#' - `scanIndex()`: returns an `integer` vector with the *scan index*
 #'   for each spectrum. This represents the relative index of the
 #'   spectrum within each file. Note that this can be different to the
-#'   `acquisitionNum` of the spectrum which is the index of the
+#'   `acquisitionNum()` of the spectrum which is the index of the
 #'   spectrum as reported in the mzML file.
 #'
-#' - `selectSpectraVariables`: subset the object to specified spectra variables.
-#'   This will eventually remove spectra variables listed in `@spectraVariables`
-#'   and will also drop columns from the local cache if not among
-#'   `spectraVariables`.
+#' - `selectSpectraVariables()`: subset the object to specified spectra
+#'   variables. This will eventually remove spectra variables listed in
+#'   `@spectraVariables` and will also drop columns from the local cache if
+#'   not among `spectraVariables`.
 #'
-#' - `smoothed`,`smoothed<-`: gets or sets whether a spectrum is
-#'   *smoothed*. `smoothed` returns a `logical` vector of length equal
+#' - `smoothed()`,`smoothed<-`: gets or sets whether a spectrum is
+#'   *smoothed*. `smoothed()` returns a `logical` vector of length equal
 #'   to the number of spectra. `smoothed<-` takes a `logical` vector
 #'   of length 1 or equal to the number of spectra in `object`.
 #'
-#' - `spectraVariables`: returns the available spectra variables, i.e. the
+#' - `spectraVariables()`: returns the available spectra variables, i.e. the
 #'   unique set of *core spectra variables*, cached spectra variables and
 #'   spectra variables defined in the `@spectraVariables` slot (i.e. spectra
 #'   variables thought to be provided by the extending `MsBackend` instance).
 #'
-#' - `spectraData`: returns a `DataFrame` with cached spectra variablers or
+#' - `spectraData()`: returns a `DataFrame` with cached spectra variablers or
 #'   initialized *core spectra variables*. Parameter `spectraVariables` allows
 #'   to specify the variables to retrieve. The function returns `NULL` if the
 #'   requested variables are not cached and are not provided by the extending
@@ -196,10 +196,10 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   backend.
 #'
 #'
-#' @param columns For `spectraData`: `character` with the names of the spectra
+#' @param columns For `spectraData()`: `character` with the names of the spectra
 #'     variables to retrieve.
 #'
-#' @param data For `backendInitialize`: (optional) `data.frame` with cached
+#' @param data For `backendInitialize()`: (optional) `data.frame` with cached
 #'     values. The number of rows (and their order) has to match the number of
 #'     spectra.
 #'
@@ -211,17 +211,17 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'
 #' @param name For `$<-`: the name of the spectra variable to set.
 #'
-#' @param nspectra For `backendInitialize`: `integer` with the number of
+#' @param nspectra For `backendInitialize()`: `integer` with the number of
 #'     spectra.
 #'
 #' @param object A `MsBackendCached` object.
 #'
-#' @param spectraVariables For `backendInitialize`: `character` with the names
+#' @param spectraVariables For `backendInitialize()`: `character` with the names
 #'     of the spectra variables that are provided by the extending backend.
-#'     For `selectSpectraVariables`: `character` specifying the spectra
+#'     For `selectSpectraVariables()`: `character` specifying the spectra
 #'     variables to keep.
 #'
-#' @param use.names For `lengths`: whether spectrum names should be used.
+#' @param use.names For `lengths()`: whether spectrum names should be used.
 #'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.

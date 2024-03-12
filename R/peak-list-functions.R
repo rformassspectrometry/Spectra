@@ -13,7 +13,7 @@ NULL
 #'
 #' @description
 #'
-#' `combinePeaksData` aggregates provided peak matrices into a single peak
+#' `combinePeaksData()` aggregates provided peak matrices into a single peak
 #' matrix. Peaks are grouped by their m/z values with the `group()` function
 #' from the `MsCoreUtils` package. In brief, all peaks in all provided
 #' spectra are first ordered by their m/z and consecutively grouped into one

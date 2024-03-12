@@ -1,11 +1,6 @@
 #' @include hidden_aliases.R
 NULL
 
-setGeneric("backendBpparam", def = function(object, ...)
-    standardGeneric("backendBpparam"))
-#' @rdname hidden_aliases
-setGeneric("backendParallelFactor", def = function(object, ...)
-    standardGeneric("backendParallelFactor"))
 #' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
 setGeneric("combinePeaks", function(object, ...)
@@ -73,6 +68,3 @@ setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
 #' @export
 setGeneric("spectraVariableMapping", function(object, ...)
     standardGeneric("spectraVariableMapping"))
-
-setGeneric("supportsSetBackend", function(object, ...)
-    standardGeneric("supportsSetBackend"))

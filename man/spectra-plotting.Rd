@@ -78,7 +78,7 @@ plotSpectraOverlay(
 )
 }
 \arguments{
-\item{x}{a \code{\link[=Spectra]{Spectra()}} object. For \code{plotSpectraMirror} it has to be an
+\item{x}{a \code{\link[=Spectra]{Spectra()}} object. For \code{plotSpectraMirror()} it has to be an
 object of length 2.}
 
 \item{xlab}{\code{character(1)} with the label for the x-axis (by default
@@ -107,7 +107,7 @@ spectrum.}
 \item{labels}{allows to specify a label for each peak. Can be a \code{character}
 with length equal to the number of peaks, or, ideally, a \code{function} that
 uses one of the \code{Spectra}'s variables (see examples below).
-\code{plotSpectraMirror} supports only \code{labels} of type \emph{function}.}
+\code{plotSpectraMirror()} supports only \code{labels} of type \emph{function}.}
 
 \item{labelCex}{\code{numeric(1)} giving the amount by which the text should be
 magnified relative to the default. See parameter \code{cex} in \code{\link[=par]{par()}}.}
@@ -123,10 +123,10 @@ parameter \code{srt} in \code{\link[=text]{text()}}.}
 
 \item{labelCol}{color for the label(s).}
 
-\item{asp}{for \code{plotSpectra}: the target ratio (columns / rows) when plotting
-mutliple spectra (e.g. for 20 spectra use \code{asp = 4/5} for 4 columns and 5 rows
-or \code{asp = 5/4} for 5 columns and 4 rows; see \code{\link[grDevices:n2mfrow]{grDevices::n2mfrow()}} for
-details).}
+\item{asp}{for \code{plotSpectra()}: the target ratio (columns / rows) when
+plotting mutliple spectra (e.g. for 20 spectra use \code{asp = 4/5} for 4
+columns and 5 rows or \code{asp = 5/4} for 5 columns and 4 rows; see
+\code{\link[grDevices:n2mfrow]{grDevices::n2mfrow()}} for details).}
 
 \item{...}{additional parameters to be passed to the \code{\link[=plot.default]{plot.default()}}
 function.}
@@ -136,26 +136,26 @@ function.}
 \item{frame.plot}{\code{logical(1)} whether a box should be drawn around the
 plotting area.}
 
-\item{y}{for \code{plotSpectraMirror}: \code{Spectra} object of length 1 against which
-\code{x} should be plotted against.}
+\item{y}{for \code{plotSpectraMirror()}: \code{Spectra} object of length 1 against
+which \code{x} should be plotted against.}
 
-\item{ppm}{for \code{plotSpectraMirror}: m/z relative acceptable difference (in
+\item{ppm}{for \code{plotSpectraMirror()}: m/z relative acceptable difference (in
 ppm) for peaks to be considered matching (see \code{\link[=common]{common()}} for more
 details).}
 
-\item{tolerance}{for \code{plotSpectraMirror}: absolute acceptable difference of
+\item{tolerance}{for \code{plotSpectraMirror()}: absolute acceptable difference of
 m/z values for peaks to be considered matching (see \code{\link[=common]{common()}} for more
 details).}
 
-\item{matchCol}{for \code{plotSpectraMirror}: color for matching peaks.}
+\item{matchCol}{for \code{plotSpectraMirror()}: color for matching peaks.}
 
-\item{matchLwd}{for \code{plotSpectraMirror}: line width (\code{lwd}) to draw matching
+\item{matchLwd}{for \code{plotSpectraMirror()}: line width (\code{lwd}) to draw
+matching peaks. See \code{\link[=par]{par()}} for more details.}
+
+\item{matchLty}{for \code{plotSpectraMirror()}: line type (\code{lty}) to draw matching
 peaks. See \code{\link[=par]{par()}} for more details.}
 
-\item{matchLty}{for \code{plotSpectraMirror}: line type (\code{lty}) to draw matching
-peaks. See \code{\link[=par]{par()}} for more details.}
-
-\item{matchPch}{for \code{plotSpectraMirror}: point character (\code{pch}) to label
+\item{matchPch}{for \code{plotSpectraMirror()}: point character (\code{pch}) to label
 matching peaks. Defaults to \code{matchPch = 16}, set to \code{matchPch = NA} to
 disable. See \code{\link[=par]{par()}} for more details.}
 }
@@ -165,11 +165,11 @@ These functions create a plot.
 \description{
 \code{\link[=Spectra]{Spectra()}} can be plotted with one of the following functions
 \itemize{
-\item \code{plotSpectra}: plots each spectrum in its separate plot by splitting
+\item \code{plotSpectra()}: plots each spectrum in its separate plot by splitting
 the plot area into as many panels as there are spectra.
-\item \code{plotSpectraOverlay}: plots all spectra in \code{x} \strong{into the same} plot (as
+\item \code{plotSpectraOverlay()}: plots all spectra in \code{x} \strong{into the same} plot (as
 an overlay).
-\item \code{plotSpectraMirror}: plots a pair of spectra as a \emph{mirror plot}.
+\item \code{plotSpectraMirror()}: plots a pair of spectra as a \emph{mirror plot}.
 Parameters \code{x} and \code{y} both have to be a \code{Spectra} of length 1. Matching
 peaks (considering \code{ppm} and \code{tolerance}) are highlighted. See \code{\link[=common]{common()}}
 for details on peak matching. Parameters \code{matchCol}, \code{matchLty},

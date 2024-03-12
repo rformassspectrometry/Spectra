@@ -6,20 +6,20 @@
 #'
 #' [Spectra()] can be plotted with one of the following functions
 #'
-#' - `plotSpectra`: plots each spectrum in its separate plot by splitting
+#' - `plotSpectra()`: plots each spectrum in its separate plot by splitting
 #'   the plot area into as many panels as there are spectra.
 #'
-#' - `plotSpectraOverlay`: plots all spectra in `x` **into the same** plot (as
+#' - `plotSpectraOverlay()`: plots all spectra in `x` **into the same** plot (as
 #'   an overlay).
 #'
-#' - `plotSpectraMirror`: plots a pair of spectra as a *mirror plot*.
+#' - `plotSpectraMirror()`: plots a pair of spectra as a *mirror plot*.
 #'   Parameters `x` and `y` both have to be a `Spectra` of length 1. Matching
 #'   peaks (considering `ppm` and `tolerance`) are highlighted. See [common()]
 #'   for details on peak matching. Parameters `matchCol`, `matchLty`,
 #'   `matchLwd` and `matchPch` allow to customize how matching peaks are
 #'   indicated.
 #'
-#' @param x a [Spectra()] object. For `plotSpectraMirror` it has to be an
+#' @param x a [Spectra()] object. For `plotSpectraMirror()` it has to be an
 #'     object of length 2.
 #'
 #' @param xlab `character(1)` with the label for the x-axis (by default
@@ -48,7 +48,7 @@
 #' @param labels allows to specify a label for each peak. Can be a `character`
 #'     with length equal to the number of peaks, or, ideally, a `function` that
 #'     uses one of the `Spectra`'s variables (see examples below).
-#'     `plotSpectraMirror` supports only `labels` of type *function*.
+#'     `plotSpectraMirror()` supports only `labels` of type *function*.
 #'
 #' @param labelCex `numeric(1)` giving the amount by which the text should be
 #'     magnified relative to the default. See parameter `cex` in [par()].
@@ -69,33 +69,33 @@
 #' @param frame.plot `logical(1)` whether a box should be drawn around the
 #'     plotting area.
 #'
-#' @param ppm for `plotSpectraMirror`: m/z relative acceptable difference (in
+#' @param ppm for `plotSpectraMirror()`: m/z relative acceptable difference (in
 #'     ppm) for peaks to be considered matching (see [common()] for more
 #'     details).
 #'
-#' @param tolerance for `plotSpectraMirror`: absolute acceptable difference of
+#' @param tolerance for `plotSpectraMirror()`: absolute acceptable difference of
 #'     m/z values for peaks to be considered matching (see [common()] for more
 #'     details).
 #'
-#' @param matchCol for `plotSpectraMirror`: color for matching peaks.
+#' @param matchCol for `plotSpectraMirror()`: color for matching peaks.
 #'
-#' @param matchLwd for `plotSpectraMirror`: line width (`lwd`) to draw matching
+#' @param matchLwd for `plotSpectraMirror()`: line width (`lwd`) to draw
+#'     matching peaks. See [par()] for more details.
+#'
+#' @param matchLty for `plotSpectraMirror()`: line type (`lty`) to draw matching
 #'     peaks. See [par()] for more details.
 #'
-#' @param matchLty for `plotSpectraMirror`: line type (`lty`) to draw matching
-#'     peaks. See [par()] for more details.
-#'
-#' @param matchPch for `plotSpectraMirror`: point character (`pch`) to label
+#' @param matchPch for `plotSpectraMirror()`: point character (`pch`) to label
 #'     matching peaks. Defaults to `matchPch = 16`, set to `matchPch = NA` to
 #'     disable. See [par()] for more details.
 #'
-#' @param y for `plotSpectraMirror`: `Spectra` object of length 1 against which
-#'     `x` should be plotted against.
+#' @param y for `plotSpectraMirror()`: `Spectra` object of length 1 against
+#'     which `x` should be plotted against.
 #'
-#' @param asp for `plotSpectra`: the target ratio (columns / rows) when plotting
-#' mutliple spectra (e.g. for 20 spectra use `asp = 4/5` for 4 columns and 5 rows
-#' or `asp = 5/4` for 5 columns and 4 rows; see [grDevices::n2mfrow()] for
-#' details).
+#' @param asp for `plotSpectra()`: the target ratio (columns / rows) when
+#'     plotting mutliple spectra (e.g. for 20 spectra use `asp = 4/5` for 4
+#'     columns and 5 rows or `asp = 5/4` for 5 columns and 4 rows; see
+#'     [grDevices::n2mfrow()] for details).
 #'
 #' @param ... additional parameters to be passed to the [plot.default()]
 #'     function.

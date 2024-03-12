@@ -101,12 +101,12 @@ register(SerialParam())
 Operations on peaks data are the most time and memory demanding tasks. These
 generally apply a function to, or modify the *m/z* and/or intensity
 values. Among these functions are for example functions that filter, remove or
-combine mass peaks (such as `filterMzRange`, `filterIntensity` or
-`combinePeaks`) or functions that perform calculations on the peaks data (such
-as `bin` or `pickPeaks`) or also functions that provide information on, or
-summarize spectra (such as `lengths` or `ionCount`). For all these functions,
-the peaks data needs to be present in memory and on-disk backends, such as the
-`MsBackendMzR`, need thus to first import the data from their data
+combine mass peaks (such as `filterMzRange()`, `filterIntensity()` or
+`combinePeaks()`) or functions that perform calculations on the peaks data (such
+as `bin()` or `pickPeaks()`) or also functions that provide information on, or
+summarize spectra (such as `lengths()` or `ionCount()`). For all these
+functions, the peaks data needs to be present in memory and on-disk backends,
+such as the `MsBackendMzR`, need thus to first import the data from their data
 storage. However, loading the full peaks data at once into memory might not be
 possible for large data sets. Loading and processing the data in smaller chunks
 would however reduce the memory demand and hence allow to process also such data
@@ -115,7 +115,7 @@ automatically split and processed by the data storage files. For all other
 backends chunk-wise processing can be enabled by defining the
 `processingChunkSize` of a `Spectra`, i.e. the number of spectra for which peaks
 data should be loaded and processed in each iteration. The
-`processingChunkFactor` function can be used to evaluate how the data will be
+`processingChunkFactor()` function can be used to evaluate how the data will be
 split. Below we use this function to evaluate how chunk-wise processing would be
 performed with the two `Spectra` objects.
 
@@ -134,7 +134,7 @@ processingChunkFactor(sps_mzr) |> table()
 
 The data would thus be split and processed by the original file, from which the
 data is imported. We next specifically define the chunk-size for both `Spectra`
-with the `processingChunkSize` function.
+with the `processingChunkSize()` function.
 
 ```{r}
 processingChunkSize(sps_mem) <- 3000
@@ -154,8 +154,8 @@ equally sized arbitrary chunks and no longer by original data file. Setting
 `processingChunkSize` thus overrides any splitting suggested by the backend.
 
 After having set a `processingChunkSize`, any operation involving peaks data
-will by default be performed in a chunk-wise manner. Thus, calling `ionCount` on
-our `Spectra` will now split the data in chunks of 3000 spectra and sum the
+will by default be performed in a chunk-wise manner. Thus, calling `ionCount()`
+on our `Spectra` will now split the data in chunks of 3000 spectra and sum the
 intensities (per spectrum) chunk by chunk.
 
 ```{r}
@@ -172,7 +172,7 @@ processing setup).
 
 Note that this chunk-wise processing only affects functions that involve actual
 peak data.  Subset operations that only reduce the number of spectra (such as
-`filterRt` or `[`) bypass this mechanism and are applied immediately to the
+`filterRt()` or `[`) bypass this mechanism and are applied immediately to the
 data.
 
 For an evaluation of chunk-wise processing see also this
@@ -189,7 +189,7 @@ on the *Spectra* github repository.
 
 - `Spectra` uses the `r Biocpkg("BiocParallel")` package for parallel
   processing. The parallel processing setup can be configured globally by
-  *registering* the preferred setup using the `register` function (e.g.
+  *registering* the preferred setup using the `register()` function (e.g.
   `register(SnowParam(4))` to use socket-based parallel processing on Windows
   using 4 different R processes). Parallel processing can be disabled by setting
   `register(SerialParam())`.
@@ -209,30 +209,31 @@ Some functions allow to configure parallel processing using a dedicated
 parameter that allows to define how to split the data for parallel (or
 chunk-wise) processing. These functions are:
 
-- `applyProcessing`: parameter `f` (defaults to `processingChunkFactor(object)`)
-  can be used to define how to split and process the data in parallel.
-- `combineSpectra`: parameter `p` (defaults to `x$dataStorage`) defines how the
-  data should be split and processed in parallel.
-- `estimatePrecursorIntensity`: parameter `f` (defaults to `dataOrigin(x)`)
+- `applyProcessing()`: parameter `f` (defaults to
+  `processingChunkFactor(object)`) can be used to define how to split and
+  process the data in parallel.
+- `combineSpectra()`: parameter `p` (defaults to `x$dataStorage`) defines how
+  the data should be split and processed in parallel.
+- `estimatePrecursorIntensity()`: parameter `f` (defaults to `dataOrigin(x)`)
   defines the splitting and processing. This should represent the original data
   files the spectra data derives from.
-- `intensity`: parameter `f` (defaults to `processingChunkFactor(object)`)
+- `intensity()`: parameter `f` (defaults to `processingChunkFactor(object)`)
   defines if and how the data should be split for parallel processing.
-- `mz`: parameter `f` (defaults to `processingChunkFactor(object)`)
+- `mz()`: parameter `f` (defaults to `processingChunkFactor(object)`)
   defines if and how the data should be split for parallel processing.
-- `peaksData`: parameter `f` (defaults to `processingChunkFactor(object)`)
+- `peaksData()`: parameter `f` (defaults to `processingChunkFactor(object)`)
   defines if and how the data should be split for parallel processing.
-- `setBackend`: parameter `f` (defaults to `processingChunkFactor(object)`)
+- `setBackend()`: parameter `f` (defaults to `processingChunkFactor(object)`)
   defines if and how the data should be split for parallel processing.
 
 Functions that perform chunk-wise (parallel) processing *natively*, i.e., based
 on the `processingChunkFactor`:
 
-- `containsMz`.
-- `containsNeutralLoss`.
-- `ionCount`.
-- `isCentroided`.
-- `isEmpty`.
+- `containsMz()`.
+- `containsNeutralLoss()`.
+- `ionCount()`.
+- `isCentroided()`.
+- `isEmpty()`.
 
 
 

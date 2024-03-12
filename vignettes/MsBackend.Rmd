@@ -78,7 +78,7 @@ General conventions for MS data of a `Spectra` are:
 - `MsBackend` implementations can also represent purely *read-only* data
   resources. In this case only data accessor methods need to be implemented but
   not data replacement methods. Whether a backend is read-only can be set with
-  the `@readonly` slot of the virtual `MsBackend` class (the `isReadOnly`
+  the `@readonly` slot of the virtual `MsBackend` class (the `isReadOnly()`
   function can be used to retrieve the value for this slot). The default is
   `@readonly = FALSE` and thus all data replacement method listed in section
   *Data replacement methods* have to be implemented. For read-only backends
@@ -100,13 +100,13 @@ For parallel processing, `Spectra` splits the backend based on a defined
 `factor` and processes each in parallel (or *in serial* if a `SerialParam` is
 used). The splitting `factor` can be defined for `Spectra` by setting the
 parameter `processingChunkSize`. Alternatively, through the
-`backendParallelFactor` function the backend can also *suggest* a `factor` that
-should/could be used for splitting and parallel processing. The default
-implementation for `backendParallelFactor` is to return an empty `factor`
+`backendParallelFactor()` function the backend can also *suggest* a `factor`
+that should/could be used for splitting and parallel processing. The default
+implementation for `backendParallelFactor()` is to return an empty `factor`
 (`factor()`) hence not suggesting any preferred
-splitting. `backendParallelFactor` for `MsBackendMzR` on the other hand returns
-a `factor` based on the data files the data is stored in (i.e. based on the
-`dataStorage` of the MS data).
+splitting. `backendParallelFactor()` for `MsBackendMzR` on the other hand
+returns a `factor` based on the data files the data is stored in (i.e. based
+on the `dataStorage` of the MS data).
 
 Besides parallel processing, this chunk-wise processing can also reduce the
 memory demand for operations, because only the peak data of the current chunk
@@ -173,7 +173,7 @@ setValidity("MsBackendTest", function(object) {
 })
 ```
 
-We can now create an instance of our new class with the `MsBackendTest`
+We can now create an instance of our new class with the `MsBackendTest()`
 function.
 
 ```{r}
@@ -194,10 +194,10 @@ listed here. Also, it is strongly advised to write dedicated unit tests for
 each newly implemented method or function already **during** the development.
 
 
-### `dataStorage`
+### `dataStorage()`
 
 The `dataStorage` spectra variable of a spectrum provides some information how
-or where the data is stored. The `dataStorage` method should therefor return a
+or where the data is stored. The `dataStorage()` method should therefor return a
 `character` vector with length equal to the number of spectra of a backend
 object with that information. For most backends the data storage information can
 be a simple string such as `"memory"` or `"database"` to specify that the data
@@ -209,10 +209,10 @@ load data from data files upon request will use this spectra variable to store
 and keep track of the original data file for each spectrum. An example is the
 `MsBackendMzR` backend that retrieves the MS data on-the-fly from the original
 data file(s) whenever m/z or intensity values are requested from the
-backend. Calling `dataStorage` on an `MsBackendMzR` returns thus the names from
-the originating files.
+backend. Calling `dataStorage()` on an `MsBackendMzR` returns thus the names
+from the originating files.
 
-For our example backend we define a simple `dataStorage` method that simply
+For our example backend we define a simple `dataStorage()` method that simply
 returns the column `"dataStorage"` from the `@svars` (as a `character`).
 
 ```{r}
@@ -222,9 +222,9 @@ setMethod("dataStorage", "MsBackendTest", function(object) {
 ```
 
 
-### `length`
+### `length()`
 
-`length` is expected to return a single `integer` with the total number of
+`length()` is expected to return a single `integer` with the total number of
 spectra that are available through the backend class. For our example backend we
 simply return the number of rows of the `data.frame` stored in the
 `@spectraVars` slot.
@@ -236,17 +236,17 @@ setMethod("length", "MsBackendTest", function(x) {
 ```
 
 
-### `backendInitialize`
+### `backendInitialize()`
 
-The `backendInitialize` method is expected to be called after creating an
+The `backendInitialize()` method is expected to be called after creating an
 instance of the backend class and should prepare (initialize) the backend which
 in most cases means that MS data is loaded. This method can take any parameters
 needed by the backend to get loaded/initialized with data (which can be file
 names from which to load the data, a database connection or object(s) containing
-the data). During `backendInitialize` usually also the special spectra variables
-`dataStorage` and `dataOrigin` are set.
+the data). During `backendInitialize()` usually also the special spectra
+variables `dataStorage` and `dataOrigin` are set.
 
-Below we define a `backendInitialize` method that takes as arguments a
+Below we define a `backendInitialize()` method that takes as arguments a
 `data.frame` with spectra variables and two `list`s with the m/z and intensity
 values for each spectrum.
 
@@ -276,7 +276,7 @@ memory* as in our example) and from where the data is originating. The
 individual spectra derive.
 
 We can now create an instance of our backend class and fill it with data. We
-thus first define our MS data and pass this to the `backendInitialize` method.
+thus first define our MS data and pass this to the `backendInitialize()` method.
 
 ```{r}
 ## A data.frame with spectra variables.
@@ -298,16 +298,16 @@ be
 ```
 
 While this method works and is compliant with the `MsBackend` API (because there
-is no requirement on the input parameters for the `backendInitialize` method),
+is no requirement on the input parameters for the `backendInitialize()` method),
 it would be good practice for backends that are supposed to support replacing
 data, to add an optional additional parameter `data` that would allow passing
 the *complete* MS data (including m/z and intensity values) to the function as a
 `DataFrame`. This would simplify the implementation of some replacement methods
 and would in addition also allow to change the backend of a `Spectra` using the
-`setBackend` to our new backend. We thus re-implement the `backendInitialize`
-method supporting also to initialize the backend with such a data frame and we
-also implement a helper function that checks spectra variables for the correct
-data type.
+`setBackend()` to our new backend. We thus re-implement the
+`backendInitialize()` method supporting also to initialize the backend with such
+a data frame and we also implement a helper function that checks spectra
+variables for the correct data type.
 
 ```{r}
 #' Helper function to check if core spectra variables have the correct
@@ -329,7 +329,7 @@ data type.
 ```
 
 This function is then used to check the input data in our new
-`backendInitialize` method.
+`backendInitialize()` method.
 
 ```{r}
 setMethod(
@@ -358,7 +358,7 @@ setMethod(
     })
 ```
 
-We below create the backend again with the updated `backendInitialize`.
+We below create the backend again with the updated `backendInitialize()`.
 
 ```{r}
 ## Create and initialize the backend
@@ -367,41 +367,41 @@ be <- backendInitialize(MsBackendTest(),
 be
 ```
 
-The `backendInitialize` method that we implemented for our backend class expects
-the user to provide the full MS data. This does however not always have to be
-the case. The `backendInitialize` method of the `MsBackendMzR` backend takes for
-example the file names of the raw mzML, mzXML or CDF files as input and
-initializes the backend by importing part of the data from these. Also the
-backends defined by the `r Biocpkg("MsBackendMgf")` or
-`r Biocpkg("MsBackendMsp")` packages work in the same way and thus allow to
-import MS data from these specific file formats. The `backendInitialize` method
-of the backend defined in the `r Biocpkg("MsBackendSql")` on the other hand
-takes only the connection to a database containing the data as input and
-performs some sanity checks on the data but does not load the data into the
-backend. Any subsequent data access is handled by the methods of the backend
-class through SQL calls to the database.
+The `backendInitialize()` method that we implemented for our backend class
+expects the user to provide the full MS data. This does however not always have
+to be the case. The `backendInitialize()` method of the `MsBackendMzR` backend
+takes for example the file names of the raw mzML, mzXML or CDF files as input
+and initializes the backend by importing part of the data from these. Also the
+backends defined by the `r Biocpkg("MsBackendMgf")` or `r
+Biocpkg("MsBackendMsp")` packages work in the same way and thus allow to import
+MS data from these specific file formats. The `backendInitialize()` method of
+the backend defined in the `r Biocpkg("MsBackendSql")` on the other hand takes
+only the connection to a database containing the data as input and performs some
+sanity checks on the data but does not load the data into the backend. Any
+subsequent data access is handled by the methods of the backend class through
+SQL calls to the database.
 
-The purpose of the `backendInitialize` method is to *initialize* and prepare the
-data in a way that it can be accessed by a `Spectra` object (through the
+The purpose of the `backendInitialize()` method is to *initialize* and prepare
+the data in a way that it can be accessed by a `Spectra` object (through the
 initialized backend class). Whether the data is loaded by the
-`backendInitialize` method into memory or simply referenced to within the
+`backendInitialize()` method into memory or simply referenced to within the
 backend class does not matter as long as the backend is able to provide the data
 with its accessor methods.
 
-Note also that a `backendInitialize` function should ideally also perform some
+Note also that a `backendInitialize()` function should ideally also perform some
 data sanity checks (e.g. whether spectra variables have the correct data type
 etc).
 
 
-### `spectraVariables`
+### `spectraVariables()`
 
-The `spectraVariables` method should return a `character` vector with the names
-of all available spectra variables of the backend. While a backend class should
-support defining and providing their own spectra variables, each `MsBackend`
-class **must** provide also the *core spectra variables* (in the correct data
-type). Since not all data file formats provide values for all these spectra
-variables they can however also be `NA` (with the exception of the spectra
-variable `"dataStorage"`).
+The `spectraVariables()` method should return a `character` vector with the
+names of all available spectra variables of the backend. While a backend class
+should support defining and providing their own spectra variables, each
+`MsBackend` class **must** provide also the *core spectra variables* (in the
+correct data type). Since not all data file formats provide values for all these
+spectra variables they can however also be `NA` (with the exception of the
+spectra variable `"dataStorage"`).
 
 The `coreSpectraVariables()` function returns the full list of mandatory spectra
 variables along with their expected data type.
@@ -410,7 +410,7 @@ variables along with their expected data type.
 coreSpectraVariables()
 ```
 
-A typical `spectraVariables` method for a `MsBackend` class will thus be
+A typical `spectraVariables()` method for a `MsBackend` class will thus be
 implemented similarly to the one for our `MsBackendTest` test backend: it will
 return the union of the core spectra variables and the names for all available
 spectra variables within the backend object.
@@ -423,9 +423,9 @@ spectraVariables(be)
 ```
 
 
-### `spectraData`
+### `spectraData()`
 
-The `spectraData` method should return the **full** spectra data within a
+The `spectraData()` method should return the **full** spectra data within a
 backend as a `DataFrame` object (defined in the `r Biocpkg("S4Vectors")`
 package). The second parameter `columns` allows to define the names of the
 spectra variables that should be returned in the `DataFrame`. Each row in this
@@ -466,7 +466,7 @@ core spectra variables that are not available within the backend to the result.
 }
 ```
 
-We next implement the `spectraData` method that uses this helper function to
+We next implement the `spectraData()` method that uses this helper function to
 fill eventually missing core spectra variables. Note also that this function
 should return a `DataFrame` even for a single column.
 
@@ -488,15 +488,15 @@ setMethod(
 ```
 
 As an alternative, we could also initialize the `@spectraVars` data frame within
-the `backendInitialize` method adding columns for spectra variables that are not
-provided by the user and require that this data frame always contains all core
-spectra variables. Extracting spectra data (single spectra variables or the full
-data) might thus be more efficient then the on-the-fly initialization with
+the `backendInitialize()` method adding columns for spectra variables that are
+not provided by the user and require that this data frame always contains all
+core spectra variables. Extracting spectra data (single spectra variables or the
+full data) might thus be more efficient then the on-the-fly initialization with
 eventual missing spectra variables, but the backend class would also have a
 larger memory footprint because even spectra variables with only missing values
 for all spectra need to be stored within the object.
 
-We can now use `spectraData` to either extract the full spectra data from the
+We can now use `spectraData()` to either extract the full spectra data from the
 backend, or only the data for selected spectra variables.
 
 ```{r}
@@ -511,22 +511,21 @@ spectraData(be, c("centroided", "polarity"))
 ```
 
 
-### `peaksData`
+### `peaksData()`
 
-The `peaksData` method extracts the MS peaks data from a backend, which includes
-the m/z and intensity values of each MS peak of a spectrum. These are expected
-to be returned as a `List` of numerical matrices with columns in each `matrix`
-being the requested *peaks variables* (with the default being `"mz"` and
-`"intensity"`) of one spectrum. Backends must provide at least these two peaks
-variables.
+The `peaksData()` method extracts the MS peaks data from a backend, which
+includes the m/z and intensity values of each MS peak of a spectrum. These are
+expected to be returned as a `List` of numerical matrices with columns in each
+`matrix` being the requested *peaks variables* (with the default being `"mz"`
+and `"intensity"`) of one spectrum. Backends must provide at least these two
+peaks variables.
 
-Below we implement the `peaksData` method for our backend. We need to loop over
-the `@mz` and `@intensity` slots to merge the m/z and intensity of each spectrum
-into a `matrix`. Also, for simplicity reasons, we accept only
-`c("mz", "intensity")` for the `columns` parameter. This is the expected default
-behavior for a `MsBackend`, but in general the `columns` parameter is thought to
-allow the user to specify which peaks variables should be returned in each
-`matrix`.
+Below we implement the `peaksData()` method for our backend. We need to loop
+over the `@mz` and `@intensity` slots to merge the m/z and intensity of each
+spectrum into a `matrix`. Also, for simplicity reasons, we accept only `c("mz",
+"intensity")` for the `columns` parameter. This is the expected default behavior
+for a `MsBackend`, but in general the `columns` parameter is thought to allow
+the user to specify which peaks variables should be returned in each `matrix`.
 
 ```{r}
 setMethod(
@@ -545,23 +544,23 @@ And with this method we can now extract the peaks data from our backend.
 peaksData(be)
 ```
 
-The `peaksData` method is used in many data analysis functions of the `Spectra`
-object to extract the MS data, thus ideally this method should be implemented in
-an efficient way. For our backend we need to loop over the lists of m/z and
-intensity values which is obviously not ideal. Thus, storing the m/z and
-intensity values in separate slots as done in this backend might not be
-ideal. The `MsBackendMemory` backend for example stores the MS data already as
-a `list` of matrices which results in a more efficient `peaksData` method (but
+The `peaksData()` method is used in many data analysis functions of the
+`Spectra` object to extract the MS data, thus ideally this method should be
+implemented in an efficient way. For our backend we need to loop over the lists
+of m/z and intensity values which is obviously not ideal. Thus, storing the m/z
+and intensity values in separate slots as done in this backend might not be
+ideal. The `MsBackendMemory` backend for example stores the MS data already as a
+`list` of matrices which results in a more efficient `peaksData()` method (but
 comes also with a larger overhead when adding, replacing or checking MS data).
 
 Note also that while a backend needs to provide m/z and intensity values,
 additional peak variables would also be supported. The `MsBackendMemory` class
 for example allows to store and provide additional peak variables that can then
 be added as additional columns to each returned `matrix`. In this case the
-default `peaksVariables` method should also be overwritten to list the
-additionally available variables and the `columns` parameter of the `peaksData`
-method should allow selection of these additional peaks variables (in addition
-to the required `"mz"` and `"intensity"` variables).
+default `peaksVariables()` method should also be overwritten to list the
+additionally available variables and the `columns` parameter of the
+`peaksData()` method should allow selection of these additional peaks variables
+(in addition to the required `"mz"` and `"intensity"` variables).
 
 
 ### `[`
@@ -604,13 +603,13 @@ spectraData(a)
 ```
 
 
-### `backendMerge`
+### `backendMerge()`
 
-The `backendMerge` method merges (combines) `MsBackend` objects (of the same
+The `backendMerge()` method merges (combines) `MsBackend` objects (of the same
 type!) into a single instance. For our test backend we thus need to combine the
 values in the `@spectraVars`, `@mz` and `@intensity` slots. To support also
 merging of `data.frame`s with different set of columns we use the
-`MsCoreUtils::rbindFill` function instead of a simple `rbind` (this function
+`MsCoreUtils::rbindFill()` function instead of a simple `rbind()` (this function
 joins data frames making an union of all available columns).
 
 ```{r}
@@ -641,7 +640,7 @@ The `$` method is expected to extract a single spectra variable from a
 backend. Parameter `name` should allow to name the spectra variable to
 return. Each `MsBackend` **must** support extracting the core spectra variables
 with this method (even if no data might be available for that variable). In our
-example implementation below we make use of the `spectraData` method, but more
+example implementation below we make use of the `spectraData()` method, but more
 efficient implementations might be available as well (that would not require to
 first subset/create a `DataFrame` with the full data and to then subset that
 again). Also, the `$` method should check if the requested spectra variable is
@@ -672,13 +671,13 @@ be$mz
 ```
 
 
-### `lengths`
+### `lengths()`
 
-The `lengths` method is expected to return an `integer` vector (same length as
+The `lengths()` method is expected to return an `integer` vector (same length as
 the number of spectra in the backend) with the total number of peaks per
 spectrum.
 
-For our `MsBackendTest` we can simply use the `lengths` method on the m/z or
+For our `MsBackendTest` we can simply use the `lengths()` method on the m/z or
 intensity values for that.
 
 ```{r}
@@ -694,14 +693,14 @@ lengths(be)
 ```
 
 
-### `isEmpty`
+### `isEmpty()`
 
-The `isEmpty` method is expected to return for each spectrum the information
+The `isEmpty()` method is expected to return for each spectrum the information
 whether it is *empty*, i.e. does not contain any MS peaks (and hence m/z or
 intensity values). The result of the method has to be a `logical` of length
 equal to the number of spectra represented by the backend with `TRUE` indicating
 whether a spectrum is empty and `FALSE` otherwise. For our implementation of the
-`isEmpty` method we use the `lenghts` method defined above that returns the
+`isEmpty()` method we use the `lenghts()` method defined above that returns the
 number of MS peaks per spectrum.
 
 ```{r}
@@ -712,11 +711,11 @@ isEmpty(be)
 ```
 
 
-### `acquisitionNum`
+### `acquisitionNum()`
 
 Extract the `acquisitionNum` core spectra variable. The method is expected to
 return an `integer` vector with the same length as there are spectra represented
-by the backend. For our backend we simply re-use the `spectraData` method.
+by the backend. For our backend we simply re-use the `spectraData()` method.
 
 ```{r}
 setMethod("acquisitionNum", "MsBackendTest", function(object) {
@@ -726,7 +725,7 @@ acquisitionNum(be)
 ```
 
 
-### `centroided`
+### `centroided()`
 
 Extract for each spectrum the information whether it contains *centroided*
 data. The method is expected to return a `logical` vector with the same length
@@ -740,7 +739,7 @@ centroided(be)
 ```
 
 
-### `collisionEnergy`
+### `collisionEnergy()`
 
 Extract for each spectrum the collision energy applied to generate the fragment
 spectrum. The method is expected to return a `numeric` vector with the same
@@ -755,7 +754,7 @@ collisionEnergy(be)
 ```
 
 
-### `dataOrigin`
+### `dataOrigin()`
 
 Extract the *data origin* spectra variable for each spectrum. This spectra
 variable can be used to store the origin of each spectra. The method is expected
@@ -770,7 +769,7 @@ dataOrigin(be)
 ```
 
 
-### `intensity`
+### `intensity()`
 
 Extract the intensity values for each spectrum in the backend. The result is
 expected to be a `NumericList` of length equal to the number of spectra
@@ -785,7 +784,7 @@ intensity(be)
 ```
 
 
-### `isolationWindowLowerMz`
+### `isolationWindowLowerMz()`
 
 Extract the core spectra variable `isolationWindowLowerMz` from the
 backend. This information is usually provided for each spectrum in the raw mzML
@@ -800,7 +799,7 @@ isolationWindowLowerMz(be)
 ```
 
 
-### `isolationWindowTargetMz`
+### `isolationWindowTargetMz()`
 
 Extract the core spectra variable `isolationWindowTargetMz` from the
 backend. This information is usually provided for each spectrum in the raw mzML
@@ -815,7 +814,7 @@ isolationWindowTargetMz(be)
 ```
 
 
-### `isolationWindowUpperMz`
+### `isolationWindowUpperMz()`
 
 Extract the core spectra variable `isolationWindowUpperMz` from the
 backend. This information is usually provided for each spectrum in the raw mzML
@@ -830,7 +829,7 @@ isolationWindowUpperMz(be)
 ```
 
 
-### `msLevel`
+### `msLevel()`
 
 Extract the MS level for each spectrum in the backend. This method is expected
 to return an `integer` of length equal to the number of spectra represented by
@@ -844,7 +843,7 @@ msLevel(be)
 ```
 
 
-### `mz`
+### `mz()`
 
 Extract the m/z values for each spectrum in the backend. The result is
 expected to be a `NumericList` of length equal to the number of spectra
@@ -859,7 +858,7 @@ mz(be)
 ```
 
 
-### `polarity`
+### `polarity()`
 
 Extract the `polarity` core spectra variable for each spectrum in the
 backend. This method is expected to return an `integer` of length equal to the
@@ -874,7 +873,7 @@ polarity(be)
 ```
 
 
-### `precScanNum`
+### `precScanNum()`
 
 Extract the acquisition number of the precursor for each spectrum. This method
 is expected to return an `integer` of length equal to the number of spectra
@@ -889,7 +888,7 @@ precScanNum(be)
 ```
 
 
-### `precursorCharge`
+### `precursorCharge()`
 
 Extract the charge of the precursor for each spectrum. This method
 is expected to return an `integer` of length equal to the number of spectra
@@ -904,7 +903,7 @@ precursorCharge(be)
 ```
 
 
-### `precursorIntensity`
+### `precursorIntensity()`
 
 Extract the intensity of the precursor for each spectrum. This method is
 expected to return an `numeric` of length equal to the number of spectra
@@ -919,7 +918,7 @@ precursorIntensity(be)
 ```
 
 
-### `precursorMz`
+### `precursorMz()`
 
 Extract the precursor m/z for each spectrum. This method is
 expected to return an `numeric` of length equal to the number of spectra
@@ -934,7 +933,7 @@ precursorMz(be)
 ```
 
 
-### `rtime`
+### `rtime()`
 
 Extract the retention time of each spectrum. This method is expected to return a
 `numeric` of length equal to the number of spectra represented by the backend.
@@ -947,7 +946,7 @@ rtime(be)
 ```
 
 
-### `scanIndex`
+### `scanIndex()`
 
 Extract the *scan index* core spectra variable. The scan index represents the
 relative index of the spectrum within the respective raw data file and can be
@@ -963,7 +962,7 @@ scanIndex(be)
 ```
 
 
-### `smoothed`
+### `smoothed()`
 
 Extract the `smoothed` core spectra variable that indicates whether a spectrum
 was *smoothed*. This variable is supported for backward compatibility but
@@ -978,9 +977,9 @@ smoothed(be)
 ```
 
 
-### `spectraNames`
+### `spectraNames()`
 
-The `spectraNames` can be used to extract (optional) names (or IDs) for
+The `spectraNames()` can be used to extract (optional) names (or IDs) for
 individual spectra of a backend, or `NULL` if not set. For our test backend we
 can use the `rownames` of the `@spectraVars` slot to store spectra names.
 
@@ -998,16 +997,16 @@ backends that support also data replacement also the methods listed in the next
 section need to be implemented.
 
 
-### `tic`
+### `tic()`
 
-The `tic` method should return the total ion count (i.e. the sum of intensities)
-for each spectrum. This information is usually also provided by the raw MS data
-files, but can also be calculated on the fly from the data. The parameter
-`initial` (which is by default `TRUE`) allows to define whether the provided
-*original* tic should be returned (for `initial = TRUE`) or whether the tic
-should be calculated on the actual data (`initial = FALSE`). The original tic
-values are usually provided by a spectra variable `"totIonCurrent"`. Thus, for
-`initial = TRUE`, in our implementation below we return the value of such a
+The `tic()` method should return the total ion count (i.e. the sum of
+intensities) for each spectrum. This information is usually also provided by the
+raw MS data files, but can also be calculated on the fly from the data. The
+parameter `initial` (which is by default `TRUE`) allows to define whether the
+provided *original* tic should be returned (for `initial = TRUE`) or whether the
+tic should be calculated on the actual data (`initial = FALSE`). The original
+tic values are usually provided by a spectra variable `"totIonCurrent"`. Thus,
+for `initial = TRUE`, in our implementation below we return the value of such a
 spectra variable it it is avaialble or `NA` if it is not.
 
 ```{r}
@@ -1055,7 +1054,7 @@ and is expected to replace the **full** data within the backend, i.e. all
 spectra variables as well as peak data. Also, importantly, the number of spectra
 before and after calling the `spectraData<-` method on an object has to be the
 same. For our implementation we can make use of the optional parameter `data`
-that we added to the `backendInitialize` method and that allows to fill a
+that we added to the `backendInitialize()` method and that allows to fill a
 `MsBackendTest` object with the full data.
 
 ```{r}
@@ -1128,7 +1127,7 @@ The `mz<-` method should allow to replace the m/z values of all spectra in a
 backend. The implementation can be the same as for the `intensity<-`
 method. m/z values within each spectrum need to be increasingly ordered. We thus
 also check that this is the case for the provided m/z values. We take here the
-advantage that a efficient `is.unsorted` implementation for `NumericList` is
+advantage that a efficient `is.unsorted()` implementation for `NumericList` is
 already available, which is faster than e.g. calling
 `vapply(mz(be), is.unsorted, logical(1))`.
 
@@ -1190,8 +1189,8 @@ lengths(be)
 
 The `$<-` method should allow to replace values for spectra variables or also to
 add additional spectra variables to the backend. As with all replacement
-methods, the `length` of `value` has to match the number of spectra represented
-by the backend.
+methods, the `length()` of `value` has to match the number of spectra
+represented by the backend.
 
 ```{r}
 setReplaceMethod("$", "MsBackendTest", function(x, name, value) {
@@ -1227,22 +1226,23 @@ Replacement methods for all *core* spectra variables can be implemented
 similarly.
 
 
-### `selectSpectraVariables`
+### `selectSpectraVariables()`
 
-The `selectSpectraVariables` should allow to reduce the information within the
-backend (parameter `object`) to the selected spectra variables (parameter
-`spectraVariables`). This is equivalent to a subset by columns/variables. For
-core spectra variables, if not specified by parameter `spectraVariables`, only
-their values are expected to be removed (since core spectra variables are
-expected to be available even if they are not defined within a backend). The
-implementation for our backend will remove any columns in the `@spectraVars`
-data frame not defined in the `spectraVariables` parameter. Special care is
-given to the `"mz"` and `"intensity"` spectra variables: if they are not
-selected, the `@mz` and `@intensity` slots are initialized with empty
-`NumericList` (of length matching the number of spectra). Note also that some
-backends might throw an error if a spectra variable required for the backend is
-removed (such as `"dataStorage"` for a `MsBackendMzR` backend, which is
-required by the backend to allow retrieval of m/z and intensity values).
+The `selectSpectraVariables()` function should allow to reduce the information
+within the backend (parameter `object`) to the selected spectra variables
+(parameter `spectraVariables`). This is equivalent to a subset by
+columns/variables. For core spectra variables, if not specified by parameter
+`spectraVariables`, only their values are expected to be removed (since core
+spectra variables are expected to be available even if they are not defined
+within a backend). The implementation for our backend will remove any columns in
+the `@spectraVars` data frame not defined in the `spectraVariables`
+parameter. Special care is given to the `"mz"` and `"intensity"` spectra
+variables: if they are not selected, the `@mz` and `@intensity` slots are
+initialized with empty `NumericList` (of length matching the number of
+spectra). Note also that some backends might throw an error if a spectra
+variable required for the backend is removed (such as `"dataStorage"` for a
+`MsBackendMzR` backend, which is required by the backend to allow retrieval of
+m/z and intensity values).
 
 ```{r}
 setMethod(
@@ -1261,7 +1261,7 @@ setMethod(
     })
 ```
 
-We can now use `selectSpectraVariables` to remove for example the spectra
+We can now use `selectSpectraVariables()` to remove for example the spectra
 variable `"new_var"` added above.
 
 ```{r}
@@ -1296,8 +1296,8 @@ intensity(be2)
 
 Replace the value for the *centroided* core spectra variable. The provided data
 type **must** be a logical. We re-use the function `.sv_valid_data_type` which
-was defined above for `backendInitialize` to check for the correct data type of
-core spectra variables.
+was defined above for `backendInitialize()` to check for the correct data type
+of core spectra variables.
 
 ```{r}
 setReplaceMethod("centroided", "MsBackendTest", function(object, value) {
@@ -1554,9 +1554,9 @@ classes, thus these methods don't have to be implemented for each new
 backend. For some backends, depending on how the data is represented or accessed
 within it, different implementations might however be more efficient.
 
-### `backendBpparam`
+### `backendBpparam()`
 
-The `backendBpparam` method is supposed to evaluate whether a provided (or the
+The `backendBpparam()` method is supposed to evaluate whether a provided (or the
 default) parallel processing setup is supported by the backend. Backends that
 do not support parallel processing should return `SerialParam()` instead.
 
@@ -1571,12 +1571,13 @@ setMethod("backendBpparam", signature = "MsBackend",
 
 ```
 
-### `backendParallelFactor`
+### `backendParallelFactor()`
 
-The `backendParallelFactor` allows a backend to suggest a preferred way how the
-backend could be split for parallel processing. See also the notes on parallel
-processing above for more information. The default implementation returns
-`factor()` (i.e. a `factor` of length 0) hence not suggesting any splitting:
+The `backendParallelFactor()` allows a backend to suggest a preferred way how
+the backend could be split for parallel processing. See also the notes on
+parallel processing above for more information. The default implementation
+returns `factor()` (i.e. a `factor` of length 0) hence not suggesting any
+splitting:
 
 ```{r}
 setMethod("backendParallelFactor", "MsBackend", function(object, ...) {
@@ -1585,18 +1586,18 @@ setMethod("backendParallelFactor", "MsBackend", function(object, ...) {
 
 ```
 
-### `dropNaSpectraVariables`
+### `dropNaSpectraVariables()`
 
-The `dropNaSpectraVariables` is supposed to allow removing all spectra variables
-from a data set (storage) that contain only missing values (i.e. where the value
-of a spectra variable for each spectrum is `NA`). This function is intended to
-reduce memory requirements of backends such as the `MsBackendMzR` that load
-values from all core spectra variables from the original data files, even if
-their values are only `NA`. Removing these missing values from the backend can
-hence reduce the size in memory of a backend without data loss (because methods
-extracting core spectra variables are supposed to always return `NA` values even
-if no data is available for them - in such cases the `NA` values are supposed to
-be created on-the-fly.
+The `dropNaSpectraVariables()` is supposed to allow removing all spectra
+variables from a data set (storage) that contain only missing values (i.e. where
+the value of a spectra variable for each spectrum is `NA`). This function is
+intended to reduce memory requirements of backends such as the `MsBackendMzR`
+that load values from all core spectra variables from the original data files,
+even if their values are only `NA`. Removing these missing values from the
+backend can hence reduce the size in memory of a backend without data loss
+(because methods extracting core spectra variables are supposed to always return
+`NA` values even if no data is available for them - in such cases the `NA`
+values are supposed to be created on-the-fly.
 
 The default implementation is shown below.
 
@@ -1610,11 +1611,11 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
 })
 ```
 
-### `isReadOnly`
+### `isReadOnly()`
 
-`isReadOnly` is expected to return a `logical(1)` with either `TRUE` or `FALSE`
-indicating whether the backend supports replacing data or not. The default
-implementation is shown below.
+`isReadOnly()` is expected to return a `logical(1)` with either `TRUE` or
+`FALSE` indicating whether the backend supports replacing data or not. The
+default implementation is shown below.
 
 ```{r}
 setMethod("isReadOnly", "MsBackend", function(object) {
@@ -1623,9 +1624,9 @@ setMethod("isReadOnly", "MsBackend", function(object) {
 ```
 
 
-### `peaksVariables`
+### `peaksVariables()`
 
-The `peaksVariables` is expected to return a `character` vector with the names
+The `peaksVariables()` is expected to return a `character` vector with the names
 of the *peaks variables* (i.e. information and properties of individual mass
 peaks) available in the backend. The default implementation for `MsBackend`
 returns by default `c("mz", "intensity")`. This method should only be
@@ -1639,7 +1640,7 @@ setMethod("peaksVariables", "MsBackend", function(object) {
 ```
 
 
-### `uniqueMsLevels`
+### `uniqueMsLevels()`
 
 This method should return the unique MS level(s) of all spectra within the
 backend. The default implementation is shown below.
@@ -1651,13 +1652,13 @@ setMethod("uniqueMsLevels", "MsBackend", function(object, ...) {
 ```
 
 This method thus retrieves first the MS levels of all spectra and then calls
-`unique` on them. Database-based backends might avoid such an eventually heavy
+`unique()` on them. Database-based backends might avoid such an eventually heavy
 operation by selecting the unique MS levels directly using an SQL call.
 
 
-### `ionCount`
+### `ionCount()`
 
-The `ionCount` method should return a `numeric` (length equal to the number of
+The `ionCount()` method should return a `numeric` (length equal to the number of
 spectra represented by the backend) with the sum of all intensities within each
 spectrum. For empty spectra `NA_real_` should be returned. The method below is
 the default implementation of the method.
@@ -1669,10 +1670,10 @@ setMethod("ionCount", "MsBackend", function(object) {
 ```
 
 
-### `isCentroided`
+### `isCentroided()`
 
 This method should return the information for each spectrum whether it is
-*centroided*. In contrast to the `centroided` method a heuristic approach is
+*centroided*. In contrast to the `centroided()` method a heuristic approach is
 used. The default implementation is shown below.
 
 ```{r}
@@ -1682,7 +1683,7 @@ setMethod("isCentroided", "MsBackend", function(object, ...) {
 ```
 
 
-### `reset`
+### `reset()`
 
 This is a special method that backends may implement or support, but don't
 necessary have to. This method will be called by the `reset,Spectra` method and
@@ -1698,7 +1699,7 @@ setMethod("reset", "MsBackend", function(object) {
 ```
 
 
-### `export`
+### `export()`
 
 This method should *export* the data from a `MsBackend`. The method is called by
 the `export,Spectra` method that passes itself as a second argument to the
@@ -1730,9 +1731,9 @@ See alternatively also the `r Biocpkg("MsBackendMgf")` package for an
 implementation for the `MsBackendMgf` backend.
 
 
-### `split`
+### `split()`
 
-The `split` method should allow to split a `MsBackend` into a `list` of
+The `split()` method should allow to split a `MsBackend` into a `list` of
 `MsBackend` objects. The default implementation is shown below.
 
 ```{r}
@@ -1742,12 +1743,12 @@ setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
 ```
 
 
-### `supportsSetBackend`
+### `supportsSetBackend()`
 
-Whether a `MsBackend` supports the `setBackend` method that allows to change the
-backend of a `Spectra` object from one to another backend. To support
-`setBackend` the backend needs to have a parameter `data` in its
-`backendInitialize` method that allows it to be initialized with a `DataFrame`
+Whether a `MsBackend` supports the `setBackend()` method that allows to change
+the backend of a `Spectra` object from one to another backend. To support
+`setBackend()` the backend needs to have a parameter `data` in its
+`backendInitialize()` method that allows it to be initialized with a `DataFrame`
 containing the full spectra data. The default implementation is shown below.
 
 ```{r}
@@ -1757,7 +1758,7 @@ setMethod("supportsSetBackend", "MsBackend", function(object, ...) {
 ```
 
 
-### `filterDataOrigin`
+### `filterDataOrigin()`
 
 The `filter*` methods are expected to take a `MsBackend` and to subset it based
 on some criteria. While also the `[` method could be used to perform such subset
@@ -1770,7 +1771,7 @@ would allow a more efficient operation.
 All filter methods are expected to return the subset backend (i.e. an instance
 of the same backend class with the same, or less spectra).
 
-The `filterDataOrigin` should subset the backend to spectra with their
+The `filterDataOrigin()` should subset the backend to spectra with their
 `dataOrigin` spectra variable matching the values provided with the `dataOrigin`
 parameter. The default implementation for `MsBackend` is shown below.
 
@@ -1788,9 +1789,9 @@ setMethod("filterDataOrigin", "MsBackend",
 ```
 
 
-### `filterDataStorage`
+### `filterDataStorage()`
 
-Similar to the `filterDataOrigin`, the `filterDataStorage` should subset a
+Similar to the `filterDataOrigin()`, the `filterDataStorage()` should subset a
 backend to spectra with their `dataStorage` spectra variable matching the values
 provided with the `dataStorage` parameter.
 
@@ -1807,11 +1808,11 @@ setMethod("filterDataStorage", "MsBackend",
 ```
 
 
-### `filterEmptySpectra`
+### `filterEmptySpectra()`
 
-The `filterEmptySpectra` should remove all *empty* spectra (i.e. spectra without
-any mass peaks) from the backend. The method is expected to return the subset
-backend. The default implementation for `MsBackend` is shown below.
+The `filterEmptySpectra()` should remove all *empty* spectra (i.e. spectra
+without any mass peaks) from the backend. The method is expected to return the
+subset backend. The default implementation for `MsBackend` is shown below.
 
 ```{r}
 setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
@@ -1821,11 +1822,11 @@ setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
 ```
 
 
-### `filterIsolationWindow`
+### `filterIsolationWindow()`
 
-The `filterIsolationWindow` filters the backend to spectra with the provided
-`mz` value being within their `isolationWindowLowerMz` and
-`isolationWindowUpperMz`. The parameter `mz` defining this target m/z is
+The `filterIsolationWindow()` filters the backend to spectra with the provided
+`mz` value being within their `isolationWindowLowerMz()` and
+`isolationWindowUpperMz()`. The parameter `mz` defining this target m/z is
 expected to be a `numeric` of length 1. The default implementation for
 `MsBackend` is shown below.
 
@@ -1843,11 +1844,11 @@ setMethod("filterIsolationWindow", "MsBackend",
 ```
 
 
-### `filterMsLevel`
+### `filterMsLevel()`
 
-The `filterMsLevel` method is expected to reduce the backend to spectra with the
-provided MS level(s). Parameter `msLevel` has to be an `integer` (any length).
-The default implementation for `MsBackend` is shown below.
+The `filterMsLevel()` method is expected to reduce the backend to spectra with
+the provided MS level(s). Parameter `msLevel` has to be an `integer` (any
+length).  The default implementation for `MsBackend` is shown below.
 
 ```{r}
 setMethod("filterMsLevel", "MsBackend",
@@ -1859,9 +1860,9 @@ setMethod("filterMsLevel", "MsBackend",
 ```
 
 
-### `filterPolarity`
+### `filterPolarity()`
 
-The `filterPolarity` method is expected to subset the backend to spectra
+The `filterPolarity()` method is expected to subset the backend to spectra
 matching the provided polarity (or polarities). Parameter `polarity` has to be
 an `integer` (of any length). The default implementation for `MsBackend` is
 shown below.
@@ -1876,11 +1877,11 @@ setMethod("filterPolarity", "MsBackend",
 ```
 
 
-### `filterPrecursorMzRange`
+### `filterPrecursorMzRange()`
 
-The `filterPrecursorMzRange` method filters the backend to spectra with their
+The `filterPrecursorMzRange()` method filters the backend to spectra with their
 `precursorMz` being between the provided m/z range (parameter `mz`). This method
-was previously named `filterPrecursorMz`. Parameter `mz` is expected to be a
+was previously named `filterPrecursorMz()`. Parameter `mz` is expected to be a
 `numeric` of length 2 defining the lower and upper limit of this precursor m/z
 range. The default implementation for `MsBackend` is shown below.
 
@@ -1897,9 +1898,9 @@ setMethod("filterPrecursorMzRange", "MsBackend",
 ```
 
 
-### `filterPrecursorMzValues`
+### `filterPrecursorMzValues()`
 
-The `filterPrecursorMzValues` method filters the backend to spectra with their
+The `filterPrecursorMzValues()` method filters the backend to spectra with their
 m/z values matching to the provided m/z value(s). Parameters `ppm` and
 `tolerance` (both expected to be `numeric` of length 1) allow to define the
 conditions for the relaxed matching. Parameter `mz` has to be a `numeric` (of
@@ -1927,12 +1928,12 @@ The `.values_match_mz` function used by this function is defined as:
 ```
 
 
-### `filterPrecursorCharge`
+### `filterPrecursorCharge()`
 
-The `filterPrecursorCharge` method filters the backend to spectra with matching
-precursor charge. Parameter `z` defining the requested precursor charge has to
-be an `integer` (of any length). The default implementation for `MsBackend` is
-shown below.
+The `filterPrecursorCharge()` method filters the backend to spectra with
+matching precursor charge. Parameter `z` defining the requested precursor charge
+has to be an `integer` (of any length). The default implementation for
+`MsBackend` is shown below.
 
 ```{r}
 setMethod("filterPrecursorCharge", "MsBackend",
@@ -1945,9 +1946,9 @@ setMethod("filterPrecursorCharge", "MsBackend",
 ```
 
 
-### `filterPrecursorScan`
+### `filterPrecursorScan()`
 
-The `filterPrecursorScan` method filters the backend to parent (e.g. MS1) and
+The `filterPrecursorScan()` method filters the backend to parent (e.g. MS1) and
 children scans (e.g. MS2) of acquisition number `acquisitionNum`. Parameter `f`
 defines how the backend should be split (by default by original data file) to
 avoid selecting spectra from different samples/files. The default implementation
@@ -1970,9 +1971,9 @@ setMethod("filterPrecursorScan", "MsBackend",
 ```
 
 
-### `filterRt`
+### `filterRt()`
 
-The `filterRt` method filters the backend to spectra with their retention time
+The `filterRt()` method filters the backend to spectra with their retention time
 being between the provided rt range. Parameter `rt` is expected
 to be a `numeric` of length 2 defining the lower and upper bound of this
 range. Parameter `msLevel.` (note the `.` in the name of the parameter!) can be
@@ -2005,8 +2006,8 @@ backends that retrieve data from inherently read-only resources (such as
 database connection or raw data files) but still would need to support adding
 spectra variables or changing values of spectra variables. Similarly, if the
 only purpose of a backend is to import or export data in a specific format, the
-`MsBackendMemory` might be extended and a single method (`backendInitialize`)
-would need to be implemented for the new class: this new `backendInitialize`
+`MsBackendMemory` might be extended and a single method (`backendInitialize()`)
+would need to be implemented for the new class: this new `backendInitialize()`
 would then call the code to import the data from the new file format and store
 it within the available slots of the `MsBackendMemory` object. Examples would be
 the backends provided by the `r Biocpkg("MsBackendMgf")`

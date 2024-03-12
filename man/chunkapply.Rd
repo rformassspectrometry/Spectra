@@ -25,7 +25,7 @@ Depending on \code{FUN}, but in most cases a vector/result object of
 length equal to \code{length(x)}.
 }
 \description{
-\code{chunkapply} splits \code{x} into chunks and applies the function \code{FUN} stepwise
+\code{chunkapply()} splits \code{x} into chunks and applies the function \code{FUN} stepwise
 to each of these chunks. Depending on the object it is called, this
 function might reduce memory demand considerably, if for example only the
 full data for a single chunk needs to be loaded into memory at a time (e.g.,

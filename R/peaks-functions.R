@@ -234,7 +234,7 @@ NULL
 #' between their m/z values is smaller than defined with parameters `tolerance`
 #' and `ppm`. All functions take two matrices
 #'
-#' - `joinPeaks`: maps peaks from two spectra allowing to specify the type of
+#' - `joinPeaks()`: maps peaks from two spectra allowing to specify the type of
 #'   *join* that should be performed: `type = "outer"` each peak in `x` will be
 #'   matched with each peak in `y`, for peaks that do not match any peak in the
 #'   other spectra an `NA` intensity is returned. With `type = "left"` all peaks
@@ -244,8 +244,8 @@ NULL
 #'   between `x` and `y` are returned by `type = "inner"`, i.e. only
 #'   peaks present in both spectra are reported.
 #'
-#' - `joinPeaksGnps`: matches/maps peaks between spectra with the same approach
-#'   used in GNPS: peaks are considered matching if a) the
+#' - `joinPeaksGnps()`: matches/maps peaks between spectra with the same
+#'   approach used in GNPS: peaks are considered matching if a) the
 #'   difference in their m/z values is smaller than defined by `tolerance`
 #'   and `ppm` (this is the same as `joinPeaks`) **and** b) the difference of
 #'   their m/z *adjusted* for the difference of the spectras' precursor is
@@ -258,10 +258,10 @@ NULL
 #'   `compareSpectra` should be called with `MAPFUN = joinPeaksGnps` and
 #'   `FUN = MsCoreUtils::gnps`).
 #'
-#' - `joinPeaksNone`: does not perform any peak matching but simply returns
+#' - `joinPeaksNone()`: does not perform any peak matching but simply returns
 #'   the peak matrices in a `list`. This function should be used with the
 #'   `MAPFUN` parameter of [compareSpectra()] if the spectra similarity
-#'   function used (parameter `FUN` of `compareSpectra`) performs its own
+#'   function used (parameter `FUN` of `compareSpectra()`) performs its own
 #'   peak matching and does hence not expect matched peak matrices as an input.
 #'
 #' @section Implementation notes:
@@ -278,21 +278,21 @@ NULL
 #' @param tolerance `numeric(1)` defining a constant maximal accepted difference
 #'     between m/z values of peaks from the two spectra to be matched/mapped.
 #'
-#' @param type For `joinPeaks` and `joinPeaksGnps`: `character(1)` specifying
-#'     the type of join that should be performed. See function description for
-#'     details.
+#' @param type For `joinPeaks()` and `joinPeaksGnps()`: `character(1)`
+#'     specifying the type of join that should be performed. See function
+#'     description for details.
 #'
 #' @param x `matrix` with two columns `"mz"` and `"intensity"` containing the
 #'     m/z and intensity values of the mass peaks of a spectrum.
 #'
-#' @param xPrecursorMz for `joinPeaksGnps`: `numeric(1)` with the precursor m/z
-#'     of the spectrum `x`.
+#' @param xPrecursorMz for `joinPeaksGnps()`: `numeric(1)` with the precursor
+#'     m/z of the spectrum `x`.
 #'
 #' @param y `matrix` with two columns `"mz"` and `"intensity"` containing the
 #'     m/z and intensity values of the mass peaks of a spectrum.
 #'
-#' @param yPrecursorMz for `joinPeaksGnps`: `numeric(1)` with the precursor m/z
-#'     of the spectrum `y`.
+#' @param yPrecursorMz for `joinPeaksGnps()`: `numeric(1)` with the precursor
+#'     m/z of the spectrum `y`.
 #'
 #' @param ... optional parameters passed to the [MsCoreUtils::join()] function.
 #'

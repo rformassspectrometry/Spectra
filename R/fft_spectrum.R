@@ -6,9 +6,9 @@
 #'
 #' @description
 #'
-#' The `filterFourierTransformArtefacts` function removes (Orbitrap) fast
+#' The `filterFourierTransformArtefacts()` function removes (Orbitrap) fast
 #' fourier artefact peaks from spectra. Such artefacts (also referred to as
-#' *rippples*) seem to be related to the
+#' *ripples*) seem to be related to the
 #' [*ringing*](https://en.wikipedia.org/wiki/Ringing_artifacts) phenomenon and
 #' are frequently seen in Orbitrap data as small random mass peaks ~ 0.01 Da
 #' from a main peak with a very large intensity. See also

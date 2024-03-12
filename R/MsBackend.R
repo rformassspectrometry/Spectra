@@ -83,8 +83,8 @@
 #'
 #' @param dataStorage For `filterDataStorage()`: `character` to define which
 #'     spectra to keep.
-#'     For `filterAcquisitionNum()`: optionally specify if filtering should occur
-#'     only for spectra of selected `dataStorage`.
+#'     For `filterAcquisitionNum()`: optionally specify if filtering should
+#'     occur only for spectra of selected `dataStorage`.
 #'
 #' @param drop For `[`: not considered.
 #'
@@ -187,7 +187,7 @@
 #'
 #' Backends extending `MsBackend` **must** implement all of its methods (listed
 #' above). Developers of new `MsBackend`s should follow the
-#' `MsBackendDataFrame` implementation. To ensure a new implementation being
+#' `MsBackendMemory` implementation. To ensure a new implementation being
 #' conform with the `MsBackend` definition, developers should included test
 #' suites provided by this package in their unit test setup. For that a variable
 #' `be` should be created in the package's `"testthat.R"` file that represents
@@ -241,7 +241,7 @@
 #'   because they contain a connection to a database that can not be
 #'   shared across processes) should extend this method to return only
 #'   `SerialParam()` and hence disable parallel processing for (most)
-#'   methods and functions. See also `backendParallelFactor` for a
+#'   methods and functions. See also `backendParallelFactor()` for a
 #'   function to provide a preferred splitting of the backend for parallel
 #'   processing.
 #'
@@ -257,7 +257,7 @@
 #'   [setBackend()] function from `Spectra`. Note that eventually (for
 #'   *read-only* backends) also the `supportsSetBackend` method would need
 #'   to be implemented to return `TRUE`.
-#'   The `backendInitialize` method has also to ensure to correctly set
+#'   The `backendInitialize()` method has also to ensure to correctly set
 #'   spectra variable `dataStorage`.
 #'
 #' - `backendMerge()`: merges (combines) `MsBackend` objects into a single
@@ -268,7 +268,7 @@
 #'   (preferred) way how the backend can be split for parallel processing
 #'   used for all peak data accessor or data manipulation functions.
 #'   The default implementation returns a factor of length 0 (`factor()`)
-#'   providing thus no default splitting. A `backendParallelFactor` for
+#'   providing thus no default splitting. `backendParallelFactor()` for
 #'   `MsBackendMzR` on the other hand returns `factor(dataStorage(object))`
 #'   hence suggesting to split the object by data file.
 #'
@@ -277,8 +277,8 @@
 #'   e.g. be the mzML file from which the data was read.
 #'
 #' - `dataStorage()`: gets a `character` of length equal to the number of
-#'   spectra in `object` with the data storage of each spectrum. Note that a
-#'   `dataStorage` of `NA_character_` is not supported.
+#'   spectra in `object` with the data storage of each spectrum. Note that
+#'   missing values (`NA_character_`) are not supported for `dataStorage`.
 #'
 #' - `dropNaSpectraVariables()`: removes spectra variables (i.e. columns in the
 #'   object's `spectraData` that contain only missing values (`NA`). Note that
@@ -308,7 +308,7 @@
 #'   is exported. Taking data from a `Spectra` class ensures that also all
 #'   eventual data manipulations (cached in the `Spectra`'s lazy evaluation
 #'   queue) are applied prior to export - this would not be possible with only a
-#'   [MsBackend] class. An example implementation is the `export` method
+#'   [MsBackend] class. An example implementation is the `export()` method
 #'   for the `MsBackendMzR` backend that supports export of the data in
 #'   *mzML* or *mzXML* format. See the documentation for the `MsBackendMzR`
 #'   class below for more information.
@@ -424,7 +424,7 @@
 #'   writeable backends support this method.
 #'
 #' - `ionCount()`: returns a `numeric` with the sum of intensities for
-#'   each spectrum. If the spectrum is empty (see `isEmpty`),
+#'   each spectrum. If the spectrum is empty (see `isEmpty()`),
 #'   `NA_real_` is returned.
 #'
 #' - `isCentroided()`: a heuristic approach assessing if the spectra in
@@ -507,7 +507,7 @@
 #'   peak variables are `"mz"` and `"intensity"` (which all backends need to
 #'   support and provide), but some backends might provide additional variables.
 #'   All these variables are expected to be returned (if requested) by the
-#'   `peaksData` function.
+#'   `peaksData()` function.
 #'
 #' - `reset()` a backend (if supported). This method will be called on the
 #'   backend by the `reset,Spectra` method that is supposed to restore the data
@@ -561,12 +561,12 @@
 #'
 #' - `supportsSetBackend()`: whether a `MsBackend` supports the `Spectra`
 #'   `setBackend()` function. For a `MsBackend` to support `setBackend()` it
-#'   needs to have a parameter called `data` in its `backendInitialize` method
+#'   needs to have a parameter called `data` in its `backendInitialize()` method
 #'   that support receiving all spectra data as a `DataFrame` from another
 #'   backend and to initialize the backend with this data. In general
-#'   *read-only* backends do not support `setBackend` hence, the default
-#'   implementation of `supportsSetBackend` returns `!isReadOnly(object)`. If
-#'   a read-only backend would support the `setBackend` and being initialized
+#'   *read-only* backends do not support `setBackend()` hence, the default
+#'   implementation of `supportsSetBackend()` returns `!isReadOnly(object)`. If
+#'   a read-only backend would support the `setBackend()` and being initialized
 #'   with a `DataFrame` an implementation of this method for that backend could
 #'   be defined that returns `TRUE` (see also the `MsBackend` vignette for
 #'   details and examples).
@@ -586,7 +586,7 @@
 #' This method should only support subsetting by spectra (rows, `i`) and has
 #' to return a `MsBackend` class.
 #'
-#' Backends extending `MsBackend` should also implement the `backendMerge`
+#' Backends extending `MsBackend` should also implement the `backendMerge()`
 #' method to support combining backend instances (only backend classes of the
 #' same type should be merged). Merging should follow the following rules:
 #'
@@ -603,7 +603,7 @@
 #' backends store the data different. The `MsBackendDataFrame` stores
 #' all data in a `DataFrame` and thus supports also S4-classes as
 #' spectra variables. Also, sepratate access to m/z or intensity values (i.e.
-#' using the `mz` and `intensity` methods) is faster for the
+#' using the `mz()` and `intensity()` methods) is faster for the
 #' `MsBackendDataFrame`. The `MsBackendMemory` on the other hand, due to the
 #' way the data is organized internally, provides much faster access to the
 #' full peak data (i.e. the numerical matrices of m/z and intensity values).
@@ -618,7 +618,7 @@
 #'
 #' New objects can be created with the `MsBackendMemory()` and
 #' `MsBackendDataFrame()` function, respectively. Both backends can be
-#' subsequently initialized with the `backendInitialize` method, taking a
+#' subsequently initialized with the `backendInitialize()` method, taking a
 #' `DataFrame` (or `data.frame`) with the (full) MS data as first parameter
 #' `data`. The second parameter `peaksVariables` allows to define which columns
 #' in `data` contain *peak variables* such as the m/z and intensity values of
@@ -677,10 +677,10 @@
 #' memory.
 #'
 #' New objects can be created with the `MsBackendMzR()` function which
-#' can be subsequently filled with data by calling `backendInitialize`
+#' can be subsequently filled with data by calling `backendInitialize()`
 #' passing the file names of the input data files with argument `files`.
 #'
-#' This backend provides an `export` method to export data from a `Spectra` in
+#' This backend provides an `export()` method to export data from a `Spectra` in
 #' *mzML* or *mzXML* format. The definition of the function is:
 #'
 #' `export(object, x, file = tempfile(), format = c("mzML", "mzXML"),
@@ -704,7 +704,7 @@
 #' See examples in [Spectra-class] or the vignette for more details and
 #' examples.
 #'
-#' The `MsBackendMzR` ignores parameter `columns` of the `peaksData`
+#' The `MsBackendMzR` ignores parameter `columns` of the `peaksData()`
 #' function and returns **always** m/z and intensity values.
 #'
 #'
@@ -717,14 +717,14 @@
 #'
 #' New objects can be created with the `MsBackendHdf5Peaks()` function which
 #' can be subsequently filled with data by calling the object's
-#' `backendInitialize` method passing the desired file names of the HDF5 data
+#' `backendInitialize()` method passing the desired file names of the HDF5 data
 #' files along with the spectra variables in form of a `DataFrame` (see
 #' `MsBackendDataFrame` for the expected format). An optional parameter
 #' `hdf5path` allows to specify the folder where the HDF5 data files should be
 #' stored to. If provided, this is added as the path to the submitted file
 #' names (parameter `files`).
 #'
-#' By default `backendInitialize` will store all peak data into a single HDF5
+#' By default `backendInitialize()` will store all peak data into a single HDF5
 #' file which name has to be provided with the parameter `files`. To store peak
 #' data across several HDF5 files `data` has to contain a column
 #' `"dataStorage"` that defines the grouping of spectra/peaks into files: peaks
@@ -797,7 +797,7 @@
 #'
 #' be
 #'
-#' ## The `backendInitialize` method initializes the backend filling it with
+#' ## The `backendInitialize()` method initializes the backend filling it with
 #' ## data. This method can take any parameters needed for the backend to
 #' ## get loaded with the data (e.g. a file name from which to load the data,
 #' ## a database connection or, in this case, a data frame containing the data).
@@ -814,7 +814,7 @@
 #' ## methods are supposed to return a value.
 #' precursorMz(be)
 #'
-#' ## The `peaksData` method is supposed to return the peaks of the spectra as
+#' ## The `peaksData()` method is supposed to return the peaks of the spectra as
 #' ## a `list`.
 #' peaksData(be)
 #'
@@ -837,7 +837,7 @@
 #' ## and allows also adding arbitrary additional peaks variables (annotations)
 #' ## Below we thus add a column "peak_ann" with arbitrary names/ids for each
 #' ## peak and add the name of this column to the `peaksVariables` parameter
-#' ## of the `backendInitialize` method (in addition to `"mz"` and
+#' ## of the `backendInitialize()` method (in addition to `"mz"` and
 #' ## `"intensity"` that should **always** be specified.
 #' data$peak_ann <- list(c("a", "", "d"), c("", "d", "e", "f"), c("h", "i"))
 #' be <- backendInitialize(MsBackendMemory(), data,
@@ -849,7 +849,7 @@
 #' ## peak_ann is also listed as a peaks variable
 #' peaksVariables(be)
 #'
-#' ## The additional peaks variable can be accessed using the peaksData
+#' ## The additional peaks variable can be accessed using the `peaksData()`
 #' ## function
 #' peaksData(be, "peak_ann")
 #'
@@ -883,6 +883,8 @@ setValidity("MsBackend", function(object) {
     else msg
 })
 
+#' @importMethodsFrom ProtGenerics backendBpparam
+#'
 #' @exportMethod backendBpparam
 #'
 #' @rdname MsBackend
@@ -915,6 +917,8 @@ setMethod("backendMerge", "MsBackend", function(object, ...) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @importMethodsFrom ProtGenerics backendParallelFactor
+#'
 #' @exportMethod backendParallelFactor
 #'
 #' @rdname MsBackend
@@ -1636,6 +1640,8 @@ setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
     split.default(x, f, drop = drop, ...)
 })
 
+#' @importMethodsFrom ProtGenerics supportsSetBackend
+#'
 #' @exportMethod supportsSetBackend
 #'
 #' @rdname MsBackend

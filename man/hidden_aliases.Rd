@@ -7,7 +7,6 @@
 \alias{hidden_aliases}
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
-\alias{backendParallelFactor}
 \alias{bin,numeric-method}
 \alias{containsMz}
 \alias{containsNeutralLoss}
@@ -161,8 +160,6 @@
 \alias{combinePeaks,list-method}
 \title{Internal page for hidden aliases}
 \usage{
-backendParallelFactor(object, ...)
-
 \S4method{bin}{numeric}(
   x,
   y,

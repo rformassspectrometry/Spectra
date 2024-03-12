@@ -20,7 +20,7 @@
 #' force the recomputation of the `"countIdentifications"` variable,
 #' users should either delete or rename it.
 #'
-#' @param object An instance of class `Spectra()` that contains
+#' @param object An instance of class `Spectra` that contains
 #'     identification data, as defined by the `sequence` argument.
 #'
 #' @param identification `character(1)` with the name of the spectra

@@ -44,7 +44,7 @@ of the \linkS4class{MsBackend}.}
 \description{
 Some MS instrument manufacturers don't provide precursor intensities for
 fragment spectra. These can however be estimated, given that also MS1
-spectra are available. The \code{estimatePrecursorIntensity} defines the
+spectra are available. The \code{estimatePrecursorIntensity()} funtion defines the
 precursor intensities for MS2 spectra using the intensity of the matching
 MS1 peak from the closest MS1 spectrum (i.e. the last MS1 spectrum measured
 before the respective MS2 spectrum). With \code{method = "interpolation"} it is

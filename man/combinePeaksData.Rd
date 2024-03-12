@@ -61,7 +61,7 @@ Peaks \code{matrix} with m/z and intensity values representing the aggregated
 values across the provided peak matrices.
 }
 \description{
-\code{combinePeaksData} aggregates provided peak matrices into a single peak
+\code{combinePeaksData()} aggregates provided peak matrices into a single peak
 matrix. Peaks are grouped by their m/z values with the \code{group()} function
 from the \code{MsCoreUtils} package. In brief, all peaks in all provided
 spectra are first ordered by their m/z and consecutively grouped into one

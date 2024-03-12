@@ -28,9 +28,9 @@ m/z and intensity values of the mass peaks of a spectrum.}
 \item{y}{\code{matrix} with two columns \code{"mz"} and \code{"intensity"} containing the
 m/z and intensity values of the mass peaks of a spectrum.}
 
-\item{type}{For \code{joinPeaks} and \code{joinPeaksGnps}: \code{character(1)} specifying
-the type of join that should be performed. See function description for
-details.}
+\item{type}{For \code{joinPeaks()} and \code{joinPeaksGnps()}: \code{character(1)}
+specifying the type of join that should be performed. See function
+description for details.}
 
 \item{tolerance}{\code{numeric(1)} defining a constant maximal accepted difference
 between m/z values of peaks from the two spectra to be matched/mapped.}
@@ -41,11 +41,11 @@ matched/mapped.}
 
 \item{...}{optional parameters passed to the \code{\link[MsCoreUtils:matching]{MsCoreUtils::join()}} function.}
 
-\item{xPrecursorMz}{for \code{joinPeaksGnps}: \code{numeric(1)} with the precursor m/z
-of the spectrum \code{x}.}
+\item{xPrecursorMz}{for \code{joinPeaksGnps()}: \code{numeric(1)} with the precursor
+m/z of the spectrum \code{x}.}
 
-\item{yPrecursorMz}{for \code{joinPeaksGnps}: \code{numeric(1)} with the precursor m/z
-of the spectrum \code{y}.}
+\item{yPrecursorMz}{for \code{joinPeaksGnps()}: \code{numeric(1)} with the precursor
+m/z of the spectrum \code{y}.}
 }
 \value{
 All functions return a \code{list} of elements \code{"x"} and \code{"y"} each being a two
@@ -60,7 +60,7 @@ These functions map peaks from two spectra with each other if the difference
 between their m/z values is smaller than defined with parameters \code{tolerance}
 and \code{ppm}. All functions take two matrices
 \itemize{
-\item \code{joinPeaks}: maps peaks from two spectra allowing to specify the type of
+\item \code{joinPeaks()}: maps peaks from two spectra allowing to specify the type of
 \emph{join} that should be performed: \code{type = "outer"} each peak in \code{x} will be
 matched with each peak in \code{y}, for peaks that do not match any peak in the
 other spectra an \code{NA} intensity is returned. With \code{type = "left"} all peaks
@@ -69,8 +69,8 @@ from the left spectrum (\code{x}) will be matched with peaks in \code{y}. Peaks 
 same as \code{type = "left"} only for \code{y}. Only peaks that can be matched
 between \code{x} and \code{y} are returned by \code{type = "inner"}, i.e. only
 peaks present in both spectra are reported.
-\item \code{joinPeaksGnps}: matches/maps peaks between spectra with the same approach
-used in GNPS: peaks are considered matching if a) the
+\item \code{joinPeaksGnps()}: matches/maps peaks between spectra with the same
+approach used in GNPS: peaks are considered matching if a) the
 difference in their m/z values is smaller than defined by \code{tolerance}
 and \code{ppm} (this is the same as \code{joinPeaks}) \strong{and} b) the difference of
 their m/z \emph{adjusted} for the difference of the spectras' precursor is
@@ -82,10 +82,10 @@ results are the same as with \code{\link[=joinPeaks]{joinPeaks()}}. To calculate
 scores, \code{\link[=gnps]{gnps()}} should be called on the aligned peak matrices (i.e.
 \code{compareSpectra} should be called with \code{MAPFUN = joinPeaksGnps} and
 \code{FUN = MsCoreUtils::gnps}).
-\item \code{joinPeaksNone}: does not perform any peak matching but simply returns
+\item \code{joinPeaksNone()}: does not perform any peak matching but simply returns
 the peak matrices in a \code{list}. This function should be used with the
 \code{MAPFUN} parameter of \code{\link[=compareSpectra]{compareSpectra()}} if the spectra similarity
-function used (parameter \code{FUN} of \code{compareSpectra}) performs its own
+function used (parameter \code{FUN} of \code{compareSpectra()}) performs its own
 peak matching and does hence not expect matched peak matrices as an input.
 }
 }

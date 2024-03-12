@@ -693,9 +693,10 @@ processingLog <- function(x) {
 #' @title Estimate Precursor Intensities
 #'
 #' @description
+#'
 #' Some MS instrument manufacturers don't provide precursor intensities for
 #' fragment spectra. These can however be estimated, given that also MS1
-#' spectra are available. The `estimatePrecursorIntensity` defines the
+#' spectra are available. The `estimatePrecursorIntensity()` funtion defines the
 #' precursor intensities for MS2 spectra using the intensity of the matching
 #' MS1 peak from the closest MS1 spectrum (i.e. the last MS1 spectrum measured
 #' before the respective MS2 spectrum). With `method = "interpolation"` it is
@@ -841,7 +842,7 @@ estimatePrecursorIntensity <- function(x, ppm = 20, tolerance = 0,
 #'
 #' @description
 #'
-#' `chunkapply` splits `x` into chunks and applies the function `FUN` stepwise
+#' `chunkapply()` splits `x` into chunks and applies the function `FUN` stepwise
 #' to each of these chunks. Depending on the object it is called, this
 #' function might reduce memory demand considerably, if for example only the
 #' full data for a single chunk needs to be loaded into memory at a time (e.g.,
@@ -1097,10 +1098,10 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #' of the currently processed subset is loaded into memory and processed.
 #' This chunk-wise processing, which is by default disabled, can be enabled
 #' by setting the processing chunk size of a `Spectra` with the
-#' `processingChunkSize` function to a value which is smaller than the
+#' `processingChunkSize()` function to a value which is smaller than the
 #' length of the `Spectra` object. Setting `processingChunkSize(sps) <- 1000`
 #' will cause any data manipulation operation on the `sps`, such as
-#' `filterIntensity` or `bin`, to be performed eventually in parallel for
+#' `filterIntensity()` or `bin()`, to be performed eventually in parallel for
 #' sets of 1000 spectra in each iteration.
 #'
 #' Such chunk-wise processing is specifically useful for `Spectra` objects
@@ -1118,7 +1119,7 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #' `MsBackendMzR` returns for example a `factor` based on the *dataStorage*
 #' spectra variable. A `factor` of length 0 is returned if no particular
 #' preferred splitting should be performed. The suggested chunk definition
-#' will be used if no finite `processingChunkSize` is defined. Setting
+#' will be used if no finite `processingChunkSize()` is defined. Setting
 #' the `processingChunkSize` overrides `backendParallelFactor`.
 #'
 #' See the *Large-scale data handling and processing with Spectra* for more
@@ -1126,12 +1127,12 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #'
 #' Functions to configure parallel or chunk-wise processing:
 #'
-#' - `processingChunkSize`: allows to get or set the size of the chunks for
+#' - `processingChunkSize()`: allows to get or set the size of the chunks for
 #'   parallel processing or chunk-wise processing of a `Spectra` in general.
 #'   With a value of `Inf` (the default) no chunk-wise processing will be
 #'   performed.
 #'
-#' - `processingChunkFactor`: returns a `factor` defining the chunks into
+#' - `processingChunkFactor()`: returns a `factor` defining the chunks into
 #'   which a `Spectra` will be split for chunk-wise (parallel) processing.
 #'   A `factor` of length 0 indicates that no chunk-wise processing will be
 #'   performed.
@@ -1139,15 +1140,15 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #' @note
 #'
 #' Some backends might not support parallel processing at all.
-#' For these, the `backendBpparam` function will always return a
+#' For these, the `backendBpparam()` function will always return a
 #' `SerialParam()` independently on how parallel processing was defined.
 #'
 #' @param x `Spectra`.
 #'
 #' @param value `integer(1)` defining the chunk size.
 #'
-#' @return `processingChunkSize` returns the currently defined processing
-#'     chunk size (or `Inf` if it is not defined). `processingChunkFactor`
+#' @return `processingChunkSize()` returns the currently defined processing
+#'     chunk size (or `Inf` if it is not defined). `processingChunkFactor()`
 #'     returns a `factor` defining the chunks into which `x` will be split
 #'     for (parallel) chunk-wise processing or a `factor` of length 0 if
 #'     no splitting is defined.

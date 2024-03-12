@@ -25,7 +25,7 @@ loss spectra should be calculated.}
 
 \item{...}{Currently ignored.}
 
-\item{filterPeaks}{For \code{PrecursorMzParam}: \code{character(1)} or \code{function}
+\item{filterPeaks}{For \code{PrecursorMzParam()}: \code{character(1)} or \code{function}
 defining if and how fragment peaks should be filtered before calculation.
 Pre-defined options are: \code{"none"} (keep all peaks), \code{"abovePrecursor"}
 (removes all fragment peaks with an m/z >= precursor m/z),
@@ -55,11 +55,11 @@ A \code{\link[=Spectra]{Spectra()}} object with calculated neutral loss spectra.
 This help page lists functions that convert MS/MS spectra to neutral loss
 spectra. The main function for this is \code{neutralLoss} and the specific
 algorithm to be used is defined (and configured) with dedicated \emph{parameter}
-objects (paramer \code{param} of the \code{neutralLoss} function).
+objects (paramer \code{param} of the \code{neutralLoss()} function).
 
 The parameter objects for the different algorithms are:
 \itemize{
-\item \code{PrecursorMzParam}: calculates neutral loss spectra as in Aisporna
+\item \code{PrecursorMzParam()}: calculates neutral loss spectra as in Aisporna
 \emph{et al.} 2022 by subtracting the (fragment's) peak m/z value from the
 precursor m/z value of each spectrum (precursor m/z - fragment m/z).
 Parameter \code{msLevel} allows to restrict calculation of neutral loss
