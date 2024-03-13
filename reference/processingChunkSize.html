@@ -7,10 +7,10 @@ data chunk) and also reduces the memory demand  since only the MS data
 of the currently processed subset is loaded into memory and processed.
 This chunk-wise processing, which is by default disabled, can be enabled
 by setting the processing chunk size of a Spectra with the
-processingChunkSize function to a value which is smaller than the
+processingChunkSize() function to a value which is smaller than the
 length of the Spectra object. Setting processingChunkSize(sps) &amp;lt;- 1000
 will cause any data manipulation operation on the sps, such as
-filterIntensity or bin, to be performed eventually in parallel for
+filterIntensity() or bin(), to be performed eventually in parallel for
 sets of 1000 spectra in each iteration.
 Such chunk-wise processing is specifically useful for Spectra objects
 using an on-disk backend or for very large experiments. For small data
@@ -26,16 +26,16 @@ data by returning a factor defining the respective data chunks. The
 MsBackendMzR returns for example a factor based on the dataStorage
 spectra variable. A factor of length 0 is returned if no particular
 preferred splitting should be performed. The suggested chunk definition
-will be used if no finite processingChunkSize is defined. Setting
+will be used if no finite processingChunkSize() is defined. Setting
 the processingChunkSize overrides backendParallelFactor.
 See the Large-scale data handling and processing with Spectra for more
 information and examples.
 Functions to configure parallel or chunk-wise processing:
-processingChunkSize: allows to get or set the size of the chunks for
+processingChunkSize(): allows to get or set the size of the chunks for
 parallel processing or chunk-wise processing of a Spectra in general.
 With a value of Inf (the default) no chunk-wise processing will be
 performed.
-processingChunkFactor: returns a factor defining the chunks into
+processingChunkFactor(): returns a factor defining the chunks into
 which a Spectra will be split for chunk-wise (parallel) processing.
 A factor of length 0 indicates that no chunk-wise processing will be
 performed.
@@ -48,10 +48,10 @@ data chunk) and also reduces the memory demand  since only the MS data
 of the currently processed subset is loaded into memory and processed.
 This chunk-wise processing, which is by default disabled, can be enabled
 by setting the processing chunk size of a Spectra with the
-processingChunkSize function to a value which is smaller than the
+processingChunkSize() function to a value which is smaller than the
 length of the Spectra object. Setting processingChunkSize(sps) &amp;lt;- 1000
 will cause any data manipulation operation on the sps, such as
-filterIntensity or bin, to be performed eventually in parallel for
+filterIntensity() or bin(), to be performed eventually in parallel for
 sets of 1000 spectra in each iteration.
 Such chunk-wise processing is specifically useful for Spectra objects
 using an on-disk backend or for very large experiments. For small data
@@ -67,16 +67,16 @@ data by returning a factor defining the respective data chunks. The
 MsBackendMzR returns for example a factor based on the dataStorage
 spectra variable. A factor of length 0 is returned if no particular
 preferred splitting should be performed. The suggested chunk definition
-will be used if no finite processingChunkSize is defined. Setting
+will be used if no finite processingChunkSize() is defined. Setting
 the processingChunkSize overrides backendParallelFactor.
 See the Large-scale data handling and processing with Spectra for more
 information and examples.
 Functions to configure parallel or chunk-wise processing:
-processingChunkSize: allows to get or set the size of the chunks for
+processingChunkSize(): allows to get or set the size of the chunks for
 parallel processing or chunk-wise processing of a Spectra in general.
 With a value of Inf (the default) no chunk-wise processing will be
 performed.
-processingChunkFactor: returns a factor defining the chunks into
+processingChunkFactor(): returns a factor defining the chunks into
 which a Spectra will be split for chunk-wise (parallel) processing.
 A factor of length 0 indicates that no chunk-wise processing will be
 performed.
@@ -92,7 +92,7 @@ performed.
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,10 +146,10 @@ data chunk) and also reduces the memory demand  since only the MS data
 of the currently processed subset is loaded into memory and processed.
 This chunk-wise processing, which is by default disabled, can be enabled
 by setting the processing chunk size of a <code>Spectra</code> with the
-<code>processingChunkSize</code> function to a value which is smaller than the
+<code>processingChunkSize()</code> function to a value which is smaller than the
 length of the <code>Spectra</code> object. Setting <code>processingChunkSize(sps) &lt;- 1000</code>
 will cause any data manipulation operation on the <code>sps</code>, such as
-<code>filterIntensity</code> or <code>bin</code>, to be performed eventually in parallel for
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterIntensity()</a></code> or <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">bin()</a></code>, to be performed eventually in parallel for
 sets of 1000 spectra in each iteration.</p>
 <p>Such chunk-wise processing is specifically useful for <code>Spectra</code> objects
 using an <em>on-disk</em> backend or for very large experiments. For small data
@@ -159,21 +159,21 @@ the chunk-wise processing.</p>
 <p>For some backends a certain type of splitting and chunk-wise processing
 might be preferable. The <code>MsBackendMzR</code> backend for example needs to load
 the MS data from the original (mzML) files, hence chunk-wise processing
-on a per-file basis would be ideal. The <code><a href="hidden_aliases.html">backendParallelFactor()</a></code> function
+on a per-file basis would be ideal. The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendParallelFactor()</a></code> function
 for <code>MsBackend</code> allows backends to suggest a preferred splitting of the
 data by returning a <code>factor</code> defining the respective data chunks. The
 <code>MsBackendMzR</code> returns for example a <code>factor</code> based on the <em>dataStorage</em>
 spectra variable. A <code>factor</code> of length 0 is returned if no particular
 preferred splitting should be performed. The suggested chunk definition
-will be used if no finite <code>processingChunkSize</code> is defined. Setting
+will be used if no finite <code>processingChunkSize()</code> is defined. Setting
 the <code>processingChunkSize</code> overrides <code>backendParallelFactor</code>.</p>
 <p>See the <em>Large-scale data handling and processing with Spectra</em> for more
 information and examples.</p>
-<p>Functions to configure parallel or chunk-wise processing:</p><ul><li><p><code>processingChunkSize</code>: allows to get or set the size of the chunks for
+<p>Functions to configure parallel or chunk-wise processing:</p><ul><li><p><code>processingChunkSize()</code>: allows to get or set the size of the chunks for
 parallel processing or chunk-wise processing of a <code>Spectra</code> in general.
 With a value of <code>Inf</code> (the default) no chunk-wise processing will be
 performed.</p></li>
-<li><p><code>processingChunkFactor</code>: returns a <code>factor</code> defining the chunks into
+<li><p><code>processingChunkFactor()</code>: returns a <code>factor</code> defining the chunks into
 which a <code>Spectra</code> will be split for chunk-wise (parallel) processing.
 A <code>factor</code> of length 0 indicates that no chunk-wise processing will be
 performed.</p></li>
@@ -202,8 +202,8 @@ performed.</p></li>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p><code>processingChunkSize</code> returns the currently defined processing
-chunk size (or <code>Inf</code> if it is not defined). <code>processingChunkFactor</code></p>
+<p><code>processingChunkSize()</code> returns the currently defined processing
+chunk size (or <code>Inf</code> if it is not defined). <code>processingChunkFactor()</code></p>
 
 
 <p>returns a <code>factor</code> defining the chunks into which <code>x</code> will be split
@@ -213,7 +213,7 @@ no splitting is defined.</p>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>Some backends might not support parallel processing at all.
-For these, the <code>backendBpparam</code> function will always return a
+For these, the <code><a href="MsBackend.html">backendBpparam()</a></code> function will always return a
 <code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam()</a></code> independently on how parallel processing was defined.</p>
     </div>
     <div class="section level2">

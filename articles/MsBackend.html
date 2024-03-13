@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,7 @@ Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="exte
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
 Louail [aut] (<a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
 [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-03-11 15:28:10.046246<br><strong>Compiled</strong>: Mon Mar 11 15:41:27 2024</p>
+[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-03-13 06:28:23.396102<br><strong>Compiled</strong>: Wed Mar 13 06:39:27 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -170,17 +170,18 @@ missing).</li>
 <em>read-only</em> data resources. In this case only data accessor
 methods need to be implemented but not data replacement methods. Whether
 a backend is read-only can be set with the <code>@readonly</code> slot
-of the virtual <code>MsBackend</code> class (the <code>isReadOnly</code>
-function can be used to retrieve the value for this slot). The default
-is <code>@readonly = FALSE</code> and thus all data replacement method
-listed in section <em>Data replacement methods</em> have to be
-implemented. For read-only backends (<code>@readonly = TRUE</code>) only
-the methods in section <em>Required methods</em> need to be implemented.
-Backends can also be <em>partially</em> read-only, such as the
-<code>MsBackendMzR</code>. This backend allows for example to change
-spectra variables, but not the peaks data (i.e. the m/z and intensity
-values). Also, backends for purely read-only resources could extend the
-<code>MsBackendCached</code> from the <em><a href="https://bioconductor.org/packages/3.19/Spectra" class="external-link">Spectra</a></em>
+of the virtual <code>MsBackend</code> class (the
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">isReadOnly()</a></code> function can be used to retrieve the value for
+this slot). The default is <code>@readonly = FALSE</code> and thus all
+data replacement method listed in section <em>Data replacement
+methods</em> have to be implemented. For read-only backends
+(<code>@readonly = TRUE</code>) only the methods in section <em>Required
+methods</em> need to be implemented. Backends can also be
+<em>partially</em> read-only, such as the <code>MsBackendMzR</code>.
+This backend allows for example to change spectra variables, but not the
+peaks data (i.e. the m/z and intensity values). Also, backends for
+purely read-only resources could extend the <code>MsBackendCached</code>
+from the <em><a href="https://bioconductor.org/packages/3.19/Spectra" class="external-link">Spectra</a></em>
 package to enable support for modifying (or adding) spectra variables.
 Any changes to spectra variables will be internally cached by the
 <code>MsBackendCached</code> without the need of them being propagating
@@ -197,12 +198,12 @@ based on a defined <code>factor</code> and processes each in parallel
 (or <em>in serial</em> if a <code>SerialParam</code> is used). The
 splitting <code>factor</code> can be defined for <code>Spectra</code> by
 setting the parameter <code>processingChunkSize</code>. Alternatively,
-through the <code>backendParallelFactor</code> function the backend can
-also <em>suggest</em> a <code>factor</code> that should/could be used
-for splitting and parallel processing. The default implementation for
-<code>backendParallelFactor</code> is to return an empty
+through the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendParallelFactor()</a></code> function the backend
+can also <em>suggest</em> a <code>factor</code> that should/could be
+used for splitting and parallel processing. The default implementation
+for <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendParallelFactor()</a></code> is to return an empty
 <code>factor</code> (<code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code>) hence not suggesting any
-preferred splitting. <code>backendParallelFactor</code> for
+preferred splitting. <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendParallelFactor()</a></code> for
 <code>MsBackendMzR</code> on the other hand returns a
 <code>factor</code> based on the data files the data is stored in
 (i.e. based on the <code>dataStorage</code> of the MS data).</p>
@@ -279,7 +280,7 @@ rows of the <code>spectraVars</code> slot matches the length of the
 <span><span class="co">## </span></span>
 <span><span class="co">## Extends: "MsBackend"</span></span></code></pre>
 <p>We can now create an instance of our new class with the
-<code>MsBackendTest</code> function.</p>
+<code>MsBackendTest()</code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">MsBackendTest</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## An object of class "MsBackendTest"</span></span>
@@ -312,11 +313,11 @@ advised to write dedicated unit tests for each newly implemented method
 or function already <strong>during</strong> the development.</p>
 <div class="section level4">
 <h4 id="datastorage">
-<code>dataStorage</code><a class="anchor" aria-label="anchor" href="#datastorage"></a>
+<code>dataStorage()</code><a class="anchor" aria-label="anchor" href="#datastorage"></a>
 </h4>
 <p>The <code>dataStorage</code> spectra variable of a spectrum provides
 some information how or where the data is stored. The
-<code>dataStorage</code> method should therefor return a
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">dataStorage()</a></code> method should therefor return a
 <code>character</code> vector with length equal to the number of spectra
 of a backend object with that information. For most backends the data
 storage information can be a simple string such as <code>"memory"</code>
@@ -328,9 +329,9 @@ variable to store and keep track of the original data file for each
 spectrum. An example is the <code>MsBackendMzR</code> backend that
 retrieves the MS data on-the-fly from the original data file(s) whenever
 m/z or intensity values are requested from the backend. Calling
-<code>dataStorage</code> on an <code>MsBackendMzR</code> returns thus
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">dataStorage()</a></code> on an <code>MsBackendMzR</code> returns thus
 the names from the originating files.</p>
-<p>For our example backend we define a simple <code>dataStorage</code>
+<p>For our example backend we define a simple <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">dataStorage()</a></code>
 method that simply returns the column <code>"dataStorage"</code> from
 the <code>@svars</code> (as a <code>character</code>).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -340,9 +341,9 @@ the <code>@svars</code> (as a <code>character</code>).</p>
 </div>
 <div class="section level4">
 <h4 id="length">
-<code>length</code><a class="anchor" aria-label="anchor" href="#length"></a>
+<code>length()</code><a class="anchor" aria-label="anchor" href="#length"></a>
 </h4>
-<p><code>length</code> is expected to return a single
+<p><code><a href="https://rdrr.io/r/base/length.html" class="external-link">length()</a></code> is expected to return a single
 <code>integer</code> with the total number of spectra that are available
 through the backend class. For our example backend we simply return the
 number of rows of the <code>data.frame</code> stored in the
@@ -354,19 +355,19 @@ number of rows of the <code>data.frame</code> stored in the
 </div>
 <div class="section level4">
 <h4 id="backendinitialize">
-<code>backendInitialize</code><a class="anchor" aria-label="anchor" href="#backendinitialize"></a>
+<code>backendInitialize()</code><a class="anchor" aria-label="anchor" href="#backendinitialize"></a>
 </h4>
-<p>The <code>backendInitialize</code> method is expected to be called
+<p>The <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method is expected to be called
 after creating an instance of the backend class and should prepare
 (initialize) the backend which in most cases means that MS data is
 loaded. This method can take any parameters needed by the backend to get
 loaded/initialized with data (which can be file names from which to load
 the data, a database connection or object(s) containing the data).
-During <code>backendInitialize</code> usually also the special spectra
+During <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> usually also the special spectra
 variables <code>dataStorage</code> and <code>dataOrigin</code> are
 set.</p>
-<p>Below we define a <code>backendInitialize</code> method that takes as
-arguments a <code>data.frame</code> with spectra variables and two
+<p>Below we define a <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method that takes
+as arguments a <code>data.frame</code> with spectra variables and two
 <code>list</code>s with the m/z and intensity values for each
 spectrum.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -394,7 +395,7 @@ example) and from where the data is originating. The
 original data files individual spectra derive.</p>
 <p>We can now create an instance of our backend class and fill it with
 data. We thus first define our MS data and pass this to the
-<code>backendInitialize</code> method.</p>
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## A data.frame with spectra variables.</span></span>
 <span><span class="va">svars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>msLevel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">2L</span><span class="op">)</span>,</span>
@@ -438,17 +439,17 @@ data. We thus first define our MS data and pass this to the
 <span><span class="co">## [1] "0.1"</span></span></code></pre>
 <p>While this method works and is compliant with the
 <code>MsBackend</code> API (because there is no requirement on the input
-parameters for the <code>backendInitialize</code> method), it would be
+parameters for the <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method), it would be
 good practice for backends that are supposed to support replacing data,
 to add an optional additional parameter <code>data</code> that would
 allow passing the <em>complete</em> MS data (including m/z and intensity
 values) to the function as a <code>DataFrame</code>. This would simplify
 the implementation of some replacement methods and would in addition
 also allow to change the backend of a <code>Spectra</code> using the
-<code>setBackend</code> to our new backend. We thus re-implement the
-<code>backendInitialize</code> method supporting also to initialize the
-backend with such a data frame and we also implement a helper function
-that checks spectra variables for the correct data type.</p>
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">setBackend()</a></code> to our new backend. We thus re-implement the
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method supporting also to initialize
+the backend with such a data frame and we also implement a helper
+function that checks spectra variables for the correct data type.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Helper function to check if core spectra variables have the correct</span></span>
 <span><span class="co">#' data type.</span></span>
@@ -467,7 +468,7 @@ that checks spectra variables for the correct data type.</p>
 <span>    <span class="cn">TRUE</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>This function is then used to check the input data in our new
-<code>backendInitialize</code> method.</p>
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span></span>
 <span>    <span class="st">"backendInitialize"</span>, <span class="st">"MsBackendTest"</span>,</span>
@@ -494,7 +495,7 @@ that checks spectra variables for the correct data type.</p>
 <span>        <span class="va">object</span></span>
 <span>    <span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>We below create the backend again with the updated
-<code>backendInitialize</code>.</p>
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Create and initialize the backend</span></span>
 <span><span class="va">be</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MsBackend.html">backendInitialize</a></span><span class="op">(</span><span class="fu">MsBackendTest</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -524,37 +525,37 @@ that checks spectra variables for the correct data type.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Slot "version":</span></span>
 <span><span class="co">## [1] "0.1"</span></span></code></pre>
-<p>The <code>backendInitialize</code> method that we implemented for our
-backend class expects the user to provide the full MS data. This does
-however not always have to be the case. The
-<code>backendInitialize</code> method of the <code>MsBackendMzR</code>
+<p>The <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method that we implemented for
+our backend class expects the user to provide the full MS data. This
+does however not always have to be the case. The
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method of the <code>MsBackendMzR</code>
 backend takes for example the file names of the raw mzML, mzXML or CDF
 files as input and initializes the backend by importing part of the data
 from these. Also the backends defined by the <em><a href="https://bioconductor.org/packages/3.19/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
-or <em><a href="https://bioconductor.org/packages/3.19/MsBackendMsp" class="external-link">MsBackendMsp</a></em>
-packages work in the same way and thus allow to import MS data from
-these specific file formats. The <code>backendInitialize</code> method
-of the backend defined in the <em><a href="https://bioconductor.org/packages/3.19/MsBackendSql" class="external-link">MsBackendSql</a></em>
+or <code>r Biocpkg("MsBackendMsp")</code> packages work in the same way
+and thus allow to import MS data from these specific file formats. The
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method of the backend defined in the
+<em><a href="https://bioconductor.org/packages/3.19/MsBackendSql" class="external-link">MsBackendSql</a></em>
 on the other hand takes only the connection to a database containing the
 data as input and performs some sanity checks on the data but does not
 load the data into the backend. Any subsequent data access is handled by
 the methods of the backend class through SQL calls to the database.</p>
-<p>The purpose of the <code>backendInitialize</code> method is to
+<p>The purpose of the <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method is to
 <em>initialize</em> and prepare the data in a way that it can be
 accessed by a <code>Spectra</code> object (through the initialized
 backend class). Whether the data is loaded by the
-<code>backendInitialize</code> method into memory or simply referenced
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method into memory or simply referenced
 to within the backend class does not matter as long as the backend is
 able to provide the data with its accessor methods.</p>
-<p>Note also that a <code>backendInitialize</code> function should
+<p>Note also that a <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> function should
 ideally also perform some data sanity checks (e.g. whether spectra
 variables have the correct data type etc).</p>
 </div>
 <div class="section level4">
 <h4 id="spectravariables">
-<code>spectraVariables</code><a class="anchor" aria-label="anchor" href="#spectravariables"></a>
+<code>spectraVariables()</code><a class="anchor" aria-label="anchor" href="#spectravariables"></a>
 </h4>
-<p>The <code>spectraVariables</code> method should return a
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables()</a></code> method should return a
 <code>character</code> vector with the names of all available spectra
 variables of the backend. While a backend class should support defining
 and providing their own spectra variables, each <code>MsBackend</code>
@@ -582,7 +583,7 @@ type.</p>
 <span><span class="co">##               "numeric"               "numeric"               "numeric" </span></span>
 <span><span class="co">##  isolationWindowUpperMz </span></span>
 <span><span class="co">##               "numeric"</span></span></code></pre>
-<p>A typical <code>spectraVariables</code> method for a
+<p>A typical <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables()</a></code> method for a
 <code>MsBackend</code> class will thus be implemented similarly to the
 one for our <code>MsBackendTest</code> test backend: it will return the
 union of the core spectra variables and the names for all available
@@ -605,9 +606,9 @@ spectra variables within the backend object.</p>
 </div>
 <div class="section level4">
 <h4 id="spectradata">
-<code>spectraData</code><a class="anchor" aria-label="anchor" href="#spectradata"></a>
+<code>spectraData()</code><a class="anchor" aria-label="anchor" href="#spectradata"></a>
 </h4>
-<p>The <code>spectraData</code> method should return the
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraData()</a></code> method should return the
 <strong>full</strong> spectra data within a backend as a
 <code>DataFrame</code> object (defined in the <em><a href="https://bioconductor.org/packages/3.19/S4Vectors" class="external-link">S4Vectors</a></em>
 package). The second parameter <code>columns</code> allows to define the
@@ -650,10 +651,10 @@ backend to the result.</p>
 <span>    <span class="op">}</span></span>
 <span>    <span class="va">x</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>We next implement the <code>spectraData</code> method that uses this
-helper function to fill eventually missing core spectra variables. Note
-also that this function should return a <code>DataFrame</code> even for
-a single column.</p>
+<p>We next implement the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraData()</a></code> method that uses
+this helper function to fill eventually missing core spectra variables.
+Note also that this function should return a <code>DataFrame</code> even
+for a single column.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span></span>
 <span>    <span class="st">"spectraData"</span>, <span class="st">"MsBackendTest"</span>,</span>
@@ -671,7 +672,7 @@ a single column.</p>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>As an alternative, we could also initialize the
 <code>@spectraVars</code> data frame within the
-<code>backendInitialize</code> method adding columns for spectra
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method adding columns for spectra
 variables that are not provided by the user and require that this data
 frame always contains all core spectra variables. Extracting spectra
 data (single spectra variables or the full data) might thus be more
@@ -679,7 +680,7 @@ efficient then the on-the-fly initialization with eventual missing
 spectra variables, but the backend class would also have a larger memory
 footprint because even spectra variables with only missing values for
 all spectra need to be stored within the object.</p>
-<p>We can now use <code>spectraData</code> to either extract the full
+<p>We can now use <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraData()</a></code> to either extract the full
 spectra data from the backend, or only the data for selected spectra
 variables.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -732,22 +733,22 @@ variables.</p>
 </div>
 <div class="section level4">
 <h4 id="peaksdata">
-<code>peaksData</code><a class="anchor" aria-label="anchor" href="#peaksdata"></a>
+<code>peaksData()</code><a class="anchor" aria-label="anchor" href="#peaksdata"></a>
 </h4>
-<p>The <code>peaksData</code> method extracts the MS peaks data from a
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code> method extracts the MS peaks data from a
 backend, which includes the m/z and intensity values of each MS peak of
 a spectrum. These are expected to be returned as a <code>List</code> of
 numerical matrices with columns in each <code>matrix</code> being the
 requested <em>peaks variables</em> (with the default being
 <code>"mz"</code> and <code>"intensity"</code>) of one spectrum.
 Backends must provide at least these two peaks variables.</p>
-<p>Below we implement the <code>peaksData</code> method for our backend.
-We need to loop over the <code>@mz</code> and <code>@intensity</code>
-slots to merge the m/z and intensity of each spectrum into a
-<code>matrix</code>. Also, for simplicity reasons, we accept only
-<code>c("mz", "intensity")</code> for the <code>columns</code>
-parameter. This is the expected default behavior for a
-<code>MsBackend</code>, but in general the <code>columns</code>
+<p>Below we implement the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code> method for our
+backend. We need to loop over the <code>@mz</code> and
+<code>@intensity</code> slots to merge the m/z and intensity of each
+spectrum into a <code>matrix</code>. Also, for simplicity reasons, we
+accept only <code>c("mz", "intensity")</code> for the
+<code>columns</code> parameter. This is the expected default behavior
+for a <code>MsBackend</code>, but in general the <code>columns</code>
 parameter is thought to allow the user to specify which peaks variables
 should be returned in each <code>matrix</code>.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
@@ -780,7 +781,7 @@ backend.</p>
 <span><span class="co">## [1,]  64.4      12.3</span></span>
 <span><span class="co">## [2,] 123.1      35.2</span></span>
 <span><span class="co">## [3,] 124.1     100.0</span></span></code></pre>
-<p>The <code>peaksData</code> method is used in many data analysis
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code> method is used in many data analysis
 functions of the <code>Spectra</code> object to extract the MS data,
 thus ideally this method should be implemented in an efficient way. For
 our backend we need to loop over the lists of m/z and intensity values
@@ -788,17 +789,17 @@ which is obviously not ideal. Thus, storing the m/z and intensity values
 in separate slots as done in this backend might not be ideal. The
 <code>MsBackendMemory</code> backend for example stores the MS data
 already as a <code>list</code> of matrices which results in a more
-efficient <code>peaksData</code> method (but comes also with a larger
+efficient <code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code> method (but comes also with a larger
 overhead when adding, replacing or checking MS data).</p>
 <p>Note also that while a backend needs to provide m/z and intensity
 values, additional peak variables would also be supported. The
 <code>MsBackendMemory</code> class for example allows to store and
 provide additional peak variables that can then be added as additional
 columns to each returned <code>matrix</code>. In this case the default
-<code>peaksVariables</code> method should also be overwritten to list
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksVariables()</a></code> method should also be overwritten to list
 the additionally available variables and the <code>columns</code>
-parameter of the <code>peaksData</code> method should allow selection of
-these additional peaks variables (in addition to the required
+parameter of the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code> method should allow selection
+of these additional peaks variables (in addition to the required
 <code>"mz"</code> and <code>"intensity"</code> variables).</p>
 </div>
 <div class="section level4">
@@ -877,16 +878,17 @@ one-dimensional (with each spectrum being one element).</p>
 </div>
 <div class="section level4">
 <h4 id="backendmerge">
-<code>backendMerge</code><a class="anchor" aria-label="anchor" href="#backendmerge"></a>
+<code>backendMerge()</code><a class="anchor" aria-label="anchor" href="#backendmerge"></a>
 </h4>
-<p>The <code>backendMerge</code> method merges (combines)
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendMerge()</a></code> method merges (combines)
 <code>MsBackend</code> objects (of the same type!) into a single
 instance. For our test backend we thus need to combine the values in the
 <code>@spectraVars</code>, <code>@mz</code> and <code>@intensity</code>
 slots. To support also merging of <code>data.frame</code>s with
-different set of columns we use the <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/rbindFill.html" class="external-link">MsCoreUtils::rbindFill</a></code>
-function instead of a simple <code>rbind</code> (this function joins
-data frames making an union of all available columns).</p>
+different set of columns we use the
+<code><a href="https://rdrr.io/pkg/MsCoreUtils/man/rbindFill.html" class="external-link">MsCoreUtils::rbindFill()</a></code> function instead of a simple
+<code><a href="https://rdrr.io/pkg/BiocGenerics/man/cbind.html" class="external-link">rbind()</a></code> (this function joins data frames making an union of
+all available columns).</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"backendMerge"</span>, <span class="st">"MsBackendTest"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">res</span> <span class="op">&lt;-</span> <span class="va">object</span></span>
@@ -951,7 +953,7 @@ name the spectra variable to return. Each <code>MsBackend</code>
 <strong>must</strong> support extracting the core spectra variables with
 this method (even if no data might be available for that variable). In
 our example implementation below we make use of the
-<code>spectraData</code> method, but more efficient implementations
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraData()</a></code> method, but more efficient implementations
 might be available as well (that would not require to first
 subset/create a <code>DataFrame</code> with the full data and to then
 subset that again). Also, the <code>$</code> method should check if the
@@ -980,13 +982,14 @@ backend.</p>
 </div>
 <div class="section level4">
 <h4 id="lengths">
-<code>lengths</code><a class="anchor" aria-label="anchor" href="#lengths"></a>
+<code>lengths()</code><a class="anchor" aria-label="anchor" href="#lengths"></a>
 </h4>
-<p>The <code>lengths</code> method is expected to return an
+<p>The <code><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths()</a></code> method is expected to return an
 <code>integer</code> vector (same length as the number of spectra in the
 backend) with the total number of peaks per spectrum.</p>
 <p>For our <code>MsBackendTest</code> we can simply use the
-<code>lengths</code> method on the m/z or intensity values for that.</p>
+<code><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths()</a></code> method on the m/z or intensity values for
+that.</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"lengths"</span>, <span class="st">"MsBackendTest"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">use.names</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">mz</span>, use.names <span class="op">=</span> <span class="va">use.names</span><span class="op">)</span></span>
@@ -998,17 +1001,17 @@ backend) with the total number of peaks per spectrum.</p>
 </div>
 <div class="section level4">
 <h4 id="isempty">
-<code>isEmpty</code><a class="anchor" aria-label="anchor" href="#isempty"></a>
+<code>isEmpty()</code><a class="anchor" aria-label="anchor" href="#isempty"></a>
 </h4>
-<p>The <code>isEmpty</code> method is expected to return for each
+<p>The <code><a href="https://rdrr.io/pkg/S4Vectors/man/List-class.html" class="external-link">isEmpty()</a></code> method is expected to return for each
 spectrum the information whether it is <em>empty</em>, i.e. does not
 contain any MS peaks (and hence m/z or intensity values). The result of
 the method has to be a <code>logical</code> of length equal to the
 number of spectra represented by the backend with <code>TRUE</code>
 indicating whether a spectrum is empty and <code>FALSE</code> otherwise.
-For our implementation of the <code>isEmpty</code> method we use the
-<code>lenghts</code> method defined above that returns the number of MS
-peaks per spectrum.</p>
+For our implementation of the <code><a href="https://rdrr.io/pkg/S4Vectors/man/List-class.html" class="external-link">isEmpty()</a></code> method we use the
+<code>lenghts()</code> method defined above that returns the number of
+MS peaks per spectrum.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"isEmpty"</span>, <span class="st">"MsBackendTest"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0L</span></span>
@@ -1018,12 +1021,12 @@ peaks per spectrum.</p>
 </div>
 <div class="section level4">
 <h4 id="acquisitionnum">
-<code>acquisitionNum</code><a class="anchor" aria-label="anchor" href="#acquisitionnum"></a>
+<code>acquisitionNum()</code><a class="anchor" aria-label="anchor" href="#acquisitionnum"></a>
 </h4>
 <p>Extract the <code>acquisitionNum</code> core spectra variable. The
 method is expected to return an <code>integer</code> vector with the
 same length as there are spectra represented by the backend. For our
-backend we simply re-use the <code>spectraData</code> method.</p>
+backend we simply re-use the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraData()</a></code> method.</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"acquisitionNum"</span>, <span class="st">"MsBackendTest"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraData</a></span><span class="op">(</span><span class="va">object</span>, <span class="st">"acquisitionNum"</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1L</span><span class="op">]</span></span>
@@ -1033,7 +1036,7 @@ backend we simply re-use the <code>spectraData</code> method.</p>
 </div>
 <div class="section level4">
 <h4 id="centroided">
-<code>centroided</code><a class="anchor" aria-label="anchor" href="#centroided"></a>
+<code>centroided()</code><a class="anchor" aria-label="anchor" href="#centroided"></a>
 </h4>
 <p>Extract for each spectrum the information whether it contains
 <em>centroided</em> data. The method is expected to return a
@@ -1048,7 +1051,7 @@ represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="collisionenergy">
-<code>collisionEnergy</code><a class="anchor" aria-label="anchor" href="#collisionenergy"></a>
+<code>collisionEnergy()</code><a class="anchor" aria-label="anchor" href="#collisionenergy"></a>
 </h4>
 <p>Extract for each spectrum the collision energy applied to generate
 the fragment spectrum. The method is expected to return a
@@ -1064,7 +1067,7 @@ which this information is not available, such as MS1 spectra).</p>
 </div>
 <div class="section level4">
 <h4 id="dataorigin">
-<code>dataOrigin</code><a class="anchor" aria-label="anchor" href="#dataorigin"></a>
+<code>dataOrigin()</code><a class="anchor" aria-label="anchor" href="#dataorigin"></a>
 </h4>
 <p>Extract the <em>data origin</em> spectra variable for each spectrum.
 This spectra variable can be used to store the origin of each spectra.
@@ -1079,7 +1082,7 @@ length equal to the number of spectra represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="intensity">
-<code>intensity</code><a class="anchor" aria-label="anchor" href="#intensity"></a>
+<code>intensity()</code><a class="anchor" aria-label="anchor" href="#intensity"></a>
 </h4>
 <p>Extract the intensity values for each spectrum in the backend. The
 result is expected to be a <code>NumericList</code> of length equal to
@@ -1098,7 +1101,7 @@ already stored within a <code>NumericList</code>.</p>
 </div>
 <div class="section level4">
 <h4 id="isolationwindowlowermz">
-<code>isolationWindowLowerMz</code><a class="anchor" aria-label="anchor" href="#isolationwindowlowermz"></a>
+<code>isolationWindowLowerMz()</code><a class="anchor" aria-label="anchor" href="#isolationwindowlowermz"></a>
 </h4>
 <p>Extract the core spectra variable <code>isolationWindowLowerMz</code>
 from the backend. This information is usually provided for each spectrum
@@ -1114,7 +1117,7 @@ represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="isolationwindowtargetmz">
-<code>isolationWindowTargetMz</code><a class="anchor" aria-label="anchor" href="#isolationwindowtargetmz"></a>
+<code>isolationWindowTargetMz()</code><a class="anchor" aria-label="anchor" href="#isolationwindowtargetmz"></a>
 </h4>
 <p>Extract the core spectra variable
 <code>isolationWindowTargetMz</code> from the backend. This information
@@ -1130,7 +1133,7 @@ the number of spectra represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="isolationwindowuppermz">
-<code>isolationWindowUpperMz</code><a class="anchor" aria-label="anchor" href="#isolationwindowuppermz"></a>
+<code>isolationWindowUpperMz()</code><a class="anchor" aria-label="anchor" href="#isolationwindowuppermz"></a>
 </h4>
 <p>Extract the core spectra variable <code>isolationWindowUpperMz</code>
 from the backend. This information is usually provided for each spectrum
@@ -1146,7 +1149,7 @@ represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="mslevel">
-<code>msLevel</code><a class="anchor" aria-label="anchor" href="#mslevel"></a>
+<code>msLevel()</code><a class="anchor" aria-label="anchor" href="#mslevel"></a>
 </h4>
 <p>Extract the MS level for each spectrum in the backend. This method is
 expected to return an <code>integer</code> of length equal to the number
@@ -1160,7 +1163,7 @@ of spectra represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="mz">
-<code>mz</code><a class="anchor" aria-label="anchor" href="#mz"></a>
+<code>mz()</code><a class="anchor" aria-label="anchor" href="#mz"></a>
 </h4>
 <p>Extract the m/z values for each spectrum in the backend. The result
 is expected to be a <code>NumericList</code> of length equal to the
@@ -1178,7 +1181,7 @@ expected to be ordered increasingly for each element (spectrum).</p>
 </div>
 <div class="section level4">
 <h4 id="polarity">
-<code>polarity</code><a class="anchor" aria-label="anchor" href="#polarity"></a>
+<code>polarity()</code><a class="anchor" aria-label="anchor" href="#polarity"></a>
 </h4>
 <p>Extract the <code>polarity</code> core spectra variable for each
 spectrum in the backend. This method is expected to return an
@@ -1194,7 +1197,7 @@ to be encoded by <code>0L</code> and <code>1L</code>, respectively.</p>
 </div>
 <div class="section level4">
 <h4 id="precscannum">
-<code>precScanNum</code><a class="anchor" aria-label="anchor" href="#precscannum"></a>
+<code>precScanNum()</code><a class="anchor" aria-label="anchor" href="#precscannum"></a>
 </h4>
 <p>Extract the acquisition number of the precursor for each spectrum.
 This method is expected to return an <code>integer</code> of length
@@ -1210,7 +1213,7 @@ spectra (or if the acquisition number of the precursor is not provided)
 </div>
 <div class="section level4">
 <h4 id="precursorcharge">
-<code>precursorCharge</code><a class="anchor" aria-label="anchor" href="#precursorcharge"></a>
+<code>precursorCharge()</code><a class="anchor" aria-label="anchor" href="#precursorcharge"></a>
 </h4>
 <p>Extract the charge of the precursor for each spectrum. This method is
 expected to return an <code>integer</code> of length equal to the number
@@ -1226,7 +1229,7 @@ returned.</p>
 </div>
 <div class="section level4">
 <h4 id="precursorintensity">
-<code>precursorIntensity</code><a class="anchor" aria-label="anchor" href="#precursorintensity"></a>
+<code>precursorIntensity()</code><a class="anchor" aria-label="anchor" href="#precursorintensity"></a>
 </h4>
 <p>Extract the intensity of the precursor for each spectrum. This method
 is expected to return an <code>numeric</code> of length equal to the
@@ -1242,7 +1245,7 @@ precursor intensity for a fragment spectrum is not provided)
 </div>
 <div class="section level4">
 <h4 id="precursormz">
-<code>precursorMz</code><a class="anchor" aria-label="anchor" href="#precursormz"></a>
+<code>precursorMz()</code><a class="anchor" aria-label="anchor" href="#precursormz"></a>
 </h4>
 <p>Extract the precursor m/z for each spectrum. This method is expected
 to return an <code>numeric</code> of length equal to the number of
@@ -1258,7 +1261,7 @@ to be returned.</p>
 </div>
 <div class="section level4">
 <h4 id="rtime">
-<code>rtime</code><a class="anchor" aria-label="anchor" href="#rtime"></a>
+<code>rtime()</code><a class="anchor" aria-label="anchor" href="#rtime"></a>
 </h4>
 <p>Extract the retention time of each spectrum. This method is expected
 to return a <code>numeric</code> of length equal to the number of
@@ -1272,7 +1275,7 @@ spectra represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="scanindex">
-<code>scanIndex</code><a class="anchor" aria-label="anchor" href="#scanindex"></a>
+<code>scanIndex()</code><a class="anchor" aria-label="anchor" href="#scanindex"></a>
 </h4>
 <p>Extract the <em>scan index</em> core spectra variable. The scan index
 represents the relative index of the spectrum within the respective raw
@@ -1289,7 +1292,7 @@ to the number of spectra represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="smoothed">
-<code>smoothed</code><a class="anchor" aria-label="anchor" href="#smoothed"></a>
+<code>smoothed()</code><a class="anchor" aria-label="anchor" href="#smoothed"></a>
 </h4>
 <p>Extract the <code>smoothed</code> core spectra variable that
 indicates whether a spectrum was <em>smoothed</em>. This variable is
@@ -1305,11 +1308,11 @@ number of spectra represented by the backend.</p>
 </div>
 <div class="section level4">
 <h4 id="spectranames">
-<code>spectraNames</code><a class="anchor" aria-label="anchor" href="#spectranames"></a>
+<code>spectraNames()</code><a class="anchor" aria-label="anchor" href="#spectranames"></a>
 </h4>
-<p>The <code>spectraNames</code> can be used to extract (optional) names
-(or IDs) for individual spectra of a backend, or <code>NULL</code> if
-not set. For our test backend we can use the <code>rownames</code> of
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraNames()</a></code> can be used to extract (optional)
+names (or IDs) for individual spectra of a backend, or <code>NULL</code>
+if not set. For our test backend we can use the <code>rownames</code> of
 the <code>@spectraVars</code> slot to store spectra names.</p>
 <div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"spectraNames"</span>, <span class="st">"MsBackendTest"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1326,9 +1329,9 @@ to be implemented.</p>
 </div>
 <div class="section level4">
 <h4 id="tic">
-<code>tic</code><a class="anchor" aria-label="anchor" href="#tic"></a>
+<code>tic()</code><a class="anchor" aria-label="anchor" href="#tic"></a>
 </h4>
-<p>The <code>tic</code> method should return the total ion count
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">tic()</a></code> method should return the total ion count
 (i.e. the sum of intensities) for each spectrum. This information is
 usually also provided by the raw MS data files, but can also be
 calculated on the fly from the data. The parameter <code>initial</code>
@@ -1387,7 +1390,7 @@ variables as well as peak data. Also, importantly, the number of spectra
 before and after calling the <code>spectraData&lt;-</code> method on an
 object has to be the same. For our implementation we can make use of the
 optional parameter <code>data</code> that we added to the
-<code>backendInitialize</code> method and that allows to fill a
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method and that allows to fill a
 <code>MsBackendTest</code> object with the full data.</p>
 <div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/methods/GenericFunctions.html" class="external-link">setReplaceMethod</a></span><span class="op">(</span><span class="st">"spectraData"</span>, <span class="st">"MsBackendTest"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">value</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1519,7 +1522,7 @@ values of all spectra in a backend. The implementation can be the same
 as for the <code>intensity&lt;-</code> method. m/z values within each
 spectrum need to be increasingly ordered. We thus also check that this
 is the case for the provided m/z values. We take here the advantage that
-a efficient <code>is.unsorted</code> implementation for
+a efficient <code><a href="https://rdrr.io/pkg/BiocGenerics/man/is.unsorted.html" class="external-link">is.unsorted()</a></code> implementation for
 <code>NumericList</code> is already available, which is faster than
 e.g. calling <code>vapply(mz(be), is.unsorted, logical(1))</code>.</p>
 <div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
@@ -1583,7 +1586,7 @@ example remove peaks.</p>
 </h4>
 <p>The <code>$&lt;-</code> method should allow to replace values for
 spectra variables or also to add additional spectra variables to the
-backend. As with all replacement methods, the <code>length</code> of
+backend. As with all replacement methods, the <code><a href="https://rdrr.io/r/base/length.html" class="external-link">length()</a></code> of
 <code>value</code> has to match the number of spectra represented by the
 backend.</p>
 <div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
@@ -1617,26 +1620,27 @@ implemented similarly.</p>
 </div>
 <div class="section level4">
 <h4 id="selectspectravariables">
-<code>selectSpectraVariables</code><a class="anchor" aria-label="anchor" href="#selectspectravariables"></a>
+<code>selectSpectraVariables()</code><a class="anchor" aria-label="anchor" href="#selectspectravariables"></a>
 </h4>
-<p>The <code>selectSpectraVariables</code> should allow to reduce the
-information within the backend (parameter <code>object</code>) to the
-selected spectra variables (parameter <code>spectraVariables</code>).
-This is equivalent to a subset by columns/variables. For core spectra
-variables, if not specified by parameter <code>spectraVariables</code>,
-only their values are expected to be removed (since core spectra
-variables are expected to be available even if they are not defined
-within a backend). The implementation for our backend will remove any
-columns in the <code>@spectraVars</code> data frame not defined in the
-<code>spectraVariables</code> parameter. Special care is given to the
-<code>"mz"</code> and <code>"intensity"</code> spectra variables: if
-they are not selected, the <code>@mz</code> and <code>@intensity</code>
-slots are initialized with empty <code>NumericList</code> (of length
-matching the number of spectra). Note also that some backends might
-throw an error if a spectra variable required for the backend is removed
-(such as <code>"dataStorage"</code> for a <code>MsBackendMzR</code>
-backend, which is required by the backend to allow retrieval of m/z and
-intensity values).</p>
+<p>The <code><a href="../reference/hidden_aliases.html">selectSpectraVariables()</a></code> function should allow to
+reduce the information within the backend (parameter
+<code>object</code>) to the selected spectra variables (parameter
+<code>spectraVariables</code>). This is equivalent to a subset by
+columns/variables. For core spectra variables, if not specified by
+parameter <code>spectraVariables</code>, only their values are expected
+to be removed (since core spectra variables are expected to be available
+even if they are not defined within a backend). The implementation for
+our backend will remove any columns in the <code>@spectraVars</code>
+data frame not defined in the <code>spectraVariables</code> parameter.
+Special care is given to the <code>"mz"</code> and
+<code>"intensity"</code> spectra variables: if they are not selected,
+the <code>@mz</code> and <code>@intensity</code> slots are initialized
+with empty <code>NumericList</code> (of length matching the number of
+spectra). Note also that some backends might throw an error if a spectra
+variable required for the backend is removed (such as
+<code>"dataStorage"</code> for a <code>MsBackendMzR</code> backend,
+which is required by the backend to allow retrieval of m/z and intensity
+values).</p>
 <div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span></span>
 <span>    <span class="st">"selectSpectraVariables"</span>, <span class="st">"MsBackendTest"</span>,</span>
@@ -1652,7 +1656,7 @@ intensity values).</p>
 <span>        <span class="fu"><a href="https://rdrr.io/r/methods/validObject.html" class="external-link">validObject</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span>        <span class="va">object</span></span>
 <span>    <span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>We can now use <code>selectSpectraVariables</code> to remove for
+<p>We can now use <code><a href="../reference/hidden_aliases.html">selectSpectraVariables()</a></code> to remove for
 example the spectra variable <code>"new_var"</code> added above.</p>
 <div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">be2</span> <span class="op">&lt;-</span> <span class="va">be</span></span>
@@ -1705,7 +1709,7 @@ the m/z and intensity values get removed.</p>
 <p>Replace the value for the <em>centroided</em> core spectra variable.
 The provided data type <strong>must</strong> be a logical. We re-use the
 function <code>.sv_valid_data_type</code> which was defined above for
-<code>backendInitialize</code> to check for the correct data type of
+<code><a href="../reference/MsBackend.html">backendInitialize()</a></code> to check for the correct data type of
 core spectra variables.</p>
 <div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/methods/GenericFunctions.html" class="external-link">setReplaceMethod</a></span><span class="op">(</span><span class="st">"centroided"</span>, <span class="st">"MsBackendTest"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">value</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1957,9 +1961,9 @@ the data is represented or accessed within it, different implementations
 might however be more efficient.</p>
 <div class="section level4">
 <h4 id="backendbpparam">
-<code>backendBpparam</code><a class="anchor" aria-label="anchor" href="#backendbpparam"></a>
+<code>backendBpparam()</code><a class="anchor" aria-label="anchor" href="#backendbpparam"></a>
 </h4>
-<p>The <code>backendBpparam</code> method is supposed to evaluate
+<p>The <code><a href="../reference/MsBackend.html">backendBpparam()</a></code> method is supposed to evaluate
 whether a provided (or the default) parallel processing setup is
 supported by the backend. Backends that do not support parallel
 processing should return <code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam()</a></code> instead.</p>
@@ -1973,10 +1977,10 @@ processing should return <code><a href="https://rdrr.io/pkg/BiocParallel/man/Ser
 </div>
 <div class="section level4">
 <h4 id="backendparallelfactor">
-<code>backendParallelFactor</code><a class="anchor" aria-label="anchor" href="#backendparallelfactor"></a>
+<code>backendParallelFactor()</code><a class="anchor" aria-label="anchor" href="#backendparallelfactor"></a>
 </h4>
-<p>The <code>backendParallelFactor</code> allows a backend to suggest a
-preferred way how the backend could be split for parallel processing.
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendParallelFactor()</a></code> allows a backend to suggest
+a preferred way how the backend could be split for parallel processing.
 See also the notes on parallel processing above for more information.
 The default implementation returns <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code> (i.e. a
 <code>factor</code> of length 0) hence not suggesting any splitting:</p>
@@ -1987,11 +1991,11 @@ The default implementation returns <code><a href="https://rdrr.io/r/base/factor.
 </div>
 <div class="section level4">
 <h4 id="dropnaspectravariables">
-<code>dropNaSpectraVariables</code><a class="anchor" aria-label="anchor" href="#dropnaspectravariables"></a>
+<code>dropNaSpectraVariables()</code><a class="anchor" aria-label="anchor" href="#dropnaspectravariables"></a>
 </h4>
-<p>The <code>dropNaSpectraVariables</code> is supposed to allow removing
-all spectra variables from a data set (storage) that contain only
-missing values (i.e. where the value of a spectra variable for each
+<p>The <code><a href="../reference/hidden_aliases.html">dropNaSpectraVariables()</a></code> is supposed to allow
+removing all spectra variables from a data set (storage) that contain
+only missing values (i.e. where the value of a spectra variable for each
 spectrum is <code>NA</code>). This function is intended to reduce memory
 requirements of backends such as the <code>MsBackendMzR</code> that load
 values from all core spectra variables from the original data files,
@@ -2013,9 +2017,9 @@ supposed to be created on-the-fly.</p>
 </div>
 <div class="section level4">
 <h4 id="isreadonly">
-<code>isReadOnly</code><a class="anchor" aria-label="anchor" href="#isreadonly"></a>
+<code>isReadOnly()</code><a class="anchor" aria-label="anchor" href="#isreadonly"></a>
 </h4>
-<p><code>isReadOnly</code> is expected to return a
+<p><code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">isReadOnly()</a></code> is expected to return a
 <code>logical(1)</code> with either <code>TRUE</code> or
 <code>FALSE</code> indicating whether the backend supports replacing
 data or not. The default implementation is shown below.</p>
@@ -2026,9 +2030,9 @@ data or not. The default implementation is shown below.</p>
 </div>
 <div class="section level4">
 <h4 id="peaksvariables">
-<code>peaksVariables</code><a class="anchor" aria-label="anchor" href="#peaksvariables"></a>
+<code>peaksVariables()</code><a class="anchor" aria-label="anchor" href="#peaksvariables"></a>
 </h4>
-<p>The <code>peaksVariables</code> is expected to return a
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksVariables()</a></code> is expected to return a
 <code>character</code> vector with the names of the <em>peaks
 variables</em> (i.e. information and properties of individual mass
 peaks) available in the backend. The default implementation for
@@ -2043,7 +2047,7 @@ variables. The default implementation is shown below.</p>
 </div>
 <div class="section level4">
 <h4 id="uniquemslevels">
-<code>uniqueMsLevels</code><a class="anchor" aria-label="anchor" href="#uniquemslevels"></a>
+<code>uniqueMsLevels()</code><a class="anchor" aria-label="anchor" href="#uniquemslevels"></a>
 </h4>
 <p>This method should return the unique MS level(s) of all spectra
 within the backend. The default implementation is shown below.</p>
@@ -2052,19 +2056,19 @@ within the backend. The default implementation is shown below.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">msLevel</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>This method thus retrieves first the MS levels of all spectra and
-then calls <code>unique</code> on them. Database-based backends might
+then calls <code><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique()</a></code> on them. Database-based backends might
 avoid such an eventually heavy operation by selecting the unique MS
 levels directly using an SQL call.</p>
 </div>
 <div class="section level4">
 <h4 id="ioncount">
-<code>ionCount</code><a class="anchor" aria-label="anchor" href="#ioncount"></a>
+<code>ionCount()</code><a class="anchor" aria-label="anchor" href="#ioncount"></a>
 </h4>
-<p>The <code>ionCount</code> method should return a <code>numeric</code>
-(length equal to the number of spectra represented by the backend) with
-the sum of all intensities within each spectrum. For empty spectra
-<code>NA_real_</code> should be returned. The method below is the
-default implementation of the method.</p>
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">ionCount()</a></code> method should return a
+<code>numeric</code> (length equal to the number of spectra represented
+by the backend) with the sum of all intensities within each spectrum.
+For empty spectra <code>NA_real_</code> should be returned. The method
+below is the default implementation of the method.</p>
 <div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"ionCount"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">vapply1d</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>, <span class="va">sum</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -2072,10 +2076,10 @@ default implementation of the method.</p>
 </div>
 <div class="section level4">
 <h4 id="iscentroided">
-<code>isCentroided</code><a class="anchor" aria-label="anchor" href="#iscentroided"></a>
+<code>isCentroided()</code><a class="anchor" aria-label="anchor" href="#iscentroided"></a>
 </h4>
 <p>This method should return the information for each spectrum whether
-it is <em>centroided</em>. In contrast to the <code>centroided</code>
+it is <em>centroided</em>. In contrast to the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">centroided()</a></code>
 method a heuristic approach is used. The default implementation is shown
 below.</p>
 <div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
@@ -2085,7 +2089,7 @@ below.</p>
 </div>
 <div class="section level4">
 <h4 id="reset">
-<code>reset</code><a class="anchor" aria-label="anchor" href="#reset"></a>
+<code>reset()</code><a class="anchor" aria-label="anchor" href="#reset"></a>
 </h4>
 <p>This is a special method that backends may implement or support, but
 don’t necessary have to. This method will be called by the
@@ -2102,7 +2106,7 @@ database.</p>
 </div>
 <div class="section level4">
 <h4 id="export">
-<code>export</code><a class="anchor" aria-label="anchor" href="#export"></a>
+<code>export()</code><a class="anchor" aria-label="anchor" href="#export"></a>
 </h4>
 <p>This method should <em>export</em> the data from a
 <code>MsBackend</code>. The method is called by the
@@ -2135,9 +2139,9 @@ backend.</p>
 </div>
 <div class="section level4">
 <h4 id="split">
-<code>split</code><a class="anchor" aria-label="anchor" href="#split"></a>
+<code>split()</code><a class="anchor" aria-label="anchor" href="#split"></a>
 </h4>
-<p>The <code>split</code> method should allow to split a
+<p>The <code><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split()</a></code> method should allow to split a
 <code>MsBackend</code> into a <code>list</code> of
 <code>MsBackend</code> objects. The default implementation is shown
 below.</p>
@@ -2148,15 +2152,15 @@ below.</p>
 </div>
 <div class="section level4">
 <h4 id="supportssetbackend">
-<code>supportsSetBackend</code><a class="anchor" aria-label="anchor" href="#supportssetbackend"></a>
+<code>supportsSetBackend()</code><a class="anchor" aria-label="anchor" href="#supportssetbackend"></a>
 </h4>
-<p>Whether a <code>MsBackend</code> supports the <code>setBackend</code>
-method that allows to change the backend of a <code>Spectra</code>
-object from one to another backend. To support <code>setBackend</code>
-the backend needs to have a parameter <code>data</code> in its
-<code>backendInitialize</code> method that allows it to be initialized
-with a <code>DataFrame</code> containing the full spectra data. The
-default implementation is shown below.</p>
+<p>Whether a <code>MsBackend</code> supports the
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">setBackend()</a></code> method that allows to change the backend of a
+<code>Spectra</code> object from one to another backend. To support
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">setBackend()</a></code> the backend needs to have a parameter
+<code>data</code> in its <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method that
+allows it to be initialized with a <code>DataFrame</code> containing the
+full spectra data. The default implementation is shown below.</p>
 <div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"supportsSetBackend"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">isReadOnly</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
@@ -2164,7 +2168,7 @@ default implementation is shown below.</p>
 </div>
 <div class="section level4">
 <h4 id="filterdataorigin">
-<code>filterDataOrigin</code><a class="anchor" aria-label="anchor" href="#filterdataorigin"></a>
+<code>filterDataOrigin()</code><a class="anchor" aria-label="anchor" href="#filterdataorigin"></a>
 </h4>
 <p>The <code>filter*</code> methods are expected to take a
 <code>MsBackend</code> and to subset it based on some criteria. While
@@ -2177,7 +2181,7 @@ storage/representation within a backend would allow a more efficient
 operation.</p>
 <p>All filter methods are expected to return the subset backend (i.e. an
 instance of the same backend class with the same, or less spectra).</p>
-<p>The <code>filterDataOrigin</code> should subset the backend to
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterDataOrigin()</a></code> should subset the backend to
 spectra with their <code>dataOrigin</code> spectra variable matching the
 values provided with the <code>dataOrigin</code> parameter. The default
 implementation for <code>MsBackend</code> is shown below.</p>
@@ -2194,10 +2198,10 @@ implementation for <code>MsBackend</code> is shown below.</p>
 </div>
 <div class="section level4">
 <h4 id="filterdatastorage">
-<code>filterDataStorage</code><a class="anchor" aria-label="anchor" href="#filterdatastorage"></a>
+<code>filterDataStorage()</code><a class="anchor" aria-label="anchor" href="#filterdatastorage"></a>
 </h4>
-<p>Similar to the <code>filterDataOrigin</code>, the
-<code>filterDataStorage</code> should subset a backend to spectra with
+<p>Similar to the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterDataOrigin()</a></code>, the
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterDataStorage()</a></code> should subset a backend to spectra with
 their <code>dataStorage</code> spectra variable matching the values
 provided with the <code>dataStorage</code> parameter.</p>
 <div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
@@ -2213,12 +2217,12 @@ provided with the <code>dataStorage</code> parameter.</p>
 </div>
 <div class="section level4">
 <h4 id="filteremptyspectra">
-<code>filterEmptySpectra</code><a class="anchor" aria-label="anchor" href="#filteremptyspectra"></a>
+<code>filterEmptySpectra()</code><a class="anchor" aria-label="anchor" href="#filteremptyspectra"></a>
 </h4>
-<p>The <code>filterEmptySpectra</code> should remove all <em>empty</em>
-spectra (i.e. spectra without any mass peaks) from the backend. The
-method is expected to return the subset backend. The default
-implementation for <code>MsBackend</code> is shown below.</p>
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterEmptySpectra()</a></code> should remove all
+<em>empty</em> spectra (i.e. spectra without any mass peaks) from the
+backend. The method is expected to return the subset backend. The
+default implementation for <code>MsBackend</code> is shown below.</p>
 <div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterEmptySpectra"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
@@ -2227,12 +2231,12 @@ implementation for <code>MsBackend</code> is shown below.</p>
 </div>
 <div class="section level4">
 <h4 id="filterisolationwindow">
-<code>filterIsolationWindow</code><a class="anchor" aria-label="anchor" href="#filterisolationwindow"></a>
+<code>filterIsolationWindow()</code><a class="anchor" aria-label="anchor" href="#filterisolationwindow"></a>
 </h4>
-<p>The <code>filterIsolationWindow</code> filters the backend to spectra
-with the provided <code>mz</code> value being within their
-<code>isolationWindowLowerMz</code> and
-<code>isolationWindowUpperMz</code>. The parameter <code>mz</code>
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterIsolationWindow()</a></code> filters the backend to
+spectra with the provided <code>mz</code> value being within their
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">isolationWindowLowerMz()</a></code> and
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">isolationWindowUpperMz()</a></code>. The parameter <code>mz</code>
 defining this target m/z is expected to be a <code>numeric</code> of
 length 1. The default implementation for <code>MsBackend</code> is shown
 below.</p>
@@ -2250,9 +2254,9 @@ below.</p>
 </div>
 <div class="section level4">
 <h4 id="filtermslevel">
-<code>filterMsLevel</code><a class="anchor" aria-label="anchor" href="#filtermslevel"></a>
+<code>filterMsLevel()</code><a class="anchor" aria-label="anchor" href="#filtermslevel"></a>
 </h4>
-<p>The <code>filterMsLevel</code> method is expected to reduce the
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMsLevel()</a></code> method is expected to reduce the
 backend to spectra with the provided MS level(s). Parameter
 <code>msLevel</code> has to be an <code>integer</code> (any length). The
 default implementation for <code>MsBackend</code> is shown below.</p>
@@ -2266,9 +2270,9 @@ default implementation for <code>MsBackend</code> is shown below.</p>
 </div>
 <div class="section level4">
 <h4 id="filterpolarity">
-<code>filterPolarity</code><a class="anchor" aria-label="anchor" href="#filterpolarity"></a>
+<code>filterPolarity()</code><a class="anchor" aria-label="anchor" href="#filterpolarity"></a>
 </h4>
-<p>The <code>filterPolarity</code> method is expected to subset the
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPolarity()</a></code> method is expected to subset the
 backend to spectra matching the provided polarity (or polarities).
 Parameter <code>polarity</code> has to be an <code>integer</code> (of
 any length). The default implementation for <code>MsBackend</code> is
@@ -2283,15 +2287,15 @@ shown below.</p>
 </div>
 <div class="section level4">
 <h4 id="filterprecursormzrange">
-<code>filterPrecursorMzRange</code><a class="anchor" aria-label="anchor" href="#filterprecursormzrange"></a>
+<code>filterPrecursorMzRange()</code><a class="anchor" aria-label="anchor" href="#filterprecursormzrange"></a>
 </h4>
-<p>The <code>filterPrecursorMzRange</code> method filters the backend to
-spectra with their <code>precursorMz</code> being between the provided
-m/z range (parameter <code>mz</code>). This method was previously named
-<code>filterPrecursorMz</code>. Parameter <code>mz</code> is expected to
-be a <code>numeric</code> of length 2 defining the lower and upper limit
-of this precursor m/z range. The default implementation for
-<code>MsBackend</code> is shown below.</p>
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorMzRange()</a></code> method filters the backend
+to spectra with their <code>precursorMz</code> being between the
+provided m/z range (parameter <code>mz</code>). This method was
+previously named <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorMz()</a></code>. Parameter
+<code>mz</code> is expected to be a <code>numeric</code> of length 2
+defining the lower and upper limit of this precursor m/z range. The
+default implementation for <code>MsBackend</code> is shown below.</p>
 <div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RforMassSpectrometry/MsCoreUtils" class="external-link">MsCoreUtils</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -2317,9 +2321,9 @@ of this precursor m/z range. The default implementation for
 </div>
 <div class="section level4">
 <h4 id="filterprecursormzvalues">
-<code>filterPrecursorMzValues</code><a class="anchor" aria-label="anchor" href="#filterprecursormzvalues"></a>
+<code>filterPrecursorMzValues()</code><a class="anchor" aria-label="anchor" href="#filterprecursormzvalues"></a>
 </h4>
-<p>The <code>filterPrecursorMzValues</code> method filters the backend
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorMzValues()</a></code> method filters the backend
 to spectra with their m/z values matching to the provided m/z value(s).
 Parameters <code>ppm</code> and <code>tolerance</code> (both expected to
 be <code>numeric</code> of length 1) allow to define the conditions for
@@ -2346,10 +2350,10 @@ defined as:</p>
 </div>
 <div class="section level4">
 <h4 id="filterprecursorcharge">
-<code>filterPrecursorCharge</code><a class="anchor" aria-label="anchor" href="#filterprecursorcharge"></a>
+<code>filterPrecursorCharge()</code><a class="anchor" aria-label="anchor" href="#filterprecursorcharge"></a>
 </h4>
-<p>The <code>filterPrecursorCharge</code> method filters the backend to
-spectra with matching precursor charge. Parameter <code>z</code>
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorCharge()</a></code> method filters the backend
+to spectra with matching precursor charge. Parameter <code>z</code>
 defining the requested precursor charge has to be an
 <code>integer</code> (of any length). The default implementation for
 <code>MsBackend</code> is shown below.</p>
@@ -2364,9 +2368,9 @@ defining the requested precursor charge has to be an
 </div>
 <div class="section level4">
 <h4 id="filterprecursorscan">
-<code>filterPrecursorScan</code><a class="anchor" aria-label="anchor" href="#filterprecursorscan"></a>
+<code>filterPrecursorScan()</code><a class="anchor" aria-label="anchor" href="#filterprecursorscan"></a>
 </h4>
-<p>The <code>filterPrecursorScan</code> method filters the backend to
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorScan()</a></code> method filters the backend to
 parent (e.g. MS1) and children scans (e.g. MS2) of acquisition number
 <code>acquisitionNum</code>. Parameter <code>f</code> defines how the
 backend should be split (by default by original data file) to avoid
@@ -2389,10 +2393,10 @@ implementation for <code>MsBackend</code> is shown below.</p>
 </div>
 <div class="section level4">
 <h4 id="filterrt">
-<code>filterRt</code><a class="anchor" aria-label="anchor" href="#filterrt"></a>
+<code>filterRt()</code><a class="anchor" aria-label="anchor" href="#filterrt"></a>
 </h4>
-<p>The <code>filterRt</code> method filters the backend to spectra with
-their retention time being between the provided rt range. Parameter
+<p>The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRt()</a></code> method filters the backend to spectra
+with their retention time being between the provided rt range. Parameter
 <code>rt</code> is expected to be a <code>numeric</code> of length 2
 defining the lower and upper bound of this range. Parameter
 <code>msLevel.</code> (note the <code>.</code> in the name of the
@@ -2428,11 +2432,11 @@ connection or raw data files) but still would need to support adding
 spectra variables or changing values of spectra variables. Similarly, if
 the only purpose of a backend is to import or export data in a specific
 format, the <code>MsBackendMemory</code> might be extended and a single
-method (<code>backendInitialize</code>) would need to be implemented for
-the new class: this new <code>backendInitialize</code> would then call
-the code to import the data from the new file format and store it within
-the available slots of the <code>MsBackendMemory</code> object. Examples
-would be the backends provided by the <em><a href="https://bioconductor.org/packages/3.19/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
+method (<code><a href="../reference/MsBackend.html">backendInitialize()</a></code>) would need to be implemented
+for the new class: this new <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> would then
+call the code to import the data from the new file format and store it
+within the available slots of the <code>MsBackendMemory</code> object.
+Examples would be the backends provided by the <em><a href="https://bioconductor.org/packages/3.19/MsBackendMgf" class="external-link">MsBackendMgf</a></em>
 and <em><a href="https://bioconductor.org/packages/3.19/MsBackendMsp" class="external-link">MsBackendMsp</a></em>
 classes.</p>
 </div>
@@ -2480,8 +2484,8 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] MsCoreUtils_1.15.4  IRanges_2.37.1      Spectra_1.13.6     </span></span>
-<span><span class="co">## [4] ProtGenerics_1.35.3 BiocParallel_1.37.1 S4Vectors_0.41.4   </span></span>
+<span><span class="co">## [1] MsCoreUtils_1.15.4  IRanges_2.37.1      Spectra_1.13.7     </span></span>
+<span><span class="co">## [4] ProtGenerics_1.35.4 BiocParallel_1.37.1 S4Vectors_0.41.4   </span></span>
 <span><span class="co">## [7] BiocGenerics_0.49.1 BiocStyle_2.31.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
@@ -2489,15 +2493,15 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">##  [4] parallel_4.4.0         cluster_2.1.6          jquerylib_0.1.4       </span></span>
 <span><span class="co">##  [7] systemfonts_1.0.6      textshaping_0.3.7      yaml_2.3.8            </span></span>
 <span><span class="co">## [10] fastmap_1.1.1          R6_2.5.1               knitr_1.45            </span></span>
-<span><span class="co">## [13] MASS_7.3-60.2          bookdown_0.38          desc_1.4.3            </span></span>
-<span><span class="co">## [16] bslib_0.6.1            rlang_1.1.3            cachem_1.0.8          </span></span>
-<span><span class="co">## [19] xfun_0.42              fs_1.6.3               sass_0.4.8            </span></span>
-<span><span class="co">## [22] memoise_2.0.1          cli_3.6.2              pkgdown_2.0.7.9000    </span></span>
-<span><span class="co">## [25] magrittr_2.0.3         digest_0.6.35          MetaboCoreUtils_1.11.2</span></span>
-<span><span class="co">## [28] clue_0.3-65            lifecycle_1.0.4        vctrs_0.6.5           </span></span>
-<span><span class="co">## [31] evaluate_0.23          codetools_0.2-19       ragg_1.2.7            </span></span>
-<span><span class="co">## [34] rmarkdown_2.26         purrr_1.0.2            tools_4.4.0           </span></span>
-<span><span class="co">## [37] htmltools_0.5.7</span></span></code></pre>
+<span><span class="co">## [13] MASS_7.3-60.2          htmlwidgets_1.6.4      bookdown_0.38         </span></span>
+<span><span class="co">## [16] desc_1.4.3             bslib_0.6.1            rlang_1.1.3           </span></span>
+<span><span class="co">## [19] cachem_1.0.8           xfun_0.42              fs_1.6.3              </span></span>
+<span><span class="co">## [22] sass_0.4.8             memoise_2.0.1          cli_3.6.2             </span></span>
+<span><span class="co">## [25] pkgdown_2.0.7.9000     magrittr_2.0.3         digest_0.6.35         </span></span>
+<span><span class="co">## [28] MetaboCoreUtils_1.11.2 clue_0.3-65            lifecycle_1.0.4       </span></span>
+<span><span class="co">## [31] vctrs_0.6.5            evaluate_0.23          codetools_0.2-19      </span></span>
+<span><span class="co">## [34] ragg_1.2.7             rmarkdown_2.26         purrr_1.0.2           </span></span>
+<span><span class="co">## [37] tools_4.4.0            htmltools_0.5.7</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,7 @@ Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="exte
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
 Louail [aut] (<a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
 [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-03-11 15:28:10.046246<br><strong>Compiled</strong>: Mon Mar 11 15:41:42 2024</p>
+[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-03-13 06:28:23.396102<br><strong>Compiled</strong>: Wed Mar 13 06:39:42 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -639,25 +639,26 @@ unbiased estimation of memory usage.</p>
 tasks. These generally apply a function to, or modify the <em>m/z</em>
 and/or intensity values. Among these functions are for example functions
 that filter, remove or combine mass peaks (such as
-<code>filterMzRange</code>, <code>filterIntensity</code> or
-<code>combinePeaks</code>) or functions that perform calculations on the
-peaks data (such as <code>bin</code> or <code>pickPeaks</code>) or also
-functions that provide information on, or summarize spectra (such as
-<code>lengths</code> or <code>ionCount</code>). For all these functions,
-the peaks data needs to be present in memory and on-disk backends, such
-as the <code>MsBackendMzR</code>, need thus to first import the data
-from their data storage. However, loading the full peaks data at once
-into memory might not be possible for large data sets. Loading and
-processing the data in smaller chunks would however reduce the memory
-demand and hence allow to process also such data sets. For the
-<code>MsBackendMzR</code> and <code>MsBackendHdf5Peaks</code> backends
-the data is automatically split and processed by the data storage files.
-For all other backends chunk-wise processing can be enabled by defining
-the <code>processingChunkSize</code> of a <code>Spectra</code>, i.e. the
-number of spectra for which peaks data should be loaded and processed in
-each iteration. The <code>processingChunkFactor</code> function can be
-used to evaluate how the data will be split. Below we use this function
-to evaluate how chunk-wise processing would be performed with the two
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMzRange()</a></code>, <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterIntensity()</a></code> or
+<code><a href="../reference/Spectra.html">combinePeaks()</a></code>) or functions that perform calculations on
+the peaks data (such as <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">bin()</a></code> or <code><a href="../reference/hidden_aliases.html">pickPeaks()</a></code>)
+or also functions that provide information on, or summarize spectra
+(such as <code><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths()</a></code> or <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">ionCount()</a></code>). For all
+these functions, the peaks data needs to be present in memory and
+on-disk backends, such as the <code>MsBackendMzR</code>, need thus to
+first import the data from their data storage. However, loading the full
+peaks data at once into memory might not be possible for large data
+sets. Loading and processing the data in smaller chunks would however
+reduce the memory demand and hence allow to process also such data sets.
+For the <code>MsBackendMzR</code> and <code>MsBackendHdf5Peaks</code>
+backends the data is automatically split and processed by the data
+storage files. For all other backends chunk-wise processing can be
+enabled by defining the <code>processingChunkSize</code> of a
+<code>Spectra</code>, i.e. the number of spectra for which peaks data
+should be loaded and processed in each iteration. The
+<code><a href="../reference/processingChunkSize.html">processingChunkFactor()</a></code> function can be used to evaluate
+how the data will be split. Below we use this function to evaluate how
+chunk-wise processing would be performed with the two
 <code>Spectra</code> objects.</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/processingChunkSize.html">processingChunkFactor</a></span><span class="op">(</span><span class="va">sps_mem</span><span class="op">)</span></span></code></pre></div>
@@ -681,8 +682,8 @@ processing.</p>
 <span><span class="co">##                                                              931</span></span></code></pre>
 <p>The data would thus be split and processed by the original file, from
 which the data is imported. We next specifically define the chunk-size
-for both <code>Spectra</code> with the <code>processingChunkSize</code>
-function.</p>
+for both <code>Spectra</code> with the
+<code><a href="../reference/processingChunkSize.html">processingChunkSize()</a></code> function.</p>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/processingChunkSize.html">processingChunkSize</a></span><span class="op">(</span><span class="va">sps_mem</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">3000</span></span>
 <span><span class="fu"><a href="../reference/processingChunkSize.html">processingChunkFactor</a></span><span class="op">(</span><span class="va">sps_mem</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html" class="external-link">table</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -704,9 +705,9 @@ longer by original data file. Setting <code>processingChunkSize</code>
 thus overrides any splitting suggested by the backend.</p>
 <p>After having set a <code>processingChunkSize</code>, any operation
 involving peaks data will by default be performed in a chunk-wise
-manner. Thus, calling <code>ionCount</code> on our <code>Spectra</code>
-will now split the data in chunks of 3000 spectra and sum the
-intensities (per spectrum) chunk by chunk.</p>
+manner. Thus, calling <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">ionCount()</a></code> on our
+<code>Spectra</code> will now split the data in chunks of 3000 spectra
+and sum the intensities (per spectrum) chunk by chunk.</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">ionCount</a></span><span class="op">(</span><span class="va">sps_mem</span><span class="op">)</span></span></code></pre></div>
 <p>While chunk-wise processing reduces the memory demand of operations,
@@ -718,8 +719,8 @@ chunk-wise processing has the advantage, that chunks can (and will) be
 processed in parallel (depending on the parallel processing setup).</p>
 <p>Note that this chunk-wise processing only affects functions that
 involve actual peak data. Subset operations that only reduce the number
-of spectra (such as <code>filterRt</code> or <code>[</code>) bypass this
-mechanism and are applied immediately to the data.</p>
+of spectra (such as <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRt()</a></code> or <code>[</code>) bypass
+this mechanism and are applied immediately to the data.</p>
 <p>For an evaluation of chunk-wise processing see also this <a href="https://github.com/rformassspectrometry/Spectra/issues/304#issuecomment-1825699576" class="external-link">issue</a>
 on the <em>Spectra</em> github repository.</p>
 </div>
@@ -735,7 +736,7 @@ processing (if not already used, as with
 <li><p><code>Spectra</code> uses the <em><a href="https://bioconductor.org/packages/3.19/BiocParallel" class="external-link">BiocParallel</a></em>
 package for parallel processing. The parallel processing setup can be
 configured globally by <em>registering</em> the preferred setup using
-the <code>register</code> function (e.g.
+the <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">register()</a></code> function (e.g.
 <code>register(SnowParam(4))</code> to use socket-based parallel
 processing on Windows using 4 different R processes). Parallel
 processing can be disabled by setting
@@ -759,32 +760,32 @@ dedicated parameter that allows to define how to split the data for
 parallel (or chunk-wise) processing. These functions are:</p>
 <ul>
 <li>
-<code>applyProcessing</code>: parameter <code>f</code> (defaults to
-<code>processingChunkFactor(object)</code>) can be used to define how to
-split and process the data in parallel.</li>
+<code><a href="../reference/Spectra.html">applyProcessing()</a></code>: parameter <code>f</code> (defaults
+to <code>processingChunkFactor(object)</code>) can be used to define how
+to split and process the data in parallel.</li>
 <li>
-<code>combineSpectra</code>: parameter <code>p</code> (defaults to
+<code><a href="../reference/Spectra.html">combineSpectra()</a></code>: parameter <code>p</code> (defaults to
 <code>x$dataStorage</code>) defines how the data should be split and
 processed in parallel.</li>
 <li>
-<code>estimatePrecursorIntensity</code>: parameter <code>f</code>
+<code><a href="../reference/estimatePrecursorIntensity.html">estimatePrecursorIntensity()</a></code>: parameter <code>f</code>
 (defaults to <code>dataOrigin(x)</code>) defines the splitting and
 processing. This should represent the original data files the spectra
 data derives from.</li>
 <li>
-<code>intensity</code>: parameter <code>f</code> (defaults to
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity()</a></code>: parameter <code>f</code> (defaults to
 <code>processingChunkFactor(object)</code>) defines if and how the data
 should be split for parallel processing.</li>
 <li>
-<code>mz</code>: parameter <code>f</code> (defaults to
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz()</a></code>: parameter <code>f</code> (defaults to
 <code>processingChunkFactor(object)</code>) defines if and how the data
 should be split for parallel processing.</li>
 <li>
-<code>peaksData</code>: parameter <code>f</code> (defaults to
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code>: parameter <code>f</code> (defaults to
 <code>processingChunkFactor(object)</code>) defines if and how the data
 should be split for parallel processing.</li>
 <li>
-<code>setBackend</code>: parameter <code>f</code> (defaults to
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">setBackend()</a></code>: parameter <code>f</code> (defaults to
 <code>processingChunkFactor(object)</code>) defines if and how the data
 should be split for parallel processing.</li>
 </ul>
@@ -793,15 +794,15 @@ should be split for parallel processing.</li>
 <code>processingChunkFactor</code>:</p>
 <ul>
 <li>
-<code>containsMz</code>.</li>
+<code><a href="../reference/hidden_aliases.html">containsMz()</a></code>.</li>
 <li>
-<code>containsNeutralLoss</code>.</li>
+<code><a href="../reference/hidden_aliases.html">containsNeutralLoss()</a></code>.</li>
 <li>
-<code>ionCount</code>.</li>
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">ionCount()</a></code>.</li>
 <li>
-<code>isCentroided</code>.</li>
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">isCentroided()</a></code>.</li>
 <li>
-<code>isEmpty</code>.</li>
+<code><a href="https://rdrr.io/pkg/S4Vectors/man/List-class.html" class="external-link">isEmpty()</a></code>.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -833,7 +834,7 @@ should be split for parallel processing.</li>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] Spectra_1.13.6      ProtGenerics_1.35.3 BiocParallel_1.37.1</span></span>
+<span><span class="co">## [1] Spectra_1.13.7      ProtGenerics_1.35.4 BiocParallel_1.37.1</span></span>
 <span><span class="co">## [4] S4Vectors_0.41.4    BiocGenerics_0.49.1 BiocStyle_2.31.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
@@ -842,16 +843,16 @@ should be split for parallel processing.</li>
 <span><span class="co">##  [7] cluster_2.1.6          jquerylib_0.1.4        systemfonts_1.0.6     </span></span>
 <span><span class="co">## [10] IRanges_2.37.1         textshaping_0.3.7      yaml_2.3.8            </span></span>
 <span><span class="co">## [13] fastmap_1.1.1          R6_2.5.1               knitr_1.45            </span></span>
-<span><span class="co">## [16] MASS_7.3-60.2          bookdown_0.38          desc_1.4.3            </span></span>
-<span><span class="co">## [19] bslib_0.6.1            rlang_1.1.3            cachem_1.0.8          </span></span>
-<span><span class="co">## [22] xfun_0.42              fs_1.6.3               MsCoreUtils_1.15.4    </span></span>
-<span><span class="co">## [25] sass_0.4.8             memoise_2.0.1          cli_3.6.2             </span></span>
-<span><span class="co">## [28] pkgdown_2.0.7.9000     magrittr_2.0.3         ncdf4_1.22            </span></span>
-<span><span class="co">## [31] digest_0.6.35          mzR_2.37.2             MetaboCoreUtils_1.11.2</span></span>
-<span><span class="co">## [34] clue_0.3-65            lifecycle_1.0.4        vctrs_0.6.5           </span></span>
-<span><span class="co">## [37] evaluate_0.23          codetools_0.2-19       ragg_1.2.7            </span></span>
-<span><span class="co">## [40] rmarkdown_2.26         purrr_1.0.2            tools_4.4.0           </span></span>
-<span><span class="co">## [43] htmltools_0.5.7</span></span></code></pre>
+<span><span class="co">## [16] MASS_7.3-60.2          htmlwidgets_1.6.4      bookdown_0.38         </span></span>
+<span><span class="co">## [19] desc_1.4.3             bslib_0.6.1            rlang_1.1.3           </span></span>
+<span><span class="co">## [22] cachem_1.0.8           xfun_0.42              MsCoreUtils_1.15.4    </span></span>
+<span><span class="co">## [25] fs_1.6.3               sass_0.4.8             memoise_2.0.1         </span></span>
+<span><span class="co">## [28] cli_3.6.2              pkgdown_2.0.7.9000     magrittr_2.0.3        </span></span>
+<span><span class="co">## [31] ncdf4_1.22             digest_0.6.35          mzR_2.37.2            </span></span>
+<span><span class="co">## [34] MetaboCoreUtils_1.11.2 clue_0.3-65            lifecycle_1.0.4       </span></span>
+<span><span class="co">## [37] vctrs_0.6.5            evaluate_0.23          codetools_0.2-19      </span></span>
+<span><span class="co">## [40] ragg_1.2.7             rmarkdown_2.26         purrr_1.0.2           </span></span>
+<span><span class="co">## [43] tools_4.4.0            htmltools_0.5.7</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -12,8 +12,8 @@ replacement operation with $&amp;lt;- will add the specified values to a local
 data.frame within the MsBackendCached class that allows to cache these
 values (increasing obviously the memory demand of the object).
 Any data accessor functions of the extending MsBackend class (such as $
-or msLevel or spectraData) should first use callNextMethod to call the
-respective accessor of MsBackendCached that will evaluate if the
+or msLevel() or spectraData()) should first use callNextMethod() to
+call the respective accessor of MsBackendCached that will evaluate if the
 requested spectra variable(s) are in the local cache and return these. If
 the requested spectra variables are neither in the local cache, nor
 listed in the @spectraVariables slot (which defines all spectra variables
@@ -31,8 +31,8 @@ replacement operation with $&amp;lt;- will add the specified values to a local
 data.frame within the MsBackendCached class that allows to cache these
 values (increasing obviously the memory demand of the object).
 Any data accessor functions of the extending MsBackend class (such as $
-or msLevel or spectraData) should first use callNextMethod to call the
-respective accessor of MsBackendCached that will evaluate if the
+or msLevel() or spectraData()) should first use callNextMethod() to
+call the respective accessor of MsBackendCached that will evaluate if the
 requested spectra variable(s) are in the local cache and return these. If
 the requested spectra variables are neither in the local cache, nor
 listed in the @spectraVariables slot (which defines all spectra variables
@@ -48,7 +48,7 @@ spectra variables then missing values of the correct data type are returned."><m
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,8 +107,8 @@ replacement operation with <code>$&lt;-</code> will add the specified values to 
 <code>data.frame</code> within the <code>MsBackendCached</code> class that allows to <em>cache</em> these
 values (increasing obviously the memory demand of the object).</p>
 <p>Any data accessor functions of the extending <code>MsBackend</code> class (such as <code>$</code>
-or <code>msLevel</code> or <code>spectraData</code>) should first use <code>callNextMethod</code> to call the
-respective accessor of <code>MsBackendCached</code> that will evaluate if the
+or <code>msLevel()</code> or <code>spectraData()</code>) should first use <code>callNextMethod()</code> to
+call the respective accessor of <code>MsBackendCached</code> that will evaluate if the
 requested spectra variable(s) are in the local cache and return these. If
 the requested spectra variables are neither in the local cache, nor
 listed in the <code>@spectraVariables</code> slot (which defines all spectra variables
@@ -254,20 +254,20 @@ smoothed(object) &lt;- value</code></pre></div>
 
 
 <dt>data</dt>
-<dd><p>For <code>backendInitialize</code>: (optional) <code>data.frame</code> with cached
+<dd><p>For <code><a href="MsBackend.html">backendInitialize()</a></code>: (optional) <code>data.frame</code> with cached
 values. The number of rows (and their order) has to match the number of
 spectra.</p></dd>
 
 
 <dt>nspectra</dt>
-<dd><p>For <code>backendInitialize</code>: <code>integer</code> with the number of
+<dd><p>For <code><a href="MsBackend.html">backendInitialize()</a></code>: <code>integer</code> with the number of
 spectra.</p></dd>
 
 
 <dt>spectraVariables</dt>
-<dd><p>For <code>backendInitialize</code>: <code>character</code> with the names
+<dd><p>For <code><a href="MsBackend.html">backendInitialize()</a></code>: <code>character</code> with the names
 of the spectra variables that are provided by the extending backend.
-For <code>selectSpectraVariables</code>: <code>character</code> specifying the spectra
+For <code><a href="hidden_aliases.html">selectSpectraVariables()</a></code>: <code>character</code> specifying the spectra
 variables to keep.</p></dd>
 
 
@@ -280,7 +280,7 @@ variables to keep.</p></dd>
 
 
 <dt>columns</dt>
-<dd><p>For <code>spectraData</code>: <code>character</code> with the names of the spectra
+<dd><p>For <code>spectraData()</code>: <code>character</code> with the names of the spectra
 variables to retrieve.</p></dd>
 
 
@@ -306,7 +306,7 @@ method description or expected data type.</p></dd>
 
 
 <dt>use.names</dt>
-<dd><p>For <code>lengths</code>: whether spectrum names should be used.</p></dd>
+<dd><p>For <code><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths()</a></code>: whether spectrum names should be used.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -320,11 +320,11 @@ method description or expected data type.</p></dd>
     
 
 
-<p>Classes extending the <code>MsBackendCached</code> need to</p><ul><li><p>call the <code>backendInitialize</code> method of this class in their own
-<code>backendInitialize</code> method and set at least the number of spectra with
+<p>Classes extending the <code>MsBackendCached</code> need to</p><ul><li><p>call the <code><a href="MsBackend.html">backendInitialize()</a></code> method of this class in their own
+<code><a href="MsBackend.html">backendInitialize()</a></code> method and set at least the number of spectra with
 the <code>nspectra</code> parameter and the <code>spectraVariables</code> that are available to
 the (extending) backend class.</p></li>
-<li><p>implement the <code>spectraData</code> method that also calls the <code>spectraData</code>
+<li><p>implement the <code>spectraData()</code> method that also calls the <code>spectraData()</code>
 method from <code>MsBackendCached</code> to also retrieve cached values (e.g. using
 <code>res &lt;- callNextMethod()</code> at the beginning of the <code>spectraData</code> function).
 The <code>spectraData,MsBackendCached</code> method will return <code>NULL</code> if the
@@ -356,14 +356,14 @@ that can be retrieved from the data base or original data files).</p></li>
     <h2 id="available-methods">Available methods<a class="anchor" aria-label="anchor" href="#available-methods"></a></h2>
     
 
-<ul><li><p><code>acquisitionNum</code>: returns the acquisition number of each
+<ul><li><p><code>acquisitionNum()</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
 spectra (with <code>NA_integer_</code> if not available).</p></li>
-<li><p><code>backendInitialize</code>: <em>initializes</em> the backend. The method takes parameters
-<code>data</code> (<code>data.frame</code> with cached data), <code>nspectra</code> (<code>integer</code> defining the
-number of spectra) and <code>spectraVariables</code> (<code>character</code> with the spectra
-variables that are provided by the extending backend.</p></li>
-<li><p><code>centroided</code>, <code>centroided&lt;-</code>: gets or sets the centroiding
+<li><p><code><a href="MsBackend.html">backendInitialize()</a></code>: <em>initializes</em> the backend. The method takes
+parameters <code>data</code> (<code>data.frame</code> with cached data), <code>nspectra</code> (<code>integer</code>
+defining the number of spectra) and <code>spectraVariables</code> (<code>character</code> with
+the spectra variables that are provided by the extending backend.</p></li>
+<li><p><code>centroided()</code>, <code>centroided&lt;-</code>: gets or sets the centroiding
 information of the spectra. <code>centroided</code> returns a <code>logical</code>
 vector of length equal to the number of spectra with <code>TRUE</code> if a
 spectrum is centroided, <code>FALSE</code> if it is in profile mode and <code>NA</code>
@@ -371,76 +371,76 @@ if it is undefined. See also <code>isCentroided</code> for estimating from
 the spectrum data whether the spectrum is centroided.  <code>value</code>
 for <code>centroided&lt;-</code> is either a single <code>logical</code> or a <code>logical</code> of
 length equal to the number of spectra in <code>object</code>.</p></li>
-<li><p><code>collisionEnergy</code>, <code>collisionEnergy&lt;-</code>: gets or sets the
-collision energy for all spectra in <code>object</code>. <code>collisionEnergy</code>
+<li><p><code>collisionEnergy()</code>, <code>collisionEnergy&lt;-</code>: gets or sets the
+collision energy for all spectra in <code>object</code>. <code>collisionEnergy()</code>
 returns a <code>numeric</code> with length equal to the number of spectra
 (<code>NA_real_</code> if not present/defined), <code>collisionEnergy&lt;-</code> takes a
 <code>numeric</code> of length equal to the number of spectra in <code>object</code>.</p></li>
-<li><p><code>dataOrigin</code>: gets a <code>character</code> of length equal to the number of spectra
+<li><p><code>dataOrigin()</code>: gets a <code>character</code> of length equal to the number of spectra
 in <code>object</code> with the <em>data origin</em> of each spectrum. This could e.g. be
 the mzML file from which the data was read.</p></li>
-<li><p><code>intensity</code>: gets the intensity values from the spectra. Returns
+<li><p><code>intensity()</code>: gets the intensity values from the spectra. Returns
 a <code>NumericList()</code> of <code>numeric</code> vectors (intensity values for each
 spectrum). The length of the <code>list</code> is equal to the number of
 <code>spectra</code> in <code>object</code>.</p></li>
-<li><p><code>ionCount</code>: returns a <code>numeric</code> with the sum of intensities for
-each spectrum. If the spectrum is empty (see <code>isEmpty</code>),
+<li><p><code>ionCount()</code>: returns a <code>numeric</code> with the sum of intensities for
+each spectrum. If the spectrum is empty (see <code>isEmpty()</code>),
 <code>NA_real_</code> is returned.</p></li>
-<li><p><code>isEmpty</code>: checks whether a spectrum in <code>object</code> is empty
+<li><p><code>isEmpty()</code>: checks whether a spectrum in <code>object</code> is empty
 (i.e. does not contain any peaks). Returns a <code>logical</code> vector of
 length equal number of spectra.</p></li>
-<li><p><code>isolationWindowLowerMz</code>, <code>isolationWindowLowerMz&lt;-</code>: gets or sets the
+<li><p><code>isolationWindowLowerMz()</code>, <code>isolationWindowLowerMz&lt;-</code>: gets or sets the
 lower m/z boundary of the isolation window.</p></li>
-<li><p><code>isolationWindowTargetMz</code>, <code>isolationWindowTargetMz&lt;-</code>: gets or sets the
+<li><p><code>isolationWindowTargetMz()</code>, <code>isolationWindowTargetMz&lt;-</code>: gets or sets the
 target m/z of the isolation window.</p></li>
-<li><p><code>isolationWindowUpperMz</code>, <code>isolationWindowUpperMz&lt;-</code>: gets or sets the
+<li><p><code>isolationWindowUpperMz()</code>, <code>isolationWindowUpperMz&lt;-</code>: gets or sets the
 upper m/z boundary of the isolation window.</p></li>
-<li><p><code>length</code>: returns the number of spectra (i.e. the <code>@nspectra</code>).</p></li>
-<li><p><code>lengths</code>: gets the number of peaks (m/z-intensity values) per
+<li><p><code><a href="https://rdrr.io/r/base/length.html" class="external-link">length()</a></code>: returns the number of spectra (i.e. the <code>@nspectra</code>).</p></li>
+<li><p><code><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths()</a></code>: gets the number of peaks (m/z-intensity values) per
 spectrum.  Returns an <code>integer</code> vector (length equal to the
 number of spectra). For empty spectra, <code>0</code> is returned.</p></li>
-<li><p><code>msLevel</code>: gets the spectra's MS level. Returns an <code>integer</code>
+<li><p><code>msLevel()</code>: gets the spectra's MS level. Returns an <code>integer</code>
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or <code>NA_integer_</code> if not available).</p></li>
-<li><p><code>mz</code>: gets the mass-to-charge ratios (m/z) from the
+<li><p><code>mz()</code>: gets the mass-to-charge ratios (m/z) from the
 spectra. Returns a <code>NumericList()</code> or length equal to the number of
 spectra, each element a <code>numeric</code> vector with the m/z values of
 one spectrum.</p></li>
-<li><p><code>polarity</code>, <code>polarity&lt;-</code>: gets or sets the polarity for each
+<li><p><code>polarity()</code>, <code>polarity&lt;-</code>: gets or sets the polarity for each
 spectrum.  <code>polarity</code> returns an <code>integer</code> vector (length equal
 to the number of spectra), with <code>0</code> and <code>1</code> representing negative
 and positive polarities, respectively. <code>polarity&lt;-</code> expects an
 integer vector of length 1 or equal to the number of spectra.</p></li>
-<li><p><code>precursorCharge</code>, <code>precursorIntensity</code>, <code>precursorMz</code>,
-<code>precScanNum</code>, <code>precAcquisitionNum</code>: get the charge (<code>integer</code>),
+<li><p><code>precursorCharge()</code>, <code>precursorIntensity()</code>, <code>precursorMz()</code>,
+<code>precScanNum()</code>, <code>precAcquisitionNum()</code>: get the charge (<code>integer</code>),
 intensity (<code>numeric</code>), m/z (<code>numeric</code>), scan index (<code>integer</code>)
 and acquisition number (<code>interger</code>) of the precursor for MS level
 2 and above spectra from the object. Returns a vector of length equal to
 the number of spectra in <code>object</code>. <code>NA</code> are reported for MS1
 spectra of if no precursor information is available.</p></li>
-<li><p><code>rtime</code>, <code>rtime&lt;-</code>: gets or sets the retention times for each
-spectrum (in seconds). <code>rtime</code> returns a <code>numeric</code> vector (length equal to
-the number of spectra) with the retention time for each spectrum.
+<li><p><code>rtime()</code>, <code>rtime&lt;-</code>: gets or sets the retention times for each
+spectrum (in seconds). <code>rtime()</code> returns a <code>numeric</code> vector (length equal
+to the number of spectra) with the retention time for each spectrum.
 <code>rtime&lt;-</code> expects a numeric vector with length equal to the
 number of spectra.</p></li>
-<li><p><code>scanIndex</code>: returns an <code>integer</code> vector with the <em>scan index</em>
+<li><p><code>scanIndex()</code>: returns an <code>integer</code> vector with the <em>scan index</em>
 for each spectrum. This represents the relative index of the
 spectrum within each file. Note that this can be different to the
-<code>acquisitionNum</code> of the spectrum which is the index of the
+<code>acquisitionNum()</code> of the spectrum which is the index of the
 spectrum as reported in the mzML file.</p></li>
-<li><p><code>selectSpectraVariables</code>: subset the object to specified spectra variables.
-This will eventually remove spectra variables listed in <code>@spectraVariables</code>
-and will also drop columns from the local cache if not among
-<code>spectraVariables</code>.</p></li>
-<li><p><code>smoothed</code>,<code>smoothed&lt;-</code>: gets or sets whether a spectrum is
-<em>smoothed</em>. <code>smoothed</code> returns a <code>logical</code> vector of length equal
+<li><p><code><a href="hidden_aliases.html">selectSpectraVariables()</a></code>: subset the object to specified spectra
+variables. This will eventually remove spectra variables listed in
+<code>@spectraVariables</code> and will also drop columns from the local cache if
+not among <code>spectraVariables</code>.</p></li>
+<li><p><code>smoothed()</code>,<code>smoothed&lt;-</code>: gets or sets whether a spectrum is
+<em>smoothed</em>. <code>smoothed()</code> returns a <code>logical</code> vector of length equal
 to the number of spectra. <code>smoothed&lt;-</code> takes a <code>logical</code> vector
 of length 1 or equal to the number of spectra in <code>object</code>.</p></li>
-<li><p><code>spectraVariables</code>: returns the available spectra variables, i.e. the
+<li><p><code>spectraVariables()</code>: returns the available spectra variables, i.e. the
 unique set of <em>core spectra variables</em>, cached spectra variables and
 spectra variables defined in the <code>@spectraVariables</code> slot (i.e. spectra
 variables thought to be provided by the extending <code>MsBackend</code> instance).</p></li>
-<li><p><code>spectraData</code>: returns a <code>DataFrame</code> with cached spectra variablers or
+<li><p><code>spectraData()</code>: returns a <code>DataFrame</code> with cached spectra variablers or
 initialized <em>core spectra variables</em>. Parameter <code>spectraVariables</code> allows
 to specify the variables to retrieve. The function returns <code>NULL</code> if the
 requested variables are not cached and are not provided by the extending
