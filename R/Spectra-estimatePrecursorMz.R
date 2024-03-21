@@ -22,10 +22,10 @@
 #'
 #' @note
 #'
-#' This approach should only be applied if fragment spectra are recorded
-#' through  data dependent acquisition (DDA), since only with this data it
-#' can be assumed that the peak with the highest intensity within the
-#' considered m/z window represents the precrusor ion.
+#' This approach is applicable only when fragment spectra are obtained through
+#' data-dependent acquisition (DDA), as it assumes that the peak with the
+#' highest intensity within the given isolation m/z window (from the previous
+#' MS1 spectrum) corresponds to the precursor ion.
 #'
 #' The spectra in `object` have to be ordered by their retention time.
 #'
