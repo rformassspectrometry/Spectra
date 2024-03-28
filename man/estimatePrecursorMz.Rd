@@ -40,11 +40,12 @@ The \code{estimatePrecursorMz} function estimates/adjusts the reported precursor
 m/z of a fragment spectrum using the following approach: in data dependent
 acquisition (DDA) mode, the MS instrument will select ions with the highest
 intensities in one MS scan for fragmentation. Thus, for each fragment
-spectrum, this method identifies the peak with the highest intensity and
-an m/z value similar to the fragment spectrum's reported precursor m/z
-(given parameters \code{tolerance} and \code{ppm}). This m/z value is then reported.
-Since the fragment spectrum's potential MS1 mass peak is selected based on
-its intensity, this method should \strong{only be used for DDA data}.
+spectrum, this method identifies in the previous MS1 spectrum the peak with
+the highest intensity and an m/z value similar to the fragment spectrum's
+reported precursor m/z (given parameters \code{tolerance} and \code{ppm}). This m/z
+value is then reported. Since the fragment spectrum's potential MS1 mass
+peak is selected based on its intensity, this method should \strong{only be used
+for DDA data}.
 }
 \note{
 This approach is applicable only when fragment spectra are obtained through
@@ -74,6 +75,10 @@ abline(0, 1)
 ## They seem highly similar, but are they identical?
 identical(precursorMz(s), pmz)
 all.equal(precursorMz(s), pmz)
+
+## Plot also the difference of m/z values against the m/z value
+plot(precursorMz(s), precursorMz(s) - pmz, xlab = "precursor m/z",
+    ylab = "difference reported - estimated precursor m/z")
 
 ## we could then replace the reported precursor m/z values
 s$precursorMz <- pmz
