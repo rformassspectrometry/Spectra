@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,31 +57,35 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.13" id="spectra-113">Spectra 1.13<a class="anchor" aria-label="anchor" href="#spectra-113"></a></h2>
 <div class="section level3">
-<h3 id="changes-in-1-13">Changes in 1.13.7<a class="anchor" aria-label="anchor" href="#changes-in-1-13"></a></h3>
+<h3 id="changes-in-1-13">Changes in 1.13.8<a class="anchor" aria-label="anchor" href="#changes-in-1-13"></a></h3>
+<ul><li>Add <code><a href="../reference/estimatePrecursorMz.html">estimatePrecursorMz()</a></code> function to <em>estimate</em> the precursor m/z for DDA fragment spectra from previous MS1 spectra <a href="https://github.com/rformassspectrometry/Spectra/issues/315" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/315" class="external-link">#315</a>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-in-1-13-1">Changes in 1.13.7<a class="anchor" aria-label="anchor" href="#changes-in-1-13-1"></a></h3>
 <ul><li>Move generics <code><a href="../reference/MsBackend.html">backendBpparam()</a></code>, <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendParallelFactor()</a></code> and <code><a href="../reference/MsBackend.html">supportsSetBackend()</a></code> to <em>ProtGenerics</em>. Required <em>ProtGenerics</em> version 1.35.4 or higher.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-13-1">Changes in 1.13.6<a class="anchor" aria-label="anchor" href="#changes-in-1-13-1"></a></h3>
+<h3 id="changes-in-1-13-2">Changes in 1.13.6<a class="anchor" aria-label="anchor" href="#changes-in-1-13-2"></a></h3>
 <ul><li>Add <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRanges()</a></code> and <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterValues()</a></code> functions to allow filtering of a Spectra object based on ranges or similarities of any existing <code>spectraData</code> variables.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-13-2">Changes in 1.13.5<a class="anchor" aria-label="anchor" href="#changes-in-1-13-2"></a></h3>
+<h3 id="changes-in-1-13-3">Changes in 1.13.5<a class="anchor" aria-label="anchor" href="#changes-in-1-13-3"></a></h3>
 <ul><li>Move generics to <code>ProtGenerics</code>. Requires <code>ProtGenerics</code> version 1.35.3.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-13-3">Changes in 1.13.4<a class="anchor" aria-label="anchor" href="#changes-in-1-13-3"></a></h3>
+<h3 id="changes-in-1-13-4">Changes in 1.13.4<a class="anchor" aria-label="anchor" href="#changes-in-1-13-4"></a></h3>
 <ul><li>Add <code>entropy</code> and <code>nentropy</code> functions to allow to calculate the (normalized) entropy for each spectrum.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-13-4">Changes in 1.13.3<a class="anchor" aria-label="anchor" href="#changes-in-1-13-4"></a></h3>
+<h3 id="changes-in-1-13-5">Changes in 1.13.3<a class="anchor" aria-label="anchor" href="#changes-in-1-13-5"></a></h3>
 <ul><li>Fix issue in <code>setBackend</code> that might cause chunk-wise processing to be not run.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-13-5">Changes in 1.13.2<a class="anchor" aria-label="anchor" href="#changes-in-1-13-5"></a></h3>
+<h3 id="changes-in-1-13-6">Changes in 1.13.2<a class="anchor" aria-label="anchor" href="#changes-in-1-13-6"></a></h3>
 <ul><li>Add possibility to enable and perform chunk-wise (parallel) processing to <code>Spectra</code>: add functions <code>processingChunkSize</code>, <code>backendParallelFactor</code> and <code>processingChunkFactor</code> to set or get definition of chunks for parallel processing. All functions working on peaks data use this mechanism which is implemented in the internal <code>.peaksapply</code> function. The <code>Spectra</code> object gains a new slot <code>"processingChunkSize"</code> that is used to define the size of the processing chunks for the <code>Spectra</code>. See also <a href="https://github.com/rformassspectrometry/Spectra/issues/304" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/304" class="external-link">#304</a>. This ensures processing also of very large data sets.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-13-6">Changes in 1.13.1<a class="anchor" aria-label="anchor" href="#changes-in-1-13-6"></a></h3>
+<h3 id="changes-in-1-13-7">Changes in 1.13.1<a class="anchor" aria-label="anchor" href="#changes-in-1-13-7"></a></h3>
 <ul><li>Fix issue with <code>bin</code> function (see <a href="https://github.com/rformassspectrometry/Spectra/issues/303" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/302" class="external-link">#302</a>). Addition of <code>zero.rm</code> parameter to prevent creation of <em>empty</em> bins.</li>
 </ul></div>
 </div>
