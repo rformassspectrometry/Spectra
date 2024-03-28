@@ -36,7 +36,7 @@ instead of accurate m/z values. See also the
 \href{https://ccms-ucsd.github.io/GNPSDocumentation/fileconversion_waters/}{GNPS documentation}
 for more information.
 
-The \code{estimatePrecursorMz} function estimates/adjusts the reported precursor
+The \code{estimatePrecursorMz()} function estimates/adjusts the reported precursor
 m/z of a fragment spectrum using the following approach: in data dependent
 acquisition (DDA) mode, the MS instrument will select ions with the highest
 intensities in one MS scan for fragmentation. Thus, for each fragment
