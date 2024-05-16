@@ -594,7 +594,7 @@ NULL
 #'   access and it is possible to *revert* the operation with the `reset()`
 #'   function (see description of `reset()` above).
 #'
-#' - `combinePeaks()`: combines mass peaks within each spectrum with a
+#' - `combinePeaks()`: combines mass peaks **within each spectrum** with a
 #'   difference in their m/z values that is smaller than the maximal
 #'   acceptable difference defined by `ppm` and `tolerance`. Parameters
 #'   `intensityFun` and `mzFun` allow to define functions to aggregate the
@@ -612,13 +612,15 @@ NULL
 #'   `reduceSpectra()` for a function to select a single *representative*
 #'   mass peak for each peak group.
 #'
-#' - `combineSpectra()`: combines sets of spectra into a single spectrum per
-#'   set. For each spectrum group (set), spectra variables from the first
-#'   spectrum are used and the peak matrices are combined using the function
-#'   specified with `FUN`, which defaults to [combinePeaksData()]. Please
-#'   refer to the [combinePeaksData()] help page for details and options of
-#'   the actual combination of peaks across the sets of spectra and to the
-#'   package vignette for examples and alternative ways to aggregate spectra.
+#' - `combineSpectra()`: combines MS data from **sets of spectra into a
+#'   single spectrum per set** (in contrast to `combinePeaks()` or
+#'   `reduceSpectra()` that combine mass peaks **within each spectrum**).
+#'   For each spectrum group (set), spectra variables from the first spectrum
+#'   are used and the peak matrices are combined using the function specified
+#'   with `FUN`, which defaults to [combinePeaksData()]. Please refer to the
+#'   [combinePeaksData()] help page for details and options of the actual
+#'   combination of peaks across the sets of spectra and to the package
+#'   vignette for examples and alternative ways to aggregate spectra.
 #'   The sets of spectra can be specified with parameter `f`.
 #'   In addition it is possible to define, with parameter `p` if and how to
 #'   split the input data for parallel processing.

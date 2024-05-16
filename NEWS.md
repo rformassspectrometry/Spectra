@@ -1,3 +1,10 @@
+# Spectra 1.15
+
+## Changes in 1.15.1
+
+- Improve documentation for `combineSpectra()` and `combinePeaks()` [issue
+  #320](https://github.com/rformassspectrometry/Spectra/issues/320).
+
 # Spectra 1.13
 
 ## Changes in 1.13.8

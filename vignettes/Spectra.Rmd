@@ -412,11 +412,14 @@ affecting the total number of spectra are (in alphabetic order):
   to specify whether all conditions (`match = "all"`; the default) or if
   any of the conditions must match (`match = "any"`; all spectra for which
   values are within any of the provided ranges are retained).
+- `combineSpectra()`: allows to combine the MS data from sets of spectra into a
+  single spectrum per set. Thus, instead of filtering the data, this function
+  aggregates it.
 
 Filter functions that return the same number of spectra, but affect/subset the
 peaks data (m/z and intensity values) within each spectrum are:
 
-- `combinePeaks()`: groups peaks within each spectrum based on similarity of
+- `combinePeaks()`: groups peaks **within each spectrum** based on similarity of
   their m/z values and combines these into a single peak per peak group.
 - `deisotopeSpectra()`: deisotopes each individual spectrum keeping only the
   monoisotopic peak for peaks groups of potential isotopologues.
@@ -871,18 +874,26 @@ See also `?plotSpectra` for more plotting options and examples.
 
 The `Spectra` package provides the `combineSpectra()` function that allows to
 *aggregate* multiple spectra into a single one. The main parameters of this
-function are `f`, which defines the grouping of the spectra, and `FUN` which
-allows to define the function that performs the actual aggregation. The default
-aggregation function is `combinePeaksData()` (see `?combinePeaksData` for
-details) that combines multiple spectra into a single spectrum with all peaks
-from all input spectra (with additional paramter `peaks = "union"`), or peaks
-that are present in a certain proportion of input spectra (with parameter
-`peaks = "intersect"`; parameter `minProp` allows to define the minimum
-required proportion of spectra in which a peak needs to be present. Below we
-use this function to combine the spectra for 1-methylhistidine and caffeine
-into a single spectrum for each compound. We use the spectra variable `$name`,
-that contains the names of the compounds, to define which spectra should be
-grouped together.
+function are `f`, which defines the sets of spectra that should be combined, and
+`FUN`, which allows to define the function that performs the actual
+aggregation. The default aggregation function is `combinePeaksData()` (see
+`?combinePeaksData` for details) that combines multiple spectra into a single
+spectrum with all peaks from all input spectra (with additional paramter `peaks
+= "union"`), or peaks that are present in a certain proportion of input spectra
+(with parameter `peaks = "intersect"`; parameter `minProp` allows to define the
+minimum required proportion of spectra in which a peak needs to be present. It
+is important to mention that, by default, the function combines all mass peaks
+from all spectra with a similar m/z value into a single, representative mass
+peak aggregating all their intensities into one. To avoid the resulting
+intensity to be affected by potential noise peaks it might be advised to first
+*clean* the individual mass spectra using e.g. the `combinePeaks()` or
+`reduceSpectra()` functions that first aggregate mass peaks **within** each
+individual spectrum.
+
+In this example we below we use `combineSpectra()` to combine the spectra for
+1-methylhistidine and caffeine into a single spectrum for each compound. We use
+the spectra variable `$name`, that contains the names of the compounds, to
+define which spectra should be grouped together.
 
 ```{r}
 sps_agg <- combineSpectra(sps, f = sps$name)
