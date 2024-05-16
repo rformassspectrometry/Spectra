@@ -11,6 +11,10 @@ setGeneric("containsMz", function(object, ...)
 #' @rdname hidden_aliases
 setGeneric("containsNeutralLoss", function(object, ...)
     standardGeneric("containsNeutralLoss"))
+setGeneric("dataStorageBasePath", function(object, ...)
+    standardGeneric("dataStorageBasePath"))
+setGeneric("dataStorageBasePath<-", function(object, ..., value)
+    standardGeneric("dataStorageBasePath<-"))
 #' @rdname hidden_aliases
 setGeneric("dropNaSpectraVariables", function(object, ...)
     standardGeneric("dropNaSpectraVariables"))

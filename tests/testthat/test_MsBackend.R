@@ -75,3 +75,9 @@ test_that("backendBpparam,MsBackend works", {
 test_that("backendParallelFactor,MsBackend works", {
     expect_equal(backendParallelFactor(MsBackendMemory()), factor())
 })
+
+test_that("dataStorageBasePath,MsExperiment works", {
+    expect_identical(dataStorageBasePath(MsBackendMemory()), NA_character_)
+    tmp <- MsBackendMemory()
+    expect_warning(dataStorageBasePath(tmp) <- "/", "not support")
+})
