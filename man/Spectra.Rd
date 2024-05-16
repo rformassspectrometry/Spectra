@@ -1441,6 +1441,9 @@ possible to calculate the precursor intensity based on an interpolation of
 intensity values (and retention times) of the matching MS1 peaks from the
 previous and next MS1 spectrum. See \code{\link[=estimatePrecursorIntensity]{estimatePrecursorIntensity()}} for
 examples and more details.
+\item \code{estimatePrecursorMz()}: \strong{for DDA data}: allows to estimate a fragment
+spectra's precursor m/z based on the reported precursor m/z and the data
+from the previous MS1 spectrum. See \code{\link[=estimatePrecursorMz]{estimatePrecursorMz()}} for details.
 \item \code{neutralLoss()}: calculates neutral loss spectra for fragment spectra. See
 \code{\link[=neutralLoss]{neutralLoss()}} for detailed documentation.
 \item \code{processingLog()}: returns a \code{character} vector with the processing log

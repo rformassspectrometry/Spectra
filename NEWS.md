@@ -1,5 +1,11 @@
 # Spectra 1.13
 
+## Changes in 1.13.8
+
+- Add `estimatePrecursorMz()` function to *estimate* the precursor m/z for DDA
+  fragment spectra from previous MS1 spectra [issue
+  #315](https://github.com/rformassspectrometry/Spectra/issues/315).
+
 ## Changes in 1.13.7
 
 - Move generics `backendBpparam()`, `backendParallelFactor()` and

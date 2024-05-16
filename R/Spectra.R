@@ -703,6 +703,10 @@ NULL
 #'   previous and next MS1 spectrum. See [estimatePrecursorIntensity()] for
 #'   examples and more details.
 #'
+#' - `estimatePrecursorMz()`: **for DDA data**: allows to estimate a fragment
+#'   spectra's precursor m/z based on the reported precursor m/z and the data
+#'   from the previous MS1 spectrum. See [estimatePrecursorMz()] for details.
+#'
 #' - `neutralLoss()`: calculates neutral loss spectra for fragment spectra. See
 #'   [neutralLoss()] for detailed documentation.
 #'
