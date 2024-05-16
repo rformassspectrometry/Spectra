@@ -1348,7 +1348,7 @@ same bin are aggregated using the function provided with parameter \code{FUN}
 the binning operation is applied to the peak data on-the-fly upon data
 access and it is possible to \emph{revert} the operation with the \code{reset()}
 function (see description of \code{reset()} above).
-\item \code{combinePeaks()}: combines mass peaks within each spectrum with a
+\item \code{combinePeaks()}: combines mass peaks \strong{within each spectrum} with a
 difference in their m/z values that is smaller than the maximal
 acceptable difference defined by \code{ppm} and \code{tolerance}. Parameters
 \code{intensityFun} and \code{mzFun} allow to define functions to aggregate the
@@ -1364,13 +1364,15 @@ dropped (i.e. their values are replaced with \code{NA}) for combined peaks
 unless they are constant across the combined peaks. See also
 \code{reduceSpectra()} for a function to select a single \emph{representative}
 mass peak for each peak group.
-\item \code{combineSpectra()}: combines sets of spectra into a single spectrum per
-set. For each spectrum group (set), spectra variables from the first
-spectrum are used and the peak matrices are combined using the function
-specified with \code{FUN}, which defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}. Please
-refer to the \code{\link[=combinePeaksData]{combinePeaksData()}} help page for details and options of
-the actual combination of peaks across the sets of spectra and to the
-package vignette for examples and alternative ways to aggregate spectra.
+\item \code{combineSpectra()}: combines MS data from \strong{sets of spectra into a
+single spectrum per set} (in contrast to \code{combinePeaks()} or
+\code{reduceSpectra()} that combine mass peaks \strong{within each spectrum}).
+For each spectrum group (set), spectra variables from the first spectrum
+are used and the peak matrices are combined using the function specified
+with \code{FUN}, which defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}. Please refer to the
+\code{\link[=combinePeaksData]{combinePeaksData()}} help page for details and options of the actual
+combination of peaks across the sets of spectra and to the package
+vignette for examples and alternative ways to aggregate spectra.
 The sets of spectra can be specified with parameter \code{f}.
 In addition it is possible to define, with parameter \code{p} if and how to
 split the input data for parallel processing.
