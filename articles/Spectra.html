@@ -26,7 +26,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.1</small>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -88,7 +88,7 @@ Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="exte
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
 Louail [aut] (<a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
 [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-05-16 05:45:48.991675<br><strong>Compiled</strong>: Thu May 16 06:17:40 2024</p>
+[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-05-16 09:59:27.687087<br><strong>Compiled</strong>: Thu May 16 10:24:02 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -631,15 +631,19 @@ and ppm). If multiple values/spectra variables are defined, the
 conditions (<code>match = "all"</code>; the default) or if any of the
 conditions must match (<code>match = "any"</code>; all spectra for which
 values are within any of the provided ranges are retained).</li>
+<li>
+<code><a href="../reference/Spectra.html">combineSpectra()</a></code>: allows to combine the MS data from
+sets of spectra into a single spectrum per set. Thus, instead of
+filtering the data, this function aggregates it.</li>
 </ul>
 <p>Filter functions that return the same number of spectra, but
 affect/subset the peaks data (m/z and intensity values) within each
 spectrum are:</p>
 <ul>
 <li>
-<code><a href="../reference/Spectra.html">combinePeaks()</a></code>: groups peaks within each spectrum based
-on similarity of their m/z values and combines these into a single peak
-per peak group.</li>
+<code><a href="../reference/Spectra.html">combinePeaks()</a></code>: groups peaks <strong>within each
+spectrum</strong> based on similarity of their m/z values and combines
+these into a single peak per peak group.</li>
 <li>
 <code><a href="../reference/Spectra.html">deisotopeSpectra()</a></code>: deisotopes each individual spectrum
 keeping only the monoisotopic peak for peaks groups of potential
@@ -762,8 +766,8 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Thu May 16 06:17:45 2024]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Thu May 16 06:17:45 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Thu May 16 10:24:07 2024]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Thu May 16 10:24:07 2024]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -798,7 +802,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Thu May 16 06:17:45 2024]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Thu May 16 10:24:07 2024]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
@@ -890,9 +894,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Thu May 16 06:17:45 2024]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu May 16 06:17:45 2024]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu May 16 06:17:45 2024]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Thu May 16 10:24:07 2024]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu May 16 10:24:07 2024]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu May 16 10:24:07 2024]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -923,9 +927,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Thu May 16 06:17:45 2024]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu May 16 06:17:45 2024]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu May 16 06:17:45 2024]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Thu May 16 10:24:07 2024]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu May 16 10:24:07 2024]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu May 16 10:24:07 2024]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity()</a></code> on this object will
 now return intensities that are half of the intensities of the original
@@ -1195,9 +1199,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Thu May 16 06:17:45 2024]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu May 16 06:17:45 2024]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu May 16 06:17:45 2024]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Thu May 16 10:24:07 2024]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu May 16 10:24:07 2024]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu May 16 10:24:07 2024]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code><a href="../reference/Spectra.html">applyProcessing()</a></code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1281,9 +1285,9 @@ examples.</p>
 <p>The <code>Spectra</code> package provides the
 <code><a href="../reference/Spectra.html">combineSpectra()</a></code> function that allows to <em>aggregate</em>
 multiple spectra into a single one. The main parameters of this function
-are <code>f</code>, which defines the grouping of the spectra, and
-<code>FUN</code> which allows to define the function that performs the
-actual aggregation. The default aggregation function is
+are <code>f</code>, which defines the sets of spectra that should be
+combined, and <code>FUN</code>, which allows to define the function that
+performs the actual aggregation. The default aggregation function is
 <code><a href="../reference/combinePeaksData.html">combinePeaksData()</a></code> (see <code><a href="../reference/combinePeaksData.html">?combinePeaksData</a></code> for
 details) that combines multiple spectra into a single spectrum with all
 peaks from all input spectra (with additional paramter
@@ -1291,11 +1295,19 @@ peaks from all input spectra (with additional paramter
 proportion of input spectra (with parameter
 <code>peaks = "intersect"</code>; parameter <code>minProp</code> allows
 to define the minimum required proportion of spectra in which a peak
-needs to be present. Below we use this function to combine the spectra
-for 1-methylhistidine and caffeine into a single spectrum for each
-compound. We use the spectra variable <code>$name</code>, that contains
-the names of the compounds, to define which spectra should be grouped
-together.</p>
+needs to be present. It is important to mention that, by default, the
+function combines all mass peaks from all spectra with a similar m/z
+value into a single, representative mass peak aggregating all their
+intensities into one. To avoid the resulting intensity to be affected by
+potential noise peaks it might be advised to first <em>clean</em> the
+individual mass spectra using e.g. the <code><a href="../reference/Spectra.html">combinePeaks()</a></code> or
+<code><a href="../reference/Spectra.html">reduceSpectra()</a></code> functions that first aggregate mass peaks
+<strong>within</strong> each individual spectrum.</p>
+<p>In this example we below we use <code><a href="../reference/Spectra.html">combineSpectra()</a></code> to
+combine the spectra for 1-methylhistidine and caffeine into a single
+spectrum for each compound. We use the spectra variable
+<code>$name</code>, that contains the names of the compounds, to define
+which spectra should be grouped together.</p>
 <div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sps_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">combineSpectra</a></span><span class="op">(</span><span class="va">sps</span>, f <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></code></pre></div>
 <p>As a result, the 4 spectra got aggregated into two.</p>
@@ -1521,7 +1533,7 @@ parameters).</p>
 <div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file744f75908872...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file1fd96d4df1bf...OK</span></span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
@@ -1542,8 +1554,8 @@ and spectra 2 and 4 to another.</p>
 <div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file744f373c6f42...OK</span></span>
-<span><span class="co">## Writing file file744f510dec90...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file1fd97a782dba...OK</span></span>
+<span><span class="co">## Writing file file1fd977bb755a...OK</span></span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/smooth.html" class="external-link">smooth()</a></code>
 function) and centroiding (using the <code><a href="../reference/hidden_aliases.html">pickPeaks()</a></code> function)
@@ -1584,7 +1596,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1862         1   259.752       931</span></span>
 <span><span class="co">##  ... 33 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Thu May 16 06:17:50 2024]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Thu May 16 10:24:13 2024]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
@@ -1771,7 +1783,7 @@ only peak data of 5000 spectra at a time will be loaded into memory.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">##  [1] msdata_0.45.0       msentropy_0.1.4     Rcpp_1.0.12        </span></span>
-<span><span class="co">##  [4] MsCoreUtils_1.17.0  Spectra_1.15.0      ProtGenerics_1.37.0</span></span>
+<span><span class="co">##  [4] MsCoreUtils_1.17.0  Spectra_1.15.1      ProtGenerics_1.37.0</span></span>
 <span><span class="co">##  [7] BiocParallel_1.39.0 S4Vectors_0.43.0    BiocGenerics_0.51.0</span></span>
 <span><span class="co">## [10] BiocStyle_2.33.0   </span></span>
 <span><span class="co">## </span></span>
