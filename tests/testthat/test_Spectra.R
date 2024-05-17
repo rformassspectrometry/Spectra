@@ -1901,7 +1901,9 @@ test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
     tmp <- sciex_mzr
     tmp <- Spectra(tmp)
     dataStorageBasePath(tmp) <- tmpd
-    expect_equal(dataStorageBasePath(tmp), tmpd)
+    expect_true(validObject(tmp@backend))
+    bp <- normalizePath(dataStorageBasePath(tmp))
+    expect_equal(bp, tmpd)
 
     #' errors
     expect_error(dataStorageBasePath(tmp) <- "some path", "Provided path")

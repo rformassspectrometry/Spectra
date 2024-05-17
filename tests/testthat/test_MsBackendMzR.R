@@ -579,7 +579,9 @@ test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
                  MsCoreUtils::common_path(sciex_file))
     tmp <- sciex_mzr
     dataStorageBasePath(tmp) <- tmpd
-    expect_equal(dataStorageBasePath(tmp), gsub("\\", "/", tmpd, fixed = TRUE))
+    expect_true(validObject(tmp))
+    bp <- normalizePath(dataStorageBasePath(tmp))
+    expect_equal(bp, tmpd)
 
     #' errors
     expect_error(dataStorageBasePath(tmp) <- "some path", "Provided path")
