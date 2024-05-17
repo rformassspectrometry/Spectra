@@ -223,10 +223,12 @@ setMethod("dataStorageBasePath", "MsBackendMzR", function(object) {
 setReplaceMethod(
     "dataStorageBasePath", "MsBackendMzR", function(object, value) {
         ds <- dataStorage(object)
+        ds <- gsub("\\", "/", ds, fixed = TRUE)
+        value <- gsub("\\", "/", value, fixed = TRUE)
         cp <- common_path(ds)
         ds <- sub(cp, value, ds, fixed = TRUE)
         if (!all(file.exists(unique(ds))))
             stop("Provided path does not contain all data files.")
-        dataStorage(object) <- ds
+        dataStorage(object) <- normalizePath(ds)
         object
     })
