@@ -2,7 +2,14 @@
 
 ## Changes in 1.15.2
 
+- Add `dataStorageDataPath()` and `dataStorageDataPath<-` methods to allow
+  updating/adapting the path of the data storage files of backends supporting
+  that [issue #321](https://github.com/rformassspectrometry/Spectra/issues/321).
 
+## Changes in 1.15.1
+
+- Improve documentation for `combineSpectra()` and `combinePeaks()` [issue
+  #320](https://github.com/rformassspectrometry/Spectra/issues/320).
 
 # Spectra 1.13
 
