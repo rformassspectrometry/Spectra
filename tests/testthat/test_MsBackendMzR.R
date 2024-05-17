@@ -572,7 +572,7 @@ test_that("backendParallelFactor,MsBackendMzR", {
 })
 
 test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
-    tmpd <- tempdir()
+    tmpd <- normalizePath(tempdir())
     file.copy(sciex_file, tmpd)
 
     expect_equal(dataStorageBasePath(sciex_mzr),

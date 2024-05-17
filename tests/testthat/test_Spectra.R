@@ -1892,7 +1892,7 @@ test_that("entropy,Spectra works", {
 })
 
 test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
-    tmpd <- tempdir()
+    tmpd <- normalizePath(tempdir())
     file.copy(sciex_file, tmpd)
 
     tmp <- Spectra(sciex_mzr)
