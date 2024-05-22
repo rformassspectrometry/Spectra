@@ -26,38 +26,28 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.2</small>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/Spectra.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/Spectra.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <button href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</button>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/MsBackend.html">Creating new `MsBackend` classes</a>
-    <a class="dropdown-item" href="../articles/Spectra-large-scale.html">Large-scale data handling and processing with Spectra</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/MsBackend.html">Creating new `MsBackend` classes</a></li>
+    <li><a class="dropdown-item" href="../articles/Spectra-large-scale.html">Large-scale data handling and processing with Spectra</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
-<li><form class="form-inline" role="search">
-<input type="search" class="form-control" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="github">
-    <span class="fa fab fa-github fa-lg"></span>
-  </a>
-</li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
   </div>
@@ -88,7 +78,7 @@ Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="exte
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
 Louail [aut] (<a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
 [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-05-16 09:59:27.687087<br><strong>Compiled</strong>: Thu May 16 10:23:52 2024</p>
+[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-05-22 08:14:10.057675<br><strong>Compiled</strong>: Wed May 22 08:39:53 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -382,25 +372,24 @@ should be split for parallel processing.</li>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] Spectra_1.15.1      ProtGenerics_1.37.0 BiocParallel_1.39.0</span></span>
+<span><span class="co">## [1] Spectra_1.15.2      ProtGenerics_1.37.0 BiocParallel_1.39.0</span></span>
 <span><span class="co">## [4] S4Vectors_0.43.0    BiocGenerics_0.51.0 BiocStyle_2.33.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] jsonlite_1.8.8         compiler_4.4.0         BiocManager_1.30.23   </span></span>
 <span><span class="co">##  [4] Rcpp_1.0.12            Biobase_2.65.0         parallel_4.4.0        </span></span>
-<span><span class="co">##  [7] cluster_2.1.6          jquerylib_0.1.4        systemfonts_1.0.6     </span></span>
+<span><span class="co">##  [7] cluster_2.1.6          jquerylib_0.1.4        systemfonts_1.1.0     </span></span>
 <span><span class="co">## [10] IRanges_2.39.0         textshaping_0.3.7      yaml_2.3.8            </span></span>
-<span><span class="co">## [13] fastmap_1.1.1          R6_2.5.1               knitr_1.46            </span></span>
-<span><span class="co">## [16] MASS_7.3-60.2          htmlwidgets_1.6.4      bookdown_0.39         </span></span>
+<span><span class="co">## [13] fastmap_1.2.0          R6_2.5.1               knitr_1.46            </span></span>
+<span><span class="co">## [16] htmlwidgets_1.6.4      MASS_7.3-60.2          bookdown_0.39         </span></span>
 <span><span class="co">## [19] desc_1.4.3             bslib_0.7.0            rlang_1.1.3           </span></span>
-<span><span class="co">## [22] cachem_1.0.8           xfun_0.43              MsCoreUtils_1.17.0    </span></span>
-<span><span class="co">## [25] fs_1.6.4               sass_0.4.9             memoise_2.0.1         </span></span>
+<span><span class="co">## [22] cachem_1.1.0           xfun_0.44              fs_1.6.4              </span></span>
+<span><span class="co">## [25] MsCoreUtils_1.17.0     sass_0.4.9             memoise_2.0.1         </span></span>
 <span><span class="co">## [28] cli_3.6.2              pkgdown_2.0.9.9000     magrittr_2.0.3        </span></span>
 <span><span class="co">## [31] ncdf4_1.22             digest_0.6.35          mzR_2.37.3            </span></span>
-<span><span class="co">## [34] MetaboCoreUtils_1.13.0 clue_0.3-65            lifecycle_1.0.4       </span></span>
-<span><span class="co">## [37] vctrs_0.6.5            evaluate_0.23          codetools_0.2-20      </span></span>
-<span><span class="co">## [40] ragg_1.3.1             rmarkdown_2.26.2       purrr_1.0.2           </span></span>
-<span><span class="co">## [43] tools_4.4.0            htmltools_0.5.8.1</span></span></code></pre>
+<span><span class="co">## [34] MetaboCoreUtils_1.13.0 lifecycle_1.0.4        clue_0.3-65           </span></span>
+<span><span class="co">## [37] evaluate_0.23          codetools_0.2-20       ragg_1.3.2            </span></span>
+<span><span class="co">## [40] rmarkdown_2.27         tools_4.4.0            htmltools_0.5.8.1</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
