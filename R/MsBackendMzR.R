@@ -214,3 +214,21 @@ setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
 setMethod("backendParallelFactor", "MsBackendMzR", function(object) {
     factor(dataStorage(object), levels = unique(dataStorage(object)))
 })
+
+#' @importFrom MsCoreUtils common_path
+setMethod("dataStorageBasePath", "MsBackendMzR", function(object) {
+    common_path(dataStorage(object))
+})
+
+setReplaceMethod(
+    "dataStorageBasePath", "MsBackendMzR", function(object, value) {
+        ds <- dataStorage(object)
+        ds <- gsub("\\", "/", ds, fixed = TRUE)
+        value <- gsub("\\", "/", value, fixed = TRUE)
+        cp <- common_path(ds)
+        ds <- sub(cp, value, ds, fixed = TRUE)
+        if (!all(file.exists(unique(ds))))
+            stop("Provided path does not contain all data files.")
+        dataStorage(object) <- normalizePath(ds)
+        object
+    })

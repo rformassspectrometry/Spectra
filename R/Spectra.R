@@ -136,6 +136,15 @@ NULL
 #' - `...`: additional parameters specific for the `MsBackend` passed with
 #'   parameter `backend`.
 #'
+#' The `dataStorageBasePath()` and `dataStorageBasePath<-` functions allow, for
+#' backend classes that support this operation, to get or change the *base*
+#' path to the directory where the backend stores the data. In-memory backends
+#' such as [MsBackendMemory] or [MsBackendDataFrame] keeping all MS data in
+#' memory don't support, and need, this function, but for [MsBackendMzR] this
+#' function can be used to update/adapt the path to the directory containing
+#' the original data files. Thus, for `Spectra` objects (using this backend)
+#' that were moved to another file system or computer, these functions allow to
+#' adjust/adapt the base file path.
 #'
 #' @section Accessing spectra data:
 #'
@@ -2810,4 +2819,15 @@ setMethod("entropy", "Spectra", function(object, normalized = TRUE) {
 #' @rdname Spectra
 setMethod("entropy", "ANY", function(object, ...) {
     MsCoreUtils::entropy(object)
+})
+
+#' @rdname Spectra
+setMethod("dataStorageBasePath", "Spectra", function(object) {
+    dataStorageBasePath(object@backend)
+})
+
+#' @rdname Spectra
+setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
+    dataStorageBasePath(object@backend) <- value
+    object
 })

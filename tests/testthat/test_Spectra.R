@@ -1891,4 +1891,20 @@ test_that("entropy,Spectra works", {
   expect_identical(res, vapply(df$intensity, MsCoreUtils::entropy, numeric(1)))
 })
 
+test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
+    tmpd <- normalizePath(tempdir())
+    file.copy(sciex_file, tmpd)
 
+    tmp <- Spectra(sciex_mzr)
+    expect_equal(dataStorageBasePath(tmp),
+                 MsCoreUtils::common_path(sciex_file))
+    tmp <- sciex_mzr
+    tmp <- Spectra(tmp)
+    dataStorageBasePath(tmp) <- tmpd
+    expect_true(validObject(tmp@backend))
+    bp <- normalizePath(dataStorageBasePath(tmp))
+    expect_equal(bp, tmpd)
+
+    #' errors
+    expect_error(dataStorageBasePath(tmp) <- "some path", "Provided path")
+})

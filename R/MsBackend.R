@@ -11,6 +11,10 @@
 #' @aliases backendInitialize
 #' @aliases backendParallelFactor,MsBackendMzR-method
 #' @aliases backendParallelFactor,MsBackendHdf5Peaks-method
+#' @aliases dataStorageBasePath
+#' @aliases dataStorageBasePath,MsBackendMzR-method
+#' @aliases dataStorageBasePath<-
+#' @aliases dataStorageBasePath<-,MsBackendMzR-method
 #'
 #' @description
 #'
@@ -279,6 +283,16 @@
 #' - `dataStorage()`: gets a `character` of length equal to the number of
 #'   spectra in `object` with the data storage of each spectrum. Note that
 #'   missing values (`NA_character_`) are not supported for `dataStorage`.
+#'
+#' - `dataStorageBasePath()`, `dataStorageBasePath<-: gets or sets the common
+#'   *base* path of the directory containing all data files. If supported,
+#'   the function is expected to return (or accept) a `character` of length 1.
+#'   Most backends (such as for example the `MsBackendMemory` will not support
+#'   this function and `dataStorageBasePath()` will return `NA_character_`.
+#'   For `MsBackendMzR`, this function allows to get or change the path to the
+#'   directory containing the original data files, which is required if e.g.
+#'   a serialized `MsBackendMzR` instance gets copied to another computer or
+#'   file system.
 #'
 #' - `dropNaSpectraVariables()`: removes spectra variables (i.e. columns in the
 #'   object's `spectraData` that contain only missing values (`NA`). Note that
@@ -1711,3 +1725,20 @@ setReplaceMethod("[[", "MsBackend", function(x, i, j, ..., value) {
 setMethod("uniqueMsLevels", "MsBackend", function(object, ...) {
     unique(msLevel(object))
 })
+
+#' @exportMethod dataStorageBasePath
+#'
+#' @rdname MsBackend
+setMethod("dataStorageBasePath", "MsBackend", function(object) {
+    NA_character_
+})
+
+#' @exportMethod dataStorageBasePath<-
+#'
+#' @rdname MsBackend
+setReplaceMethod(
+    "dataStorageBasePath", "MsBackend", function(object, value) {
+        warning(class(object)[1L], " does not support changing",
+                " 'dataStorageBasePath'.")
+        object
+    })

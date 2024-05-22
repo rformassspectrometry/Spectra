@@ -570,3 +570,19 @@ test_that("backendParallelFactor,MsBackendMzR", {
                  factor(dataStorage(sciex_mzr),
                         levels = unique(dataStorage(sciex_mzr))))
 })
+
+test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
+    tmpd <- normalizePath(tempdir())
+    file.copy(sciex_file, tmpd)
+
+    expect_equal(dataStorageBasePath(sciex_mzr),
+                 MsCoreUtils::common_path(sciex_file))
+    tmp <- sciex_mzr
+    dataStorageBasePath(tmp) <- tmpd
+    expect_true(validObject(tmp))
+    bp <- normalizePath(dataStorageBasePath(tmp))
+    expect_equal(bp, tmpd)
+
+    #' errors
+    expect_error(dataStorageBasePath(tmp) <- "some path", "Provided path")
+})

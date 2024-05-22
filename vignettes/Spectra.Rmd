@@ -1287,6 +1287,60 @@ a `lengths(sps)` call, the number of peaks per spectra could also be determined
 5000L)`. In that way only peak data of 5000 spectra at a time will be loaded
 into memory.
 
+
+# Serializing (saving), moving and loading serialized `Spectra` objects
+
+Serializing and re-loading variables/objects during an analysis using e.g. the
+`save()` and `load()` functions are common in many workflows, especially if some
+of the tasks are computationally intensive and take long time. Sometimes such
+serialized objects might even be moved from one computer (or file system) to
+another. These operations are unproblematic for `Spectra` objects with
+*in-memory* backends such as the `MsBackendMemory` or `MsBackendDataFrame`, that
+keep all data in memory, would however break for *on-disk* backends such as the
+`MsBackendMzR` if the file path to the original data files is not identical. It
+is thus suggested (if the size of the MS data respectively the available system
+memory allows it) to change the backend for such `Spectra` objects to a
+`MsBackendMemory` before serializing the object with `save()`. For `Spectra`
+objects with a `MsBackendMzR` an alternative option would be to eventually
+update/adapt the path to the directory containing the raw (e.g. mzML) data
+files: assuming these data files are available on both computers, the path to
+the directory containing these can be updated with the `dataStorageBasePath<-`
+function allowing thus to move/copy serialized `Spectra` objects between
+computers or file systems.
+
+An example workflow could be:
+
+files *a.mzML*, *b.mzML* are stored in a directory */data/mzML/* on one
+computer. These get loaded as a `Spectra` object with `MsBackendMzR` and then
+serialized to a file *A.RData*.
+
+```{r, eval = FALSE}
+A <- Spectra(c("/data/mzML/a.mzML", "/data/mzML/b.mzML"))
+save(A, file = "A.RData")
+```
+
+Assuming this file gets now copied to another computer (where the data is not
+available in a folder */data/mzML/*) and loaded with `load()`.
+
+```{r, eval = FALSE}
+load("A.RData")
+```
+
+This `Spectra` object would not be valid because its `MsBackendMzR` can no
+longer access the MS data in the original data files. Assuming the user also
+copied the data files *a.mzML* and *b.mzML*, but to a folder
+*/some_other_folder/*, the base storage path of the object would need to be
+adapted to match the directory where the data files are available on the second
+computer:
+
+```{r, eval = FALSE}
+dataStorageBasePath(A) <- "/some_other_folder"
+```
+
+By pointing now the storage path to the new storage location of the data files,
+the `Spectra` object `A` would also be usable on the second computer.
+
+
 # Session information
 
 ```{r si}

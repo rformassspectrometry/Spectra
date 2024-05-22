@@ -17,6 +17,10 @@
 \alias{backendInitialize}
 \alias{backendParallelFactor,MsBackendMzR-method}
 \alias{backendParallelFactor,MsBackendHdf5Peaks-method}
+\alias{dataStorageBasePath}
+\alias{dataStorageBasePath,MsBackendMzR-method}
+\alias{dataStorageBasePath<-}
+\alias{dataStorageBasePath<-,MsBackendMzR-method}
 \alias{backendBpparam,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
@@ -93,6 +97,8 @@
 \alias{$<-,MsBackend-method}
 \alias{[[,MsBackend-method}
 \alias{[[<-,MsBackend-method}
+\alias{dataStorageBasePath,MsBackend-method}
+\alias{dataStorageBasePath<-,MsBackend-method}
 \alias{MsBackendDataFrame}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{MsBackendHdf5Peaks}
@@ -268,6 +274,10 @@
 \S4method{[[}{MsBackend}(x, i, j, ...) <- value
 
 \S4method{uniqueMsLevels}{MsBackend}(object, ...)
+
+\S4method{dataStorageBasePath}{MsBackend}(object)
+
+\S4method{dataStorageBasePath}{MsBackend}(object) <- value
 
 MsBackendDataFrame()
 
@@ -559,6 +569,8 @@ e.g. be the mzML file from which the data was read.
 \item \code{dataStorage()}: gets a \code{character} of length equal to the number of
 spectra in \code{object} with the data storage of each spectrum. Note that
 missing values (\code{NA_character_}) are not supported for \code{dataStorage}.
+\item \code{dataStorageBasePath()}, \verb{dataStorageBasePath<-: gets or sets the common *base* path of the directory containing all data files. If supported, the function is expected to return (or accept) a }character\verb{of length 1. Most backends (such as for example the}MsBackendMemory\verb{will not support this function and}dataStorageBasePath()\verb{will return}NA_character_\verb{. For }MsBackendMzR\verb{, this function allows to get or change the path to the directory containing the original data files, which is required if e.g. a serialized }MsBackendMzR` instance gets copied to another computer or
+file system.
 \item \code{dropNaSpectraVariables()}: removes spectra variables (i.e. columns in the
 object's \code{spectraData} that contain only missing values (\code{NA}). Note that
 while columns with only \code{NA}s are removed, a \code{spectraData()} call after

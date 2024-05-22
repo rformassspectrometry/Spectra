@@ -108,6 +108,8 @@
 \alias{combinePeaks,Spectra-method}
 \alias{entropy,Spectra-method}
 \alias{entropy,ANY-method}
+\alias{dataStorageBasePath,Spectra-method}
+\alias{dataStorageBasePath<-,Spectra-method}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(
@@ -504,6 +506,10 @@ coreSpectraVariables()
 \S4method{entropy}{Spectra}(object, normalized = TRUE)
 
 \S4method{entropy}{ANY}(object, ...)
+
+\S4method{dataStorageBasePath}{Spectra}(object)
+
+\S4method{dataStorageBasePath}{Spectra}(object) <- value
 }
 \arguments{
 \item{object}{For \code{Spectra()}: either a \code{DataFrame} or \code{missing}. See
@@ -952,6 +958,16 @@ of the data (i.e. which has a defined \code{export} method).
 \item \code{...}: additional parameters specific for the \code{MsBackend} passed with
 parameter \code{backend}.
 }
+
+The \code{dataStorageBasePath()} and \verb{dataStorageBasePath<-} functions allow, for
+backend classes that support this operation, to get or change the \emph{base}
+path to the directory where the backend stores the data. In-memory backends
+such as \link{MsBackendMemory} or \link{MsBackendDataFrame} keeping all MS data in
+memory don't support, and need, this function, but for \link{MsBackendMzR} this
+function can be used to update/adapt the path to the directory containing
+the original data files. Thus, for \code{Spectra} objects (using this backend)
+that were moved to another file system or computer, these functions allow to
+adjust/adapt the base file path.
 }
 
 \section{Accessing spectra data}{
