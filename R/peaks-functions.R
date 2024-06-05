@@ -87,7 +87,7 @@ NULL
                                     msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    x[which(between(x[, "intensity"], intensity)), , drop = FALSE]
+    x[which(MsCoreUtils::between(x[, "intensity"], intensity)), , drop = FALSE]
 }
 
 #' @description
@@ -146,8 +146,9 @@ NULL
                                    keep = TRUE, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    no_match <- is.na(closest(x[, "mz"], mz, tolerance = tolerance, ppm = ppm,
-                              duplicates = "keep", .check = FALSE))
+    no_match <- is.na(MsCoreUtils::closest(x[, "mz"], mz, tolerance = tolerance,
+                                           ppm = ppm, duplicates = "keep",
+                                           .check = FALSE))
     if (keep) x[!no_match, , drop = FALSE]
     else x[no_match, , drop = FALSE]
 }
@@ -170,8 +171,8 @@ NULL
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
     if (keep)
-        x[between(x[, "mz"], mz), , drop = FALSE]
-    else x[!between(x[, "mz"], mz), , drop = FALSE]
+        x[MsCoreUtils::between(x[, "mz"], mz), , drop = FALSE]
+    else x[!MsCoreUtils::between(x[, "mz"], mz), , drop = FALSE]
 }
 
 #' @description
@@ -415,14 +416,14 @@ joinPeaksNone <- function(x, y, ...) {
         return(x)
     }
 
-    n <- noise(x[, 1L], x[, 2L], method = method, ...)
+    n <- MsCoreUtils::noise(x[, 1L], x[, 2L], method = method, ...)
 
-    l <- localMaxima(x[, 2L], hws = halfWindowSize)
+    l <- MsCoreUtils::localMaxima(x[, 2L], hws = halfWindowSize)
 
     p <- which(l & x[, 2L] > (snr * n))
 
     if (k > 0L) {
-        cbind(mz = refineCentroids(x = x[, 1L], y = x[, 2L], p = p,
+        cbind(mz = MsCoreUtils::refineCentroids(x = x[, 1L], y = x[, 2L], p = p,
                                    k = k, threshold = threshold,
                                    descending = descending),
               intensity = x[p, 2L])
@@ -552,9 +553,10 @@ joinPeaksNone <- function(x, y, ...) {
 .peaks_deisotope <-
     function(x, substDefinition = isotopicSubstitutionMatrix("HMDB_NEUTRAL"),
              tolerance = 0, ppm = 10, charge = 1, ...) {
-        iso_grps <- isotopologues(x, substDefinition = substDefinition,
-                                  tolerance = tolerance, ppm = ppm,
-                                  charge = charge)
+        iso_grps <- MetaboCoreUtils::isotopologues(
+                                         x, substDefinition = substDefinition,
+                                         tolerance = tolerance, ppm = ppm,
+                                         charge = charge)
         if (length(iso_grps)) {
             rem <- unique(unlist(lapply(iso_grps, `[`, -1), use.names = FALSE))
             x[-rem, , drop = FALSE]
@@ -614,7 +616,7 @@ joinPeaksNone <- function(x, y, ...) {
                            msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !length(x))
         return(x)
-    grps <- group(x[, "mz"], tolerance = tolerance, ppm = ppm)
+    grps <- MsCoreUtils::group(x[, "mz"], tolerance = tolerance, ppm = ppm)
     lg <- length(grps)
     if (grps[lg] == lg)
         return(x)
@@ -649,7 +651,7 @@ joinPeaksNone <- function(x, y, ...) {
                                        msLevel = spectrumMsLevel, ...) {
     if (!spectrumMsLevel %in% msLevel || !nrow(x))
         return(x)
-    keep <- is.na(closest(x[, "mz"], precursorMz, ppm = ppm,
+    keep <- is.na(MsCoreUtils::closest(x[, "mz"], precursorMz, ppm = ppm,
                           tolerance = tolerance, duplicates = "keep",
                           .check = FALSE))
     x[keep, , drop = FALSE]

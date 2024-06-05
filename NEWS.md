@@ -1,5 +1,12 @@
 # Spectra 1.15
 
+## Changes in 1.15.3
+
+- For evaluation of the `Spectra`'s processing queue: call functions from the
+  *MetaboCoreUtils* directly through their namespace (`MsCoreUtils::`) to avoid
+  errors if performed in parallel on Windows machines or if called on a
+  re-loaded object.
+
 ## Changes in 1.15.2
 
 - Add `dataStorageDataPath()` and `dataStorageDataPath<-` methods to allow
