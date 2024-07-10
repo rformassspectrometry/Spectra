@@ -1125,30 +1125,23 @@ function is supposed to be more efficient than \code{unique(msLevel(object))}.
 }
 }
 
-\section{Data subsetting, filtering and merging}{
+\section{Filter spectra data}{
 
 
-Subsetting and filtering of \code{Spectra} objects can be performed with the below
-listed methods.
+Filter a \code{Spectra} object based on the spectra data. This includes subset
+operations that reduce the number of spectra in the object as well as filters
+that reduce the \emph{content} of the \code{Spectra} object. See section
+\emph{Filter peaks data} below for functions that filter the peaks data of a
+\code{Spectra}.
 \itemize{
 \item \code{[}: subsets the spectra keeping only selected elements (\code{i}). The method
 \strong{always} returns a \code{Spectra} object.
-\item \code{deisotopeSpectra()}: \emph{deisotopes} each spectrum keeping only the
-monoisotopic peak for groups of isotopologues. Isotopologues are
-estimated using the \code{\link[=isotopologues]{isotopologues()}} function from the
-\emph{MetaboCoreUtils} package. Note that
-the default parameters for isotope prediction/detection have been
-determined using data from the Human Metabolome Database (HMDB) and
-isotopes for elements other than CHNOPS might not be detected. See
-parameter \code{substDefinition} in the documentation of \code{\link[=isotopologues]{isotopologues()}} for
-more information. The approach and code to define the parameters for
-isotope prediction is described
-\href{https://github.com/EuracBiomedicalResearch/isotopologues}{here}.
 \item \code{dropNaSpectraVariables()}: removes spectra variables (i.e. columns in the
 object's \code{spectraData} that contain only missing values (\code{NA}). Note that
 while columns with only \code{NA}s are removed, a \code{spectraData()} call after
 \code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
-for \emph{core} spectra variables.
+for \emph{core} spectra variables. The total number of spectra is not changed
+by this function.
 \item \code{filterAcquisitionNum()}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
@@ -1170,30 +1163,6 @@ the provided \code{dataStorage} parameter).
 \item \code{filterEmptySpectra()}: removes empty spectra (i.e. spectra without peaks).
 Returns the filtered \code{Spectra} object (with spectra in their
 original order).
-\item \code{filterFourierTransformArtefacts()}: removes (Orbitrap) fast fourier
-artefact peaks from spectra (see examples below). The function iterates
-through all intensity ordered peaks in a spectrum and removes all peaks
-with an m/z within +/- \code{halfWindowSize} of the current peak if their
-intensity is lower than \code{threshold} times the current peak's intensity.
-Additional parameters \code{keepIsotopes}, \code{maxCharge} and \code{isotopeTolerance}
-allow to avoid removing of potential \verb{[13]C} isotope peaks (\code{maxCharge}
-being the maximum charge that should be considered and \code{isotopeTolerance}
-the absolute acceptable tolerance for matching their m/z).
-See \code{\link[=filterFourierTransformArtefacts]{filterFourierTransformArtefacts()}} for details and background and
-\code{deisitopeSpectra()} for an alternative.
-\item \code{filterIntensity()}: filters each spectrum keeping only peaks with
-intensities that are within the provided range or match the criteria of
-the provided function. For the former, parameter \code{intensity} has to be a
-\code{numeric} defining the intensity range, for the latter a \code{function} that
-takes the intensity values of the spectrum and returns a \code{logical} whether
-the peak should be retained or not (see examples below for details) -
-additional parameters to the function can be passed with \code{...}. To
-remove only peaks with intensities below a certain threshold, say 100, use
-\code{intensity = c(100, Inf)}. Note: also a single value can be passed with
-the \code{intensity} parameter in which case an upper limit of \code{Inf} is used.
-Note that this function removes also peaks with missing intensities
-(i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
-filtering to spectra of the specified MS level(s).
 \item \code{filterIsolationWindow()}: retains spectra that contain \code{mz} in their
 isolation window m/z range (i.e. with an \code{isolationWindowLowerMz} <= \code{mz}
 and \code{isolationWindowUpperMz} >= \code{mz}. Returns the filtered \code{Spectra}
@@ -1201,15 +1170,6 @@ object (with spectra in their original order).
 \item \code{filterMsLevel()}: filters object by MS level keeping only spectra matching
 the MS level specified with argument \code{msLevel}. Returns the filtered
 \code{Spectra} (with spectra in their original order).
-\item \code{filterMzRange()}: filters the object keeping or removing peaks in each
-spectrum that are within the provided m/z range. Whether peaks are
-retained or removed can be configured with parameter \code{keep} (default
-\code{keep = TRUE}).
-\item \code{filterMzValues()}: filters the object keeping \strong{all} peaks in each
-spectrum that match the provided m/z value(s) (for \code{keep = TRUE}, the
-default) or removing \strong{all} of them (for \code{keep = FALSE}). The m/z
-matching considers also the absolute \code{tolerance} and m/z-relative
-\code{ppm} values. \code{tolerance} and \code{ppm} have to be of length 1.
 \item \code{filterPolarity()}: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered \code{Spectra} (with spectra in their
 original order).
@@ -1235,18 +1195,11 @@ a precursor m/z for a target m/z accepting a small difference in \emph{ppm}.
 \item \code{filterPrecursorMzValues()}: retains spectra with precursor m/z matching
 any of the provided m/z values (given \code{ppm} and \code{tolerance}). Spectra with
 missing precursor m/z value (e.g. MS1 spectra) are dropped.
-\item \code{filterPrecursorPeaks()}: removes peaks from each spectrum in \code{object} with
-an m/z equal or larger than the m/z of the precursor, depending on the
-value of parameter \code{mz}: for \verb{mz = ==" (the default) peaks with matching m/z (considering an absolute and relative acceptable difference depending on }tolerance\code{and}ppm\verb{, respectively) are removed. For }mz = ">="\verb{all peaks with an m/z larger or equal to the precursor m/z (minus}tolerance\verb{and the}ppm\verb{of the precursor m/z) are removed. Parameter}msLevel.\verb{allows to restrict the filter to certain MS levels (by default the filter is applied to all MS levels). Note that no peaks are removed if the precursor m/z is}NA` (e.g. typically for MS1 spectra).
 \item \code{filterPrecursorScan()}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra} (with spectra in their original order). Parameter \code{f} allows to
 define which spectra belong to the same sample or original data file (
 defaults to \code{f = dataOrigin(object)}).
-\item \code{filterRt()}: retains spectra of MS level \code{msLevel} with retention
-times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
-\code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
-original order).
 \item \code{filterRanges()}: allows filtering of the \code{Spectra} object based on user
 defined \emph{numeric} ranges (parameter \code{ranges}) for one or more available
 spectra variables in object (spectra variable names can be specified with
@@ -1256,6 +1209,10 @@ ranges/spectra variables are defined, the \code{match} parameter can be used
 to specify whether all conditions (\code{match = "all"}; the default) or if
 any of the conditions must match (\code{match = "any"}; all spectra for which
 values are within any of the provided ranges are retained).
+\item \code{filterRt()}: retains spectra of MS level \code{msLevel} with retention
+times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
+\code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
+original order).
 \item \code{filterValues()}: allows filtering of the \code{Spectra} object based on
 similarities of \emph{numeric} values of one or more \code{spectraVariables(object)}
 (parameter \code{spectraVariables}) to provided values (parameter \code{values})
@@ -1264,18 +1221,6 @@ values/spectra variables are defined, the \code{match} parameter can be used
 to specify whether all conditions (\code{match = "all"}; the default) or if
 any of the conditions must match (\code{match = "any"}; all spectra for which
 values are within any of the provided ranges are retained).
-\item \code{reduceSpectra()}: for groups of peaks within highly similar m/z values
-within each spectrum (given \code{ppm} and \code{tolerance}), this function keeps
-only the peak with the highest intensity removing all other peaks hence
-\emph{reducing} each spectrum to the highest intensity peaks per \emph{peak group}.
-Peak groups are defined using the \code{\link[=group]{group()}} function from the
-\emph{MsCoreUtils} package.
-\item \code{reset()}: restores the data to its original state (as much as possible):
-removes any processing steps from the lazy processing queue and calls
-\code{reset()} on the backend which, depending on the backend, can also undo
-e.g. data filtering operations. Note that a \verb{reset*(} call after
-\code{applyProcessing()} will not have any effect. See examples below for more
-information.
 \item \code{selectSpectraVariables()}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (i.e., those listed by
@@ -1283,8 +1228,130 @@ be dropped. For mandatory columns (i.e., those listed by
 the values will be dropped but not the variable itself. Additional (or
 user defined) spectra variables will be completely removed.
 Returns the filtered \code{Spectra}.
-\item \code{split()}: splits the \code{Spectra} object based on parameter \code{f} into a \code{list}
-of \code{Spectra} objects.
+}
+}
+
+\section{Filter or aggregate mass peak data}{
+
+
+Operations that filter or aggregate the mass peak data from each spectrum
+without changing the number of spectra in a \code{Spectra} object.
+\itemize{
+\item \code{combinePeaks()}: combines mass peaks \strong{within each spectrum} with a
+difference in their m/z values that is smaller than the maximal
+acceptable difference defined by \code{ppm} and \code{tolerance}. Parameters
+\code{intensityFun} and \code{mzFun} allow to define functions to aggregate the
+intensity and m/z values for each such group of peaks. With
+\code{weighted = TRUE} (the default), the m/z value of the combined peak is
+calculated using an intensity-weighted mean and parameter \code{mzFun} is
+ignored. The \code{\link[MsCoreUtils:group]{MsCoreUtils::group()}} function is used for the grouping of
+mass peaks. Parameter \code{msLevel.} allows to define selected MS levels for
+which peaks should be combined. This function returns a \code{Spectra} with
+the same number of spectra than the input object, but with possibly
+combined peaks within each spectrum.
+dropped (i.e. their values are replaced with \code{NA}) for combined peaks
+unless they are constant across the combined peaks. See also
+\code{reduceSpectra()} for a function to select a single \emph{representative}
+mass peak for each peak group.
+\item \code{deisotopeSpectra()}: \emph{deisotopes} each spectrum keeping only the
+monoisotopic peak for groups of isotopologues. Isotopologues are
+estimated using the \code{\link[=isotopologues]{isotopologues()}} function from the
+\emph{MetaboCoreUtils} package. Note that
+the default parameters for isotope prediction/detection have been
+determined using data from the Human Metabolome Database (HMDB) and
+isotopes for elements other than CHNOPS might not be detected. See
+parameter \code{substDefinition} in the documentation of \code{\link[=isotopologues]{isotopologues()}} for
+more information. The approach and code to define the parameters for
+isotope prediction is described
+\href{https://github.com/EuracBiomedicalResearch/isotopologues}{here}.
+\item \code{filterFourierTransformArtefacts()}: removes (Orbitrap) fast fourier
+artefact peaks from spectra (see examples below). The function iterates
+through all intensity ordered peaks in a spectrum and removes all peaks
+with an m/z within +/- \code{halfWindowSize} of the current peak if their
+intensity is lower than \code{threshold} times the current peak's intensity.
+Additional parameters \code{keepIsotopes}, \code{maxCharge} and \code{isotopeTolerance}
+allow to avoid removing of potential \verb{[13]C} isotope peaks (\code{maxCharge}
+being the maximum charge that should be considered and \code{isotopeTolerance}
+the absolute acceptable tolerance for matching their m/z).
+See \code{\link[=filterFourierTransformArtefacts]{filterFourierTransformArtefacts()}} for details and background and
+\code{deisitopeSpectra()} for an alternative.
+\item \code{filterIntensity()}: filters mass peaks in each spectrum keeping only
+those with intensities that are within the provided range or match the
+criteria of the provided function. For the former, parameter \code{intensity}
+has to be a \code{numeric} defining the intensity range, for the latter a
+\code{function} that takes the intensity values of the spectrum and returns
+a \code{logical} whether the peak should be retained or not (see examples
+below for details) - additional parameters to the function can be passed
+with \code{...}.
+To remove only peaks with intensities below a certain threshold, say
+100, use \code{intensity = c(100, Inf)}. Note: also a single value can be
+passed with the \code{intensity} parameter in which case an upper limit of
+\code{Inf} is used.
+Note that this function removes also peaks with missing intensities
+(i.e. an intensity of \code{NA}). Parameter \code{msLevel.} allows to restrict the
+filtering to spectra of the specified MS level(s).
+\item \code{filterMzRange()}: filters mass peaks in the object keeping or removing
+those in each spectrum that are within the provided m/z range. Whether
+peaks are retained or removed can be configured with parameter \code{keep}
+(default \code{keep = TRUE}).
+\item \code{filterMzValues()}: filters mass peaks in the object keeping all
+peaks in each spectrum that match the provided m/z value(s) (for
+\code{keep = TRUE}, the default) or removing all of them (for \code{keep = FALSE}).
+The m/z matching considers also the absolute \code{tolerance} and m/z-relative
+\code{ppm} values. \code{tolerance} and \code{ppm} have to be of length 1.
+\item \code{filterPeaksRanges()}: filters mass peaks of a \code{Spectra} object using any
+set of range-based filters on numeric spectra or peaks variables. See
+\code{\link[=filterPeaksRanges]{filterPeaksRanges()}} for more information.
+\item \code{filterPrecursorPeaks()}: removes peaks from each spectrum in \code{object} with
+an m/z equal or larger than the m/z of the precursor, depending on the
+value of parameter \code{mz}: for \verb{mz = ==" (the default) peaks with matching m/z (considering an absolute and relative acceptable difference depending on }tolerance\code{and}ppm\verb{, respectively) are removed. For }mz = ">="\verb{all peaks with an m/z larger or equal to the precursor m/z (minus}tolerance\verb{and the}ppm\verb{of the precursor m/z) are removed. Parameter}msLevel.\verb{allows to restrict the filter to certain MS levels (by default the filter is applied to all MS levels). Note that no peaks are removed if the precursor m/z is}NA` (e.g. typically for MS1 spectra).
+\item \code{reduceSpectra()}: keeps for groups of peaks with similar m/z values in
+(given \code{ppm} and \code{tolerance}) in each spectrum only the peak with the
+highest intensity removing all other peaks hence \emph{reducing} each
+spectrum to the highest intensity peaks per \emph{peak group}.
+Peak groups are defined using the \code{\link[=group]{group()}} function from the
+\emph{MsCoreUtils} package. See also the \code{combinePeaks()} function for an
+alternative function to combine peaks within each spectrum.
+}
+}
+
+\section{Merging, aggregating and splitting}{
+
+
+Several \code{Spectra} objects can be concatenated into a single object with the
+\code{c()} or the \code{concatenateSpectra()} function. Concatenation will fail if the
+processing queue of any of the \code{Spectra} objects is not empty or if
+different backends are used in the \code{Spectra} objects. Thus, in these cases,
+prior to merging \code{Spectra} object it is suggested to change the backend to
+a \code{MsBackendMemory} using the \code{setBackend()} function, and to \emph{apply} all
+data processing steps using \code{applyProcessing()}. The spectra variables
+of the resulting \code{Spectra} object is the union of the spectra variables of
+the individual \code{Spectra} objects.
+\itemize{
+\item \code{combineSpectra()}: combines MS data (i.e. mass peaks) from sets of
+spectra into a single spectrum per set (in contrast to \code{combinePeaks()}
+or \code{reduceSpectra()} that combine mass peaks \strong{within each spectrum}).
+For each spectrum group (set), spectra variables from the first spectrum
+are used and the peak matrices are combined using the function specified
+with \code{FUN}, which defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}. Please refer to the
+\code{\link[=combinePeaksData]{combinePeaksData()}} help page for details and options of the actual
+combination of peaks across the sets of spectra and to the package
+vignette for examples and alternative ways to aggregate spectra.
+The sets of spectra can be specified with parameter \code{f}.
+In addition it is possible to define, with parameter \code{p} if and how to
+split the input data for parallel processing.
+This defaults to \code{p = x$dataStorage} and hence a per-file parallel
+processing is applied for \code{Spectra} with file-based backends (such as the
+\code{\link[=MsBackendMzR]{MsBackendMzR()}}).
+Prior combination of the spectra all processings queued in the lazy
+evaluation queue are applied. Be aware that calling \code{combineSpectra()} on a
+\code{Spectra} object with certain backends that allow modifications might
+\strong{overwrite} the original data. This does not happen with a
+\code{MsBackendMemory} or \code{MsBackendDataFrame} backend, but with a
+\code{MsBackendHdf5Peaks} backend the m/z and intensity values in the original
+hdf5 file(s) will be overwritten.
+The function returns a \code{Spectra} of length equal to the unique levels
+of \code{f}.
 \item \code{joinSpectraData()}: Individual spectra variables can be directly
 added with the \verb{$<-} or \verb{[[<-} syntax. The \code{joinSpectraData()}
 function allows to merge a \code{DataFrame} to the existing spectra
@@ -1304,14 +1371,9 @@ should be explored and ideally be removed using for
 \code{QFeatures::reduceDataFrame()}, \code{PMS::reducePSMs()} or similar
 functions.
 }
+\item \code{split()}: splits the \code{Spectra} object based on parameter \code{f} into a \code{list}
+of \code{Spectra} objects.
 }
-
-Several \code{Spectra} objects can be concatenated into a single object with the
-\code{c()} or the \code{concatenateSpectra()} function. Concatenation will fail if the
-processing queue of any of the \code{Spectra} objects is not empty or if
-different backends are used in the \code{Spectra} objects. The spectra variables
-of the resulting \code{Spectra} object is the union of the spectra variables of
-the individual \code{Spectra} objects.
 }
 
 \section{Data manipulation and analysis methods}{
@@ -1364,46 +1426,6 @@ same bin are aggregated using the function provided with parameter \code{FUN}
 the binning operation is applied to the peak data on-the-fly upon data
 access and it is possible to \emph{revert} the operation with the \code{reset()}
 function (see description of \code{reset()} above).
-\item \code{combinePeaks()}: combines mass peaks \strong{within each spectrum} with a
-difference in their m/z values that is smaller than the maximal
-acceptable difference defined by \code{ppm} and \code{tolerance}. Parameters
-\code{intensityFun} and \code{mzFun} allow to define functions to aggregate the
-intensity and m/z values for each such group of peaks. With
-\code{weighted = TRUE} (the default), the m/z value of the combined peak is
-calculated using an intensity-weighted mean and parameter \code{mzFun} is
-ignored. The \code{\link[MsCoreUtils:group]{MsCoreUtils::group()}} function is used for the grouping of
-mass peaks. Parameter \code{msLevel.} allows to define selected MS levels for
-which peaks should be combined. This function returns a \code{Spectra} with
-the same number of spectra than the input object, but with possibly
-combined peaks within each spectrum.
-dropped (i.e. their values are replaced with \code{NA}) for combined peaks
-unless they are constant across the combined peaks. See also
-\code{reduceSpectra()} for a function to select a single \emph{representative}
-mass peak for each peak group.
-\item \code{combineSpectra()}: combines MS data from \strong{sets of spectra into a
-single spectrum per set} (in contrast to \code{combinePeaks()} or
-\code{reduceSpectra()} that combine mass peaks \strong{within each spectrum}).
-For each spectrum group (set), spectra variables from the first spectrum
-are used and the peak matrices are combined using the function specified
-with \code{FUN}, which defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}. Please refer to the
-\code{\link[=combinePeaksData]{combinePeaksData()}} help page for details and options of the actual
-combination of peaks across the sets of spectra and to the package
-vignette for examples and alternative ways to aggregate spectra.
-The sets of spectra can be specified with parameter \code{f}.
-In addition it is possible to define, with parameter \code{p} if and how to
-split the input data for parallel processing.
-This defaults to \code{p = x$dataStorage} and hence a per-file parallel
-processing is applied for \code{Spectra} with file-based backends (such as the
-\code{\link[=MsBackendMzR]{MsBackendMzR()}}).
-Prior combination of the spectra all processings queued in the lazy
-evaluation queue are applied. Be aware that calling \code{combineSpectra()} on a
-\code{Spectra} object with certain backends that allow modifications might
-\strong{overwrite} the original data. This does not happen with a
-\code{MsBackendMemory} or \code{MsBackendDataFrame} backend, but with a
-\code{MsBackendHdf5Peaks} backend the m/z and intensity values in the original
-hdf5 file(s) will be overwritten.
-The function returns a \code{Spectra} of length equal to the unique levels
-of \code{f}.
 \item \code{compareSpectra()}: compares each spectrum in \code{x} with each spectrum in \code{y}
 using the function provided with \code{FUN} (defaults to \code{\link[=ndotproduct]{ndotproduct()}}). If
 \code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
@@ -1438,16 +1460,6 @@ the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \
 is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one. See also
 the vignette for additional examples, such as using spectral entropy
 similarity in the scoring.
-\item \code{deisotopeSpectra()}: \emph{deisotopes} each spectrum keeping only the
-monoisotopic peak for groups of isotopologues. Isotopologues are
-estimated using the \code{\link[=isotopologues]{isotopologues()}} function from the \emph{MetaboCoreUtils}
-package. Note that the default parameters for isotope
-prediction/detection have been determined using data from the Human
-Metabolome Database (HMDB) and isotopes for elements other than CHNOPS
-might not be detected. See parameter \code{substDefinition} in the
-documentation of \code{\link[=isotopologues]{isotopologues()}} for more information. The approach
-and code to define the parameters for isotope prediction is described
-\href{https://github.com/EuracBiomedicalResearch/isotopologues}{here}.
 \item \code{entropy()}: calculates the entropy of each spectra based on the metrics
 suggested by Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
 See also \code{\link[=nentropy]{nentropy()}} in the \emph{MsCoreUtils} package for details.
@@ -1466,13 +1478,12 @@ from the previous MS1 spectrum. See \code{\link[=estimatePrecursorMz]{estimatePr
 \code{\link[=neutralLoss]{neutralLoss()}} for detailed documentation.
 \item \code{processingLog()}: returns a \code{character} vector with the processing log
 messages.
-\item \code{reduceSpectra()}: keeps for groups of peaks with similar m/z values in
-(given \code{ppm} and \code{tolerance}) in each spectrum only the peak with the
-highest intensity removing all other peaks hence \emph{reducing} each
-spectrum to the highest intensity peaks per \emph{peak group}.
-Peak groups are defined using the \code{\link[=group]{group()}} function from the
-\emph{MsCoreUtils} package. See also the \code{combinePeaks()} function for an
-alternative function to combine peaks within each spectrum.
+\item \code{reset()}: restores the data to its original state (as much as possible):
+removes any processing steps from the lazy processing queue and calls
+\code{reset()} on the backend which, depending on the backend, can also undo
+e.g. data filtering operations. Note that a \verb{reset*(} call after
+\code{applyProcessing()} will not have any effect. See examples below for more
+information.
 \item \code{scalePeaks()}: scales intensities of peaks within each spectrum depending
 on parameter \code{by}. With \code{by = sum} (the default) peak intensities are
 divided by the sum of peak intensities within each spectrum. The sum of

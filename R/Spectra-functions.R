@@ -1182,3 +1182,184 @@ processingChunkFactor <- function(x) {
         stop("'x' is supposed to be a 'Spectra' object")
     .parallel_processing_factor(x)
 }
+
+#' @title Filter peaks based on spectra and peaks variable ranges
+#'
+#' @description
+#'
+#' The `filterPeaksRanges()` function allows to filter the peaks matrices of a
+#' [Spectra] object using any set of range-based filters on numeric spectra
+#' variables or peaks variables. These ranges can be passed to the function
+#' using the `...` as `<variable name> = <range>` pairs. `<variable name>`
+#' has to be an available spectra or peaks variable. `<range>` can be a
+#' `numeric` of length 2 defining the lower and upper boundary, or a `numeric`
+#' two-column matrix (multi-row matrices are also supported, see further
+#' below). `filterPeaksRanges(s, mz = c(200, 300))` woudl for example reduce
+#' the peaks matrices of the `Spectra` object `s` to mass peaks with an m/z
+#' value between 200 and 300. `filterPeaksRanges()` returns the original
+#' `Spectra` object with the filter operation added to the processing queue.
+#' Thus, the filter gets only applied when the peaks data gets extracted
+#' with `mz()`, `intensity()` or `peaksData()`. If ranges for both spectra
+#' **and** peaks variables are defined, the function evaluates first whether
+#' the spectra variable value for a spectrum is within the provided range and,
+#' if so, applies also the peaks variable-based filter (otherwise an empty
+#' peaks matrix is returned).
+#'
+#' If more than one spectra variable and/or peaks variable are defined, their
+#' filter results are combined with a logical AND: a peak matrix is only
+#' returned for a spectrum if all values of spectra variables are within the
+#' provided (respective) ranges for spectra variables, and this matrix is
+#' further filtered to contain only those peaks which values are within the
+#' provided peaks variable ranges.
+#'
+#' **Filtering with multiple ranges** per spectra and peaks variables is also
+#' supported: ranges can also be provided as multi-row numeric (two-column)
+#' matrices. In this case, the above described procedure is applied for each
+#' row separately and their results are combined with a logical OR, i.e.
+#' peaks matrices are returned that match any of the conditions/filters
+#' of a row. The number of rows of the provided ranges (being it for spectra
+#' or peaks variables) have to match.
+#'
+#' **Missing value handling**: any comparison which involves a missing value
+#' (beingvit a spectra variable value, a peaks variable value or a value
+#' in one of thevprovided ranges) is treated as a logical `FALSE`. For
+#' example, if the retention time of a spectrum is `NA` and the data is
+#' filtered using a retention time range, an empty peaks matrix is returned
+#' (for `keep = TRUE`, for `keep = FALSE` the full peaks matrix is returned).
+#'
+#' @note
+#'
+#' In contrast to other *filter* functions, this function does not provide a
+#' `msLevel.` parameter to apply the filter only on spectra of the specified
+#' MS levels. In contrast, to apply no, or different, filters to spectra from
+#' different MS levels, multi-row range matrices can be used (see examples
+#' below).
+#'
+#' @param object A [Spectra] object.
+#'
+#' @param ... the ranges for the spectra and/or peaks variables. Has to be
+#'     provided as `<name> = <range>` pairs with `<name>` being the name of a
+#'     spectra or peaks variable (of numeric data type) and `<range>` being
+#'     either a `numeric` of length 2 or a `numeric` two column matrix (see
+#'     function desription above for details),
+#'
+#' @param keep `logical(1)` whether to keep (default) or remove peaks that
+#'     match the provided range(s).
+#'
+#' @author Johannes Rainer
+#'
+#' @name filterPeaksRanges
+#'
+#' @export
+#'
+#' @examples
+#'
+#' ## Define a test Spectra
+#' d <- data.frame(rtime = c(123.2, 134.2), msLevel = c(1L, 2L))
+#' d$mz <- list(c(100.1, 100.2, 100.3, 200.1, 200.2, 300.3),
+#'     c(100.3, 100.4, 200.2, 400.3, 400.4))
+#' ## Use the index of the mass peak within the spectrum as index for
+#' ## better illustration of filtering results
+#' d$intensity <- list(c(1:6), 1:5)
+#' s <- Spectra(d)
+#' s
+#'
+#' ## Filter peaks removing all mass peaks with an m/z between 200 and 300
+#' res <- filterPeaksRanges(s, mz = c(200, 300), keep = FALSE)
+#' res
+#'
+#' ## The Spectra object has still the same length and spectra variables
+#' length(res)
+#' res$rtime
+#'
+#' ## The filter gets applied when mass peak data gets extracted, using either
+#' ## `mz()`, `intensity()` or `peaksData()`. The filtered peaks data does
+#' ## not contain any mass peaks with m/z values between 200 and 300:
+#' peaksData(res)[[1L]]
+#' peaksData(res)[[2L]]
+#'
+#' ## We next combine spectra and filter variables. We want to keep only mass
+#' ## peaks of MS2 spectra that have an m/z between 100 and 110.
+#' res <- filterPeaksRanges(s, mz = c(100, 110), msLevel = c(2, 2))
+#' res
+#' length(res)
+#'
+#' ## Only data for peaks are returned for which the spectra's MS level is
+#' ## between 2 and 2 and with an m/z between 100 and 110. The peaks data for
+#' ## the first spectrum, that has MS level 1, is thus empty:
+#' peaksData(res)[[1L]]
+#'
+#' ## While the peaks matrix for the second spectrum (with MS level 2) contains
+#' ## the mass peaks with m/z between 100 and 110.
+#' peaksData(res)[[2L]]
+#'
+#' ## To keep also the peaks data for the first spectrum, we need to define
+#' ## an additional set of ranges, which we define using a second row in each
+#' ## ranges matrix. We use the same filter as above, i.e. keeping only mass
+#' ## peaks with an m/z between 100 and 110 for spectra with MS level 2, but
+#' ## add an additional row for MS level 1 spectra keeping mass peaks with an
+#' ## m/z between 0 and 2000. Filter results of different rows are combined
+#' ## using a logical OR, i.e. peaks matrices with mass peaks are returned
+#' ## matching either the first, or the second row.
+#' res <- filterPeaksRanges(s, mz = rbind(c(100, 110), c(0, 1000)),
+#'     msLevel = rbind(c(2, 2), c(1, 1)))
+#'
+#' ## The results for the MS level 2 spectrum are the same as before, but with
+#' ## the additional row we keep the full peaks matrix of the MS1 spectrum:
+#' peaksData(res)[[1L]]
+#' peaksData(res)[[2L]]
+#'
+#' ## As a last example we define a filter that keeps all mass peaks with an
+#' ## m/z either between 100 and 200, or between 300 and 400.
+#' res <- filterPeaksRanges(s, mz = rbind(c(100, 200), c(300, 400)))
+#' peaksData(res)[[1L]]
+#' peaksData(res)[[2L]]
+#'
+#' ## Such filters could thus be defined to restrict/filter the MS data to
+#' ## specific e.g. retention time and m/z ranges.
+filterPeaksRanges <- function(object, ..., keep = TRUE) {
+    if (!inherits(object, "Spectra"))
+        stop("'object' is expected to be a 'Spectra' object.")
+    dots <- list(...)
+    variables <- names(dots)
+    if (!length(variables))
+        return(object)
+    ## check that:
+    ## - variables are in spectraVariables
+    pvars <- peaksVariables(object)
+    svars <- spectraVariables(object)
+    if (!all(variables %in% c(svars, pvars)))
+        stop("Provided filter variable(s): ",
+             paste0("\"", variables[!variables %in% c(svars, pvars)], "\"",
+                    collapse = ", "), " are not valid spectra variables. ",
+             "Use 'spectraVariables(object)' and 'peaksVariables()' to list ",
+             "available variables.")
+    ## - range parameters are defined correctly
+    err <- paste0("Range parameters have to be either a 'numeric' of length ",
+                  "2 or a 'numeric' matrix with two columns.")
+    dots <- lapply(dots, function(z) {
+        if (is.null(nrow(z))) {
+            if (length(z) != 2)
+                stop(err)
+            z <- matrix(z, ncol = 2)
+        }
+        if (!is.matrix(z) | !is.numeric(z)) stop(err)
+        z
+    })
+    ## - number for rows of matrices matches.
+    nr <- unlist(lapply(dots, nrow), use.names = FALSE)
+    if (any(nr != nr[1L]))
+        stop("Number of rows of the range matrices have to match.")
+    ## OK, now proceed to split by svar and pvar and pass to the peaks function.
+    pvars <- intersect(variables, pvars)
+    svars <- intersect(variables, svars)
+    object <- addProcessing(object, .peaks_filter_ranges, ranges = dots,
+                            svars = svars, pvars = pvars,
+                            spectraVariables = c(svars, "msLevel"), keep = keep)
+    if (keep) keep_or_remove <- "select"
+    else keep_or_remove <- "remove"
+    object@processing <- .logging(
+        object@processing, "Filter: ", keep_or_remove, " peaks based on ",
+        "user-provided ranges for ", length(variables), " variables")
+    object
+}

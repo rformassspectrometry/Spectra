@@ -490,3 +490,235 @@ test_that(".peaks_filter_precursor_keep_below works", {
         precursorMz = 14.2, tolerance = 0.1)
     expect_equal(unname(res[, "intensity"]), 1)
 })
+
+test_that(".peaks_filter_ranges works", {
+    ## Testing all possible combinations, with/without spectra and/or peaks
+    ## variables, single/multiple variables, single/multiple rows, NA handling
+    x <- cbind(mz = c(100.1, 100.2, 100.3, 100.4,
+                      104.1, 104.2,
+                      200.3, 200.4, 200.5,
+                      300.1, 300.2),
+               intensity = 1:11)
+    ## res <- .peaks_filter_ranges(x, spectrumMsLevel = 1L, msLevel = 2L)
+    ## expect_equal(res, x)
+
+    ## Single filters.
+    ranges <- list(rtime = cbind(1, 2), new_var = cbind(3, 4),
+                   mz = cbind(200, 201), intensity = cbind(8, 9))
+
+    ## * No peaks variables.
+    pvars <- character()
+    svars <- c("rtime", "new_var")
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) == 0)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 4,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) == 0)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 4,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x)
+
+    ## * No spectra variables.
+    pvars <- c("mz", "intensity")
+    svars <- character()
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) < nrow(x))
+    expect_equal(res[, "intensity"], 8:9)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) < nrow(x))
+    expect_equal(res[, "intensity"], c(1:7, 10:11))
+    ranges$mz <- cbind(100, 106)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) < nrow(x))
+    expect_true(nrow(res) == 0)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x)
+    ranges$mz <- cbind(200, 201)
+
+    ## * Spectra and peaks variables.
+    svars <- c("rtime")
+    pvars <- c("mz")
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                ranges = ranges, spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) < nrow(x))
+    expect_equal(res[, "intensity"], 7:9)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                ranges = ranges, spectrumMsLevel = 1L,
+                                keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) < nrow(x))
+    expect_equal(res[, "intensity"], c(1:6, 10:11))
+
+    ## Multiple filters.
+    ranges <- list(rtime = rbind(c(1, 2), c(0, 4), c(2, 3)),
+                   new_var = rbind(c(3, 4), c(1, 9), c(3, 5)),
+                   mz = rbind(c(200, 201), c(100, 101), c(200, 201)),
+                   intensity = rbind(c(8, 9), c(1, 20), c(3, 12)))
+
+    ## * No peaks variables.
+    svars <- c("rtime", "new_var")
+    pvars <- character()
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 1,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) == 0)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 4,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 4,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) == 0)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 20,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) == 0L)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 20,
+                                new_var = 3, ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x)
+
+    ## * No spectra variables.
+    svars <- character()
+    pvars <- c("mz", "intensity")
+    res <- .peaks_filter_ranges(x, pvars = pvars, ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) < nrow(x))
+    expect_equal(res[, 2L], sort(c(8, 9, 1, 2, 3, 4, 7)))
+    res <- .peaks_filter_ranges(x, pvars = pvars, ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_true(nrow(res) < nrow(x))
+    expect_equal(res[, 2L], c(5:6, 10:11))
+    res <- .peaks_filter_ranges(x, pvars = c("intensity"), ranges = ranges,
+                                spectrumMsLevel = 1L)
+    expect_equal(res, x)
+    res <- .peaks_filter_ranges(x, pvars = c("intensity"), ranges = ranges,
+                                spectrumMsLevel = 1L, keep = FALSE)
+    expect_equal(res, x[logical(), , drop = FALSE])
+
+    ## * Spectra and peaks variables.
+    svars <- c("rtime")
+    pvars <- c("mz")
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 2,
+                                ranges = ranges, spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res[, 2L], c(1:4, 7:9))
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 2,
+                                ranges = ranges, spectrumMsLevel = 1L,
+                                keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res[, 2L], c(5:6, 10:11))
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 4,
+                                ranges = ranges, spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res[, 2L], 1:4)
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = 4,
+                                ranges = ranges, spectrumMsLevel = 1L,
+                                keep = FALSE)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res[, 2L], 5:11)
+
+    ## Handling NA
+    ## * spectra variable value is NA
+    ranges <- lapply(ranges, function(z) z[1, , drop = FALSE])
+    svars <- "rtime"
+    pvars <- c("mz", "intensity")
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = NA,
+                                ranges = ranges, spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x[logical(), , drop = FALSE])
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = NA,
+                                ranges = ranges, spectrumMsLevel = 1L,
+                                keep = FALSE)
+    expect_equal(res, x)
+
+    svars <- c("rtime", "new_var")
+    res <- .peaks_filter_ranges(x, svars = svars, pvars = pvars, rtime = NA,
+                                ranges = ranges, spectrumMsLevel = 1L,
+                                new_var = 3)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x[logical(), , drop = FALSE])
+
+    ## * peaks variable value is NA
+    x[8, 2L] <- NA_real_
+    res <- .peaks_filter_ranges(x, pvars = c("mz", "intensity"),
+                                ranges = ranges, spectrumMsLevel = 1L)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(unname(res[, 2L]), 9L)
+
+    ## * range value is NA
+    ranges$rtime <- cbind(NA, 2)
+    res <- .peaks_filter_ranges(x, svars = c("rtime", "new_var"), rtime = 2,
+                                new_var = 3, spectrumMsLevel = 1L,
+                                ranges = ranges)
+    expect_true(is.matrix(res))
+    expect_equal(colnames(res), colnames(x))
+    expect_equal(res, x[logical(), , drop = FALSE])
+    res <- .peaks_filter_ranges(x, svars = c("rtime", "new_var"), rtime = 2,
+                                new_var = 3, spectrumMsLevel = 1L,
+                                ranges = ranges, keep = FALSE)
+    expect_equal(res, x)
+})

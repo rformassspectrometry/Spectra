@@ -360,25 +360,39 @@ Similar to spectra variables it is also possible to replace values for
 **existing** peaks variables using the `$<-` function.
 
 
-## Filtering, subsetting and merging
+## Filtering, aggregating and merging spectra data
 
-Apart from *classical* subsetting operations such as `[` and `split()`, a set of
-filter functions are defined for `Spectra` objects (for detailed help please see
-the `?Spectra` help). Filter and subset functions either reduce the number of
-spectra within a `Spectra` object, or affect the number of
-peaks (by either aggregating or subset) within each spectrum. Filter functions
-affecting the total number of spectra are (in alphabetic order):
+Various functions are available to filter, subset and merge `Spectra`
+objects. These can be generally subdivided into functions that subset or filter
+*spectra data* and operations that filter *mass peak data*. A third category of
+function allows to aggregate data within a `Spectra` or to merge and combine
+multiple `Spectra` objects into one. Functions of the various categories are
+described in the following subsections. Please refer to the function's
+documentation for more details and information.
 
+
+### Filter spectra data
+
+These functions comprise subset operations that reduce the total number of
+spectra in a `Spectra` object as well as filter functions that reduce the
+content of the `Spectra`'s spectra data (i.e. the content of its
+`spectraVariables()`). These functions thus don't change or affect the mass
+peaks data of the `Spectra`'s individual spectra.
+
+- `[`: operation to reduce a `Spectra` object to selected elements.
+- `dropNaSpectraVariables()`: drops `spectraVariables()` that contain only
+  missing values. The function returns a `Spectra` object with the same number
+  of elements, but with eventually fewer spectra variables.
 - `filterAcquisitionNum()`: retains spectra with certain acquisition numbers.
 - `filterDataOrigin()`: subsets to spectra from specific origins.
 - `filterDataStorage()`: subsets to spectra from certain data storage files.
 - `filterEmptySpectra()`: removes spectra without mass peaks.
-- `filterMzRange()`: subsets spectra keeping only peaks with an m/z within the
-  provided m/z range.
 - `filterIsolationWindow()`: keeps spectra with the provided `mz` in their
   isolation window (m/z range).
 - `filterMsLevel()`: filters by MS level.
 - `filterPolarity()`: filters by polarity.
+- `filterPrecursorCharge()`: retains (MSn) spectra with specified
+  precursor charge(s).
 - `filterPrecursorIsotopes()`: identifies precursor ions (from fragment spectra)
   that could represent isotopes of the same molecule. For each of these spectra
   groups only the spectrum of the monoisotopic precursor ion is returned. MS1
@@ -390,52 +404,58 @@ affecting the total number of spectra are (in alphabetic order):
   the provided m/z range.
 - `filterPrecursorMzValues(()`: retains (MSn) spectra with precursor m/z value
   matching the provided value(s) considering also a `tolerance` and `ppm`.
-- `filterPrecursorCharge()`: retains (MSn) spectra with specified
-  precursor charge(s).
 - `filterPrecursorScan()`: retains (parent and children) scans of an acquisition
   number.
-- `filterRanges()`: allows filtering of the `Spectra` object based on user
-  defined *numeric* ranges (parameter `ranges`) for one or more available
-  spectra variables in object (spectra variable names can be specified with
-  parameter `spectraVariables`). Spectra for which the value of a spectra
-  variable is within it's defined range are retained. If multiple
-  ranges/spectra variables are defined, the `match` parameter can be used
-  to specify whether all conditions (`match = "all"`; the default) or if
-  any of the conditions must match (`match = "any"`; all spectra for which
-  values are within any of the provided ranges are retained).
+- `filterRanges()`: filters a `Spectra` object based on (multiple) user
+  defined *numeric* ranges for one or more available (numeric) spectra
+  variables.
 - `filterRt()`: filters based on retention time range.
-- `filterValues()`: allows filtering of the `Spectra` object based on
-  similarities of *numeric* values of one or more `spectraVariables(object)`
-  (parameter `spectraVariables`) to provided values (parameter `values`)
-  given acceptable differences (parameters tolerance and ppm). If multiple
-  values/spectra variables are defined, the `match` parameter can be used
-  to specify whether all conditions (`match = "all"`; the default) or if
-  any of the conditions must match (`match = "any"`; all spectra for which
-  values are within any of the provided ranges are retained).
-- `combineSpectra()`: allows to combine the MS data from sets of spectra into a
-  single spectrum per set. Thus, instead of filtering the data, this function
-  aggregates it.
+- `filterValues()`: filters a `Spectra` object based on similarities of
+  *numeric* values of one or more available spectra variables.
+- `selectSpectraVariables()`: reduces the (spectra) data within the object to
+  the selected spectra variables.
 
-Filter functions that return the same number of spectra, but affect/subset the
-peaks data (m/z and intensity values) within each spectrum are:
+
+### Filter or aggregate mass peak data
+
+These function filter or aggregate the mass peak data (`peaksData()`) of each
+spectrum in a `Spectra` without changing the total number of spectra.
 
 - `combinePeaks()`: groups peaks **within each spectrum** based on similarity of
   their m/z values and combines these into a single peak per peak group.
 - `deisotopeSpectra()`: deisotopes each individual spectrum keeping only the
   monoisotopic peak for peaks groups of potential isotopologues.
+- `filterFourierTransformArtefacts()`: removes (Orbitrap) fast fourier transform
+  artifact peaks from spectra.
 - `filterIntensity()`: filter each spectrum keeping only peaks with intensities
   meeting certain criteria.
-- `filterMzRange()`: subsets peaks data within each spectrum keeping only peaks
-  with their m/z values within the specified m/z range.
+- `filterMzRange()`: filters mass peaks keeping (or removing) those with an
+  m/z within the provided m/z range.
+- `filterMzValues()`: filters mass peaks within each spectrum keeping (or
+  removing) those with an m/z matching the provided value(s).
+- `filterPeaksRanges()`: filters mass peaks using any set of range-based filters
+  on numeric spectra or peaks variables.
 - `filterPrecursorPeaks()`: removes peaks with either an m/z value matching the
   precursor m/z of the respective spectrum (with parameter `mz = "=="`) or peaks
   with an m/z value larger or equal to the precursor m/z (with parameter
   `mz = ">="`).
-- `filterMzValues()`: subsets peaks within each spectrum keeping or removing
-  (all) peaks matching provided m/z value(s) (given parameters `ppm` and
-  `tolerance`).
 - `reduceSpectra()`: filters individual spectra keeping only the largest peak
   for groups of peaks with similar m/z values.
+
+
+### Merging, aggregating and splitting
+
+
+- `c()`: combine several `Spectra` into a single `Spectra` object.
+- `combineSpectra()`: allows to combine the MS data from sets of spectra into a
+  single spectrum per set. Thus, instead of filtering the data, this function
+  aggregates it.
+- `joinSpectraData()`: merge a `DataFrame` to the existing spectra data.
+- `split()`: splits the `Spectra` object based on a provided grouping factor.
+
+
+
+### Examples and use cases for filter operations
 
 In this example, we use the `filterValues()` function to retain spectra with a
 base peak m/z close to 100 (+/- 30 ppm) and a retention time around 230 (+/- 5
