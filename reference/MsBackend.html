@@ -25,6 +25,8 @@ backend requires the mzR package.
 MsBackendHdf5Peaks: stores the m/z and intensities on-disk in custom hdf5
 data files and the remaining spectra variables in memory (in a
 DataFrame). This backend requires the rhdf5 package.
+
+
 See below for more details about individual backends."><meta property="og:description" content="Note that the classes described here are not meant to be used
 directly by the end-users and the material in this man page is
 aimed at package developers.
@@ -51,14 +53,23 @@ backend requires the mzR package.
 MsBackendHdf5Peaks: stores the m/z and intensities on-disk in custom hdf5
 data files and the remaining spectra variables in memory (in a
 DataFrame). This backend requires the rhdf5 package.
+
+
 See below for more details about individual backends."><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+
+
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
+
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.3</small>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/Spectra.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -72,6 +83,8 @@ See below for more details about individual backends."><meta property="og:image"
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
+
+
   </div>
 </nav><div class="container template-reference-topic">
 <div class="row">
@@ -80,6 +93,7 @@ See below for more details about individual backends."><meta property="og:image"
       <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/MsBackend.R" class="external-link"><code>R/MsBackend.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/MsBackendDataFrame-functions.R" class="external-link"><code>R/MsBackendDataFrame-functions.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/MsBackendDataFrame.R" class="external-link"><code>R/MsBackendDataFrame.R</code></a>, and 4 more</small>
       <div class="d-none name"><code>MsBackend.Rd</code></div>
     </div>
+
     <div class="ref-description section level2">
     <p>Note that the classes described here are not meant to be used
 directly by the end-users and the material in this man page is
@@ -108,6 +122,7 @@ data files and the remaining spectra variables in memory (in a
 <code>DataFrame</code>). This backend requires the <code>rhdf5</code> package.</p></li>
 </ul><p>See below for more details about individual backends.</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'MsBackend'</span></span>
@@ -205,7 +220,7 @@ data files and the remaining spectra variables in memory (in a
 <span>  <span class="va">object</span>,</span>
 <span>  spectraVariables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  ranges <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"any"</span><span class="op">)</span></span>
+<span>  match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"any"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
@@ -218,7 +233,7 @@ data files and the remaining spectra variables in memory (in a
 <span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"any"</span><span class="op">)</span></span>
+<span>  match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"any"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
@@ -376,17 +391,26 @@ data files and the remaining spectra variables in memory (in a
 <span></span>
 <span><span class="fu">MsBackendMzR</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
+
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>Object extending <code>MsBackend</code>.</p></dd>
+
+
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
 <dd><p>for <code>backendBpparam()</code>: parameter object from the
 <code>BiocParallel</code> package defining the parallel processing setup.
 Defaults to <code>BPPARAM = bpparam()</code>. See <code>bpparam()</code> for more
 information.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments.</p></dd>
+
+
 <dt id="arg-columns">columns<a class="anchor" aria-label="anchor" href="#arg-columns"></a></dt>
 <dd><p>For <code>spectraData()</code> accessor: optional <code>character</code> with
 column names (spectra variables) that should be included in the
@@ -395,38 +419,56 @@ For <code>peaksData()</code> accessor: optional <code>character</code> with requ
 in the individual <code>matrix</code> of the returned <code>list</code>. Defaults to
 <code>peaksVariables(object)</code> and depends on what <em>peaks variables</em> the
 backend provides.</p></dd>
+
+
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></dd>
+
+
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>for <code>filterAcquisitionNum()</code>: <code>integer</code> with the acquisition
 numbers to filter for.</p></dd>
+
+
 <dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
 <dd><p>For <code>filterFile()</code>: index or name of the file(s) to which the
 data should be subsetted. For <code><a href="hidden_aliases.html">export()</a></code>: <code>character</code> of length 1 or
 equal to the number of spectra.</p></dd>
+
+
 <dt id="arg-dataorigin">dataOrigin<a class="anchor" aria-label="anchor" href="#arg-dataorigin"></a></dt>
 <dd><p>For <code>filterDataOrigin()</code>: <code>character</code> to define which
 spectra to keep.
 For <code>filterAcquisitionNum()</code>: optionally specify if filtering should
 occur only for spectra of selected <code>dataOrigin</code>.</p></dd>
+
+
 <dt id="arg-datastorage">dataStorage<a class="anchor" aria-label="anchor" href="#arg-datastorage"></a></dt>
 <dd><p>For <code>filterDataStorage()</code>: <code>character</code> to define which
 spectra to keep.
 For <code>filterAcquisitionNum()</code>: optionally specify if filtering should
 occur only for spectra of selected <code>dataStorage</code>.</p></dd>
+
+
 <dt id="arg-mz">mz<a class="anchor" aria-label="anchor" href="#arg-mz"></a></dt>
 <dd><p>For <code>filterIsolationWindow()</code>: <code>numeric(1)</code> with the m/z value to
 filter the object. For <code>filterPrecursorMzRange()</code>: <code>numeric(2)</code> with the
 lower and upper m/z boundary. For <code>filterPrecursorMzValues()</code>: <code>numeric</code>
 with the m/z value(s) to filter the object.</p></dd>
+
+
 <dt id="arg-mslevel">msLevel<a class="anchor" aria-label="anchor" href="#arg-mslevel"></a></dt>
 <dd><p><code>integer</code> defining the MS level of the spectra to which the
 function should be applied. For <code>filterMsLevel()</code>: the MS level to which
 <code>object</code> should be subsetted.</p></dd>
+
+
 <dt id="arg-polarity">polarity<a class="anchor" aria-label="anchor" href="#arg-polarity"></a></dt>
 <dd><p>For <code>filterPolarity()</code>: <code>integer</code> specifying the polarity to
 to subset <code>object</code>.</p></dd>
+
+
 <dt id="arg-ppm">ppm<a class="anchor" aria-label="anchor" href="#arg-ppm"></a></dt>
 <dd><p>For <code>filterPrecursorMzValues()</code>: <code>numeric(1)</code> with the
 m/z-relative maximal acceptable difference for a m/z to be considered
@@ -436,6 +478,8 @@ a maximal accepted difference between user input <code>values</code> and the
 <code>spectraVariables</code> values.  If it is not equal to the length of the
 value provided with parameter <code>spectraVariables</code>, <code>ppm[1]</code> will be
 recycled.</p></dd>
+
+
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p>For <code>filterPrecursorMzValues()</code>: <code>numeric(1)</code> with the
 maximal absolute acceptable difference for a m/z value to be considered
@@ -444,18 +488,26 @@ accepted tolerance between the <code>values</code> and the spectra variables.
 Defaults to <code>tolerance = 0</code>. If it is not equal to the length of the
 value provided with parameter <code>spectraVariables</code>, <code>tolerance[1]</code> will
 be recycled.</p></dd>
+
+
 <dt id="arg-z">z<a class="anchor" aria-label="anchor" href="#arg-z"></a></dt>
 <dd><p>For <code>filterPrecursorCharge()</code>: <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer()</a></code> with the precursor
 charges to be used as filter.</p></dd>
+
+
 <dt id="arg-acquisitionnum">acquisitionNum<a class="anchor" aria-label="anchor" href="#arg-acquisitionnum"></a></dt>
 <dd><p>for <code>filterPrecursorScan()</code>: <code>integer</code> with the
 acquisition number of the spectra to which the object should be
 subsetted.</p></dd>
+
+
 <dt id="arg-f">f<a class="anchor" aria-label="anchor" href="#arg-f"></a></dt>
 <dd><p><code>factor</code> defining the grouping to split <code>x</code>. See <code><a href="https://rdrr.io/r/base/split.html" class="external-link">split()</a></code>. For
 <code>filterPrecursorScan()</code>: factor defining from which original data files
 the spectra derive to avoid selecting spectra from different
 samples/files. Defaults to <code>f = dataOrigin(object)</code>.</p></dd>
+
+
 <dt id="arg-spectravariables">spectraVariables<a class="anchor" aria-label="anchor" href="#arg-spectravariables"></a></dt>
 <dd><p>For <code><a href="hidden_aliases.html">selectSpectraVariables()</a></code>: <code>character</code> with the
 names of the spectra variables to which the backend should be subsetted.
@@ -463,53 +515,82 @@ For <code>filterRanges()</code> and <code>filterValues()</code>: <code>character
 the column(s) from <code>spectraData(object)</code> on which to filter the data and
 that correspond to the the names of the spectra variables that should be
 used for the filtering.</p></dd>
+
+
 <dt id="arg-ranges">ranges<a class="anchor" aria-label="anchor" href="#arg-ranges"></a></dt>
 <dd><p>for <code>filterRanges()</code>: A <code>numeric</code> vector of paired values
 (upper and lower boundary) that define the ranges to filter the <code>object</code>.
 These paired values need to be in the same order as the
 <code>spectraVariables</code> parameter (see below).</p></dd>
+
+
 <dt id="arg-match">match<a class="anchor" aria-label="anchor" href="#arg-match"></a></dt>
 <dd><p>For <code>filterRanges()</code> and <code>filterValues()</code>: <code>character(1) </code>
 defining whether the condition has to match for all provided
 <code>ranges</code>/<code>values</code> (<code>match = "all"</code>; the default), or for any of them
 (<code>match = "any"</code>) for spectra to be retained.</p></dd>
+
+
 <dt id="arg-rt">rt<a class="anchor" aria-label="anchor" href="#arg-rt"></a></dt>
 <dd><p>for <code>filterRt()</code>: <code>numeric(2)</code> defining the retention time range
 to be used to subset/filter <code>object</code>.</p></dd>
+
+
 <dt id="arg-mslevel-">msLevel.<a class="anchor" aria-label="anchor" href="#arg-mslevel-"></a></dt>
 <dd><p>same as <code>msLevel</code> above.</p></dd>
+
+
 <dt id="arg-values">values<a class="anchor" aria-label="anchor" href="#arg-values"></a></dt>
 <dd><p>for <code>filterValues()</code>: A <code>numeric</code> vector that define the
 values to filter the <code>object</code>. <code>values</code> needs to be of same length than
 parameter <code>spectraVariables</code> and in the same order.</p></dd>
+
+
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>Object extending <code>MsBackend</code>.</p></dd>
+
+
 <dt id="arg-use-names">use.names<a class="anchor" aria-label="anchor" href="#arg-use-names"></a></dt>
 <dd><p>For <code><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths()</a></code>: whether spectrum names should be used.</p></dd>
+
+
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
 <dd><p>For <code>[</code>: not considered.</p></dd>
+
+
 <dt id="arg-initial">initial<a class="anchor" aria-label="anchor" href="#arg-initial"></a></dt>
 <dd><p>For <code>tic()</code>: <code>logical(1)</code> whether the initially
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (<code>initial = FALSE</code>).</p></dd>
+
+
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
 <dd><p>For <code>[</code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></dd>
+
+
 <dt id="arg-j">j<a class="anchor" aria-label="anchor" href="#arg-j"></a></dt>
 <dd><p>For <code>[</code>: not supported.</p></dd>
+
+
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>For <code>$</code> and <code>$&lt;-</code>: the name of the spectra variable to return
 or set.</p></dd>
+
+
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>For <code>backendInitialize()</code>: <code>DataFrame</code> with spectrum
 metadata/data. This parameter can be empty for <code>MsBackendMzR</code> backends
 but needs to be provided for <code>MsBackendDataFrame</code> backends.</p></dd>
+
+
 <dt id="arg-peaksvariables">peaksVariables<a class="anchor" aria-label="anchor" href="#arg-peaksvariables"></a></dt>
 <dd><p>For <code>backendInitialize()</code> for <code>MsBackendMemory</code>:
 <code>character</code> specifying which of the columns of the provided <code>data</code>
 contain <em>peaks variables</em> (i.e. information for individual mass
 peaks). Defaults to <code>peaksVariables = c("mz", "intensity")</code>. <code>"mz"</code>
 and <code>"intensity"</code> should <strong>always</strong> be specified.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -517,6 +598,9 @@ and <code>"intensity"</code> should <strong>always</strong> be specified.</p></d
     </div>
     <div class="section level2">
     <h2 id="implementation-notes">Implementation notes<a class="anchor" aria-label="anchor" href="#implementation-notes"></a></h2>
+
+
+
 <p>Backends extending <code>MsBackend</code> <strong>must</strong> implement all of its methods (listed
 above). Developers of new <code>MsBackend</code>s should follow the
 <code>MsBackendMemory</code> implementation. To ensure a new implementation being
@@ -546,6 +630,9 @@ of m/z or intensity values.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="backend-functions">Backend functions<a class="anchor" aria-label="anchor" href="#backend-functions"></a></h2>
+
+
+
 <p>New backend classes <strong>must</strong> extend the base <code>MsBackend</code> class will have to
 implement some of the following methods (see the <code>MsBackend</code> vignette for
 detailed description and examples):</p><ul><li><p><code>[</code>: subset the backend. Only subsetting by element (<em>row</em>/<code>i</code>) is
@@ -859,6 +946,9 @@ efficient implementations could be defined for specific backends.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="subsetting-and-merging-backend-classes">Subsetting and merging backend classes<a class="anchor" aria-label="anchor" href="#subsetting-and-merging-backend-classes"></a></h2>
+
+
+
 <p>Backend classes must support (implement) the <code>[</code> method to subset the object.
 This method should only support subsetting by spectra (rows, <code>i</code>) and has
 to return a <code>MsBackend</code> class.</p>
@@ -932,6 +1022,9 @@ are always <code>numeric</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="msbackendmzr-on-disk-ms-data-backend"><code>MsBackendMzR</code>, on-disk MS data backend<a class="anchor" aria-label="anchor" href="#msbackendmzr-on-disk-ms-data-backend"></a></h2>
+
+
+
 <p>The <code>MsBackendMzR</code> keeps only a limited amount of data in memory,
 while the spectra data (m/z and intensity values) are fetched from
 the raw files on-demand. This backend uses the <code>mzR</code> package for
@@ -967,6 +1060,9 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
     </div>
     <div class="section level2">
     <h2 id="msbackendhdf-peaks-on-disk-ms-data-backend"><code>MsBackendHdf5Peaks</code>, on-disk MS data backend<a class="anchor" aria-label="anchor" href="#msbackendhdf-peaks-on-disk-ms-data-backend"></a></h2>
+
+
+
 <p>The <code>MsBackendHdf5Peaks</code> keeps, similar to the <code>MsBackendMzR</code>, peak data
 (i.e. m/z and intensity values) in custom data files (in HDF5 format) on
 disk while the remaining spectra variables are kept in memory. This backend
@@ -996,6 +1092,7 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Johannes Rainer, Sebastian Gibb, Laurent Gatto</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
@@ -1209,12 +1306,21 @@ function and returns <strong>always</strong> m/z and intensity values.</p>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
+
+
     <footer><div class="pkgdown-footer-left">
   <p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto, Johannes Rainer, Sebastian Gibb, Philippine Louail.</p>
 </div>
+
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
+
     </footer></div>
+
+
+
+
+
   </body></html>
 

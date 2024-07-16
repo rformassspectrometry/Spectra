@@ -33,12 +33,19 @@ value is then reported. Since the fragment spectrum's potential MS1 mass
 peak is selected based on its intensity, this method should only be used
 for DDA data."><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+
+
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
+
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.3</small>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/Spectra.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -52,6 +59,8 @@ for DDA data."><meta property="og:image" content="https://rformassspectrometry.g
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
+
+
   </div>
 </nav><div class="container template-reference-topic">
 <div class="row">
@@ -60,6 +69,7 @@ for DDA data."><meta property="og:image" content="https://rformassspectrometry.g
       <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra-estimatePrecursorMz.R" class="external-link"><code>R/Spectra-estimatePrecursorMz.R</code></a></small>
       <div class="d-none name"><code>estimatePrecursorMz.Rd</code></div>
     </div>
+
     <div class="ref-description section level2">
     <p>MS data from Waters instruments are calibrated through the <em>Lock Mass</em>, but,
 while all m/z values of mass peaks in each spectrum will be calibrated by
@@ -79,26 +89,37 @@ value is then reported. Since the fragment spectrum's potential MS1 mass
 peak is selected based on its intensity, this method should <strong>only be used
 for DDA data</strong>.</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">estimatePrecursorMz</span><span class="op">(</span><span class="va">object</span>, tolerance <span class="op">=</span> <span class="fl">0.3</span>, ppm <span class="op">=</span> <span class="fl">10</span>, BPPARAM <span class="op">=</span> <span class="fu">SerialParam</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
+
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p><code><a href="Spectra.html">Spectra()</a></code> object with <strong>DDA</strong> data.</p></dd>
+
+
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p><code>numeric(1)</code> defining an absolute acceptable difference in
 m/z between the fragment spectra's reported precursor m/z and the
 MS1 peaks considered as the precursor peak. All MS1 peaks from the
 previous MS1 scan with an m/z between the fragment spectrum's
 precursorMz +/- (tolerance + ppm(precursorMz, ppm)) are considered.</p></dd>
+
+
 <dt id="arg-ppm">ppm<a class="anchor" aria-label="anchor" href="#arg-ppm"></a></dt>
 <dd><p><code>numeric(1)</code> defining the m/z dependent acceptable difference in
 m/z. See documentation of parameter <code>tolerance</code> for more information.</p></dd>
+
+
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
 <dd><p>parallel processing setup. Defaults to
 <code>BPPARAM = SerialParam()</code>. See <code>SerialParam()</code> for more information.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -122,6 +143,7 @@ they feel comfortable with.</p>
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Mar Garcia-Aloy, Johannes Rainer</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
@@ -154,12 +176,21 @@ they feel comfortable with.</p>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
+
+
     <footer><div class="pkgdown-footer-left">
   <p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto, Johannes Rainer, Sebastian Gibb, Philippine Louail.</p>
 </div>
+
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
+
     </footer></div>
+
+
+
+
+
   </body></html>
 

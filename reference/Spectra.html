@@ -9,12 +9,19 @@ It supports multiple data backends, e.g. in-memory (MsBackendMemory,
 MsBackendDataFrame()), on-disk as mzML (MsBackendMzR()) or HDF5
 (MsBackendHdf5Peaks())."><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+
+
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
+
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.3</small>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/Spectra.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -28,6 +35,8 @@ MsBackendDataFrame()), on-disk as mzML (MsBackendMzR()) or HDF5
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
+
+
   </div>
 </nav><div class="container template-reference-topic">
 <div class="row">
@@ -36,6 +45,7 @@ MsBackendDataFrame()), on-disk as mzML (MsBackendMzR()) or HDF5
       <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra-functions.R" class="external-link"><code>R/Spectra-functions.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra.R" class="external-link"><code>R/Spectra.R</code></a></small>
       <div class="d-none name"><code>Spectra.Rd</code></div>
     </div>
+
     <div class="ref-description section level2">
     <p>The <code>Spectra</code> class encapsules spectral mass spectrometry data and
 related metadata.</p>
@@ -43,6 +53,7 @@ related metadata.</p>
 <code><a href="MsBackend.html">MsBackendDataFrame()</a></code>), on-disk as mzML (<code><a href="MsBackend.html">MsBackendMzR()</a></code>) or HDF5
 (<code><a href="MsBackend.html">MsBackendHdf5Peaks()</a></code>).</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">applyProcessing</span><span class="op">(</span></span>
@@ -60,7 +71,7 @@ related metadata.</p>
 <span>  p <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">dataStorage</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="va">combinePeaksData</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">joinSpectraData</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by.x <span class="op">=</span> <span class="st">"spectrumId"</span>, <span class="va">by.y</span>, suffix.y <span class="op">=</span> <span class="st">".y"</span><span class="op">)</span></span>
@@ -72,7 +83,7 @@ related metadata.</p>
 <span>  substDefinition <span class="op">=</span> <span class="fu">isotopicSubstitutionMatrix</span><span class="op">(</span><span class="st">"HMDB_NEUTRAL"</span><span class="op">)</span>,</span>
 <span>  tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>charge <span class="op">=</span> <span class="fl">1</span></span>
+<span>  charge <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">reduceSpectra</span><span class="op">(</span><span class="va">x</span>, tolerance <span class="op">=</span> <span class="fl">0</span>, ppm <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
@@ -83,7 +94,7 @@ related metadata.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>substDefinition <span class="op">=</span> <span class="fu">isotopicSubstitutionMatrix</span><span class="op">(</span><span class="st">"HMDB_NEUTRAL"</span><span class="op">)</span></span>
+<span>  substDefinition <span class="op">=</span> <span class="fu">isotopicSubstitutionMatrix</span><span class="op">(</span><span class="st">"HMDB_NEUTRAL"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">scalePeaks</span><span class="op">(</span><span class="va">x</span>, by <span class="op">=</span> <span class="va">sum</span>, msLevel. <span class="op">=</span> <span class="fu">uniqueMsLevels</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
@@ -93,7 +104,7 @@ related metadata.</p>
 <span>  tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  mz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"=="</span>, <span class="st">"&gt;="</span><span class="op">)</span>,</span>
-<span>msLevel. <span class="op">=</span> <span class="fu">uniqueMsLevels</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span>  msLevel. <span class="op">=</span> <span class="fu">uniqueMsLevels</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'missing'</span></span>
@@ -103,7 +114,7 @@ related metadata.</p>
 <span>  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  backend <span class="op">=</span> <span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
@@ -112,7 +123,7 @@ related metadata.</p>
 <span>  processingQueue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'character'</span></span>
@@ -123,7 +134,7 @@ related metadata.</p>
 <span>  source <span class="op">=</span> <span class="fu"><a href="MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  backend <span class="op">=</span> <span class="va">source</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'ANY'</span></span>
@@ -134,7 +145,7 @@ related metadata.</p>
 <span>  source <span class="op">=</span> <span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  backend <span class="op">=</span> <span class="va">source</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra,MsBackend'</span></span>
@@ -143,7 +154,7 @@ related metadata.</p>
 <span>  <span class="va">backend</span>,</span>
 <span>  f <span class="op">=</span> <span class="fu"><a href="processingChunkSize.html">processingChunkFactor</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -164,7 +175,7 @@ related metadata.</p>
 <span>  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mz"</span>, <span class="st">"intensity"</span><span class="op">)</span>,</span>
 <span>  f <span class="op">=</span> <span class="fu"><a href="processingChunkSize.html">processingChunkFactor</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -231,7 +242,7 @@ related metadata.</p>
 <span>  tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"any"</span>, <span class="st">"all"</span><span class="op">)</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -240,7 +251,7 @@ related metadata.</p>
 <span>  neutralLoss <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -250,7 +261,7 @@ related metadata.</p>
 <span>  <span class="va">...</span>,</span>
 <span>  chunkSize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">SerialParam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">SerialParam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -295,7 +306,7 @@ related metadata.</p>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
 <span><span class="fu"><a href="hidden_aliases.html">selectSpectraVariables</a></span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
-<span>spectraVariables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">union</a></span><span class="op">(</span><span class="fu">spectraVariables</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>, <span class="fu">peaksVariables</span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span></span>
+<span>  spectraVariables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">union</a></span><span class="op">(</span><span class="fu">spectraVariables</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>, <span class="fu">peaksVariables</span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -342,7 +353,7 @@ related metadata.</p>
 <span>  <span class="va">object</span>,</span>
 <span>  n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dataStorage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>dataOrigin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  dataOrigin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -361,7 +372,7 @@ related metadata.</p>
 <span>  threshold <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  keepIsotopes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  maxCharge <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>isotopeTolerance <span class="op">=</span> <span class="fl">0.005</span></span>
+<span>  isotopeTolerance <span class="op">=</span> <span class="fl">0.005</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -383,7 +394,7 @@ related metadata.</p>
 <span>  <span class="va">object</span>,</span>
 <span>  mz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  msLevel. <span class="op">=</span> <span class="fu">uniqueMsLevels</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
-<span>keep <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  keep <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -393,7 +404,7 @@ related metadata.</p>
 <span>  tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  msLevel. <span class="op">=</span> <span class="fu">uniqueMsLevels</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
-<span>keep <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  keep <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -425,7 +436,7 @@ related metadata.</p>
 <span>  <span class="va">object</span>,</span>
 <span>  spectraVariables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  ranges <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"any"</span><span class="op">)</span></span>
+<span>  match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"any"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -435,7 +446,7 @@ related metadata.</p>
 <span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"any"</span><span class="op">)</span></span>
+<span>  match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"any"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -445,7 +456,7 @@ related metadata.</p>
 <span>  breaks <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  msLevel. <span class="op">=</span> <span class="fu">uniqueMsLevels</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="va">sum</span>,</span>
-<span>zero.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  zero.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra,Spectra'</span></span>
@@ -457,7 +468,7 @@ related metadata.</p>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="va">ndotproduct</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>SIMPLIFY <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  SIMPLIFY <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra,missing'</span></span>
@@ -469,7 +480,7 @@ related metadata.</p>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="va">ndotproduct</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>SIMPLIFY <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  SIMPLIFY <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -490,7 +501,7 @@ related metadata.</p>
 <span>  <span class="va">object</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="va">min</span>,</span>
 <span>  value <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>msLevel. <span class="op">=</span> <span class="fu">uniqueMsLevels</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span>  msLevel. <span class="op">=</span> <span class="fu">uniqueMsLevels</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
@@ -535,14 +546,25 @@ related metadata.</p>
 <span><span class="fu"><a href="MsBackend.html">dataStorageBasePath</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
-<span><span class="fu"><a href="MsBackend.html">dataStorageBasePath</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
+<span><span class="fu"><a href="MsBackend.html">dataStorageBasePath</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span></span>
+<span><span class="fu">asDataFrame</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  i <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
+<span>  spectraVars <span class="op">=</span> <span class="fu">spectraVariables</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
+
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>For <code>Spectra()</code>: either a <code>DataFrame</code> or <code>missing</code>. See
 section on creation of <code>Spectra</code> objects for details. For all other
 methods a <code>Spectra</code> object.</p></dd>
+
+
 <dt id="arg-f">f<a class="anchor" aria-label="anchor" href="#arg-f"></a></dt>
 <dd><p>For <code><a href="https://rdrr.io/r/base/split.html" class="external-link">split()</a></code>: factor defining how to split <code>x</code>. See <code><a href="https://rdrr.io/r/base/split.html" class="external-link">base::split()</a></code>
 for details. For <code>setBackend()</code>: factor defining how to split the data
@@ -556,19 +578,29 @@ belong to the same original data file (sample): Defaults to
 For <code>intensity()</code>, <code>mz()</code> and <code>peaksData()</code>: factor defining how data
 should be chunk-wise loaded an processed. Defaults to
 <code><a href="processingChunkSize.html">processingChunkFactor()</a></code>.</p></dd>
+
+
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
 <dd><p>Parallel setup configuration. See <code>bpparam()</code> for more
 information. This is passed directly to the <code><a href="MsBackend.html">backendInitialize()</a></code> method
 of the <a href="MsBackend.html">MsBackend</a>.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments.</p></dd>
+
+
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>A <code>Spectra</code> object.</p></dd>
+
+
 <dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
 <dd><p>For <code>combineSpectra()</code>: <code>factor</code> defining how to split the input
 <code>Spectra</code> for parallel processing. Defaults to <code>x$dataStorage</code>, i.e.,
 depending on the used backend, per-file parallel processing will be
 performed.</p></dd>
+
+
 <dt id="arg-fun">FUN<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
 <dd><p>For <code>addProcessing()</code>: function to be applied to the peak matrix
 of each spectrum in <code>object</code>. For <code>compareSpectra()</code>: function to compare
@@ -580,25 +612,37 @@ For <code>bin()</code>: function to aggregate intensity values of peaks falling
 into the same bin. Defaults to <code>FUN = sum</code> thus summing up intensities.
 For <code>spectrapply()</code> and <code><a href="chunkapply.html">chunkapply()</a></code>: function to be applied to
 <code>Spectra</code>.</p></dd>
+
+
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A <code>Spectra</code> object. A <code>DataFrame</code> for <code>joinSpectraData()</code>.</p></dd>
+
+
 <dt id="arg-by-x">by.x<a class="anchor" aria-label="anchor" href="#arg-by-x"></a></dt>
 <dd><p>A <code>character(1)</code> specifying the spectra variable used
 for merging. Default is <code>"spectrumId"</code>.</p></dd>
+
+
 <dt id="arg-by-y">by.y<a class="anchor" aria-label="anchor" href="#arg-by-y"></a></dt>
 <dd><p>A <code>character(1)</code> specifying the column used for
 merging. Set to <code>by.x</code> if missing.</p></dd>
+
+
 <dt id="arg-suffix-y">suffix.y<a class="anchor" aria-label="anchor" href="#arg-suffix-y"></a></dt>
 <dd><p>A <code>character(1)</code> specifying the suffix to be used
 for making the names of columns in the merged spectra variables
 unique. This suffix will be used to amend <code>names(y)</code>, while
 <code>spectraVariables(x)</code> will remain unchanged.</p></dd>
+
+
 <dt id="arg-substdefinition">substDefinition<a class="anchor" aria-label="anchor" href="#arg-substdefinition"></a></dt>
 <dd><p>For <code>deisotopeSpectra()</code> and
 <code>filterPrecursorIsotopes()</code>: <code>matrix</code> or <code>data.frame</code> with definitions
 of isotopic substitutions. Uses by default isotopic substitutions
 defined from all compounds in the Human Metabolome Database (HMDB). See
 <code>isotopologues()</code> or <code>isotopicSubstitutionMatrix()</code> for details.</p></dd>
+
+
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p>For <code>compareSpectra()</code>, <code><a href="hidden_aliases.html">containsMz()</a></code>,
 <code>deisotopeSpectra()</code>, <code>filterMzValues()</code> and <code>reduceSpectra()</code>:
@@ -615,6 +659,8 @@ define a maximal accepted difference between user input <code>values</code> and 
 <code>spectraVariables</code> values. If it is not equal to the length of the
 value provided with parameter <code>spectraVariables</code>, <code>tolerance[1]</code> will be
 recycled. Default is <code>tolerance = 0</code></p></dd>
+
+
 <dt id="arg-ppm">ppm<a class="anchor" aria-label="anchor" href="#arg-ppm"></a></dt>
 <dd><p>For <code>compareSpectra()</code>, <code><a href="hidden_aliases.html">containsMz()</a></code>, <code>deisotopeSpectra()</code>,
 <code>filterMzValues()</code> and <code>reduceSpectra()</code>: <code>numeric(1)</code>
@@ -629,31 +675,45 @@ a maximal accepted difference between user input <code>values</code> and the
 <code>spectraVariables</code> values.  If it is not equal to the length of the
 value provided with parameter <code>spectraVariables</code>, <code>ppm[1]</code> will be
 recycled.</p></dd>
+
+
 <dt id="arg-charge">charge<a class="anchor" aria-label="anchor" href="#arg-charge"></a></dt>
 <dd><p>For <code>deisotopeSpectra()</code>: expected charge of the ionized
 compounds. See <code>isotopologues()</code> for details.</p></dd>
+
+
 <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
 <dd><p>For <code>scalePeaks()</code>: function to calculate a single <code>numeric</code> from
 intensity values of a spectrum by which all intensities (of
 that spectrum) should be divided by. The default <code>by = sum</code> will
 divide intensities of each spectrum by the sum of intensities of that
 spectrum.</p></dd>
+
+
 <dt id="arg-mslevel-">msLevel.<a class="anchor" aria-label="anchor" href="#arg-mslevel-"></a></dt>
 <dd><p><code>integer</code> defining the MS level(s) of the spectra to which
 the function should be applied (defaults to all MS levels of <code>object</code>.
 For <code>filterMsLevel()</code>: the MS level to which <code>object</code> should be
 subsetted.</p></dd>
+
+
 <dt id="arg-mz">mz<a class="anchor" aria-label="anchor" href="#arg-mz"></a></dt>
 <dd><p>For <code>filterIsolationWindow()</code>: <code>numeric(1)</code> with the m/z value to
 filter the object. For <code>filterPrecursorMz()</code> and <code>filterMzRange()</code>:
 <code>numeric(2)</code> defining the lower and upper m/z boundary.
 For <code>filterMzValues()</code> and <code>filterPrecursorMzValues()</code>: <code>numeric</code> with
 the m/z values to match peaks or precursor m/z against.</p></dd>
+
+
 <dt id="arg-processingqueue">processingQueue<a class="anchor" aria-label="anchor" href="#arg-processingqueue"></a></dt>
 <dd><p>For <code>Spectra()</code>: optional <code>list</code> of
 ProcessingStep objects.</p></dd>
+
+
 <dt id="arg-metadata">metadata<a class="anchor" aria-label="anchor" href="#arg-metadata"></a></dt>
 <dd><p>For <code>Spectra()</code>: optional <code>list</code> with metadata information.</p></dd>
+
+
 <dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a></dt>
 <dd><p>For <code>Spectra()</code>: <a href="MsBackend.html">MsBackend</a> to be used as backend. See
 section on creation of <code>Spectra</code> objects for details. For <code>setBackend()</code>:
@@ -663,12 +723,18 @@ parameter <code>data</code> in their <code><a href="MsBackend.html">backendIniti
 passing the full spectra data to the initialize method. See section on
 creation of <code>Spectra</code> objects for details.
 For <code><a href="hidden_aliases.html">export()</a></code>: <a href="MsBackend.html">MsBackend</a> to be used to export the data.</p></dd>
+
+
 <dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
 <dd><p>For <code>Spectra()</code>: instance of <a href="MsBackend.html">MsBackend</a> that can be used
 to import spectrum data from the provided files. See section <em>Creation
 of objects, conversion and changing the backend</em> for more details.</p></dd>
+
+
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
 <dd><p>For <code>[</code>, <code><a href="https://rdrr.io/r/base/split.html" class="external-link">split()</a></code>: not considered.</p></dd>
+
+
 <dt id="arg-columns">columns<a class="anchor" aria-label="anchor" href="#arg-columns"></a></dt>
 <dd><p>For <code>spectraData()</code> accessor: optional <code>character</code> with
 column names (spectra variables) that should be included in the
@@ -677,21 +743,33 @@ For <code>peaksData()</code> accessor: optional <code>character</code> with requ
 in the individual <code>matrix</code> of the returned <code>list</code>. Defaults to
 <code>c("mz", "value")</code> but any values returned by <code>peaksVariables(object)</code>
 with <code>object</code> being the <code>Spectra</code> object are supported.</p></dd>
+
+
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></dd>
+
+
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
 <dd><p>for <code><a href="hidden_aliases.html">containsMz()</a></code>: either <code>"any"</code> or <code>"all"</code> defining whether
 any (the default) or all provided <code>mz</code> have to be present in the
 spectrum.</p></dd>
+
+
 <dt id="arg-neutralloss">neutralLoss<a class="anchor" aria-label="anchor" href="#arg-neutralloss"></a></dt>
 <dd><p>for <code><a href="hidden_aliases.html">containsNeutralLoss()</a></code>: <code>numeric(1)</code> defining the
 value which should be subtracted from the spectrum's precursor m/z.</p></dd>
+
+
 <dt id="arg-chunksize">chunkSize<a class="anchor" aria-label="anchor" href="#arg-chunksize"></a></dt>
 <dd><p>For <code>spectrapply()</code>: size of the chunks into which <code>Spectra</code>
 should be split. This parameter overrides parameters <code>f</code> and <code>BPPARAM</code>.</p></dd>
+
+
 <dt id="arg-use-names">use.names<a class="anchor" aria-label="anchor" href="#arg-use-names"></a></dt>
 <dd><p>For <code><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths()</a></code>: ignored.</p></dd>
+
+
 <dt id="arg-spectravariables">spectraVariables<a class="anchor" aria-label="anchor" href="#arg-spectravariables"></a></dt>
 <dd><ul><li><p>For <code><a href="hidden_aliases.html">selectSpectraVariables()</a></code>: <code>character</code> with the
 names of the spectra variables to which the backend should be
@@ -704,31 +782,49 @@ the data and that correspond to the the names of the spectra variables
 that should be used for the filtering.</p></li>
 </ul></li>
 </ul></dd>
+
+
 <dt id="arg-initial">initial<a class="anchor" aria-label="anchor" href="#arg-initial"></a></dt>
 <dd><p>For <code>tic()</code>: <code>logical(1)</code> whether the initially
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (<code>initial = FALSE</code>, same as <code>ionCount()</code>).</p></dd>
+
+
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>For <code>$</code> and <code>$&lt;-</code>: the name of the spectra variable to return
 or set.</p></dd>
+
+
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
-<dd><p>For <code>[</code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></dd>
+<dd><p>For <code>[</code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the
+object. For <code>asDataFrame()</code> an <code>numeric</code> indicating which scans to coerce
+to a <code>DataFrame</code> (default is <code>seq_along(object)</code>).</p></dd>
+
+
 <dt id="arg-j">j<a class="anchor" aria-label="anchor" href="#arg-j"></a></dt>
 <dd><p>For <code>[</code>: not supported.</p></dd>
+
+
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>for <code>filterAcquisitionNum()</code>: <code>integer</code> with the acquisition
 numbers to filter for.</p></dd>
+
+
 <dt id="arg-datastorage">dataStorage<a class="anchor" aria-label="anchor" href="#arg-datastorage"></a></dt>
 <dd><p>For <code>filterDataStorage()</code>: <code>character</code> to define which
 spectra to keep.
 For <code>filterAcquisitionNum()</code>: optionally specify if filtering should
 occur only for spectra of selected <code>dataStorage</code>.</p></dd>
+
+
 <dt id="arg-dataorigin">dataOrigin<a class="anchor" aria-label="anchor" href="#arg-dataorigin"></a></dt>
 <dd><p>For <code>filterDataOrigin()</code>: <code>character</code> to define which
 spectra to keep.
 For <code>filterAcquisitionNum()</code>: optionally specify if filtering should
 occurr only for spectra of selected <code>dataOrigin</code>.</p></dd>
+
+
 <dt id="arg-halfwindowsize">halfWindowSize<a class="anchor" aria-label="anchor" href="#arg-halfwindowsize"></a></dt>
 <dd><ul><li><p>For <code><a href="hidden_aliases.html">pickPeaks()</a></code>: <code>integer(1)</code>, used in the
 identification of the mass peaks: a local maximum has to be the maximum
@@ -739,6 +835,8 @@ window left and right of a peak where to remove fourier transform
 artefacts.</p></li>
 </ul></li>
 </ul></dd>
+
+
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
 <dd><ul><li><p>For <code><a href="hidden_aliases.html">pickPeaks()</a></code>: a <code>double(1)</code> defining the proportion of the maximal
 peak intensity. Just values above are used for the weighted mean
@@ -752,16 +850,24 @@ times the intensity of the tested peak (within the selected
 <code>halfWindowSize</code>).</p></li>
 </ul></li>
 </ul></dd>
+
+
 <dt id="arg-keepisotopes">keepIsotopes<a class="anchor" aria-label="anchor" href="#arg-keepisotopes"></a></dt>
 <dd><p>For <code><a href="filterFourierTransformArtefacts.html">filterFourierTransformArtefacts()</a></code>: whether isotope
 peaks should not be removed as fourier artefacts.</p></dd>
+
+
 <dt id="arg-maxcharge">maxCharge<a class="anchor" aria-label="anchor" href="#arg-maxcharge"></a></dt>
 <dd><p>For <code><a href="filterFourierTransformArtefacts.html">filterFourierTransformArtefacts()</a></code>: the maximum charge
 to be considered for isotopes.</p></dd>
+
+
 <dt id="arg-isotopetolerance">isotopeTolerance<a class="anchor" aria-label="anchor" href="#arg-isotopetolerance"></a></dt>
 <dd><p>For <code><a href="filterFourierTransformArtefacts.html">filterFourierTransformArtefacts()</a></code>: the m/z
 <code>tolerance</code> to be used to define whether peaks might be isotopes of
 the current tested peak.</p></dd>
+
+
 <dt id="arg-intensity">intensity<a class="anchor" aria-label="anchor" href="#arg-intensity"></a></dt>
 <dd><p>For <code>filterIntensity()</code>: <code>numeric</code> of length 1 or 2
 defining either the lower or the lower and upper intensity limit for the
@@ -769,55 +875,83 @@ filtering, or a <code>function</code> that takes the intensities as input and
 returns a <code>logical</code> (same length then peaks in the spectrum) whether the
 peak should be retained or not. Defaults to <code>intensity = c(0, Inf)</code> thus
 only peaks with <code>NA</code> intensity are removed.</p></dd>
+
+
 <dt id="arg-keep">keep<a class="anchor" aria-label="anchor" href="#arg-keep"></a></dt>
 <dd><p>For <code>filterMzValues()</code> and <code>filterMzRange()</code>: <code>logical(1)</code>
 whether  the matching peaks should be retained (<code>keep = TRUE</code>, the
 default) or dropped (<code>keep = FALSE</code>).</p></dd>
+
+
 <dt id="arg-polarity">polarity<a class="anchor" aria-label="anchor" href="#arg-polarity"></a></dt>
 <dd><p>for <code>filterPolarity()</code>: <code>integer</code> specifying the polarity to
 to subset <code>object</code>.</p></dd>
+
+
 <dt id="arg-z">z<a class="anchor" aria-label="anchor" href="#arg-z"></a></dt>
 <dd><p>For <code>filterPrecursorCharge()</code>: <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer()</a></code> with the precursor
 charges to be used as filter.</p></dd>
+
+
 <dt id="arg-acquisitionnum">acquisitionNum<a class="anchor" aria-label="anchor" href="#arg-acquisitionnum"></a></dt>
 <dd><p>for <code>filterPrecursorScan()</code>: <code>integer</code> with the
 acquisition number of the spectra to which the object should be
 subsetted.</p></dd>
+
+
 <dt id="arg-rt">rt<a class="anchor" aria-label="anchor" href="#arg-rt"></a></dt>
 <dd><p>for <code>filterRt()</code>: <code>numeric(2)</code> defining the retention time range to
 be used to subset/filter <code>object</code>.</p></dd>
+
+
 <dt id="arg-ranges">ranges<a class="anchor" aria-label="anchor" href="#arg-ranges"></a></dt>
 <dd><p>for <code>filterRanges()</code>: A <code>numeric</code> vector of paired values
 (upper and lower boundary) that define the ranges to filter the <code>object</code>.
 These paired values need to be in the same order as the
 <code>spectraVariables</code> parameter (see below).</p></dd>
+
+
 <dt id="arg-match">match<a class="anchor" aria-label="anchor" href="#arg-match"></a></dt>
 <dd><p>For <code>filterRanges()</code> and <code>filterValues()</code>: <code>character(1) </code>
 defining whether the condition has to match for all provided
 <code>ranges</code>/<code>values</code> (<code>match = "all"</code>; the default), or for any of them
 (<code>match = "any"</code>) for spectra to be retained.</p></dd>
+
+
 <dt id="arg-values">values<a class="anchor" aria-label="anchor" href="#arg-values"></a></dt>
 <dd><p>for <code>filterValues()</code>: A <code>numeric</code> vector that define the
 values to filter the Spectra data. These values need to be in the same
 order as the <code>spectraVariables</code> parameter.</p></dd>
+
+
 <dt id="arg-binsize">binSize<a class="anchor" aria-label="anchor" href="#arg-binsize"></a></dt>
 <dd><p>For <code>bin()</code>: <code>numeric(1)</code> defining the size for the m/z bins.
 Defaults to <code>binSize = 1</code>.</p></dd>
+
+
 <dt id="arg-breaks">breaks<a class="anchor" aria-label="anchor" href="#arg-breaks"></a></dt>
 <dd><p>For <code>bin()</code>: <code>numeric</code> defining the m/z breakpoints between
 bins.</p></dd>
+
+
 <dt id="arg-zero-rm">zero.rm<a class="anchor" aria-label="anchor" href="#arg-zero-rm"></a></dt>
 <dd><p><code>logical</code>. For <code>bin()</code>: indicating whether to remove bins
 with zero intensity. Defaults to <code>TRUE</code>, meaning the function will
 discard bins created with an intensity of 0 to enhance memory efficiency.</p></dd>
+
+
 <dt id="arg-mapfun">MAPFUN<a class="anchor" aria-label="anchor" href="#arg-mapfun"></a></dt>
 <dd><p>For <code>compareSpectra()</code>: function to map/match peaks between the
 two compared spectra. See <code><a href="joinPeaks.html">joinPeaks()</a></code> for more information and possible
 functions.</p></dd>
+
+
 <dt id="arg-simplify">SIMPLIFY<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
 <dd><p>For <code>compareSpectra()</code> whether the result matrix should be
 <em>simplified</em> to a <code>numeric</code> if possible (i.e. if either <code>x</code> or <code>y</code> is
 of length 1).</p></dd>
+
+
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><ul><li><p>For <code><a href="hidden_aliases.html">pickPeaks()</a></code>: <code>character(1)</code>, the noise estimators that
 should be used, currently the the <em>M</em>edian <em>A</em>bsolute <em>D</em>eviation
@@ -828,32 +962,53 @@ Weighted-Moving-Average- (<code>method = "WeightedMovingAverage")</code>,
 Savitzky-Golay-Smoothing (<code>method = "SavitzkyGolay"</code>) are supported.</p></li>
 </ul></li>
 </ul></dd>
+
+
 <dt id="arg-snr">snr<a class="anchor" aria-label="anchor" href="#arg-snr"></a></dt>
 <dd><p>For <code><a href="hidden_aliases.html">pickPeaks()</a></code>: <code>double(1)</code> defining the
 <em>S</em>ignal-to-<em>N</em>oise-<em>R</em>atio. The intensity of a local maximum has to be
 higher than <code>snr * noise</code> to be considered as peak.</p></dd>
+
+
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
 <dd><p>For <code><a href="hidden_aliases.html">pickPeaks()</a></code>: <code>integer(1)</code>, number of values left and right of
 the peak that should be considered in the weighted mean calculation.</p></dd>
+
+
 <dt id="arg-descending">descending<a class="anchor" aria-label="anchor" href="#arg-descending"></a></dt>
 <dd><p>For <code><a href="hidden_aliases.html">pickPeaks()</a></code>: <code>logical</code>, if <code>TRUE</code> just values between
 the nearest valleys around the peak centroids are used.</p></dd>
+
+
 <dt id="arg-intensityfun">intensityFun<a class="anchor" aria-label="anchor" href="#arg-intensityfun"></a></dt>
 <dd><p>For <code>combinePeaks()</code>: function to be used to aggregate
 intensities for all peaks in each peak group into a single intensity
 value.</p></dd>
+
+
 <dt id="arg-mzfun">mzFun<a class="anchor" aria-label="anchor" href="#arg-mzfun"></a></dt>
 <dd><p>For <code>combinePeaks()</code>: function to aggregate m/z values for all
 peaks within each peak group into a single m/z value. This parameter
 is ignored if <code>weighted = TRUE</code> (the default).</p></dd>
+
+
 <dt id="arg-weighted">weighted<a class="anchor" aria-label="anchor" href="#arg-weighted"></a></dt>
 <dd><p>For <code>combinePeaks()</code>: <code>logical(1)</code> whether m/z values of
 peaks within each peak group should be aggregated into a single m/z
 value using an intensity-weighted mean. Defaults to <code>weighted = TRUE</code>.</p></dd>
+
+
 <dt id="arg-normalized">normalized<a class="anchor" aria-label="anchor" href="#arg-normalized"></a></dt>
 <dd><p>for <code><a href="hidden_aliases.html">entropy()</a></code>: <code>logical(1)</code> whether the normalized
 entropy should be calculated (default). See also <code>nentropy()</code> for
 details.</p></dd>
+
+
+<dt id="arg-spectravars">spectraVars<a class="anchor" aria-label="anchor" href="#arg-spectravars"></a></dt>
+<dd><p><code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> indicating what spectra variables to add to
+the <code>DataFrame</code>. Default is <code>spectraVariables(object)</code>, i.e. all
+available variables.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -888,6 +1043,9 @@ the <code>acquisitionNum</code>)</p></li>
     </div>
     <div class="section level2">
     <h2 id="creation-of-objects-conversion-changing-the-backend-and-export">Creation of objects, conversion, changing the backend and export<a class="anchor" aria-label="anchor" href="#creation-of-objects-conversion-changing-the-backend-and-export"></a></h2>
+
+
+
 <p><code>Spectra</code> classes can be created with the <code>Spectra()</code> constructor function
 which supports the following formats:</p><ul><li><p>parameter <code>object</code> is a <code>data.frame</code> or <code>DataFrame</code> containing the
 spectrum data. The provided <code>backend</code> (by default a
@@ -957,6 +1115,8 @@ adjust/adapt the base file path.</p>
     </div>
     <div class="section level2">
     <h2 id="accessing-spectra-data">Accessing spectra data<a class="anchor" aria-label="anchor" href="#accessing-spectra-data"></a></h2>
+
+
 <ul><li><p><code>$</code>, <code>$&lt;-</code>: gets (or sets) a spectra variable for all spectra in <code>object</code>.
 See examples for details. Note that replacing values of a peaks variable
 is not supported with a non-empty processing queue, i.e. if any filtering
@@ -1109,6 +1269,9 @@ function is supposed to be more efficient than <code>unique(msLevel(object))</co
 </ul></div>
     <div class="section level2">
     <h2 id="data-subsetting-filtering-and-merging">Data subsetting, filtering and merging<a class="anchor" aria-label="anchor" href="#data-subsetting-filtering-and-merging"></a></h2>
+
+
+
 <p>Subsetting and filtering of <code>Spectra</code> objects can be performed with the below
 listed methods.</p><ul><li><p><code>[</code>: subsets the spectra keeping only selected elements (<code>i</code>). The method
 <strong>always</strong> returns a <code>Spectra</code> object.</p></li>
@@ -1290,6 +1453,9 @@ the individual <code>Spectra</code> objects.</p>
     </div>
     <div class="section level2">
     <h2 id="data-manipulation-and-analysis-methods">Data manipulation and analysis methods<a class="anchor" aria-label="anchor" href="#data-manipulation-and-analysis-methods"></a></h2>
+
+
+
 <p>Many data manipulation operations, such as those listed in this section, are
 not applied immediately to the spectra, but added to a
 <em>lazy processing/manipulation queue</em>. Operations stored in this queue are
@@ -1516,6 +1682,7 @@ level(s).</p></li>
 <p>Johannes Rainer</p>
 <p>Sebastian Gibb, Johannes Rainer, Laurent Gatto</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
@@ -1589,7 +1756,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1862         1   259.752       931</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Jun  5 12:24:40 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Jul 16 16:54:46 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory()` supports the `setBackend()` method:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="MsBackend.html">supportsSetBackend</a></span><span class="op">(</span><span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -1868,7 +2035,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         2       1.2        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Wed Jun  5 12:24:41 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Tue Jul 16 16:54:48 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Below we combine the `data` and `sciex_im` objects into a single one.</span></span></span>
 <span class="r-in"><span><span class="va">data_comb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">sciex_im</span><span class="op">)</span></span></span>
@@ -1894,7 +2061,7 @@ level(s).</p></li>
 <span class="r-in"><span><span class="fu">filterPrecursorMzRange</span><span class="op">(</span><span class="va">data_filt</span>, mz <span class="op">=</span> <span class="fl">543.23</span> <span class="op">+</span> <span class="fu"><a href="hidden_aliases.html">ppm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">543.23</span>, <span class="fl">543.23</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 0 spectra in a MsBackendMemory backend:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2354323, 543.2354323] [Wed Jun  5 12:24:41 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2354323, 543.2354323] [Tue Jul 16 16:54:48 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Filter a Spectra keeping only peaks matching certain m/z values</span></span></span>
 <span class="r-in"><span><span class="va">sps_sub</span> <span class="op">&lt;-</span> <span class="fu">filterMzValues</span><span class="op">(</span><span class="va">data</span>, mz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">103</span>, <span class="fl">104</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
@@ -2036,7 +2203,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Wed Jun  5 12:24:42 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Tue Jul 16 16:54:48 2024] </span>
 <span class="r-in"><span><span class="fu"><a href="spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">fft_spectrum</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">264.5</span>, <span class="fl">265.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5e6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="Spectra-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -2058,8 +2225,8 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 2 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Wed Jun  5 12:24:42 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Wed Jun  5 12:24:42 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Tue Jul 16 16:54:48 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Tue Jul 16 16:54:48 2024] </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">fft_spectrum_filtered</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 297</span>
 <span class="r-in"><span><span class="fu"><a href="spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">fft_spectrum_filtered</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">264.5</span>, <span class="fl">265.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5e6</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -2125,7 +2292,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Jun  5 12:24:42 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Jul 16 16:54:48 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get the intensities of the first and second spectrum.</span></span></span>
 <span class="r-in"><span><span class="fu">intensity</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
@@ -2182,9 +2349,9 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         2       1.2        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Wed Jun  5 12:24:42 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Wed Jun  5 12:24:42 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Wed Jun  5 12:24:42 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Jul 16 16:54:48 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Tue Jul 16 16:54:48 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Tue Jul 16 16:54:48 2024] </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">res_rest</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4 3</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -2387,16 +2554,42 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "B" "P"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Convert a subset of the Spectra object to a long DataFrame.</span></span></span>
+<span class="r-in"><span><span class="fu">asDataFrame</span><span class="op">(</span><span class="va">sciex</span>, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, spectraVars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rtime"</span>, <span class="st">"msLevel"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 3707 rows and 4 columns</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             mz intensity     rtime   msLevel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      105.043         0      0.28         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      105.045       412      0.28         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      105.046         0      0.28         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      107.055         0      0.28         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      107.057       412      0.28         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...        ...       ...       ...       ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3703   133.984         0     0.838         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3704   133.985       132     0.838         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3705   133.987         0     0.838         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3706   133.989       132     0.838         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3707   133.990         0     0.838         1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
+
+
     <footer><div class="pkgdown-footer-left">
   <p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto, Johannes Rainer, Sebastian Gibb, Philippine Louail.</p>
 </div>
+
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
+
     </footer></div>
+
+
+
+
+
   </body></html>
 

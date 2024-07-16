@@ -15,12 +15,19 @@ This function can be used to generate id-annotated total ion
 chromatograms, as can illustrated
 here."><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+
+
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
+
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.3</small>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/Spectra.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -34,6 +41,8 @@ here."><meta property="og:image" content="https://rformassspectrometry.github.io
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
+
+
   </div>
 </nav><div class="container template-reference-topic">
 <div class="row">
@@ -42,6 +51,7 @@ here."><meta property="og:image" content="https://rformassspectrometry.github.io
       <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/countIdentifications.R" class="external-link"><code>R/countIdentifications.R</code></a></small>
       <div class="d-none name"><code>countIdentifications.Rd</code></div>
     </div>
+
     <div class="ref-description section level2">
     <p>The function takes a <code>Spectra</code> object containing identification
 results as input. It then counts the number of identifications each
@@ -52,33 +62,44 @@ from any MS1 peak that lead to an identification.</p>
 chromatograms, as can illustrated
 <a href="https://rformassspectrometry.github.io/docs/sec-id.html#an-identification-annotated-chromatogram" class="external-link">here</a>.</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">countIdentifications</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  identification <span class="op">=</span> <span class="st">"sequence"</span>,</span>
 <span>  f <span class="op">=</span> <span class="fu">dataStorage</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
-<span>BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
+
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>An instance of class <code>Spectra</code> that contains
 identification data, as defined by the <code>sequence</code> argument.</p></dd>
+
+
 <dt id="arg-identification">identification<a class="anchor" aria-label="anchor" href="#arg-identification"></a></dt>
 <dd><p><code>character(1)</code> with the name of the spectra
 variable that defines whether a scan lead to an identification
 (typically containing the idenfified peptides sequence in
 proteomics). The absence of identification is encode by an
 <code>NA</code>. Default is <code>"sequence"</code>.</p></dd>
+
+
 <dt id="arg-f">f<a class="anchor" aria-label="anchor" href="#arg-f"></a></dt>
 <dd><p>A <code>factor</code> defining how to split <code>object</code> for parallelized
 processing. Default is <code>dataOrigin(x)</code>, i.e. each raw data
 files is processed in parallel.</p></dd>
+
+
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
 <dd><p>Parallel setup configuration. See
 <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code> for details.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -98,6 +119,7 @@ users should either delete or rename it.</p>
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Laurent Gatto</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">spdf</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="st">"DFrame"</span>, rownames <span class="op">=</span> <span class="cn">NULL</span>, nrows <span class="op">=</span> <span class="fl">86L</span>,</span></span>
@@ -173,12 +195,21 @@ users should either delete or rename it.</p>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
+
+
     <footer><div class="pkgdown-footer-left">
   <p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto, Johannes Rainer, Sebastian Gibb, Philippine Louail.</p>
 </div>
+
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
+
     </footer></div>
+
+
+
+
+
   </body></html>
 

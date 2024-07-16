@@ -39,12 +39,19 @@ listed in the @spectraVariables slot (which defines all spectra variables
 that can be requested from the extending MsBackend class) but are core
 spectra variables then missing values of the correct data type are returned."><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+
+
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
+
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.3</small>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/Spectra.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -58,6 +65,8 @@ spectra variables then missing values of the correct data type are returned."><m
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
+
+
   </div>
 </nav><div class="container template-reference-topic">
 <div class="row">
@@ -66,6 +75,7 @@ spectra variables then missing values of the correct data type are returned."><m
       <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/MsBackendCached.R" class="external-link"><code>R/MsBackendCached.R</code></a></small>
       <div class="d-none name"><code>MsBackendCached.Rd</code></div>
     </div>
+
     <div class="ref-description section level2">
     <p>The <code>MsBackendCached</code> class is a rudimentary implementation of the
 <a href="MsBackend.html">MsBackend</a> providing a simple mechanism to cache spectra data locally. This
@@ -88,6 +98,7 @@ listed in the <code>@spectraVariables</code> slot (which defines all spectra var
 that can be requested from the extending <code>MsBackend</code> class) but are <em>core
 spectra variables</em> then missing values of the correct data type are returned.</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">MsBackendCached</span><span class="op">(</span><span class="op">)</span></span>
@@ -218,42 +229,70 @@ spectra variables</em> then missing values of the correct data type are returned
 <span><span class="co"># S4 method for class 'MsBackendCached'</span></span>
 <span><span class="fu">smoothed</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
     </div>
+
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>A <code>MsBackendCached</code> object.</p></dd>
+
+
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>For <code><a href="MsBackend.html">backendInitialize()</a></code>: (optional) <code>data.frame</code> with cached
 values. The number of rows (and their order) has to match the number of
 spectra.</p></dd>
+
+
 <dt id="arg-nspectra">nspectra<a class="anchor" aria-label="anchor" href="#arg-nspectra"></a></dt>
 <dd><p>For <code><a href="MsBackend.html">backendInitialize()</a></code>: <code>integer</code> with the number of
 spectra.</p></dd>
+
+
 <dt id="arg-spectravariables">spectraVariables<a class="anchor" aria-label="anchor" href="#arg-spectravariables"></a></dt>
 <dd><p>For <code><a href="MsBackend.html">backendInitialize()</a></code>: <code>character</code> with the names
 of the spectra variables that are provided by the extending backend.
 For <code><a href="hidden_aliases.html">selectSpectraVariables()</a></code>: <code>character</code> specifying the spectra
 variables to keep.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>ignored</p></dd>
+
+
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>A <code>MsBackendCached</code> object.</p></dd>
+
+
 <dt id="arg-columns">columns<a class="anchor" aria-label="anchor" href="#arg-columns"></a></dt>
 <dd><p>For <code>spectraData()</code>: <code>character</code> with the names of the spectra
 variables to retrieve.</p></dd>
+
+
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></dd>
+
+
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
 <dd><p>For <code>[</code>: <code>integer</code> with the indices to subset the object.</p></dd>
+
+
 <dt id="arg-j">j<a class="anchor" aria-label="anchor" href="#arg-j"></a></dt>
 <dd><p>For <code>[</code>: ignored.</p></dd>
+
+
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
 <dd><p>For <code>[</code>: not considered.</p></dd>
+
+
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>For <code>$&lt;-</code>: the name of the spectra variable to set.</p></dd>
+
+
 <dt id="arg-use-names">use.names<a class="anchor" aria-label="anchor" href="#arg-use-names"></a></dt>
 <dd><p>For <code><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths()</a></code>: whether spectrum names should be used.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -261,6 +300,9 @@ method description or expected data type.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="implementation-notes">Implementation notes<a class="anchor" aria-label="anchor" href="#implementation-notes"></a></h2>
+
+
+
 <p>Classes extending the <code>MsBackendCached</code> need to</p><ul><li><p>call the <code><a href="MsBackend.html">backendInitialize()</a></code> method of this class in their own
 <code><a href="MsBackend.html">backendInitialize()</a></code> method and set at least the number of spectra with
 the <code>nspectra</code> parameter and the <code>spectraVariables</code> that are available to
@@ -295,6 +337,8 @@ that can be retrieved from the data base or original data files).</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="available-methods">Available methods<a class="anchor" aria-label="anchor" href="#available-methods"></a></h2>
+
+
 <ul><li><p><code>acquisitionNum()</code>: returns the acquisition number of each
 spectrum. Returns an <code>integer</code> of length equal to the number of
 spectra (with <code>NA_integer_</code> if not available).</p></li>
@@ -399,14 +443,24 @@ backend.</p></li>
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Johannes Rainer</p>
     </div>
+
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
+
+
     <footer><div class="pkgdown-footer-left">
   <p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto, Johannes Rainer, Sebastian Gibb, Philippine Louail.</p>
 </div>
+
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
+
     </footer></div>
+
+
+
+
+
   </body></html>
 

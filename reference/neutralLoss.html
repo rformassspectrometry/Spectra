@@ -22,6 +22,7 @@ smaller than the precursor m/z (m/z &amp;lt; precursor m/z + tolerance + ppm
 of the precursor m/z) are removed. Also in this case the precursor
 fragment peak is (depending on the values of ppm and tolerance)
 removed.
+
 "><meta property="og:description" content="This help page lists functions that convert MS/MS spectra to neutral loss
 spectra. The main function for this is neutralLoss and the specific
 algorithm to be used is defined (and configured) with dedicated parameter
@@ -45,14 +46,22 @@ smaller than the precursor m/z (m/z &amp;lt; precursor m/z + tolerance + ppm
 of the precursor m/z) are removed. Also in this case the precursor
 fragment peak is (depending on the values of ppm and tolerance)
 removed.
+
 "><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+
+
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
+
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.3</small>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/Spectra.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -66,6 +75,8 @@ removed.
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
+
+
   </div>
 </nav><div class="container template-reference-topic">
 <div class="row">
@@ -74,6 +85,7 @@ removed.
       <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra-neutralLoss.R" class="external-link"><code>R/Spectra-neutralLoss.R</code></a></small>
       <div class="d-none name"><code>neutralLoss.Rd</code></div>
     </div>
+
     <div class="ref-description section level2">
     <p>This help page lists functions that convert MS/MS spectra to neutral loss
 spectra. The main function for this is <code>neutralLoss</code> and the specific
@@ -98,6 +110,7 @@ of the precursor m/z) are removed. Also in this case the precursor
 fragment peak is (depending on the values of <code>ppm</code> and <code>tolerance</code>)
 removed.</p></li>
 </ul></div>
+
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">neutralLoss</span><span class="op">(</span><span class="va">object</span>, <span class="va">param</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -106,21 +119,30 @@ removed.</p></li>
 <span>  filterPeaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"abovePrecursor"</span>, <span class="st">"belowPrecursor"</span>, <span class="st">"removePrecursor"</span><span class="op">)</span>,</span>
 <span>  msLevel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="cn">NA_integer_</span><span class="op">)</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>tolerance <span class="op">=</span> <span class="fl">0</span></span>
+<span>  tolerance <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra,PrecursorMzParam'</span></span>
 <span><span class="fu">neutralLoss</span><span class="op">(</span><span class="va">object</span>, <span class="va">param</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
+
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p><code><a href="Spectra.html">Spectra()</a></code> object with the fragment spectra for which neutral
 loss spectra should be calculated.</p></dd>
+
+
 <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
 <dd><p>One of the <em>parameter</em> objects discussed below.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Currently ignored.</p></dd>
+
+
 <dt id="arg-filterpeaks">filterPeaks<a class="anchor" aria-label="anchor" href="#arg-filterpeaks"></a></dt>
 <dd><p>For <code>PrecursorMzParam()</code>: <code>character(1)</code> or <code>function</code>
 defining if and how fragment peaks should be filtered before calculation.
@@ -130,20 +152,27 @@ Pre-defined options are: <code>"none"</code> (keep all peaks), <code>"abovePrecu
 m/z). In addition, it is possible to pass a custom function with this
 parameter with arguments <code>x</code> (two column peak matrix) and <code>precursorMz</code>
 (the precursor m/z) that returns the sub-setted two column peak matrix.</p></dd>
+
+
 <dt id="arg-mslevel">msLevel<a class="anchor" aria-label="anchor" href="#arg-mslevel"></a></dt>
 <dd><p><code>integer</code> defining for which MS level(s) the neutral loss
 spectra should be calculated. Defaults to <code>msLevel = c(2L, NA)</code> thus,
 neutral loss spectra will be calculated for all spectra with MS level
 equal to 2 or with missing/undefined MS level. All spectra with a MS
 level different than <code>msLevel</code> will be returned unchanged.</p></dd>
+
+
 <dt id="arg-ppm">ppm<a class="anchor" aria-label="anchor" href="#arg-ppm"></a></dt>
 <dd><p><code>numeric(1)</code> with m/z-relative acceptable difference in m/z
 values to filter peaks. Defaults to <code>ppm = 10</code>. See function description
 for details.</p></dd>
+
+
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p><code>numeric(1)</code> with absolute acceptable difference in m/z
 values to filter peaks. Defaults to <code>tolerance = 0</code>. See function
 description for details.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -170,6 +199,7 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Johannes Rainer</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
@@ -250,12 +280,21 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
+
+
     <footer><div class="pkgdown-footer-left">
   <p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto, Johannes Rainer, Sebastian Gibb, Philippine Louail.</p>
 </div>
+
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
+
     </footer></div>
+
+
+
+
+
   </body></html>
 

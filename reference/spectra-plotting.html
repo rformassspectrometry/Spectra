@@ -10,6 +10,7 @@ peaks (considering ppm and tolerance) are highlighted. See common()
 for details on peak matching. Parameters matchCol, matchLty,
 matchLwd and matchPch allow to customize how matching peaks are
 indicated.
+
 "><meta property="og:description" content="Spectra() can be plotted with one of the following functions
 plotSpectra(): plots each spectrum in its separate plot by splitting
 the plot area into as many panels as there are spectra.
@@ -21,14 +22,22 @@ peaks (considering ppm and tolerance) are highlighted. See common()
 for details on peak matching. Parameters matchCol, matchLty,
 matchLwd and matchPch allow to customize how matching peaks are
 indicated.
+
 "><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+
+
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
+
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.3</small>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/Spectra.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -42,6 +51,8 @@ indicated.
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/RforMassSpectrometry/Spectra/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
+
+
   </div>
 </nav><div class="container template-reference-topic">
 <div class="row">
@@ -50,6 +61,7 @@ indicated.
       <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/plotting-functions.R" class="external-link"><code>R/plotting-functions.R</code></a></small>
       <div class="d-none name"><code>spectra-plotting.Rd</code></div>
     </div>
+
     <div class="ref-description section level2">
     <p><code><a href="Spectra.html">Spectra()</a></code> can be plotted with one of the following functions</p><ul><li><p><code>plotSpectra()</code>: plots each spectrum in its separate plot by splitting
 the plot area into as many panels as there are spectra.</p></li>
@@ -62,6 +74,7 @@ for details on peak matching. Parameters <code>matchCol</code>, <code>matchLty</
 <code>matchLwd</code> and <code>matchPch</code> allow to customize how matching peaks are
 indicated.</p></li>
 </ul></div>
+
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotSpectra</span><span class="op">(</span></span>
@@ -134,89 +147,143 @@ indicated.</p></li>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
+
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>a <code><a href="Spectra.html">Spectra()</a></code> object. For <code>plotSpectraMirror()</code> it has to be an
 object of length 2.</p></dd>
+
+
 <dt id="arg-xlab">xlab<a class="anchor" aria-label="anchor" href="#arg-xlab"></a></dt>
 <dd><p><code>character(1)</code> with the label for the x-axis (by default
 <code>xlab = "m/z"</code>).</p></dd>
+
+
 <dt id="arg-ylab">ylab<a class="anchor" aria-label="anchor" href="#arg-ylab"></a></dt>
 <dd><p><code>character(1)</code> with the label for the y-axis (by default
 <code>ylab = "intensity"</code>).</p></dd>
+
+
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p><code>character(1)</code> specifying the type of plot. See <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot.default()</a></code>
 for details. Defaults to <code>type = "h"</code> which draws each peak as a line.</p></dd>
+
+
 <dt id="arg-xlim">xlim<a class="anchor" aria-label="anchor" href="#arg-xlim"></a></dt>
 <dd><p><code>numeric(2)</code> defining the x-axis limits. The range of m/z values
 are used by default.</p></dd>
+
+
 <dt id="arg-ylim">ylim<a class="anchor" aria-label="anchor" href="#arg-ylim"></a></dt>
 <dd><p><code>numeric(2)</code> defining the y-axis limits. The range of intensity
 values are used by default.</p></dd>
+
+
 <dt id="arg-main">main<a class="anchor" aria-label="anchor" href="#arg-main"></a></dt>
 <dd><p><code>character(1)</code> with the title for the plot. By default the
 spectrum's MS level and retention time (in seconds) is used.</p></dd>
+
+
 <dt id="arg-col">col<a class="anchor" aria-label="anchor" href="#arg-col"></a></dt>
 <dd><p>color to be used to draw the peaks. Should be either of length 1,
 or equal to the number of spectra (to plot each spectrum in a different
 color) or be a <code>list</code> with colors for each individual peak in each
 spectrum.</p></dd>
+
+
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
 <dd><p>allows to specify a label for each peak. Can be a <code>character</code>
 with length equal to the number of peaks, or, ideally, a <code>function</code> that
 uses one of the <code>Spectra</code>'s variables (see examples below).
 <code>plotSpectraMirror()</code> supports only <code>labels</code> of type <em>function</em>.</p></dd>
+
+
 <dt id="arg-labelcex">labelCex<a class="anchor" aria-label="anchor" href="#arg-labelcex"></a></dt>
 <dd><p><code>numeric(1)</code> giving the amount by which the text should be
 magnified relative to the default. See parameter <code>cex</code> in <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code>.</p></dd>
+
+
 <dt id="arg-labelsrt">labelSrt<a class="anchor" aria-label="anchor" href="#arg-labelsrt"></a></dt>
 <dd><p><code>numeric(1)</code> defining the rotation of the label. See
 parameter <code>srt</code> in <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>.</p></dd>
+
+
 <dt id="arg-labeladj">labelAdj<a class="anchor" aria-label="anchor" href="#arg-labeladj"></a></dt>
 <dd><p>see parameter <code>adj</code> in <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>.</p></dd>
+
+
 <dt id="arg-labelpos">labelPos<a class="anchor" aria-label="anchor" href="#arg-labelpos"></a></dt>
 <dd><p>see parameter <code>pos</code> in <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>.</p></dd>
+
+
 <dt id="arg-labeloffset">labelOffset<a class="anchor" aria-label="anchor" href="#arg-labeloffset"></a></dt>
 <dd><p>see parameter <code>offset</code> in <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code>.</p></dd>
+
+
 <dt id="arg-labelcol">labelCol<a class="anchor" aria-label="anchor" href="#arg-labelcol"></a></dt>
 <dd><p>color for the label(s).</p></dd>
+
+
 <dt id="arg-asp">asp<a class="anchor" aria-label="anchor" href="#arg-asp"></a></dt>
 <dd><p>for <code>plotSpectra()</code>: the target ratio (columns / rows) when
 plotting mutliple spectra (e.g. for 20 spectra use <code>asp = 4/5</code> for 4
 columns and 5 rows or <code>asp = 5/4</code> for 5 columns and 4 rows; see
 <code><a href="https://rdrr.io/r/grDevices/n2mfrow.html" class="external-link">grDevices::n2mfrow()</a></code> for details).</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional parameters to be passed to the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot.default()</a></code>
 function.</p></dd>
+
+
 <dt id="arg-axes">axes<a class="anchor" aria-label="anchor" href="#arg-axes"></a></dt>
 <dd><p><code>logical(1)</code> whether (x and y) axes should be drawn.</p></dd>
+
+
 <dt id="arg-frame-plot">frame.plot<a class="anchor" aria-label="anchor" href="#arg-frame-plot"></a></dt>
 <dd><p><code>logical(1)</code> whether a box should be drawn around the
 plotting area.</p></dd>
+
+
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: <code>Spectra</code> object of length 1 against
 which <code>x</code> should be plotted against.</p></dd>
+
+
 <dt id="arg-ppm">ppm<a class="anchor" aria-label="anchor" href="#arg-ppm"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: m/z relative acceptable difference (in
 ppm) for peaks to be considered matching (see <code>common()</code> for more
 details).</p></dd>
+
+
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: absolute acceptable difference of
 m/z values for peaks to be considered matching (see <code>common()</code> for more
 details).</p></dd>
+
+
 <dt id="arg-matchcol">matchCol<a class="anchor" aria-label="anchor" href="#arg-matchcol"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: color for matching peaks.</p></dd>
+
+
 <dt id="arg-matchlwd">matchLwd<a class="anchor" aria-label="anchor" href="#arg-matchlwd"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: line width (<code>lwd</code>) to draw
 matching peaks. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code> for more details.</p></dd>
+
+
 <dt id="arg-matchlty">matchLty<a class="anchor" aria-label="anchor" href="#arg-matchlty"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: line type (<code>lty</code>) to draw matching
 peaks. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code> for more details.</p></dd>
+
+
 <dt id="arg-matchpch">matchPch<a class="anchor" aria-label="anchor" href="#arg-matchpch"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: point character (<code>pch</code>) to label
 matching peaks. Defaults to <code>matchPch = 16</code>, set to <code>matchPch = NA</code> to
 disable. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code> for more details.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -226,6 +293,7 @@ disable. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Johannes Rainer, Sebastian Gibb, Laurent Gatto</p>
     </div>
+
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
@@ -328,12 +396,21 @@ disable. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
+
+
     <footer><div class="pkgdown-footer-left">
   <p>Developed by RforMassSpectrometry Package Maintainer, Laurent Gatto, Johannes Rainer, Sebastian Gibb, Philippine Louail.</p>
 </div>
+
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
+
     </footer></div>
+
+
+
+
+
   </body></html>
 
