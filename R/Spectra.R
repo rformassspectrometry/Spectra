@@ -898,7 +898,9 @@ NULL
 #'       window left and right of a peak where to remove fourier transform
 #'       artefacts.
 #'
-#' @param i For `[`: `integer`, `logical` or `character` to subset the object.
+#' @param i For `[`: `integer`, `logical` or `character` to subset the
+#'     object. For `asDataFrame()` an `numeric` indicating which scans to coerce
+#'     to a `DataFrame` (default is `seq_along(object)`).
 #'
 #' @param j For `[`: not supported.
 #'
@@ -2831,3 +2833,24 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
     dataStorageBasePath(object@backend) <- value
     object
 })
+
+#' @export
+#' @rdname Spectra
+#'
+#' @param spectraVars `character()` indicating what spectra variables to add to
+#'     the `DataFrame`. Default is `spectraVariables(object)`, i.e. all
+#'     available variables.
+#'
+#' @examples
+#'
+#' ## Convert a subset of the Spectra object to a long DataFrame.
+#' asDataFrame(sciex, i = 1:3, spectraVars = c("rtime", "msLevel"))
+asDataFrame <- function(object, i = seq_along(object),
+                        spectraVars = spectraVariables(object)) {
+    stopifnot(inherits(object, "Spectra"))
+    object <- object[i]
+    n <- sapply(peaksData(object), nrow)
+    v <- spectraData(object)[rep(seq_along(object), n), spectraVars]
+    p <- do.call(rbind, as.list(peaksData(object)))
+    cbind(p, v)
+}

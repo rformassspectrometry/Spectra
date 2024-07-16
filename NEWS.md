@@ -6,6 +6,8 @@
   *MetaboCoreUtils* directly through their namespace (`MsCoreUtils::`) to avoid
   errors if performed in parallel on Windows machines or if called on a
   re-loaded object.
+- New `asDataFrame()` function to convert a (small) `Spectra` object
+  into a long `DataFrame`.
 
 ## Changes in 1.15.2
 
