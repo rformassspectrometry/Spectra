@@ -1,5 +1,9 @@
 # Spectra 1.15
 
+## Changes in 1.15.4
+
+- Nothing yet.
+
 ## Changes in 1.15.3
 
 - For evaluation of the `Spectra`'s processing queue: call functions from the
