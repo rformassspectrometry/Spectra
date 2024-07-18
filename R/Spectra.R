@@ -334,10 +334,10 @@ NULL
 #' @section Filter spectra data:
 #'
 #' Filter a `Spectra` object based on the spectra data. This includes subset
-#' operations that reduce the number of spectra in the object as well as filters
-#' that reduce the *content* of the `Spectra` object. See section
-#' *Filter peaks data* below for functions that filter the peaks data of a
-#' `Spectra`.
+#' operations that immediately reduce the number of spectra in the object as
+#' well as filters that reduce the *content* of the `Spectra` object.
+#' See section *Filter peaks data* below for functions that filter the peaks
+#' data of a `Spectra`.
 #'
 #' - `[`: subsets the spectra keeping only selected elements (`i`). The method
 #'   **always** returns a `Spectra` object.
@@ -456,7 +456,10 @@ NULL
 #' @section Filter or aggregate mass peak data:
 #'
 #' Operations that filter or aggregate the mass peak data from each spectrum
-#' without changing the number of spectra in a `Spectra` object.
+#' without changing the number of spectra in a `Spectra` object. Also, the
+#' actual subsetting/aggregation operation is only executed once peaks data is
+#' accessed (through `peaksData()`, `mz()` or `intensity()`) or
+#' `applyProcessing()` is called.
 #'
 #' - `combinePeaks()`: combines mass peaks **within each spectrum** with a
 #'   difference in their m/z values that is smaller than the maximal
@@ -1115,7 +1118,7 @@ NULL
 #'
 #' @param ... Additional arguments.
 #'
-#' @author Sebastian Gibb, Johannes Rainer, Laurent Gatto
+#' @author Sebastian Gibb, Johannes Rainer, Laurent Gatto, Philippine Louail
 #'
 #' @md
 #'

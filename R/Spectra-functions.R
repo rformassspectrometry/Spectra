@@ -1194,11 +1194,11 @@ processingChunkFactor <- function(x) {
 #' has to be an available spectra or peaks variable. `<range>` can be a
 #' `numeric` of length 2 defining the lower and upper boundary, or a `numeric`
 #' two-column matrix (multi-row matrices are also supported, see further
-#' below). `filterPeaksRanges(s, mz = c(200, 300))` woudl for example reduce
+#' below). `filterPeaksRanges(s, mz = c(200, 300))` would for example reduce
 #' the peaks matrices of the `Spectra` object `s` to mass peaks with an m/z
 #' value between 200 and 300. `filterPeaksRanges()` returns the original
 #' `Spectra` object with the filter operation added to the processing queue.
-#' Thus, the filter gets only applied when the peaks data gets extracted
+#' Thus, the filter gets **only** applied when the peaks data gets extracted
 #' with `mz()`, `intensity()` or `peaksData()`. If ranges for both spectra
 #' **and** peaks variables are defined, the function evaluates first whether
 #' the spectra variable value for a spectrum is within the provided range and,
@@ -1221,19 +1221,24 @@ processingChunkFactor <- function(x) {
 #' or peaks variables) have to match.
 #'
 #' **Missing value handling**: any comparison which involves a missing value
-#' (beingvit a spectra variable value, a peaks variable value or a value
-#' in one of thevprovided ranges) is treated as a logical `FALSE`. For
+#' (being it a spectra variable value, a peaks variable value or a value
+#' in one of the provided ranges) is treated as a logical `FALSE`. For
 #' example, if the retention time of a spectrum is `NA` and the data is
 #' filtered using a retention time range, an empty peaks matrix is returned
 #' (for `keep = TRUE`, for `keep = FALSE` the full peaks matrix is returned).
 #'
 #' @note
 #'
-#' In contrast to other *filter* functions, this function does not provide a
-#' `msLevel.` parameter to apply the filter only on spectra of the specified
-#' MS levels. In contrast, to apply no, or different, filters to spectra from
-#' different MS levels, multi-row range matrices can be used (see examples
-#' below).
+#' In contrast to some other *filter* functions, this function does not provide
+#' a `msLevel` parameter that allows to define the MS level of spectra on which
+#' the filter should be applied. The filter(s) will always be applied to
+#' **all** spectra (irrespectively of their MS level). Through combination of
+#' multiple filter ranges it is however possible to apply MS level-dependent
+#' filters (see examples below for details).
+#'
+#' The filter will not be applied immediately to the data but only executed when
+#' the mass peak data is accessed (through `peaksData()`, `mz()` or
+#' `intensity()`) or by calling `applyProcessing()`.
 #'
 #' @param object A [Spectra] object.
 #'

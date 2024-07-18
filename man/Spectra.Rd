@@ -1142,10 +1142,10 @@ function is supposed to be more efficient than \code{unique(msLevel(object))}.
 
 
 Filter a \code{Spectra} object based on the spectra data. This includes subset
-operations that reduce the number of spectra in the object as well as filters
-that reduce the \emph{content} of the \code{Spectra} object. See section
-\emph{Filter peaks data} below for functions that filter the peaks data of a
-\code{Spectra}.
+operations that immediately reduce the number of spectra in the object as
+well as filters that reduce the \emph{content} of the \code{Spectra} object.
+See section \emph{Filter peaks data} below for functions that filter the peaks
+data of a \code{Spectra}.
 \itemize{
 \item \code{[}: subsets the spectra keeping only selected elements (\code{i}). The method
 \strong{always} returns a \code{Spectra} object.
@@ -1248,7 +1248,10 @@ Returns the filtered \code{Spectra}.
 
 
 Operations that filter or aggregate the mass peak data from each spectrum
-without changing the number of spectra in a \code{Spectra} object.
+without changing the number of spectra in a \code{Spectra} object. Also, the
+actual subsetting/aggregation operation is only executed once peaks data is
+accessed (through \code{peaksData()}, \code{mz()} or \code{intensity()}) or
+\code{applyProcessing()} is called.
 \itemize{
 \item \code{combinePeaks()}: combines mass peaks \strong{within each spectrum} with a
 difference in their m/z values that is smaller than the maximal
@@ -1996,5 +1999,5 @@ Nir Shahaf
 
 Johannes Rainer
 
-Sebastian Gibb, Johannes Rainer, Laurent Gatto
+Sebastian Gibb, Johannes Rainer, Laurent Gatto, Philippine Louail
 }
