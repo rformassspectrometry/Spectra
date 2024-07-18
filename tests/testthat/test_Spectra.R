@@ -1908,3 +1908,24 @@ test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
     #' errors
     expect_error(dataStorageBasePath(tmp) <- "some path", "Provided path")
 })
+
+
+test_that("asDataFrame works", {
+    sciex_file <- normalizePath(
+        dir(system.file("sciex", package = "msdata"), full.names = TRUE))
+    sp <- Spectra(sciex_file)
+    ## Full dataframe
+    df <- asDataFrame(sp)
+    expect_identical(nrow(df), sum(sapply(peaksData(sp), nrow)))
+    expect_identical(ncol(df), length(spectraVariables(sp)) + 2L)
+    expect_identical(names(df), c("mz", "intensity", spectraVariables(sp)))
+    ## Three first scans and 2 spectra variables
+    df <- asDataFrame(sp, i = 1:3, spectraVars = c("msLevel", "rtime"))
+    expect_identical(nrow(df), sum(sapply(peaksData(sp[1:3]), nrow)))
+    expect_identical(ncol(df), 2L + 2L)
+    ## Three first scans and no spectra variables
+    df <- asDataFrame(sp, i = 1:3, spectraVars = NULL)
+    expect_identical(nrow(df), sum(sapply(peaksData(sp[1:3]), nrow)))
+    expect_identical(ncol(df), 2L)
+    expect_identical(names(df), c("mz", "intensity"))
+})

@@ -110,6 +110,7 @@
 \alias{entropy,ANY-method}
 \alias{dataStorageBasePath,Spectra-method}
 \alias{dataStorageBasePath<-,Spectra-method}
+\alias{asDataFrame}
 \title{The Spectra class to manage and access MS data}
 \usage{
 applyProcessing(
@@ -510,6 +511,12 @@ coreSpectraVariables()
 \S4method{dataStorageBasePath}{Spectra}(object)
 
 \S4method{dataStorageBasePath}{Spectra}(object) <- value
+
+asDataFrame(
+  object,
+  i = seq_along(object),
+  spectraVars = spectraVariables(object)
+)
 }
 \arguments{
 \item{object}{For \code{Spectra()}: either a \code{DataFrame} or \code{missing}. See
@@ -688,7 +695,9 @@ total ion current should be (re)calculated on the actual data
 \item{name}{For \code{$} and \verb{$<-}: the name of the spectra variable to return
 or set.}
 
-\item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
+\item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the
+object. For \code{asDataFrame()} an \code{numeric} indicating which scans to coerce
+to a \code{DataFrame} (default is \code{seq_along(object)}).}
 
 \item{j}{For \code{[}: not supported.}
 
@@ -838,6 +847,10 @@ value using an intensity-weighted mean. Defaults to \code{weighted = TRUE}.}
 \item{normalized}{for \code{entropy()}: \code{logical(1)} whether the normalized
 entropy should be calculated (default). See also \code{\link[=nentropy]{nentropy()}} for
 details.}
+
+\item{spectraVars}{\code{character()} indicating what spectra variables to add to
+the \code{DataFrame}. Default is \code{spectraVariables(object)}, i.e. all
+available variables.}
 }
 \value{
 See individual method description for the return value.
@@ -1972,6 +1985,9 @@ peaksData(sps, columns = peaksVariables(sps))[[1L]]
 
 ## Access just the pk_ann variable
 sps$pk_ann
+
+## Convert a subset of the Spectra object to a long DataFrame.
+asDataFrame(sciex, i = 1:3, spectraVars = c("rtime", "msLevel"))
 }
 \author{
 Nir Shahaf, Johannes Rainer
