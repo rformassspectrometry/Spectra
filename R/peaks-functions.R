@@ -672,3 +672,62 @@ joinPeaksNone <- function(x, y, ...) {
     pmz <- precursorMz - tolerance - ppm(precursorMz, ppm = ppm)
     x[x[, "mz"] < pmz, , drop = FALSE]
 }
+
+#' filter a peak matrix `x` by (arbitrary) numeric ranges for spectra and/or
+#' peaks variables. ranges for spectra and peaks variables are combined using
+#' a logical AND, rows in the provided range matrices with a logical OR.
+#'
+#' Used by `filterPeaksRanges()` function for `Spectra`.
+#'
+#' @param svars `character` with the spectra variables for which filter ranges
+#'     where provided.
+#'
+#' @param pvars `character` with the peaks variables for which filter ranges
+#'     where provided.
+#'
+#' @param ranges `list` with `numeric` two-column matrices with the
+#'     user-provided ranges. The number of rows of all matrices is expected
+#'     to match.
+#'
+#' @param spectrumMsLevel `integer(1)` with the MS level of the peak matrix'
+#'     spectrum.
+#'
+#' @param keep `logical(1)` whether mass peaks that match the filters should be
+#'     kept or removed.
+#'
+#' @param ... values for all spectra variables defined in `svars` are expected
+#'     to be passed through `...` as `name = value` pairs.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.peaks_filter_ranges <- function(x, svars = character(),
+                                 pvars = character(),
+                                 ranges, spectrumMsLevel,
+                                 keep = TRUE, ...) {
+    svalue <- list(..., msLevel = spectrumMsLevel)
+    nx <- nrow(x)
+    sel <- rep(FALSE, nx)
+    for (i in seq_len(nrow(ranges[[1L]]))) {
+        ## check ranges for spectra variables
+        svars_ok <- vapply(svars, function(z)
+            MsCoreUtils::between(svalue[[z]], ranges[[z]][i, ]), TRUE,
+            USE.NAMES = FALSE)
+        if (!anyNA(svars_ok) && all(svars_ok)) {
+            if (length(pvars)) {
+                ## check ranges for peaks variables
+                tmp <- rowSums(do.call(cbind, lapply(pvars, function(z) {
+                    MsCoreUtils::between(x[, z], ranges[[z]][i, ])
+                }))) == length(pvars)
+                tmp[is.na(tmp)] <- FALSE
+                sel <- sel | tmp
+            } else {
+                ## No need to check further, because we have a match
+                if (keep) return(x)
+                else return(x[logical(), , drop = FALSE])
+            }
+        }
+    }
+    if (keep) x[sel, , drop = FALSE]
+    else x[!sel, , drop = FALSE]
+}

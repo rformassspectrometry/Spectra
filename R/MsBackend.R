@@ -774,7 +774,7 @@
 #'
 #' @return See documentation of respective function.
 #'
-#' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
+#' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto, Philippine Louail
 #'
 #' @md
 #'

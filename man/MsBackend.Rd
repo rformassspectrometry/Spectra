@@ -1090,5 +1090,5 @@ be$peak_ann <- NULL
 peaksVariables(be)
 }
 \author{
-Johannes Rainer, Sebastian Gibb, Laurent Gatto
+Johannes Rainer, Sebastian Gibb, Laurent Gatto, Philippine Louail
 }

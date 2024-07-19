@@ -1,8 +1,9 @@
 # Spectra 1.15
 
-## Changes in 1.15.4
+## Changes in 1.15.5
 
-- Nothing yet.
+- Add new `filterPeaksRanges()` function to filter mass peaks by ranges on
+  numeric spectra or peak variables.
 
 ## Changes in 1.15.3
 

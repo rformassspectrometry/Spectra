@@ -861,3 +861,75 @@ test_that("processingChunkFactor works", {
 
     expect_error(processingChunkFactor("a"), "Spectra")
 })
+
+test_that("filterPeaksRanges,Spectra works", {
+    df <- data.frame(rtime = 123.3, new_var = 4, msLevel = 2L)
+    df$mz <- list(c(100.1, 100.2, 100.3, 100.4, 200.1, 200.2, 200.3,
+                    300.1, 300.3, 300.4, 300.5))
+    df$intensity <- list(1:11)
+    s <- Spectra(df)
+    ## Check errors
+    expect_error(filterPeaksRanges(3), "'Spectra' object")
+    expect_error(filterPeaksRanges(s, rtime = c(1, 2), not_exist = c(1, 2)),
+                 "valid spectra variables")
+    expect_error(filterPeaksRanges(s, rtime = 2, mz = c(1, 2)),
+                 "'numeric' of length 2")
+    expect_error(filterPeaksRanges(
+        s, rtime = rbind(c(1, 2), c(2, 3)), mz = c(1, 2)),
+        "Number of rows of the range matrices")
+
+    ## Single range per variable
+    res <- filterPeaksRanges(s, rtime = c(100, 200), mz = cbind(200, 300))
+    expect_true(inherits(res, "Spectra"))
+    expect_true(length(res@processingQueue) > 0L)
+    expect_equal(res@processingQueueVariables, c("rtime", "msLevel"))
+    expect_equal(length(res@processing), 1L)
+    a <- peaksData(res)[[1L]]
+    expect_equal(a[, 2L], c(5:7))
+    res <- filterPeaksRanges(s, rtime = c(100, 200), mz = cbind(200, 300),
+                             keep = FALSE)
+    a <- peaksData(res)[[1L]]
+    expect_equal(a[, 2L], c(1:4, 8:11))
+
+    ## Multiple ranges per variable
+    res <- filterPeaksRanges(
+        s, new_var = rbind(c(1, 8), c(1, 4), c(1, 5)),
+        rtime = rbind(c(100, 200), c(400, 500), c(100, 200)),
+        mz = rbind(c(100, 100.3), c(0, 500), c(300.3, 310)))
+    expect_true(inherits(res, "Spectra"))
+    a <- peaksData(res)[[1L]]
+    expect_equal(a[, 2L], c(1:3, 9:11))
+    res <- filterPeaksRanges(
+        s, new_var = rbind(c(1, 8), c(1, 4), c(1, 5)),
+        rtime = rbind(c(100, 200), c(400, 500), c(100, 200)),
+        mz = rbind(c(100, 100.3), c(0, 500), c(300.3, 310)), keep = FALSE)
+    expect_true(inherits(res, "Spectra"))
+    a <- peaksData(res)[[1L]]
+    expect_equal(a[, 2L], c(4:8))
+
+    ## Filter also with msLevel; to have the same behaviour as with other
+    ## filters we would need to add a second filter for e.g. MS level 2
+    s <- c(s, s)
+    s$msLevel <- c(1L, 2L)
+    res <- filterPeaksRanges(s, rtime = c(100, 200), msLevel = c(1, 1),
+                             mz = c(100, 200))
+    a <- peaksData(res)[[1L]]
+    expect_equal(a[, 2L], 1:4)
+    a <- peaksData(res)[[2L]]
+    expect_true(nrow(a) == 0L)
+    res <- filterPeaksRanges(s, rtime = rbind(c(100, 200), c(100, 200)),
+                             msLevel = rbind(c(1, 1), c(2, 2)),
+                             mz = rbind(c(100, 200), c(0, 400)))
+    a <- peaksData(res)[[1L]]
+    expect_equal(a[, 2L], 1:4)
+    a <- peaksData(res)[[2L]]
+    expect_equal(a[, 2L], 1:11)
+    res <- filterPeaksRanges(s, rtime = rbind(c(100, 200), c(100, 200)),
+                             msLevel = rbind(c(1, 1), c(2, 2)),
+                             mz = rbind(c(100, 200), c(0, 400)),
+                             keep = FALSE)
+    a <- peaksData(res)[[1L]]
+    expect_equal(a[, 2L], 5:11)
+    a <- peaksData(res)[[2L]]
+    expect_true(nrow(a) == 0)
+})
