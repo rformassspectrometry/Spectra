@@ -15,7 +15,7 @@ MsBackendDataFrame()), on-disk as mzML (MsBackendMzR()) or HDF5
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -1268,29 +1268,22 @@ spectrum, <code>0</code> is returned.</p></li>
 function is supposed to be more efficient than <code>unique(msLevel(object))</code>.</p></li>
 </ul></div>
     <div class="section level2">
-    <h2 id="data-subsetting-filtering-and-merging">Data subsetting, filtering and merging<a class="anchor" aria-label="anchor" href="#data-subsetting-filtering-and-merging"></a></h2>
+    <h2 id="filter-spectra-data">Filter spectra data<a class="anchor" aria-label="anchor" href="#filter-spectra-data"></a></h2>
 
 
 
-<p>Subsetting and filtering of <code>Spectra</code> objects can be performed with the below
-listed methods.</p><ul><li><p><code>[</code>: subsets the spectra keeping only selected elements (<code>i</code>). The method
+<p>Filter a <code>Spectra</code> object based on the spectra data. This includes subset
+operations that immediately reduce the number of spectra in the object as
+well as filters that reduce the <em>content</em> of the <code>Spectra</code> object.
+See section <em>Filter peaks data</em> below for functions that filter the peaks
+data of a <code>Spectra</code>.</p><ul><li><p><code>[</code>: subsets the spectra keeping only selected elements (<code>i</code>). The method
 <strong>always</strong> returns a <code>Spectra</code> object.</p></li>
-<li><p><code>deisotopeSpectra()</code>: <em>deisotopes</em> each spectrum keeping only the
-monoisotopic peak for groups of isotopologues. Isotopologues are
-estimated using the <code>isotopologues()</code> function from the
-<em>MetaboCoreUtils</em> package. Note that
-the default parameters for isotope prediction/detection have been
-determined using data from the Human Metabolome Database (HMDB) and
-isotopes for elements other than CHNOPS might not be detected. See
-parameter <code>substDefinition</code> in the documentation of <code>isotopologues()</code> for
-more information. The approach and code to define the parameters for
-isotope prediction is described
-<a href="https://github.com/EuracBiomedicalResearch/isotopologues" class="external-link">here</a>.</p></li>
 <li><p><code><a href="hidden_aliases.html">dropNaSpectraVariables()</a></code>: removes spectra variables (i.e. columns in the
 object's <code>spectraData</code> that contain only missing values (<code>NA</code>). Note that
 while columns with only <code>NA</code>s are removed, a <code>spectraData()</code> call after
 <code><a href="hidden_aliases.html">dropNaSpectraVariables()</a></code> might still show columns containing <code>NA</code> values
-for <em>core</em> spectra variables.</p></li>
+for <em>core</em> spectra variables. The total number of spectra is not changed
+by this function.</p></li>
 <li><p><code>filterAcquisitionNum()</code>: filters the object keeping only spectra matching
 the provided acquisition numbers (argument <code>n</code>). If <code>dataOrigin</code> or
 <code>dataStorage</code> is also provided, <code>object</code> is subsetted to the spectra with
@@ -1312,30 +1305,6 @@ the provided <code>dataStorage</code> parameter).</p></li>
 <li><p><code>filterEmptySpectra()</code>: removes empty spectra (i.e. spectra without peaks).
 Returns the filtered <code>Spectra</code> object (with spectra in their
 original order).</p></li>
-<li><p><code><a href="filterFourierTransformArtefacts.html">filterFourierTransformArtefacts()</a></code>: removes (Orbitrap) fast fourier
-artefact peaks from spectra (see examples below). The function iterates
-through all intensity ordered peaks in a spectrum and removes all peaks
-with an m/z within +/- <code>halfWindowSize</code> of the current peak if their
-intensity is lower than <code>threshold</code> times the current peak's intensity.
-Additional parameters <code>keepIsotopes</code>, <code>maxCharge</code> and <code>isotopeTolerance</code>
-allow to avoid removing of potential <code>[13]C</code> isotope peaks (<code>maxCharge</code>
-being the maximum charge that should be considered and <code>isotopeTolerance</code>
-the absolute acceptable tolerance for matching their m/z).
-See <code><a href="filterFourierTransformArtefacts.html">filterFourierTransformArtefacts()</a></code> for details and background and
-<code>deisitopeSpectra()</code> for an alternative.</p></li>
-<li><p><code>filterIntensity()</code>: filters each spectrum keeping only peaks with
-intensities that are within the provided range or match the criteria of
-the provided function. For the former, parameter <code>intensity</code> has to be a
-<code>numeric</code> defining the intensity range, for the latter a <code>function</code> that
-takes the intensity values of the spectrum and returns a <code>logical</code> whether
-the peak should be retained or not (see examples below for details) -
-additional parameters to the function can be passed with <code>...</code>. To
-remove only peaks with intensities below a certain threshold, say 100, use
-<code>intensity = c(100, Inf)</code>. Note: also a single value can be passed with
-the <code>intensity</code> parameter in which case an upper limit of <code>Inf</code> is used.
-Note that this function removes also peaks with missing intensities
-(i.e. an intensity of <code>NA</code>). Parameter <code>msLevel.</code> allows to restrict the
-filtering to spectra of the specified MS level(s).</p></li>
 <li><p><code>filterIsolationWindow()</code>: retains spectra that contain <code>mz</code> in their
 isolation window m/z range (i.e. with an <code>isolationWindowLowerMz</code> &lt;= <code>mz</code>
 and <code>isolationWindowUpperMz</code> &gt;= <code>mz</code>. Returns the filtered <code>Spectra</code>
@@ -1343,15 +1312,6 @@ object (with spectra in their original order).</p></li>
 <li><p><code>filterMsLevel()</code>: filters object by MS level keeping only spectra matching
 the MS level specified with argument <code>msLevel</code>. Returns the filtered
 <code>Spectra</code> (with spectra in their original order).</p></li>
-<li><p><code>filterMzRange()</code>: filters the object keeping or removing peaks in each
-spectrum that are within the provided m/z range. Whether peaks are
-retained or removed can be configured with parameter <code>keep</code> (default
-<code>keep = TRUE</code>).</p></li>
-<li><p><code>filterMzValues()</code>: filters the object keeping <strong>all</strong> peaks in each
-spectrum that match the provided m/z value(s) (for <code>keep = TRUE</code>, the
-default) or removing <strong>all</strong> of them (for <code>keep = FALSE</code>). The m/z
-matching considers also the absolute <code>tolerance</code> and m/z-relative
-<code>ppm</code> values. <code>tolerance</code> and <code>ppm</code> have to be of length 1.</p></li>
 <li><p><code>filterPolarity()</code>: filters the object keeping only spectra matching the
 provided polarity. Returns the filtered <code>Spectra</code> (with spectra in their
 original order).</p></li>
@@ -1377,18 +1337,11 @@ a precursor m/z for a target m/z accepting a small difference in <em>ppm</em>.</
 <li><p><code>filterPrecursorMzValues()</code>: retains spectra with precursor m/z matching
 any of the provided m/z values (given <code>ppm</code> and <code>tolerance</code>). Spectra with
 missing precursor m/z value (e.g. MS1 spectra) are dropped.</p></li>
-<li><p><code>filterPrecursorPeaks()</code>: removes peaks from each spectrum in <code>object</code> with
-an m/z equal or larger than the m/z of the precursor, depending on the
-value of parameter <code>mz</code>: for <code>mz = ==" (the default) peaks with matching m/z (considering an absolute and relative acceptable difference depending on </code>tolerance<code>and</code>ppm<code>, respectively) are removed. For </code>mz = "&gt;="<code>all peaks with an m/z larger or equal to the precursor m/z (minus</code>tolerance<code>and the</code>ppm<code>of the precursor m/z) are removed. Parameter</code>msLevel.<code>allows to restrict the filter to certain MS levels (by default the filter is applied to all MS levels). Note that no peaks are removed if the precursor m/z is</code>NA` (e.g. typically for MS1 spectra).</p></li>
 <li><p><code>filterPrecursorScan()</code>: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number <code>acquisitionNum</code>. Returns the filtered
 <code>Spectra</code> (with spectra in their original order). Parameter <code>f</code> allows to
 define which spectra belong to the same sample or original data file (
 defaults to <code>f = dataOrigin(object)</code>).</p></li>
-<li><p><code>filterRt()</code>: retains spectra of MS level <code>msLevel</code> with retention
-times (in seconds) within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>)
-<code>rt[2]</code>. Returns the filtered <code>Spectra</code> (with spectra in their
-original order).</p></li>
 <li><p><code>filterRanges()</code>: allows filtering of the <code>Spectra</code> object based on user
 defined <em>numeric</em> ranges (parameter <code>ranges</code>) for one or more available
 spectra variables in object (spectra variable names can be specified with
@@ -1398,6 +1351,10 @@ ranges/spectra variables are defined, the <code>match</code> parameter can be us
 to specify whether all conditions (<code>match = "all"</code>; the default) or if
 any of the conditions must match (<code>match = "any"</code>; all spectra for which
 values are within any of the provided ranges are retained).</p></li>
+<li><p><code>filterRt()</code>: retains spectra of MS level <code>msLevel</code> with retention
+times (in seconds) within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>)
+<code>rt[2]</code>. Returns the filtered <code>Spectra</code> (with spectra in their
+original order).</p></li>
 <li><p><code>filterValues()</code>: allows filtering of the <code>Spectra</code> object based on
 similarities of <em>numeric</em> values of one or more <code>spectraVariables(object)</code>
 (parameter <code>spectraVariables</code>) to provided values (parameter <code>values</code>)
@@ -1406,18 +1363,6 @@ values/spectra variables are defined, the <code>match</code> parameter can be us
 to specify whether all conditions (<code>match = "all"</code>; the default) or if
 any of the conditions must match (<code>match = "any"</code>; all spectra for which
 values are within any of the provided ranges are retained).</p></li>
-<li><p><code>reduceSpectra()</code>: for groups of peaks within highly similar m/z values
-within each spectrum (given <code>ppm</code> and <code>tolerance</code>), this function keeps
-only the peak with the highest intensity removing all other peaks hence
-<em>reducing</em> each spectrum to the highest intensity peaks per <em>peak group</em>.
-Peak groups are defined using the <code><a href="https://rdrr.io/r/grDevices/plotmath.html" class="external-link">group()</a></code> function from the
-<em>MsCoreUtils</em> package.</p></li>
-<li><p><code><a href="hidden_aliases.html">reset()</a></code>: restores the data to its original state (as much as possible):
-removes any processing steps from the lazy processing queue and calls
-<code><a href="hidden_aliases.html">reset()</a></code> on the backend which, depending on the backend, can also undo
-e.g. data filtering operations. Note that a <code>reset*(</code> call after
-<code>applyProcessing()</code> will not have any effect. See examples below for more
-information.</p></li>
 <li><p><code><a href="hidden_aliases.html">selectSpectraVariables()</a></code>: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (i.e., those listed by
@@ -1425,8 +1370,129 @@ be dropped. For mandatory columns (i.e., those listed by
 the values will be dropped but not the variable itself. Additional (or
 user defined) spectra variables will be completely removed.
 Returns the filtered <code>Spectra</code>.</p></li>
-<li><p><code><a href="https://rdrr.io/r/base/split.html" class="external-link">split()</a></code>: splits the <code>Spectra</code> object based on parameter <code>f</code> into a <code>list</code>
-of <code>Spectra</code> objects.</p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="filter-or-aggregate-mass-peak-data">Filter or aggregate mass peak data<a class="anchor" aria-label="anchor" href="#filter-or-aggregate-mass-peak-data"></a></h2>
+
+
+
+<p>Operations that filter or aggregate the mass peak data from each spectrum
+without changing the number of spectra in a <code>Spectra</code> object. Also, the
+actual subsetting/aggregation operation is only executed once peaks data is
+accessed (through <code>peaksData()</code>, <code>mz()</code> or <code>intensity()</code>) or
+<code>applyProcessing()</code> is called.</p><ul><li><p><code>combinePeaks()</code>: combines mass peaks <strong>within each spectrum</strong> with a
+difference in their m/z values that is smaller than the maximal
+acceptable difference defined by <code>ppm</code> and <code>tolerance</code>. Parameters
+<code>intensityFun</code> and <code>mzFun</code> allow to define functions to aggregate the
+intensity and m/z values for each such group of peaks. With
+<code>weighted = TRUE</code> (the default), the m/z value of the combined peak is
+calculated using an intensity-weighted mean and parameter <code>mzFun</code> is
+ignored. The <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/group.html" class="external-link">MsCoreUtils::group()</a></code> function is used for the grouping of
+mass peaks. Parameter <code>msLevel.</code> allows to define selected MS levels for
+which peaks should be combined. This function returns a <code>Spectra</code> with
+the same number of spectra than the input object, but with possibly
+combined peaks within each spectrum.
+dropped (i.e. their values are replaced with <code>NA</code>) for combined peaks
+unless they are constant across the combined peaks. See also
+<code>reduceSpectra()</code> for a function to select a single <em>representative</em>
+mass peak for each peak group.</p></li>
+<li><p><code>deisotopeSpectra()</code>: <em>deisotopes</em> each spectrum keeping only the
+monoisotopic peak for groups of isotopologues. Isotopologues are
+estimated using the <code>isotopologues()</code> function from the
+<em>MetaboCoreUtils</em> package. Note that
+the default parameters for isotope prediction/detection have been
+determined using data from the Human Metabolome Database (HMDB) and
+isotopes for elements other than CHNOPS might not be detected. See
+parameter <code>substDefinition</code> in the documentation of <code>isotopologues()</code> for
+more information. The approach and code to define the parameters for
+isotope prediction is described
+<a href="https://github.com/EuracBiomedicalResearch/isotopologues" class="external-link">here</a>.</p></li>
+<li><p><code><a href="filterFourierTransformArtefacts.html">filterFourierTransformArtefacts()</a></code>: removes (Orbitrap) fast fourier
+artefact peaks from spectra (see examples below). The function iterates
+through all intensity ordered peaks in a spectrum and removes all peaks
+with an m/z within +/- <code>halfWindowSize</code> of the current peak if their
+intensity is lower than <code>threshold</code> times the current peak's intensity.
+Additional parameters <code>keepIsotopes</code>, <code>maxCharge</code> and <code>isotopeTolerance</code>
+allow to avoid removing of potential <code>[13]C</code> isotope peaks (<code>maxCharge</code>
+being the maximum charge that should be considered and <code>isotopeTolerance</code>
+the absolute acceptable tolerance for matching their m/z).
+See <code><a href="filterFourierTransformArtefacts.html">filterFourierTransformArtefacts()</a></code> for details and background and
+<code>deisitopeSpectra()</code> for an alternative.</p></li>
+<li><p><code>filterIntensity()</code>: filters mass peaks in each spectrum keeping only
+those with intensities that are within the provided range or match the
+criteria of the provided function. For the former, parameter <code>intensity</code>
+has to be a <code>numeric</code> defining the intensity range, for the latter a
+<code>function</code> that takes the intensity values of the spectrum and returns
+a <code>logical</code> whether the peak should be retained or not (see examples
+below for details) - additional parameters to the function can be passed
+with <code>...</code>.
+To remove only peaks with intensities below a certain threshold, say
+100, use <code>intensity = c(100, Inf)</code>. Note: also a single value can be
+passed with the <code>intensity</code> parameter in which case an upper limit of
+<code>Inf</code> is used.
+Note that this function removes also peaks with missing intensities
+(i.e. an intensity of <code>NA</code>). Parameter <code>msLevel.</code> allows to restrict the
+filtering to spectra of the specified MS level(s).</p></li>
+<li><p><code>filterMzRange()</code>: filters mass peaks in the object keeping or removing
+those in each spectrum that are within the provided m/z range. Whether
+peaks are retained or removed can be configured with parameter <code>keep</code>
+(default <code>keep = TRUE</code>).</p></li>
+<li><p><code>filterMzValues()</code>: filters mass peaks in the object keeping all
+peaks in each spectrum that match the provided m/z value(s) (for
+<code>keep = TRUE</code>, the default) or removing all of them (for <code>keep = FALSE</code>).
+The m/z matching considers also the absolute <code>tolerance</code> and m/z-relative
+<code>ppm</code> values. <code>tolerance</code> and <code>ppm</code> have to be of length 1.</p></li>
+<li><p><code><a href="filterPeaksRanges.html">filterPeaksRanges()</a></code>: filters mass peaks of a <code>Spectra</code> object using any
+set of range-based filters on numeric spectra or peaks variables. See
+<code><a href="filterPeaksRanges.html">filterPeaksRanges()</a></code> for more information.</p></li>
+<li><p><code>filterPrecursorPeaks()</code>: removes peaks from each spectrum in <code>object</code> with
+an m/z equal or larger than the m/z of the precursor, depending on the
+value of parameter <code>mz</code>: for <code>mz = ==" (the default) peaks with matching m/z (considering an absolute and relative acceptable difference depending on </code>tolerance<code>and</code>ppm<code>, respectively) are removed. For </code>mz = "&gt;="<code>all peaks with an m/z larger or equal to the precursor m/z (minus</code>tolerance<code>and the</code>ppm<code>of the precursor m/z) are removed. Parameter</code>msLevel.<code>allows to restrict the filter to certain MS levels (by default the filter is applied to all MS levels). Note that no peaks are removed if the precursor m/z is</code>NA` (e.g. typically for MS1 spectra).</p></li>
+<li><p><code>reduceSpectra()</code>: keeps for groups of peaks with similar m/z values in
+(given <code>ppm</code> and <code>tolerance</code>) in each spectrum only the peak with the
+highest intensity removing all other peaks hence <em>reducing</em> each
+spectrum to the highest intensity peaks per <em>peak group</em>.
+Peak groups are defined using the <code><a href="https://rdrr.io/r/grDevices/plotmath.html" class="external-link">group()</a></code> function from the
+<em>MsCoreUtils</em> package. See also the <code>combinePeaks()</code> function for an
+alternative function to combine peaks within each spectrum.</p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="merging-aggregating-and-splitting">Merging, aggregating and splitting<a class="anchor" aria-label="anchor" href="#merging-aggregating-and-splitting"></a></h2>
+
+
+
+<p>Several <code>Spectra</code> objects can be concatenated into a single object with the
+<code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> or the <code>concatenateSpectra()</code> function. Concatenation will fail if the
+processing queue of any of the <code>Spectra</code> objects is not empty or if
+different backends are used in the <code>Spectra</code> objects. Thus, in these cases,
+prior to merging <code>Spectra</code> object it is suggested to change the backend to
+a <code>MsBackendMemory</code> using the <code>setBackend()</code> function, and to <em>apply</em> all
+data processing steps using <code>applyProcessing()</code>. The spectra variables
+of the resulting <code>Spectra</code> object is the union of the spectra variables of
+the individual <code>Spectra</code> objects.</p><ul><li><p><code>combineSpectra()</code>: combines MS data (i.e. mass peaks) from sets of
+spectra into a single spectrum per set (in contrast to <code>combinePeaks()</code>
+or <code>reduceSpectra()</code> that combine mass peaks <strong>within each spectrum</strong>).
+For each spectrum group (set), spectra variables from the first spectrum
+are used and the peak matrices are combined using the function specified
+with <code>FUN</code>, which defaults to <code><a href="combinePeaksData.html">combinePeaksData()</a></code>. Please refer to the
+<code><a href="combinePeaksData.html">combinePeaksData()</a></code> help page for details and options of the actual
+combination of peaks across the sets of spectra and to the package
+vignette for examples and alternative ways to aggregate spectra.
+The sets of spectra can be specified with parameter <code>f</code>.
+In addition it is possible to define, with parameter <code>p</code> if and how to
+split the input data for parallel processing.
+This defaults to <code>p = x$dataStorage</code> and hence a per-file parallel
+processing is applied for <code>Spectra</code> with file-based backends (such as the
+<code><a href="MsBackend.html">MsBackendMzR()</a></code>).
+Prior combination of the spectra all processings queued in the lazy
+evaluation queue are applied. Be aware that calling <code>combineSpectra()</code> on a
+<code>Spectra</code> object with certain backends that allow modifications might
+<strong>overwrite</strong> the original data. This does not happen with a
+<code>MsBackendMemory</code> or <code>MsBackendDataFrame</code> backend, but with a
+<code>MsBackendHdf5Peaks</code> backend the m/z and intensity values in the original
+hdf5 file(s) will be overwritten.
+The function returns a <code>Spectra</code> of length equal to the unique levels
+of <code>f</code>.</p></li>
 <li><p><code>joinSpectraData()</code>: Individual spectra variables can be directly
 added with the <code>$&lt;-</code> or <code>[[&lt;-</code> syntax. The <code>joinSpectraData()</code>
 function allows to merge a <code>DataFrame</code> to the existing spectra
@@ -1444,13 +1510,9 @@ should be explored and ideally be removed using for
 <code>QFeatures::reduceDataFrame()</code>, <code>PMS::reducePSMs()</code> or similar
 functions.</p></li>
 </ul></li>
-</ul><p>Several <code>Spectra</code> objects can be concatenated into a single object with the
-<code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> or the <code>concatenateSpectra()</code> function. Concatenation will fail if the
-processing queue of any of the <code>Spectra</code> objects is not empty or if
-different backends are used in the <code>Spectra</code> objects. The spectra variables
-of the resulting <code>Spectra</code> object is the union of the spectra variables of
-the individual <code>Spectra</code> objects.</p>
-    </div>
+<li><p><code><a href="https://rdrr.io/r/base/split.html" class="external-link">split()</a></code>: splits the <code>Spectra</code> object based on parameter <code>f</code> into a <code>list</code>
+of <code>Spectra</code> objects.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="data-manipulation-and-analysis-methods">Data manipulation and analysis methods<a class="anchor" aria-label="anchor" href="#data-manipulation-and-analysis-methods"></a></h2>
 
@@ -1501,46 +1563,6 @@ same bin are aggregated using the function provided with parameter <code>FUN</co
 the binning operation is applied to the peak data on-the-fly upon data
 access and it is possible to <em>revert</em> the operation with the <code><a href="hidden_aliases.html">reset()</a></code>
 function (see description of <code><a href="hidden_aliases.html">reset()</a></code> above).</p></li>
-<li><p><code>combinePeaks()</code>: combines mass peaks <strong>within each spectrum</strong> with a
-difference in their m/z values that is smaller than the maximal
-acceptable difference defined by <code>ppm</code> and <code>tolerance</code>. Parameters
-<code>intensityFun</code> and <code>mzFun</code> allow to define functions to aggregate the
-intensity and m/z values for each such group of peaks. With
-<code>weighted = TRUE</code> (the default), the m/z value of the combined peak is
-calculated using an intensity-weighted mean and parameter <code>mzFun</code> is
-ignored. The <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/group.html" class="external-link">MsCoreUtils::group()</a></code> function is used for the grouping of
-mass peaks. Parameter <code>msLevel.</code> allows to define selected MS levels for
-which peaks should be combined. This function returns a <code>Spectra</code> with
-the same number of spectra than the input object, but with possibly
-combined peaks within each spectrum.
-dropped (i.e. their values are replaced with <code>NA</code>) for combined peaks
-unless they are constant across the combined peaks. See also
-<code>reduceSpectra()</code> for a function to select a single <em>representative</em>
-mass peak for each peak group.</p></li>
-<li><p><code>combineSpectra()</code>: combines MS data from <strong>sets of spectra into a
-single spectrum per set</strong> (in contrast to <code>combinePeaks()</code> or
-<code>reduceSpectra()</code> that combine mass peaks <strong>within each spectrum</strong>).
-For each spectrum group (set), spectra variables from the first spectrum
-are used and the peak matrices are combined using the function specified
-with <code>FUN</code>, which defaults to <code><a href="combinePeaksData.html">combinePeaksData()</a></code>. Please refer to the
-<code><a href="combinePeaksData.html">combinePeaksData()</a></code> help page for details and options of the actual
-combination of peaks across the sets of spectra and to the package
-vignette for examples and alternative ways to aggregate spectra.
-The sets of spectra can be specified with parameter <code>f</code>.
-In addition it is possible to define, with parameter <code>p</code> if and how to
-split the input data for parallel processing.
-This defaults to <code>p = x$dataStorage</code> and hence a per-file parallel
-processing is applied for <code>Spectra</code> with file-based backends (such as the
-<code><a href="MsBackend.html">MsBackendMzR()</a></code>).
-Prior combination of the spectra all processings queued in the lazy
-evaluation queue are applied. Be aware that calling <code>combineSpectra()</code> on a
-<code>Spectra</code> object with certain backends that allow modifications might
-<strong>overwrite</strong> the original data. This does not happen with a
-<code>MsBackendMemory</code> or <code>MsBackendDataFrame</code> backend, but with a
-<code>MsBackendHdf5Peaks</code> backend the m/z and intensity values in the original
-hdf5 file(s) will be overwritten.
-The function returns a <code>Spectra</code> of length equal to the unique levels
-of <code>f</code>.</p></li>
 <li><p><code>compareSpectra()</code>: compares each spectrum in <code>x</code> with each spectrum in <code>y</code>
 using the function provided with <code>FUN</code> (defaults to <code>ndotproduct()</code>). If
 <code>y</code> is missing, each spectrum in <code>x</code> is compared with each other spectrum
@@ -1575,16 +1597,6 @@ the comparison of <code>x[2]</code> with <code>y[3]</code>). If <code>SIMPLIFY =
 is <em>simplified</em> to a <code>numeric</code> if length of <code>x</code> or <code>y</code> is one. See also
 the vignette for additional examples, such as using spectral entropy
 similarity in the scoring.</p></li>
-<li><p><code>deisotopeSpectra()</code>: <em>deisotopes</em> each spectrum keeping only the
-monoisotopic peak for groups of isotopologues. Isotopologues are
-estimated using the <code>isotopologues()</code> function from the <em>MetaboCoreUtils</em>
-package. Note that the default parameters for isotope
-prediction/detection have been determined using data from the Human
-Metabolome Database (HMDB) and isotopes for elements other than CHNOPS
-might not be detected. See parameter <code>substDefinition</code> in the
-documentation of <code>isotopologues()</code> for more information. The approach
-and code to define the parameters for isotope prediction is described
-<a href="https://github.com/EuracBiomedicalResearch/isotopologues" class="external-link">here</a>.</p></li>
 <li><p><code><a href="hidden_aliases.html">entropy()</a></code>: calculates the entropy of each spectra based on the metrics
 suggested by Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
 See also <code>nentropy()</code> in the <em>MsCoreUtils</em> package for details.</p></li>
@@ -1603,13 +1615,12 @@ from the previous MS1 spectrum. See <code><a href="estimatePrecursorMz.html">est
 <code><a href="neutralLoss.html">neutralLoss()</a></code> for detailed documentation.</p></li>
 <li><p><code>processingLog()</code>: returns a <code>character</code> vector with the processing log
 messages.</p></li>
-<li><p><code>reduceSpectra()</code>: keeps for groups of peaks with similar m/z values in
-(given <code>ppm</code> and <code>tolerance</code>) in each spectrum only the peak with the
-highest intensity removing all other peaks hence <em>reducing</em> each
-spectrum to the highest intensity peaks per <em>peak group</em>.
-Peak groups are defined using the <code><a href="https://rdrr.io/r/grDevices/plotmath.html" class="external-link">group()</a></code> function from the
-<em>MsCoreUtils</em> package. See also the <code>combinePeaks()</code> function for an
-alternative function to combine peaks within each spectrum.</p></li>
+<li><p><code><a href="hidden_aliases.html">reset()</a></code>: restores the data to its original state (as much as possible):
+removes any processing steps from the lazy processing queue and calls
+<code><a href="hidden_aliases.html">reset()</a></code> on the backend which, depending on the backend, can also undo
+e.g. data filtering operations. Note that a <code>reset*(</code> call after
+<code>applyProcessing()</code> will not have any effect. See examples below for more
+information.</p></li>
 <li><p><code>scalePeaks()</code>: scales intensities of peaks within each spectrum depending
 on parameter <code>by</code>. With <code>by = sum</code> (the default) peak intensities are
 divided by the sum of peak intensities within each spectrum. The sum of
@@ -1680,7 +1691,7 @@ level(s).</p></li>
     <p>Nir Shahaf, Johannes Rainer</p>
 <p>Nir Shahaf</p>
 <p>Johannes Rainer</p>
-<p>Sebastian Gibb, Johannes Rainer, Laurent Gatto</p>
+<p>Sebastian Gibb, Johannes Rainer, Laurent Gatto, Philippine Louail</p>
     </div>
 
     <div class="section level2">
@@ -1756,7 +1767,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1862         1   259.752       931</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Jul 16 16:58:14 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jul 19 09:49:55 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory()` supports the `setBackend()` method:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="MsBackend.html">supportsSetBackend</a></span><span class="op">(</span><span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -2035,7 +2046,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         2       1.2        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Tue Jul 16 16:58:15 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Fri Jul 19 09:49:56 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Below we combine the `data` and `sciex_im` objects into a single one.</span></span></span>
 <span class="r-in"><span><span class="va">data_comb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">sciex_im</span><span class="op">)</span></span></span>
@@ -2061,7 +2072,7 @@ level(s).</p></li>
 <span class="r-in"><span><span class="fu">filterPrecursorMzRange</span><span class="op">(</span><span class="va">data_filt</span>, mz <span class="op">=</span> <span class="fl">543.23</span> <span class="op">+</span> <span class="fu"><a href="hidden_aliases.html">ppm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">543.23</span>, <span class="fl">543.23</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 0 spectra in a MsBackendMemory backend:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2354323, 543.2354323] [Tue Jul 16 16:58:15 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with a precursor m/z within [543.2354323, 543.2354323] [Fri Jul 19 09:49:56 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Filter a Spectra keeping only peaks matching certain m/z values</span></span></span>
 <span class="r-in"><span><span class="va">sps_sub</span> <span class="op">&lt;-</span> <span class="fu">filterMzValues</span><span class="op">(</span><span class="va">data</span>, mz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">103</span>, <span class="fl">104</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
@@ -2203,7 +2214,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Tue Jul 16 16:58:15 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Fri Jul 19 09:49:56 2024] </span>
 <span class="r-in"><span><span class="fu"><a href="spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">fft_spectrum</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">264.5</span>, <span class="fl">265.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5e6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="Spectra-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -2225,8 +2236,8 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 2 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Tue Jul 16 16:58:15 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Tue Jul 16 16:58:15 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Fri Jul 19 09:49:56 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove fast fourier artefacts. [Fri Jul 19 09:49:56 2024] </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">fft_spectrum_filtered</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 297</span>
 <span class="r-in"><span><span class="fu"><a href="spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">fft_spectrum_filtered</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">264.5</span>, <span class="fl">265.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5e6</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -2292,7 +2303,7 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Jul 16 16:58:15 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Jul 19 09:49:56 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get the intensities of the first and second spectrum.</span></span></span>
 <span class="r-in"><span><span class="fu">intensity</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
@@ -2349,9 +2360,9 @@ level(s).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         2       1.2        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 17 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Tue Jul 16 16:58:15 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Tue Jul 16 16:58:16 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Tue Jul 16 16:58:16 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 40 in MS level(s) 1, 2 set to 0 [Fri Jul 19 09:49:56 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [40, Inf] in spectra of MS level(s) 1, 2. [Fri Jul 19 09:49:56 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Fri Jul 19 09:49:56 2024] </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">res_rest</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4 3</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu">mz</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">)</span></span></span>

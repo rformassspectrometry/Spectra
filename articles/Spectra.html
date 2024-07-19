@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@ Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="exte
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
 Louail [aut] (<a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
 [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-07-16 16:36:40.898842<br><strong>Compiled</strong>: Tue Jul 16 16:59:49 2024</p>
+[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-07-19 09:31:40.595906<br><strong>Compiled</strong>: Fri Jul 19 09:51:27 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -550,17 +550,34 @@ for <strong>existing</strong> peaks variables using the
 <code>$&lt;-</code> function.</p>
 </div>
 <div class="section level3">
-<h3 id="filtering-subsetting-and-merging">Filtering, subsetting and merging<a class="anchor" aria-label="anchor" href="#filtering-subsetting-and-merging"></a>
+<h3 id="filtering-aggregating-and-merging-spectra-data">Filtering, aggregating and merging spectra data<a class="anchor" aria-label="anchor" href="#filtering-aggregating-and-merging-spectra-data"></a>
 </h3>
-<p>Apart from <em>classical</em> subsetting operations such as
-<code>[</code> and <code><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split()</a></code>, a set of filter functions are
-defined for <code>Spectra</code> objects (for detailed help please see
-the <code><a href="../reference/Spectra.html">?Spectra</a></code> help). Filter and subset functions either
-reduce the number of spectra within a <code>Spectra</code> object, or
-affect the number of peaks (by either aggregating or subset) within each
-spectrum. Filter functions affecting the total number of spectra are (in
-alphabetic order):</p>
+<p>Various functions are available to filter, subset and merge
+<code>Spectra</code> objects. These can be generally subdivided into
+functions that subset or filter <em>spectra data</em> and operations
+that filter <em>mass peak data</em>. A third category of function allows
+to aggregate data within a <code>Spectra</code> or to merge and combine
+multiple <code>Spectra</code> objects into one. Functions of the various
+categories are described in the following subsections. Please refer to
+the function’s documentation for more details and information.</p>
+<div class="section level4">
+<h4 id="filter-spectra-data">Filter spectra data<a class="anchor" aria-label="anchor" href="#filter-spectra-data"></a>
+</h4>
+<p>These functions comprise subset operations that reduce the total
+number of spectra in a <code>Spectra</code> object as well as filter
+functions that reduce the content of the <code>Spectra</code>’s spectra
+data (i.e. the content of its <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables()</a></code>). These
+functions thus don’t change or affect the mass peaks data of the
+<code>Spectra</code>’s individual spectra.</p>
 <ul>
+<li>
+<code>[</code>: operation to reduce a <code>Spectra</code> object to
+selected elements.</li>
+<li>
+<code><a href="../reference/hidden_aliases.html">dropNaSpectraVariables()</a></code>: drops
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraVariables()</a></code> that contain only missing values. The
+function returns a <code>Spectra</code> object with the same number of
+elements, but with eventually fewer spectra variables.</li>
 <li>
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterAcquisitionNum()</a></code>: retains spectra with certain
 acquisition numbers.</li>
@@ -574,15 +591,15 @@ data storage files.</li>
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterEmptySpectra()</a></code>: removes spectra without mass
 peaks.</li>
 <li>
-<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMzRange()</a></code>: subsets spectra keeping only peaks
-with an m/z within the provided m/z range.</li>
-<li>
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterIsolationWindow()</a></code>: keeps spectra with the
 provided <code>mz</code> in their isolation window (m/z range).</li>
 <li>
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMsLevel()</a></code>: filters by MS level.</li>
 <li>
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPolarity()</a></code>: filters by polarity.</li>
+<li>
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorCharge()</a></code>: retains (MSn) spectra with
+specified precursor charge(s).</li>
 <li>
 <code><a href="../reference/Spectra.html">filterPrecursorIsotopes()</a></code>: identifies precursor ions
 (from fragment spectra) that could represent isotopes of the same
@@ -602,44 +619,29 @@ precursor m/z within the provided m/z range.</li>
 precursor m/z value matching the provided value(s) considering also a
 <code>tolerance</code> and <code>ppm</code>.</li>
 <li>
-<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorCharge()</a></code>: retains (MSn) spectra with
-specified precursor charge(s).</li>
-<li>
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorScan()</a></code>: retains (parent and children)
 scans of an acquisition number.</li>
 <li>
-<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRanges()</a></code>: allows filtering of the
-<code>Spectra</code> object based on user defined <em>numeric</em>
-ranges (parameter <code>ranges</code>) for one or more available spectra
-variables in object (spectra variable names can be specified with
-parameter <code>spectraVariables</code>). Spectra for which the value of
-a spectra variable is within it’s defined range are retained. If
-multiple ranges/spectra variables are defined, the <code>match</code>
-parameter can be used to specify whether all conditions
-(<code>match = "all"</code>; the default) or if any of the conditions
-must match (<code>match = "any"</code>; all spectra for which values are
-within any of the provided ranges are retained).</li>
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRanges()</a></code>: filters a <code>Spectra</code> object
+based on (multiple) user defined <em>numeric</em> ranges for one or more
+available (numeric) spectra variables.</li>
 <li>
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRt()</a></code>: filters based on retention time range.</li>
 <li>
-<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterValues()</a></code>: allows filtering of the
-<code>Spectra</code> object based on similarities of <em>numeric</em>
-values of one or more <code>spectraVariables(object)</code> (parameter
-<code>spectraVariables</code>) to provided values (parameter
-<code>values</code>) given acceptable differences (parameters tolerance
-and ppm). If multiple values/spectra variables are defined, the
-<code>match</code> parameter can be used to specify whether all
-conditions (<code>match = "all"</code>; the default) or if any of the
-conditions must match (<code>match = "any"</code>; all spectra for which
-values are within any of the provided ranges are retained).</li>
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterValues()</a></code>: filters a <code>Spectra</code> object
+based on similarities of <em>numeric</em> values of one or more
+available spectra variables.</li>
 <li>
-<code><a href="../reference/Spectra.html">combineSpectra()</a></code>: allows to combine the MS data from
-sets of spectra into a single spectrum per set. Thus, instead of
-filtering the data, this function aggregates it.</li>
+<code><a href="../reference/hidden_aliases.html">selectSpectraVariables()</a></code>: reduces the (spectra) data
+within the object to the selected spectra variables.</li>
 </ul>
-<p>Filter functions that return the same number of spectra, but
-affect/subset the peaks data (m/z and intensity values) within each
-spectrum are:</p>
+</div>
+<div class="section level4">
+<h4 id="filter-or-aggregate-mass-peak-data">Filter or aggregate mass peak data<a class="anchor" aria-label="anchor" href="#filter-or-aggregate-mass-peak-data"></a>
+</h4>
+<p>These function filter or aggregate the mass peak data
+(<code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code>) of each spectrum in a <code>Spectra</code>
+without changing the total number of spectra.</p>
 <ul>
 <li>
 <code><a href="../reference/Spectra.html">combinePeaks()</a></code>: groups peaks <strong>within each
@@ -650,12 +652,21 @@ these into a single peak per peak group.</li>
 keeping only the monoisotopic peak for peaks groups of potential
 isotopologues.</li>
 <li>
+<code><a href="../reference/filterFourierTransformArtefacts.html">filterFourierTransformArtefacts()</a></code>: removes (Orbitrap)
+fast fourier transform artifact peaks from spectra.</li>
+<li>
 <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterIntensity()</a></code>: filter each spectrum keeping only
 peaks with intensities meeting certain criteria.</li>
 <li>
-<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMzRange()</a></code>: subsets peaks data within each
-spectrum keeping only peaks with their m/z values within the specified
-m/z range.</li>
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMzRange()</a></code>: filters mass peaks keeping (or
+removing) those with an m/z within the provided m/z range.</li>
+<li>
+<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMzValues()</a></code>: filters mass peaks within each
+spectrum keeping (or removing) those with an m/z matching the provided
+value(s).</li>
+<li>
+<code><a href="../reference/filterPeaksRanges.html">filterPeaksRanges()</a></code>: filters mass peaks using any set
+of range-based filters on numeric spectra or peaks variables.</li>
 <li>
 <code><a href="../reference/Spectra.html">filterPrecursorPeaks()</a></code>: removes peaks with either an
 m/z value matching the precursor m/z of the respective spectrum (with
@@ -663,13 +674,32 @@ parameter <code>mz = "=="</code>) or peaks with an m/z value larger or
 equal to the precursor m/z (with parameter
 <code>mz = "&gt;="</code>).</li>
 <li>
-<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMzValues()</a></code>: subsets peaks within each spectrum
-keeping or removing (all) peaks matching provided m/z value(s) (given
-parameters <code>ppm</code> and <code>tolerance</code>).</li>
-<li>
 <code><a href="../reference/Spectra.html">reduceSpectra()</a></code>: filters individual spectra keeping
 only the largest peak for groups of peaks with similar m/z values.</li>
 </ul>
+</div>
+<div class="section level4">
+<h4 id="merging-aggregating-and-splitting">Merging, aggregating and splitting<a class="anchor" aria-label="anchor" href="#merging-aggregating-and-splitting"></a>
+</h4>
+<ul>
+<li>
+<code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code>: combine several <code>Spectra</code> into a single
+<code>Spectra</code> object.</li>
+<li>
+<code><a href="../reference/Spectra.html">combineSpectra()</a></code>: allows to combine the MS data from
+sets of spectra into a single spectrum per set. Thus, instead of
+filtering the data, this function aggregates it.</li>
+<li>
+<code><a href="../reference/Spectra.html">joinSpectraData()</a></code>: merge a <code>DataFrame</code> to
+the existing spectra data.</li>
+<li>
+<code><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split()</a></code>: splits the <code>Spectra</code> object based
+on a provided grouping factor.</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="examples-and-use-cases-for-filter-operations">Examples and use cases for filter operations<a class="anchor" aria-label="anchor" href="#examples-and-use-cases-for-filter-operations"></a>
+</h4>
 <p>In this example, we use the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterValues()</a></code> function to
 retain spectra with a base peak m/z close to 100 (+/- 30 ppm) and a
 retention time around 230 (+/- 5 s).</p>
@@ -767,8 +797,8 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Tue Jul 16 16:59:53 2024]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Tue Jul 16 16:59:53 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Jul 19 09:51:32 2024]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Jul 19 09:51:32 2024]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -803,7 +833,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Jul 16 16:59:54 2024]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Jul 19 09:51:32 2024]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
@@ -835,6 +865,7 @@ also for <code>Spectra</code> containing the data from very large
 experiments, because it can significantly reduce the object’s size in
 memory. In such cases the <code><a href="../reference/hidden_aliases.html">selectSpectraVariables()</a></code> function
 can be used to retain only specified spectra variables.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="data-manipulations">Data manipulations<a class="anchor" aria-label="anchor" href="#data-manipulations"></a>
@@ -895,9 +926,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Jul 16 16:59:54 2024]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jul 16 16:59:54 2024]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jul 16 16:59:54 2024]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Jul 19 09:51:32 2024]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul 19 09:51:32 2024]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul 19 09:51:32 2024]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -928,9 +959,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Jul 16 16:59:54 2024]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jul 16 16:59:54 2024]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jul 16 16:59:54 2024]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Jul 19 09:51:32 2024]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul 19 09:51:32 2024]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul 19 09:51:32 2024]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity()</a></code> on this object will
 now return intensities that are half of the intensities of the original
@@ -1200,9 +1231,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Jul 16 16:59:54 2024]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jul 16 16:59:54 2024]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jul 16 16:59:54 2024]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Jul 19 09:51:32 2024]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Jul 19 09:51:32 2024]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jul 19 09:51:32 2024]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code><a href="../reference/Spectra.html">applyProcessing()</a></code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1534,7 +1565,7 @@ parameters).</p>
 <div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file25633f69fa55...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file1ff0767bc50a...OK</span></span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
@@ -1555,8 +1586,8 @@ and spectra 2 and 4 to another.</p>
 <div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/hidden_aliases.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file256362b2eed7...OK</span></span>
-<span><span class="co">## Writing file file2563310cefff...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file1ff033d30f7c...OK</span></span>
+<span><span class="co">## Writing file file1ff076a71e8...OK</span></span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/smooth.html" class="external-link">smooth()</a></code>
 function) and centroiding (using the <code><a href="../reference/hidden_aliases.html">pickPeaks()</a></code> function)
@@ -1597,7 +1628,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1862         1   259.752       931</span></span>
 <span><span class="co">##  ... 33 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Tue Jul 16 16:59:59 2024]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jul 19 09:51:38 2024]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
@@ -1835,16 +1866,16 @@ usable on the second computer.</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] msdata_0.45.0       msentropy_0.1.4     Rcpp_1.0.12        </span></span>
-<span><span class="co">##  [4] MsCoreUtils_1.17.0  Spectra_1.15.4      ProtGenerics_1.37.0</span></span>
-<span><span class="co">##  [7] BiocParallel_1.39.0 S4Vectors_0.43.1    BiocGenerics_0.51.0</span></span>
+<span><span class="co">##  [1] msdata_0.45.0       msentropy_0.1.4     Rcpp_1.0.13        </span></span>
+<span><span class="co">##  [4] MsCoreUtils_1.17.0  Spectra_1.15.5      ProtGenerics_1.37.0</span></span>
+<span><span class="co">##  [7] BiocParallel_1.39.0 S4Vectors_0.43.2    BiocGenerics_0.51.0</span></span>
 <span><span class="co">## [10] BiocStyle_2.33.1   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] jsonlite_1.8.8         highr_0.11             compiler_4.4.1        </span></span>
 <span><span class="co">##  [4] BiocManager_1.30.23    Biobase_2.65.0         rhdf5filters_1.17.0   </span></span>
 <span><span class="co">##  [7] parallel_4.4.1         cluster_2.1.6          jquerylib_0.1.4       </span></span>
-<span><span class="co">## [10] systemfonts_1.1.0      IRanges_2.39.1         textshaping_0.4.0     </span></span>
+<span><span class="co">## [10] systemfonts_1.1.0      IRanges_2.39.2         textshaping_0.4.0     </span></span>
 <span><span class="co">## [13] yaml_2.3.9             fastmap_1.2.0          R6_2.5.1              </span></span>
 <span><span class="co">## [16] knitr_1.48             htmlwidgets_1.6.4      MASS_7.3-61           </span></span>
 <span><span class="co">## [19] bookdown_0.40          desc_1.4.3             bslib_0.7.0           </span></span>
