@@ -1,5 +1,10 @@
 # Spectra 1.15
 
+## Changes in 1.15.6
+
+- Fix in `selectSpectraVariables()` for `MsBackendMzR`: ensure peaks variables
+  `"mz"` and `"intensity"` are not by default removed.
+
 ## Changes in 1.15.5
 
 - Add new `filterPeaksRanges()` function to filter mass peaks by ranges on

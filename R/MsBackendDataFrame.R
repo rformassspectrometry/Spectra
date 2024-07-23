@@ -406,7 +406,7 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
                                                 spectraVariables(object))],
                              collapse = ", "), " not available")
               keep <- spectraVariables[spectraVariables %in%
-                                            colnames(object@spectraData)]
+                                       colnames(object@spectraData)]
               if (length(keep))
                   object@spectraData <- object@spectraData[, keep,
                                                            drop = FALSE]
@@ -414,7 +414,7 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
               if (length(msg))
                   stop(msg)
               object@peaksVariables <- intersect(object@peaksVariables,
-                                                 colnames(object@spectraData))
+                                                 spectraVariables)
               validObject(object)
               object
 })

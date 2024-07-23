@@ -622,15 +622,32 @@ test_that("selectSpectraVariables,MsBackendDataFrame works", {
     be <- backendInitialize(MsBackendDataFrame(), df)
 
     res <- selectSpectraVariables(be, c("dataStorage", "other_col"))
+
+    expect_equal(res@peaksVariables, be@peaksVariables)
     expect_equal(colnames(res@spectraData), c("dataStorage", "other_col"))
     expect_equal(msLevel(res), c(NA_integer_, NA_integer_))
 
     res <- selectSpectraVariables(be, c("dataStorage", "rtime"))
     expect_equal(colnames(res@spectraData), c("dataStorage", "rtime"))
+    expect_equal(res@peaksVariables, be@peaksVariables)
 
     expect_error(selectSpectraVariables(be, "rtime"), "dataStorage is/are missing")
     expect_error(selectSpectraVariables(be, "something"),
                  "something not available")
+
+    df$mz <- list(c(1.2, 1.4), c(5.3, 34.5, 52.1))
+    df$intensity <- list(c(123, 121.1), c(1231.1, 343.1, 21.1))
+    be <- backendInitialize(MsBackendDataFrame(), df)
+    res <- selectSpectraVariables(be, c("dataStorage", "other_col"))
+    expect_equal(colnames(res@spectraData), c("dataStorage", "other_col"))
+    expect_equal(msLevel(res), c(NA_integer_, NA_integer_))
+    expect_equal(res@peaksVariables, character())
+
+    be <- backendInitialize(MsBackendDataFrame(), df)
+    res <- selectSpectraVariables(be, c("dataStorage", "mz", "intensity"))
+    expect_equal(colnames(res@spectraData), c("dataStorage", "mz", "intensity"))
+    expect_equal(msLevel(res), c(NA_integer_, NA_integer_))
+    expect_equal(res@peaksVariables, c("mz", "intensity"))
 })
 
 test_that("$,$<-,MsBackendDataFrame works", {

@@ -493,6 +493,14 @@ test_that("selectSpectraVariables,MsBackendMzR works", {
                                         "scanIndex"))
     expect_equal(colnames(res@spectraData), c("dataStorage", "msLevel", "rtime",
                                               "scanIndex"))
+    expect_equal(res@peaksVariables, character())
+
+    res <- selectSpectraVariables(be, c("dataStorage", "msLevel", "rtime",
+                                        "scanIndex", "mz", "intensity"))
+    expect_equal(colnames(res@spectraData), c("dataStorage", "msLevel", "rtime",
+                                              "scanIndex"))
+    expect_equal(res@peaksVariables, c("mz", "intensity"))
+
     expect_error(selectSpectraVariables(be, c("dataStorage", "msLevel")),
                  "scanIndex is/are missing")
 })
@@ -559,6 +567,7 @@ test_that("dropNaSpectraVariables works with MsBackendMzR", {
     expect_equal(mz(res[1]), mz(sciex_mzr[1]))
     expect_true(length(spectraVariables(res)) <
                 length(spectraVariables(sciex_mzr)))
+    expect_equal(res@peaksVariables, sciex_mzr@peaksVariables)
 })
 
 test_that("supportsSetBackend,MsBackendMzR", {
