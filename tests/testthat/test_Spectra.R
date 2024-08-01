@@ -1929,3 +1929,13 @@ test_that("asDataFrame works", {
     expect_identical(ncol(df), 2L)
     expect_identical(names(df), c("mz", "intensity"))
 })
+
+test_that("estimatePrecursorIntensity works", {
+    fls <- msdata::proteomics(full.names = TRUE)[c(5, 3)]
+    second <- Spectra(fls[2], backend = MsBackendMzR())
+    both <- Spectra(fls, backend = MsBackendMzR())
+
+    res_second <- estimatePrecursorIntensity(second)
+    res_both <- estimatePrecursorIntensity(both)
+    expect_equal(res_second, res_both[510:length(res_both)])
+})

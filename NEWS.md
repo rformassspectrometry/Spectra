@@ -1,5 +1,10 @@
 # Spectra 1.15
 
+## Changes in 1.15.7
+
+- Change `estimatePrecursorIntensity()` to a method to avoid overrides/clashes
+  with the same-named implementation in *xcms*.
+
 ## Changes in 1.15.6
 
 - Fix in `selectSpectraVariables()` for `MsBackendMzR`: ensure peaks variables

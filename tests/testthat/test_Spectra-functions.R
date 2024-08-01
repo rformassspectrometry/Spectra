@@ -690,16 +690,6 @@ test_that(".estimate_precursor_intensity works", {
     expect_true(all(is.na(res)))
 })
 
-test_that("estimatePrecursorIntensity works", {
-    fls <- msdata::proteomics(full.names = TRUE)[c(5, 3)]
-    second <- Spectra(fls[2], backend = MsBackendMzR())
-    both <- Spectra(fls, backend = MsBackendMzR())
-
-    res_second <- estimatePrecursorIntensity(second)
-    res_both <- estimatePrecursorIntensity(both)
-    expect_equal(res_second, res_both[510:length(res_both)])
-})
-
 test_that(".chunk_factor works", {
     res <- .chunk_factor(10, chunkSize = 3)
     expect_equal(res, as.factor(c(1, 1, 1, 2, 2, 2, 3, 3, 3, 4)))
