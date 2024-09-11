@@ -3,20 +3,22 @@ NULL
 
 #' @title The Spectra class to manage and access MS data
 #'
-#' @aliases Spectra-class [,Spectra-method
-#' @aliases uniqueMsLevels uniqueMsLevels,Spectra-method
-#' @aliases combinePeaks
+#' @aliases Spectra-class
 #'
 #' @name Spectra
 #'
 #' @description
 #'
-#' The `Spectra` class encapsules spectral mass spectrometry data and
-#' related metadata.
+#' The `Spectra` class encapsules spectral mass spectrometry (MS) data and
+#' related metadata. The MS data is represented by a *backend* extending the
+#' virual [MsBackend] class which provides the data to the `Spectra` object.
+#' The `Spectra` class implements only data accessor, filtering and analysis
+#' methods for the MS data and relies on its *backend* to provide the MS data.
+#' This allows to change data representations of a `Spectra` object depending
+#' on the user's needs and properties of the data. Different backends and
+#' their properties are explained in the [MsBackend] documentation.
 #'
-#' It supports multiple data backends, e.g. in-memory ([MsBackendMemory],
-#' [MsBackendDataFrame()]), on-disk as mzML ([MsBackendMzR()]) or HDF5
-#' ([MsBackendHdf5Peaks()]).
+#' LLLLL link to other documentations.
 #'
 #' @details
 #'
@@ -54,6 +56,28 @@ NULL
 #'   the `acquisitionNum`)
 #'
 #' See also [this issue](https://github.com/lgatto/MSnbase/issues/525).
+
+#' @title Accessing Mass Spectrometry Data
+#'
+#'
+
+#' @title Merging, Splitting and Aggregating Spectra
+#'
+#' @aliases [,Spectra-method
+
+#' @title Filtering and Subsetting Spectra Objects
+#'
+
+#' @title Data Manipulation and Analysis Methods
+#'
+
+#' @title Spectra Similarity Calculations
+
+#' @title The Spectra class to manage and access MS data
+#'
+#' @aliases uniqueMsLevels uniqueMsLevels,Spectra-method
+#' @aliases combinePeaks
+#'
 #'
 #' @section Creation of objects, conversion, changing the backend and export:
 #'
