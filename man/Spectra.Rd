@@ -18,6 +18,7 @@
 \alias{uniqueMsLevels}
 \alias{uniqueMsLevels,Spectra-method}
 \alias{combinePeaks}
+\alias{msLevel}
 \alias{Spectra,missing-method}
 \alias{Spectra,MsBackend-method}
 \alias{Spectra,character-method}
@@ -1565,6 +1566,14 @@ ranges of successive non-0 peaks <= \code{threshold} are set to 0.
 Parameter \code{msLevel.} allows to apply this to only spectra of certain MS
 level(s).
 }
+}
+
+\section{Backward compatibility}{
+
+
+\code{Spectra} objects can be coerced to the older \code{MSpectra} objects from the
+\emph{MSnbase} package using the \code{as()} function (e.g. \code{as(sps, "MSpectra")}
+where \code{sps} is a \code{Spectra} object).
 }
 
 \examples{

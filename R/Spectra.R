@@ -6,6 +6,7 @@ NULL
 #' @aliases Spectra-class [,Spectra-method
 #' @aliases uniqueMsLevels uniqueMsLevels,Spectra-method
 #' @aliases combinePeaks
+#' @aliases msLevel
 #'
 #' @name Spectra
 #'
@@ -54,6 +55,7 @@ NULL
 #'   the `acquisitionNum`)
 #'
 #' See also [this issue](https://github.com/lgatto/MSnbase/issues/525).
+#'
 #'
 #' @section Creation of objects, conversion, changing the backend and export:
 #'
@@ -145,6 +147,7 @@ NULL
 #' the original data files. Thus, for `Spectra` objects (using this backend)
 #' that were moved to another file system or computer, these functions allow to
 #' adjust/adapt the base file path.
+#'
 #'
 #' @section Accessing spectra data:
 #'
@@ -330,6 +333,7 @@ NULL
 #'
 #' - `uniqueMsLevels()`: get the unique MS levels available in `object`. This
 #'   function is supposed to be more efficient than `unique(msLevel(object))`.
+#'
 #'
 #' @section Filter spectra data:
 #'
@@ -797,6 +801,13 @@ NULL
 #'   ranges of successive non-0 peaks <= `threshold` are set to 0.
 #'   Parameter `msLevel.` allows to apply this to only spectra of certain MS
 #'   level(s).
+#'
+#'
+#' @section Backward compatibility:
+#'
+#' `Spectra` objects can be coerced to the older `MSpectra` objects from the
+#' *MSnbase* package using the `as()` function (e.g. `as(sps, "MSpectra")`
+#' where `sps` is a `Spectra` object).
 #'
 #'
 #' @return See individual method description for the return value.
@@ -1786,6 +1797,10 @@ setAs("Spectra", "list", function(from, to) {
 
 setAs("Spectra", "SimpleList", function(from, to) {
     peaksData(from)
+})
+
+setAs("Spectra", "MSpectra", function(from) {
+    MSnbase::MSpectra(.spectra_to_spectrum_list(from, chunkSize = 1000))
 })
 
 #' @rdname Spectra

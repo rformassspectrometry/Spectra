@@ -1292,3 +1292,62 @@ filterPeaksRanges <- function(object, ..., keep = TRUE) {
         "user-provided ranges for ", length(variables), " variables")
     object
 }
+
+#' Coercion method from `Spectra` to `MSnbase::MSpectra`.
+#'
+#' @noRd
+.spectra_to_spectrum_list <- function(x, chunkSize = 100) {
+    requireNamespace("MSnbase", quietly = TRUE)
+    spectrapply(x, function(z) {
+        msl <- msLevel(z)
+        r <- vector("list", length = length(msl))
+        i <- which(msl == 1L)
+        j <- which(msl > 1L)
+        if (length(i)) {
+            z_1 <- z[i]
+            mzs <- mz(z_1)
+            ints <- intensity(z_1)
+            l <- lengths(mzs)
+            r[i] <- MSnbase:::Spectra1_mz_sorted(
+                                  peaksCount = l,
+                                  rt = rtime(z_1),
+                                  acquisitionNum = acquisitionNum(z_1),
+                                  scanIndex = scanIndex(z_1),
+                                  tic = sum(ints),
+                                  mz = unlist(mzs),
+                                  intensity = unlist(ints),
+                                  fromFile = rep(NA_integer_, length(i)),
+                                  centroided = centroided(z_1),
+                                  smoothed = smoothed(z_1),
+                                  polarity = polarity(z_1),
+                                  nvalues = l)
+        }
+        if (length(j)) {
+            z_2 <- z[j]
+            mzs <- mz(z_2)
+            ints <- intensity(z_2)
+            l <- lengths(mzs)
+            r[j] <- MSnbase:::Spectra2_mz_sorted(
+                                  msLevel = msl[j],
+                                  peaksCount = l,
+                                  rt = rtime(z_2),
+                                  acquisitionNum = acquisitionNum(z_2),
+                                  scanIndex = scanIndex(z_2),
+                                  tic = sum(ints),
+                                  mz = unlist(mzs),
+                                  intensity = unlist(intensity(z_2)),
+                                  fromFile = rep(NA_integer_, length(j)),
+                                  centroided = centroided(z_2),
+                                  smoothed = smoothed(z_2),
+                                  polarity = polarity(z_2),
+                                  merged = rep(1, length(j)),
+                                  precScanNum = precScanNum(z_2),
+                                  precursorMz = precursorMz(z_2),
+                                  precursorIntensity = precursorIntensity(z_2),
+                                  precursorCharge = precursorCharge(z_2),
+                                  collisionEnergy = collisionEnergy(z_2),
+                                  nvalues = l)
+        }
+        r
+    }, chunkSize = chunkSize)
+}

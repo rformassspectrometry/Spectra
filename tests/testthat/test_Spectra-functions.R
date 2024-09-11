@@ -923,3 +923,13 @@ test_that("filterPeaksRanges,Spectra works", {
     a <- peaksData(res)[[2L]]
     expect_true(nrow(a) == 0)
 })
+
+test_that(".spectra_to_spectrum_list works", {
+    ## With MSnbase in Enhances we would need to call it like below.
+    if (requireNamespace("MSnbase", quietly = TRUE)) {
+        ## library(MSnbase) # MSnbase needs to be in Suggests
+        a <- .spectra_to_spectrum_list(sps_dda, chunkSize = 5000)
+        expect_true(is.list(a))
+        expect_equal(length(a), length(sps_dda))
+    }
+})

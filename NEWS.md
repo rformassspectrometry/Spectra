@@ -1,5 +1,10 @@
 # Spectra 1.15
 
+## Changes in 1.15.8
+
+- Add backward compatibility by supporting to change from a `Spectra` to a
+  *MSnbase* `MSpectra` object using `as()`.
+
 ## Changes in 1.15.7
 
 - Change `estimatePrecursorIntensity()` to a method to avoid overrides/clashes

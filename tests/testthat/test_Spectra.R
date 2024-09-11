@@ -1939,3 +1939,13 @@ test_that("estimatePrecursorIntensity works", {
     res_both <- estimatePrecursorIntensity(both)
     expect_equal(res_second, res_both[510:length(res_both)])
 })
+
+test_that("coersion from Spectra to MSpectra works", {
+    ## With MSnbase in Enhances we would need to call it like below
+    if (requireNamespace("MSnbase", quietly = TRUE)) {
+        ## library(MSnbase) # MSnbase needs to be in Suggests
+        a <- as(sps_dda, "MSpectra")
+        expect_s4_class(a, "MSpectra")
+        expect_equal(unname(msLevel(a)), msLevel(sps_dda))
+    }
+})
