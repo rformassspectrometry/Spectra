@@ -1,5 +1,10 @@
 # Spectra 1.15
 
+## Changes in 1.15.8
+
+- Refactor the `Spectra()` constructor method: better support for
+  initialization of backends that define their own specific parameters.
+
 ## Changes in 1.15.7
 
 - Change `estimatePrecursorIntensity()` to a method to avoid overrides/clashes

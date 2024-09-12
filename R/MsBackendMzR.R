@@ -43,12 +43,14 @@ setValidity("MsBackendMzR", function(object) {
 #' @importFrom BiocParallel bpparam
 setMethod("backendInitialize", "MsBackendMzR",
           function(object, files, ..., BPPARAM = bpparam()) {
-              if (missing(files) || !length(files))
+              if (missing(files))
                   stop("Parameter 'files' is mandatory for 'MsBackendMzR'")
               if (!is.character(files))
                   stop("Parameter 'files' is expected to be a character vector",
                        " with the files names from where data should be",
                        " imported")
+              if (!length(files))
+                  return(object)
               files <- normalizePath(files, mustWork = FALSE)
               msg <- .valid_ms_backend_files_exist(files)
               if (length(msg))
