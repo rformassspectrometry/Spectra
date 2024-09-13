@@ -13,32 +13,48 @@ test_that("Spectra,ANY works", {
 
     df$polarity <- "NEG"
     expect_error(Spectra(df), "wrong data type: polarity")
+
+    res <- Spectra(files = sciex_file, source = MsBackendMzR())
+    expect_s4_class(res@backend, "MsBackendMzR")
+    expect_true(length(res) > 1)
 })
 
 test_that("Spectra,missing works", {
     res <- Spectra()
     expect_true(length(res) == 0)
+    expect_s4_class(res@backend, "MsBackendMemory")
+
+    res <- Spectra(backend = MsBackendDataFrame())
+    expect_true(length(res) == 0)
+    expect_s4_class(res@backend, "MsBackendDataFrame")
+
+    res <- Spectra(source = MsBackendDataFrame())
+    expect_true(length(res) == 0)
+    expect_s4_class(res@backend, "MsBackendDataFrame")
 
     be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
                                                             fromFile = 1L))
     res <- Spectra(backend = be)
+    expect_s4_class(res@backend, "MsBackendDataFrame")
     expect_true(length(res) == 2)
     expect_identical(msLevel(res), c(1L, 2L))
 })
 
 test_that("Spectra,MsBackend works", {
-    res <- Spectra()
-    expect_true(length(res) == 0)
-
-    be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
-                                                            fromFile = 1L))
+    be <- backendInitialize(MsBackendDataFrame(),
+                            DataFrame(msLevel = c(1L, 2L),
+                                      fromFile = 1L))
     res <- Spectra(be)
     expect_true(length(res) == 2)
     expect_identical(msLevel(res), c(1L, 2L))
 })
 
 test_that("Spectra,character works", {
-    res <- Spectra(sciex_file, backend = MsBackendMzR())
+    res <- Spectra(sciex_file)
+    expect_true(is(res@backend, "MsBackendMzR"))
+    expect_true(length(res) > 0)
+
+    res <- Spectra(sciex_file, source = MsBackendMzR())
     expect_true(is(res@backend, "MsBackendMzR"))
     expect_equal(unique(res@backend$dataStorage), sciex_file)
     expect_identical(rtime(res), rtime(sciex_mzr))
@@ -51,7 +67,7 @@ test_that("Spectra,character works", {
     show(res)
 
     ## Empty character
-    res <- Spectra(character(), backend = MsBackendMzR())
+    res <- Spectra(character())
     expect_s4_class(res, "Spectra")
     expect_s4_class(res@backend, "MsBackendMzR")
     expect_true(length(res) == 0)
@@ -60,6 +76,37 @@ test_that("Spectra,character works", {
     expect_s4_class(res, "Spectra")
     expect_s4_class(res@backend, "MsBackendDataFrame")
     expect_true(length(res) == 0)
+})
+
+test_that(".create_spectra works, ", {
+    ## missing object
+    res <- .create_spectra()
+    expect_true(length(res) == 0)
+    expect_s4_class(res@backend, "MsBackendMemory")
+    expect_error(res <- .create_spectra(backend = MsBackendMzR()), "mandatory")
+
+    ## object being a character, backend a MsBackendMemory -> error
+    res <- expect_error(.create_spectra(sciex_file), "DataFrame")
+    ## object being a character, backend a MsBackendMzR
+    res <- .create_spectra(sciex_file, backend = MsBackendMzR())
+    expect_s4_class(res@backend, "MsBackendMzR")
+    dta <- spectraData(res@backend)
+
+    ## object being a DataFrame, backend a MsBackendDataFrame
+    res <- .create_spectra(dta, backend = MsBackendDataFrame())
+    expect_s4_class(res@backend, "MsBackendDataFrame")
+    expect_equal(res$msLevel, dta$msLevel)
+
+    ## object missing but providing files
+    res <- .create_spectra(files = sciex_file, backend = MsBackendMzR())
+    expect_s4_class(res@backend, "MsBackendMzR")
+    expect_equal(res$msLevel, dta$msLevel)
+
+    ## object missing but providing data
+    res <- .create_spectra(data = dta, backend = MsBackendMemory())
+    expect_s4_class(res@backend, "MsBackendMemory")
+    expect_equal(res$msLevel, dta$msLevel)
+
 })
 
 test_that("setBackend,Spectra works", {
