@@ -1,5 +1,9 @@
 # Spectra 1.15
 
+## Changes in 1.15.9
+
+- Restructure and reorganize documentation for `Spectra`.
+
 ## Changes in 1.15.8
 
 - Refactor the `Spectra()` constructor method: better support for

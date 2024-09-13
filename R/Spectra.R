@@ -11,6 +11,11 @@ NULL
 #'
 #' @name Spectra-class
 #'
+#' @aliases Spectra
+#' @aliases setBackend
+#' @aliases export
+#' @aliases dataStorageBasePath
+#'
 #' @description
 #'
 #' The `Spectra` class encapsules spectral mass spectrometry (MS) data and
@@ -28,6 +33,22 @@ NULL
 #' - [processingChunkSize()] for information on parallel and chunk-wise data
 #'   processing.
 #' - [plotSpectra()] for visualization of `Spectra`.
+#' - [spectraData()] for accessing and using MS data through `Spectra`.
+#'
+#'
+#' @section Data stored in a `Spectra` object:
+#'
+#' The `Spectra` object is a container for MS data that includes mass peak
+#' data (*m/z* and related intensity values, also referred to as *peaks data*
+#' in the context of `Spectra`) and metadata of individual spectra (so called
+#' *spectra variables*). While a core set of spectra variables (the
+#' `coreSpectraVariables()`) are guaranteed to be provided by a
+#' `Spectra`, it is possible to add arbitrary additional spectra variables to
+#' a `Spectra` object.
+#'
+#' The `Spectra` object is designed to contain MS data of a (large) set of mass
+#' spectra. The data is organized *linearly* and can be thought of a list of
+#' mass spectra, i.e. each element in the `Spectra` is one spectrum.
 #'
 #'
 #' @section Creation of objects:
@@ -486,30 +507,7 @@ setMethod("dataStorageBasePath", "Spectra", function(object) {
 setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
     dataStorageBasePath(object@backend) <- value
     object
-}
-)
-
-## CONTINUNE HERE:
-## - check if some additional methods/functions need to be moved up.
-
-################################################################################
-##
-## Merging, splitting and aggregating Spectra: length of Spectra is changed
-##
-################################################################################
-
-#' @title Merging, splitting and aggregating Spectra
-#'
-#' @aliases [,Spectra-method
-
-################################################################################
-##
-## Filtering, subsetting Spectra: subsetting Spectra and its data content.
-##
-################################################################################
-
-#' @title Filtering and subsetting Spectra objects
-#'
+})
 
 ################################################################################
 ##
@@ -519,68 +517,409 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 
 #' @title Accessing mass spectrometry data
 #'
+#' @name spectraData
 #'
-
-################################################################################
-##
-## Data manipulation and analysis operations (lazy processing)
-##
-################################################################################
-
-#' @title Data manipulation and analysis methods
+#' @aliases acquisitionNum
+#' @aliases centroided
+#' @aliases collisionEnergy
+#' @aliases dataOrigin
+#' @aliases dataStorage
+#' @aliases ionCount
+#' @aliases isCentroided
+#' @aliases isEmpty
+#' @aliases isolationWindowLowerMz
+#' @aliases isolationWindowUpperMz
+#' @aliases isolationWindowTargetMz
+#' @aliases lengths
+#' @aliases msLevel
+#' @aliases mz
+#' @aliases peaksData
+#' @aliases peaksVariables
+#' @aliases polarity
+#' @aliases precursorCharge
+#' @aliases precursorIntensity
+#' @aliases precursorMz
+#' @aliases rtime
+#' @aliases scanIndex
+#' @aliases smoothed
+#' @aliases spectraData
+#' @aliases spectraNames
+#' @aliases spectraVariables
+#' @aliases tic
+#' @aliases uniqueMsLevels
 #'
-
-################################################################################
-##
-## Spectra similarity calculations
-##
-################################################################################
-
-#' @title Spectra similarity calculations
-
-
-#' @rdname Spectra
+#' @description
 #'
-#' @importFrom MsCoreUtils vapply1c
+#' As detailed in the documentation of the [Spectra-class], a `Spectra` object
+#' is a container for mass spectrometry (MS) data that includes both the mass
+#' peaks data (or *peaks data*, generally *m/z* and intensity values) as well
+#' as spectra metadata (so called *spectra variables*). Spectra variables
+#' generally define one value per spectrum, while for peaks variables one value
+#' per mass peak is defined and hence multiple values per spectrum (depending
+#' on the number of mass peaks of a spectrum).
 #'
-#' @exportMethod c
-setMethod("c", "Spectra", function(x, ...) {
-    .concatenate_spectra(unname(list(unname(x), ...)))
-})
-
-#' @rdname Spectra
-setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
-    bcknds <- split(x@backend, f, ...)
-    lapply(bcknds, function(b) {
-        slot(x, "backend", check = FALSE) <- b
-        x
-    })
-})
-
-
-#### ---------------------------------------------------------------------------
-##
-##                          ACCESSOR METHODS
-##
-#### ---------------------------------------------------------------------------
-
-#' @rdname Spectra
-setMethod("acquisitionNum", "Spectra", function(object)
-    acquisitionNum(object@backend))
-
-#' @rdname Spectra
-setMethod(
-    "peaksData", "Spectra",
-    function(object, columns = c("mz", "intensity"),
-             f = processingChunkFactor(object), ..., BPPARAM = bpparam()) {
-        if (length(object@processingQueue) || length(f))
-            SimpleList(.peaksapply(object, columns = columns, f = f))
-        else SimpleList(peaksData(object@backend, columns = columns))
-    })
-
-#' @rdname Spectra
-setMethod("peaksVariables", "Spectra", function(object)
-    peaksVariables(object@backend))
+#' Data can be extracted from a `Spectra` object using dedicated accessor
+#' functions or also using the `$` operator. Depending on the backend class
+#' used by the `Spectra` to represent the data, data can also be added or
+#' replaced (again, using dedicated functions or using `$<-`).
+#'
+#' @section Spectra variables:
+#'
+#' A common set of *core spectra variables* are defined for `Spectra`. These
+#' have a pre-defined data type and each `Spectra` will return a value for
+#' these if requested. If no value for a spectra variable is defined, a missing
+#' value (of the correct data type) is returned. The list of core spectra
+#' variables and their respective data type is:
+#'
+#' - *acquisitionNum* `integer(1)`: the index of acquisition of a spectrum
+#'   during an MS run.
+#' - *centroided* `logical(1)`: whether the spectrum is in profile or centroid
+#'   mode.
+#' - *collisionEnergy* `numeric(1)`: collision energy used to create an MSn
+#'   spectrum.
+#' - *dataOrigin* `character(1)`: the *origin* of the spectrum's data, e.g. the
+#'   mzML file from which it was read.
+#' - *dataStorage* `character(1)`: the (current) storage location of the
+#'   spectrum data. This value depends on the backend used to handle and
+#'   provide the data. For an *in-memory* backend like the `MsBackendDataFrame`
+#'   this will be `"<memory>"`, for an on-disk backend such as the
+#'   `MsBackendHdf5Peaks` it will be the name of the HDF5 file where the
+#'   spectrum's peak data is stored.
+#' - *isolationWindowLowerMz* `numeric(1)`: lower m/z for the isolation
+#'   window in which the (MSn) spectrum was measured.
+#' - *isolationWindowTargetMz* `numeric(1)`: the target m/z for the isolation
+#'   window in which the (MSn) spectrum was measured.
+#' - *isolationWindowUpperMz* `numeric(1)`: upper m/z for the isolation window
+#'   in which the (MSn) spectrum was measured.
+#' - *msLevel* `integer(1)`: the MS level of the spectrum.
+#' - *polarity* `integer(1)`: the polarity of the spectrum (`0` and `1`
+#'   representing negative and positive polarity, respectively).
+#' - *precScanNum* `integer(1)`: the scan (acquisition) number of the precursor
+#'   for an MSn spectrum.
+#' - *precursorCharge* `integer(1)`: the charge of the precursor of an MSn
+#'   spectrum.
+#' - *precursorIntensity* `numeric(1)`: the intensity of the precursor of an
+#'   MSn spectrum.
+#' - *precursorMz* `numeric(1)`: the m/z of the precursor of an MSn spectrum.
+#' - *rtime* `numeric(1)`: the retention time of a spectrum.
+#' - *scanIndex* `integer(1)`: the index of a spectrum within a (raw) file.
+#' - *smoothed* `logical(1)`: whether the spectrum was smoothed.
+#'
+#' For each of these spectra variable a dedicated accessor function is defined
+#' (such as `msLevel()` or `rtime()`) that allows to extract the values of
+#' that spectra variable for all spectra in a `Spectra` object. Also,
+#' replacement functions are defined, but not all backends might support
+#' replacing values for spectra variables. As described above, additional
+#' spectra variables can be defined or added. The `spectraVariables()` function
+#' can be used to
+#'
+#' Values for multiple spectra variables, or all spectra vartiables* can be
+#' extracted with the `spectraData()` function.
+#'
+#'
+#' @section Peaks variables:
+#'
+#' `Spectra` also provide mass peak data with the *m/z* and intensity values
+#' being the *core* peaks variables:
+#'
+#' - *intensity* `numeric`: intensity values for the spectrum's peaks.
+#' - *mz* `numeric`: the m/z values for the spectrum's peaks.
+#'
+#' Values for these can be extracted with the `mz()` and `intensity()`
+#' functions, or the `peaksData()` function. The former functions return a
+#' `NumericList` with the respective values, while the latter returns a `List`
+#' with `numeric` two-column matrices. The list of peaks matrices can also
+#' be extracted using `as(x, "list")` or `as(x, "SimpleList")` with `x` being
+#' a `Spectra` object.
+#'
+#' Some `Spectra`/backends provide also values for additional peaks variables.
+#' The set of available peaks variables can be extracted with the
+#' `peaksVariables()` function.
+#'
+#'
+#' @section Functions to access MS data:
+#'
+#' The set of available functions to extract data from, or set data in, a
+#' `Spectra` object are (in alphabetical order) listed below. Note that there
+#' are also other functions to extract information from a `Spectra` object
+#' documented LLLLLLL
+#'
+#' - `$`, `$<-`: gets (or sets) a spectra variable for all spectra in `object`.
+#'   See examples for details. Note that replacing values of a peaks variable
+#'   is not supported with a non-empty processing queue, i.e. if any filtering
+#'   or data manipulations on the peaks data was performed. In these cases
+#'   [applyProcessing()] needs to be called first to apply all cached data
+#'   operations.
+#'
+#' - `acquisitionNum()`: returns the acquisition number of each
+#'   spectrum. Returns an `integer` of length equal to the number of
+#'   spectra (with `NA_integer_` if not available).
+#'
+#' - `centroided()`, `centroided<-`: gets or sets the centroiding
+#'   information of the spectra. `centroided()` returns a `logical`
+#'   vector of length equal to the number of spectra with `TRUE` if a
+#'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
+#'   if it is undefined. See also `isCentroided()` for estimating from
+#'   the spectrum data whether the spectrum is centroided. `value`
+#'   for `centroided<-` is either a single `logical` or a `logical` of
+#'   length equal to the number of spectra in `object`.
+#'
+#' - `collisionEnergy()`, `collisionEnergy<-`: gets or sets the
+#'   collision energy for all spectra in `object`. `collisionEnergy()`
+#'   returns a `numeric` with length equal to the number of spectra
+#'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
+#'   `numeric` of length equal to the number of spectra in `object`.
+#'
+#' - `coreSpectraVariables()`: returns the *core* spectra variables along with
+#'   their expected data type.
+#'
+#' - `dataOrigin()`, `dataOrigin<-`: gets or sets the *data origin* for each
+#'   spectrum. `dataOrigin()` returns a `character` vector (same length than
+#'   `object`) with the origin of the spectra. `dataOrigin<-` expects a
+#'   `character` vector (same length than `object`) with the replacement
+#'   values for the data origin of each spectrum.
+#'
+#' - `dataStorage()`: returns a `character` vector (same length than `object`)
+#'   with the data storage location of each spectrum.
+#'
+#' - `intensity()`: gets the intensity values from the spectra. Returns
+#'   a [NumericList()] of `numeric` vectors (intensity values for each
+#'   spectrum). The length of the list is equal to the number of
+#'   `spectra` in `object`.
+#'
+#' - `ionCount()`: returns a `numeric` with the sum of intensities for
+#'   each spectrum. If the spectrum is empty (see `isEmpty()`),
+#'   `NA_real_` is returned.
+#'
+#' - `isCentroided()`: a heuristic approach assessing if the spectra in
+#'   `object` are in profile or centroided mode. The function takes
+#'   the `qtl`th quantile top peaks, then calculates the difference
+#'   between adjacent m/z value and returns `TRUE` if the first
+#'   quartile is greater than `k`. (See `Spectra:::.isCentroided()` for
+#'   the code.)
+#'
+#' - `isEmpty()`: checks whether a spectrum in `object` is empty
+#'   (i.e. does not contain any peaks). Returns a `logical` vector of
+#'   length equal number of spectra.
+#'
+#' - `isolationWindowLowerMz()`, `isolationWindowLowerMz<-`: gets or sets the
+#'   lower m/z boundary of the isolation window.
+#'
+#' - `isolationWindowTargetMz()`, `isolationWindowTargetMz<-`: gets or sets the
+#'   target m/z of the isolation window.
+#'
+#' - `isolationWindowUpperMz()`, `isolationWindowUpperMz<-`: gets or sets the
+#'   upper m/z boundary of the isolation window.
+#'
+#' - `length()`: gets the number of spectra in the object.
+#'
+#' - `lengths()`: gets the number of peaks (m/z-intensity values) per
+#'   spectrum. Returns an `integer` vector (length equal to the
+#'   number of spectra). For empty spectra, `0` is returned.
+#'
+#' - `msLevel()`: gets the spectra's MS level. Returns an integer vector (names
+#'   being spectrum names, length equal to the number of spectra) with the MS
+#'   level for each spectrum.
+#'
+#' - `mz()`: gets the mass-to-charge ratios (m/z) from the
+#'   spectra. Returns a [NumericList()] or length equal to the number of
+#'   spectra, each element a `numeric` vector with the m/z values of
+#'   one spectrum.
+#'
+#' - `peaksData()`: gets the *peaks* data for all spectra in `object`. Peaks
+#'   data consist of the m/z and intensity values as well as possible additional
+#'   annotations (variables) of all peaks of each spectrum. The function
+#'   returns a [SimpleList()] of two dimensional arrays (either `matrix` or
+#'   `data.frame`), with each array providing the values for the requested
+#'   *peak variables* (by default `"mz"` and `"intensity"`). Optional parameter
+#'   `columns` is passed to the backend's `peaksData()` function to allow
+#'   the selection of specific (or additional) peaks variables (columns) that
+#'   should be extracted (if available). Importantly,
+#'   it is **not** guaranteed that each backend supports this parameter (while
+#'   each backend must support extraction of `"mz"` and `"intensity"` columns).
+#'   Parameter `columns` defaults to `c("mz", "intensity")` but any value
+#'   returned by `peaksVariables(object)` is supported.
+#'   Note also that it is possible to extract the peak data with
+#'   `as(x, "list")` and `as(x, "SimpleList")` as a `list` and `SimpleList`,
+#'   respectively. Note however that, in contrast to `peaksData()`, `as()`
+#'   does not support the parameter `columns`.
+#'
+#' - `peaksVariables()`: lists the available variables for mass peaks provided
+#'   by the backend. Default peak variables are `"mz"` and `"intensity"` (which
+#'   all backends need to support and provide), but some backends might provide
+#'   additional variables.
+#'   These variables correspond to the column names of the peak data array
+#'   returned by `peaksData()`.
+#'
+#' - `polarity()`, `polarity<-`: gets or sets the polarity for each
+#'   spectrum. `polarity()` returns an `integer` vector (length equal
+#'   to the number of spectra), with `0` and `1` representing negative
+#'   and positive polarities, respectively. `polarity<-` expects an
+#'   `integer` vector of length 1 or equal to the number of spectra.
+#'
+#' - `precursorCharge()`, `precursorIntensity()`, `precursorMz()`,
+#'   `precScanNum()`, `precAcquisitionNum()`: gets the charge (`integer`),
+#'   intensity (`numeric`), m/z (`numeric`), scan index (`integer`)
+#'   and acquisition number (`interger`) of the precursor for MS level >
+#'   2 spectra from the object. Returns a vector of length equal to
+#'   the number of spectra in `object`. `NA` are reported for MS1
+#'   spectra of if no precursor information is available.
+#'
+#' - `rtime()`, `rtime<-`: gets or sets the retention times (in seconds)
+#'   for each spectrum.  `rtime()` returns a `numeric` vector (length
+#'   equal to the number of spectra) with the retention time for each
+#'   spectrum.  `rtime<-` expects a numeric vector with length equal
+#'   to the number of spectra.
+#'
+#' - `scanIndex()`: returns an `integer` vector with the *scan index*
+#'   for each spectrum. This represents the relative index of the
+#'   spectrum within each file. Note that this can be different to the
+#'   `acquisitionNum` of the spectrum which represents the index of the
+#'   spectrum during acquisition/measurement (as reported in the mzML file).
+#'
+#' - `smoothed()`,`smoothed<-`: gets or sets whether a spectrum is
+#'   *smoothed*. `smoothed()` returns a `logical` vector of length equal
+#'   to the number of spectra. `smoothed<-` takes a `logical` vector
+#'   of length 1 or equal to the number of spectra in `object`.
+#'
+#' - `spectraData()`: gets general spectrum metadata (annotation, also called
+#'   header). `spectraData()` returns a `DataFrame`. Note that this
+#'   method does by default **not** return m/z or intensity values.
+#'
+#' - `spectraData<-`: **replaces** the full spectra data of the `Spectra`
+#'   object with the one provided with `value`. The `spectraData<-` function
+#'   expects a `DataFrame` to be passed as value with the same number of rows
+#'   as there a spectra in `object`. Note that replacing values of
+#'   peaks variables is not supported with a non-empty processing queue, i.e.
+#'   if any filtering or data manipulations on the peaks data was performed.
+#'   In these cases [applyProcessing()] needs to be called first to apply all
+#'   cached data operations and empty the processing queue.
+#'
+#' - `spectraNames()`, `spectraNames<-`: gets or sets the spectra names.
+#'
+#' - `spectraVariables()`: returns a `character` vector with the
+#'   available spectra variables (columns, fields or attributes of each
+#'   spectrum) available in `object`. Note that `spectraVariables()` does not
+#'   list the *peak variables* (`"mz"`, `"intensity"` and eventual additional
+#'   annotations for each MS peak). Peak variables are returned by
+#'   `peaksVariables()`.
+#'
+#' - `tic()`: gets the total ion current/count (sum of signal of a
+#'   spectrum) for all spectra in `object`. By default, the value
+#'   reported in the original raw data file is returned. For an empty
+#'   spectrum, `0` is returned.
+#'
+#' - `uniqueMsLevels()`: get the unique MS levels available in `object`. This
+#'   function is supposed to be more efficient than `unique(msLevel(object))`.
+#'
+#' @md
+#'
+#' @author Sebastian Gibb, Johannes Rainer, Laurent Gatto, Philippine Louail
+#'
+#' @examples
+#' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
+#' ## backend.
+#' sciex_file <- dir(system.file("sciex", package = "msdata"),
+#'     full.names = TRUE)
+#' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
+#' sciex
+#'
+#' ## Get the number of spectra in the data set
+#' length(sciex)
+#'
+#' ## Get the number of mass peaks per spectrum - limit to the first 6
+#' lengths(sciex) |> head()
+#'
+#' ## Get the MS level for each spectrum - limit to the first 6 spectra
+#' msLevel(sciex) |> head()
+#'
+#' ## Alternatively, we could also use $ to access a specific spectra variable.
+#' ## This could also be used to add additional spectra variables to the
+#' ## object (see further below).
+#' sciex$msLevel |> head()
+#'
+#' ## Get the intensity and m/z values.
+#' intensity(sciex)
+#' mz(sciex)
+#'
+#' ## Convert a subset of the Spectra object to a long DataFrame.
+#' asDataFrame(sciex, i = 1:3, spectraVars = c("rtime", "msLevel"))
+#'
+#' ## Create a Spectra providing a `DataFrame` containing the spectrum data.
+#'
+#' spd <- DataFrame(msLevel = c(1L, 2L), rtime = c(1.1, 1.2))
+#' spd$mz <- list(c(100, 103.2, 104.3, 106.5), c(45.6, 120.4, 190.2))
+#' spd$intensity <- list(c(200, 400, 34.2, 17), c(12.3, 15.2, 6.8))
+#'
+#' s <- Spectra(spd)
+#' s
+#'
+#' ## Get the peak data (m/z and intensity values).
+#' pks <- peaksData(s)
+#' pks
+#' pks[[1]]
+#' pks[[2]]
+#'
+#' ## Note that we could get the same resulb by coercing the `Spectra` to
+#' ## a `list` or `SimpleList`:
+#' as(data, "list")
+#' as(data, "SimpleList")
+#'
+#' ## List all available spectra variables (i.e. spectrum data and metadata).
+#' spectraVariables(s)
+#'
+#' ## For all *core* spectrum variables accessor functions are available. These
+#' ## return NA if the variable was not set.
+#' centroided(s)
+#' dataStorage(s)
+#' rtime(s)
+#' precursorMz(s)
+#'
+#' ## The core spectra variables are:
+#' coreSpectraVariables()
+#'
+#' ## Add an additional metadata column.
+#' s$spectrum_id <- c("sp_1", "sp_2")
+#'
+#' ## List spectra variables, "spectrum_id" is now also listed
+#' spectraVariables(s)
+#'
+#' ## Get the values for the new spectra variable
+#' s$spectrum_id
+#'
+#' ## Extract specific spectra variables.
+#' spectraData(s columns = c("spectrum_id", "msLevel"))
+#'
+#'
+#' ## ---- PEAKS VARIABLES AND DATA ----
+#'
+#' ## Some `MsBackend` classes provide support for arbitrary peaks variables
+#' ## (in addition to the mandatory `"mz"` and `"intensity"` values. Below
+#' ## we create a simple data frame with an additional peak variable `"pk_ann"`
+#' ## and create a `Spectra` with a `MsBackendMemory` for that data.
+#' ## Importantly the number of values (per spectrum) need to be the same
+#' ## for all peak variables.
+#'
+#' tmp <- data.frame(msLevel = c(2L, 2L), rtime = c(123.2, 123.5))
+#' tmp$mz <- list(c(103.1, 110.4, 303.1), c(343.2, 453.1))
+#' tmp$intensity <- list(c(130.1, 543.1, 40), c(0.9, 0.45))
+#' tmp$pk_ann <- list(c(NA_character_, "A", "P"), c("B", "P"))
+#'
+#' ## Create the Spectra. With parameter `peaksVariables` we can define
+#' ## the columns in `tmp` that contain peaks variables.
+#' sps <- Spectra(tmp, source = MsBackendMemory(),
+#'     peaksVariables = c("mz", "intensity", "pk_ann"))
+#' peaksVariables(sps)
+#'
+#' ## Extract just the m/z and intensity values
+#' peaksData(sps)[[1L]]
+#'
+#' ## Extract the full peaks data
+#' peaksData(sps, columns = peaksVariables(sps))[[1L]]
+#'
+#' ## Access just the pk_ann variable
+#' sps$pk_ann
+NULL
 
 #' @importFrom methods setAs
 setAs("Spectra", "list", function(from, to) {
@@ -591,48 +930,68 @@ setAs("Spectra", "SimpleList", function(from, to) {
     peaksData(from)
 })
 
-#' @rdname Spectra
+#' @export
+#'
+#' @rdname spectraData
+#'
+#' @param spectraVars `character()` indicating what spectra variables to add to
+#'     the `DataFrame`. Default is `spectraVariables(object)`, i.e. all
+#'     available variables.
+asDataFrame <- function(object, i = seq_along(object),
+                        spectraVars = spectraVariables(object)) {
+    stopifnot(inherits(object, "Spectra"))
+    object <- object[i]
+    n <- sapply(peaksData(object), nrow)
+    v <- spectraData(object)[rep(seq_along(object), n), spectraVars]
+    p <- do.call(rbind, as.list(peaksData(object)))
+    cbind(p, v)
+}
+
+#' @rdname spectraData
+setMethod("acquisitionNum", "Spectra", function(object)
+    acquisitionNum(object@backend))
+
+#' @rdname spectraData
 setMethod("centroided", "Spectra", function(object) {
     centroided(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("centroided", "Spectra", function(object, value) {
     centroided(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("collisionEnergy", "Spectra", function(object) {
     collisionEnergy(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("collisionEnergy", "Spectra", function(object, value) {
     collisionEnergy(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
+#'
+#' @export
+coreSpectraVariables <- function() .SPECTRA_DATA_COLUMNS
+
+#' @rdname spectraData
 setMethod("dataOrigin", "Spectra", function(object) dataOrigin(object@backend))
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("dataOrigin", "Spectra", function(object, value) {
     dataOrigin(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("dataStorage", "Spectra",
           function(object) dataStorage(object@backend))
 
-#' @rdname Spectra
-setMethod("dropNaSpectraVariables", "Spectra", function(object) {
-    object@backend <- dropNaSpectraVariables(object@backend)
-    object
-})
-
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("intensity", "Spectra", function(object,
                                            f = processingChunkFactor(object),
                                            ...) {
@@ -642,7 +1001,7 @@ setMethod("intensity", "Spectra", function(object,
     else intensity(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("ionCount", "Spectra", function(object) {
     if (length(object))
         unlist(.peaksapply(
@@ -651,7 +1010,7 @@ setMethod("ionCount", "Spectra", function(object) {
     else numeric()
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("isCentroided", "Spectra", function(object, ...) {
     if (length(object))
         unlist(.peaksapply(object, FUN = .peaks_is_centroided),
@@ -659,7 +1018,7 @@ setMethod("isCentroided", "Spectra", function(object, ...) {
     else logical()
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("isEmpty", "Spectra", function(x) {
     if (length(x))
         unlist(.peaksapply(x, FUN = function(pks, ...) nrow(pks) == 0),
@@ -667,125 +1026,45 @@ setMethod("isEmpty", "Spectra", function(x) {
     else logical()
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("isolationWindowLowerMz", "Spectra", function(object) {
     isolationWindowLowerMz(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("isolationWindowLowerMz", "Spectra", function(object, value) {
     isolationWindowLowerMz(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("isolationWindowTargetMz", "Spectra", function(object) {
     isolationWindowTargetMz(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("isolationWindowTargetMz", "Spectra", function(object, value) {
     isolationWindowTargetMz(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("isolationWindowUpperMz", "Spectra", function(object) {
     isolationWindowUpperMz(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("isolationWindowUpperMz", "Spectra", function(object, value) {
     isolationWindowUpperMz(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
-#'
-#' @exportMethod containsMz
-setMethod("containsMz", "Spectra", function(object, mz = numeric(),
-                                            tolerance = 0,
-                                            ppm = 20, which = c("any", "all"),
-                                            BPPARAM = bpparam()) {
-    cond_fun <- match.fun(match.arg(which))
-    if (all(is.na(mz)))
-        return(rep(NA, length(object)))
-    mz <- unique(sort(mz))
-    BPPARAM <- backendBpparam(object@backend, BPPARAM)
-    ## TODO: fix to use .peaksapply instead.
-    if (is(BPPARAM, "SerialParam"))
-        .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
-                condFun = cond_fun, parallel = BPPARAM)
-    else {
-        sp <- SerialParam()
-        f <- as.factor(dataStorage(object))
-        res <- .lapply(object, FUN = .has_mz, mz = mz, tolerance = tolerance,
-                       condFun = cond_fun, parallel = sp, f = f,
-                       BPPARAM = BPPARAM)
-        unsplit(res, f = f)
-    }
-})
-
-#' @rdname Spectra
-#'
-#' @exportMethod containsNeutralLoss
-setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
-                                                     tolerance = 0, ppm = 20,
-                                                     BPPARAM = bpparam()) {
-    BPPARAM <- backendBpparam(object@backend, BPPARAM)
-    ## TODO: FIX me to use chunk size.
-    if (is(BPPARAM, "SerialParam")) {
-        .has_mz_each(object, precursorMz(object) - neutralLoss,
-                     tolerance = tolerance, ppm = ppm, parallel = BPPARAM)
-    } else {
-        sp <- SerialParam()
-        f <- as.factor(dataStorage(object))
-        res <- .lapply(object, FUN = function(obj, n, tol, ppm, par) {
-            .has_mz_each(obj, precursorMz(obj) - n, tolerance = tol,
-                         ppm = ppm, parallel = sp)
-        }, n = neutralLoss, tol = tolerance, ppm = ppm, par = sp, f = f,
-                       BPPARAM = BPPARAM)
-        unsplit(res, f = f)
-    }
-})
-
-#' @rdname Spectra
-#'
-#' @importMethodsFrom ProtGenerics spectrapply
-#'
-#' @exportMethod spectrapply
-setMethod("spectrapply", "Spectra", function(object, FUN, ...,
-                                             chunkSize = integer(),
-                                             f = factor(),
-                                             BPPARAM = SerialParam()) {
-    if (missing(FUN))
-        FUN <- identity
-    if (length(chunkSize))
-        return(chunkapply(object, FUN, ..., chunkSize = chunkSize))
-    if (!length(f))
-        f <- as.factor(seq_along(object))
-    .lapply(object, FUN = FUN, f = f, ...,
-            BPPARAM = backendBpparam(object@backend, BPPARAM))
-})
-
-#' @rdname Spectra
+#' @rdname spectraData
 #'
 #' @exportMethod length
 setMethod("length", "Spectra", function(x) length(x@backend))
 
-#' @rdname Spectra
-setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
-
-#' @rdname Spectra
-setMethod("mz", "Spectra", function(object, f = processingChunkFactor(object),
-                                    ...) {
-    if (length(object@processingQueue) || length(f))
-        NumericList(.peaksapply(object, FUN = function(z, ...) z[, 1],
-                                f = f, ...), compress = FALSE)
-    else mz(object@backend)
-})
-
-#' @rdname Spectra
+#' @rdname spectraData
 #'
 #' @exportMethod lengths
 setMethod("lengths", "Spectra", function(x, use.names = FALSE) {
@@ -798,76 +1077,91 @@ setMethod("lengths", "Spectra", function(x, use.names = FALSE) {
     } else integer()
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
+setMethod("msLevel", "Spectra", function(object) msLevel(object@backend))
+
+#' @rdname spectraData
+setMethod("mz", "Spectra", function(object, f = processingChunkFactor(object),
+                                    ...) {
+    if (length(object@processingQueue) || length(f))
+        NumericList(.peaksapply(object, FUN = function(z, ...) z[, 1],
+                                f = f, ...), compress = FALSE)
+    else mz(object@backend)
+})
+
+#' @rdname spectraData
+setMethod(
+    "peaksData", "Spectra",
+    function(object, columns = c("mz", "intensity"),
+             f = processingChunkFactor(object), ..., BPPARAM = bpparam()) {
+        if (length(object@processingQueue) || length(f))
+            SimpleList(.peaksapply(object, columns = columns, f = f))
+        else SimpleList(peaksData(object@backend, columns = columns))
+    })
+
+#' @rdname spectraData
+setMethod("peaksVariables", "Spectra", function(object)
+    peaksVariables(object@backend))
+
+#' @rdname spectraData
 setMethod("polarity", "Spectra", function(object) {
     polarity(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("polarity", "Spectra", function(object, value) {
     polarity(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("precScanNum", "Spectra", function(object) {
     precScanNum(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("precursorCharge", "Spectra", function(object) {
     precursorCharge(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("precursorIntensity", "Spectra", function(object) {
     precursorIntensity(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("precursorMz", "Spectra", function(object) {
     precursorMz(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("rtime", "Spectra", function(object) {
     rtime(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("rtime", "Spectra", function(object, value) {
     rtime(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("scanIndex", "Spectra", function(object) {
     scanIndex(object@backend)
 })
 
-#' @rdname Spectra
-setMethod(
-    "selectSpectraVariables", "Spectra",
-    function(object, spectraVariables = union(spectraVariables(object),
-                                              peaksVariables(object))) {
-        spectraVariables <- union(spectraVariables, "dataStorage")
-        object@backend <- selectSpectraVariables(
-            object@backend, spectraVariables = spectraVariables)
-        object
-    })
-
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("smoothed", "Spectra", function(object) {
     smoothed(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("smoothed", "Spectra", function(object, value) {
     smoothed(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 #'
 #' @importMethodsFrom ProtGenerics spectraData
 #'
@@ -897,7 +1191,7 @@ setMethod(
             spectraData(object@backend, columns = columns)
     })
 
-#' @rdname Spectra
+#' @rdname spectraData
 #'
 #' @importMethodsFrom ProtGenerics spectraData<-
 #'
@@ -925,23 +1219,23 @@ setReplaceMethod("spectraData", "Spectra", function(object, value) {
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("spectraNames", "Spectra", function(object) {
     spectraNames(object@backend)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setReplaceMethod("spectraNames", "Spectra", function(object, value) {
     spectraNames(object@backend) <- value
     object
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("spectraVariables", "Spectra", function(object) {
     setdiff(spectraVariables(object@backend), peaksVariables(object@backend))
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 setMethod("tic", "Spectra", function(object, initial = TRUE) {
     if (!length(object))
         return(numeric())
@@ -950,7 +1244,12 @@ setMethod("tic", "Spectra", function(object, initial = TRUE) {
     else ionCount(object)
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
+setMethod("uniqueMsLevels", "Spectra", function(object, ...) {
+    uniqueMsLevels(object@backend, ...)
+})
+
+#' @rdname spectraData
 #'
 #' @importMethodsFrom S4Vectors $
 #'
@@ -971,7 +1270,7 @@ setMethod("$", "Spectra", function(x, name) {
     }
 })
 
-#' @rdname Spectra
+#' @rdname spectraData
 #'
 #' @export
 setReplaceMethod("$", "Spectra", function(x, name, value) {
@@ -985,6 +1284,63 @@ setReplaceMethod("$", "Spectra", function(x, name, value) {
     x@backend <- do.call("$<-", list(x@backend, name, value))
     x
 })
+
+
+################################################################################
+##
+## Merging, splitting and aggregating Spectra: length of Spectra is changed
+##
+################################################################################
+
+#' @title Merging, splitting and aggregating Spectra
+#'
+#' @rdname Spectra
+#'
+#' @importFrom MsCoreUtils vapply1c
+#'
+#' @exportMethod c
+setMethod("c", "Spectra", function(x, ...) {
+    .concatenate_spectra(unname(list(unname(x), ...)))
+})
+
+#' @rdname Spectra
+setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
+    bcknds <- split(x@backend, f, ...)
+    lapply(bcknds, function(b) {
+        slot(x, "backend", check = FALSE) <- b
+        x
+    })
+})
+
+
+
+################################################################################
+##
+## Filtering, subsetting Spectra: subsetting Spectra and its data content.
+##
+################################################################################
+
+#' @title Filtering and subsetting Spectra objects
+#'
+#' @aliases [,Spectra-method
+
+#' @rdname Spectra
+setMethod("dropNaSpectraVariables", "Spectra", function(object) {
+    object@backend <- dropNaSpectraVariables(object@backend)
+    object
+})
+
+#' @rdname Spectra
+setMethod(
+    "selectSpectraVariables", "Spectra",
+    function(object, spectraVariables = union(spectraVariables(object),
+                                              peaksVariables(object))) {
+        spectraVariables <- union(spectraVariables, "dataStorage")
+        object@backend <- selectSpectraVariables(
+            object@backend, spectraVariables = spectraVariables)
+        object
+    })
+
 
 #' @rdname Spectra
 #'
@@ -1018,11 +1374,6 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
     x
 })
 
-#### ---------------------------------------------------------------------------
-##
-##                      FILTERING AND SUBSETTING
-##
-#### ---------------------------------------------------------------------------
 
 #' @rdname Spectra
 setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
@@ -1032,6 +1383,34 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
         return(x)
     slot(x, "backend", check = FALSE) <- x@backend[i = i]
     x
+})
+
+#' @rdname hidden_aliases
+setMethod("combinePeaks", "list", function(object, ...) {
+    .Deprecated("combinePeaksData", old = "combinePeaks",
+                msg = paste0("'combinePeaks' for lists of peak matrices is ",
+                             "deprecated; please use 'combinePeaksData' ",
+                             "instead."))
+    combinePeaksData(object, ...)
+})
+
+#' @rdname Spectra
+#'
+#' @exportMethod combinePeaks
+setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
+                                              intensityFun = base::mean,
+                                              mzFun = base::mean,
+                                              weighted = TRUE,
+                                              msLevel. = uniqueMsLevels(object),
+                                              ...) {
+    object <- addProcessing(
+        object, .peaks_combine, ppm = ppm, tolerance = tolerance,
+        intensityFun = intensityFun, mzFun = mzFun, weighted = weighted,
+        msLevel = force(msLevel.), spectraVariables = "msLevel")
+    object@processing <- .logging(
+        object@processing, "Combining peaks within each spectrum with ppm = ",
+        ppm, " and tolerance = ", tolerance, ".")
+    object
 })
 
 #' @rdname Spectra
@@ -1322,17 +1701,6 @@ setMethod("filterRt", "Spectra",
           })
 
 #' @rdname Spectra
-setMethod("reset", "Spectra", function(object, ...) {
-    object@backend <- reset(object@backend)
-    object@processingQueue <- list()
-    if (!.hasSlot(object, "processingQueueVariables"))
-        object <- updateObject(object, check = FALSE)
-    object@processingQueueVariables <- character()
-    object@processing <- .logging(object@processing, "Reset object.")
-    object
-})
-
-#' @rdname Spectra
 setMethod("filterRanges", "Spectra",
           function(object, spectraVariables = character(), ranges = numeric(),
                    match = c("all", "any")){
@@ -1360,11 +1728,48 @@ setMethod("filterValues", "Spectra",
               object
               })
 
-#### ---------------------------------------------------------------------------
+
+################################################################################
 ##
-##                      DATA MANIPULATION METHODS
+## Data manipulation and analysis operations (lazy processing)
 ##
-#### ---------------------------------------------------------------------------
+################################################################################
+
+#' @title Data manipulation and analysis methods
+#'
+#' `reset()` to clean the lazy processing queue.
+
+#' @exportMethod addProcessing
+#'
+#' @importFrom ProtGenerics ProcessingStep
+#'
+#' @importMethodsFrom ProtGenerics addProcessing
+#'
+#' @importClassesFrom ProtGenerics ProcessingStep
+#'
+#' @importFrom methods .hasSlot
+#'
+#' @importFrom BiocGenerics updateObject
+#'
+#' @rdname Spectra
+setMethod("addProcessing", "Spectra", function(object, FUN, ...,
+                                               spectraVariables = character()) {
+    if (missing(FUN))
+        return(object)
+    object@processingQueue <- c(object@processingQueue,
+                                list(ProcessingStep(FUN, ARGS = list(...))))
+    if (!.hasSlot(object, "processingQueueVariables"))
+        object <- updateObject(object)
+    object@processingQueueVariables <- union(object@processingQueueVariables,
+                                             spectraVariables)
+    validObject(object)
+    object
+})
+
+#' @rdname Spectra
+setMethod("backendBpparam", "Spectra", function(object, BPPARAM = bpparam()) {
+    backendBpparam(object@backend, BPPARAM)
+})
 
 #' @rdname Spectra
 #'
@@ -1396,45 +1801,72 @@ setMethod("bin", "Spectra", function(x, binSize = 1L, breaks = NULL,
 
 #' @rdname Spectra
 #'
-#' @exportMethod compareSpectra
-#'
-#' @importFrom MsCoreUtils ndotproduct
-#'
-#' @importMethodsFrom ProtGenerics compareSpectra
-#'
-#' @exportMethod compareSpectra
-setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
-          function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
-              mat <- .compare_spectra_chunk(x, y, MAPFUN = MAPFUN,
-                                            tolerance = tolerance,
-                                            ppm = ppm, FUN = FUN, ...)
-              if (SIMPLIFY && (length(x) == 1 || length(y) == 1))
-                  mat <- as.vector(mat)
-              mat
-          })
+#' @exportMethod containsMz
+setMethod("containsMz", "Spectra", function(object, mz = numeric(),
+                                            tolerance = 0,
+                                            ppm = 20, which = c("any", "all"),
+                                            BPPARAM = bpparam()) {
+    cond_fun <- match.fun(match.arg(which))
+    if (all(is.na(mz)))
+        return(rep(NA, length(object)))
+    mz <- unique(sort(mz))
+    BPPARAM <- backendBpparam(object@backend, BPPARAM)
+    ## TODO: fix to use .peaksapply instead.
+    if (is(BPPARAM, "SerialParam"))
+        .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
+                condFun = cond_fun, parallel = BPPARAM)
+    else {
+        sp <- SerialParam()
+        f <- as.factor(dataStorage(object))
+        res <- .lapply(object, FUN = .has_mz, mz = mz, tolerance = tolerance,
+                       condFun = cond_fun, parallel = sp, f = f,
+                       BPPARAM = BPPARAM)
+        unsplit(res, f = f)
+    }
+})
+
 #' @rdname Spectra
-setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
-          function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
-              if (length(x) == 1)
-                  return(compareSpectra(x, x, MAPFUN = MAPFUN,
-                                        tolerance = tolerance,
-                                        ppm = ppm, FUN = FUN, ...,
-                                        SIMPLIFY = SIMPLIFY))
-              mat <- .compare_spectra_self(x, MAPFUN = MAPFUN, FUN = FUN,
-                                           tolerance = tolerance, ppm = ppm,
-                                           ...)
-              if (SIMPLIFY && length(x) == 1)
-                  mat <- as.vector(mat)
-              mat
-          })
+#'
+#' @exportMethod containsNeutralLoss
+setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
+                                                     tolerance = 0, ppm = 20,
+                                                     BPPARAM = bpparam()) {
+    BPPARAM <- backendBpparam(object@backend, BPPARAM)
+    ## TODO: FIX me to use chunk size.
+    if (is(BPPARAM, "SerialParam")) {
+        .has_mz_each(object, precursorMz(object) - neutralLoss,
+                     tolerance = tolerance, ppm = ppm, parallel = BPPARAM)
+    } else {
+        sp <- SerialParam()
+        f <- as.factor(dataStorage(object))
+        res <- .lapply(object, FUN = function(obj, n, tol, ppm, par) {
+            .has_mz_each(obj, precursorMz(obj) - n, tolerance = tol,
+                         ppm = ppm, parallel = sp)
+        }, n = neutralLoss, tol = tolerance, ppm = ppm, par = sp, f = f,
+                       BPPARAM = BPPARAM)
+        unsplit(res, f = f)
+    }
+})
 
-## estimateMzResolution
-
-## estimateNoise
-
-## normalize
+#' @rdname Spectra
+#'
+#' @importFrom MsCoreUtils entropy nentropy
+#'
+#' @export
+setMethod("entropy", "Spectra", function(object, normalized = TRUE) {
+    if (length(object)) {
+    if (normalized) entropy_fun <- nentropy
+    else entropy_fun <- entropy
+    unlist(.peaksapply(
+        object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])),
+        use.names = FALSE
+        )
+    } else numeric()
+})
+#' @rdname Spectra
+setMethod("entropy", "ANY", function(object, ...) {
+    MsCoreUtils::entropy(object)
+})
 
 #' @rdname Spectra
 #'
@@ -1478,10 +1910,6 @@ setMethod("pickPeaks", "Spectra",
     object
 })
 
-## quantify
-
-## removeReporters
-
 #' @rdname Spectra
 #'
 #' @exportMethod replaceIntensitiesBelow
@@ -1509,6 +1937,16 @@ setMethod("replaceIntensitiesBelow", "Spectra",
               object
           })
 
+#' @rdname Spectra
+setMethod("reset", "Spectra", function(object, ...) {
+    object@backend <- reset(object@backend)
+    object@processingQueue <- list()
+    if (!.hasSlot(object, "processingQueueVariables"))
+        object <- updateObject(object, check = FALSE)
+    object@processingQueueVariables <- character()
+    object@processing <- .logging(object@processing, "Reset object.")
+    object
+})
 
 #' @rdname Spectra
 #'
@@ -1541,119 +1979,28 @@ setMethod("smooth", "Spectra",
     x
 })
 
-#' @exportMethod addProcessing
-#'
-#' @importFrom ProtGenerics ProcessingStep
-#'
-#' @importMethodsFrom ProtGenerics addProcessing
-#'
-#' @importClassesFrom ProtGenerics ProcessingStep
-#'
-#' @importFrom methods .hasSlot
-#'
-#' @importFrom BiocGenerics updateObject
-#'
 #' @rdname Spectra
-setMethod("addProcessing", "Spectra", function(object, FUN, ...,
-                                               spectraVariables = character()) {
+#'
+#' @importMethodsFrom ProtGenerics spectrapply
+#'
+#' @exportMethod spectrapply
+setMethod("spectrapply", "Spectra", function(object, FUN, ...,
+                                             chunkSize = integer(),
+                                             f = factor(),
+                                             BPPARAM = SerialParam()) {
     if (missing(FUN))
-        return(object)
-    object@processingQueue <- c(object@processingQueue,
-                                list(ProcessingStep(FUN, ARGS = list(...))))
-    if (!.hasSlot(object, "processingQueueVariables"))
-        object <- updateObject(object)
-    object@processingQueueVariables <- union(object@processingQueueVariables,
-                                             spectraVariables)
-    validObject(object)
-    object
+        FUN <- identity
+    if (length(chunkSize))
+        return(chunkapply(object, FUN, ..., chunkSize = chunkSize))
+    if (!length(f))
+        f <- as.factor(seq_along(object))
+    .lapply(object, FUN = FUN, f = f, ...,
+            BPPARAM = backendBpparam(object@backend, BPPARAM))
 })
-
-#' @rdname Spectra
-#'
-#' @export
-coreSpectraVariables <- function() .SPECTRA_DATA_COLUMNS
-
-#' @rdname Spectra
-setMethod("uniqueMsLevels", "Spectra", function(object, ...) {
-    uniqueMsLevels(object@backend, ...)
-})
-
-#' @rdname Spectra
-setMethod("backendBpparam", "Spectra", function(object, BPPARAM = bpparam()) {
-    backendBpparam(object@backend, BPPARAM)
-})
-
-#' @rdname hidden_aliases
-setMethod("combinePeaks", "list", function(object, ...) {
-    .Deprecated("combinePeaksData", old = "combinePeaks",
-                msg = paste0("'combinePeaks' for lists of peak matrices is ",
-                             "deprecated; please use 'combinePeaksData' ",
-                             "instead."))
-    combinePeaksData(object, ...)
-})
-
-#' @rdname Spectra
-#'
-#' @exportMethod combinePeaks
-setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
-                                              intensityFun = base::mean,
-                                              mzFun = base::mean,
-                                              weighted = TRUE,
-                                              msLevel. = uniqueMsLevels(object),
-                                              ...) {
-    object <- addProcessing(
-        object, .peaks_combine, ppm = ppm, tolerance = tolerance,
-        intensityFun = intensityFun, mzFun = mzFun, weighted = weighted,
-        msLevel = force(msLevel.), spectraVariables = "msLevel")
-    object@processing <- .logging(
-        object@processing, "Combining peaks within each spectrum with ppm = ",
-        ppm, " and tolerance = ", tolerance, ".")
-    object
-})
-
-
-#' @rdname Spectra
-#'
-#' @importFrom MsCoreUtils entropy nentropy
-#'
-#' @export
-setMethod("entropy", "Spectra", function(object, normalized = TRUE) {
-    if (length(object)) {
-    if (normalized) entropy_fun <- nentropy
-    else entropy_fun <- entropy
-    unlist(.peaksapply(
-        object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])),
-        use.names = FALSE
-        )
-    } else numeric()
-})
-#' @rdname Spectra
-setMethod("entropy", "ANY", function(object, ...) {
-    MsCoreUtils::entropy(object)
-})
-
-#' @export
-#' @rdname Spectra
-#'
-#' @param spectraVars `character()` indicating what spectra variables to add to
-#'     the `DataFrame`. Default is `spectraVariables(object)`, i.e. all
-#'     available variables.
-#'
-#' @examples
-#'
-#' ## Convert a subset of the Spectra object to a long DataFrame.
-#' asDataFrame(sciex, i = 1:3, spectraVars = c("rtime", "msLevel"))
-asDataFrame <- function(object, i = seq_along(object),
-                        spectraVars = spectraVariables(object)) {
-    stopifnot(inherits(object, "Spectra"))
-    object <- object[i]
-    n <- sapply(peaksData(object), nrow)
-    v <- spectraData(object)[rep(seq_along(object), n), spectraVars]
-    p <- do.call(rbind, as.list(peaksData(object)))
-    cbind(p, v)
-}
 
 #' @title Estimate Precursor Intensities
+#'
+#' @aliases estimatePrecursorIntensity
 #'
 #' @description
 #'
@@ -1733,3 +2080,48 @@ setMethod(
                         msLevel = msLevel., BPPARAM = BPPARAM),
                use.names = FALSE)
     })
+
+
+################################################################################
+##
+## Spectra similarity calculations
+##
+################################################################################
+
+#' @title Spectra similarity calculations
+
+#' @rdname Spectra
+#'
+#' @exportMethod compareSpectra
+#'
+#' @importFrom MsCoreUtils ndotproduct
+#'
+#' @importMethodsFrom ProtGenerics compareSpectra
+#'
+#' @exportMethod compareSpectra
+setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
+          function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
+                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
+              mat <- .compare_spectra_chunk(x, y, MAPFUN = MAPFUN,
+                                            tolerance = tolerance,
+                                            ppm = ppm, FUN = FUN, ...)
+              if (SIMPLIFY && (length(x) == 1 || length(y) == 1))
+                  mat <- as.vector(mat)
+              mat
+          })
+#' @rdname Spectra
+setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
+          function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
+                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
+              if (length(x) == 1)
+                  return(compareSpectra(x, x, MAPFUN = MAPFUN,
+                                        tolerance = tolerance,
+                                        ppm = ppm, FUN = FUN, ...,
+                                        SIMPLIFY = SIMPLIFY))
+              mat <- .compare_spectra_self(x, MAPFUN = MAPFUN, FUN = FUN,
+                                           tolerance = tolerance, ppm = ppm,
+                                           ...)
+              if (SIMPLIFY && length(x) == 1)
+                  mat <- as.vector(mat)
+              mat
+          })
