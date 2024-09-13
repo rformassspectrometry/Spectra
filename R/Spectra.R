@@ -1634,8 +1634,10 @@ setMethod("Spectra", "missing", function(object, processingQueue = list(),
                                          metadata = list(), ...,
                                          backend = MsBackendMemory(),
                                          BPPARAM = bpparam()) {
-    new("Spectra", metadata = metadata, processingQueue = processingQueue,
-        backend = backend)
+    if (length(backend))
+        new("Spectra", metadata = metadata, processingQueue = processingQueue,
+            backend = backend)
+    else callNextMethod()
 })
 
 #' @rdname Spectra
@@ -1654,13 +1656,12 @@ setMethod("Spectra", "character", function(object, processingQueue = list(),
                                            source = MsBackendMzR(),
                                            backend = source,
                                            ..., BPPARAM = bpparam()) {
-    if (!length(object))
-        Spectra(backend, metadata = metadata,
-                processingQueue = processingQueue)
-    else
-        callNextMethod(object = object, processingQueue = processingQueue,
-                       metadata = metadata, source = source, backend = backend,
-                       ..., BPPARAM = BPPARAM)
+    sp <- .create_spectra(object, processingQueue = processingQueue,
+                          metadata = metadata, backend = source,
+                          ..., BPPARAM = BPPARAM)
+    if (class(source)[1L] != class(backend)[1L])
+        setBackend(sp, backend, ..., BPPARAM = backendBpparam(backend, BPPARAM))
+    else sp
 })
 
 #' @rdname Spectra
@@ -1669,14 +1670,25 @@ setMethod("Spectra", "ANY", function(object, processingQueue = list(),
                                      source = MsBackendMemory(),
                                      backend = source,
                                      ..., BPPARAM = bpparam()) {
-    sp <- new("Spectra", metadata = metadata, processingQueue = processingQueue,
-              backend = backendInitialize(
-                  source, object, ...,
-                  BPPARAM = backendBpparam(source, BPPARAM)))
+    sp <- .create_spectra(object, processingQueue = processingQueue,
+                          metadata = metadata, backend = source,
+                          ..., BPPARAM = BPPARAM)
     if (class(source)[1L] != class(backend)[1L])
         setBackend(sp, backend, ..., BPPARAM = backendBpparam(backend, BPPARAM))
     else sp
 })
+
+.create_spectra <- function(object, processingQueue = list(), metadata = list(),
+                            backend = MsBackendMemory(), ...,
+                            BPPARAM = bpparam()) {
+    if (missing(object))
+        backend <- backendInitialize(
+            backend, ..., BPPARAM = backendBpparam(backend, BPPARAM))
+    else backend <- backendInitialize(
+             backend, object, ..., BPPARAM = backendBpparam(backend, BPPARAM))
+    new("Spectra", metadata = metadata, processingQueue = processingQueue,
+        backend = backend)
+}
 
 #' @rdname Spectra
 #'
