@@ -1053,6 +1053,8 @@ asDataFrame <- function(object, i = seq_along(object),
 }
 
 #' @rdname spectraData
+#'
+#' @export
 setMethod("acquisitionNum", "Spectra", function(object)
     acquisitionNum(object@backend))
 
@@ -1195,6 +1197,8 @@ setMethod("mz", "Spectra", function(object, f = processingChunkFactor(object),
 })
 
 #' @rdname spectraData
+#'
+#' @export
 setMethod(
     "peaksData", "Spectra",
     function(object, columns = c("mz", "intensity"),

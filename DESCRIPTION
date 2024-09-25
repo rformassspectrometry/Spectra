@@ -40,9 +40,9 @@ Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
 Depends:
     R (>= 4.0.0),
     S4Vectors,
-    BiocParallel,
-    ProtGenerics (>= 1.37.1)
+    BiocParallel
 Imports:
+    ProtGenerics (>= 1.37.1),
     methods,
     IRanges,
     MsCoreUtils (>= 1.7.5),
