@@ -308,7 +308,13 @@ NULL
 #'
 #' @author Johannes Rainer, Michael Witting
 #'
-#' @seealso [gnps()]
+#' @seealso
+#'
+#' - [compareSpectra()] for the function to calculate similarities between
+#'   spectra.
+#'
+#' - [gnps()] in the *MsCoreUtils* package for more information on the GNPS
+#'   similarity score.
 #'
 #' @importFrom MsCoreUtils join ppm
 #'

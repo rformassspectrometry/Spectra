@@ -87,6 +87,10 @@ setClassUnion("functionOrNull", c("function", "NULL"))
 #' Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 #' \doi{10.1021/jasms.1c00343}
 #'
+#' @seealso
+#'
+#' [addProcessing()] for other data analysis and manipulation functions.
+#'
 #' @examples
 #'
 #' ## Create a simple example Spectra object with some MS1, MS2 and MS3 spectra.

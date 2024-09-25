@@ -40,6 +40,10 @@
 #'     spectra variable `countIdentifications` with the number of
 #'     identification for each scan.
 #'
+#' @seealso
+#'
+#' [addProcessing()] for other data analysis functions.
+#'
 #' @author Laurent Gatto
 #'
 #' @export

@@ -21,6 +21,7 @@
 \alias{dataStorageBasePath,MsBackendMzR-method}
 \alias{dataStorageBasePath<-}
 \alias{dataStorageBasePath<-,MsBackendMzR-method}
+\alias{msLeveL<-,MsBackend-method}
 \alias{backendBpparam,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
@@ -68,6 +69,7 @@
 \alias{isReadOnly,MsBackend-method}
 \alias{length,MsBackend-method}
 \alias{msLevel,MsBackend-method}
+\alias{msLevel<-,MsBackend-method}
 \alias{mz,MsBackend-method}
 \alias{mz<-,MsBackend-method}
 \alias{lengths,MsBackend-method}
@@ -212,6 +214,8 @@
 \S4method{length}{MsBackend}(x)
 
 \S4method{msLevel}{MsBackend}(object)
+
+\S4method{msLevel}{MsBackend}(object) <- value
 
 \S4method{mz}{MsBackend}(object)
 
@@ -720,6 +724,7 @@ number of spectra). For empty spectra, \code{0} is returned.
 \item \code{msLevel()}: gets the spectra's MS level. Returns an \code{integer}
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
+\item \verb{msLevel<-}: replaces the spectra's MS level.
 \item \code{mz()}: gets the mass-to-charge ratios (m/z) from the
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
@@ -938,7 +943,7 @@ This backend provides an \code{export()} method to export data from a \code{Spec
 The parameters are:
 \itemize{
 \item \code{object}: an instance of the \code{MsBackendMzR} class.
-\item \code{x}: the \linkS4class{Spectra} object to be exported.
+\item \code{x}: the \link{Spectra} object to be exported.
 \item \code{file}: \code{character} with the (full) output file name(s). Should be
 of length 1 or equal \code{length(x)}. If a single file is specified, all
 spectra are exported to that file. Alternatively it is possible to specify
@@ -952,7 +957,7 @@ backend and if \code{dataOrigin(x)} contains the original MS data file names.
 \item \code{BPPARAM}: parallel processing settings.
 }
 
-See examples in \linkS4class{Spectra} or the vignette for more details and
+See examples in \link{Spectra} or the vignette for more details and
 examples.
 
 The \code{MsBackendMzR} ignores parameter \code{columns} of the \code{peaksData()}

@@ -83,6 +83,9 @@ plot(precursorMz(s), precursorMz(s) - pmz, xlab = "precursor m/z",
 ## we could then replace the reported precursor m/z values
 s$precursorMz <- pmz
 }
+\seealso{
+\code{\link[=addProcessing]{addProcessing()}} for other data analysis and manipulation functions.
+}
 \author{
 Mar Garcia-Aloy, Johannes Rainer
 }

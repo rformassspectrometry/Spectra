@@ -207,7 +207,7 @@ NULL
 
 #' @export applyProcessing
 #'
-#' @rdname Spectra
+#' @rdname addProcessing
 applyProcessing <- function(object, f = processingChunkFactor(object),
                             BPPARAM = bpparam(), ...) {
     queue <- object@processingQueue
@@ -538,14 +538,14 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
 
 #' @export concatenateSpectra
 #'
-#' @rdname Spectra
+#' @rdname combineSpectra
 concatenateSpectra <- function(x, ...) {
     .concatenate_spectra(unlist(unname(list(unname(x), ...))))
 }
 
 #' @export combineSpectra
 #'
-#' @rdname Spectra
+#' @rdname combineSpectra
 combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
                            FUN = combinePeaksData, ..., BPPARAM = bpparam()) {
     if (!is.factor(f))
@@ -622,7 +622,7 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
 
 #' @export joinSpectraData
 #'
-#' @rdname Spectra
+#' @rdname combineSpectra
 joinSpectraData <- function(x, y,
                             by.x = "spectrumId",
                             by.y,
@@ -685,7 +685,7 @@ joinSpectraData <- function(x, y,
 
 #' @export
 #'
-#' @rdname Spectra
+#' @rdname addProcessing
 processingLog <- function(x) {
     x@processing
 }
@@ -831,9 +831,7 @@ chunkapply <- function(x, FUN, ..., chunkSize = 1000L, chunks = factor()) {
     as.factor(rep(1:ceiling(len / chunkSize), each = chunkSize)[seq_len(len)])
 }
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf, Johannes Rainer
+#' @rdname filterMsLevel
 #'
 #' @export
 deisotopeSpectra <-
@@ -845,9 +843,7 @@ deisotopeSpectra <-
                       substDefinition = im, charge = charge)
     }
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf, Johannes Rainer
+#' @rdname filterMsLevel
 #'
 #' @export
 reduceSpectra <- function(x, tolerance = 0, ppm = 20) {
@@ -856,9 +852,7 @@ reduceSpectra <- function(x, tolerance = 0, ppm = 20) {
     addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
 }
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf
+#' @rdname filterMsLevel
 #'
 #' @export
 filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 20) {
@@ -891,9 +885,7 @@ filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 20) {
     x
 }
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf
+#' @rdname filterMsLevel
 #'
 #' @export
 filterPrecursorIsotopes <-
@@ -926,9 +918,7 @@ filterPrecursorIsotopes <-
         x
 }
 
-#' @rdname Spectra
-#'
-#' @author Johannes Rainer
+#' @rdname addProcessing
 #'
 #' @export
 scalePeaks <- function(x, by = sum, msLevel. = uniqueMsLevels(x)) {
@@ -941,7 +931,7 @@ scalePeaks <- function(x, by = sum, msLevel. = uniqueMsLevels(x)) {
     x
 }
 
-#' @rdname Spectra
+#' @rdname filterMsLevel
 #'
 #' @export
 filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
@@ -991,6 +981,11 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #' - on-disk backends: file-based backends, such as `MsBackendMzR`: perform
 #'   per file parallel processing if `f` or `chunkSize` is not defined.
 #'   Other on-disk backends: only if requested by the user.
+#'
+#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
+#'     information.
+#'
+#' @param object `Spectra` object.
 #'
 #' @param x `Spectra` object.
 #'
@@ -1066,6 +1061,11 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #' Some backends might not support parallel processing at all.
 #' For these, the `backendBpparam()` function will always return a
 #' `SerialParam()` independently on how parallel processing was defined.
+#'
+#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
+#'     information.
+#'
+#' @param object `Spectra` object.
 #'
 #' @param x `Spectra`.
 #'

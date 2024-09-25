@@ -15,6 +15,7 @@
 #' @aliases dataStorageBasePath,MsBackendMzR-method
 #' @aliases dataStorageBasePath<-
 #' @aliases dataStorageBasePath<-,MsBackendMzR-method
+#' @aliases msLeveL<-,MsBackend-method
 #'
 #' @description
 #'
@@ -474,6 +475,8 @@
 #'   vector (of length equal to the number of spectra) with the MS
 #'   level for each spectrum (or `NA_integer_` if not available).
 #'
+#' - `msLevel<-`: replaces the spectra's MS level.
+#'
 #' - `mz()`: gets the mass-to-charge ratios (m/z) from the
 #'   spectra. Returns a [NumericList()] or length equal to the number of
 #'   spectra, each element a `numeric` vector with the m/z values of
@@ -702,7 +705,7 @@
 #'
 #' The parameters are:
 #' - `object`: an instance of the `MsBackendMzR` class.
-#' - `x`: the [Spectra-class] object to be exported.
+#' - `x`: the [Spectra] object to be exported.
 #' - `file`: `character` with the (full) output file name(s). Should be
 #'   of length 1 or equal `length(x)`. If a single file is specified, all
 #'   spectra are exported to that file. Alternatively it is possible to specify
@@ -715,7 +718,7 @@
 #'   backend and if `dataOrigin(x)` contains the original MS data file names.
 #' - `BPPARAM`: parallel processing settings.
 #'
-#' See examples in [Spectra-class] or the vignette for more details and
+#' See examples in [Spectra] or the vignette for more details and
 #' examples.
 #'
 #' The `MsBackendMzR` ignores parameter `columns` of the `peaksData()`
@@ -902,6 +905,8 @@ setValidity("MsBackend", function(object) {
 #' @exportMethod backendBpparam
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("backendBpparam", signature = "MsBackend",
           function(object, BPPARAM = bpparam()) {
               BPPARAM
@@ -912,6 +917,8 @@ setMethod("backendBpparam", signature = "MsBackend",
 #' @importMethodsFrom ProtGenerics backendInitialize
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("backendInitialize", signature = "MsBackend", function(object, ...) {
     validObject(object)
     object
@@ -927,6 +934,8 @@ setMethod("backendMerge", "list", function(object, ...) {
 #' @exportMethod backendMerge
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("backendMerge", "MsBackend", function(object, ...) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -936,11 +945,15 @@ setMethod("backendMerge", "MsBackend", function(object, ...) {
 #' @exportMethod backendParallelFactor
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("backendParallelFactor", "MsBackend", function(object, ...) {
     factor()
 })
 
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("export", "MsBackend", function(object, ...) {
     stop(class(object), " does not support export of data; please provide a ",
          "backend that supports data export with parameter 'backend'.")
@@ -951,6 +964,8 @@ setMethod("export", "MsBackend", function(object, ...) {
 #' @importMethodsFrom ProtGenerics acquisitionNum
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("acquisitionNum", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -960,6 +975,8 @@ setMethod("acquisitionNum", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics peaksData
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("peaksData", "MsBackend", function(object,
                                              columns = c("mz", "intensity")) {
     stop("Not implemented for ", class(object), ".")
@@ -970,6 +987,8 @@ setMethod("peaksData", "MsBackend", function(object,
 #' @importMethodsFrom ProtGenerics peaksVariables
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("peaksVariables", "MsBackend", function(object) {
     c("mz", "intensity")
 })
@@ -981,6 +1000,8 @@ setMethod("peaksVariables", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics centroided
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("centroided", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -990,6 +1011,8 @@ setMethod("centroided", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics centroided<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("centroided", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -999,6 +1022,8 @@ setReplaceMethod("centroided", "MsBackend", function(object, value) {
 #' @importMethodsFrom ProtGenerics collisionEnergy
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("collisionEnergy", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1008,6 +1033,8 @@ setMethod("collisionEnergy", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics collisionEnergy<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1017,6 +1044,8 @@ setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
 #' @importMethodsFrom ProtGenerics dataOrigin
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("dataOrigin", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1026,6 +1055,8 @@ setMethod("dataOrigin", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics dataOrigin<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1035,6 +1066,8 @@ setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
 #' @importMethodsFrom ProtGenerics dataStorage
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("dataStorage", "MsBackend", function(object) {
     stop("Method 'dataStorage' is not implemented for ", class(object), ".")
 })
@@ -1044,6 +1077,8 @@ setMethod("dataStorage", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics dataStorage<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
     stop("Method 'dataStorage' is not implemented for ", class(object), ".")
 })
@@ -1051,6 +1086,8 @@ setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
 #' @exportMethod dropNaSpectraVariables
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     svs <- spectraVariables(object)
     svs <- svs[!(svs %in% c("mz", "intensity"))]
@@ -1069,6 +1106,8 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics filterAcquisitionNum
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterAcquisitionNum", "MsBackend", function(object, n, file, ...) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1078,6 +1117,8 @@ setMethod("filterAcquisitionNum", "MsBackend", function(object, n, file, ...) {
 #' @importMethodsFrom ProtGenerics filterDataOrigin
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterDataOrigin", "MsBackend",
           function(object, dataOrigin = character()) {
               if (length(dataOrigin)) {
@@ -1093,6 +1134,8 @@ setMethod("filterDataOrigin", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterDataStorage
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterDataStorage", "MsBackend",
           function(object, dataStorage = character()) {
               if (length(dataStorage)) {
@@ -1108,6 +1151,8 @@ setMethod("filterDataStorage", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterEmptySpectra
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
     if (!length(object)) return(object)
     object[as.logical(lengths(object))]
@@ -1118,6 +1163,8 @@ setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
 #' @importMethodsFrom ProtGenerics filterIsolationWindow
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterIsolationWindow", "MsBackend",
           function(object, mz = numeric(), ...) {
               if (length(mz)) {
@@ -1134,6 +1181,8 @@ setMethod("filterIsolationWindow", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterMsLevel
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterMsLevel", "MsBackend",
           function(object, msLevel = integer()) {
               if (length(msLevel)) {
@@ -1146,6 +1195,8 @@ setMethod("filterMsLevel", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterPolarity
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterPolarity", "MsBackend",
           function(object, polarity = integer()) {
               if (length(polarity))
@@ -1158,6 +1209,8 @@ setMethod("filterPolarity", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterPrecursorMzRange
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterPrecursorMzRange", "MsBackend",
           function(object, mz = numeric()) {
               if (length(mz)) {
@@ -1170,6 +1223,8 @@ setMethod("filterPrecursorMzRange", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterPrecursorMz
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterPrecursorMz", "MsBackend",
           function(object, mz = numeric()) {
               filterPrecursorMzRange(object, mz)
@@ -1180,6 +1235,8 @@ setMethod("filterPrecursorMz", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterPrecursorMzValues
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterPrecursorMzValues", "MsBackend",
           function(object, mz = numeric(), ppm = 20, tolerance = 0) {
               if (length(mz)) {
@@ -1193,6 +1250,8 @@ setMethod("filterPrecursorMzValues", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterPrecursorCharge
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterPrecursorCharge", "MsBackend",
           function(object, z = integer()) {
               if (length(z)) {
@@ -1206,6 +1265,8 @@ setMethod("filterPrecursorCharge", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterPrecursorScan
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterPrecursorScan", "MsBackend",
           function(object, acquisitionNum = integer(), f = dataOrigin(object)) {
               if (length(acquisitionNum) && length(f)) {
@@ -1226,6 +1287,8 @@ setMethod("filterPrecursorScan", "MsBackend",
 #' @importFrom MsCoreUtils between
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterRanges", "MsBackend",
           function(object, spectraVariables = character(), ranges = numeric(),
                    match = c("all", "any")){
@@ -1267,6 +1330,8 @@ setMethod("filterRanges", "MsBackend",
 #' @importMethodsFrom ProtGenerics filterRt
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterRt", "MsBackend",
           function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
               if (length(rt)) {
@@ -1284,6 +1349,8 @@ setMethod("filterRt", "MsBackend",
 #' @importFrom MsCoreUtils ppm
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("filterValues", "MsBackend",
           function(object, spectraVariables = character(), values = numeric(),
                    ppm = 0, tolerance = 0, match = c("all", "any")){
@@ -1329,6 +1396,8 @@ setMethod("filterValues", "MsBackend",
 #' @importMethodsFrom ProtGenerics intensity
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("intensity", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1338,6 +1407,8 @@ setMethod("intensity", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics intensity<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("intensity", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1349,6 +1420,8 @@ setReplaceMethod("intensity", "MsBackend", function(object, value) {
 #' @importFrom MsCoreUtils vapply1d
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("ionCount", "MsBackend", function(object) {
     vapply1d(intensity(object), sum, na.rm = TRUE)
 })
@@ -1359,6 +1432,8 @@ setMethod("ionCount", "MsBackend", function(object) {
 #' @importFrom MsCoreUtils vapply1l
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("isCentroided", "MsBackend", function(object, ...) {
     vapply1l(peaksData(object), .peaks_is_centroided)
 })
@@ -1368,6 +1443,8 @@ setMethod("isCentroided", "MsBackend", function(object, ...) {
 #' @rdname MsBackend
 #'
 #' @importMethodsFrom S4Vectors isEmpty
+#'
+#' @export
 setMethod("isEmpty", "MsBackend", function(x) {
     stop("Not implemented for ", class(x), ".")
 })
@@ -1377,6 +1454,8 @@ setMethod("isEmpty", "MsBackend", function(x) {
 #' @importMethodsFrom ProtGenerics isolationWindowLowerMz
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("isolationWindowLowerMz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1386,6 +1465,8 @@ setMethod("isolationWindowLowerMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowLowerMz<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("isolationWindowLowerMz", "MsBackend", function(object,
                                                                  value) {
     stop("Not implemented for ", class(object), ".")
@@ -1396,6 +1477,8 @@ setReplaceMethod("isolationWindowLowerMz", "MsBackend", function(object,
 #' @importMethodsFrom ProtGenerics isolationWindowTargetMz
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("isolationWindowTargetMz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1405,6 +1488,8 @@ setMethod("isolationWindowTargetMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowTargetMz<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("isolationWindowTargetMz", "MsBackend", function(object,
                                                                   value) {
     stop("Not implemented for ", class(object), ".")
@@ -1415,6 +1500,8 @@ setReplaceMethod("isolationWindowTargetMz", "MsBackend", function(object,
 #' @importMethodsFrom ProtGenerics isolationWindowUpperMz
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("isolationWindowUpperMz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1424,6 +1511,8 @@ setMethod("isolationWindowUpperMz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics isolationWindowUpperMz<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("isolationWindowUpperMz", "MsBackend", function(object,
                                                                  value) {
     stop("Not implemented for ", class(object), ".")
@@ -1434,6 +1523,8 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackend", function(object,
 #' @importMethodsFrom ProtGenerics isReadOnly
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("isReadOnly", "MsBackend", function(object) {
     object@readonly
 })
@@ -1441,6 +1532,8 @@ setMethod("isReadOnly", "MsBackend", function(object) {
 #' @exportMethod length
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("length", "MsBackend", function(x) {
     stop("Not implemented for ", class(x), ".")
 })
@@ -1450,7 +1543,18 @@ setMethod("length", "MsBackend", function(x) {
 #' @importMethodsFrom ProtGenerics msLevel
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("msLevel", "MsBackend", function(object) {
+    stop("Not implemented for ", class(object), ".")
+})
+
+#' @importMethodsFrom ProtGenerics msLevel<-
+#'
+#' @rdname MsBackend
+#'
+#' @export
+setReplaceMethod("msLevel", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
@@ -1459,6 +1563,8 @@ setMethod("msLevel", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics mz
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("mz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1468,6 +1574,8 @@ setMethod("mz", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics mz<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("mz", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1482,6 +1590,8 @@ setMethod("lengths", "MsBackend", function(x, use.names = FALSE) {
 #' @importMethodsFrom ProtGenerics polarity
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("polarity", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1491,6 +1601,8 @@ setMethod("polarity", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics polarity<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("polarity", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1500,6 +1612,8 @@ setReplaceMethod("polarity", "MsBackend", function(object, value) {
 #' @importMethodsFrom ProtGenerics precScanNum
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("precScanNum", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1509,6 +1623,8 @@ setMethod("precScanNum", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics precursorCharge
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("precursorCharge", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1518,6 +1634,8 @@ setMethod("precursorCharge", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics precursorIntensity
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("precursorIntensity", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1527,6 +1645,8 @@ setMethod("precursorIntensity", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics precursorMz
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("precursorMz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1534,7 +1654,10 @@ setMethod("precursorMz", "MsBackend", function(object) {
 #' @exportMethod peaksData<-
 #'
 #' @importMethodsFrom ProtGenerics peaksData<-
+#'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("peaksData", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1542,6 +1665,8 @@ setReplaceMethod("peaksData", "MsBackend", function(object, value) {
 #' @exportMethod reset
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("reset", "MsBackend", function(object) {
     object
 })
@@ -1551,6 +1676,8 @@ setMethod("reset", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics rtime
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("rtime", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1560,6 +1687,8 @@ setMethod("rtime", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics rtime<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("rtime", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1569,6 +1698,8 @@ setReplaceMethod("rtime", "MsBackend", function(object, value) {
 #' @importMethodsFrom ProtGenerics scanIndex
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("scanIndex", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1576,6 +1707,8 @@ setMethod("scanIndex", "MsBackend", function(object) {
 #' @exportMethod selectSpectraVariables
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod(
     "selectSpectraVariables", "MsBackend",
     function(object, spectraVariables = spectraVariables(object)) {
@@ -1587,6 +1720,8 @@ setMethod(
 #' @importMethodsFrom ProtGenerics smoothed
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("smoothed", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1598,6 +1733,8 @@ setMethod("smoothed", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics smoothed<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("smoothed", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1605,6 +1742,8 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
 #' @exportMethod spectraData
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod(
     "spectraData", "MsBackend",
     function(object, columns = spectraVariables(object)) {
@@ -1614,6 +1753,8 @@ setMethod(
 #' @exportMethod spectraData<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("spectraData", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1623,6 +1764,8 @@ setReplaceMethod("spectraData", "MsBackend", function(object, value) {
 #' @importMethodsFrom ProtGenerics spectraNames
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("spectraNames", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1632,6 +1775,8 @@ setMethod("spectraNames", "MsBackend", function(object) {
 #' @importMethodsFrom ProtGenerics spectraNames<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("spectraNames", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1641,6 +1786,8 @@ setReplaceMethod("spectraNames", "MsBackend", function(object, value) {
 #' @importMethodsFrom ProtGenerics spectraVariables
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("spectraVariables", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1650,6 +1797,8 @@ setMethod("spectraVariables", "MsBackend", function(object) {
 #' @importMethodsFrom S4Vectors split
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
     split.default(x, f, drop = drop, ...)
 })
@@ -1659,6 +1808,8 @@ setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
 #' @exportMethod supportsSetBackend
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("supportsSetBackend", "MsBackend", function(object, ...) {
     !isReadOnly(object)
 })
@@ -1668,6 +1819,8 @@ setMethod("supportsSetBackend", "MsBackend", function(object, ...) {
 #' @importMethodsFrom ProtGenerics tic
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("tic", "MsBackend", function(object, initial = TRUE) {
     stop("Not implemented for ", class(object), ".")
 })
@@ -1675,6 +1828,8 @@ setMethod("tic", "MsBackend", function(object, initial = TRUE) {
 #' @exportMethod [
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
     stop("Not implemented for ", class(x), ".")
 })
@@ -1682,6 +1837,8 @@ setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
 #' @exportMethod $
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("$", "MsBackend", function(x, name) {
     stop("Not implemented for ", class(x), ".")
 })
@@ -1689,6 +1846,8 @@ setMethod("$", "MsBackend", function(x, name) {
 #' @exportMethod $<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("$", "MsBackend", function(x, name, value) {
     stop("Not implemented for ", class(x), ".")
 })
@@ -1696,6 +1855,8 @@ setReplaceMethod("$", "MsBackend", function(x, name, value) {
 #' @exportMethod [[
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("[[", "MsBackend", function(x, i, j, ...) {
     if (!is.character(i))
         stop("'i' is supposed to be a character defining the spectra ",
@@ -1708,6 +1869,8 @@ setMethod("[[", "MsBackend", function(x, i, j, ...) {
 #' @exportMethod [[<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod("[[", "MsBackend", function(x, i, j, ..., value) {
     if (!is.character(i))
         stop("'i' is supposed to be a character defining the spectra ",
@@ -1722,6 +1885,8 @@ setReplaceMethod("[[", "MsBackend", function(x, i, j, ..., value) {
 #' @importMethodsFrom ProtGenerics uniqueMsLevels
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("uniqueMsLevels", "MsBackend", function(object, ...) {
     unique(msLevel(object))
 })
@@ -1729,6 +1894,8 @@ setMethod("uniqueMsLevels", "MsBackend", function(object, ...) {
 #' @exportMethod dataStorageBasePath
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setMethod("dataStorageBasePath", "MsBackend", function(object) {
     NA_character_
 })
@@ -1736,6 +1903,8 @@ setMethod("dataStorageBasePath", "MsBackend", function(object) {
 #' @exportMethod dataStorageBasePath<-
 #'
 #' @rdname MsBackend
+#'
+#' @export
 setReplaceMethod(
     "dataStorageBasePath", "MsBackend", function(object, value) {
         warning(class(object)[1L], " does not support changing",
