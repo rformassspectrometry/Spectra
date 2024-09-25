@@ -279,8 +279,6 @@ setMethod("msLevel", "MsBackendDataFrame", function(object, ...) {
 })
 
 #' @rdname hidden_aliases
-#'
-#' @importMethodsFrom ProtGenerics msLevel<-
 setReplaceMethod("msLevel", "MsBackendDataFrame", function(object, value) {
     if (!is.integer(value) && is.numeric(value))
         value <- as.integer(value)

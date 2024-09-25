@@ -21,6 +21,7 @@
 \alias{dataStorageBasePath,MsBackendMzR-method}
 \alias{dataStorageBasePath<-}
 \alias{dataStorageBasePath<-,MsBackendMzR-method}
+\alias{msLeveL<-,MsBackend-method}
 \alias{backendBpparam,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
@@ -720,6 +721,7 @@ number of spectra). For empty spectra, \code{0} is returned.
 \item \code{msLevel()}: gets the spectra's MS level. Returns an \code{integer}
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
+\item \verb{msLevel<-}: replaces the spectra's MS level.
 \item \code{mz()}: gets the mass-to-charge ratios (m/z) from the
 spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
 spectra, each element a \code{numeric} vector with the m/z values of
