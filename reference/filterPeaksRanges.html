@@ -77,7 +77,7 @@ filtered using a retention time range, an empty peaks matrix is returned
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,7 +121,7 @@ the peaks matrices of the <code>Spectra</code> object <code>s</code> to mass pea
 value between 200 and 300. <code>filterPeaksRanges()</code> returns the original
 <code>Spectra</code> object with the filter operation added to the processing queue.
 Thus, the filter gets <strong>only</strong> applied when the peaks data gets extracted
-with <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz()</a></code>, <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity()</a></code> or <code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code>. If ranges for both spectra
+with <code><a href="spectraData.html">mz()</a></code>, <code><a href="spectraData.html">intensity()</a></code> or <code><a href="spectraData.html">peaksData()</a></code>. If ranges for both spectra
 <strong>and</strong> peaks variables are defined, the function evaluates first whether
 the spectra variable value for a spectrum is within the provided range and,
 if so, applies also the peaks variable-based filter (otherwise an empty
@@ -182,8 +182,8 @@ the filter should be applied. The filter(s) will always be applied to
 multiple filter ranges it is however possible to apply MS level-dependent
 filters (see examples below for details).</p>
 <p>The filter will not be applied immediately to the data but only executed when
-the mass peak data is accessed (through <code><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData()</a></code>, <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz()</a></code> or
-<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">intensity()</a></code>) or by calling <code><a href="Spectra.html">applyProcessing()</a></code>.</p>
+the mass peak data is accessed (through <code><a href="spectraData.html">peaksData()</a></code>, <code><a href="spectraData.html">mz()</a></code> or
+<code><a href="spectraData.html">intensity()</a></code>) or by calling <code><a href="addProcessing.html">applyProcessing()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -220,7 +220,7 @@ the mass peak data is accessed (through <code><a href="https://rdrr.io/pkg/ProtG
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 16 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: remove peaks based on user-provided ranges for 1 variables [Fri Sep 13 07:10:39 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: remove peaks based on user-provided ranges for 1 variables [Wed Sep 25 13:46:19 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The Spectra object has still the same length and spectra variables</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
@@ -231,13 +231,13 @@ the mass peak data is accessed (through <code><a href="https://rdrr.io/pkg/ProtG
 <span class="r-in"><span><span class="co">## The filter gets applied when mass peak data gets extracted, using either</span></span></span>
 <span class="r-in"><span><span class="co">## `mz()`, `intensity()` or `peaksData()`. The filtered peaks data does</span></span></span>
 <span class="r-in"><span><span class="co">## not contain any mass peaks with m/z values between 200 and 300:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 100.1         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 100.2         2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 100.3         3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 300.3         6</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 100.3         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 100.4         2</span>
@@ -256,19 +256,19 @@ the mass peak data is accessed (through <code><a href="https://rdrr.io/pkg/ProtG
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 16 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select peaks based on user-provided ranges for 2 variables [Fri Sep 13 07:10:39 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select peaks based on user-provided ranges for 2 variables [Wed Sep 25 13:46:19 2024] </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Only data for peaks are returned for which the spectra's MS level is</span></span></span>
 <span class="r-in"><span><span class="co">## between 2 and 2 and with an m/z between 100 and 110. The peaks data for</span></span></span>
 <span class="r-in"><span><span class="co">## the first spectrum, that has MS level 1, is thus empty:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      mz intensity</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## While the peaks matrix for the second spectrum (with MS level 2) contains</span></span></span>
 <span class="r-in"><span><span class="co">## the mass peaks with m/z between 100 and 110.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 100.3         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 100.4         2</span>
@@ -286,7 +286,7 @@ the mass peak data is accessed (through <code><a href="https://rdrr.io/pkg/ProtG
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The results for the MS level 2 spectrum are the same as before, but with</span></span></span>
 <span class="r-in"><span><span class="co">## the additional row we keep the full peaks matrix of the MS1 spectrum:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 100.1         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 100.2         2</span>
@@ -294,7 +294,7 @@ the mass peak data is accessed (through <code><a href="https://rdrr.io/pkg/ProtG
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 200.1         4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 200.2         5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 300.3         6</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 100.3         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 100.4         2</span>
@@ -302,13 +302,13 @@ the mass peak data is accessed (through <code><a href="https://rdrr.io/pkg/ProtG
 <span class="r-in"><span><span class="co">## As a last example we define a filter that keeps all mass peaks with an</span></span></span>
 <span class="r-in"><span><span class="co">## m/z either between 100 and 200, or between 300 and 400.</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">filterPeaksRanges</span><span class="op">(</span><span class="va">s</span>, mz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">400</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 100.1         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 100.2         2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 100.3         3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 300.3         6</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/peaksData.html" class="external-link">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mz intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 100.3         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 100.4         2</span>
@@ -326,7 +326,7 @@ the mass peak data is accessed (through <code><a href="https://rdrr.io/pkg/ProtG
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
 </div>
 
     </footer></div>

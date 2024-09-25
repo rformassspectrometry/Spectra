@@ -55,7 +55,7 @@ removed.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@ removed.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Calculate Neutral Loss Spectra</h1>
-      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra-neutralLoss.R" class="external-link"><code>R/Spectra-neutralLoss.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra-neutralLoss.R" class="external-link"><code>R/Spectra-neutralLoss.R</code></a></small>
       <div class="d-none name"><code>neutralLoss.Rd</code></div>
     </div>
 
@@ -113,9 +113,7 @@ removed.</p></li>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">neutralLoss</span><span class="op">(</span><span class="va">object</span>, <span class="va">param</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">PrecursorMzParam</span><span class="op">(</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">PrecursorMzParam</span><span class="op">(</span></span>
 <span>  filterPeaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"abovePrecursor"</span>, <span class="st">"belowPrecursor"</span>, <span class="st">"removePrecursor"</span><span class="op">)</span>,</span>
 <span>  msLevel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="cn">NA_integer_</span><span class="op">)</span>,</span>
 <span>  ppm <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -130,20 +128,7 @@ removed.</p></li>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p><code><a href="Spectra.html">Spectra()</a></code> object with the fragment spectra for which neutral
-loss spectra should be calculated.</p></dd>
-
-
-<dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
-<dd><p>One of the <em>parameter</em> objects discussed below.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Currently ignored.</p></dd>
-
-
-<dt id="arg-filterpeaks">filterPeaks<a class="anchor" aria-label="anchor" href="#arg-filterpeaks"></a></dt>
+<dl><dt id="arg-filterpeaks">filterPeaks<a class="anchor" aria-label="anchor" href="#arg-filterpeaks"></a></dt>
 <dd><p>For <code>PrecursorMzParam()</code>: <code>character(1)</code> or <code>function</code>
 defining if and how fragment peaks should be filtered before calculation.
 Pre-defined options are: <code>"none"</code> (keep all peaks), <code>"abovePrecursor"</code>
@@ -173,6 +158,19 @@ for details.</p></dd>
 values to filter peaks. Defaults to <code>tolerance = 0</code>. See function
 description for details.</p></dd>
 
+
+<dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
+<dd><p><code><a href="Spectra.html">Spectra()</a></code> object with the fragment spectra for which neutral
+loss spectra should be calculated.</p></dd>
+
+
+<dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
+<dd><p>One of the <em>parameter</em> objects discussed below.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Currently ignored.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -194,6 +192,10 @@ the neutral loss spectra.</p>
 (2022). Neutral Loss Mass Spectral Data Enhances Molecular Similarity
 Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <a href="https://doi.org/10.1021/jasms.1c00343" class="external-link">doi:10.1021/jasms.1c00343</a></p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="addProcessing.html">addProcessing()</a></code> for other data analysis and manipulation functions.</p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -221,7 +223,7 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-in"><span><span class="co">## Calculate neutral loss spectra for all MS2 spectra, keeping MS1 and MS3</span></span></span>
 <span class="r-in"><span><span class="co">## spectra unchanged.</span></span></span>
 <span class="r-in"><span><span class="va">sps_nl</span> <span class="op">&lt;-</span> <span class="fu">neutralLoss</span><span class="op">(</span><span class="va">sps</span>, <span class="fu">PrecursorMzParam</span><span class="op">(</span>msLevel <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">mz</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] 13 23 39 86</span>
@@ -229,7 +231,7 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[4]] 5 7 9 20 100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[5]] 15 53 299 300</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[6]] 34 56 100 200 204 309</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] -46 1 17 27</span>
@@ -242,7 +244,7 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-in"><span><span class="co">## with an m/z &gt;= precursorMz</span></span></span>
 <span class="r-in"><span><span class="va">sps_nl</span> <span class="op">&lt;-</span> <span class="fu">neutralLoss</span><span class="op">(</span><span class="va">sps</span>, <span class="fu">PrecursorMzParam</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    filterPeaks <span class="op">=</span> <span class="st">"abovePrecursor"</span>, msLevel <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] 1 17 27</span>
@@ -256,7 +258,7 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-in"><span><span class="co">## of 1 and ppm 10</span></span></span>
 <span class="r-in"><span><span class="va">sps_nl</span> <span class="op">&lt;-</span> <span class="fu">neutralLoss</span><span class="op">(</span><span class="va">sps</span>, <span class="fu">PrecursorMzParam</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    filterPeaks <span class="op">=</span> <span class="st">"removePrecursor"</span>, tolerance <span class="op">=</span> <span class="fl">1</span>, ppm <span class="op">=</span> <span class="fl">10</span>, msLevel <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] -46 17 27</span>
@@ -268,7 +270,7 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 <span class="r-in"><span><span class="co">## Empty spectra are returned for MS 2 spectra with undefined precursor m/z.</span></span></span>
 <span class="r-in"><span><span class="va">sps</span><span class="op">$</span><span class="va">precursorMz</span> <span class="op">&lt;-</span> <span class="cn">NA_real_</span></span></span>
 <span class="r-in"><span><span class="va">sps_nl</span> <span class="op">&lt;-</span> <span class="fu">neutralLoss</span><span class="op">(</span><span class="va">sps</span>, <span class="fu">PrecursorMzParam</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">mz</a></span><span class="op">(</span><span class="va">sps_nl</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] 3 12 14 15 16 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] numeric(0)</span>
@@ -287,7 +289,7 @@ Analysis in METLIN. Journal of the American Society for Mass Spectrometry.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
 </div>
 
     </footer></div>

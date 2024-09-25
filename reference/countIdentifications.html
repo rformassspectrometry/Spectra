@@ -21,7 +21,7 @@ here."><meta property="og:image" content="https://rformassspectrometry.github.io
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ chromatograms, as can illustrated
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">countIdentifications</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  identification <span class="op">=</span> <span class="st">"sequence"</span>,</span>
-<span>  f <span class="op">=</span> <span class="fu">dataStorage</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
+<span>  f <span class="op">=</span> <span class="fu"><a href="spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>,</span>
 <span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -116,6 +116,10 @@ force the recomputation of the <code>"countIdentifications"</code> variable,
 users should either delete or rename it.</p>
     </div>
     <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="addProcessing.html">addProcessing()</a></code> for other data analysis functions.</p></div>
+    </div>
+    <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Laurent Gatto</p>
     </div>
@@ -161,13 +165,13 @@ users should either delete or rename it.</p>
 <span class="r-in"><span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">spdf</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## We have in this data 5 MS1 and 81 MS2 scans</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu">msLevel</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">msLevel</a></span><span class="op">(</span><span class="va">sp</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1  2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  5 81 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The acquisition number of the MS1 scans</span></span></span>
-<span class="r-in"><span><span class="fu">acquisitionNum</span><span class="op">(</span><span class="fu">filterMsLevel</span><span class="op">(</span><span class="va">sp</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">acquisitionNum</a></span><span class="op">(</span><span class="fu"><a href="filterMsLevel.html">filterMsLevel</a></span><span class="op">(</span><span class="va">sp</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8975 8994 9012 9026 9045</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## And the number of MS2 scans with precursor ions selected</span></span></span>
@@ -202,7 +206,7 @@ users should either delete or rename it.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
 </div>
 
     </footer></div>

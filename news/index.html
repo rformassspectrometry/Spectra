@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,33 +40,37 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.15" id="spectra-115">Spectra 1.15<a class="anchor" aria-label="anchor" href="#spectra-115"></a></h2>
 <div class="section level3">
-<h3 id="changes-in-1-15">Changes in 1.15.8<a class="anchor" aria-label="anchor" href="#changes-in-1-15"></a></h3>
+<h3 id="changes-in-1-15">Changes in 1.15.9<a class="anchor" aria-label="anchor" href="#changes-in-1-15"></a></h3>
+<ul><li>Restructure and reorganize documentation for <code>Spectra</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-in-1-15-1">Changes in 1.15.8<a class="anchor" aria-label="anchor" href="#changes-in-1-15-1"></a></h3>
 <ul><li>Refactor the <code><a href="../reference/Spectra.html">Spectra()</a></code> constructor method: better support for initialization of backends that define their own specific parameters.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-15-1">Changes in 1.15.7<a class="anchor" aria-label="anchor" href="#changes-in-1-15-1"></a></h3>
-<ul><li>Change <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">estimatePrecursorIntensity()</a></code> to a method to avoid overrides/clashes with the same-named implementation in <em>xcms</em>.</li>
+<h3 id="changes-in-1-15-2">Changes in 1.15.7<a class="anchor" aria-label="anchor" href="#changes-in-1-15-2"></a></h3>
+<ul><li>Change <code><a href="../reference/estimatePrecursorIntensity.html">estimatePrecursorIntensity()</a></code> to a method to avoid overrides/clashes with the same-named implementation in <em>xcms</em>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-15-2">Changes in 1.15.6<a class="anchor" aria-label="anchor" href="#changes-in-1-15-2"></a></h3>
-<ul><li>Fix in <code><a href="../reference/hidden_aliases.html">selectSpectraVariables()</a></code> for <code>MsBackendMzR</code>: ensure peaks variables <code>"mz"</code> and <code>"intensity"</code> are not by default removed.</li>
+<h3 id="changes-in-1-15-3">Changes in 1.15.6<a class="anchor" aria-label="anchor" href="#changes-in-1-15-3"></a></h3>
+<ul><li>Fix in <code><a href="../reference/filterMsLevel.html">selectSpectraVariables()</a></code> for <code>MsBackendMzR</code>: ensure peaks variables <code>"mz"</code> and <code>"intensity"</code> are not by default removed.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-15-3">Changes in 1.15.5<a class="anchor" aria-label="anchor" href="#changes-in-1-15-3"></a></h3>
+<h3 id="changes-in-1-15-4">Changes in 1.15.5<a class="anchor" aria-label="anchor" href="#changes-in-1-15-4"></a></h3>
 <ul><li>Add new <code><a href="../reference/filterPeaksRanges.html">filterPeaksRanges()</a></code> function to filter mass peaks by ranges on numeric spectra or peak variables.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-15-4">Changes in 1.15.3<a class="anchor" aria-label="anchor" href="#changes-in-1-15-4"></a></h3>
+<h3 id="changes-in-1-15-5">Changes in 1.15.3<a class="anchor" aria-label="anchor" href="#changes-in-1-15-5"></a></h3>
 <ul><li>For evaluation of the <code>Spectra</code>’s processing queue: call functions from the <em>MetaboCoreUtils</em> directly through their namespace (<code>MsCoreUtils::</code>) to avoid errors if performed in parallel on Windows machines or if called on a re-loaded object.</li>
-<li>New <code><a href="../reference/Spectra.html">asDataFrame()</a></code> function to convert a (small) <code>Spectra</code> object into a long <code>DataFrame</code>.</li>
+<li>New <code><a href="../reference/spectraData.html">asDataFrame()</a></code> function to convert a (small) <code>Spectra</code> object into a long <code>DataFrame</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-15-5">Changes in 1.15.2<a class="anchor" aria-label="anchor" href="#changes-in-1-15-5"></a></h3>
+<h3 id="changes-in-1-15-6">Changes in 1.15.2<a class="anchor" aria-label="anchor" href="#changes-in-1-15-6"></a></h3>
 <ul><li>Add <code>dataStorageDataPath()</code> and <code>dataStorageDataPath&lt;-</code> methods to allow updating/adapting the path of the data storage files of backends supporting that <a href="https://github.com/rformassspectrometry/Spectra/issues/321" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/321" class="external-link">#321</a>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-1-15-6">Changes in 1.15.1<a class="anchor" aria-label="anchor" href="#changes-in-1-15-6"></a></h3>
-<ul><li>Improve documentation for <code><a href="../reference/Spectra.html">combineSpectra()</a></code> and <code><a href="../reference/Spectra.html">combinePeaks()</a></code> <a href="https://github.com/rformassspectrometry/Spectra/issues/320" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/320" class="external-link">#320</a>.</li>
+<h3 id="changes-in-1-15-7">Changes in 1.15.1<a class="anchor" aria-label="anchor" href="#changes-in-1-15-7"></a></h3>
+<ul><li>Improve documentation for <code><a href="../reference/combineSpectra.html">combineSpectra()</a></code> and <code><a href="../reference/combinePeaks.html">combinePeaks()</a></code> <a href="https://github.com/rformassspectrometry/Spectra/issues/320" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/320" class="external-link">#320</a>.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -77,11 +81,11 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-13-1">Changes in 1.13.7<a class="anchor" aria-label="anchor" href="#changes-in-1-13-1"></a></h3>
-<ul><li>Move generics <code><a href="../reference/MsBackend.html">backendBpparam()</a></code>, <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendParallelFactor()</a></code> and <code><a href="../reference/MsBackend.html">supportsSetBackend()</a></code> to <em>ProtGenerics</em>. Required <em>ProtGenerics</em> version 1.35.4 or higher.</li>
+<ul><li>Move generics <code><a href="../reference/MsBackend.html">backendBpparam()</a></code>, <code>backendParallelFactor()</code> and <code><a href="../reference/MsBackend.html">supportsSetBackend()</a></code> to <em>ProtGenerics</em>. Required <em>ProtGenerics</em> version 1.35.4 or higher.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-13-2">Changes in 1.13.6<a class="anchor" aria-label="anchor" href="#changes-in-1-13-2"></a></h3>
-<ul><li>Add <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRanges()</a></code> and <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterValues()</a></code> functions to allow filtering of a Spectra object based on ranges or similarities of any existing <code>spectraData</code> variables.</li>
+<ul><li>Add <code><a href="../reference/filterMsLevel.html">filterRanges()</a></code> and <code><a href="../reference/filterMsLevel.html">filterValues()</a></code> functions to allow filtering of a Spectra object based on ranges or similarities of any existing <code>spectraData</code> variables.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-13-3">Changes in 1.13.5<a class="anchor" aria-label="anchor" href="#changes-in-1-13-3"></a></h3>
@@ -173,7 +177,7 @@
 <div class="section level3">
 <h3 id="changes-in-1-9">Changes in 1.9.15<a class="anchor" aria-label="anchor" href="#changes-in-1-9"></a></h3>
 <ul><li>Fix issue in <code>MsBackendMemory</code> failed to return intensity or m/z values when peaks data is empty.</li>
-<li>Fix bug in <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorScan()</a></code> (see <a href="https://github.com/RforMassSpectrometry/Spectra/issues/194" class="external-link">#194</a> and PR <a href="https://github.com/RforMassSpectrometry/Spectra/issues/277" class="external-link">#277</a>).</li>
+<li>Fix bug in <code><a href="../reference/filterMsLevel.html">filterPrecursorScan()</a></code> (see <a href="https://github.com/RforMassSpectrometry/Spectra/issues/194" class="external-link">#194</a> and PR <a href="https://github.com/RforMassSpectrometry/Spectra/issues/277" class="external-link">#277</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-9-1">Changes in 1.9.14<a class="anchor" aria-label="anchor" href="#changes-in-1-9-1"></a></h3>
@@ -223,7 +227,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-9-10">Changes in 1.9.5<a class="anchor" aria-label="anchor" href="#changes-in-1-9-10"></a></h3>
-<ul><li>Fix bug in <code><a href="../reference/hidden_aliases.html">containsMz()</a></code> when <code>mz</code> isn’t ordered (see <a href="https://github.com/RforMassSpectrometry/Spectra/issues/258" class="external-link">#258</a>).</li>
+<ul><li>Fix bug in <code><a href="../reference/addProcessing.html">containsMz()</a></code> when <code>mz</code> isn’t ordered (see <a href="https://github.com/RforMassSpectrometry/Spectra/issues/258" class="external-link">#258</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-9-11">Changes in 1.9.4<a class="anchor" aria-label="anchor" href="#changes-in-1-9-11"></a></h3>
@@ -371,7 +375,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-2">Changes in 1.3.9<a class="anchor" aria-label="anchor" href="#changes-in-1-3-2"></a></h3>
-<ul><li>New features: <code><a href="../reference/Spectra.html">joinSpectraData()</a></code> now check for duplicated keys in <code>x</code> (throws an error) and <code>y</code> (thows a warning).</li>
+<ul><li>New features: <code><a href="../reference/combineSpectra.html">joinSpectraData()</a></code> now check for duplicated keys in <code>x</code> (throws an error) and <code>y</code> (thows a warning).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-3-3">Changes in 1.3.8<a class="anchor" aria-label="anchor" href="#changes-in-1-3-3"></a></h3>
@@ -415,7 +419,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-1">Changes in 1.1.19<a class="anchor" aria-label="anchor" href="#changes-in-1-1-1"></a></h3>
-<ul><li>New <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterPrecursorCharge()</a></code> method.</li>
+<ul><li>New <code><a href="../reference/filterMsLevel.html">filterPrecursorCharge()</a></code> method.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-2">Changes in 1.1.18<a class="anchor" aria-label="anchor" href="#changes-in-1-1-2"></a></h3>
@@ -471,7 +475,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-14">Changes in 1.1.6<a class="anchor" aria-label="anchor" href="#changes-in-1-1-14"></a></h3>
-<ul><li>New <code><a href="../reference/Spectra.html">joinSpectraData()</a></code> function.</li>
+<ul><li>New <code><a href="../reference/combineSpectra.html">joinSpectraData()</a></code> function.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-1-1-15">Changes in 1.1.5<a class="anchor" aria-label="anchor" href="#changes-in-1-1-15"></a></h3>
@@ -566,7 +570,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
 </div>
 
     </footer></div>

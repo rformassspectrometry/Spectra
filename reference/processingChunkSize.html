@@ -89,7 +89,7 @@ performed.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +116,7 @@ performed.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Parallel and chunk-wise processing of <code>Spectra</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra-functions.R" class="external-link"><code>R/Spectra-functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra-functions.R" class="external-link"><code>R/Spectra-functions.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/Spectra.R" class="external-link"><code>R/Spectra.R</code></a></small>
       <div class="d-none name"><code>processingChunkSize.Rd</code></div>
     </div>
 
@@ -132,7 +132,7 @@ by setting the processing chunk size of a <code>Spectra</code> with the
 <code>processingChunkSize()</code> function to a value which is smaller than the
 length of the <code>Spectra</code> object. Setting <code>processingChunkSize(sps) &lt;- 1000</code>
 will cause any data manipulation operation on the <code>sps</code>, such as
-<code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterIntensity()</a></code> or <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">bin()</a></code>, to be performed eventually in parallel for
+<code><a href="filterMsLevel.html">filterIntensity()</a></code> or <code><a href="addProcessing.html">bin()</a></code>, to be performed eventually in parallel for
 sets of 1000 spectra in each iteration.</p>
 <p>Such chunk-wise processing is specifically useful for <code>Spectra</code> objects
 using an <em>on-disk</em> backend or for very large experiments. For small data
@@ -142,7 +142,7 @@ the chunk-wise processing.</p>
 <p>For some backends a certain type of splitting and chunk-wise processing
 might be preferable. The <code>MsBackendMzR</code> backend for example needs to load
 the MS data from the original (mzML) files, hence chunk-wise processing
-on a per-file basis would be ideal. The <code><a href="https://rdrr.io/pkg/ProtGenerics/man/backendInitialize.html" class="external-link">backendParallelFactor()</a></code> function
+on a per-file basis would be ideal. The <code>backendParallelFactor()</code> function
 for <code>MsBackend</code> allows backends to suggest a preferred splitting of the
 data by returning a <code>factor</code> defining the respective data chunks. The
 <code>MsBackendMzR</code> returns for example a <code>factor</code> based on the <em>dataStorage</em>
@@ -168,7 +168,10 @@ performed.</p></li>
 <span></span>
 <span><span class="fu">processingChunkSize</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
 <span></span>
-<span><span class="fu">processingChunkFactor</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">processingChunkFactor</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'Spectra'</span></span>
+<span><span class="fu"><a href="MsBackend.html">backendBpparam</a></span><span class="op">(</span><span class="va">object</span>, BPPARAM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">bpparam</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -181,6 +184,15 @@ performed.</p></li>
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p><code>integer(1)</code> defining the chunk size.</p></dd>
+
+
+<dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
+<dd><p><code>Spectra</code> object.</p></dd>
+
+
+<dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
+<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">bpparam()</a></code> for more
+information.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -211,7 +223,7 @@ For these, the <code><a href="MsBackend.html">backendBpparam()</a></code> functi
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
 </div>
 
     </footer></div>

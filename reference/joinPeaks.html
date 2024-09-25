@@ -69,7 +69,7 @@ peak matching and does hence not expect matched peak matrices as an input.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,8 +127,8 @@ scores, <code>gnps()</code> should be called on the aligned peak matrices (i.e.
 <code>FUN = MsCoreUtils::gnps</code>).</p></li>
 <li><p><code>joinPeaksNone()</code>: does not perform any peak matching but simply returns
 the peak matrices in a <code>list</code>. This function should be used with the
-<code>MAPFUN</code> parameter of <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">compareSpectra()</a></code> if the spectra similarity
-function used (parameter <code>FUN</code> of <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">compareSpectra()</a></code>) performs its own
+<code>MAPFUN</code> parameter of <code><a href="compareSpectra.html">compareSpectra()</a></code> if the spectra similarity
+function used (parameter <code>FUN</code> of <code><a href="compareSpectra.html">compareSpectra()</a></code>) performs its own
 peak matching and does hence not expect matched peak matrices as an input.</p></li>
 </ul></div>
 
@@ -216,7 +216,12 @@ definition. Parameters <code>ppm</code> and <code>tolerance</code> are suggested
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>gnps()</code></p></div>
+    <div class="dont-index">
+<ul><li><p><code><a href="compareSpectra.html">compareSpectra()</a></code> for the function to calculate similarities between
+spectra.</p></li>
+<li><p><code>gnps()</code> in the <em>MsCoreUtils</em> package for more information on the GNPS
+similarity score.</p></li>
+</ul></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -441,7 +446,7 @@ definition. Parameters <code>ppm</code> and <code>tolerance</code> are suggested
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
 </div>
 
     </footer></div>
