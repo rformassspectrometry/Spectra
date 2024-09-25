@@ -69,6 +69,7 @@
 \alias{isReadOnly,MsBackend-method}
 \alias{length,MsBackend-method}
 \alias{msLevel,MsBackend-method}
+\alias{msLevel<-,MsBackend-method}
 \alias{mz,MsBackend-method}
 \alias{mz<-,MsBackend-method}
 \alias{lengths,MsBackend-method}
@@ -213,6 +214,8 @@
 \S4method{length}{MsBackend}(x)
 
 \S4method{msLevel}{MsBackend}(object)
+
+\S4method{msLevel}{MsBackend}(object) <- value
 
 \S4method{mz}{MsBackend}(object)
 

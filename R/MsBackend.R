@@ -1551,6 +1551,8 @@ setMethod("msLevel", "MsBackend", function(object) {
 
 #' @importMethodsFrom ProtGenerics msLevel<-
 #'
+#' @rdname MsBackend
+#'
 #' @export
 setReplaceMethod("msLevel", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
