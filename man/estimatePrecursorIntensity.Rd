@@ -2,6 +2,7 @@
 % Please edit documentation in R/Spectra.R
 \name{estimatePrecursorIntensity,Spectra-method}
 \alias{estimatePrecursorIntensity,Spectra-method}
+\alias{estimatePrecursorIntensity}
 \title{Estimate Precursor Intensities}
 \usage{
 \S4method{estimatePrecursorIntensity}{Spectra}(

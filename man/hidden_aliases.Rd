@@ -8,15 +8,6 @@
 \alias{[,MsBackendDataFrame-method}
 \alias{ppm}
 \alias{bin,numeric-method}
-\alias{containsMz}
-\alias{containsNeutralLoss}
-\alias{dropNaSpectraVariables}
-\alias{entropy}
-\alias{export}
-\alias{pickPeaks}
-\alias{replaceIntensitiesBelow}
-\alias{reset}
-\alias{selectSpectraVariables}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendMerge,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
@@ -169,24 +160,6 @@
   returnMids = TRUE,
   .check = TRUE
 )
-
-containsMz(object, ...)
-
-containsNeutralLoss(object, ...)
-
-dropNaSpectraVariables(object, ...)
-
-entropy(object, ...)
-
-export(object, ...)
-
-pickPeaks(object, ...)
-
-replaceIntensitiesBelow(object, threshold = min, ...)
-
-reset(object, ...)
-
-selectSpectraVariables(object, ...)
 
 \S4method{show}{MsBackendDataFrame}(object)
 

@@ -55,6 +55,10 @@
 #'
 #' @author Mar Garcia-Aloy, Johannes Rainer
 #'
+#' @seealso
+#'
+#' [addProcessing()] for other data analysis and manipulation functions.
+#'
 #' @export
 #'
 #' @examples

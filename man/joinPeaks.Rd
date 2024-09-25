@@ -142,7 +142,12 @@ joinPeaksGnps(x, y, pmz_x, pmz_y)
 joinPeaksGnps(x, y, pmz_x, yPrecursorMz = NA)
 }
 \seealso{
-\code{\link[=gnps]{gnps()}}
+\itemize{
+\item \code{\link[=compareSpectra]{compareSpectra()}} for the function to calculate similarities between
+spectra.
+\item \code{\link[=gnps]{gnps()}} in the \emph{MsCoreUtils} package for more information on the GNPS
+similarity score.
+}
 }
 \author{
 Johannes Rainer, Michael Witting

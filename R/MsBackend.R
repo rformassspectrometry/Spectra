@@ -702,7 +702,7 @@
 #'
 #' The parameters are:
 #' - `object`: an instance of the `MsBackendMzR` class.
-#' - `x`: the [Spectra-class] object to be exported.
+#' - `x`: the [Spectra] object to be exported.
 #' - `file`: `character` with the (full) output file name(s). Should be
 #'   of length 1 or equal `length(x)`. If a single file is specified, all
 #'   spectra are exported to that file. Alternatively it is possible to specify
@@ -715,7 +715,7 @@
 #'   backend and if `dataOrigin(x)` contains the original MS data file names.
 #' - `BPPARAM`: parallel processing settings.
 #'
-#' See examples in [Spectra-class] or the vignette for more details and
+#' See examples in [Spectra] or the vignette for more details and
 #' examples.
 #'
 #' The `MsBackendMzR` ignores parameter `columns` of the `peaksData()`

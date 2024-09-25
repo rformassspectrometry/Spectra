@@ -938,7 +938,7 @@ This backend provides an \code{export()} method to export data from a \code{Spec
 The parameters are:
 \itemize{
 \item \code{object}: an instance of the \code{MsBackendMzR} class.
-\item \code{x}: the \linkS4class{Spectra} object to be exported.
+\item \code{x}: the \link{Spectra} object to be exported.
 \item \code{file}: \code{character} with the (full) output file name(s). Should be
 of length 1 or equal \code{length(x)}. If a single file is specified, all
 spectra are exported to that file. Alternatively it is possible to specify
@@ -952,7 +952,7 @@ backend and if \code{dataOrigin(x)} contains the original MS data file names.
 \item \code{BPPARAM}: parallel processing settings.
 }
 
-See examples in \linkS4class{Spectra} or the vignette for more details and
+See examples in \link{Spectra} or the vignette for more details and
 examples.
 
 The \code{MsBackendMzR} ignores parameter \code{columns} of the \code{peaksData()}
