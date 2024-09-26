@@ -292,6 +292,20 @@ setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
 })
 
 #' @rdname hidden_aliases
+#'
+#' @aliases [,MsBackendHdf5Peaks-method
+setMethod("extractByIndex", c("MsBackendHdf5Peaks", "ANY"),
+          function(object, i) {
+              fls <- unique(object@spectraData$dataStorage)
+              slot(object, "spectraData", check = FALSE) <-
+                  extractROWS(object@spectraData, i)
+              slot(object, "modCount", check = FALSE) <-
+                  object@modCount[match(
+                             unique(object@spectraData$dataStorage), fls)]
+              object
+})
+
+#' @rdname hidden_aliases
 setMethod("backendMerge", "MsBackendHdf5Peaks", function(object, ...) {
     object <- unname(c(object, ...))
     fls <- lapply(object, function(z) unique(z@spectraData$dataStorage))

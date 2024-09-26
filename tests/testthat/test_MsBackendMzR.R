@@ -474,6 +474,8 @@ test_that("[,MsBackendMzR works", {
     expect_equal(length(tmp), 13)
     expect_equal(tmp@spectraData$scanIndex, 13:25)
     expect_true(all(is.na(smoothed(tmp))))
+    tmp_2 <- extractByIndex(sciex_mzr, 13:25)
+    expect_equal(tmp, tmp_2)
 
     ints <- intensity(tmp)
     spd <- spectraData(tmp)

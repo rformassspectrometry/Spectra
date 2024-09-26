@@ -236,8 +236,9 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
             }, queue = queue, pv = pv, svars = svars, BPPARAM = BPPARAM)
         bknds <- backendMerge(bknds)
         if (is.unsorted(f))
-            bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-                                        use.names = FALSE))]
+            bknds <- extractByIndex(
+                bknds, order(unlist(split(seq_along(bknds), f),
+                                    use.names = FALSE)))
         object@backend <- bknds
     } else {
         if (length(svars))

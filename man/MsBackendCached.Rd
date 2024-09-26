@@ -5,6 +5,7 @@
 \alias{MsBackendCached-class}
 \alias{backendInitialize,MsBackendCached-method}
 \alias{dataStorage,MsBackendCached-method}
+\alias{extractByIndex,MsBackendCached,ANY-method}
 \alias{length,MsBackendCached-method}
 \alias{spectraVariables,MsBackendCached-method}
 \alias{spectraData,MsBackendCached-method}
@@ -56,6 +57,8 @@ MsBackendCached()
 )
 
 \S4method{dataStorage}{MsBackendCached}(object)
+
+\S4method{extractByIndex}{MsBackendCached,ANY}(object, i)
 
 \S4method{length}{MsBackendCached}(x)
 
@@ -150,6 +153,8 @@ variables to keep.}
 
 \item{...}{ignored}
 
+\item{i}{For \code{[}: \code{integer} with the indices to subset the object.}
+
 \item{x}{A \code{MsBackendCached} object.}
 
 \item{columns}{For \code{spectraData()}: \code{character} with the names of the spectra
@@ -157,8 +162,6 @@ variables to retrieve.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
-
-\item{i}{For \code{[}: \code{integer} with the indices to subset the object.}
 
 \item{j}{For \code{[}: ignored.}
 

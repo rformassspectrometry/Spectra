@@ -20,6 +20,7 @@
 \alias{dataOrigin<-,MsBackendDataFrame-method}
 \alias{dataStorage,MsBackendDataFrame-method}
 \alias{dataStorage<-,MsBackendDataFrame-method}
+\alias{extractByIndex,MsBackendDataFrame,ANY-method}
 \alias{intensity,MsBackendDataFrame-method}
 \alias{intensity<-,MsBackendDataFrame-method}
 \alias{isEmpty,MsBackendDataFrame-method}
@@ -75,6 +76,7 @@
 \alias{spectraData<-,MsBackendHdf5Peaks-method}
 \alias{$<-,MsBackendHdf5Peaks-method}
 \alias{[,MsBackendHdf5Peaks-method}
+\alias{extractByIndex,MsBackendHdf5Peaks,ANY-method}
 \alias{backendMerge,MsBackendHdf5Peaks-method}
 \alias{show,MsBackendMemory-method}
 \alias{backendMerge,MsBackendMemory-method}
@@ -87,6 +89,7 @@
 \alias{dataOrigin<-,MsBackendMemory-method}
 \alias{dataStorage,MsBackendMemory-method}
 \alias{dataStorage<-,MsBackendMemory-method}
+\alias{extractByIndex,MsBackendMemory,ANY-method}
 \alias{intensity,MsBackendMemory-method}
 \alias{intensity<-,MsBackendMemory-method}
 \alias{ionCount,MsBackendMemory-method}
@@ -184,6 +187,8 @@
 \S4method{dataStorage}{MsBackendDataFrame}(object)
 
 \S4method{dataStorage}{MsBackendDataFrame}(object) <- value
+
+\S4method{extractByIndex}{MsBackendDataFrame,ANY}(object, i)
 
 \S4method{intensity}{MsBackendDataFrame}(object)
 
@@ -309,6 +314,8 @@
 
 \S4method{[}{MsBackendHdf5Peaks}(x, i, j, ..., drop = FALSE)
 
+\S4method{extractByIndex}{MsBackendHdf5Peaks,ANY}(object, i)
+
 \S4method{backendMerge}{MsBackendHdf5Peaks}(object, ...)
 
 \S4method{show}{MsBackendMemory}(object)
@@ -332,6 +339,8 @@
 \S4method{dataStorage}{MsBackendMemory}(object)
 
 \S4method{dataStorage}{MsBackendMemory}(object) <- value
+
+\S4method{extractByIndex}{MsBackendMemory,ANY}(object, i)
 
 \S4method{intensity}{MsBackendMemory}(object)
 

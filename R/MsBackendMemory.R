@@ -193,6 +193,18 @@ setReplaceMethod("dataStorage", "MsBackendMemory", function(object, value) {
 })
 
 #' @rdname hidden_aliases
+setMethod("extractByIndex", c("MsBackendMemory", "ANY"), function(object, i) {
+    slot(object, "spectraData", check = FALSE) <-
+        object@spectraData[i, , drop = FALSE]
+    if (length(object@peaksData))
+        slot(object, "peaksData", check = FALSE) <- object@peaksData[i]
+    if (length(object@peaksDataFrame))
+        slot(object, "peaksDataFrame", check = FALSE) <-
+            object@peaksDataFrame[i]
+    object
+})
+
+#' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMemory", function(object) {
     if (length(object)) {
         NumericList(.df_pdata_column(object@peaksData, "intensity"),

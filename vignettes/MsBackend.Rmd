@@ -602,6 +602,28 @@ a <- be[c(2, 2, 2)]
 spectraData(a)
 ```
 
+In addition to the `[` method it is also suggested to implement a
+`extractByIndex()` method. Similar to `[`, this method should extract elements
+from, or subset, a backend, but it expects an integer vector with the indices as
+second parameter. Hence, this method does not require conversion of
+e.g. `logical` to `integer`. Also, this method helps avoiding namespace issues
+sometimes encountered with parallel processing using the `SnowParam` when the
+implementation of `[` for certain backends are not found.
+
+Data analysis methods on `Spectra` objects will use this method for most
+operations. Implementation of this method is optional, since the default
+implementation for `MsBackend` will fall back to `[`. Below we implement this
+method for our example backend.
+
+```{r}
+setMethod("extractByIndex", c("MsBackendTest", "ANY"), function(object, i) {
+    x@spectraVars <- x@spectraVars[i, ]
+    x@mz <- x@mz[i]
+    x@intensity <- x@intensity[i]
+    x
+})
+```
+
 
 ### `backendMerge()`
 

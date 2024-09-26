@@ -40,6 +40,8 @@
 \alias{dataStorage,MsBackend-method}
 \alias{dataStorage<-,MsBackend-method}
 \alias{dropNaSpectraVariables,MsBackend-method}
+\alias{extractByIndex,MsBackend,ANY-method}
+\alias{extractByIndex,MsBackend,missing-method}
 \alias{filterAcquisitionNum,MsBackend-method}
 \alias{filterDataOrigin,MsBackend-method}
 \alias{filterDataStorage,MsBackend-method}
@@ -144,6 +146,10 @@
 \S4method{dataStorage}{MsBackend}(object) <- value
 
 \S4method{dropNaSpectraVariables}{MsBackend}(object)
+
+\S4method{extractByIndex}{MsBackend,ANY}(object, i)
+
+\S4method{extractByIndex}{MsBackend,missing}(object, i)
 
 \S4method{filterAcquisitionNum}{MsBackend}(object, n, file, ...)
 
@@ -316,6 +322,8 @@ backend provides.}
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
 
+\item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
+
 \item{n}{for \code{filterAcquisitionNum()}: \code{integer} with the acquisition
 numbers to filter for.}
 
@@ -410,8 +418,6 @@ parameter \code{spectraVariables} and in the same order.}
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (\code{initial = FALSE}).}
-
-\item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
 
 \item{j}{For \code{[}: not supported.}
 
@@ -604,6 +610,17 @@ queue) are applied prior to export - this would not be possible with only a
 for the \code{MsBackendMzR} backend that supports export of the data in
 \emph{mzML} or \emph{mzXML} format. See the documentation for the \code{MsBackendMzR}
 class below for more information.
+\item \code{extractByIndex()}: function to subset a backend to selected elements
+defined by the provided index. Similar to \code{[}, this method should allow
+extracting (or to subset) the data in any order. In contrast to \code{[},
+however, \code{i} is expected to be an \code{integer} (while \code{[} should also
+support \code{logical} and eventually \code{character}). While being apparently
+redundant to \code{[}, this methods avoids package namespace errors/problems
+that can result in implementations of \code{[} being not found by R (which
+can happen sometimes in parallel processing using the \code{\link[=SnowParam]{SnowParam()}}). This
+method is used internally by \code{Spectra} to extract/subset its backend.
+Implementation is optional, as the default implementation for \code{MsBackend}
+will use \code{[}.
 \item \code{filterAcquisitionNum()}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with

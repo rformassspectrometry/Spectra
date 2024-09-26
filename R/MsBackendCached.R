@@ -295,6 +295,15 @@ setMethod("dataStorage", "MsBackendCached", function(object) {
 })
 
 #' @rdname MsBackendCached
+setMethod("extractByIndex", c("MsBackendCached", "ANY"),
+          function(object, i) {
+    slot(object, "localData", check = FALSE) <-
+        object@localData[i, , drop = FALSE]
+    object@nspectra <- nrow(object@localData)
+    object
+})
+
+#' @rdname MsBackendCached
 setMethod("length", "MsBackendCached", function(x) {
     x@nspectra
 })

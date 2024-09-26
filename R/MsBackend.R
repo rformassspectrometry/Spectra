@@ -328,6 +328,18 @@
 #'   *mzML* or *mzXML* format. See the documentation for the `MsBackendMzR`
 #'   class below for more information.
 #'
+#' - `extractByIndex()`: function to subset a backend to selected elements
+#'   defined by the provided index. Similar to `[`, this method should allow
+#'   extracting (or to subset) the data in any order. In contrast to `[`,
+#'   however, `i` is expected to be an `integer` (while `[` should also
+#'   support `logical` and eventually `character`). While being apparently
+#'   redundant to `[`, this methods avoids package namespace errors/problems
+#'   that can result in implementations of `[` being not found by R (which
+#'   can happen sometimes in parallel processing using the [SnowParam()]). This
+#'   method is used internally by `Spectra` to extract/subset its backend.
+#'   Implementation is optional, as the default implementation for `MsBackend`
+#'   will use `[`.
+#'
 #' - `filterAcquisitionNum()`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
 #'   `dataStorage` is also provided, `object` is subsetted to the spectra with
@@ -1099,6 +1111,21 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
         else allna
     })
     selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
+})
+
+#' @rdname MsBackend
+#'
+#' @export
+setMethod("extractByIndex", c("MsBackend", "ANY"), function(object, i) {
+    object[i = i]
+})
+
+#' @rdname MsBackend
+#'
+#' @export
+setMethod("extractByIndex", c("MsBackend", "missing"), function(object, i) {
+    message("extractByIndex,MsBackend,missing")
+    object
 })
 
 #' @exportMethod filterAcquisitionNum
