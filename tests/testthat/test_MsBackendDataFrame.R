@@ -576,24 +576,42 @@ test_that("show,MsBackendDataFrame works", {
 test_that("[,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_error(be[1])
+
+    expect_equal(extractByIndex(be), be)
+
     df <- DataFrame(scanIndex = 1:2, a = "a", b = "b")
     be <- backendInitialize(be, df)
     res <- be[1]
     expect_true(validObject(res))
     expect_equal(be@spectraData[1, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 1)
+    expect_equal(res, res_2)
     res <- be[2]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 2)
+    expect_equal(res, res_2)
     res <- be[2:1]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2:1, ], res@spectraData)
+    res_2 <- extractByIndex(be, 2:1)
+    expect_equal(res, res_2)
+
+    res <- be[c(2, 1, 2)]
+    expect_equal(res$scanIndex, c(2, 1, 2))
+    res_2 <- extractByIndex(be, c(2, 1, 2))
+    expect_equal(res, res_2)
 
     res <- be[c(FALSE, FALSE)]
     expect_true(validObject(res))
     expect_true(length(res) == 0)
+    res_2 <- extractByIndex(be, integer())
+    expect_equal(res, res_2)
     res <- be[c(FALSE, TRUE)]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 2)
+    expect_equal(res, res_2)
 
     expect_error(be[TRUE], "match the length of")
     expect_error(be["a"], "does not have names")
@@ -606,11 +624,15 @@ test_that("[,MsBackendDataFrame works", {
     expect_true(validObject(res))
     expect_equal(dataStorage(res), "2")
     expect_equal(res@spectraData$file, "b")
+    res_2 <- extractByIndex(be, 3)
+    expect_equal(res, res_2)
 
     res <- be[c(3, 1)]
     expect_true(validObject(res))
     expect_equal(dataStorage(res), c("2", "1"))
     expect_equal(res@spectraData$file, c("b", "a"))
+    res_2 <- extractByIndex(be, c(3, 1))
+    expect_equal(res, res_2)
 })
 
 test_that("selectSpectraVariables,MsBackendDataFrame works", {

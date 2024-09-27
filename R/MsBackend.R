@@ -15,6 +15,7 @@
 #' @aliases dataStorageBasePath,MsBackendMzR-method
 #' @aliases dataStorageBasePath<-
 #' @aliases dataStorageBasePath<-,MsBackendMzR-method
+#' @aliases extractByIndex
 #' @aliases msLeveL<-,MsBackend-method
 #'
 #' @description
@@ -223,7 +224,9 @@
 #'   allowed. Parameter `i` should support `integer` indices and `logical`
 #'   and should throw an error if `i` is out of bounds. The
 #'   `MsCoreUtils::i2index` could be used to check the input `i`.
-#'   For `i = integer()` an empty backend should be returned.
+#'   For `i = integer()` an empty backend should be returned. Implementation
+#'   of this method is optional, as the default calls the `extractByIndex()`
+#'   method (which has to be implemented as the main subsetting method).
 #'
 #' - `$`, `$<-`: access or set/add a single spectrum variable (column) in the
 #'   backend. Using a `value` of `NULL` should allow deleting the specified
@@ -327,6 +330,17 @@
 #'   for the `MsBackendMzR` backend that supports export of the data in
 #'   *mzML* or *mzXML* format. See the documentation for the `MsBackendMzR`
 #'   class below for more information.
+#'
+#' - `extractByIndex()`: function to subset a backend to selected elements
+#'   defined by the provided index. Similar to `[`, this method should allow
+#'   extracting (or to subset) the data in any order. In contrast to `[`,
+#'   however, `i` is expected to be an `integer` (while `[` should also
+#'   support `logical` and eventually `character`). While being apparently
+#'   redundant to `[`, this methods avoids package namespace errors/problems
+#'   that can result in implementations of `[` being not found by R (which
+#'   can happen sometimes in parallel processing using the [SnowParam()]). This
+#'   method is used internally by `Spectra` to extract/subset its backend.
+#'   Implementation of this method is mandatory.
 #'
 #' - `filterAcquisitionNum()`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
@@ -1101,6 +1115,22 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
 })
 
+#' @rdname MsBackend
+#'
+#' @export
+setMethod("extractByIndex", c("MsBackend", "ANY"), function(object, i) {
+    if (existsMethod("[", class(object)[1L]))
+        object[i = i]
+    else stop("'extractByIndex' not implemented for ", class(object)[1L], ".")
+})
+
+#' @rdname MsBackend
+#'
+#' @export
+setMethod("extractByIndex", c("MsBackend", "missing"), function(object, i) {
+    object
+})
+
 #' @exportMethod filterAcquisitionNum
 #'
 #' @importMethodsFrom ProtGenerics filterAcquisitionNum
@@ -1831,7 +1861,7 @@ setMethod("tic", "MsBackend", function(object, initial = TRUE) {
 #'
 #' @export
 setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
-    stop("Not implemented for ", class(x), ".")
+    extractByIndex(x, i2index(i, length = length(x)))
 })
 
 #' @exportMethod $

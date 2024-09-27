@@ -1,5 +1,10 @@
 # Spectra 1.15
 
+## Changes in 1.15.10
+
+- Add new `extractSpectra()` generic and implementation for `MsBackend`. Fixes
+  [issue #5](https://github.com/rformassspectrometry/MsBackendMetaboLights/issues/5).
+
 ## Changes in 1.15.9
 
 - Restructure and reorganize documentation for `Spectra`.

@@ -87,12 +87,24 @@ test_that("[,MsBackendCached works", {
     res <- be[c(1, 4, 3), ]
     expect_true(length(res) == 3)
     expect_true(nrow(res@localData) == 3)
+    res_2 <- extractByIndex(be, c(1, 4, 3))
+    expect_equal(res, res_2)
 
     df <- data.frame(msLevel = 1L, b = 1:6)
     be <- backendInitialize(be, data = df)
     res <- be[c(6, 1, 3)]
     expect_true(length(res) == 3)
     expect_equal(res@localData$b, c(6, 1, 3))
+    res_2 <- extractByIndex(be, c(6, 1, 3))
+    expect_equal(res, res_2)
+
+    res <- be[c(6, 1, 3, 1)]
+    expect_true(length(res) == 4)
+    expect_equal(res@localData$b, c(6, 1, 3, 1))
+    res_2 <- extractByIndex(be, c(6, 1, 3, 1))
+    expect_equal(res, res_2)
+
+    expect_equal(extractByIndex(be), be)
 })
 
 test_that("$,MsBackendCached works", {

@@ -49,6 +49,24 @@ test_that("[", {
     res <- be[integer()]
     expect_s4_class(res, class(be)[1L])
     expect_true(length(res) == 0L)
+
+    ## logical
+    l <- rep(FALSE, length(be))
+    l[sample(seq_along(l), floor(length(l) / 2))] <- TRUE
+    res <- be[l]
+    expect_true(validObject(res))
+    expect_true(length(res) == sum(l))
+    expect_equal(res, be[which(l)])
+})
+
+#' extractByIndex. Uses [ if not implemented
+test_that("extractByIndex", {
+    i <- sample(seq_along(be), floor(length(be) / 2))
+    res <- extractByIndex(be, i)
+    expect_true(validObject(res))
+    expect_equal(length(res), length(i))
+    expect_equal(msLevel(res), msLevel(be)[i])
+    expect_equal(rtime(res), rtime(be)[i])
 })
 
 #' dropNASpectraVariables: only for not read-only

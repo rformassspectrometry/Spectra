@@ -295,6 +295,15 @@ setMethod("dataStorage", "MsBackendCached", function(object) {
 })
 
 #' @rdname MsBackendCached
+setMethod("extractByIndex", c("MsBackendCached", "ANY"),
+          function(object, i) {
+    slot(object, "localData", check = FALSE) <-
+        object@localData[i, , drop = FALSE]
+    object@nspectra <- nrow(object@localData)
+    object
+})
+
+#' @rdname MsBackendCached
 setMethod("length", "MsBackendCached", function(x) {
     x@nspectra
 })
@@ -428,7 +437,7 @@ setMethod("show", "MsBackendCached", function(object) {
     cat(class(object), "with", n, "spectra\n")
     if (n) {
         idx <- unique(c(1L:min(6L, n), max(1L, n-5L):n))
-        spd <- spectraData(object[idx, ],
+        spd <- spectraData(extractByIndex(object, idx),
                            c("msLevel", "precursorMz", "polarity"))
         if (!length(rownames(spd)))
             rownames(spd) <- idx

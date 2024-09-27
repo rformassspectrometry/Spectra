@@ -182,6 +182,14 @@ setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
 })
 
 #' @rdname hidden_aliases
+setMethod("extractByIndex", c("MsBackendDataFrame", "ANY"),
+          function(object, i) {
+              slot(object, "spectraData", check = FALSE) <-
+                  extractROWS(object@spectraData, i)
+              object
+          })
+
+#' @rdname hidden_aliases
 setMethod("intensity", "MsBackendDataFrame", function(object) {
     if (any(colnames(object@spectraData) == "intensity"))
         object@spectraData$intensity
@@ -544,6 +552,8 @@ setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
 #' @importFrom MsCoreUtils i2index
 #'
 #' @rdname hidden_aliases
+#'
+#' @export
 setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     .subset_backend_data_frame(x, i)
 })
@@ -564,5 +574,5 @@ setMethod("filterAcquisitionNum", "MsBackendDataFrame",
                              "acquisition number(s) for sub-setting")
     sel_file <- .sel_file(object, dataStorage, dataOrigin)
     sel_acq <- acquisitionNum(object) %in% n & sel_file
-    object[sel_acq | !sel_file]
+    extractByIndex(object, which(sel_acq | !sel_file))
 })

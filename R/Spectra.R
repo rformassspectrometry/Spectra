@@ -515,8 +515,9 @@ setMethod(
                 ## That below ensures the backend is returned in its original
                 ## order - unsplit does unfortunately not work.
                 if (is.unsorted(f))
-                    bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-                                                use.names = FALSE))]
+                    bknds <- extractByIndex(
+                        bknds, order(unlist(split(seq_along(bknds), f),
+                                            use.names = FALSE)))
             } else {
                 bknds <- backendInitialize(
                     backend, data = spectraData(object@backend), ...)
@@ -2415,7 +2416,8 @@ setMethod("[", "Spectra", function(x, i, j, ..., drop = FALSE) {
         stop("Subsetting 'Spectra' by columns is not (yet) supported")
     if (missing(i))
         return(x)
-    slot(x, "backend", check = FALSE) <- x@backend[i = i]
+    slot(x, "backend", check = FALSE) <- extractByIndex(
+        x@backend, i2index(i, length(x)))
     x
 })
 
@@ -2439,7 +2441,8 @@ setMethod("filterAcquisitionNum", "Spectra", function(object, n = integer(),
 
 #' @rdname filterMsLevel
 setMethod("filterEmptySpectra", "Spectra", function(object) {
-    object@backend <- object@backend[as.logical(lengths(object))]
+    object@backend <- extractByIndex(object@backend,
+                                     which(as.logical(lengths(object))))
     object@processing <- .logging(object@processing,
                                   "Filter: removed empty spectra.")
     object

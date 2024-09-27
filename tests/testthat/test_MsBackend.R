@@ -56,6 +56,31 @@ test_that("MsBackend methods throw errors", {
     expect_error(dm[1], "implemented for")
     expect_error(dm$a, "implemented for")
     expect_error(dm$a <- "a", "implemented for")
+    expect_error(extractByIndex(dm, 1), "implemented for")
+})
+
+test_that("extractByIndex not implemented fallback", {
+    ## Backends that don't implement a dedicated `extractByIndex` method should
+    ## fall back to the [ method.
+    setClass("DummyBackend",
+             contains = "MsBackend",
+             slots = c(d = "integer"))
+    dm <- new("DummyBackend")
+    expect_error(extractByIndex(dm, 1L), "'extractByIndex' not implemented")
+
+    dm@d <- 1:4
+
+    ## Have an implementation for [ but not extractByIndex:
+    setMethod("[", "DummyBackend", function(x, i, j, ..., drop = FALSE) {
+        x@d <- x@d[i]
+        x
+    })
+
+    res <- dm[c(3, 1)]
+    expect_equal(res@d, c(3L, 1L))
+
+    res <- extractByIndex(dm, c(3, 1))
+    expect_equal(res@d, c(3L, 1L))
 })
 
 test_that("reset,MsBackend works", {

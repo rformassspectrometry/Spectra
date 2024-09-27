@@ -501,41 +501,67 @@ test_that("$<-,MsBackendMemory works", {
 
 test_that("[,MsBackendMemory works", {
     be <- new("MsBackendMemory")
+    res <- extractByIndex(be)
+    expect_equal(res, be)
+
     df <- data.frame(scanIndex = 1:2, a = "a", b = "b")
     be <- backendInitialize(be, df)
     res <- be[1]
     expect_true(validObject(res))
     expect_equal(be@spectraData[1, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 1)
+    expect_equal(res, res_2)
+
     res <- be[2]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 2)
+    expect_equal(res, res_2)
+
     res <- be[2:1]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2:1, ], res@spectraData)
+    res_2 <- extractByIndex(be, 2:1)
+    expect_equal(res, res_2)
 
     res <- be[c(FALSE, FALSE)]
     expect_true(validObject(res))
     expect_true(length(res) == 0)
+    res_2 <- extractByIndex(be, integer())
+    expect_equal(res, res_2)
+
     res <- be[c(FALSE, TRUE)]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 2)
+    expect_equal(res, res_2)
 
     expect_error(be[TRUE], "match the length of")
     expect_error(be["a"], "names")
 
     df <- data.frame(scanIndex = c(1L, 2L, 1L, 2L),
-                     file = c("a", "a", "b", "b"))
+                     file = c("a", "a", "b", "b"),
+                     idx = 1:4)
     be <- backendInitialize(be, df)
     dataStorage(be) <- c("1", "1", "2", "2")
     res <- be[3]
     expect_true(validObject(res))
     expect_equal(dataStorage(res), "2")
     expect_equal(res@spectraData$file, "b")
+    res_2 <- extractByIndex(be, 3)
+    expect_equal(res, res_2)
 
     res <- be[c(3, 1)]
     expect_true(validObject(res))
     expect_equal(dataStorage(res), c("2", "1"))
     expect_equal(res@spectraData$file, c("b", "a"))
+    res_2 <- extractByIndex(be, c(3, 1))
+    expect_equal(res, res_2)
+
+    res <- be[c(3, 1, 3)]
+    expect_equal(res$idx, c(3, 1, 3))
+    res_2 <- extractByIndex(be, c(3, 1, 3))
+    expect_equal(res, res_2)
 })
 
 test_that("split,MsBackendMemory works", {

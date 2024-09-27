@@ -334,12 +334,16 @@ test_that("[,MsBackendHdf5Peaks works", {
     expect_identical(peaksData(res), sciex_pks[idx])
     expect_identical(rtime(res), rtime(sciex_mzr)[idx])
     expect_identical(msLevel(res), msLevel(sciex_mzr)[idx])
+    res_2 <- extractByIndex(be, idx)
+    expect_equal(res, res_2)
 
     idx <- dataStorage(be) == fls[2]
     res <- be[idx, ]
     expect_true(validObject(res))
     expect_true(all(dataStorage(res) == fls[2]))
     expect_identical(peaksData(res), sciex_pks[idx])
+    res_2 <- extractByIndex(be, idx)
+    expect_equal(res, res_2)
 })
 
 test_that("backendMerge,MsBackendHdf5Peaks works", {
