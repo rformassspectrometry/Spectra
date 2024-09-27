@@ -63,7 +63,7 @@ See below for more details about individual backends."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -178,6 +178,12 @@ data files and the remaining spectra variables in memory (in a
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
 <span><span class="fu"><a href="filterMsLevel.html">dropNaSpectraVariables</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'MsBackend,ANY'</span></span>
+<span><span class="fu">extractByIndex</span><span class="op">(</span><span class="va">object</span>, <span class="va">i</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'MsBackend,missing'</span></span>
+<span><span class="fu">extractByIndex</span><span class="op">(</span><span class="va">object</span>, <span class="va">i</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
 <span><span class="fu"><a href="filterMsLevel.html">filterAcquisitionNum</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">n</span>, <span class="va">file</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -429,6 +435,10 @@ backend provides.</p></dd>
 method description or expected data type.</p></dd>
 
 
+<dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
+<dd><p>For <code>[</code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></dd>
+
+
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>for <code><a href="filterMsLevel.html">filterAcquisitionNum()</a></code>: <code>integer</code> with the acquisition
 numbers to filter for.</p></dd>
@@ -568,10 +578,6 @@ total ion current should be (re)calculated on the actual data
 (<code>initial = FALSE</code>).</p></dd>
 
 
-<dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
-<dd><p>For <code>[</code>: <code>integer</code>, <code>logical</code> or <code>character</code> to subset the object.</p></dd>
-
-
 <dt id="arg-j">j<a class="anchor" aria-label="anchor" href="#arg-j"></a></dt>
 <dd><p>For <code>[</code>: not supported.</p></dd>
 
@@ -642,7 +648,9 @@ detailed description and examples):</p><ul><li><p><code>[</code>: subset the bac
 allowed. Parameter <code>i</code> should support <code>integer</code> indices and <code>logical</code>
 and should throw an error if <code>i</code> is out of bounds. The
 <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/i2index.html" class="external-link">MsCoreUtils::i2index</a></code> could be used to check the input <code>i</code>.
-For <code>i = integer()</code> an empty backend should be returned.</p></li>
+For <code>i = integer()</code> an empty backend should be returned. Implementation
+of this method is optional, as the default calls the <code>extractByIndex()</code>
+method (which has to be implemented as the main subsetting method).</p></li>
 <li><p><code>$</code>, <code>$&lt;-</code>: access or set/add a single spectrum variable (column) in the
 backend. Using a <code>value</code> of <code>NULL</code> should allow deleting the specified
 spectra variable. An error should be thrown if the spectra variable is not
@@ -725,6 +733,16 @@ MsBackend class. An example implementation is the <code><a href="Spectra.html">e
 for the <code>MsBackendMzR</code> backend that supports export of the data in
 <em>mzML</em> or <em>mzXML</em> format. See the documentation for the <code>MsBackendMzR</code>
 class below for more information.</p></li>
+<li><p><code>extractByIndex()</code>: function to subset a backend to selected elements
+defined by the provided index. Similar to <code>[</code>, this method should allow
+extracting (or to subset) the data in any order. In contrast to <code>[</code>,
+however, <code>i</code> is expected to be an <code>integer</code> (while <code>[</code> should also
+support <code>logical</code> and eventually <code>character</code>). While being apparently
+redundant to <code>[</code>, this methods avoids package namespace errors/problems
+that can result in implementations of <code>[</code> being not found by R (which
+can happen sometimes in parallel processing using the <code>SnowParam()</code>). This
+method is used internally by <code>Spectra</code> to extract/subset its backend.
+Implementation of this method is mandatory.</p></li>
 <li><p><code><a href="filterMsLevel.html">filterAcquisitionNum()</a></code>: filters the object keeping only spectra matching
 the provided acquisition numbers (argument <code>n</code>). If <code>dataOrigin</code> or
 <code>dataStorage</code> is also provided, <code>object</code> is subsetted to the spectra with

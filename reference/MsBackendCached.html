@@ -45,7 +45,7 @@ spectra variables then missing values of the correct data type are returned."><m
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,6 +114,9 @@ spectra variables</em> then missing values of the correct data type are returned
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendCached'</span></span>
 <span><span class="fu"><a href="spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'MsBackendCached,ANY'</span></span>
+<span><span class="fu"><a href="MsBackend.html">extractByIndex</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">i</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendCached'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -260,6 +263,10 @@ variables to keep.</p></dd>
 <dd><p>ignored</p></dd>
 
 
+<dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
+<dd><p>For <code>[</code>: <code>integer</code> with the indices to subset the object.</p></dd>
+
+
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>A <code>MsBackendCached</code> object.</p></dd>
 
@@ -272,10 +279,6 @@ variables to retrieve.</p></dd>
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></dd>
-
-
-<dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
-<dd><p>For <code>[</code>: <code>integer</code> with the indices to subset the object.</p></dd>
 
 
 <dt id="arg-j">j<a class="anchor" aria-label="anchor" href="#arg-j"></a></dt>
