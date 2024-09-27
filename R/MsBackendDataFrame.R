@@ -574,5 +574,5 @@ setMethod("filterAcquisitionNum", "MsBackendDataFrame",
                              "acquisition number(s) for sub-setting")
     sel_file <- .sel_file(object, dataStorage, dataOrigin)
     sel_acq <- acquisitionNum(object) %in% n & sel_file
-    object[sel_acq | !sel_file]
+    extractByIndex(object, which(sel_acq | !sel_file))
 })

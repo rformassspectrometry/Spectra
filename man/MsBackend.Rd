@@ -21,6 +21,7 @@
 \alias{dataStorageBasePath,MsBackendMzR-method}
 \alias{dataStorageBasePath<-}
 \alias{dataStorageBasePath<-,MsBackendMzR-method}
+\alias{extractByIndex}
 \alias{msLeveL<-,MsBackend-method}
 \alias{backendBpparam,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
@@ -527,7 +528,9 @@ detailed description and examples):
 allowed. Parameter \code{i} should support \code{integer} indices and \code{logical}
 and should throw an error if \code{i} is out of bounds. The
 \code{MsCoreUtils::i2index} could be used to check the input \code{i}.
-For \code{i = integer()} an empty backend should be returned.
+For \code{i = integer()} an empty backend should be returned. Implementation
+of this method is optional, as the default calls the \code{extractByIndex()}
+method (which has to be implemented as the main subsetting method).
 \item \code{$}, \verb{$<-}: access or set/add a single spectrum variable (column) in the
 backend. Using a \code{value} of \code{NULL} should allow deleting the specified
 spectra variable. An error should be thrown if the spectra variable is not
@@ -619,8 +622,7 @@ redundant to \code{[}, this methods avoids package namespace errors/problems
 that can result in implementations of \code{[} being not found by R (which
 can happen sometimes in parallel processing using the \code{\link[=SnowParam]{SnowParam()}}). This
 method is used internally by \code{Spectra} to extract/subset its backend.
-Implementation is optional, as the default implementation for \code{MsBackend}
-will use \code{[}.
+Implementation of this method is mandatory.
 \item \code{filterAcquisitionNum()}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with

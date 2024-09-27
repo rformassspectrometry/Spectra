@@ -57,8 +57,6 @@ test_that("MsBackend methods throw errors", {
     expect_error(dm$a, "implemented for")
     expect_error(dm$a <- "a", "implemented for")
     expect_error(extractByIndex(dm, 1), "implemented for")
-
-    expect_equal(extractByIndex(dm), dm)
 })
 
 test_that("reset,MsBackend works", {

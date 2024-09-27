@@ -15,6 +15,7 @@
 #' @aliases dataStorageBasePath,MsBackendMzR-method
 #' @aliases dataStorageBasePath<-
 #' @aliases dataStorageBasePath<-,MsBackendMzR-method
+#' @aliases extractByIndex
 #' @aliases msLeveL<-,MsBackend-method
 #'
 #' @description
@@ -223,7 +224,9 @@
 #'   allowed. Parameter `i` should support `integer` indices and `logical`
 #'   and should throw an error if `i` is out of bounds. The
 #'   `MsCoreUtils::i2index` could be used to check the input `i`.
-#'   For `i = integer()` an empty backend should be returned.
+#'   For `i = integer()` an empty backend should be returned. Implementation
+#'   of this method is optional, as the default calls the `extractByIndex()`
+#'   method (which has to be implemented as the main subsetting method).
 #'
 #' - `$`, `$<-`: access or set/add a single spectrum variable (column) in the
 #'   backend. Using a `value` of `NULL` should allow deleting the specified
@@ -337,8 +340,7 @@
 #'   that can result in implementations of `[` being not found by R (which
 #'   can happen sometimes in parallel processing using the [SnowParam()]). This
 #'   method is used internally by `Spectra` to extract/subset its backend.
-#'   Implementation is optional, as the default implementation for `MsBackend`
-#'   will use `[`.
+#'   Implementation of this method is mandatory.
 #'
 #' - `filterAcquisitionNum()`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
@@ -1117,14 +1119,13 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
 #'
 #' @export
 setMethod("extractByIndex", c("MsBackend", "ANY"), function(object, i) {
-    object[i = i]
+    stop("'extractByIndex' not implemented for ", class(object), ".")
 })
 
 #' @rdname MsBackend
 #'
 #' @export
 setMethod("extractByIndex", c("MsBackend", "missing"), function(object, i) {
-    message("extractByIndex,MsBackend,missing")
     object
 })
 
@@ -1858,7 +1859,7 @@ setMethod("tic", "MsBackend", function(object, initial = TRUE) {
 #'
 #' @export
 setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
-    stop("Not implemented for ", class(x), ".")
+    extractByIndex(x, i2index(i, length = length(x)))
 })
 
 #' @exportMethod $

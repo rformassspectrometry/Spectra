@@ -563,35 +563,39 @@ additionally available variables and the `columns` parameter of the
 (in addition to the required `"mz"` and `"intensity"` variables).
 
 
-### `[`
+### `extractByIndex()` and `[`
 
-The `[` method allows to subset `MsBackend` objects. This operation is expected
-to reduce a `MsBackend` object to the selected spectra. The method should
-support to subset by indices or logical vectors and should also support
-duplicating elements (i.e. when duplicated indices are used) as well as to
-subset in arbitrary order. An error should be thrown if indices are out of
-bounds, but the method should also support returning an empty backend with
-`[integer()]`. Note that the `MsCoreUtils::i2index` function can be used to
+The `extractByIndex()` and `[` methods allows to subset `MsBackend` objects.
+This operation is expected to reduce a `MsBackend` object to the selected
+spectra. These methods must also support duplication (e.g. `[c(1, 1, 1)]` and
+extraction in any arbitrary order (e.g. `[c(3, 1, 5, 3)]`). While both methods
+subset the object, `extractByIndex()` only supports to subset with an `integer`
+index, while `[`, to be compliant with the base R implementation, should support
+to subset by indices or logical vectors. An error should be thrown if indices
+are out of bounds, but the method should also support returning an empty backend
+with `[integer()]`. Note that the `MsCoreUtils::i2index` function can be used to
 check for correct input (and convert the input to an `integer` index).
 
-Below we implement a possible `[` for our test backend class. We ignore the
-parameters `j` from the definition of the `[` generic, since we treat our data
-to be one-dimensional (with each spectrum being one element).
+The `extractByIndex()` method is used by the data operation and analysis methods
+on `Spectra` objects, while the `[` is intended to be used by the end user (if
+needed). Below we implement `extractByIndex()` for our backend:
 
 ```{r}
-setMethod("[", "MsBackendTest", function(x, i, j, ..., drop = FALSE) {
-    i <- MsCoreUtils::i2index(i, length = length(x))
-    x@spectraVars <- x@spectraVars[i, ]
-    x@mz <- x@mz[i]
-    x@intensity <- x@intensity[i]
-    x
+setMethod("extractByIndex", c("MsBackendTest", "ANY"), function(object, i) {
+    object@spectraVars <- object@spectraVars[i, ]
+    object@mz <- object@mz[i]
+    object@intensity <- object@intensity[i]
+    object
 })
 ```
+
+The `[` does not need to be defined because a default implementation for
+the base `MsBackend` exists.
 
 We can now subset our backend to the last two spectra.
 
 ```{r}
-a <- be[2:3]
+a <- extractByIndex(be, 2:3)
 spectraData(a)
 ```
 
@@ -600,28 +604,6 @@ Or extracting the second spectrum multiple times.
 ```{r}
 a <- be[c(2, 2, 2)]
 spectraData(a)
-```
-
-In addition to the `[` method it is also suggested to implement a
-`extractByIndex()` method. Similar to `[`, this method should extract elements
-from, or subset, a backend, but it expects an integer vector with the indices as
-second parameter. Hence, this method does not require conversion of
-e.g. `logical` to `integer`. Also, this method helps avoiding namespace issues
-sometimes encountered with parallel processing using the `SnowParam` when the
-implementation of `[` for certain backends are not found.
-
-Data analysis methods on `Spectra` objects will use this method for most
-operations. Implementation of this method is optional, since the default
-implementation for `MsBackend` will fall back to `[`. Below we implement this
-method for our example backend.
-
-```{r}
-setMethod("extractByIndex", c("MsBackendTest", "ANY"), function(object, i) {
-    x@spectraVars <- x@spectraVars[i, ]
-    x@mz <- x@mz[i]
-    x@intensity <- x@intensity[i]
-    x
-})
 ```
 
 
