@@ -1119,7 +1119,9 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
 #'
 #' @export
 setMethod("extractByIndex", c("MsBackend", "ANY"), function(object, i) {
-    stop("'extractByIndex' not implemented for ", class(object), ".")
+    if (existsMethod("[", class(object)[1L]))
+        object[i = i]
+    else stop("'extractByIndex' not implemented for ", class(object)[1L], ".")
 })
 
 #' @rdname MsBackend
