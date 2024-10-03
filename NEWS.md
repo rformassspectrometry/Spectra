@@ -1,5 +1,9 @@
 # Spectra 1.15
 
+## Changes in 1.15.11
+
+- Add reference to `MsBackendMetaboLights`.
+
 ## Changes in 1.15.10
 
 - Add new `extractSpectra()` generic and implementation for `MsBackend`. Fixes
