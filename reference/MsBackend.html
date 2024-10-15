@@ -63,7 +63,7 @@ See below for more details about individual backends."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -696,6 +696,12 @@ The default implementation returns a factor of length 0 (<code><a href="https://
 providing thus no default splitting. <code>backendParallelFactor()</code> for
 <code>MsBackendMzR</code> on the other hand returns <code>factor(dataStorage(object))</code>
 hence suggesting to split the object by data file.</p></li>
+<li><p><code>backendRequiredSpectraVariables()</code>: returns a <code>character</code> with spectra
+variable names that are mandatory for a specific backend. The default
+returns an empty <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code>. The implementation for <code>MsBackendMzR</code>
+returns <code>c("dataStorage", "scanIndex")</code> as these two spectra variables
+are required to load the MS data on-the-fly. This method needs only to
+be implemented if a backend requires specific variables to be defined.</p></li>
 <li><p><code><a href="spectraData.html">dataOrigin()</a></code>: gets a <code>character</code> of length equal to the number of
 spectra in <code>object</code> with the <em>data origin</em> of each spectrum. This could
 e.g. be the mzML file from which the data was read.</p></li>
