@@ -122,6 +122,12 @@ setMethod("backendMerge", "MsBackendMemory", function(object, ...) {
     res
 })
 
+#' @rdname hidden_aliases
+setMethod("backendRequiredSpectraVariables", "MsBackendMemory",
+          function(object, ...) {
+              "dataStorage"
+          })
+
 ## Data accessors
 
 #' @rdname hidden_aliases
@@ -514,7 +520,8 @@ setMethod("selectSpectraVariables", "MsBackendMemory",
                                   z[, keep, drop = FALSE])
                   }
               }
-              msg <- .valid_spectra_data_required_columns(object@spectraData)
+              msg <- .valid_spectra_data_required_columns(
+                  object@spectraData, backendRequiredSpectraVariables(object))
               if (length(msg))
                   stop(msg)
               validObject(object)

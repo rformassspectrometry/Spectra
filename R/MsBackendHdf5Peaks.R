@@ -26,8 +26,8 @@ setClass("MsBackendHdf5Peaks",
          prototype = prototype(version = "0.1", readonly = FALSE))
 
 setValidity("MsBackendHdf5Peaks", function(object) {
-    msg <- .valid_spectra_data_required_columns(object@spectraData,
-                                                c("dataStorage", "scanIndex"))
+    msg <- .valid_spectra_data_required_columns(
+        object@spectraData, backendRequiredSpectraVariables(object))
     fls <- unique(object@spectraData$dataStorage)
     msg <- c(msg, .valid_ms_backend_mod_count(object@modCount, fls))
     msg <- c(msg, .valid_ms_backend_files_exist(fls))
@@ -35,6 +35,12 @@ setValidity("MsBackendHdf5Peaks", function(object) {
     if (is.null(msg)) TRUE
     else msg
 })
+
+#' @rdname hidden_aliases
+setMethod("backendRequiredSpectraVariables", "MsBackendHdf5Peaks",
+          function(object, ...) {
+              c("dataStorage", "scanIndex")
+          })
 
 #' @rdname hidden_aliases
 #'

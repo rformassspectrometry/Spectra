@@ -57,6 +57,7 @@ test_that("MsBackend methods throw errors", {
     expect_error(dm$a, "implemented for")
     expect_error(dm$a <- "a", "implemented for")
     expect_error(extractByIndex(dm, 1), "implemented for")
+    expect_equal(backendRequiredSpectraVariables(dm), character())
 })
 
 test_that("extractByIndex not implemented fallback", {

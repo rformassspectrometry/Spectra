@@ -24,13 +24,19 @@ setClass("MsBackendMzR",
          prototype = prototype(version = "0.1", readonly = TRUE))
 
 setValidity("MsBackendMzR", function(object) {
-    msg <- .valid_spectra_data_required_columns(object@spectraData,
-                                                c("dataStorage", "scanIndex"))
+    msg <- .valid_spectra_data_required_columns(
+        object@spectraData, backendRequiredSpectraVariables(object))
     msg <- c(msg, .valid_ms_backend_files_exist(
                       unique(object@spectraData$dataStorage)))
     if (length(msg)) msg
     else TRUE
 })
+
+#' @rdname hidden_aliases
+setMethod("backendRequiredSpectraVariables", "MsBackendMzR",
+          function(object, ...) {
+              c("dataStorage", "scanIndex")
+          })
 
 #' @rdname hidden_aliases
 #'

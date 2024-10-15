@@ -504,7 +504,7 @@ test_that("selectSpectraVariables,MsBackendMzR works", {
     expect_equal(res@peaksVariables, c("mz", "intensity"))
 
     expect_error(selectSpectraVariables(be, c("dataStorage", "msLevel")),
-                 "scanIndex is/are missing")
+                 "required")
 })
 
 test_that("$,$<-,MsBackendMzR works", {
@@ -596,4 +596,10 @@ test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
 
     #' errors
     expect_error(dataStorageBasePath(tmp) <- "some path", "Provided path")
+})
+
+test_that("backendRequiredSpectraVariables,MsBackendMzR works", {
+    tmp <- MsBackendMzR()
+    expect_equal(backendRequiredSpectraVariables(tmp),
+                 c("dataStorage", "scanIndex"))
 })

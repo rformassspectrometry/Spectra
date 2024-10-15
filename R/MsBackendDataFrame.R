@@ -22,7 +22,8 @@ setClass("MsBackendDataFrame",
                                version = "0.2"))
 
 setValidity("MsBackendDataFrame", function(object) {
-    msg <- .valid_spectra_data_required_columns(object@spectraData)
+    msg <- .valid_spectra_data_required_columns(
+        object@spectraData, backendRequiredSpectraVariables(object))
     if (length(msg))
         return(msg)
     msg <- c(
@@ -91,6 +92,12 @@ setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
     validObject(res)
     res
 })
+
+#' @rdname hidden_aliases
+setMethod("backendRequiredSpectraVariables", "MsBackendDataFrame",
+          function(object, ...) {
+              "dataStorage"
+          })
 
 ## Data accessors
 
@@ -413,14 +420,16 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
                        paste(spectraVariables[!(spectraVariables %in%
                                                 spectraVariables(object))],
                              collapse = ", "), " not available")
+              bv <- backendRequiredSpectraVariables(object)
+              if (!all(bv %in% spectraVariables))
+                  stop("Spectra variables ",
+                       paste(bv[!bv %in% spectraVariables], collapse = ","),
+                       " are required by the backend")
               keep <- spectraVariables[spectraVariables %in%
                                        colnames(object@spectraData)]
               if (length(keep))
                   object@spectraData <- object@spectraData[, keep,
                                                            drop = FALSE]
-              msg <- .valid_spectra_data_required_columns(object@spectraData)
-              if (length(msg))
-                  stop(msg)
               object@peaksVariables <- intersect(object@peaksVariables,
                                                  spectraVariables)
               validObject(object)

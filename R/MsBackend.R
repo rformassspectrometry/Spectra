@@ -17,6 +17,8 @@
 #' @aliases dataStorageBasePath<-,MsBackendMzR-method
 #' @aliases extractByIndex
 #' @aliases msLeveL<-,MsBackend-method
+#' @aliases backendRequiredSpectraVariables
+#' @aliases backendRequiredSpectraVariables,MsBackend-method
 #'
 #' @description
 #'
@@ -279,6 +281,13 @@
 #'   providing thus no default splitting. `backendParallelFactor()` for
 #'   `MsBackendMzR` on the other hand returns `factor(dataStorage(object))`
 #'   hence suggesting to split the object by data file.
+#'
+#' - `backendRequiredSpectraVariables()`: returns a `character` with spectra
+#'   variable names that are mandatory for a specific backend. The default
+#'   returns an empty `character()`. The implementation for `MsBackendMzR`
+#'   returns `c("dataStorage", "scanIndex")` as these two spectra variables
+#'   are required to load the MS data on-the-fly. This method needs only to
+#'   be implemented if a backend requires specific variables to be defined.
 #'
 #' - `dataOrigin()`: gets a `character` of length equal to the number of
 #'   spectra in `object` with the *data origin* of each spectrum. This could
@@ -965,6 +974,12 @@ setMethod("backendParallelFactor", "MsBackend", function(object, ...) {
     factor()
 })
 
+#' @export
+setMethod("backendRequiredSpectraVariables", "MsBackend",
+          function(object, ...) {
+              character()
+          })
+
 #' @rdname MsBackend
 #'
 #' @export
@@ -1104,7 +1119,8 @@ setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
 #' @export
 setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
     svs <- spectraVariables(object)
-    svs <- svs[!(svs %in% c("mz", "intensity"))]
+    req_cols <- c(backendRequiredSpectraVariables(object), c("mz", "intensity"))
+    svs <- svs[!(svs %in% req_cols)]
     spd <- spectraData(object, columns = svs)
     keep <- !vapply1l(spd, function(z) {
         allna <- all(is.na(z))
@@ -1112,10 +1128,12 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
             FALSE
         else allna
     })
-    selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
+    selectSpectraVariables(object, c(svs[keep], req_cols))
 })
 
 #' @rdname MsBackend
+#'
+#' @importFrom methods existsMethod
 #'
 #' @export
 setMethod("extractByIndex", c("MsBackend", "ANY"), function(object, i) {

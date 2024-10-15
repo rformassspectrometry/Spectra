@@ -10,6 +10,7 @@
 \alias{bin,numeric-method}
 \alias{show,MsBackendDataFrame-method}
 \alias{backendMerge,MsBackendDataFrame-method}
+\alias{backendRequiredSpectraVariables,MsBackendDataFrame-method}
 \alias{acquisitionNum,MsBackendDataFrame-method}
 \alias{peaksData,MsBackendDataFrame-method}
 \alias{centroided,MsBackendDataFrame-method}
@@ -60,6 +61,7 @@
 \alias{$<-,MsBackendDataFrame-method}
 \alias{split,MsBackendDataFrame,ANY-method}
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
+\alias{backendRequiredSpectraVariables,MsBackendHdf5Peaks-method}
 \alias{backendInitialize,MsBackendHdf5Peaks-method}
 \alias{show,MsBackendHdf5Peaks-method}
 \alias{peaksData,MsBackendHdf5Peaks-method}
@@ -80,6 +82,7 @@
 \alias{backendMerge,MsBackendHdf5Peaks-method}
 \alias{show,MsBackendMemory-method}
 \alias{backendMerge,MsBackendMemory-method}
+\alias{backendRequiredSpectraVariables,MsBackendMemory-method}
 \alias{acquisitionNum,MsBackendMemory-method}
 \alias{centroided,MsBackendMemory-method}
 \alias{centroided<-,MsBackendMemory-method}
@@ -132,6 +135,7 @@
 \alias{[,MsBackendMemory-method}
 \alias{split,MsBackendMemory,ANY-method}
 \alias{filterAcquisitionNum,MsBackendMemory-method}
+\alias{backendRequiredSpectraVariables,MsBackendMzR-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
 \alias{peaksData,MsBackendMzR-method}
@@ -167,6 +171,8 @@
 \S4method{show}{MsBackendDataFrame}(object)
 
 \S4method{backendMerge}{MsBackendDataFrame}(object, ...)
+
+\S4method{backendRequiredSpectraVariables}{MsBackendDataFrame}(object, ...)
 
 \S4method{acquisitionNum}{MsBackendDataFrame}(object)
 
@@ -275,6 +281,8 @@
   dataOrigin = character()
 )
 
+\S4method{backendRequiredSpectraVariables}{MsBackendHdf5Peaks}(object, ...)
+
 \S4method{backendInitialize}{MsBackendHdf5Peaks}(
   object,
   files = character(),
@@ -321,6 +329,8 @@
 \S4method{show}{MsBackendMemory}(object)
 
 \S4method{backendMerge}{MsBackendMemory}(object, ...)
+
+\S4method{backendRequiredSpectraVariables}{MsBackendMemory}(object, ...)
 
 \S4method{acquisitionNum}{MsBackendMemory}(object)
 
@@ -430,6 +440,8 @@
   dataStorage = character(),
   dataOrigin = character()
 )
+
+\S4method{backendRequiredSpectraVariables}{MsBackendMzR}(object, ...)
 
 \S4method{backendInitialize}{MsBackendMzR}(object, files, ..., BPPARAM = bpparam())
 
