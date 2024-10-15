@@ -1590,6 +1590,23 @@ setMethod("backendParallelFactor", "MsBackend", function(object, ...) {
 
 ```
 
+### `backendRequiredSpectraVariables()`
+
+The `backendRequiredSpectraVariables()` method can be implemented if a backend
+needs specific spectra variables to work. The default implementation is:
+
+```{r}
+setMethod("backendRequiredSpectraVariables", "MsBackend",
+          function(object, ...) {
+              character()
+          })
+```
+
+The implementation for `MsBackendMzR` returns `c("dataStorage", "scanIndex")` as
+the backend needs these two spectra variables to load the MS data on-the-fly
+from the original data files.
+
+
 ### `dropNaSpectraVariables()`
 
 The `dropNaSpectraVariables()` is supposed to allow removing all spectra

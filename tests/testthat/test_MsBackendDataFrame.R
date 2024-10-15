@@ -653,7 +653,7 @@ test_that("selectSpectraVariables,MsBackendDataFrame works", {
     expect_equal(colnames(res@spectraData), c("dataStorage", "rtime"))
     expect_equal(res@peaksVariables, be@peaksVariables)
 
-    expect_error(selectSpectraVariables(be, "rtime"), "dataStorage is/are missing")
+    expect_error(selectSpectraVariables(be, "rtime"), "are required")
     expect_error(selectSpectraVariables(be, "something"),
                  "something not available")
 
@@ -1023,4 +1023,9 @@ test_that("[[,[[<-,MsBackendDataFrame works", {
 
 test_that("supportsSetBackend,MsBackendDataFrame", {
     expect_true(supportsSetBackend(MsBackendDataFrame()))
+})
+
+test_that("backendRequiredSpectraVariables,MsBackendDataFrame works", {
+    expect_equal(backendRequiredSpectraVariables(MsBackendDataFrame()),
+                 "dataStorage")
 })

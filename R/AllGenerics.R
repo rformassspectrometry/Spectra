@@ -1,6 +1,8 @@
 #' @include hidden_aliases.R
 NULL
 
+setGeneric("backendRequiredSpectraVariables", function(object, ...)
+          standardGeneric("backendRequiredSpectraVariables"))
 #' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
 setGeneric("combinePeaks", function(object, ...)

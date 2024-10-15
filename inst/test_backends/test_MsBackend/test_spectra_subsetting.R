@@ -92,8 +92,9 @@ test_that("selectSpectraVariables", {
     if (!isReadOnly(be) || inherits(be, "MsBackendCached") ||
         inherits(be, "MsBackendDataFrame")) {
         tmp <- be
-        res <- selectSpectraVariables(tmp, c("mz", "intensity",
-                                             "dataStorage", "scanIndex"))
+        res <- selectSpectraVariables(
+            tmp, union(c("mz", "intensity", "dataStorage", "scanIndex"),
+                       backendRequiredSpectraVariables(be)))
         expect_true(all(names(coreSpectraVariables()) %in%
                         spectraVariables(res)))
         expect_true(all(is.na(res$msLevel)))

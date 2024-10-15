@@ -23,6 +23,8 @@
 \alias{dataStorageBasePath<-,MsBackendMzR-method}
 \alias{extractByIndex}
 \alias{msLeveL<-,MsBackend-method}
+\alias{backendRequiredSpectraVariables}
+\alias{backendRequiredSpectraVariables,MsBackend-method}
 \alias{backendBpparam,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
@@ -576,6 +578,12 @@ The default implementation returns a factor of length 0 (\code{factor()})
 providing thus no default splitting. \code{backendParallelFactor()} for
 \code{MsBackendMzR} on the other hand returns \code{factor(dataStorage(object))}
 hence suggesting to split the object by data file.
+\item \code{backendRequiredSpectraVariables()}: returns a \code{character} with spectra
+variable names that are mandatory for a specific backend. The default
+returns an empty \code{character()}. The implementation for \code{MsBackendMzR}
+returns \code{c("dataStorage", "scanIndex")} as these two spectra variables
+are required to load the MS data on-the-fly. This method needs only to
+be implemented if a backend requires specific variables to be defined.
 \item \code{dataOrigin()}: gets a \code{character} of length equal to the number of
 spectra in \code{object} with the \emph{data origin} of each spectrum. This could
 e.g. be the mzML file from which the data was read.

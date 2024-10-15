@@ -1,5 +1,10 @@
 # Spectra 1.15
 
+## Changes in 1.15.12
+
+- Add generic `backendRequiredSpectraVariables()` to allow definition of
+  mandatory spectra variables for a backend.
+
 ## Changes in 1.15.11
 
 - Add reference to `MsBackendMetaboLights`.

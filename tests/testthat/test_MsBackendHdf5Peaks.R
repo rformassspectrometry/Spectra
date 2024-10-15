@@ -413,3 +413,8 @@ test_that("backendParallelFactor,MsBackendHdf5Peaks", {
                  factor(dataStorage(sciex_hd5),
                         levels = unique(dataStorage(sciex_hd5))))
 })
+
+test_that("backendRequiredSpectraVariables,MsBackendHdf5Peaks works", {
+    expect_equal(backendRequiredSpectraVariables(MsBackendHdf5Peaks()),
+                 c("dataStorage", "scanIndex"))
+})

@@ -944,3 +944,8 @@ test_that("tic,MsBackendMemory works", {
 test_that("supportsSetBackend,MsBackendMemory", {
     expect_true(supportsSetBackend(MsBackendMemory()))
 })
+
+test_that("backendRequiredSpectraVariables,MsBackendMemory works", {
+    expect_equal(backendRequiredSpectraVariables(MsBackendMemory()),
+                 "dataStorage")
+})
