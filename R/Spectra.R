@@ -1245,6 +1245,12 @@ setMethod("precursorMz", "Spectra", function(object) {
 })
 
 #' @rdname spectraData
+setReplaceMethod("precursorMz", "Spectra", function(object, ..., value) {
+    precursorMz(object@backend) <- value
+    object
+})
+
+#' @rdname spectraData
 setMethod("rtime", "Spectra", function(object) {
     rtime(object@backend)
 })

@@ -1,5 +1,9 @@
 # Spectra 1.15
 
+## Changes in 1.15.13
+
+- Add `precursorMz<-` method [issue #336](https://github.com/rformassspectrometry/Spectra/issues/336).
+
 ## Changes in 1.15.12
 
 - Add generic `backendRequiredSpectraVariables()` to allow definition of

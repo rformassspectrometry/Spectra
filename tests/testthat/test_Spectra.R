@@ -1986,3 +1986,9 @@ test_that("estimatePrecursorIntensity works", {
     res_both <- estimatePrecursorIntensity(both)
     expect_equal(res_second, res_both[510:length(res_both)])
 })
+
+test_that("precursorMz<-,Spectra works", {
+    a <- sps_dda[1:3]
+    precursorMz(a) <- c(12.3, 1.1, 34.3)
+    expect_equal(precursorMz(a), c(12.3, 1.1, 34.3))
+})
