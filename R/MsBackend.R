@@ -1699,6 +1699,18 @@ setMethod("precursorMz", "MsBackend", function(object) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @exportMethod precursorMz<-
+#'
+#' @importMethodsFrom ProtGenerics precursorMz<-
+#'
+#' @rdname MsBackend
+#'
+#' @export
+setReplaceMethod("precursorMz", "MsBackend", function(object, ..., value) {
+    object$precursorMz <- value
+    object
+})
+
 #' @exportMethod peaksData<-
 #'
 #' @importMethodsFrom ProtGenerics peaksData<-

@@ -464,7 +464,6 @@ setMethod("centroided", "MsBackendCached", function(object) {
 #' @rdname MsBackendCached
 setReplaceMethod("centroided", "MsBackendCached", function(object, value) {
     object$centroided <- value
-    validObject(object)
     object
 })
 
@@ -476,7 +475,6 @@ setMethod("collisionEnergy", "MsBackendCached", function(object) {
 #' @rdname MsBackendCached
 setReplaceMethod("collisionEnergy", "MsBackendCached", function(object, value) {
     object$collisionEnergy <- value
-    validObject(object)
     object
 })
 
@@ -488,7 +486,6 @@ setMethod("dataOrigin", "MsBackendCached", function(object) {
 #' @rdname MsBackendCached
 setReplaceMethod("dataOrigin", "MsBackendCached", function(object, value) {
     object$dataOrigin <- value
-    validObject(object)
     object
 })
 
@@ -525,7 +522,6 @@ setMethod("isolationWindowLowerMz", "MsBackendCached", function(object) {
 setReplaceMethod("isolationWindowLowerMz", "MsBackendCached",
                  function(object, value) {
                      object$isolationWindowLowerMz <- value
-                     validObject(object)
                      object
                  })
 
@@ -538,7 +534,6 @@ setMethod("isolationWindowTargetMz", "MsBackendCached", function(object) {
 setReplaceMethod("isolationWindowTargetMz", "MsBackendCached",
                  function(object, value) {
                      object$isolationWindowTargetMz <- value
-                     validObject(object)
                      object
                  })
 
@@ -551,7 +546,6 @@ setMethod("isolationWindowUpperMz", "MsBackendCached", function(object) {
 setReplaceMethod("isolationWindowUpperMz", "MsBackendCached",
                  function(object, value) {
                      object$isolationWindowUpperMz <- value
-                     validObject(object)
                      object
                  })
 
@@ -574,7 +568,6 @@ setMethod("polarity", "MsBackendCached", function(object) {
 setReplaceMethod("polarity", "MsBackendCached", function(object, value) {
     if (is.numeric(value)) value <- as.integer(value)
     object$polarity <- value
-    validObject(object)
     object
 })
 
@@ -601,7 +594,6 @@ setMethod("rtime", "MsBackendCached", function(object) {
 #' @rdname MsBackendCached
 setReplaceMethod("rtime", "MsBackendCached", function(object, value) {
     object$rtime <- value
-    validObject(object)
     object
 })
 
@@ -618,6 +610,5 @@ setMethod("smoothed", "MsBackendCached", function(object) {
 #' @rdname MsBackendCached
 setReplaceMethod("smoothed", "MsBackendCached", function(object, value) {
     object$smoothed <- value
-    validObject(object)
     object
 })

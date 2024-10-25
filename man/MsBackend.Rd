@@ -84,6 +84,7 @@
 \alias{precursorCharge,MsBackend-method}
 \alias{precursorIntensity,MsBackend-method}
 \alias{precursorMz,MsBackend-method}
+\alias{precursorMz<-,MsBackend-method}
 \alias{peaksData<-,MsBackend-method}
 \alias{reset,MsBackend-method}
 \alias{rtime,MsBackend-method}
@@ -243,6 +244,8 @@
 \S4method{precursorIntensity}{MsBackend}(object)
 
 \S4method{precursorMz}{MsBackend}(object)
+
+\S4method{precursorMz}{MsBackend}(object, ...) <- value
 
 \S4method{peaksData}{MsBackend}(object) <- value
 
