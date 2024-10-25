@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@ Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="exte
 [aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
 Louail [aut] (<a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
 [ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-10-15 20:16:32.502799<br><strong>Compiled</strong>: Tue Oct 15 20:44:57 2024</p>
+[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-10-25 06:46:39.390017<br><strong>Compiled</strong>: Fri Oct 25 07:14:30 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -2011,6 +2011,21 @@ avoid such an eventually heavy operation by selecting the unique MS
 levels directly using an SQL call.</p>
 </div>
 <div class="section level4">
+<h4 id="precursormz-">
+<code>precursorMz&lt;-</code><a class="anchor" aria-label="anchor" href="#precursormz-"></a>
+</h4>
+<p>Replace the values for the <em>precursor m/z</em> spectra variable.
+Parameter <code>value</code> has to be of type <code>numeric</code>
+(<code>NA_real_</code> missing values are supported, e.g. for MS1
+spectra). The default implementation uses the <code>$&lt;-</code>
+method:</p>
+<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/methods/GenericFunctions.html" class="external-link">setReplaceMethod</a></span><span class="op">(</span><span class="st">"precursorMz"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span>, <span class="va">value</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">object</span><span class="op">$</span><span class="va">precursorMz</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span>    <span class="va">object</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
 <h4 id="ioncount">
 <code>ionCount()</code><a class="anchor" aria-label="anchor" href="#ioncount"></a>
 </h4>
@@ -2019,7 +2034,7 @@ levels directly using an SQL call.</p>
 by the backend) with the sum of all intensities within each spectrum.
 For empty spectra <code>NA_real_</code> should be returned. The method
 below is the default implementation of the method.</p>
-<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"ionCount"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">vapply1d</span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">intensity</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>, <span class="va">sum</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
@@ -2032,7 +2047,7 @@ below is the default implementation of the method.</p>
 it is <em>centroided</em>. In contrast to the <code><a href="../reference/spectraData.html">centroided()</a></code>
 method a heuristic approach is used. The default implementation is shown
 below.</p>
-<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"isCentroided"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">vapply1l</span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">peaksData</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span>, <span class="va">.peaks_is_centroided</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
@@ -2049,7 +2064,7 @@ its original state. The default implementation for
 <code>MsBackendSql</code> backend from the <em><a href="https://bioconductor.org/packages/3.20/MsBackendSql" class="external-link">MsBackendSql</a></em>
 package in contrast re-initializes the data using the data from the
 database.</p>
-<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"reset"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">object</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
@@ -2066,7 +2081,7 @@ implementation is thus expected to take a <code>Spectra</code> object as
 second argument from which all data should be taken and exported.
 Implementation of this method is optional. The implementation of the
 method for the <code>MsBackendMzR</code> backend is shown below.</p>
-<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"export"</span>, <span class="st">"MsBackendMzR"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">x</span>, <span class="va">file</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                                             <span class="va">format</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mzML"</span>, <span class="st">"mzXML"</span><span class="op">)</span>,</span>
 <span>                                             <span class="va">copy</span> <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -2095,7 +2110,7 @@ backend.</p>
 <code>MsBackend</code> into a <code>list</code> of
 <code>MsBackend</code> objects. The default implementation is shown
 below.</p>
-<div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"split"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">f</span>, <span class="va">drop</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split.default</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">f</span>, drop <span class="op">=</span> <span class="va">drop</span>, <span class="va">...</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
@@ -2111,7 +2126,7 @@ below.</p>
 <code>data</code> in its <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> method that
 allows it to be initialized with a <code>DataFrame</code> containing the
 full spectra data. The default implementation is shown below.</p>
-<div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"supportsSetBackend"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="op">!</span><span class="fu">isReadOnly</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
@@ -2135,7 +2150,7 @@ instance of the same backend class with the same, or less spectra).</p>
 spectra with their <code>dataOrigin</code> spectra variable matching the
 values provided with the <code>dataOrigin</code> parameter. The default
 implementation for <code>MsBackend</code> is shown below.</p>
-<div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterDataOrigin"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">dataOrigin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dataOrigin</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2154,7 +2169,7 @@ implementation for <code>MsBackend</code> is shown below.</p>
 <code><a href="../reference/filterMsLevel.html">filterDataStorage()</a></code> should subset a backend to spectra with
 their <code>dataStorage</code> spectra variable matching the values
 provided with the <code>dataStorage</code> parameter.</p>
-<div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterDataStorage"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">dataStorage</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dataStorage</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2173,7 +2188,7 @@ provided with the <code>dataStorage</code> parameter.</p>
 <em>empty</em> spectra (i.e. spectra without any mass peaks) from the
 backend. The method is expected to return the subset backend. The
 default implementation for <code>MsBackend</code> is shown below.</p>
-<div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterEmptySpectra"</span>, <span class="st">"MsBackend"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span>    <span class="va">object</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical</a></span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">lengths</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
@@ -2190,7 +2205,7 @@ spectra with the provided <code>mz</code> value being within their
 defining this target m/z is expected to be a <code>numeric</code> of
 length 1. The default implementation for <code>MsBackend</code> is shown
 below.</p>
-<div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb187"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterIsolationWindow"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">mz</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mz</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2210,7 +2225,7 @@ below.</p>
 backend to spectra with the provided MS level(s). Parameter
 <code>msLevel</code> has to be an <code>integer</code> (any length). The
 default implementation for <code>MsBackend</code> is shown below.</p>
-<div class="sourceCode" id="cb187"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb188"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterMsLevel"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">msLevel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">msLevel</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2227,7 +2242,7 @@ backend to spectra matching the provided polarity (or polarities).
 Parameter <code>polarity</code> has to be an <code>integer</code> (of
 any length). The default implementation for <code>MsBackend</code> is
 shown below.</p>
-<div class="sourceCode" id="cb188"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb189"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterPolarity"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">polarity</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">polarity</span><span class="op">)</span><span class="op">)</span></span>
@@ -2246,7 +2261,7 @@ previously named <code>filterPrecursorMz()</code>. Parameter
 <code>mz</code> is expected to be a <code>numeric</code> of length 2
 defining the lower and upper limit of this precursor m/z range. The
 default implementation for <code>MsBackend</code> is shown below.</p>
-<div class="sourceCode" id="cb189"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RforMassSpectrometry/MsCoreUtils" class="external-link">MsCoreUtils</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Attaching package: 'MsCoreUtils'</span></span></code></pre>
@@ -2256,7 +2271,7 @@ default implementation for <code>MsBackend</code> is shown below.</p>
 <pre><code><span><span class="co">## The following object is masked from 'package:stats':</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##     smooth</span></span></code></pre>
-<div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb194"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterPrecursorMzRange"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">mz</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mz</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2277,7 +2292,7 @@ be <code>numeric</code> of length 1) allow to define the conditions for
 the relaxed matching. Parameter <code>mz</code> has to be a
 <code>numeric</code> (of any length). The default implementation for
 <code>MsBackend</code> is shown below.</p>
-<div class="sourceCode" id="cb194"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterPrecursorMzValues"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">mz</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">ppm</span> <span class="op">=</span> <span class="fl">20</span>, <span class="va">tolerance</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mz</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2287,7 +2302,7 @@ the relaxed matching. Parameter <code>mz</code> has to be a
 <span>          <span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>.values_match_mz</code> function used by this function is
 defined as:</p>
-<div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.values_match_mz</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">mz</span>, <span class="va">ppm</span> <span class="op">=</span> <span class="fl">20</span>, <span class="va">tolerance</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">o</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x</span>, na.last <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
 <span>    <span class="va">cmn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">common</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">o</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">mz</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="va">tolerance</span>, ppm <span class="op">=</span> <span class="va">ppm</span>,</span>
@@ -2304,7 +2319,7 @@ to spectra with matching precursor charge. Parameter <code>z</code>
 defining the requested precursor charge has to be an
 <code>integer</code> (of any length). The default implementation for
 <code>MsBackend</code> is shown below.</p>
-<div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterPrecursorCharge"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">z</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2323,7 +2338,7 @@ parent (e.g. MS1) and children scans (e.g. MS2) of acquisition number
 backend should be split (by default by original data file) to avoid
 selecting spectra from different samples/files. The default
 implementation for <code>MsBackend</code> is shown below.</p>
-<div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterPrecursorScan"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">acquisitionNum</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">f</span> <span class="op">=</span> <span class="fu"><a href="../reference/spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">acquisitionNum</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2352,7 +2367,7 @@ selected MS levels (i.e. the RT filter is only applied to spectra of the
 selected MS levels and all spectra with a different MS level are
 returned as well). The default implementation for <code>MsBackend</code>
 is shown below.</p>
-<div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/methods/setMethod.html" class="external-link">setMethod</a></span><span class="op">(</span><span class="st">"filterRt"</span>, <span class="st">"MsBackend"</span>,</span>
 <span>          <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">rt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">msLevel.</span> <span class="op">=</span> <span class="fu"><a href="../reference/spectraData.html">uniqueMsLevels</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>              <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">rt</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2396,7 +2411,7 @@ allow to check a backend for compliance with <code>MsBackend</code>.
 Below we load this test suite and call the tests. The tests will be
 performed on a variable <code>be</code> in the current workspace (which
 in our case is an instance of our <code>MsBackendTest</code> class).</p>
-<div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb200"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span></span>
 <span><span class="va">test_suite</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"test_backends"</span>, <span class="st">"test_MsBackend"</span>,</span>
 <span>                          package <span class="op">=</span> <span class="st">"Spectra"</span><span class="op">)</span></span>
@@ -2405,7 +2420,7 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb200"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb201"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.4.1 (2024-06-14)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
@@ -2431,7 +2446,7 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] MsCoreUtils_1.17.2  IRanges_2.39.2      Spectra_1.15.12    </span></span>
+<span><span class="co">## [1] MsCoreUtils_1.17.3  IRanges_2.39.2      Spectra_1.15.13    </span></span>
 <span><span class="co">## [4] BiocParallel_1.39.0 S4Vectors_0.43.2    BiocGenerics_0.51.3</span></span>
 <span><span class="co">## [7] BiocStyle_2.33.1   </span></span>
 <span><span class="co">## </span></span>
@@ -2442,7 +2457,7 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [10] ragg_1.3.3             sass_0.4.9             rmarkdown_2.28        </span></span>
 <span><span class="co">## [13] evaluate_1.0.1         jquerylib_0.1.4        MASS_7.3-61           </span></span>
 <span><span class="co">## [16] fastmap_1.2.0          yaml_2.3.10            lifecycle_1.0.4       </span></span>
-<span><span class="co">## [19] bookdown_0.40          BiocManager_1.30.25    cluster_2.1.6         </span></span>
+<span><span class="co">## [19] bookdown_0.41          BiocManager_1.30.25    cluster_2.1.6         </span></span>
 <span><span class="co">## [22] compiler_4.4.1         codetools_0.2-20       fs_1.6.4              </span></span>
 <span><span class="co">## [25] htmlwidgets_1.6.4      MetaboCoreUtils_1.13.0 systemfonts_1.1.0     </span></span>
 <span><span class="co">## [28] digest_0.6.37          R6_2.5.1               parallel_4.4.1        </span></span>
