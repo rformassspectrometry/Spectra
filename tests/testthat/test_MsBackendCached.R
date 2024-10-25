@@ -302,3 +302,10 @@ test_that("lengths,MsBackendCached works", {
     res <- lengths(be)
     expect_true(all(res == 0))
 })
+
+test_that("precursorMz<-,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 4)
+    expect_true(all(is.na(precursorMz(be))))
+    precursorMz(be) <- c(1.1, 1.2, 1.3, 1.34)
+    expect_equal(precursorMz(be), c(1.1, 1.2, 1.3, 1.34))
+})

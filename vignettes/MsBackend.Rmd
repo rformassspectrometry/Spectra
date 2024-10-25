@@ -1677,6 +1677,21 @@ This method thus retrieves first the MS levels of all spectra and then calls
 operation by selecting the unique MS levels directly using an SQL call.
 
 
+### `precursorMz<-`
+
+Replace the values for the *precursor m/z* spectra
+variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
+values are supported, e.g. for MS1 spectra). The default implementation uses the
+`$<-` method:
+
+```{r}
+setReplaceMethod("precursorMz", "MsBackend", function(object, ..., value) {
+    object$precursorMz <- value
+    object
+})
+```
+
+
 ### `ionCount()`
 
 The `ionCount()` method should return a `numeric` (length equal to the number of

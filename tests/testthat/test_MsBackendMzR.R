@@ -603,3 +603,9 @@ test_that("backendRequiredSpectraVariables,MsBackendMzR works", {
     expect_equal(backendRequiredSpectraVariables(tmp),
                  c("dataStorage", "scanIndex"))
 })
+
+test_that("precursorMz<-,MsbackendMzR works", {
+    a <- sciex_mzr[1:3]
+    precursorMz(a) <- c(12.2, 1.2, 1.4)
+    expect_equal(precursorMz(a), c(12.2, 1.2, 1.4))
+})

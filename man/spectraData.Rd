@@ -62,6 +62,7 @@
 \alias{precursorCharge,Spectra-method}
 \alias{precursorIntensity,Spectra-method}
 \alias{precursorMz,Spectra-method}
+\alias{precursorMz<-,Spectra-method}
 \alias{rtime,Spectra-method}
 \alias{rtime<-,Spectra-method}
 \alias{scanIndex,Spectra-method}
@@ -153,6 +154,8 @@ coreSpectraVariables()
 \S4method{precursorIntensity}{Spectra}(object)
 
 \S4method{precursorMz}{Spectra}(object)
+
+\S4method{precursorMz}{Spectra}(object, ...) <- value
 
 \S4method{rtime}{Spectra}(object)
 
