@@ -722,3 +722,16 @@ test_that(".peaks_filter_ranges works", {
                                 ranges = ranges, keep = FALSE)
     expect_equal(res, x)
 })
+
+test_that(".peaks_contain_mz works", {
+    pks <- cbind(mz = c(1.3, 1.5, 32.1, 45.6), c(1, 2, 3, 4))
+
+    expect_false(.peaks_contain_mz(pks))
+    expect_true(.peaks_contain_mz(pks, 1.5))
+    expect_false(.peaks_contain_mz(pks, c(1.5, 32.2), condFun = all))
+    expect_true(.peaks_contain_mz(pks, c(1.5, 32.2), condFun = any))
+    expect_true(.peaks_contain_mz(pks, c(1.5, 32.2), condFun = any,
+                                  tolerance = 0.1))
+    expect_true(.peaks_contain_mz(pks, c(1.5, 32.2), condFun = all,
+                                  tolerance = 0.1))
+})

@@ -352,32 +352,6 @@ test_that("dropNaSpectraVariables works", {
                              function(z) !any(is.na(z)))))
 })
 
-test_that(".has_mz works", {
-    sps <- Spectra(sciex_mzr)[1:10]
-    sps <- setBackend(sps, MsBackendDataFrame())
-    mzs <- mz(sps)
-    x <- c(mzs[[2]][5], mzs[[3]][8])
-
-    res <- .has_mz(sps, mz = x, ppm = 0)
-    expect_true(length(res) == length(sps))
-    expect_true(is.logical(res))
-
-    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
-    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
-    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
-    sps <- Spectra(spd)
-
-    res <- .has_mz(sps, mz = c(14, 34))
-    expect_equal(res, c(TRUE, TRUE, FALSE))
-    res <- .has_mz(sps, mz = c(14, 34), tolerance = 0.15)
-    expect_equal(res, c(TRUE, TRUE, TRUE))
-
-    res <- .has_mz(sps, mz = c(14, 34), condFun = all)
-    expect_true(all(!res))
-    res <- .has_mz(sps, mz = c(14, 34), condFun = all, tolerance = 0.15)
-    expect_equal(res, c(FALSE, TRUE, TRUE))
-})
-
 test_that(".has_mz_each works", {
     spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
     spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))

@@ -737,3 +737,13 @@ joinPeaksNone <- function(x, y, ...) {
     if (keep) x[sel, , drop = FALSE]
     else x[!sel, , drop = FALSE]
 }
+
+#' Check for presence of peaks defined by their m/z value. Note that this
+#' function does **not** return a peak matrix, but only a logical of length 1!
+#'
+#' @return `logical(1)`
+#' @noRd
+.peaks_contain_mz <- function(x, mz = numeric(), tolerance = 0, ppm = 20,
+                              condFun = any, ...) {
+    condFun(common(mz, x[, "mz"], tolerance = tolerance, ppm = ppm))
+}

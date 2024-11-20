@@ -1,3 +1,9 @@
+# Spectra 1.17
+
+## Changes in 1.17.1
+
+- Refactor `containsMz()` to support chunk-wise processing.
+
 # Spectra 1.15
 
 ## Changes in 1.15.13
