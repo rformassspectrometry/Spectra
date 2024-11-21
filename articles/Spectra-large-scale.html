@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Large-scale data handling and processing with Spectra">
 </head>
 <body>
@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.13</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,22 +83,22 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.20/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre],
-Laurent Gatto [aut] (<a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
-[aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
-[aut] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
-Louail [aut] (<a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
-[ctb] (<a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb], Mar Garcia-Aloy [ctb] (<a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-10-25 06:46:39.390017<br><strong>Compiled</strong>: Fri Oct 25 07:14:45 2024</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.21/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre],
+Laurent Gatto [aut] (ORCID: <a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
+[aut] (ORCID: <a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
+[aut] (ORCID: <a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
+Louail [aut] (ORCID: <a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
+[ctb] (ORCID: <a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
+[ctb], Mar Garcia-Aloy [ctb] (ORCID: <a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2024-11-21 06:50:34.285087<br><strong>Compiled</strong>: Thu Nov 21 07:28:09 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <em><a href="https://bioconductor.org/packages/3.20/Spectra" class="external-link">Spectra</a></em>
+<p>The <em><a href="https://bioconductor.org/packages/3.21/Spectra" class="external-link">Spectra</a></em>
 package supports handling and processing of also very large mass
 spectrometry (MS) data sets. Through dedicated backends, that only load
 MS data when requested/needed, the memory demand can be minimized.
 Examples for such backends are the <code>MsBackendMzR</code> and the
-<code>MsBackendOfflineSql</code> (defined in the <em><a href="https://bioconductor.org/packages/3.20/MsBackendSql" class="external-link">MsBackendSql</a></em>
+<code>MsBackendOfflineSql</code> (defined in the <em><a href="https://bioconductor.org/packages/3.21/MsBackendSql" class="external-link">MsBackendSql</a></em>
 package). In addition, <code>Spectra</code> supports chunk-wise data
 processing, hence only parts of the data are loaded into memory and
 processed at a time. In this document we provide information on how
@@ -115,7 +115,7 @@ latter, different implementations of the <code>MsBackend</code> class
 are available, that either are optimized for performance (such as the
 <code>MsBackendMemory</code> and <code>MsBackendDataFrame</code>) or for
 low memory requirement (such as the <code>MsBackendMzR</code>, or the
-<code>MsBackendOfflineSql</code> implemented in the <em><a href="https://bioconductor.org/packages/3.20/MsBackendSql" class="external-link">MsBackendSql</a></em>
+<code>MsBackendOfflineSql</code> implemented in the <em><a href="https://bioconductor.org/packages/3.21/MsBackendSql" class="external-link">MsBackendSql</a></em>
 package, that through the smallest possible memory footprint enables
 also the analysis of very large data sets). Below we load MS data from 4
 test files into a <code>Spectra</code> using a <code>MsBackendMzR</code>
@@ -282,7 +282,7 @@ data sets with more than about 100 samples or whenever processing tends
 to take longer than expected it is suggested to enable chunk-wise
 processing (if not already used, as with
 <code>MsBackendMzR</code>).</p></li>
-<li><p><code>Spectra</code> uses the <em><a href="https://bioconductor.org/packages/3.20/BiocParallel" class="external-link">BiocParallel</a></em>
+<li><p><code>Spectra</code> uses the <em><a href="https://bioconductor.org/packages/3.21/BiocParallel" class="external-link">BiocParallel</a></em>
 package for parallel processing. The parallel processing setup can be
 configured globally by <em>registering</em> the preferred setup using
 the <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">register()</a></code> function (e.g.
@@ -359,13 +359,13 @@ should be split for parallel processing.</li>
 </h2>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.4.1 (2024-06-14)</span></span>
+<pre><code><span><span class="co">## R Under development (unstable) (2024-11-13 r87330)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.5 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.1 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
-<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
 <span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
@@ -383,24 +383,24 @@ should be split for parallel processing.</li>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] Spectra_1.15.13     BiocParallel_1.39.0 S4Vectors_0.43.2   </span></span>
-<span><span class="co">## [4] BiocGenerics_0.51.3 BiocStyle_2.33.1   </span></span>
+<span><span class="co">## [1] Spectra_1.17.1      BiocParallel_1.41.0 S4Vectors_0.45.2   </span></span>
+<span><span class="co">## [4] BiocGenerics_0.53.3 generics_0.1.3      BiocStyle_2.35.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] jsonlite_1.8.9         compiler_4.4.1         BiocManager_1.30.25   </span></span>
-<span><span class="co">##  [4] Rcpp_1.0.13            Biobase_2.65.1         parallel_4.4.1        </span></span>
+<span><span class="co">##  [1] jsonlite_1.8.9         compiler_4.5.0         BiocManager_1.30.25   </span></span>
+<span><span class="co">##  [4] Rcpp_1.0.13-1          Biobase_2.67.0         parallel_4.5.0        </span></span>
 <span><span class="co">##  [7] cluster_2.1.6          jquerylib_0.1.4        systemfonts_1.1.0     </span></span>
-<span><span class="co">## [10] IRanges_2.39.2         textshaping_0.4.0      yaml_2.3.10           </span></span>
-<span><span class="co">## [13] fastmap_1.2.0          R6_2.5.1               ProtGenerics_1.37.1   </span></span>
-<span><span class="co">## [16] knitr_1.48             htmlwidgets_1.6.4      MASS_7.3-61           </span></span>
+<span><span class="co">## [10] IRanges_2.41.1         textshaping_0.4.0      yaml_2.3.10           </span></span>
+<span><span class="co">## [13] fastmap_1.2.0          R6_2.5.1               ProtGenerics_1.39.0   </span></span>
+<span><span class="co">## [16] knitr_1.49             htmlwidgets_1.6.4      MASS_7.3-61           </span></span>
 <span><span class="co">## [19] bookdown_0.41          desc_1.4.3             bslib_0.8.0           </span></span>
-<span><span class="co">## [22] rlang_1.1.4            cachem_1.1.0           xfun_0.48             </span></span>
-<span><span class="co">## [25] fs_1.6.4               MsCoreUtils_1.17.3     sass_0.4.9            </span></span>
+<span><span class="co">## [22] rlang_1.1.4            cachem_1.1.0           xfun_0.49             </span></span>
+<span><span class="co">## [25] fs_1.6.5               MsCoreUtils_1.19.0     sass_0.4.9            </span></span>
 <span><span class="co">## [28] cli_3.6.3              pkgdown_2.1.1.9000     ncdf4_1.23            </span></span>
-<span><span class="co">## [31] digest_0.6.37          mzR_2.39.2             MetaboCoreUtils_1.13.0</span></span>
-<span><span class="co">## [34] lifecycle_1.0.4        clue_0.3-65            evaluate_1.0.1        </span></span>
-<span><span class="co">## [37] codetools_0.2-20       ragg_1.3.3             rmarkdown_2.28        </span></span>
-<span><span class="co">## [40] tools_4.4.1            htmltools_0.5.8.1</span></span></code></pre>
+<span><span class="co">## [31] digest_0.6.37          mzR_2.41.1             MetaboCoreUtils_1.15.0</span></span>
+<span><span class="co">## [34] lifecycle_1.0.4        clue_0.3-66            evaluate_1.0.1        </span></span>
+<span><span class="co">## [37] codetools_0.2-20       ragg_1.3.3             rmarkdown_2.29        </span></span>
+<span><span class="co">## [40] tools_4.5.0            htmltools_0.5.8.1</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
