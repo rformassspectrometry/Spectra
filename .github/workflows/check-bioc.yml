@@ -53,7 +53,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, r: '4.4', bioc: '3.20', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
+          - { os: ubuntu-latest, r: 'devel', bioc: 'devel', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
           - { os: macOS-latest, r: '4.4', bioc: '3.20'}
           - { os: windows-latest, r: '4.4', bioc: '3.20'}
     env:
@@ -239,7 +239,7 @@ jobs:
       - name: Test coverage
         if: github.ref == 'refs/heads/main' && env.run_covr == 'true' && runner.os == 'Linux'
         run: |
-          covr::codecov()
+          covr::codecov(token = "${{ secrets.CODECOV_TOKEN }}")
         shell: Rscript {0}
 
       - name: Install package

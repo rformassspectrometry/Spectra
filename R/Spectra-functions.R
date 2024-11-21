@@ -63,7 +63,13 @@ NULL
 #' @description
 #'
 #' This function applies the processing queue and an arbitrary function to
-#' the peaks matrix of each spectrum of the `Spectra` object `object`.
+#' the peaks matrix of each spectrum of the `Spectra` object `object`. It has
+#' build-in parallel and/or chunk-wise processing enabled through parameter
+#' `f`, that allows to define how the `Spectra` (or rather its backend) needs
+#' to be splitted. The default `f = .parallel_processing_factor(object)` splits
+#' the backend by chunk (if a finite chunk size is defined for the `Spectra`)
+#' or by it's optimal parallel processing factor. See the description of
+#' the `.parallel_processing_factor()` function below for information.
 #'
 #' @param object `Spectra` object.
 #'
@@ -78,7 +84,8 @@ NULL
 #'
 #' @param f `factor` or `vector` that can be coerced to one defining how the
 #'     data should be split for parallel processing. Set to `NULL` or
-#'     `factor()` to disable splitting and parallel processing.
+#'     `factor()` to disable splitting and parallel processing. See function
+#'     description above for details and information.
 #'
 #' @param columns `character` defining the columns that should be returned.
 #'     This will be passed to the backend's `peaksData` function.
@@ -571,39 +578,8 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
 
 #' @description
 #'
-#' Internal function to check if any (or all) of the provided `mz` values are
-#' in the spectras' m/z.
-#'
-#' @param x `Spectra` object
-#'
-#' @param mz `numeric` of m/z value(s) to check in each spectrum of `x`.
-#'
-#' @param tolarance `numeric(1)` with the tolerance.
-#'
-#' @param ppm `numeric(1)` with the ppm.
-#'
-#' @param condFun `function` such as `any` or `all`.
-#'
-#' @param parallel `BiocParallel` parameter object.
-#'
-#' @return `logical` same length than `x`.
-#'
-#' @author Johannes Rainer
-#'
-#' @importFrom MsCoreUtils common
-#'
-#' @noRd
-.has_mz <- function(x, mz = numeric(), tolerance = 0, ppm = 20, condFun = any,
-                    parallel = SerialParam()) {
-    mzs <- mz(x, BPPARAM = parallel)
-    vapply(mzs, FUN = function(z)
-        condFun(common(mz, z, tolerance = tolerance, ppm = ppm)), logical(1))
-}
-
-#' @description
-#'
-#' Same as `.has_mz` only that a different `mz` is used for each spectrum in
-#' `x`. Length of `mz` is thus expected to be equal to length of `x`.
+#' Check for presence of an m/z value in each spectrum. Each spectrum gets
+#' its own m/z.
 #'
 #' @param mz `numeric` **same length as `x`**.
 #'

@@ -3278,23 +3278,18 @@ setMethod("containsMz", "Spectra", function(object, mz = numeric(),
                                             tolerance = 0,
                                             ppm = 20, which = c("any", "all"),
                                             BPPARAM = bpparam()) {
-    cond_fun <- match.fun(match.arg(which))
-    if (all(is.na(mz)))
-        return(rep(NA, length(object)))
-    mz <- unique(sort(mz))
-    BPPARAM <- backendBpparam(object@backend, BPPARAM)
-    ## TODO: fix to use .peaksapply instead.
-    if (is(BPPARAM, "SerialParam"))
-        .has_mz(object, mz, tolerance = tolerance, ppm = ppm,
-                condFun = cond_fun, parallel = BPPARAM)
-    else {
-        sp <- SerialParam()
-        f <- as.factor(dataStorage(object))
-        res <- .lapply(object, FUN = .has_mz, mz = mz, tolerance = tolerance,
-                       condFun = cond_fun, parallel = sp, f = f,
-                       BPPARAM = BPPARAM)
-        unsplit(res, f = f)
-    }
+    if (length(object)) {
+        cond_fun <- match.fun(match.arg(which))
+        if (all(is.na(mz)))
+            return(rep(NA, length(object)))
+        mz <- unique(sort(mz))
+        BPPARAM <- backendBpparam(object@backend, BPPARAM)
+        unlist(.peaksapply(
+            object, FUN = .peaks_contain_mz, mz = mz, tolerance = tolerance,
+            ppm = ppm, condFun = cond_fun, BPPARAM = BPPARAM),
+            use.names = FALSE
+            )
+    } else logical()
 })
 
 #' @rdname addProcessing
@@ -3327,12 +3322,12 @@ setMethod("containsNeutralLoss", "Spectra", function(object, neutralLoss = 0,
 #' @export
 setMethod("entropy", "Spectra", function(object, normalized = TRUE) {
     if (length(object)) {
-    if (normalized) entropy_fun <- nentropy
-    else entropy_fun <- entropy
-    unlist(.peaksapply(
-        object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])),
-        use.names = FALSE
-        )
+        if (normalized) entropy_fun <- nentropy
+        else entropy_fun <- entropy
+        unlist(.peaksapply(
+            object, FUN = function(pks, ...) entropy_fun(pks[, "intensity"])),
+            use.names = FALSE
+            )
     } else numeric()
 })
 #' @rdname addProcessing
