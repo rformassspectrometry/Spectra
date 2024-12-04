@@ -1676,7 +1676,7 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #' spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
 #'
 #' ## Append new spectra variables with cbind2()
-#' df <- data.frame(cola = 4:5, colb = "b")
+#' df <- data.frame(cola = seq_len(length(sciex1)), colb = "b")
 #' data_append <- cbind2(sciex1, df)
 NULL
 

@@ -246,8 +246,8 @@ spectraVariables(sciex2)
 spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
 
 ## Append new spectra variables with cbind2()
-df <- data.frame(cola = 4:5, colb = "b")
-data_append <- cbind2(data, df)
+df <- data.frame(cola = seq_len(length(sciex1)), colb = "b")
+data_append <- cbind2(sciex1, df)
 }
 \seealso{
 \itemize{

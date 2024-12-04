@@ -70,6 +70,12 @@ test_that("cbind2 works", {
     expect_equal(res$colz, rep("z", seql))
     df2  <- data.frame(cola = 3:6, colb = "b", colz = "z")
     expect_error(cbind2(be, df2), "does not match")
+    ## with matrix
+    m <- matrix(1:seql, ncol = 1, dimnames = list(NULL, "m"))
+    res <- cbind2(be, m)
+    expect_true(validObject(res))
+    expect_equal(ncol(spectraData(res)), length(spectraVariables(be)) + 1)
+    expect_equal(res$m, 1:seql)
 })
 
 #' extractByIndex. Uses [ if not implemented
