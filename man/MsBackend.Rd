@@ -34,6 +34,7 @@
 \alias{acquisitionNum,MsBackend-method}
 \alias{peaksData,MsBackend-method}
 \alias{peaksVariables,MsBackend-method}
+\alias{cbind2,MsBackend,dataframeOrDataFrameOrmatrix-method}
 \alias{centroided,MsBackend-method}
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
@@ -132,6 +133,8 @@
 \S4method{peaksData}{MsBackend}(object, columns = c("mz", "intensity"))
 
 \S4method{peaksVariables}{MsBackend}(object)
+
+\S4method{cbind2}{MsBackend,dataframeOrDataFrameOrmatrix}(x, y = data.frame(), ...)
 
 \S4method{centroided}{MsBackend}(object)
 
@@ -325,6 +328,12 @@ in the individual \code{matrix} of the returned \code{list}. Defaults to
 \code{peaksVariables(object)} and depends on what \emph{peaks variables} the
 backend provides.}
 
+\item{x}{Object extending \code{MsBackend}.}
+
+\item{y}{For \code{cbind2()}: A \code{data.frame} or \code{DataFrame} with the
+spectra variables to be added to the backend. Need to be of the same
+length as the number of spectra in the backend.}
+
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
 
@@ -410,11 +419,9 @@ to be used to subset/filter \code{object}.}
 
 \item{msLevel.}{same as \code{msLevel} above.}
 
-\item{values}{for \code{filterValues()}: A \code{numeric} vector that define the
+\item{values}{For \code{filterValues()}: A \code{numeric} vector that define the
 values to filter the \code{object}. \code{values} needs to be of same length than
 parameter \code{spectraVariables} and in the same order.}
-
-\item{x}{Object extending \code{MsBackend}.}
 
 \item{use.names}{For \code{lengths()}: whether spectrum names should be used.}
 
@@ -600,6 +607,10 @@ object's \code{spectraData} that contain only missing values (\code{NA}). Note t
 while columns with only \code{NA}s are removed, a \code{spectraData()} call after
 \code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
 for \emph{core} spectra variables.
+\item \code{cbind2()}: allows to appends multiple spectra variables to the backend at
+once. It does so \emph{blindly} and is therefore at the risk of the user. For a
+more controlled way of adding spectra variables, the \code{joinSpectraData()}
+should be used.
 \item \code{centroided()}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided()} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a

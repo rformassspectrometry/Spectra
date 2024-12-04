@@ -1,5 +1,10 @@
 # Spectra 1.17
 
+## Change in 1.17.2
+
+- Add `cbind2()` method to easily add multiple `spectraVariables` and their 
+  content to the `spectraData` of a `Spectra` object.
+
 ## Changes in 1.17.1
 
 - Refactor `containsMz()` to support chunk-wise processing.

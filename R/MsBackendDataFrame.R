@@ -567,6 +567,23 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     .subset_backend_data_frame(x, i)
 })
 
+setClassUnion("dataframeOrDataFrameOrmatrix",
+              c("data.frame", "DataFrame", "matrix"))
+#' @importMethodsFrom methods cbind2
+#'
+#' @rdname hidden_aliases
+setMethod("cbind2", signature = c("MsBackendDataFrame",
+                                  "dataframeOrDataFrameOrmatrix"),
+          function(x, y = data.frame(), ...) {
+              if (is(y, "matrix"))
+                  y <- as.data.frame(y)
+              if (nrow(y) != length(x))
+                  stop("Length of 'y' does not match the number of spectra in 'x'")
+              x@spectraData <- cbind(x@spectraData, y)
+              validObject(x)
+              x
+          })
+
 #' @rdname hidden_aliases
 setMethod("split", "MsBackendDataFrame", function(x, f, drop = FALSE, ...) {
     if (!is.factor(f))

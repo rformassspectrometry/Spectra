@@ -182,9 +182,13 @@
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
-#' @param values for `filterValues()`: A `numeric` vector that define the
+#' @param values For `filterValues()`: A `numeric` vector that define the
 #'     values to filter the `object`. `values` needs to be of same length than
 #'     parameter `spectraVariables` and in the same order.
+#'
+#' @param y For `cbind2()`: A `data.frame` or `DataFrame` with the
+#'     spectra variables to be added to the backend. Need to be of the same
+#'     length as the number of spectra in the backend.
 #'
 #' @param x Object extending `MsBackend`.
 #'
@@ -312,6 +316,11 @@
 #'   while columns with only `NA`s are removed, a `spectraData()` call after
 #'   `dropNaSpectraVariables()` might still show columns containing `NA` values
 #'   for *core* spectra variables.
+#'
+#' - `cbind2()`: allows to appends multiple spectra variables to the backend at
+#'   once. It does so *blindly* and is therefore at the risk of the user. For a
+#'   more controlled way of adding spectra variables, the `joinSpectraData()`
+#'   should be used.
 #'
 #' - `centroided()`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided()` returns a `logical`
@@ -1021,6 +1030,26 @@ setMethod("peaksData", "MsBackend", function(object,
 setMethod("peaksVariables", "MsBackend", function(object) {
     c("mz", "intensity")
 })
+
+
+setClassUnion("dataframeOrDataFrameOrmatrix", c("data.frame", "DataFrame", "matrix"))
+#' @exportMethod cbind2
+#'
+#' @importMethodsFrom methods cbind2
+#'
+#' @rdname MsBackend
+setMethod("cbind2", signature = c("MsBackend", "dataframeOrDataFrameOrmatrix"),
+          function(x, y = data.frame(), ...) {
+    if (is(y, "matrix"))
+        y <- as.data.frame(y)
+    if (nrow(y) != length(x))
+        stop("Length of 'y' does not match the number of spectra in 'x'")
+    for (i in colnames(y)) {
+        x[[i]] <- y[, i]
+    }
+    x
+})
+
 
 #' @exportMethod centroided
 #'
