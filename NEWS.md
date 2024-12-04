@@ -3,7 +3,8 @@
 ## Change in 1.17.2
 
 - Add `cbind2()` method to easily add multiple `spectraVariables` and their 
-  content to the `spectraData` of a `Spectra` object.
+  content to the `spectraData` of a `Spectra` object. 
+  See also [issue #342](https://github.com/rformassspectrometry/Spectra/issues/342)
 
 ## Changes in 1.17.1
 
