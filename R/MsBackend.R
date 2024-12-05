@@ -188,7 +188,8 @@
 #'
 #' @param y For `cbind2()`: A `data.frame` or `DataFrame` with the
 #'     spectra variables to be added to the backend. Need to be of the same
-#'     length as the number of spectra in the backend.
+#'     length as the number of spectra in the backend. The number of rows and
+#'     their order has to match the number of spectra and their order in x.
 #'
 #' @param x Object extending `MsBackend`.
 #'
@@ -318,9 +319,10 @@
 #'   for *core* spectra variables.
 #'
 #' - `cbind2()`: allows to appends multiple spectra variables to the backend at
-#'   once. It does so *blindly* and is therefore at the risk of the user. For a
-#'   more controlled way of adding spectra variables, the `joinSpectraData()`
-#'   should be used.
+#'   once. The `Spectra` and the values for the new spectra variables have to
+#'   be in a matching order. Replacing existing spectra variables is not
+#'   supported through this function. For a more controlled way of adding
+#'   spectra variables, the `joinSpectraData()` should be used.
 #'
 #' - `centroided()`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided()` returns a `logical`
@@ -1042,8 +1044,11 @@ setMethod("cbind2", signature = c("MsBackend", "dataframeOrDataFrameOrmatrix"),
           function(x, y = data.frame(), ...) {
     if (is(y, "matrix"))
         y <- as.data.frame(y)
+    if (any(colnames(x) %in% colnames(y)))
+        stop("spectra variables in 'y' are already present in 'x' ",
+             "replacing them is not allowed")
     if (nrow(y) != length(x))
-        stop("Length of 'y' does not match the number of spectra in 'x'")
+        stop("Number of row in 'y' does not match the number of spectra in 'x'")
     for (i in colnames(y)) {
         x[[i]] <- y[, i]
     }
@@ -1373,7 +1378,7 @@ setMethod("filterRanges", "MsBackend",
                   return(object)
               if (!is.numeric(ranges))
                   stop("filterRanges only support filtering for numerical ",
-                  "'spectraVariables'")
+                       "'spectraVariables'")
               match <- match.arg(match)
               if (is.character(spectraVariables)){
                   if(!all(spectraVariables %in% spectraVariables(object)))
@@ -1383,7 +1388,7 @@ setMethod("filterRanges", "MsBackend",
                            "function to list possible values.")
               } else
                   stop("The 'spectraVariables' parameter needs to be of type ",
-                  "'character'.")
+                       "'character'.")
               if (length(spectraVariables) != length(ranges) / 2)
                   stop("Length of 'ranges' needs to be twice the length of ",
                        "the parameter 'spectraVariables' and define the lower ",

@@ -7,7 +7,7 @@
 \alias{split}
 \alias{cbind2}
 \alias{c,Spectra-method}
-\alias{cbind2,Spectra,dataframeOrDataFrame-method}
+\alias{cbind2,Spectra,dataframeOrDataFrameOrmatrix-method}
 \alias{split,Spectra,ANY-method}
 \title{Merging, aggregating and splitting Spectra}
 \usage{
@@ -26,7 +26,7 @@ joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
 
 \S4method{c}{Spectra}(x, ...)
 
-\S4method{cbind2}{Spectra,dataframeOrDataFrame}(x, y, ...)
+\S4method{cbind2}{Spectra,dataframeOrDataFrameOrmatrix}(x, y, ...)
 
 \S4method{split}{Spectra,ANY}(x, f, drop = FALSE, ...)
 }
@@ -54,7 +54,8 @@ of the \linkS4class{MsBackend}.}
 
 \item{y}{For \code{joinSpectraData()}: \code{DataFrame} with the spectra variables
 to join/add. For \code{cbind2()}: a \code{data.frame}, \code{DataFrame} or
-\code{matrix}.}
+\code{matrix}. The number of rows and their order has to match the
+number of spectra in \code{x}, respectively their order.}
 
 \item{by.x}{A \code{character(1)} specifying the spectra variable used
 for merging. Default is \code{"spectrumId"}.}
@@ -85,7 +86,8 @@ the \code{\link[=applyProcessing]{applyProcessing()}} function.
 \item \code{cbind2()}: Appends multiple spectra variables from a \code{data.frame},
 \code{DataFrame} or \code{matrix} to the \code{Spectra}  object at once. It does so
 \emph{blindly} (e.g. do not check rownames compatibility) and is therefore at
-the risk of the user. For a more  controlled way of adding spectra
+the risk of the user. The function also does not allow to replace existing
+spectra variables. For a more  controlled way of adding spectra
 variables, the \code{joinSpectraData()}  should be used. It will return a
 \code{Spectra} object with the appended spectra variables. \code{cbind2()} does
 check however that the number of rows of the \code{data.frame} or \code{DataFrame}

@@ -332,7 +332,8 @@ backend provides.}
 
 \item{y}{For \code{cbind2()}: A \code{data.frame} or \code{DataFrame} with the
 spectra variables to be added to the backend. Need to be of the same
-length as the number of spectra in the backend.}
+length as the number of spectra in the backend. The number of rows and
+their order has to match the number of spectra and their order in x.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
@@ -608,9 +609,10 @@ while columns with only \code{NA}s are removed, a \code{spectraData()} call afte
 \code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
 for \emph{core} spectra variables.
 \item \code{cbind2()}: allows to appends multiple spectra variables to the backend at
-once. It does so \emph{blindly} and is therefore at the risk of the user. For a
-more controlled way of adding spectra variables, the \code{joinSpectraData()}
-should be used.
+once. The \code{Spectra} and the values for the new spectra variables have to
+be in a matching order. Replacing existing spectra variables is not
+supported through this function. For a more controlled way of adding
+spectra variables, the \code{joinSpectraData()} should be used.
 \item \code{centroided()}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided()} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
