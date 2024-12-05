@@ -76,6 +76,9 @@ test_that("cbind2 works", {
     expect_true(validObject(res))
     expect_equal(ncol(spectraData(res)), length(spectraVariables(be)) + 1)
     expect_equal(res$m, 1:seql)
+    ## no replacing
+    expect_error(cbind2(be, data.frame(scanIndex = 1:seql)),
+                 "are already present")
 })
 
 #' extractByIndex. Uses [ if not implemented

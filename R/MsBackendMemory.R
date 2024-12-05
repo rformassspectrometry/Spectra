@@ -678,7 +678,7 @@ setMethod("cbind2", signature = c("MsBackendMemory",
           function(x, y = data.frame(), ...) {
               if (is(y, "matrix"))
                   y <- as.data.frame(y)
-              if (any(colnames(x) %in% colnames(y)))
+              if (any(colnames(spectraData(x)) %in% colnames(y)))
                   stop("spectra variables in 'y' are already present in 'x' ",
                        "replacing them is not allowed")
 
