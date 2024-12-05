@@ -59,6 +59,7 @@
 \alias{tic,MsBackendDataFrame-method}
 \alias{$,MsBackendDataFrame-method}
 \alias{$<-,MsBackendDataFrame-method}
+\alias{cbind2,MsBackendDataFrame,dataframeOrDataFrameOrmatrix-method}
 \alias{split,MsBackendDataFrame,ANY-method}
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
 \alias{backendRequiredSpectraVariables,MsBackendHdf5Peaks-method}
@@ -133,6 +134,7 @@
 \alias{$,MsBackendMemory-method}
 \alias{$<-,MsBackendMemory-method}
 \alias{[,MsBackendMemory-method}
+\alias{cbind2,MsBackendMemory,dataframeOrDataFrameOrmatrix-method}
 \alias{split,MsBackendMemory,ANY-method}
 \alias{filterAcquisitionNum,MsBackendMemory-method}
 \alias{backendRequiredSpectraVariables,MsBackendMzR-method}
@@ -271,6 +273,8 @@
 \S4method{$}{MsBackendDataFrame}(x, name) <- value
 
 \S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
+
+\S4method{cbind2}{MsBackendDataFrame,dataframeOrDataFrameOrmatrix}(x, y = data.frame(), ...)
 
 \S4method{split}{MsBackendDataFrame,ANY}(x, f, drop = FALSE, ...)
 
@@ -431,6 +435,8 @@
 \S4method{$}{MsBackendMemory}(x, name) <- value
 
 \S4method{[}{MsBackendMemory}(x, i, j, ..., drop = FALSE)
+
+\S4method{cbind2}{MsBackendMemory,dataframeOrDataFrameOrmatrix}(x, y = data.frame(), ...)
 
 \S4method{split}{MsBackendMemory,ANY}(x, f, drop = FALSE, ...)
 

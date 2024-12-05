@@ -1447,6 +1447,7 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #' @aliases combineSpectra
 #' @aliases split
 #' @aliases joinSpectraData
+#' @aliases cbind2
 #'
 #' @description
 #'
@@ -1462,6 +1463,16 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #'   all `Spectra` to the same type of backend (using the [setBackend()]
 #'   function and to eventually (if needed) apply the processing queue using
 #'   the [applyProcessing()] function.
+#'
+#' - `cbind2()`: Appends multiple spectra variables from a `data.frame`,
+#'   `DataFrame` or `matrix` to the `Spectra`  object at once. It does so
+#'   *blindly* (e.g. do not check rownames compatibility) and is therefore at
+#'   the risk of the user. The function also does not allow to replace existing
+#'   spectra variables. For a more  controlled way of adding spectra
+#'   variables, the `joinSpectraData()`  should be used. It will return a
+#'   `Spectra` object with the appended spectra variables. `cbind2()` does
+#'   check however that the number of rows of the `data.frame` or `DataFrame`
+#'   matches the number of spectra in the `Spectra` object.
 #'
 #' - `combineSpectra()`: combines sets of spectra (defined with parameter `f`)
 #'   into a single spectrum per set aggregating their MS data (i.e. their
@@ -1507,6 +1518,8 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #'      should be explored and ideally be removed using for
 #'      `QFeatures::reduceDataFrame()`, `PMS::reducePSMs()` or similar
 #'      functions.
+#'    For a more general function that allows to append `data.frame`,
+#'    `DataFrame` and `matrix` see `cbind2()`.
 #'
 #' - `split()`: splits the `Spectra` object based on parameter `f` into a `list`
 #'   of `Spectra` objects.
@@ -1543,7 +1556,10 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #'
 #' @param x A `Spectra` object.
 #'
-#' @param y A `DataFrame` with the spectra variables to join/add.
+#' @param y For `joinSpectraData()`: `DataFrame` with the spectra variables
+#'     to join/add. For `cbind2()`: a `data.frame`, `DataFrame` or
+#'     `matrix`. The number of rows and their order has to match the
+#'     number of spectra in `x`, respectively their order.
 #'
 #' @param ... Additional arguments.
 #'
@@ -1660,6 +1676,10 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #'
 #' spectraVariables(sciex2)
 #' spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
+#'
+#' ## Append new spectra variables with cbind2()
+#' df <- data.frame(cola = seq_len(length(sciex1)), colb = "b")
+#' data_append <- cbind2(sciex1, df)
 NULL
 
 #' @rdname combineSpectra
@@ -1668,6 +1688,15 @@ NULL
 setMethod("c", "Spectra", function(x, ...) {
     .concatenate_spectra(unname(list(unname(x), ...)))
 })
+
+#' @rdname combineSpectra
+#'
+#' @export
+setMethod("cbind2", signature(x = "Spectra",
+                              y = "dataframeOrDataFrameOrmatrix"),
+          function(x, y, ...) {
+              x@backend <- cbind2(x@backend, y, ...)
+              })
 
 #' @rdname combineSpectra
 setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {

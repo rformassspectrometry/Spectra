@@ -5,7 +5,9 @@
 \alias{combineSpectra}
 \alias{joinSpectraData}
 \alias{split}
+\alias{cbind2}
 \alias{c,Spectra-method}
+\alias{cbind2,Spectra,dataframeOrDataFrameOrmatrix-method}
 \alias{split,Spectra,ANY-method}
 \title{Merging, aggregating and splitting Spectra}
 \usage{
@@ -23,6 +25,8 @@ combineSpectra(
 joinSpectraData(x, y, by.x = "spectrumId", by.y, suffix.y = ".y")
 
 \S4method{c}{Spectra}(x, ...)
+
+\S4method{cbind2}{Spectra,dataframeOrDataFrameOrmatrix}(x, y, ...)
 
 \S4method{split}{Spectra,ANY}(x, f, drop = FALSE, ...)
 }
@@ -48,7 +52,10 @@ of the spectra. Defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}.
 information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
 of the \linkS4class{MsBackend}.}
 
-\item{y}{A \code{DataFrame} with the spectra variables to join/add.}
+\item{y}{For \code{joinSpectraData()}: \code{DataFrame} with the spectra variables
+to join/add. For \code{cbind2()}: a \code{data.frame}, \code{DataFrame} or
+\code{matrix}. The number of rows and their order has to match the
+number of spectra in \code{x}, respectively their order.}
 
 \item{by.x}{A \code{character(1)} specifying the spectra variable used
 for merging. Default is \code{"spectrumId"}.}
@@ -76,6 +83,15 @@ objects. In such cases it is suggested to first change the backends of
 all \code{Spectra} to the same type of backend (using the \code{\link[=setBackend]{setBackend()}}
 function and to eventually (if needed) apply the processing queue using
 the \code{\link[=applyProcessing]{applyProcessing()}} function.
+\item \code{cbind2()}: Appends multiple spectra variables from a \code{data.frame},
+\code{DataFrame} or \code{matrix} to the \code{Spectra}  object at once. It does so
+\emph{blindly} (e.g. do not check rownames compatibility) and is therefore at
+the risk of the user. The function also does not allow to replace existing
+spectra variables. For a more  controlled way of adding spectra
+variables, the \code{joinSpectraData()}  should be used. It will return a
+\code{Spectra} object with the appended spectra variables. \code{cbind2()} does
+check however that the number of rows of the \code{data.frame} or \code{DataFrame}
+matches the number of spectra in the \code{Spectra} object.
 \item \code{combineSpectra()}: combines sets of spectra (defined with parameter \code{f})
 into a single spectrum per set aggregating their MS data (i.e. their
 \emph{peaks data} matrices with the \emph{m/z} and intensity values of their
@@ -120,6 +136,8 @@ throw a warning and only the last occurrence is kept. These
 should be explored and ideally be removed using for
 \code{QFeatures::reduceDataFrame()}, \code{PMS::reducePSMs()} or similar
 functions.
+For a more general function that allows to append \code{data.frame},
+\code{DataFrame} and \code{matrix} see \code{cbind2()}.
 }
 \item \code{split()}: splits the \code{Spectra} object based on parameter \code{f} into a \code{list}
 of \code{Spectra} objects.
@@ -228,6 +246,10 @@ sciex2 <- joinSpectraData(sciex1, spv, by.y = "spectrumId")
 
 spectraVariables(sciex2)
 spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
+
+## Append new spectra variables with cbind2()
+df <- data.frame(cola = seq_len(length(sciex1)), colb = "b")
+data_append <- cbind2(sciex1, df)
 }
 \seealso{
 \itemize{
