@@ -84,14 +84,12 @@ all \code{Spectra} to the same type of backend (using the \code{\link[=setBacken
 function and to eventually (if needed) apply the processing queue using
 the \code{\link[=applyProcessing]{applyProcessing()}} function.
 \item \code{cbind2()}: Appends multiple spectra variables from a \code{data.frame},
-\code{DataFrame} or \code{matrix} to the \code{Spectra}  object at once. It does so
-\emph{blindly} (e.g. do not check rownames compatibility) and is therefore at
-the risk of the user. The function also does not allow to replace existing
-spectra variables. For a more  controlled way of adding spectra
-variables, the \code{joinSpectraData()}  should be used. It will return a
-\code{Spectra} object with the appended spectra variables. \code{cbind2()} does
-check however that the number of rows of the \code{data.frame} or \code{DataFrame}
-matches the number of spectra in the \code{Spectra} object.
+\code{DataFrame} or \code{matrix} to the \code{Spectra} object at once. The order of
+the values (rows) in \code{y} has to match the order of spectra in \code{x}. The
+function does not allow to replace existing spectra variables. \code{cbind2()}
+returns a \code{Spectra} object with the appended spectra variables. For a more
+controlled way of adding spectra variables, see the \code{joinSpectraData()}
+function.
 \item \code{combineSpectra()}: combines sets of spectra (defined with parameter \code{f})
 into a single spectrum per set aggregating their MS data (i.e. their
 \emph{peaks data} matrices with the \emph{m/z} and intensity values of their

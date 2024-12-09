@@ -187,9 +187,9 @@
 #'     parameter `spectraVariables` and in the same order.
 #'
 #' @param y For `cbind2()`: A `data.frame` or `DataFrame` with the
-#'     spectra variables to be added to the backend. Need to be of the same
-#'     length as the number of spectra in the backend. The number of rows and
-#'     their order has to match the number of spectra and their order in x.
+#'     spectra variables to be added to the backend. The number of rows of `y`
+#'     and their order have to match the number of spectra and their order
+#'     in `x`.
 #'
 #' @param x Object extending `MsBackend`.
 #'
@@ -318,11 +318,11 @@
 #'   `dropNaSpectraVariables()` might still show columns containing `NA` values
 #'   for *core* spectra variables.
 #'
-#' - `cbind2()`: allows to appends multiple spectra variables to the backend at
-#'   once. The `Spectra` and the values for the new spectra variables have to
-#'   be in a matching order. Replacing existing spectra variables is not
-#'   supported through this function. For a more controlled way of adding
-#'   spectra variables, the `joinSpectraData()` should be used.
+#' - `cbind2()`: allows to appends multiple new spectra variables to the
+#'   backend at once. The values for the new spectra variables have to
+#'   be in the same order as the spectra in `x`. Replacing existing spectra
+#'   variables is not supported through this function. For a more controlled
+#'   way of adding spectra variables, the `joinSpectraData()` should be used.
 #'
 #' - `centroided()`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided()` returns a `logical`
@@ -1044,7 +1044,7 @@ setMethod("cbind2", signature = c("MsBackend", "dataframeOrDataFrameOrmatrix"),
           function(x, y = data.frame(), ...) {
     if (is(y, "matrix"))
         y <- as.data.frame(y)
-    if (any(colnames(spectraData(x)) %in% colnames(y)))
+    if (any(spectraVariables(x) %in% colnames(y)))
         stop("spectra variables in 'y' are already present in 'x' ",
              "replacing them is not allowed")
     if (nrow(y) != length(x))

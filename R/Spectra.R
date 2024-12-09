@@ -1465,14 +1465,12 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #'   the [applyProcessing()] function.
 #'
 #' - `cbind2()`: Appends multiple spectra variables from a `data.frame`,
-#'   `DataFrame` or `matrix` to the `Spectra`  object at once. It does so
-#'   *blindly* (e.g. do not check rownames compatibility) and is therefore at
-#'   the risk of the user. The function also does not allow to replace existing
-#'   spectra variables. For a more  controlled way of adding spectra
-#'   variables, the `joinSpectraData()`  should be used. It will return a
-#'   `Spectra` object with the appended spectra variables. `cbind2()` does
-#'   check however that the number of rows of the `data.frame` or `DataFrame`
-#'   matches the number of spectra in the `Spectra` object.
+#'   `DataFrame` or `matrix` to the `Spectra` object at once. The order of
+#'   the values (rows) in `y` has to match the order of spectra in `x`. The
+#'   function does not allow to replace existing spectra variables. `cbind2()`
+#'   returns a `Spectra` object with the appended spectra variables. For a more
+#'   controlled way of adding spectra variables, see the `joinSpectraData()`
+#'   function.
 #'
 #' - `combineSpectra()`: combines sets of spectra (defined with parameter `f`)
 #'   into a single spectrum per set aggregating their MS data (i.e. their
@@ -1696,7 +1694,7 @@ setMethod("cbind2", signature(x = "Spectra",
                               y = "dataframeOrDataFrameOrmatrix"),
           function(x, y, ...) {
               x@backend <- cbind2(x@backend, y, ...)
-              })
+          })
 
 #' @rdname combineSpectra
 setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
