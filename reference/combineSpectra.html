@@ -11,14 +11,12 @@ all Spectra to the same type of backend (using the setBackend()
 function and to eventually (if needed) apply the processing queue using
 the applyProcessing() function.
 cbind2(): Appends multiple spectra variables from a data.frame,
-DataFrame or matrix to the Spectra  object at once. It does so
-blindly (e.g. do not check rownames compatibility) and is therefore at
-the risk of the user. The function also does not allow to replace existing
-spectra variables. For a more  controlled way of adding spectra
-variables, the joinSpectraData()  should be used. It will return a
-Spectra object with the appended spectra variables. cbind2() does
-check however that the number of rows of the data.frame or DataFrame
-matches the number of spectra in the Spectra object.
+DataFrame or matrix to the Spectra object at once. The order of
+the values (rows) in y has to match the order of spectra in x. The
+function does not allow to replace existing spectra variables. cbind2()
+returns a Spectra object with the appended spectra variables. For a more
+controlled way of adding spectra variables, see the joinSpectraData()
+function.
 combineSpectra(): combines sets of spectra (defined with parameter f)
 into a single spectrum per set aggregating their MS data (i.e. their
 peaks data matrices with the m/z and intensity values of their
@@ -80,14 +78,12 @@ all Spectra to the same type of backend (using the setBackend()
 function and to eventually (if needed) apply the processing queue using
 the applyProcessing() function.
 cbind2(): Appends multiple spectra variables from a data.frame,
-DataFrame or matrix to the Spectra  object at once. It does so
-blindly (e.g. do not check rownames compatibility) and is therefore at
-the risk of the user. The function also does not allow to replace existing
-spectra variables. For a more  controlled way of adding spectra
-variables, the joinSpectraData()  should be used. It will return a
-Spectra object with the appended spectra variables. cbind2() does
-check however that the number of rows of the data.frame or DataFrame
-matches the number of spectra in the Spectra object.
+DataFrame or matrix to the Spectra object at once. The order of
+the values (rows) in y has to match the order of spectra in x. The
+function does not allow to replace existing spectra variables. cbind2()
+returns a Spectra object with the appended spectra variables. For a more
+controlled way of adding spectra variables, see the joinSpectraData()
+function.
 combineSpectra(): combines sets of spectra (defined with parameter f)
 into a single spectrum per set aggregating their MS data (i.e. their
 peaks data matrices with the m/z and intensity values of their
@@ -188,14 +184,12 @@ all <code>Spectra</code> to the same type of backend (using the <code><a href="S
 function and to eventually (if needed) apply the processing queue using
 the <code><a href="addProcessing.html">applyProcessing()</a></code> function.</p></li>
 <li><p><code>cbind2()</code>: Appends multiple spectra variables from a <code>data.frame</code>,
-<code>DataFrame</code> or <code>matrix</code> to the <code>Spectra</code>  object at once. It does so
-<em>blindly</em> (e.g. do not check rownames compatibility) and is therefore at
-the risk of the user. The function also does not allow to replace existing
-spectra variables. For a more  controlled way of adding spectra
-variables, the <code>joinSpectraData()</code>  should be used. It will return a
-<code>Spectra</code> object with the appended spectra variables. <code>cbind2()</code> does
-check however that the number of rows of the <code>data.frame</code> or <code>DataFrame</code>
-matches the number of spectra in the <code>Spectra</code> object.</p></li>
+<code>DataFrame</code> or <code>matrix</code> to the <code>Spectra</code> object at once. The order of
+the values (rows) in <code>y</code> has to match the order of spectra in <code>x</code>. The
+function does not allow to replace existing spectra variables. <code>cbind2()</code>
+returns a <code>Spectra</code> object with the appended spectra variables. For a more
+controlled way of adding spectra variables, see the <code>joinSpectraData()</code>
+function.</p></li>
 <li><p><code>combineSpectra()</code>: combines sets of spectra (defined with parameter <code>f</code>)
 into a single spectrum per set aggregating their MS data (i.e. their
 <em>peaks data</em> matrices with the <em>m/z</em> and intensity values of their
@@ -424,8 +418,8 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 102         1    27.902       100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:20:51 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Merge 2 Spectra into one [Mon Dec  9 10:20:51 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:18 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Merge 2 Spectra into one [Mon Dec  9 10:46:18 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The new `Spectra` objects contains the union of spectra variables from</span></span></span>
 <span class="r-in"><span><span class="co">## both:</span></span></span>
@@ -521,7 +515,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         1      0.28         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:20:51 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:18 2024] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`1`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -533,7 +527,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     1.396         5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:20:51 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:18 2024] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`2`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:</span>
@@ -544,7 +538,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         1     2.233         8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:20:51 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:18 2024] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`3`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -556,7 +550,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     3.349        12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:20:51 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:18 2024] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`4`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -568,7 +562,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     4.465        16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:20:51 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:18 2024] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`5`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:</span>
@@ -579,7 +573,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         1     5.302        19</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:20:51 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:18 2024] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

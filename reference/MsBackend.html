@@ -442,9 +442,9 @@ backend provides.</p></dd>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>For <code><a href="combineSpectra.html">cbind2()</a></code>: A <code>data.frame</code> or <code>DataFrame</code> with the
-spectra variables to be added to the backend. Need to be of the same
-length as the number of spectra in the backend. The number of rows and
-their order has to match the number of spectra and their order in x.</p></dd>
+spectra variables to be added to the backend. The number of rows of <code>y</code>
+and their order have to match the number of spectra and their order
+in <code>x</code>.</p></dd>
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
@@ -728,11 +728,11 @@ object's <code>spectraData</code> that contain only missing values (<code>NA</co
 while columns with only <code>NA</code>s are removed, a <code><a href="spectraData.html">spectraData()</a></code> call after
 <code><a href="filterMsLevel.html">dropNaSpectraVariables()</a></code> might still show columns containing <code>NA</code> values
 for <em>core</em> spectra variables.</p></li>
-<li><p><code><a href="combineSpectra.html">cbind2()</a></code>: allows to appends multiple spectra variables to the backend at
-once. The <code>Spectra</code> and the values for the new spectra variables have to
-be in a matching order. Replacing existing spectra variables is not
-supported through this function. For a more controlled way of adding
-spectra variables, the <code><a href="combineSpectra.html">joinSpectraData()</a></code> should be used.</p></li>
+<li><p><code><a href="combineSpectra.html">cbind2()</a></code>: allows to appends multiple new spectra variables to the
+backend at once. The values for the new spectra variables have to
+be in the same order as the spectra in <code>x</code>. Replacing existing spectra
+variables is not supported through this function. For a more controlled
+way of adding spectra variables, the <code><a href="combineSpectra.html">joinSpectraData()</a></code> should be used.</p></li>
 <li><p><code><a href="spectraData.html">centroided()</a></code>, <code>centroided&lt;-</code>: gets or sets the centroiding
 information of the spectra. <code><a href="spectraData.html">centroided()</a></code> returns a <code>logical</code>
 vector of length equal to the number of spectra with <code>TRUE</code> if a
