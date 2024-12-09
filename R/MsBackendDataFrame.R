@@ -567,6 +567,25 @@ setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     .subset_backend_data_frame(x, i)
 })
 
+#' @importMethodsFrom methods cbind2
+#'
+#' @rdname hidden_aliases
+setMethod("cbind2", signature = c("MsBackendDataFrame",
+                                  "dataframeOrDataFrameOrmatrix"),
+          function(x, y = data.frame(), ...) {
+              if (is(y, "matrix"))
+                  y <- as.data.frame(y)
+              if (any(colnames(spectraData(x)) %in% colnames(y)))
+                  stop("spectra variables in 'y' are already present in 'x' ",
+                       "replacing them is not allowed")
+              if (nrow(y) != length(x))
+                  stop("Number of row in 'y' does not match the number of ",
+                       "spectra in 'x'")
+              x@spectraData <- cbind(x@spectraData, y)
+              validObject(x)
+              x
+          })
+
 #' @rdname hidden_aliases
 setMethod("split", "MsBackendDataFrame", function(x, f, drop = FALSE, ...) {
     if (!is.factor(f))

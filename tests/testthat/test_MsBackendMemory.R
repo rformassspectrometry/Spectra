@@ -564,6 +564,22 @@ test_that("[,MsBackendMemory works", {
     expect_equal(res, res_2)
 })
 
+test_that("cbind2, MsBackendMemory works", {
+    be <- new("MsBackendMemory")
+    df <- data.frame(scanIndex = 1:2, a = "a", b = "b")
+    be <- backendInitialize(be, df)
+    df2 <- data.frame(cola = 3:4, colb = "b", colz = "z")
+    res <- cbind2(be, df2)
+    expect_true(validObject(res))
+    expect_equal(ncol(spectraData(res)), ncol(spectraData(be)) +3)
+    expect_equal(res$cola, c(3, 4))
+    expect_equal(res$colb, c("b", "b"))
+    expect_equal(res$colz, c("z", "z"))
+    expect_equal(res$scanIndex, 1:2)
+    df3 <- data.frame(colv = 1:6, colw = "b")
+    expect_error(cbind2(be, df3), "does not match")
+})
+
 test_that("split,MsBackendMemory works", {
     be <- new("MsBackendMemory")
     be <- backendInitialize(be, test_df)
