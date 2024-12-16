@@ -9,6 +9,7 @@
 #' @aliases supportsSetBackend
 #' @aliases backendBpparam
 #' @aliases backendInitialize
+#' @aliases backendParallelFactor
 #' @aliases backendParallelFactor,MsBackendMzR-method
 #' @aliases backendParallelFactor,MsBackendHdf5Peaks-method
 #' @aliases dataStorageBasePath
@@ -64,8 +65,8 @@
 #'
 #' @param BPPARAM for `backendBpparam()`: parameter object from the
 #'     `BiocParallel` package defining the parallel processing setup.
-#'     Defaults to `BPPARAM = bpparam()`. See [bpparam()] for more
-#'     information.
+#'     Defaults to `BPPARAM = bpparam()`. See [BiocParallel::bpparam()]
+#'     for more information.
 #'
 #' @param columns For `spectraData()` accessor: optional `character` with
 #'     column names (spectra variables) that should be included in the
@@ -133,7 +134,7 @@
 #'
 #' @param ppm For `filterPrecursorMzValues()`: `numeric(1)` with the
 #'     m/z-relative maximal acceptable difference for a m/z to be considered
-#'     matching. See [closest()] for details.
+#'     matching. See [MsCoreUtils::closest()] for details.
 #'     For `filterValues()`: `numeric` of any length allowing to define
 #'     a maximal accepted difference between user input `values` and the
 #'     `spectraVariables` values.  If it is not equal to the length of the
@@ -171,7 +172,8 @@
 #'
 #' @param tolerance For `filterPrecursorMzValues()`: `numeric(1)` with the
 #'     maximal absolute acceptable difference for a m/z value to be considered
-#'     matching. See [closest()] for details. For `filterValues()`: `numeric`
+#'     matching. See [MsCoreUtils::closest()] for details.
+#'     For `filterValues()`: `numeric`
 #'     accepted tolerance between the `values` and the spectra variables.
 #'     Defaults to `tolerance = 0`. If it is not equal to the length of the
 #'     value provided with parameter `spectraVariables`, `tolerance[1]` will
@@ -358,9 +360,9 @@
 #'   support `logical` and eventually `character`). While being apparently
 #'   redundant to `[`, this methods avoids package namespace errors/problems
 #'   that can result in implementations of `[` being not found by R (which
-#'   can happen sometimes in parallel processing using the [SnowParam()]). This
-#'   method is used internally by `Spectra` to extract/subset its backend.
-#'   Implementation of this method is mandatory.
+#'   can happen sometimes in parallel processing using the
+#'   [BiocParallel::SnowParam()]). This method is used internally by `Spectra`
+#'   to extract/subset its backend. Implementation of this method is mandatory.
 #'
 #' - `filterAcquisitionNum()`: filters the object keeping only spectra matching
 #'   the provided acquisition numbers (argument `n`). If `dataOrigin` or
@@ -462,14 +464,14 @@
 #'    for `MsBackend` is available.
 #'
 #' - `intensity()`: gets the intensity values from the spectra. Returns
-#'   a [NumericList()] of `numeric` vectors (intensity values for each
+#'   a [IRanges::NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
 #' - `intensity<-`: replaces the intensity values. `value` has to be a `list`
-#'   (or [NumericList()]) of length equal to the number of spectra and the
-#'   number of values within each list element identical to the number of
-#'   peaks in each spectrum (i.e. the `lengths(x)`). Note that just
+#'   (or [IRanges::NumericList()]) of length equal to the number of spectra
+#'   and the number of values within each list element identical to the
+#'   number of peaks in each spectrum (i.e. the `lengths(x)`). Note that just
 #'   writeable backends support this method.
 #'
 #' - `ionCount()`: returns a `numeric` with the sum of intensities for
@@ -512,8 +514,8 @@
 #' - `msLevel<-`: replaces the spectra's MS level.
 #'
 #' - `mz()`: gets the mass-to-charge ratios (m/z) from the
-#'   spectra. Returns a [NumericList()] or length equal to the number of
-#'   spectra, each element a `numeric` vector with the m/z values of
+#'   spectra. Returns a [IRanges::NumericList()] or length equal to the
+#'   number of spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
 #' - `mz<-`: replaces the m/z values. `value` has to be a `list` of length equal
@@ -700,10 +702,10 @@
 #'   precursor.
 #' - `"precursorCharge"`: `integer` with the charge of the precursor.
 #' - `"collisionEnergy"`: `numeric` with the collision energy.
-#' - `"mz"`: [NumericList()] of `numeric` vectors representing the m/z values
-#'   for each spectrum.
-#' - `"intensity"`: [NumericList()] of `numeric` vectors representing the
-#'   intensity values for each spectrum.
+#' - `"mz"`: [IRanges::NumericList()] of `numeric` vectors representing the
+#'   m/z values for each spectrum.
+#' - `"intensity"`: [IRanges::NumericList()] of `numeric` vectors
+#'   representing the intensity values for each spectrum.
 #'
 #' Additional columns are allowed too.
 #'

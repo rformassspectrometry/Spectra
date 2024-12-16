@@ -19,7 +19,8 @@ precursorMz +/- (tolerance + ppm(precursorMz, ppm)) are considered.}
 m/z. See documentation of parameter \code{tolerance} for more information.}
 
 \item{BPPARAM}{parallel processing setup. Defaults to
-\code{BPPARAM = SerialParam()}. See \code{\link[=SerialParam]{SerialParam()}} for more information.}
+\code{BPPARAM = SerialParam()}. See \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}} for
+more information.}
 }
 \value{
 \code{numeric} of length equal to the number of spectra in \code{object} with

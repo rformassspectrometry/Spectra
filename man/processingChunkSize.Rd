@@ -22,8 +22,8 @@ processingChunkFactor(x)
 
 \item{object}{\code{Spectra} object.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
-information.}
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+for more information.}
 }
 \value{
 \code{processingChunkSize()} returns the currently defined processing

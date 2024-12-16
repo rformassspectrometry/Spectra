@@ -255,9 +255,9 @@ NULL
 #'   matrices might be reported multiple times. Note that if one of
 #'   `xPrecursorMz` or `yPrecursorMz` are `NA` or if both are the same, the
 #'   results are the same as with [joinPeaks()]. To calculate GNPS similarity
-#'   scores, [gnps()] should be called on the aligned peak matrices (i.e.
-#'   `compareSpectra` should be called with `MAPFUN = joinPeaksGnps` and
-#'   `FUN = MsCoreUtils::gnps`).
+#'   scores, [MsCoreUtils::gnps()] should be called on the aligned peak
+#'   matrices (i.e. `compareSpectra` should be called with
+#'   `MAPFUN = joinPeaksGnps` and `FUN = MsCoreUtils::gnps`).
 #'
 #' - `joinPeaksNone()`: does not perform any peak matching but simply returns
 #'   the peak matrices in a `list`. This function should be used with the
@@ -313,8 +313,8 @@ NULL
 #' - [compareSpectra()] for the function to calculate similarities between
 #'   spectra.
 #'
-#' - [gnps()] in the *MsCoreUtils* package for more information on the GNPS
-#'   similarity score.
+#' - [MsCoreUtils::gnps()] in the *MsCoreUtils* package for more information
+#'   on the GNPS similarity score.
 #'
 #' @importFrom MsCoreUtils join ppm
 #'

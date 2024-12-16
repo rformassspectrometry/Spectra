@@ -46,7 +46,7 @@ accepted difference between m/z values for peaks to be matched. This
 parameter is directly passed to \code{MAPFUN}.}
 
 \item{FUN}{function to compare intensities of peaks between two spectra.
-Defaults to \code{\link[=ndotproduct]{ndotproduct()}}.}
+Defaults to \code{\link[MsCoreUtils:distance]{MsCoreUtils::ndotproduct()}}.}
 
 \item{...}{Additional arguments passed to the internal functions.}
 
@@ -56,9 +56,9 @@ of length 1).}
 }
 \description{
 \code{compareSpectra()} compares each spectrum in \code{x} with each spectrum in \code{y}
-using the function provided with \code{FUN} (defaults to \code{\link[=ndotproduct]{ndotproduct()}}). If
-\code{y} is missing, each spectrum in \code{x} is compared with each other spectrum
-in \code{x}.
+using the function provided with \code{FUN} (defaults to
+\code{\link[MsCoreUtils:distance]{MsCoreUtils::ndotproduct()}}). If \code{y} is missing, each spectrum in \code{x} is
+compared with each other spectrum in \code{x}.
 The matching/mapping of peaks between the compared spectra is done with the
 \code{MAPFUN} function. The default \code{\link[=joinPeaks]{joinPeaks()}} matches peaks of both spectra
 and allows to keep all peaks from the first spectrum (\code{type = "left"}),

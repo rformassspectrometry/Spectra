@@ -72,7 +72,7 @@ object and initialize the with data.. See section on creation of
 \code{Spectra} objects for details. For all other methods a \code{Spectra} object.}
 
 \item{processingQueue}{For \code{Spectra()}: optional \code{list} of
-\linkS4class{ProcessingStep} objects.}
+\link[ProtGenerics:ProcessingStep]{ProtGenerics::ProcessingStep} objects.}
 
 \item{metadata}{For \code{Spectra()}: optional \code{list} with metadata information.}
 
@@ -87,9 +87,9 @@ passing the full spectra data to the initialize method. See section on
 creation of \code{Spectra} objects for details.
 For \code{export()}: \linkS4class{MsBackend} to be used to export the data.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
-information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
-of the \linkS4class{MsBackend}.}
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+for more information. This is passed directly to the
+\code{\link[=backendInitialize]{backendInitialize()}} method of the \linkS4class{MsBackend}.}
 
 \item{source}{For \code{Spectra()}: instance of \linkS4class{MsBackend} that can be
 used to import spectrum data from the provided files. See section
@@ -254,8 +254,8 @@ new backend is performed separately (and in parallel) for each file. Users
 are advised to use the default setting.
 \item \code{...}: optional additional arguments passed to the \code{\link[=backendInitialize]{backendInitialize()}}
 method of the new \code{backend}.
-\item \code{BPPARAM}: setup for the parallel processing. See \code{\link[=bpparam]{bpparam()}} for
-details.
+\item \code{BPPARAM}: setup for the parallel processing. See
+\code{\link[BiocParallel:register]{BiocParallel::bpparam()}} for details.
 }
 }
 

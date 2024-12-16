@@ -104,7 +104,7 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   the mzML file from which the data was read.
 #'
 #' - `intensity()`: gets the intensity values from the spectra. Returns
-#'   a [NumericList()] of `numeric` vectors (intensity values for each
+#'   a [IRanges::NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
@@ -136,8 +136,8 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   level for each spectrum (or `NA_integer_` if not available).
 #'
 #' - `mz()`: gets the mass-to-charge ratios (m/z) from the
-#'   spectra. Returns a [NumericList()] or length equal to the number of
-#'   spectra, each element a `numeric` vector with the m/z values of
+#'   spectra. Returns a [IRanges::NumericList()] or length equal to the
+#'   number of spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
 #' - `polarity()`, `polarity<-`: gets or sets the polarity for each

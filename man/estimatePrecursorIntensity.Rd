@@ -38,9 +38,9 @@ should be estimated. Defaults to \code{2L}.}
 spectra belong to the same original data file (sample).
 Defaults to \code{f = dataOrigin(x)}.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
-information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
-of the \linkS4class{MsBackend}.}
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+for more information. This is passed directly to the
+\code{\link[=backendInitialize]{backendInitialize()}} method of the \linkS4class{MsBackend}.}
 }
 \description{
 Some MS instrument manufacturers don't provide precursor intensities for

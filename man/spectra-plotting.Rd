@@ -140,12 +140,12 @@ plotting area.}
 which \code{x} should be plotted against.}
 
 \item{ppm}{for \code{plotSpectraMirror()}: m/z relative acceptable difference (in
-ppm) for peaks to be considered matching (see \code{\link[=common]{common()}} for more
-details).}
+ppm) for peaks to be considered matching (see \code{\link[MsCoreUtils:matching]{MsCoreUtils::common()}}
+for more details).}
 
 \item{tolerance}{for \code{plotSpectraMirror()}: absolute acceptable difference of
-m/z values for peaks to be considered matching (see \code{\link[=common]{common()}} for more
-details).}
+m/z values for peaks to be considered matching (see
+\code{\link[MsCoreUtils:matching]{MsCoreUtils::common()}} for more details).}
 
 \item{matchCol}{for \code{plotSpectraMirror()}: color for matching peaks.}
 
@@ -171,10 +171,10 @@ the plot area into as many panels as there are spectra.
 an overlay).
 \item \code{plotSpectraMirror()}: plots a pair of spectra as a \emph{mirror plot}.
 Parameters \code{x} and \code{y} both have to be a \code{Spectra} of length 1. Matching
-peaks (considering \code{ppm} and \code{tolerance}) are highlighted. See \code{\link[=common]{common()}}
-for details on peak matching. Parameters \code{matchCol}, \code{matchLty},
-\code{matchLwd} and \code{matchPch} allow to customize how matching peaks are
-indicated.
+peaks (considering \code{ppm} and \code{tolerance}) are highlighted. See
+\code{\link[MsCoreUtils:matching]{MsCoreUtils::common()}} for details on peak matching. Parameters
+\code{matchCol}, \code{matchLty}, \code{matchLwd} and \code{matchPch} allow to customize
+how matching peaks are indicated.
 }
 }
 \examples{

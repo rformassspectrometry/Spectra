@@ -79,9 +79,9 @@ peaks in \code{x} can match up to two peaks in \code{y} hence peaks in the retur
 matrices might be reported multiple times. Note that if one of
 \code{xPrecursorMz} or \code{yPrecursorMz} are \code{NA} or if both are the same, the
 results are the same as with \code{\link[=joinPeaks]{joinPeaks()}}. To calculate GNPS similarity
-scores, \code{\link[=gnps]{gnps()}} should be called on the aligned peak matrices (i.e.
-\code{compareSpectra} should be called with \code{MAPFUN = joinPeaksGnps} and
-\code{FUN = MsCoreUtils::gnps}).
+scores, \code{\link[MsCoreUtils:gnps]{MsCoreUtils::gnps()}} should be called on the aligned peak
+matrices (i.e. \code{compareSpectra} should be called with
+\code{MAPFUN = joinPeaksGnps} and \code{FUN = MsCoreUtils::gnps}).
 \item \code{joinPeaksNone()}: does not perform any peak matching but simply returns
 the peak matrices in a \code{list}. This function should be used with the
 \code{MAPFUN} parameter of \code{\link[=compareSpectra]{compareSpectra()}} if the spectra similarity
@@ -145,8 +145,8 @@ joinPeaksGnps(x, y, pmz_x, yPrecursorMz = NA)
 \itemize{
 \item \code{\link[=compareSpectra]{compareSpectra()}} for the function to calculate similarities between
 spectra.
-\item \code{\link[=gnps]{gnps()}} in the \emph{MsCoreUtils} package for more information on the GNPS
-similarity score.
+\item \code{\link[MsCoreUtils:gnps]{MsCoreUtils::gnps()}} in the \emph{MsCoreUtils} package for more information
+on the GNPS similarity score.
 }
 }
 \author{
