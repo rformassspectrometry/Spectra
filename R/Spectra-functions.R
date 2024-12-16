@@ -198,7 +198,8 @@ NULL
 #' @param ... Additional parameters for `FUN`.
 #'
 #' @param BPPARAM Optional settings for `BiocParallel`-based parallel
-#'     processing. See [bpparam()] for more informations and options.
+#'     processing. See [BiocParallel::bpparam()] for more informations and
+#'     options.
 #'
 #' @return A `list` with the result of `FUN`.
 #'
@@ -959,8 +960,8 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #'   per file parallel processing if `f` or `chunkSize` is not defined.
 #'   Other on-disk backends: only if requested by the user.
 #'
-#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
-#'     information.
+#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
+#'     for more information.
 #'
 #' @param object `Spectra` object.
 #'
@@ -1039,8 +1040,8 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #' For these, the `backendBpparam()` function will always return a
 #' `SerialParam()` independently on how parallel processing was defined.
 #'
-#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
-#'     information.
+#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
+#'     for more information.
 #'
 #' @param object `Spectra` object.
 #'

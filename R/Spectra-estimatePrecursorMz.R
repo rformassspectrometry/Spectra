@@ -46,7 +46,8 @@
 #'     m/z. See documentation of parameter `tolerance` for more information.
 #'
 #' @param BPPARAM parallel processing setup. Defaults to
-#'     `BPPARAM = SerialParam()`. See [SerialParam()] for more information.
+#'     `BPPARAM = SerialParam()`. See [BiocParallel::SerialParam()] for
+#'     more information.
 #'
 #' @return `numeric` of length equal to the number of spectra in `object` with
 #'     the fragment spectra's estimated precursor m/z values. For MS1 spectra

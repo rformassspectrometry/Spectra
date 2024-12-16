@@ -49,9 +49,9 @@ NULL
 #'     creation of `Spectra` objects for details.
 #'     For `export()`: [MsBackend-class] to be used to export the data.
 #'
-#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
-#'     information. This is passed directly to the [backendInitialize()] method
-#'     of the [MsBackend-class].
+#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
+#'     for more information. This is passed directly to the
+#'     [backendInitialize()] method of the [MsBackend-class].
 #'
 #' @param f For `setBackend()`: factor defining how to split the data
 #'     for parallelized copying of the spectra data to the new backend. For
@@ -65,7 +65,7 @@ NULL
 #'     `Spectra` objects for details. For all other methods a `Spectra` object.
 #'
 #' @param processingQueue For `Spectra()`: optional `list` of
-#'     [ProcessingStep-class] objects.
+#'     [ProtGenerics::ProcessingStep-class] objects.
 #'
 #' @param source For `Spectra()`: instance of [MsBackend-class] that can be
 #'     used to import spectrum data from the provided files. See section
@@ -180,8 +180,8 @@ NULL
 #' - `...`: optional additional arguments passed to the [backendInitialize()]
 #'   method of the new `backend`.
 #'
-#' - `BPPARAM`: setup for the parallel processing. See [bpparam()] for
-#'   details.
+#' - `BPPARAM`: setup for the parallel processing. See
+#'   [BiocParallel::bpparam()] for details.
 #'
 #'
 #' @section Exporting data from a `Spectra` object:
@@ -608,9 +608,9 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 #' replaced (again, using dedicated functions or using `$<-`).
 #'
 #'
-#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
-#'     information. See also [processingChunkSize()] for more information
-#'     on parallel processing.
+#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
+#'     for more information. See also [processingChunkSize()] for more
+#'     information on parallel processing.
 #'
 #' @param columns For `spectraData()` accessor: optional `character` with
 #'     column names (spectra variables) that should be included in the
@@ -779,7 +779,7 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 #'   with the data storage location of each spectrum.
 #'
 #' - `intensity()`: gets the intensity values from the spectra. Returns
-#'   a [NumericList()] of `numeric` vectors (intensity values for each
+#'   a [IRanges::NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the list is equal to the number of
 #'   `spectra` in `object`.
 #'
@@ -818,19 +818,19 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 #'   level for each spectrum.
 #'
 #' - `mz()`: gets the mass-to-charge ratios (m/z) from the
-#'   spectra. Returns a [NumericList()] or length equal to the number of
-#'   spectra, each element a `numeric` vector with the m/z values of
+#'   spectra. Returns a [IRanges::NumericList()] or length equal to the number
+#'   of spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
 #' - `peaksData()`: gets the *peaks* data for all spectra in `object`. Peaks
 #'   data consist of the m/z and intensity values as well as possible additional
 #'   annotations (variables) of all peaks of each spectrum. The function
-#'   returns a [SimpleList()] of two dimensional arrays (either `matrix` or
-#'   `data.frame`), with each array providing the values for the requested
-#'   *peak variables* (by default `"mz"` and `"intensity"`). Optional parameter
-#'   `columns` is passed to the backend's `peaksData()` function to allow
-#'   the selection of specific (or additional) peaks variables (columns) that
-#'   should be extracted (if available). Importantly,
+#'   returns a [S4Vectors::SimpleList()] of two dimensional arrays (either
+#'   `matrix` or `data.frame`), with each array providing the values for the
+#'   requested *peak variables* (by default `"mz"` and `"intensity"`).
+#'   Optional parameter `columns` is passed to the backend's `peaksData()`
+#'   function to allow the selection of specific (or additional) peaks
+#'   variables (columns) that should be extracted (if available). Importantly,
 #'   it is **not** guaranteed that each backend supports this parameter (while
 #'   each backend must support extraction of `"mz"` and `"intensity"` columns).
 #'   Parameter `columns` defaults to `c("mz", "intensity")` but any value
@@ -1522,9 +1522,9 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #' - `split()`: splits the `Spectra` object based on parameter `f` into a `list`
 #'   of `Spectra` objects.
 #'
-#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
-#'     information. This is passed directly to the [backendInitialize()] method
-#'     of the [MsBackend-class].
+#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
+#'     for more information. This is passed directly to the
+#'     [backendInitialize()] method of the [MsBackend-class].
 #'
 #' @param by.x A `character(1)` specifying the spectra variable used
 #'     for merging. Default is `"spectrumId"`.
@@ -2028,12 +2028,13 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'
 #' - `deisotopeSpectra()`: *deisotopes* each spectrum keeping only the
 #'   monoisotopic peak for groups of isotopologues. Isotopologues are
-#'   estimated using the [isotopologues()] function from the
+#'   estimated using the [MetaboCoreUtils::isotopologues()] function from the
 #'   *MetaboCoreUtils* package. Note that
 #'   the default parameters for isotope prediction/detection have been
 #'   determined using data from the Human Metabolome Database (HMDB) and
 #'   isotopes for elements other than CHNOPS might not be detected. See
-#'   parameter `substDefinition` in the documentation of [isotopologues()] for
+#'   parameter `substDefinition` in the documentation of
+#'   [MetaboCoreUtils::isotopologues()] for
 #'   more information. The approach and code to define the parameters for
 #'   isotope prediction is described
 #'   [here](https://github.com/EuracBiomedicalResearch/isotopologues).
@@ -2105,7 +2106,7 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'     subsetted.
 #'
 #' @param charge For `deisotopeSpectra()`: expected charge of the ionized
-#'     compounds. See [isotopologues()] for details.
+#'     compounds. See [MetaboCoreUtils::isotopologues()] for details.
 #'
 #' @param dataOrigin For `filterDataOrigin()`: `character` to define which
 #'     spectra to keep.
@@ -2187,7 +2188,7 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'     For `filterPrecursorMaxIntensity()`: `numeric(1)` defining the relative
 #'     maximal accepted difference of precursor m/z values of spectra for
 #'     grouping them into *precursor groups*. For `filterPrecursorIsotopes()`:
-#'     passed directly to the [isotopologues()] function.
+#'     passed directly to the [MetaboCoreUtils::isotopologues()] function.
 #'     For `filterValues()`: `numeric` of any length allowing to define
 #'     a maximal accepted difference between user input `values` and the
 #'     `spectraVariables` values. If it is not equal to the length of the
@@ -2213,7 +2214,8 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'     `filterPrecursorIsotopes()`: `matrix` or `data.frame` with definitions
 #'     of isotopic substitutions. Uses by default isotopic substitutions
 #'     defined from all compounds in the Human Metabolome Database (HMDB). See
-#'     [isotopologues()] or [isotopicSubstitutionMatrix()] in the
+#'     [MetaboCoreUtils::isotopologues()] or
+#'     [MetaboCoreUtils::isotopicSubstitutionMatrix()] in the
 #'     *MetaboCoreUtils* for details.
 #'
 #' @param threshold For `filterFourierTransformArtefacts()`: the relative
@@ -2230,7 +2232,8 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'     For `filterPrecursorMaxIntensity()`: `numeric(1)` defining the
 #'     (constant) maximal accepted difference of precursor m/z values of
 #'     spectra for grouping them into *precursor groups*. For
-#'     `filterPrecursorIsotopes()`: passed directly to the [isotopologues()]
+#'     `filterPrecursorIsotopes()`: passed directly to the
+#'     [MetaboCoreUtils::isotopologues()]
 #'     function. For `filterValues()`: `numeric` of any length allowing to
 #'     define a maximal accepted difference between user input `values` and the
 #'     `spectraVariables` values. If it is not equal to the length of the
@@ -2906,7 +2909,8 @@ setMethod("filterValues", "Spectra",
 #'
 #' - `containsMz()`: checks for each of the spectra whether they contain mass
 #'   peaks with an m/z equal to `mz` (given acceptable difference as defined by
-#'   parameters `tolerance` and `ppm` - see [common()] for details). Parameter
+#'   parameters `tolerance` and `ppm` - see [MsCoreUtils::common()] for
+#'   details). Parameter
 #'   `which` allows to define whether any (`which = "any"`, the default) or
 #'   all (`which = "all"`) of the `mz` have to match. The function returns
 #'   `NA` if `mz` is of length 0 or is `NA`.
@@ -2918,7 +2922,8 @@ setMethod("filterValues", "Spectra",
 #'
 #' - `entropy()`: calculates the entropy of each spectra based on the metrics
 #'   suggested by Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
-#'   See also [nentropy()] in the *MsCoreUtils* package for details.
+#'   See also [MsCoreUtils::nentropy()] in the *MsCoreUtils* package for
+#'   details.
 #'
 #' - `estimatePrecursorIntensity()`: defines the precursor intensities for MS2
 #'   spectra using the intensity of the matching MS1 peak from the
@@ -2992,10 +2997,11 @@ setMethod("filterValues", "Spectra",
 #' @param binSize For `bin()`: `numeric(1)` defining the size for the m/z bins.
 #'     Defaults to `binSize = 1`.
 #'
-#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
-#'     information. This is passed directly to the [backendInitialize()] method
-#'     of the [MsBackend-class]. See also [processingChunkSize()] for
-#'     additional information on parallel processing.
+#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
+#'     for more information. This is passed directly to the
+#'     [backendInitialize()] method of the [MsBackend-class]. See also
+#'     [processingChunkSize()] for additional information on parallel
+#'     processing.
 #'
 #' @param breaks For `bin()`: `numeric` defining the m/z breakpoints between
 #'     bins.
@@ -3055,8 +3061,8 @@ setMethod("filterValues", "Spectra",
 #'     value which should be subtracted from the spectrum's precursor m/z.
 #'
 #' @param normalized for `entropy()`: `logical(1)` whether the normalized
-#'     entropy should be calculated (default). See also [nentropy()] for
-#'     details.
+#'     entropy should be calculated (default). See also
+#'     [MsCoreUtils::nentropy()] for details.
 #'
 #' @param object A `Spectra` object.
 #'
@@ -3530,9 +3536,9 @@ setMethod("spectrapply", "Spectra", function(object, FUN, ...,
 #'     spectra belong to the same original data file (sample).
 #'     Defaults to `f = dataOrigin(x)`.
 #'
-#' @param BPPARAM Parallel setup configuration. See [bpparam()] for more
-#'     information. This is passed directly to the [backendInitialize()] method
-#'     of the [MsBackend-class].
+#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
+#'     for more information. This is passed directly to the
+#'     [backendInitialize()] method of the [MsBackend-class].
 #'
 #' @author Johannes Rainer with feedback and suggestions from Corey Broeckling
 #'
@@ -3591,9 +3597,9 @@ setMethod(
 #' @description
 #'
 #' `compareSpectra()` compares each spectrum in `x` with each spectrum in `y`
-#' using the function provided with `FUN` (defaults to [ndotproduct()]). If
-#' `y` is missing, each spectrum in `x` is compared with each other spectrum
-#' in `x`.
+#' using the function provided with `FUN` (defaults to
+#' [MsCoreUtils::ndotproduct()]). If `y` is missing, each spectrum in `x` is
+#' compared with each other spectrum in `x`.
 #' The matching/mapping of peaks between the compared spectra is done with the
 #' `MAPFUN` function. The default [joinPeaks()] matches peaks of both spectra
 #' and allows to keep all peaks from the first spectrum (`type = "left"`),
@@ -3628,7 +3634,7 @@ setMethod(
 #' similarity in the scoring.
 #'
 #' @param FUN function to compare intensities of peaks between two spectra.
-#'     Defaults to [ndotproduct()].
+#'     Defaults to [MsCoreUtils::ndotproduct()].
 #'
 #' @param MAPFUN For `compareSpectra()`: function to map/match peaks between
 #'     the two compared spectra. See [joinPeaks()] for more information and

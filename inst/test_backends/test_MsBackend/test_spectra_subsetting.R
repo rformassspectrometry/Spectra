@@ -68,7 +68,7 @@ test_that("cbind2 works", {
     expect_equal(res$cola, seq_len(seql))
     expect_equal(res$colb, rep("b", seql))
     expect_equal(res$colz, rep("z", seql))
-    df2  <- data.frame(cola = 3:6, colb = "b", colz = "z")
+    df2  <- data.frame(cola = seq_len(length(be) / 2), colb = "b", colz = "z")
     expect_error(cbind2(be, df2), "does not match")
     ## with matrix
     m <- matrix(1:seql, ncol = 1, dimnames = list(NULL, "m"))

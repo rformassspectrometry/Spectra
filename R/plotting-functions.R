@@ -14,10 +14,10 @@
 #'
 #' - `plotSpectraMirror()`: plots a pair of spectra as a *mirror plot*.
 #'   Parameters `x` and `y` both have to be a `Spectra` of length 1. Matching
-#'   peaks (considering `ppm` and `tolerance`) are highlighted. See [common()]
-#'   for details on peak matching. Parameters `matchCol`, `matchLty`,
-#'   `matchLwd` and `matchPch` allow to customize how matching peaks are
-#'   indicated.
+#'   peaks (considering `ppm` and `tolerance`) are highlighted. See
+#'   [MsCoreUtils::common()] for details on peak matching. Parameters
+#'   `matchCol`, `matchLty`, `matchLwd` and `matchPch` allow to customize
+#'   how matching peaks are indicated.
 #'
 #' @param x a [Spectra()] object. For `plotSpectraMirror()` it has to be an
 #'     object of length 2.
@@ -70,12 +70,12 @@
 #'     plotting area.
 #'
 #' @param ppm for `plotSpectraMirror()`: m/z relative acceptable difference (in
-#'     ppm) for peaks to be considered matching (see [common()] for more
-#'     details).
+#'     ppm) for peaks to be considered matching (see [MsCoreUtils::common()]
+#'     for more details).
 #'
 #' @param tolerance for `plotSpectraMirror()`: absolute acceptable difference of
-#'     m/z values for peaks to be considered matching (see [common()] for more
-#'     details).
+#'     m/z values for peaks to be considered matching (see
+#'     [MsCoreUtils::common()] for more details).
 #'
 #' @param matchCol for `plotSpectraMirror()`: color for matching peaks.
 #'

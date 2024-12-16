@@ -171,7 +171,8 @@ filterPrecursorPeaks(
 \code{filterPrecursorIsotopes()}: \code{matrix} or \code{data.frame} with definitions
 of isotopic substitutions. Uses by default isotopic substitutions
 defined from all compounds in the Human Metabolome Database (HMDB). See
-\code{\link[=isotopologues]{isotopologues()}} or \code{\link[=isotopicSubstitutionMatrix]{isotopicSubstitutionMatrix()}} in the
+\code{\link[MetaboCoreUtils:isotopologues]{MetaboCoreUtils::isotopologues()}} or
+\code{\link[MetaboCoreUtils:isotopicSubstitutionMatrix]{MetaboCoreUtils::isotopicSubstitutionMatrix()}} in the
 \emph{MetaboCoreUtils} for details.}
 
 \item{tolerance}{For \code{filterMzValues()} and \code{reduceSpectra()}:
@@ -182,7 +183,8 @@ tolerance for each m/z value.
 For \code{filterPrecursorMaxIntensity()}: \code{numeric(1)} defining the
 (constant) maximal accepted difference of precursor m/z values of
 spectra for grouping them into \emph{precursor groups}. For
-\code{filterPrecursorIsotopes()}: passed directly to the \code{\link[=isotopologues]{isotopologues()}}
+\code{filterPrecursorIsotopes()}: passed directly to the
+\code{\link[MetaboCoreUtils:isotopologues]{MetaboCoreUtils::isotopologues()}}
 function. For \code{filterValues()}: \code{numeric} of any length allowing to
 define a maximal accepted difference between user input \code{values} and the
 \code{spectraVariables} values. If it is not equal to the length of the
@@ -195,7 +197,7 @@ m/z values for peaks to be matched (or grouped).
 For \code{filterPrecursorMaxIntensity()}: \code{numeric(1)} defining the relative
 maximal accepted difference of precursor m/z values of spectra for
 grouping them into \emph{precursor groups}. For \code{filterPrecursorIsotopes()}:
-passed directly to the \code{\link[=isotopologues]{isotopologues()}} function.
+passed directly to the \code{\link[MetaboCoreUtils:isotopologues]{MetaboCoreUtils::isotopologues()}} function.
 For \code{filterValues()}: \code{numeric} of any length allowing to define
 a maximal accepted difference between user input \code{values} and the
 \code{spectraVariables} values. If it is not equal to the length of the
@@ -203,7 +205,7 @@ value provided with parameter \code{spectraVariables}, \code{ppm[1]} will be
 recycled.}
 
 \item{charge}{For \code{deisotopeSpectra()}: expected charge of the ionized
-compounds. See \code{\link[=isotopologues]{isotopologues()}} for details.}
+compounds. See \code{\link[MetaboCoreUtils:isotopologues]{MetaboCoreUtils::isotopologues()}} for details.}
 
 \item{object}{\code{Spectra} object.}
 
@@ -453,12 +455,13 @@ These operations don't affect the number of spectra in the \code{Spectra} object
 \itemize{
 \item \code{deisotopeSpectra()}: \emph{deisotopes} each spectrum keeping only the
 monoisotopic peak for groups of isotopologues. Isotopologues are
-estimated using the \code{\link[=isotopologues]{isotopologues()}} function from the
+estimated using the \code{\link[MetaboCoreUtils:isotopologues]{MetaboCoreUtils::isotopologues()}} function from the
 \emph{MetaboCoreUtils} package. Note that
 the default parameters for isotope prediction/detection have been
 determined using data from the Human Metabolome Database (HMDB) and
 isotopes for elements other than CHNOPS might not be detected. See
-parameter \code{substDefinition} in the documentation of \code{\link[=isotopologues]{isotopologues()}} for
+parameter \code{substDefinition} in the documentation of
+\code{\link[MetaboCoreUtils:isotopologues]{MetaboCoreUtils::isotopologues()}} for
 more information. The approach and code to define the parameters for
 isotope prediction is described
 \href{https://github.com/EuracBiomedicalResearch/isotopologues}{here}.

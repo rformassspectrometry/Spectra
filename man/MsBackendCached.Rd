@@ -269,7 +269,7 @@ returns a \code{numeric} with length equal to the number of spectra
 in \code{object} with the \emph{data origin} of each spectrum. This could e.g. be
 the mzML file from which the data was read.
 \item \code{intensity()}: gets the intensity values from the spectra. Returns
-a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
+a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
 \item \code{ionCount()}: returns a \code{numeric} with the sum of intensities for
@@ -292,8 +292,8 @@ number of spectra). For empty spectra, \code{0} is returned.
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
 \item \code{mz()}: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
-spectra, each element a \code{numeric} vector with the m/z values of
+spectra. Returns a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} or length equal to the
+number of spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
 \item \code{polarity()}, \verb{polarity<-}: gets or sets the polarity for each
 spectrum.  \code{polarity} returns an \code{integer} vector (length equal
