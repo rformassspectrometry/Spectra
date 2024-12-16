@@ -89,7 +89,7 @@ performed.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,7 +142,7 @@ the chunk-wise processing.</p>
 <p>For some backends a certain type of splitting and chunk-wise processing
 might be preferable. The <code>MsBackendMzR</code> backend for example needs to load
 the MS data from the original (mzML) files, hence chunk-wise processing
-on a per-file basis would be ideal. The <code>backendParallelFactor()</code> function
+on a per-file basis would be ideal. The <code><a href="MsBackend.html">backendParallelFactor()</a></code> function
 for <code>MsBackend</code> allows backends to suggest a preferred splitting of the
 data by returning a <code>factor</code> defining the respective data chunks. The
 <code>MsBackendMzR</code> returns for example a <code>factor</code> based on the <em>dataStorage</em>
@@ -191,8 +191,8 @@ performed.</p></li>
 
 
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
-<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">bpparam()</a></code> for more
-information.</p></dd>
+<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code>
+for more information.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -25,7 +25,7 @@ memory demand, a chunk-wise processing of the data is performed."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -182,10 +182,11 @@ depending on <code><a href="processingChunkSize.html">processingChunkSize()</a><
 
 
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
-<dd><p>Parallel setup configuration. See <code>bpparam()</code> for more
-information. This is passed directly to the <code><a href="MsBackend.html">backendInitialize()</a></code> method
-of the <a href="MsBackend.html">MsBackend</a>. See also <code><a href="processingChunkSize.html">processingChunkSize()</a></code> for
-additional information on parallel processing.</p></dd>
+<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code>
+for more information. This is passed directly to the
+<code><a href="MsBackend.html">backendInitialize()</a></code> method of the <a href="MsBackend.html">MsBackend</a>. See also
+<code><a href="processingChunkSize.html">processingChunkSize()</a></code> for additional information on parallel
+processing.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -271,8 +272,8 @@ value which should be subtracted from the spectrum's precursor m/z.</p></dd>
 
 <dt id="arg-normalized">normalized<a class="anchor" aria-label="anchor" href="#arg-normalized"></a></dt>
 <dd><p>for <code>entropy()</code>: <code>logical(1)</code> whether the normalized
-entropy should be calculated (default). See also <code>nentropy()</code> for
-details.</p></dd>
+entropy should be calculated (default). See also
+<code><a href="https://rdrr.io/pkg/MsCoreUtils/man/entropy.html" class="external-link">MsCoreUtils::nentropy()</a></code> for details.</p></dd>
 
 
 <dt id="arg-halfwindowsize">halfWindowSize<a class="anchor" aria-label="anchor" href="#arg-halfwindowsize"></a></dt>
@@ -427,7 +428,8 @@ calculations a chunk-wise processing is generally performed.</p><ul><li><p><code
 <code><a href="chunkapply.html">chunkapply()</a></code> for details and examples.</p></li>
 <li><p><code>containsMz()</code>: checks for each of the spectra whether they contain mass
 peaks with an m/z equal to <code>mz</code> (given acceptable difference as defined by
-parameters <code>tolerance</code> and <code>ppm</code> - see <code>common()</code> for details). Parameter
+parameters <code>tolerance</code> and <code>ppm</code> - see <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">MsCoreUtils::common()</a></code> for
+details). Parameter
 <code>which</code> allows to define whether any (<code>which = "any"</code>, the default) or
 all (<code>which = "all"</code>) of the <code>mz</code> have to match. The function returns
 <code>NA</code> if <code>mz</code> is of length 0 or is <code>NA</code>.</p></li>
@@ -437,7 +439,8 @@ acceptable difference as defined by parameters <code>tolerance</code> and <code>
 Returns <code>NA</code> for MS1 spectra (or spectra without a precursor m/z).</p></li>
 <li><p><code>entropy()</code>: calculates the entropy of each spectra based on the metrics
 suggested by Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
-See also <code>nentropy()</code> in the <em>MsCoreUtils</em> package for details.</p></li>
+See also <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/entropy.html" class="external-link">MsCoreUtils::nentropy()</a></code> in the <em>MsCoreUtils</em> package for
+details.</p></li>
 <li><p><code><a href="estimatePrecursorIntensity.html">estimatePrecursorIntensity()</a></code>: defines the precursor intensities for MS2
 spectra using the intensity of the matching MS1 peak from the
 closest MS1 spectrum (i.e. the last MS1 spectrum measured before the
@@ -568,7 +571,7 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 20 in MS level(s) 1, 2 set to 0 [Mon Dec  9 10:46:04 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 20 in MS level(s) 1, 2 set to 0 [Mon Dec 16 09:26:31 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get the intensities of the first spectrum before and after the</span></span></span>
 <span class="r-in"><span><span class="co">## operation</span></span></span>
@@ -706,8 +709,8 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Scale peak intensities in spectra of MS level(s) 2. [Mon Dec  9 10:46:07 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Mon Dec  9 10:46:07 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Scale peak intensities in spectra of MS level(s) 2. [Mon Dec 16 09:26:34 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Mon Dec 16 09:26:35 2024] </span>
 <span class="r-in"><span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">sps_dda</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 223 211 227 210 220 228</span>
 <span class="r-in"><span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">sps_mod</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -741,9 +744,9 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7602         1   899.993      7602</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:10 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Mon Dec  9 10:46:10 2024]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Applied processing queue with 1 steps [Mon Dec  9 10:46:10 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec 16 09:26:37 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Mon Dec 16 09:26:37 2024]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Applied processing queue with 1 steps [Mon Dec 16 09:26:38 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## While we can't *undo* this filtering operation now using the `reset()`</span></span></span>
 <span class="r-in"><span><span class="co">## function, accessing the data would now be faster, because the operation</span></span></span>

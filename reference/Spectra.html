@@ -47,7 +47,7 @@ compareSpectra() for spectra similarity calculations.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -173,7 +173,7 @@ object and initialize the with data.. See section on creation of
 
 <dt id="arg-processingqueue">processingQueue<a class="anchor" aria-label="anchor" href="#arg-processingqueue"></a></dt>
 <dd><p>For <code>Spectra()</code>: optional <code>list</code> of
-ProcessingStep objects.</p></dd>
+<a href="https://rdrr.io/pkg/ProtGenerics/man/ProcessingStep.html" class="external-link">ProtGenerics::ProcessingStep</a> objects.</p></dd>
 
 
 <dt id="arg-metadata">metadata<a class="anchor" aria-label="anchor" href="#arg-metadata"></a></dt>
@@ -196,9 +196,9 @@ For <code>export()</code>: <a href="MsBackend.html">MsBackend</a> to be used to 
 
 
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
-<dd><p>Parallel setup configuration. See <code>bpparam()</code> for more
-information. This is passed directly to the <code><a href="MsBackend.html">backendInitialize()</a></code> method
-of the <a href="MsBackend.html">MsBackend</a>.</p></dd>
+<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code>
+for more information. This is passed directly to the
+<code><a href="MsBackend.html">backendInitialize()</a></code> method of the <a href="MsBackend.html">MsBackend</a>.</p></dd>
 
 
 <dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
@@ -337,8 +337,8 @@ new backend is performed separately (and in parallel) for each file. Users
 are advised to use the default setting.</p></li>
 <li><p><code>...</code>: optional additional arguments passed to the <code><a href="MsBackend.html">backendInitialize()</a></code>
 method of the new <code>backend</code>.</p></li>
-<li><p><code>BPPARAM</code>: setup for the parallel processing. See <code>bpparam()</code> for
-details.</p></li>
+<li><p><code>BPPARAM</code>: setup for the parallel processing. See
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code> for details.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="exporting-data-from-a-spectra-object">Exporting data from a <code>Spectra</code> object<a class="anchor" aria-label="anchor" href="#exporting-data-from-a-spectra-object"></a></h2>
@@ -438,7 +438,7 @@ parameter <code>backend</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1862         1   259.752       931</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec  9 10:46:03 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Dec 16 09:26:30 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory()` supports the `setBackend()` method:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="MsBackend.html">supportsSetBackend</a></span><span class="op">(</span><span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>

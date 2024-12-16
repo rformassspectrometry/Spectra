@@ -6,10 +6,10 @@ plotSpectraOverlay(): plots all spectra in x into the same plot (as
 an overlay).
 plotSpectraMirror(): plots a pair of spectra as a mirror plot.
 Parameters x and y both have to be a Spectra of length 1. Matching
-peaks (considering ppm and tolerance) are highlighted. See common()
-for details on peak matching. Parameters matchCol, matchLty,
-matchLwd and matchPch allow to customize how matching peaks are
-indicated.
+peaks (considering ppm and tolerance) are highlighted. See
+MsCoreUtils::common() for details on peak matching. Parameters
+matchCol, matchLty, matchLwd and matchPch allow to customize
+how matching peaks are indicated.
 
 "><meta property="og:description" content="Spectra() can be plotted with one of the following functions
 plotSpectra(): plots each spectrum in its separate plot by splitting
@@ -18,10 +18,10 @@ plotSpectraOverlay(): plots all spectra in x into the same plot (as
 an overlay).
 plotSpectraMirror(): plots a pair of spectra as a mirror plot.
 Parameters x and y both have to be a Spectra of length 1. Matching
-peaks (considering ppm and tolerance) are highlighted. See common()
-for details on peak matching. Parameters matchCol, matchLty,
-matchLwd and matchPch allow to customize how matching peaks are
-indicated.
+peaks (considering ppm and tolerance) are highlighted. See
+MsCoreUtils::common() for details on peak matching. Parameters
+matchCol, matchLty, matchLwd and matchPch allow to customize
+how matching peaks are indicated.
 
 "><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -31,7 +31,7 @@ indicated.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,10 +69,10 @@ the plot area into as many panels as there are spectra.</p></li>
 an overlay).</p></li>
 <li><p><code>plotSpectraMirror()</code>: plots a pair of spectra as a <em>mirror plot</em>.
 Parameters <code>x</code> and <code>y</code> both have to be a <code>Spectra</code> of length 1. Matching
-peaks (considering <code>ppm</code> and <code>tolerance</code>) are highlighted. See <code>common()</code>
-for details on peak matching. Parameters <code>matchCol</code>, <code>matchLty</code>,
-<code>matchLwd</code> and <code>matchPch</code> allow to customize how matching peaks are
-indicated.</p></li>
+peaks (considering <code>ppm</code> and <code>tolerance</code>) are highlighted. See
+<code><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">MsCoreUtils::common()</a></code> for details on peak matching. Parameters
+<code>matchCol</code>, <code>matchLty</code>, <code>matchLwd</code> and <code>matchPch</code> allow to customize
+how matching peaks are indicated.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -255,14 +255,14 @@ which <code>x</code> should be plotted against.</p></dd>
 
 <dt id="arg-ppm">ppm<a class="anchor" aria-label="anchor" href="#arg-ppm"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: m/z relative acceptable difference (in
-ppm) for peaks to be considered matching (see <code>common()</code> for more
-details).</p></dd>
+ppm) for peaks to be considered matching (see <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">MsCoreUtils::common()</a></code>
+for more details).</p></dd>
 
 
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p>for <code>plotSpectraMirror()</code>: absolute acceptable difference of
-m/z values for peaks to be considered matching (see <code>common()</code> for more
-details).</p></dd>
+m/z values for peaks to be considered matching (see
+<code><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">MsCoreUtils::common()</a></code> for more details).</p></dd>
 
 
 <dt id="arg-matchcol">matchCol<a class="anchor" aria-label="anchor" href="#arg-matchcol"></a></dt>

@@ -21,9 +21,9 @@ peaks in x can match up to two peaks in y hence peaks in the returned
 matrices might be reported multiple times. Note that if one of
 xPrecursorMz or yPrecursorMz are NA or if both are the same, the
 results are the same as with joinPeaks(). To calculate GNPS similarity
-scores, gnps() should be called on the aligned peak matrices (i.e.
-compareSpectra should be called with MAPFUN = joinPeaksGnps and
-FUN = MsCoreUtils::gnps).
+scores, MsCoreUtils::gnps() should be called on the aligned peak
+matrices (i.e. compareSpectra should be called with
+MAPFUN = joinPeaksGnps and FUN = MsCoreUtils::gnps).
 joinPeaksNone(): does not perform any peak matching but simply returns
 the peak matrices in a list. This function should be used with the
 MAPFUN parameter of compareSpectra() if the spectra similarity
@@ -52,9 +52,9 @@ peaks in x can match up to two peaks in y hence peaks in the returned
 matrices might be reported multiple times. Note that if one of
 xPrecursorMz or yPrecursorMz are NA or if both are the same, the
 results are the same as with joinPeaks(). To calculate GNPS similarity
-scores, gnps() should be called on the aligned peak matrices (i.e.
-compareSpectra should be called with MAPFUN = joinPeaksGnps and
-FUN = MsCoreUtils::gnps).
+scores, MsCoreUtils::gnps() should be called on the aligned peak
+matrices (i.e. compareSpectra should be called with
+MAPFUN = joinPeaksGnps and FUN = MsCoreUtils::gnps).
 joinPeaksNone(): does not perform any peak matching but simply returns
 the peak matrices in a list. This function should be used with the
 MAPFUN parameter of compareSpectra() if the spectra similarity
@@ -69,7 +69,7 @@ peak matching and does hence not expect matched peak matrices as an input.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,9 +122,9 @@ peaks in <code>x</code> can match up to two peaks in <code>y</code> hence peaks 
 matrices might be reported multiple times. Note that if one of
 <code>xPrecursorMz</code> or <code>yPrecursorMz</code> are <code>NA</code> or if both are the same, the
 results are the same as with <code>joinPeaks()</code>. To calculate GNPS similarity
-scores, <code>gnps()</code> should be called on the aligned peak matrices (i.e.
-<code>compareSpectra</code> should be called with <code>MAPFUN = joinPeaksGnps</code> and
-<code>FUN = MsCoreUtils::gnps</code>).</p></li>
+scores, <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/gnps.html" class="external-link">MsCoreUtils::gnps()</a></code> should be called on the aligned peak
+matrices (i.e. <code>compareSpectra</code> should be called with
+<code>MAPFUN = joinPeaksGnps</code> and <code>FUN = MsCoreUtils::gnps</code>).</p></li>
 <li><p><code>joinPeaksNone()</code>: does not perform any peak matching but simply returns
 the peak matrices in a <code>list</code>. This function should be used with the
 <code>MAPFUN</code> parameter of <code><a href="compareSpectra.html">compareSpectra()</a></code> if the spectra similarity
@@ -219,8 +219,8 @@ definition. Parameters <code>ppm</code> and <code>tolerance</code> are suggested
     <div class="dont-index">
 <ul><li><p><code><a href="compareSpectra.html">compareSpectra()</a></code> for the function to calculate similarities between
 spectra.</p></li>
-<li><p><code>gnps()</code> in the <em>MsCoreUtils</em> package for more information on the GNPS
-similarity score.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/MsCoreUtils/man/gnps.html" class="external-link">MsCoreUtils::gnps()</a></code> in the <em>MsCoreUtils</em> package for more information
+on the GNPS similarity score.</p></li>
 </ul></div>
     </div>
     <div class="section level2">

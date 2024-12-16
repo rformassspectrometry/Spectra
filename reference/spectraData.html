@@ -27,7 +27,7 @@ replaced (again, using dedicated functions or using $&amp;lt;-)."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -283,9 +283,9 @@ with <code>object</code> being the <code>Spectra</code> object are supported.</p
 
 
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
-<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">bpparam()</a></code> for more
-information. See also <code><a href="processingChunkSize.html">processingChunkSize()</a></code> for more information
-on parallel processing.</p></dd>
+<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code>
+for more information. See also <code><a href="processingChunkSize.html">processingChunkSize()</a></code> for more
+information on parallel processing.</p></dd>
 
 
 <dt id="arg-initial">initial<a class="anchor" aria-label="anchor" href="#arg-initial"></a></dt>
@@ -418,7 +418,7 @@ values for the data origin of each spectrum.</p></li>
 <li><p><code>dataStorage()</code>: returns a <code>character</code> vector (same length than <code>object</code>)
 with the data storage location of each spectrum.</p></li>
 <li><p><code>intensity()</code>: gets the intensity values from the spectra. Returns
-a <code>NumericList()</code> of <code>numeric</code> vectors (intensity values for each
+a <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code> of <code>numeric</code> vectors (intensity values for each
 spectrum). The length of the list is equal to the number of
 <code>spectra</code> in <code>object</code>.</p></li>
 <li><p><code>ionCount()</code>: returns a <code>numeric</code> with the sum of intensities for
@@ -447,18 +447,18 @@ number of spectra). For empty spectra, <code>0</code> is returned.</p></li>
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.</p></li>
 <li><p><code>mz()</code>: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a <code>NumericList()</code> or length equal to the number of
-spectra, each element a <code>numeric</code> vector with the m/z values of
+spectra. Returns a <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code> or length equal to the number
+of spectra, each element a <code>numeric</code> vector with the m/z values of
 one spectrum.</p></li>
 <li><p><code>peaksData()</code>: gets the <em>peaks</em> data for all spectra in <code>object</code>. Peaks
 data consist of the m/z and intensity values as well as possible additional
 annotations (variables) of all peaks of each spectrum. The function
-returns a <code><a href="https://rdrr.io/pkg/S4Vectors/man/SimpleList-class.html" class="external-link">SimpleList()</a></code> of two dimensional arrays (either <code>matrix</code> or
-<code>data.frame</code>), with each array providing the values for the requested
-<em>peak variables</em> (by default <code>"mz"</code> and <code>"intensity"</code>). Optional parameter
-<code>columns</code> is passed to the backend's <code>peaksData()</code> function to allow
-the selection of specific (or additional) peaks variables (columns) that
-should be extracted (if available). Importantly,
+returns a <code><a href="https://rdrr.io/pkg/S4Vectors/man/SimpleList-class.html" class="external-link">S4Vectors::SimpleList()</a></code> of two dimensional arrays (either
+<code>matrix</code> or <code>data.frame</code>), with each array providing the values for the
+requested <em>peak variables</em> (by default <code>"mz"</code> and <code>"intensity"</code>).
+Optional parameter <code>columns</code> is passed to the backend's <code>peaksData()</code>
+function to allow the selection of specific (or additional) peaks
+variables (columns) that should be extracted (if available). Importantly,
 it is <strong>not</strong> guaranteed that each backend supports this parameter (while
 each backend must support extraction of <code>"mz"</code> and <code>"intensity"</code> columns).
 Parameter <code>columns</code> defaults to <code>c("mz", "intensity")</code> but any value

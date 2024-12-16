@@ -45,7 +45,7 @@ spectra variables then missing values of the correct data type are returned."><m
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -366,7 +366,7 @@ returns a <code>numeric</code> with length equal to the number of spectra
 in <code>object</code> with the <em>data origin</em> of each spectrum. This could e.g. be
 the mzML file from which the data was read.</p></li>
 <li><p><code><a href="spectraData.html">intensity()</a></code>: gets the intensity values from the spectra. Returns
-a <code>NumericList()</code> of <code>numeric</code> vectors (intensity values for each
+a <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code> of <code>numeric</code> vectors (intensity values for each
 spectrum). The length of the <code>list</code> is equal to the number of
 <code>spectra</code> in <code>object</code>.</p></li>
 <li><p><code><a href="spectraData.html">ionCount()</a></code>: returns a <code>numeric</code> with the sum of intensities for
@@ -389,8 +389,8 @@ number of spectra). For empty spectra, <code>0</code> is returned.</p></li>
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or <code>NA_integer_</code> if not available).</p></li>
 <li><p><code><a href="spectraData.html">mz()</a></code>: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a <code>NumericList()</code> or length equal to the number of
-spectra, each element a <code>numeric</code> vector with the m/z values of
+spectra. Returns a <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code> or length equal to the
+number of spectra, each element a <code>numeric</code> vector with the m/z values of
 one spectrum.</p></li>
 <li><p><code><a href="spectraData.html">polarity()</a></code>, <code>polarity&lt;-</code>: gets or sets the polarity for each
 spectrum.  <code>polarity</code> returns an <code>integer</code> vector (length equal

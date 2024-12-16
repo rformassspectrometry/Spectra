@@ -63,7 +63,7 @@ See below for more details about individual backends."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -418,8 +418,8 @@ data files and the remaining spectra variables in memory (in a
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
 <dd><p>for <code>backendBpparam()</code>: parameter object from the
 <code>BiocParallel</code> package defining the parallel processing setup.
-Defaults to <code>BPPARAM = bpparam()</code>. See <code>bpparam()</code> for more
-information.</p></dd>
+Defaults to <code>BPPARAM = bpparam()</code>. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code>
+for more information.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -502,7 +502,7 @@ to subset <code>object</code>.</p></dd>
 <dt id="arg-ppm">ppm<a class="anchor" aria-label="anchor" href="#arg-ppm"></a></dt>
 <dd><p>For <code><a href="filterMsLevel.html">filterPrecursorMzValues()</a></code>: <code>numeric(1)</code> with the
 m/z-relative maximal acceptable difference for a m/z to be considered
-matching. See <code>closest()</code> for details.
+matching. See <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">MsCoreUtils::closest()</a></code> for details.
 For <code><a href="filterMsLevel.html">filterValues()</a></code>: <code>numeric</code> of any length allowing to define
 a maximal accepted difference between user input <code>values</code> and the
 <code>spectraVariables</code> values.  If it is not equal to the length of the
@@ -513,7 +513,8 @@ recycled.</p></dd>
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p>For <code><a href="filterMsLevel.html">filterPrecursorMzValues()</a></code>: <code>numeric(1)</code> with the
 maximal absolute acceptable difference for a m/z value to be considered
-matching. See <code>closest()</code> for details. For <code><a href="filterMsLevel.html">filterValues()</a></code>: <code>numeric</code>
+matching. See <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">MsCoreUtils::closest()</a></code> for details.
+For <code><a href="filterMsLevel.html">filterValues()</a></code>: <code>numeric</code>
 accepted tolerance between the <code>values</code> and the spectra variables.
 Defaults to <code>tolerance = 0</code>. If it is not equal to the length of the
 value provided with parameter <code>spectraVariables</code>, <code>tolerance[1]</code> will
@@ -764,9 +765,9 @@ however, <code>i</code> is expected to be an <code>integer</code> (while <code>[
 support <code>logical</code> and eventually <code>character</code>). While being apparently
 redundant to <code>[</code>, this methods avoids package namespace errors/problems
 that can result in implementations of <code>[</code> being not found by R (which
-can happen sometimes in parallel processing using the <code>SnowParam()</code>). This
-method is used internally by <code>Spectra</code> to extract/subset its backend.
-Implementation of this method is mandatory.</p></li>
+can happen sometimes in parallel processing using the
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">BiocParallel::SnowParam()</a></code>). This method is used internally by <code>Spectra</code>
+to extract/subset its backend. Implementation of this method is mandatory.</p></li>
 <li><p><code><a href="filterMsLevel.html">filterAcquisitionNum()</a></code>: filters the object keeping only spectra matching
 the provided acquisition numbers (argument <code>n</code>). If <code>dataOrigin</code> or
 <code>dataStorage</code> is also provided, <code>object</code> is subsetted to the spectra with
@@ -852,13 +853,13 @@ values are within any of the provided ranges are retained).
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code><a href="spectraData.html">intensity()</a></code>: gets the intensity values from the spectra. Returns
-a <code>NumericList()</code> of <code>numeric</code> vectors (intensity values for each
+a <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code> of <code>numeric</code> vectors (intensity values for each
 spectrum). The length of the <code>list</code> is equal to the number of
 <code>spectra</code> in <code>object</code>.</p></li>
 <li><p><code>intensity&lt;-</code>: replaces the intensity values. <code>value</code> has to be a <code>list</code>
-(or <code>NumericList()</code>) of length equal to the number of spectra and the
-number of values within each list element identical to the number of
-peaks in each spectrum (i.e. the <code>lengths(x)</code>). Note that just
+(or <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code>) of length equal to the number of spectra
+and the number of values within each list element identical to the
+number of peaks in each spectrum (i.e. the <code>lengths(x)</code>). Note that just
 writeable backends support this method.</p></li>
 <li><p><code><a href="spectraData.html">ionCount()</a></code>: returns a <code>numeric</code> with the sum of intensities for
 each spectrum. If the spectrum is empty (see <code><a href="spectraData.html">isEmpty()</a></code>),
@@ -889,8 +890,8 @@ vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or <code>NA_integer_</code> if not available).</p></li>
 <li><p><code>msLevel&lt;-</code>: replaces the spectra's MS level.</p></li>
 <li><p><code><a href="spectraData.html">mz()</a></code>: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a <code>NumericList()</code> or length equal to the number of
-spectra, each element a <code>numeric</code> vector with the m/z values of
+spectra. Returns a <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code> or length equal to the
+number of spectra, each element a <code>numeric</code> vector with the m/z values of
 one spectrum.</p></li>
 <li><p><code>mz&lt;-</code>: replaces the m/z values. <code>value</code> has to be a <code>list</code> of length equal
 to the number of spectra and the number of values within each list element
@@ -1055,10 +1056,10 @@ containing the precursor of a (MS2) spectrum.</p></li>
 precursor.</p></li>
 <li><p><code>"precursorCharge"</code>: <code>integer</code> with the charge of the precursor.</p></li>
 <li><p><code>"collisionEnergy"</code>: <code>numeric</code> with the collision energy.</p></li>
-<li><p><code>"mz"</code>: <code>NumericList()</code> of <code>numeric</code> vectors representing the m/z values
-for each spectrum.</p></li>
-<li><p><code>"intensity"</code>: <code>NumericList()</code> of <code>numeric</code> vectors representing the
-intensity values for each spectrum.</p></li>
+<li><p><code>"mz"</code>: <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code> of <code>numeric</code> vectors representing the
+m/z values for each spectrum.</p></li>
+<li><p><code>"intensity"</code>: <code><a href="https://rdrr.io/pkg/IRanges/man/AtomicList-class.html" class="external-link">IRanges::NumericList()</a></code> of <code>numeric</code> vectors
+representing the intensity values for each spectrum.</p></li>
 </ul><p>Additional columns are allowed too.</p>
 <p>The <code><a href="spectraData.html">peaksData()</a></code> function for <code>MsBackendMemory</code> and <code>MsBackendDataFrame</code>
 returns a <code>list</code> of <code>numeric</code> <code>matrix</code> by default (with parameter
