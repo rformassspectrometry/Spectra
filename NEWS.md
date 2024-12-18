@@ -1,5 +1,9 @@
 # Spectra 1.17
 
+## Change in 1.17.4
+
+- Import `extractByIndex()` from *ProtGenerics*.
+
 ## Change in 1.17.3
 
 - Fix `cbind2()` unit test for backends that fails if the number of spectra in

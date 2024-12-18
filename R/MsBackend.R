@@ -1171,6 +1171,8 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
 #'
 #' @importFrom methods existsMethod
 #'
+#' @importMethodsFrom ProtGenerics extractByIndex
+#'
 #' @export
 setMethod("extractByIndex", c("MsBackend", "ANY"), function(object, i) {
     if (existsMethod("[", class(object)[1L]))
