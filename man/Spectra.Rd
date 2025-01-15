@@ -117,7 +117,7 @@ Documentation on other topics and functionality of \code{Spectra}can be found in
 \itemize{
 \item \code{\link[=spectraData]{spectraData()}} for accessing and using MS data through \code{Spectra} objects.
 \item \code{\link[=filterMsLevel]{filterMsLevel()}} to subset and filter \code{Spectra} objects.
-\item \code{\link[=plotSpectra]{plotSpectra()}} for visualization of \code{Spectra} orbjects.
+\item \code{\link[=plotSpectra]{plotSpectra()}} for visualization of \code{Spectra} objects.
 \item \code{\link[=processingChunkSize]{processingChunkSize()}} for information on parallel and chunk-wise data
 processing.
 \item \code{\link[=combineSpectra]{combineSpectra()}} for merging, aggregating and splitting of \code{Spectra}

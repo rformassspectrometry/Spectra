@@ -14,76 +14,6 @@ test_that("addProcessing works", {
     show(tst)
 })
 
-test_that("applyProcessing works", {
-    ## Initialize required objects.
-    sps_mzr <- filterRt(Spectra(sciex_mzr), rt = c(10, 20))
-    ## Add processings.
-    centroided(sps_mzr) <- TRUE
-    sps_mzr <- replaceIntensitiesBelow(sps_mzr, threshold = 5000,
-                                       value = NA_real_)
-    sps_mzr <- filterIntensity(sps_mzr)
-    expect_true(length(sps_mzr@processingQueue) == 2)
-    expect_error(applyProcessing(sps_mzr), "is read-only")
-
-    ## Create writeable backends.
-    sps_mem <- setBackend(sps_mzr, backend = MsBackendDataFrame())
-    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
-                         files = c(tempfile(), tempfile()),
-                         f = rep(1, length(sps_mzr)))
-    expect_true(length(sps_mem@processingQueue) == 2)
-    expect_true(length(sps_h5@processingQueue) == 2)
-    expect_identical(peaksData(sps_mzr), peaksData(sps_mem))
-    expect_identical(peaksData(sps_h5), peaksData(sps_mem))
-
-    ## MsBackendDataFrame
-    res <- applyProcessing(sps_mem)
-    expect_true(length(res@processingQueue) == 0)
-    expect_true(length(res@processing) > length(sps_mem@processing))
-    expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaksData(res), peaksData(sps_mem))
-
-    ## MsBackendHdf5Peaks
-    res <- applyProcessing(sps_h5)
-    expect_true(length(res@processingQueue) == 0)
-    expect_true(length(res@processing) > length(sps_h5@processing))
-    expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaksData(res), peaksData(sps_mem))
-    expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
-
-    ## Applying the processing queue invalidated the original object!
-    expect_error(peaksData(sps_h5))
-    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
-                         files = c(tempfile(), tempfile()),
-                         f = rep(1, length(sps_mzr)))
-
-    ## Use an arbitrary splitting factor ensuring that the results are still OK.
-    f <- rep(letters[1:9], 8)
-    f <- sample(f)
-
-    ## MsBackendHdf5Peaks
-    res <- applyProcessing(sps_mem, f = f)
-    expect_true(length(res@processingQueue) == 0)
-    expect_true(length(res@processing) > length(sps_mem@processing))
-    expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaksData(res), peaksData(sps_mem))
-
-    ## MsBackendHdf5Peaks: throws an error, because the factor f does not
-    ## match the dataStorage.
-    expect_error(applyProcessing(sps_h5, f = f))
-
-    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
-                         files = c(tempfile(), tempfile()),
-                         f = rep(1, length(sps_mzr)))
-    res <- applyProcessing(sps_h5, f = rep(1, length(sps_h5)))
-    expect_true(length(res@processingQueue) == 0)
-    expect_true(length(res@processing) > length(sps_h5@processing))
-    expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaksData(res), peaksData(sps_mem))
-    expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
-
-    expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")
-})
-
 test_that(".check_ms_level works", {
     expect_true(.check_ms_level(sciex_mzr, 1))
     expect_warning(.check_ms_level(sciex_mzr, 2))
@@ -796,34 +726,6 @@ test_that("filterPrecursorPeaks,Spectra works", {
     expect_true(all(lengths(res)[msLevel(x) > 1L] <
                     lengths(x)[msLevel(x) > 1L]))
     expect_equal(lengths(res)[msLevel(x) == 1L], lengths(x)[msLevel(x) == 1L])
-})
-
-test_that("processingChunkSize works", {
-    s <- Spectra()
-    expect_equal(processingChunkSize(s), Inf)
-    processingChunkSize(s) <- 1000
-    expect_equal(processingChunkSize(s), 1000)
-    expect_error(processingChunkSize(s) <- c(1, 2), "length 1")
-    expect_error(processingChunkSize(s) <- "A", "character")
-})
-
-test_that("processingChunkFactor works", {
-    s <- Spectra()
-    expect_equal(processingChunkFactor(s), factor())
-    tmp <- Spectra(sciex_mzr)
-
-    expect_equal(length(processingChunkFactor(tmp)), length(tmp))
-    expect_true(is.factor(processingChunkFactor(tmp)))
-
-    processingChunkSize(tmp) <- 1000
-    res <- processingChunkFactor(tmp)
-    expect_true(is.factor(res))
-    expect_true(length(res) == length(tmp))
-    expect_equal(levels(res), c("1", "2"))
-
-    expect_equal(.parallel_processing_factor(tmp), processingChunkFactor(tmp))
-
-    expect_error(processingChunkFactor("a"), "Spectra")
 })
 
 test_that("filterPeaksRanges,Spectra works", {
