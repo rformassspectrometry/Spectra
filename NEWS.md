@@ -1,5 +1,12 @@
 # Spectra 1.17
 
+## Change in 1.17.5
+
+- Move generics `processingChunkSize()`, `processingChunkFactor()` and
+  `applyproceesing()` to *ProtGenerics*. Required *ProtGenerics* version
+  1.39.2 or higher. These were moved to be able to implement them in the
+  *Chromatograms* package.
+
 ## Change in 1.17.4
 
 - Import `extractByIndex()` from *ProtGenerics*.
