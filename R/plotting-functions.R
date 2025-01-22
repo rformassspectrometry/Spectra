@@ -217,10 +217,19 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
         main <- rep(main[1], nsp)
     if (nsp > 1)
         par(mfrow = n2mfrow(nsp, asp = asp))
+    if (length(labels)) {
+        if (is.function(labels)) {
+            labels <- labels(x)
+        }
+        mod_check <- sapply(labels, function(labels) attr(labels, "spectrumNumber"))
+        if (length(mod_check) != length(x))
+            stop("Variable modifications are not yet supported.")
+    } else {labels <- NULL}
+    
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], xlab = xlab, ylab = ylab, type = type,
                               xlim = xlim, ylim = ylim, main = main[i],
-                              col = col[[i]], labels = labels,
+                              col = col[[i]], labels = labels[[i]],
                               labelCex = labelCex, labelSrt = labelSrt,
                               labelAdj = labelAdj, labelPos = labelPos,
                               labelOffset = labelOffset, labelCol = labelCol,
@@ -259,9 +268,17 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
     if (frame.plot)
         box(...)
     title(main = main, xlab = xlab, ylab = ylab, ...)
+    if (length(labels)) {
+        if (is.function(labels)) {
+            labels <- labels(x)
+        }
+        mod_check <- sapply(labels, function(labels) attr(labels, "spectrumNumber"))
+        if (length(mod_check) != length(x))
+            stop("Variable modifications are not yet supported.")
+    } else {labels <- NULL}
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], add = TRUE, type = type, col = col[[i]],
-                              labels = labels, labelCex = labelCex,
+                              labels = labels[[i]], labelCex = labelCex,
                               labelSrt = labelSrt, labelAdj = labelAdj,
                               labelPos = labelPos, labelOffset = labelOffset,
                               labelCol = labelCol, ...)
@@ -288,9 +305,6 @@ setMethod(
              matchLty = 1, matchPch = 16, ...) {
         if (length(x) != 1 || length(y) != 1)
             stop("'x' and 'y' have to be of length 1")
-        if (length(labels) & !is.function(labels))
-            stop("'plotSpectraMirror' supports only a function with ",
-                 "parameter 'labels'")
         if (length(col) != 2)
             col <- rep(col[1], 2)
         if (!length(xlim))
@@ -309,8 +323,18 @@ setMethod(
         on.exit(dev.flush())
         plot.new()
         plot.window(xlim = xlim, ylim = ylim)
+        ## Stop if variable modifications are used
+        ## Will need to be removed once plotSpectra accepts variable modifications
+        ## See issue: https://github.com/rformassspectrometry/Spectra/issues/346
         if (length(labels)) {
-            l <- c(labels(x), labels(y))
+            if (is.function(labels)) {
+                labels <- c(labels(x), labels(y))
+            } else {
+                mod_check <- sapply(labels, function(labels) attr(labels, "spectrumNumber"))
+                if (length(mod_check) != length(x))
+                    stop("This Error occurs either because\n1) Annotations are not of length 2\n2) Variable modifications are not yet supported.")
+            }
+            l <- c(labels[[1]], labels[[2]])
             wdths <- max(strwidth(l, cex = labelCex)) / 2
             usr_lim <- par("usr")
             ylim[1L] <- ylim[1L] - wdths *
@@ -319,7 +343,7 @@ setMethod(
             xlim[1L] <- xlim[1L] - wdths
             xlim[2L] <- xlim[2L] + wdths
             plot.window(xlim = xlim, ylim = ylim, ...)
-        }
+        } else {labels <- NULL}
         if (axes) {
             axis(side = 1, ...)
             axis(side = 2, ...)
@@ -331,7 +355,7 @@ setMethod(
         x_data <- peaksData(x)[[1L]]
         y_data <- peaksData(y)[[1L]]
         .plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
-                              labels = labels, labelCex = labelCex,
+                              labels = labels[[1L]], labelCex = labelCex,
                               labelSrt = labelSrt, labelAdj = labelAdj,
                               labelPos = labelPos, labelOffset = labelOffset,
                               labelCol = labelCol, ...)
@@ -349,7 +373,7 @@ setMethod(
             labelPos <- 1
         labelSrt <- -1 * labelSrt
         .plot_single_spectrum(y, add = TRUE, type = type, col = col[[1L]],
-                              labels = labels, labelCex = labelCex,
+                              labels = labels[[2L]], labelCex = labelCex,
                               labelSrt = labelSrt, labelAdj = labelAdj,
                               labelPos = labelPos, labelOffset = labelOffset,
                               orientation = -1, labelCol = labelCol, ...)
