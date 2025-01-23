@@ -221,9 +221,8 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
         if (is.function(labels)) {
             labels <- labels(x)
         }
-        mod_check <- sapply(labels, function(labels) attr(labels, "spectrumNumber"))
-        if (length(mod_check) != length(x))
-            stop("Variable modifications are not yet supported.")
+        if (length(labels) != length(x))
+            stop("Please provide a list of annotations of 'length == length(x)'.")
     } else {labels <- NULL}
     
     for (i in seq_len(nsp))
@@ -272,9 +271,8 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
         if (is.function(labels)) {
             labels <- labels(x)
         }
-        mod_check <- sapply(labels, function(labels) attr(labels, "spectrumNumber"))
-        if (length(mod_check) != length(x))
-            stop("Variable modifications are not yet supported.")
+        if (length(labels) != length(x))
+            stop("Please provide a list of annotations of 'length == length(x)'.")
     } else {labels <- NULL}
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], add = TRUE, type = type, col = col[[i]],
@@ -330,8 +328,7 @@ setMethod(
             if (is.function(labels)) {
                 labels <- c(labels(x), labels(y))
             } else {
-                mod_check <- sapply(labels, function(labels) attr(labels, "spectrumNumber"))
-                if (length(mod_check) != length(x))
+                if (length(labels) != length(x))
                     stop("This Error occurs either because\n1) Annotations are not of length 2\n2) Variable modifications are not yet supported.")
             }
             l <- c(labels[[1]], labels[[2]])
