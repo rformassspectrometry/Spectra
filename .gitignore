@@ -4,3 +4,4 @@ local_data
 *.so
 .Rproj.user
 *.Rproj
+.Rhistory
