@@ -3805,6 +3805,11 @@ setMethod(
 #'     the two compared spectra. See [joinPeaks()] for more information and
 #'     possible functions. Defaults to [joinPeaks()].
 #'
+#' @param matchedPeaksCount `logical(1)` whether the number of matching peaks
+#'     between the compared spectra should be returned in addition to the
+#'     similarity scores. Note that with `matchedPeaksCount = TRUE` a
+#'     3-dimensional `array` is returned. See examples below for details.
+#'
 #' @param ppm `numeric(1)` defining a relative, m/z-dependent, maximal
 #'     accepted difference between m/z values for peaks to be matched. This
 #'     parameter is directly passed to `MAPFUN`.
@@ -3822,6 +3827,13 @@ setMethod(
 #'     of length 1).
 #'
 #' @param ... Additional arguments passed to the internal functions.
+#'
+#' @return For `matchedPeaksCount = FALSE` (the default) a `matrix` with the
+#'     similarity scores. With `matchedPeaksCount = FALSE` and
+#'     `SIMPLIFY = TRUE` a `numeric` vector. For `matchedPeaksCount = TRUE`
+#'     a 3-dimensional array with the scores reported in the first matrix in
+#'     z dimension (`[, , 1]`) and the number of matching peaks in the second
+#'     matrix in z dimension (`[, , 2]`).
 #'
 #' @importFrom MsCoreUtils ndotproduct
 #'
@@ -3849,6 +3861,19 @@ setMethod(
 #' ## the second row comparisons of spectrum 3 with spectra 10 to 20
 #' res
 #'
+#' ## Setting parameter `matchedPeaksCount = TRUE` returns in addition to the
+#' ## simialrity score also the number of matching peaks between the compared
+#' ## spectra. The results are then returned as a 3-dimensional array, with the
+#' ## first matrix in z dimension (`[, , 1]`) containing the scores and the
+#' ## second matrix in z dimention (`[, , 2]`) the number of matching peaks:
+#' res <- compareSpectra(sps_ms2[2:3], sps_ms2[10:20], matchedPeaksCount = TRUE)
+#'
+#' ## the scores
+#' res[, , 1L]
+#'
+#' ## the number of matching peaks
+#' res[, , 2L]
+#'
 #' ## We next calculate the pairwise similarity for the first 10 spectra
 #' compareSpectra(sps_ms2[1:10])
 #'
@@ -3864,32 +3889,37 @@ setMethod(
 #' ## of the first 20 spectra
 #' compareSpectra(sps_ms2[1:20], ppm = 10, type = "inner",
 #'     FUN = function(x, y, ...) nrow(x))
+#'
 NULL
 
 #' @rdname compareSpectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "Spectra"),
           function(x, y, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
-              mat <- .compare_spectra_chunk(x, y, MAPFUN = MAPFUN,
-                                            tolerance = tolerance,
-                                            ppm = ppm, FUN = FUN, ...)
-              if (SIMPLIFY && (length(x) == 1 || length(y) == 1))
+                   FUN = ndotproduct, ..., matchedPeaksCount = FALSE,
+                   SIMPLIFY = TRUE) {
+              mat <- .compare_spectra_chunk(
+                  x, y, MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
+                  FUN = FUN, matchedPeaksCount = matchedPeaksCount, ...)
+              if (!matchedPeaksCount && SIMPLIFY &&
+                  (length(x) == 1 || length(y) == 1))
                   mat <- as.vector(mat)
               mat
           })
 #' @rdname compareSpectra
 setMethod("compareSpectra", signature(x = "Spectra", y = "missing"),
           function(x, y = NULL, MAPFUN = joinPeaks, tolerance = 0, ppm = 20,
-                   FUN = ndotproduct, ..., SIMPLIFY = TRUE) {
+                   FUN = ndotproduct, ..., matchedPeaksCount = FALSE,
+                   SIMPLIFY = TRUE) {
               if (length(x) == 1)
                   return(compareSpectra(x, x, MAPFUN = MAPFUN,
                                         tolerance = tolerance,
                                         ppm = ppm, FUN = FUN, ...,
+                                        matchedPeaksCount = matchedPeaksCount,
                                         SIMPLIFY = SIMPLIFY))
               mat <- .compare_spectra_self(x, MAPFUN = MAPFUN, FUN = FUN,
                                            tolerance = tolerance, ppm = ppm,
                                            ...)
-              if (SIMPLIFY && length(x) == 1)
+              if (!matchedPeaksCount && SIMPLIFY && length(x) == 1)
                   mat <- as.vector(mat)
               mat
           })
