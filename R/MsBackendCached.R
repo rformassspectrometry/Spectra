@@ -328,26 +328,6 @@ setMethod("spectraVariables", "MsBackendCached", function(object) {
         res <- x@localData[, local_cols, drop = FALSE]
     if (length(core_cols)) {
         res <- fillCoreSpectraVariables(res, columns = core_cols)
-        ## mzvals <- NULL
-        ## intvals <- NULL
-        ## lst <- NumericList(numeric(), compress = FALSE)
-        ## if (any(core_cols == "mz")) {
-        ##     core_cols <- core_cols[core_cols != "mz"]
-        ##     mzvals <- lst[rep(1, times = length(x))]
-        ## }
-        ## if (any(core_cols == "intensity")) {
-        ##     core_cols <- core_cols[core_cols != "intensity"]
-        ##     intvals <- lst[rep(1, times = length(x))]
-        ## }
-        ## if (length(core_cols))
-        ##     tmp <- DataFrame(lapply(.SPECTRA_DATA_COLUMNS[core_cols],
-        ##                             function(z, n) rep(as(NA, z), n), length(x)))
-        ## else tmp <- make_zero_col_DFrame(x@nspectra)
-        ## tmp$mz <- mzvals
-        ## tmp$intensity <- intvals
-        ## if (length(res))
-        ##     res <- cbind(res, tmp)
-        ## else res <- tmp
         if (any(core_cols == "dataStorage"))
             res$dataStorage <- dataStorage(x)
     }
