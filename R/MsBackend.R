@@ -595,7 +595,9 @@
 #'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
 #'   of rows as there are spectra in `object`. Note that `spectraData()` has to
 #'   return the full data, i.e. also the m/z and intensity values (as a `list`
-#'   or `SimpleList` in columns `"mz"` and `"intensity"`.
+#'   or `SimpleList` in columns `"mz"` and `"intensity"`. See also
+#'   [fillCoreSpectraVariables()] for a function that can *complete* a spectra
+#'   data data frame with eventually missing *core* spectra variables.
 #'
 #' - `spectraNames()`: returns a `character` vector with the names of
 #'   the spectra in `object` or `NULL` if not set. `spectraNames<-` allows to

@@ -52,10 +52,11 @@ MsBackendMemory <- function() {
         ## Get missing core variables.
         other_columns <- setdiff(sp_vars, colnames(object@spectraData))
         if (length(other_columns)) {
-            other_res <- lapply(other_columns, .get_column,
-                                x = object@spectraData)
-            names(other_res) <- other_columns
-            res <- cbind(res, as.data.frame(other_res))
+            res <- fillCoreSpectraVariables(res, other_columns)
+            ## other_res <- lapply(other_columns, .get_column,
+            ##                     x = object@spectraData)
+            ## names(other_res) <- other_columns
+            ## res <- cbind(res, as.data.frame(other_res))
         }
         if (any(columns == "mz"))
             res$mz <- mz(object)

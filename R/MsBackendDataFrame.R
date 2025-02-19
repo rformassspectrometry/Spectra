@@ -468,20 +468,25 @@ setMethod("spectraData", "MsBackendDataFrame",
               res <- object@spectraData[, df_columns, drop = FALSE]
               other_columns <- setdiff(columns,colnames(object@spectraData))
               if (length(other_columns)) {
-                  other_res <- lapply(other_columns, .get_column,
-                                      x = object@spectraData)
-                  names(other_res) <- other_columns
-                  is_mz_int <- names(other_res) %in% c("mz", "intensity")
-                  if (!all(is_mz_int))
-                      res <- cbind(res, as(other_res[!is_mz_int], "DataFrame"))
-                  if (any(names(other_res) == "mz"))
-                      res$mz <- if (length(other_res$mz)) other_res$mz
-                                else NumericList(compress = FALSE)
-                  if (any(names(other_res) == "intensity"))
-                      res$intensity <- if (length(other_res$intensity))
-                                           other_res$intensity
-                                       else NumericList(compress = FALSE)
+                  res <- fillCoreSpectraVariables(res, columns = other_columns)
+                  ## other_res <- lapply(other_columns, .get_column,
+                  ##                     x = object@spectraData)
+                  ## names(other_res) <- other_columns
+                  ## is_mz_int <- names(other_res) %in% c("mz", "intensity")
+                  ## if (!all(is_mz_int))
+                  ##     res <- cbind(res, as(other_res[!is_mz_int], "DataFrame"))
+                  ## if (any(names(other_res) == "mz"))
+                  ##     res$mz <- if (length(other_res$mz)) other_res$mz
+                  ##               else NumericList(compress = FALSE)
+                  ## if (any(names(other_res) == "intensity"))
+                  ##     res$intensity <- if (length(other_res$intensity))
+                  ##                          other_res$intensity
+                  ##                      else NumericList(compress = FALSE)
               }
+              if (!all(columns %in% colnames(res)))
+                  stop("Column(s) ", paste0(columns[!columns %in% names(res)],
+                                            collapse = ", "), " not available.",
+                       call. = FALSE)
               res[, columns, drop = FALSE]
           })
 

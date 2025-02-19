@@ -103,14 +103,15 @@ MsBackendMzR <- function() {
     sp_cols <- columns[columns %in% cn]
     res <- x@spectraData[, sp_cols, drop = FALSE]
     if(!nrow(x@spectraData)) {
-        res$mz <- NumericList(compress = FALSE)
-        res$intensity <- NumericList(compress = FALSE)
-        other_cols <- setdiff(columns, c(sp_cols, "mz", "intensity"))
-        if (length(other_cols)) {
-            res_add <- lapply(.SPECTRA_DATA_COLUMNS[other_cols],
-                              do.call, args = list())
-            res <- cbind(res, res_add)
-        }
+        ## res$mz <- NumericList(compress = FALSE)
+        ## res$intensity <- NumericList(compress = FALSE)
+        ## other_cols <- setdiff(columns, c(sp_cols, "mz", "intensity"))
+        ## if (length(other_cols)) {
+        ##     res_add <- lapply(.SPECTRA_DATA_COLUMNS[other_cols],
+        ##                       do.call, args = list())
+        ##     res <- cbind(res, res_add)
+        ## }
+        res <- fillCoreSpectraVariables(res, setdiff(columns, c(sp_cols)))
         return(res[, columns, drop = FALSE])
     }
     any_mz <- any(columns == "mz")
@@ -125,9 +126,10 @@ MsBackendMzR <- function() {
     }
     other_cols <- setdiff(columns, c(sp_cols, "mz", "intensity"))
     if (length(other_cols)) {
-        other_res <- lapply(other_cols, .get_column, x = x@spectraData)
-        names(other_res) <- other_cols
-        res <- cbind(res, as(other_res, "DataFrame"))
+        res <- fillCoreSpectraVariables(res, other_cols)
+        ## other_res <- lapply(other_cols, .get_column, x = x@spectraData)
+        ## names(other_res) <- other_cols
+        ## res <- cbind(res, as(other_res, "DataFrame"))
     }
     res[, columns, drop = FALSE]
 }
