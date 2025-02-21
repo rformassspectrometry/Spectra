@@ -1016,6 +1016,22 @@ being the two `Spectra` objects to compare. As a result a *n x m* matrix will be
 returned with *n* (rows) being the spectra in `a` and *m* (columns) being the
 spectra in `b`.
 
+By setting parameter `matchedPeaksCount = TRUE` also the number of matching
+peaks between the compared spectra are returned, in addition to the similarity
+scores. The result is then a 3-dimensional `array` with the similarity scores in
+the first `matrix` in z dimension (`[, , 1]`) and the number of matching peaks
+in the second `matrix` (`[, , 2]`):
+
+```{r}
+sim <- compareSpectra(sps, sps, ppm = 40, matchedPeaksCount = TRUE)
+
+#' The similarity scores:
+sim[, , 1L]
+
+#' The number of matching peaks:
+sim[, , 2L]
+```
+
 The above similarity was calculated with the default (normalized) dot-product,
 but also other similarity scores can be used instead. Either one of the other
 metrics provided by the `r Biocpkg( "MsCoreUtils")` could be used (see

@@ -840,7 +840,9 @@ metadata (annotation, also called header).  \code{spectraData()} returns
 a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame} with the same number
 of rows as there are spectra in \code{object}. Note that \code{spectraData()} has to
 return the full data, i.e. also the m/z and intensity values (as a \code{list}
-or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}.
+or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}. See also
+\code{\link[=fillCoreSpectraVariables]{fillCoreSpectraVariables()}} for a function that can \emph{complete} a spectra
+data data frame with eventually missing \emph{core} spectra variables.
 \item \code{spectraNames()}: returns a \code{character} vector with the names of
 the spectra in \code{object} or \code{NULL} if not set. \verb{spectraNames<-} allows to
 set spectra names (if the object is not read-only).

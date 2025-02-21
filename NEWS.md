@@ -1,5 +1,10 @@
 # Spectra 1.17
 
+## Change in 1.17.6
+
+- Add new `fillCoreSpectraVariables()` function that allows to add eventually
+  missing *core* spectra variables (with the correct data type) to a data frame.
+
 ## Change in 1.17.5
 
 - Move generics `processingChunkSize()`, `processingChunkFactor()` and

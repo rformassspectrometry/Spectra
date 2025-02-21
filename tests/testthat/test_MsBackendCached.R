@@ -41,7 +41,7 @@ test_that(".spectra_data MsBackendCached works", {
 
     res <- .spectra_data(be)
     expect_true(nrow(res) == 0)
-    expect_equal(sort(colnames(res)), sort(names(Spectra:::.SPECTRA_DATA_COLUMNS)))
+    expect_equal(sort(colnames(res)), sort(names(.SPECTRA_DATA_COLUMNS)))
 
     df <- data.frame(a = 1:4, msLevel = c(1L, 2L, 1L, 3L))
     be <- backendInitialize(be, data = df)
@@ -78,6 +78,23 @@ test_that(".spectra_data MsBackendCached works", {
                                           "intensity", "precursorMz")))
     res <- .spectra_data(be, "mz")
     expect_true(is.null(res))
+})
+
+test_that("spectraData,MsBackendCached works", {
+    be <- new("MsBackendCached")
+    be@nspectra <- 14L
+    res <- spectraData(be)
+    expect_s4_class(res, "DataFrame")
+    expect_equal(.valid_column_datatype(res), NULL)
+    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+
+    expect_error(spectraData(be, "other_col"), "not available")
+
+    res <- spectraData(be, "smoothed")
+    expect_s4_class(res, "DataFrame")
+    expect_equal(colnames(res), "smoothed")
+    expect_true(all(is.na(res$smoothed)))
+    expect_true(is.logical(res$smoothed))
 })
 
 test_that("[,MsBackendCached works", {

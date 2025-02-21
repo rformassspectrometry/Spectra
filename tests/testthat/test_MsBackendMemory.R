@@ -217,6 +217,9 @@ test_that("spectraData,MsBackendMemory works", {
     expect_equal(res$mz, IRanges::NumericList(test_df$mz, compress = FALSE))
     expect_equal(res$intensity,
                  IRanges::NumericList(test_df$intensity, compress = FALSE))
+    expect_true(is.integer(res$acquisitionNum))
+    expect_true(all(is.na(res$acquisitionNum)))
+    expect_equal(.valid_column_datatype(res), NULL)
 
     tmp <- test_df
     tmp$pk_anno <- list(c("a", "b", "c"), c("", "d"), letters[12:15])
@@ -231,6 +234,7 @@ test_that("spectraData,MsBackendMemory works", {
     expect_equal(res$intensity,
                  IRanges::NumericList(test_df$intensity, compress = FALSE))
     expect_equal(res$pk_anno, tmp$pk_anno)
+    expect_equal(.valid_column_datatype(res), NULL)
 
     tmp$add_anno <- list(c(1:3), 1:2, 1:4)
     be <- backendInitialize(be, tmp)
@@ -254,6 +258,16 @@ test_that("spectraData,MsBackendMemory works", {
     expect_s4_class(res, "DataFrame")
     expect_equal(colnames(res), "pk_anno")
     expect_equal(res$pk_anno, tmp$pk_anno)
+    res <- spectraData(be, "acquisitionNum")
+    expect_s4_class(res, "DataFrame")
+    expect_equal(colnames(res), "acquisitionNum")
+    expect_true(is.integer(res$acquisitionNum))
+    expect_true(all(is.na(res$acquisitionNum)))
+    res <- spectraData(be, "smoothed")
+    expect_s4_class(res, "DataFrame")
+    expect_equal(colnames(res), "smoothed")
+    expect_true(is.logical(res$smoothed))
+    expect_true(all(is.na(res$smoothed)))
 })
 
 test_that("spectraData<-,MsBackendMemory works", {

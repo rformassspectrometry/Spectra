@@ -271,12 +271,17 @@ NULL
 #'     `chunkSize` will result in faster processing, small `chunkSize` in
 #'     lower memory demand. Defaults to `chunkSize = 10000`.
 #'
+#' @param matchedPeaksCount `logical(1)` whether the number of matched peaks
+#'     between the compared spectra should also be reported. These will be
+#'     reported in `[, , 2]` of the returned `array`.
+#'
 #' @param ... additional parameters passed to `FUN` and `MAPFUN`.
 #'
 #' @return
 #'
 #' `matrix` with number of rows equal to length of `x` and number of columns
-#' equal `length(y)`.
+#' equal `length(y)`. If `matchedPeaksCount = TRUE` a 3 dimensional `array`
+#' will be returned with the matched peaks count reported in `[, , 2]`.
 #'
 #' @importFrom stats cor
 #'
@@ -297,9 +302,22 @@ NULL
                                    tolerance = 0, ppm = 20,
                                    FUN = ndotproduct,
                                    chunkSize = 10000, ...,
+                                   matchedPeaksCount = FALSE,
                                    BPPARAM = bpparam()) {
     nx <- length(x)
     ny <- length(y)
+    if (matchedPeaksCount) {
+        compare_fun <- .peaks_compare_npeaks
+        dn <- list(spectraNames(x), spectraNames(y),
+                   c("score", "matched_peaks_count"))
+        dims <- c(nx, ny, 2L)
+        z_chunk <- 1:2
+    } else {
+        compare_fun <- .peaks_compare
+        dn <- list(spectraNames(x), spectraNames(y))
+        dims <- c(nx, ny, 1L)
+        z_chunk <- 1L
+    }
     bppx <- backendBpparam(x@backend, BPPARAM)
     if (is(bppx, "SerialParam"))
         fx <- NULL
@@ -311,13 +329,13 @@ NULL
     else fy <- backendParallelFactor(y@backend)
     pqvy <- .processingQueueVariables(y)
     if (nx <= chunkSize && ny <= chunkSize) {
-        mat <- .peaks_compare(
+        mat <- compare_fun(
             .peaksapply(x, f = fx, spectraVariables = pqvx, BPPARAM = bppx),
             .peaksapply(y, f = fy, spectraVariables = pqvy, BPPARAM = bppy),
             MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
             FUN = FUN, xPrecursorMz = precursorMz(x),
             yPrecursorMz = precursorMz(y), ...)
-        dimnames(mat) <- list(spectraNames(x), spectraNames(y))
+        dimnames(mat) <- dn
         return(mat)
     }
 
@@ -329,8 +347,7 @@ NULL
     y_chunks <- split(y_idx, ceiling(y_idx / chunkSize))
     rm(y_idx)
 
-    mat <- matrix(NA_real_, nrow = nx, ncol = ny,
-                  dimnames = list(spectraNames(x), spectraNames(y)))
+    mat <- array(NA_real_, dim = dims, dimnames = dn)
     for (x_chunk in x_chunks) {
         x_buff <- x[x_chunk]
         if (length(fx))
@@ -343,7 +360,7 @@ NULL
             if (length(fy))
                 fyc <- backendParallelFactor(y_buff@backend)
             else fyc <- NULL
-            mat[x_chunk, y_chunk] <- .peaks_compare(
+            mat[x_chunk, y_chunk, z_chunk] <- compare_fun(
                 x_peaks, .peaksapply(y_buff, f = fyc, spectraVariables = pqvy,
                                      BPPARAM = bppy),
                 MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
@@ -351,7 +368,9 @@ NULL
                 yPrecursorMz = precursorMz(y_buff), ...)
         }
     }
-    mat
+    if (matchedPeaksCount)
+        mat
+    else as.matrix(mat[, , 1L])
 }
 
 #' @description
