@@ -73,7 +73,7 @@ similarity in the scoring."><meta property="og:image" content="https://rformasss
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -152,6 +152,7 @@ similarity in the scoring.</p>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="va">ndotproduct</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  matchedPeaksCount <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  SIMPLIFY <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -164,6 +165,7 @@ similarity in the scoring.</p>
 <span>  ppm <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="va">ndotproduct</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  matchedPeaksCount <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  SIMPLIFY <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -207,12 +209,28 @@ Defaults to <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/distance.html" cl
 <dd><p>Additional arguments passed to the internal functions.</p></dd>
 
 
+<dt id="arg-matchedpeakscount">matchedPeaksCount<a class="anchor" aria-label="anchor" href="#arg-matchedpeakscount"></a></dt>
+<dd><p><code>logical(1)</code> whether the number of matching peaks
+between the compared spectra should be returned in addition to the
+similarity scores. Note that with <code>matchedPeaksCount = TRUE</code> a
+3-dimensional <code>array</code> is returned. See examples below for details.</p></dd>
+
+
 <dt id="arg-simplify">SIMPLIFY<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
 <dd><p><code>logical(1)</code> defining  whether the result matrix should be
 <em>simplified</em> to a <code>numeric</code> if possible (i.e. if either <code>x</code> or <code>y</code> is
 of length 1).</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>For <code>matchedPeaksCount = FALSE</code> (the default) a <code>matrix</code> with the
+similarity scores. With <code>matchedPeaksCount = FALSE</code> and
+<code>SIMPLIFY = TRUE</code> a <code>numeric</code> vector. For <code>matchedPeaksCount = TRUE</code>
+a 3-dimensional array with the scores reported in the first matrix in
+z dimension (<code>[, , 1]</code>) and the number of matching peaks in the second
+matrix in z dimension (<code>[, , 2]</code>).</p>
+    </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Sebastian Gibb, Johannes Rainer, Laurent Gatto</p>
@@ -240,7 +258,7 @@ of length 1).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7600         1   899.747      7600</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7601         1   899.872      7601</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7602         1   899.993      7602</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
@@ -257,6 +275,25 @@ of length 1).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]       [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0 0.05181365    0    0    0    0    0    0     0     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0 0.20331585    0    0    0    0    0    0     0     0</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Setting parameter `matchedPeaksCount = TRUE` returns in addition to the</span></span></span>
+<span class="r-in"><span><span class="co">## simialrity score also the number of matching peaks between the compared</span></span></span>
+<span class="r-in"><span><span class="co">## spectra. The results are then returned as a 3-dimensional array, with the</span></span></span>
+<span class="r-in"><span><span class="co">## first matrix in z dimension (`[, , 1]`) containing the scores and the</span></span></span>
+<span class="r-in"><span><span class="co">## second matrix in z dimention (`[, , 2]`) the number of matching peaks:</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">compareSpectra</span><span class="op">(</span><span class="va">sps_ms2</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, <span class="va">sps_ms2</span><span class="op">[</span><span class="fl">10</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span>, matchedPeaksCount <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## the scores</span></span></span>
+<span class="r-in"><span><span class="va">res</span><span class="op">[</span>, , <span class="fl">1L</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]       [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0 0.05181365    0    0    0    0    0    0     0     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0 0.20331585    0    0    0    0    0    0     0     0</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## the number of matching peaks</span></span></span>
+<span class="r-in"><span><span class="va">res</span><span class="op">[</span>, , <span class="fl">2L</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    1    0    0    0    0    0    0     0     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    1    0    0    0    0    0    0     0     0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## We next calculate the pairwise similarity for the first 10 spectra</span></span></span>
 <span class="r-in"><span><span class="fu">compareSpectra</span><span class="op">(</span><span class="va">sps_ms2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></span>
@@ -329,6 +366,7 @@ of length 1).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [18,]     0     0     0     1     1     0     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [19,]     2     0     2     0     0    11     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [20,]     0     0     0     0     0     0     4</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

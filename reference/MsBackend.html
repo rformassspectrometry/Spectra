@@ -63,7 +63,7 @@ See below for more details about individual backends."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -959,7 +959,9 @@ metadata (annotation, also called header).  <code><a href="spectraData.html">spe
 a <code>DataFrame</code>, <code>spectraData&lt;-</code> expects a <code>DataFrame</code> with the same number
 of rows as there are spectra in <code>object</code>. Note that <code><a href="spectraData.html">spectraData()</a></code> has to
 return the full data, i.e. also the m/z and intensity values (as a <code>list</code>
-or <code>SimpleList</code> in columns <code>"mz"</code> and <code>"intensity"</code>.</p></li>
+or <code>SimpleList</code> in columns <code>"mz"</code> and <code>"intensity"</code>. See also
+<code><a href="fillCoreSpectraVariables.html">fillCoreSpectraVariables()</a></code> for a function that can <em>complete</em> a spectra
+data data frame with eventually missing <em>core</em> spectra variables.</p></li>
 <li><p><code><a href="spectraData.html">spectraNames()</a></code>: returns a <code>character</code> vector with the names of
 the spectra in <code>object</code> or <code>NULL</code> if not set. <code>spectraNames&lt;-</code> allows to
 set spectra names (if the object is not read-only).</p></li>

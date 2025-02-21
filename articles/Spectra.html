@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,7 @@ Laurent Gatto [aut] (ORCID: <a href="https://orcid.org/0000-0002-1520-2268" clas
 [aut] (ORCID: <a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
 Louail [aut] (ORCID: <a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
 [ctb] (ORCID: <a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
-[ctb], Mar Garcia-Aloy [ctb] (ORCID: <a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2025-01-16 08:50:05.02405<br><strong>Compiled</strong>: Thu Jan 16 09:27:35 2025</p>
+[ctb], Mar Garcia-Aloy [ctb] (ORCID: <a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>)<br><strong>Last modified:</strong> 2025-02-21 10:37:48.281733<br><strong>Compiled</strong>: Fri Feb 21 11:12:59 2025</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -268,7 +268,7 @@ and their properties.</p>
 <span><span class="co">## 1860         1   259.194       929</span></span>
 <span><span class="co">## 1861         1   259.473       930</span></span>
 <span><span class="co">## 1862         1   259.752       931</span></span>
-<span><span class="co">##  ... 33 more variables/columns.</span></span>
+<span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_1_105-134.mzML</span></span>
@@ -316,7 +316,8 @@ variables</em>). The available variables can be listed with the
 <span><span class="co">## [27] "mergedResultStartScanNum" "mergedResultEndScanNum"  </span></span>
 <span><span class="co">## [29] "injectionTime"            "filterString"            </span></span>
 <span><span class="co">## [31] "spectrumId"               "ionMobilityDriftTime"    </span></span>
-<span><span class="co">## [33] "scanWindowLowerLimit"     "scanWindowUpperLimit"</span></span></code></pre>
+<span><span class="co">## [33] "scanWindowLowerLimit"     "scanWindowUpperLimit"    </span></span>
+<span><span class="co">## [35] "electronBeamEnergy"</span></span></code></pre>
 <p>The two <code>Spectra</code> contain a different set of variables:
 besides <code>"msLevel"</code>, <code>"polarity"</code>,
 <code>"id"</code> and <code>"name"</code>, that were specified for the
@@ -767,7 +768,7 @@ spectra measured between 175 and 189 seconds in the measurement run.</p>
 <span><span class="co">## 48          1   188.326       675</span></span>
 <span><span class="co">## 49          1   188.605       676</span></span>
 <span><span class="co">## 50          1   188.884       677</span></span>
-<span><span class="co">##  ... 33 more variables/columns.</span></span>
+<span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span></code></pre>
@@ -791,13 +792,13 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">## 48          1   188.326       675</span></span>
 <span><span class="co">## 49          1   188.605       676</span></span>
 <span><span class="co">## 50          1   188.884       677</span></span>
-<span><span class="co">##  ... 33 more variables/columns.</span></span>
+<span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Thu Jan 16 09:27:40 2025]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Thu Jan 16 09:27:40 2025]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Fri Feb 21 11:13:04 2025]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s) 1 [Fri Feb 21 11:13:04 2025]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -832,7 +833,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Thu Jan 16 09:27:40 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Feb 21 11:13:04 2025]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
@@ -925,9 +926,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Thu Jan 16 09:27:40 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Jan 16 09:27:41 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu Jan 16 09:27:41 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Feb 21 11:13:04 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb 21 11:13:04 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb 21 11:13:04 2025]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -958,9 +959,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Thu Jan 16 09:27:40 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Jan 16 09:27:41 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu Jan 16 09:27:41 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Feb 21 11:13:04 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb 21 11:13:04 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb 21 11:13:04 2025]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code><a href="../reference/spectraData.html">intensity()</a></code> on this object will
 now return intensities that are half of the intensities of the original
@@ -1227,9 +1228,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Thu Jan 16 09:27:40 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Thu Jan 16 09:27:41 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Thu Jan 16 09:27:41 2025]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Fri Feb 21 11:13:04 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Fri Feb 21 11:13:04 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Feb 21 11:13:04 2025]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code><a href="../reference/addProcessing.html">applyProcessing()</a></code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1438,6 +1439,31 @@ with <code>a</code> and <code>b</code> being the two
 matrix will be returned with <em>n</em> (rows) being the spectra in
 <code>a</code> and <em>m</em> (columns) being the spectra in
 <code>b</code>.</p>
+<p>By setting parameter <code>matchedPeaksCount = TRUE</code> also the
+number of matching peaks between the compared spectra are returned, in
+addition to the similarity scores. The result is then a 3-dimensional
+<code>array</code> with the similarity scores in the first
+<code>matrix</code> in z dimension (<code>[, , 1]</code>) and the number
+of matching peaks in the second <code>matrix</code>
+(<code>[, , 2]</code>):</p>
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compareSpectra.html">compareSpectra</a></span><span class="op">(</span><span class="va">sps</span>, <span class="va">sps</span>, ppm <span class="op">=</span> <span class="fl">40</span>, matchedPeaksCount <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#' The similarity scores:</span></span>
+<span><span class="va">sim</span><span class="op">[</span>, , <span class="fl">1L</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##           1         2         3         4</span></span>
+<span><span class="co">## 1 1.0000000 0.1380817 0.0000000 0.0000000</span></span>
+<span><span class="co">## 2 0.1380817 1.0000000 0.0000000 0.0000000</span></span>
+<span><span class="co">## 3 0.0000000 0.0000000 1.0000000 0.1817149</span></span>
+<span><span class="co">## 4 0.0000000 0.0000000 0.1817149 1.0000000</span></span></code></pre>
+<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#' The number of matching peaks:</span></span>
+<span><span class="va">sim</span><span class="op">[</span>, , <span class="fl">2L</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##   1 2 3 4</span></span>
+<span><span class="co">## 1 5 1 0 0</span></span>
+<span><span class="co">## 2 1 7 0 0</span></span>
+<span><span class="co">## 3 0 0 9 2</span></span>
+<span><span class="co">## 4 0 0 2 5</span></span></code></pre>
 <p>The above similarity was calculated with the default (normalized)
 dot-product, but also other similarity scores can be used instead.
 Either one of the other metrics provided by the <em><a href="https://bioconductor.org/packages/3.21/MsCoreUtils" class="external-link">MsCoreUtils</a></em>
@@ -1458,10 +1484,10 @@ call. We use <code>ms2_tolerance_in_ppm = 50</code> to set the tolerance
 for m/z-relative peak matching (equivalent to <code>ppm = 50</code> used
 above) and <code>ms2_tolerance_in_da = -1</code> to disable absolute
 tolerance matching.</p>
-<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YuanyueLi/MSEntropy" class="external-link">msentropy</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: Rcpp</span></span></code></pre>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compareSpectra.html">compareSpectra</a></span><span class="op">(</span><span class="va">sps</span>, MAPFUN <span class="op">=</span> <span class="va">joinPeaksNone</span>, FUN <span class="op">=</span> <span class="va">msentropy_similarity</span>,</span>
 <span>               ms2_tolerance_in_ppm <span class="op">=</span> <span class="fl">50</span>, ms2_tolerance_in_da <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           1         2         3         4</span></span>
@@ -1482,16 +1508,16 @@ Below we bin our spectra using a bin size of 0.1 (i.e. all peaks with an
 m/z smaller than 0.1 are aggregated into one binned peak. Below, we
 explicitly set <code>zero.rm = FALSE</code> to retain all bins generated
 by the function, including those with an intensity of zero.</p>
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sps_bin</span> <span class="op">&lt;-</span> <span class="fu">Spectra</span><span class="fu">::</span><span class="fu"><a href="../reference/addProcessing.html">bin</a></span><span class="op">(</span><span class="va">sps</span>, binSize <span class="op">=</span> <span class="fl">0.1</span>, zero.rm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>All spectra will now have the same number of m/z values.</p>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spectraData.html">lengths</a></span><span class="op">(</span><span class="va">sps_bin</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1400 1400 1400 1400</span></span></code></pre>
 <p>Most of the intensity values for these will however be 0 (because in
 the original spectra no peak for the respective m/z bin was
 present).</p>
-<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spectraData.html">intensity</a></span><span class="op">(</span><span class="va">sps_bin</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## NumericList of length 4</span></span>
 <span><span class="co">## [[1]] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</span></span>
@@ -1501,11 +1527,11 @@ present).</p>
 <p>We’re next creating an intensity matrix for our <code>Spectra</code>
 object, each row being one spectrum and columns representing the binned
 m/z values.</p>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">intmat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="../reference/spectraData.html">intensity</a></span><span class="op">(</span><span class="va">sps_bin</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We can now identify those columns (m/z bins) with only 0s across all
 spectra and remove these.</p>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zeros</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">intmat</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span></span>
 <span><span class="va">intmat</span> <span class="op">&lt;-</span> <span class="va">intmat</span><span class="op">[</span>, <span class="op">!</span><span class="va">zeros</span><span class="op">]</span></span>
 <span><span class="va">intmat</span></span></code></pre></div>
@@ -1522,13 +1548,13 @@ spectra and remove these.</p>
 <p>The associated m/z values for the bins can be extracted with
 <code><a href="../reference/spectraData.html">mz()</a></code> from the binned <code>Spectra</code> object. Below we
 use these as column names for the intensity matrix.</p>
-<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">intmat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spectraData.html">mz</a></span><span class="op">(</span><span class="va">sps_bin</span><span class="op">)</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="op">!</span><span class="va">zeros</span><span class="op">]</span></span></code></pre></div>
 <p>This intensity matrix could now for example be used to cluster the
 spectra based on their peak intensities.</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">heatmap</a></span><span class="op">(</span><span class="va">intmat</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
 <p>As expected, the first 2 and the last 2 spectra are more similar and
 are clustered together.</p>
 </div>
@@ -1558,15 +1584,15 @@ file name of the result file (a temporary file) to the
 <code><a href="../reference/Spectra.html">export()</a></code> function (see also the help page of the
 <code>export,MsBackendMzR</code> function for additional supported
 parameters).</p>
-<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/Spectra.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file886f4664ab9a...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file8b764b955773...OK</span></span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
 the mzML standard).</p>
-<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sps_im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">backendInitialize</a></span><span class="op">(</span><span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">fl</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/spectraData.html">spectraVariables</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="../reference/spectraData.html">spectraVariables</a></span><span class="op">(</span><span class="va">sps</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="../reference/spectraData.html">spectraVariables</a></span><span class="op">(</span><span class="va">sps_im</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "id"         "name"       "splash"     "instrument"</span></span></code></pre>
@@ -1579,11 +1605,11 @@ allows also to specify for each individual spectrum in the
 <code>file</code> has thus to be of length equal to the number of
 spectra). As an example we export below the spectrum 1 and 3 to one file
 and spectra 2 and 4 to another.</p>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/Spectra.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file886f725fca8...OK</span></span>
-<span><span class="co">## Writing file file886fb2c5db1...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file8b7629b2523c...OK</span></span>
+<span><span class="co">## Writing file file8b7677c561dc...OK</span></span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the <code><a href="../reference/addProcessing.html">smooth()</a></code>
 function) and centroiding (using the <code><a href="../reference/addProcessing.html">pickPeaks()</a></code> function)
@@ -1602,10 +1628,10 @@ to a <code>MsBackendMemory</code> backend to enable use of the data even
 without the need to keep the original mzML files. Below we change the
 backend of <code>sps_sciex</code> to the in-memory
 <code>MsBackendMemory</code> backend.</p>
-<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Mb"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 0.4 Mb</span></span></code></pre>
-<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sps_sciex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">setBackend</a></span><span class="op">(</span><span class="va">sps_sciex</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sps_sciex</span></span></code></pre></div>
 <pre><code><span><span class="co">## MSn data (Spectra) with 1862 spectra in a MsBackendMemory backend:</span></span>
@@ -1622,22 +1648,22 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1860         1   259.194       929</span></span>
 <span><span class="co">## 1861         1   259.473       930</span></span>
 <span><span class="co">## 1862         1   259.752       931</span></span>
-<span><span class="co">##  ... 33 more variables/columns.</span></span>
+<span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Thu Jan 16 09:27:46 2025]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Fri Feb 21 11:13:10 2025]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
-<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"Mb"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 53.2 Mb</span></span></code></pre>
 <p>The <code>dataStorage</code> spectrum variable has now changed, while
 <code>dataOrigin</code> still keeps the information about the
 originating files:</p>
-<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</span></span></code></pre>
-<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"</span></span>
 <span><span class="co">## [3] "20171016_POOL_POS_1_105-134.mzML" "20171016_POOL_POS_1_105-134.mzML"</span></span>
@@ -1685,7 +1711,7 @@ intensity values for the mass peaks.</p>
 use a <code>MsBackendHdf5Peaks</code> backend for data storage. The
 <code>hdf5path</code> parameter allows us to specify the storage
 location of the HDF5 file.</p>
-<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">msdata</span><span class="op">)</span></span>
 <span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msdata/man/proteomics.html" class="external-link">proteomics</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span></span>
 <span></span>
@@ -1806,13 +1832,13 @@ file systems.</p>
 <em>/data/mzML/</em> on one computer. These get loaded as a
 <code>Spectra</code> object with <code>MsBackendMzR</code> and then
 serialized to a file <em>A.RData</em>.</p>
-<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"/data/mzML/a.mzML"</span>, <span class="st">"/data/mzML/b.mzML"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">A</span>, file <span class="op">=</span> <span class="st">"A.RData"</span><span class="op">)</span></span></code></pre></div>
 <p>Assuming this file gets now copied to another computer (where the
 data is not available in a folder <em>/data/mzML/</em>) and loaded with
 <code><a href="https://rdrr.io/r/base/load.html" class="external-link">load()</a></code>.</p>
-<div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"A.RData"</span><span class="op">)</span></span></code></pre></div>
 <p>This <code>Spectra</code> object would not be valid because its
 <code>MsBackendMzR</code> can no longer access the MS data in the
@@ -1821,7 +1847,7 @@ original data files. Assuming the user also copied the data files
 <em>/some_other_folder/</em>, the base storage path of the object would
 need to be adapted to match the directory where the data files are
 available on the second computer:</p>
-<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb175"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/MsBackend.html">dataStorageBasePath</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"/some_other_folder"</span></span></code></pre></div>
 <p>By pointing now the storage path to the new storage location of the
 data files, the <code>Spectra</code> object <code>A</code> would also be
@@ -1830,9 +1856,9 @@ usable on the second computer.</p>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R Under development (unstable) (2025-01-08 r87545)</span></span>
+<pre><code><span><span class="co">## R Under development (unstable) (2025-02-12 r87715)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">## Running under: Ubuntu 24.04.1 LTS</span></span>
 <span><span class="co">## </span></span>
@@ -1857,22 +1883,22 @@ usable on the second computer.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">##  [1] msdata_0.47.0       msentropy_0.1.4     Rcpp_1.0.14        </span></span>
-<span><span class="co">##  [4] MsCoreUtils_1.19.0  Spectra_1.17.5      BiocParallel_1.41.0</span></span>
-<span><span class="co">##  [7] S4Vectors_0.45.2    BiocGenerics_0.53.3 generics_0.1.3     </span></span>
+<span><span class="co">##  [4] MsCoreUtils_1.19.0  Spectra_1.17.6      BiocParallel_1.41.2</span></span>
+<span><span class="co">##  [7] S4Vectors_0.45.4    BiocGenerics_0.53.6 generics_0.1.3     </span></span>
 <span><span class="co">## [10] BiocStyle_2.35.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] jsonlite_1.8.9         compiler_4.5.0         BiocManager_1.30.25   </span></span>
-<span><span class="co">##  [4] Biobase_2.67.0         rhdf5filters_1.19.0    parallel_4.5.0        </span></span>
-<span><span class="co">##  [7] cluster_2.1.8          jquerylib_0.1.4        systemfonts_1.1.0     </span></span>
-<span><span class="co">## [10] IRanges_2.41.2         textshaping_0.4.1      yaml_2.3.10           </span></span>
-<span><span class="co">## [13] fastmap_1.2.0          R6_2.5.1               ProtGenerics_1.39.2   </span></span>
+<span><span class="co">##  [1] jsonlite_1.9.0         compiler_4.5.0         BiocManager_1.30.25   </span></span>
+<span><span class="co">##  [4] Biobase_2.67.0         rhdf5filters_1.19.1    parallel_4.5.0        </span></span>
+<span><span class="co">##  [7] cluster_2.1.8          jquerylib_0.1.4        systemfonts_1.2.1     </span></span>
+<span><span class="co">## [10] IRanges_2.41.3         textshaping_1.0.0      yaml_2.3.10           </span></span>
+<span><span class="co">## [13] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.39.2   </span></span>
 <span><span class="co">## [16] knitr_1.49             htmlwidgets_1.6.4      MASS_7.3-64           </span></span>
-<span><span class="co">## [19] bookdown_0.42          desc_1.4.3             bslib_0.8.0           </span></span>
-<span><span class="co">## [22] rlang_1.1.4            cachem_1.1.0           xfun_0.50             </span></span>
-<span><span class="co">## [25] fs_1.6.5               sass_0.4.9             cli_3.6.3             </span></span>
+<span><span class="co">## [19] bookdown_0.42          desc_1.4.3             bslib_0.9.0           </span></span>
+<span><span class="co">## [22] rlang_1.1.5            cachem_1.1.0           xfun_0.51             </span></span>
+<span><span class="co">## [25] fs_1.6.5               sass_0.4.9             cli_3.6.4             </span></span>
 <span><span class="co">## [28] Rhdf5lib_1.29.0        pkgdown_2.1.1.9000     ncdf4_1.23            </span></span>
-<span><span class="co">## [31] digest_0.6.37          mzR_2.41.1             MetaboCoreUtils_1.15.0</span></span>
+<span><span class="co">## [31] digest_0.6.37          mzR_2.41.4             MetaboCoreUtils_1.15.0</span></span>
 <span><span class="co">## [34] rhdf5_2.51.2           lifecycle_1.0.4        clue_0.3-66           </span></span>
 <span><span class="co">## [37] evaluate_1.0.3         codetools_0.2-20       ragg_1.3.3            </span></span>
 <span><span class="co">## [40] rmarkdown_2.29         tools_4.5.0            htmltools_0.5.8.1</span></span></code></pre>
