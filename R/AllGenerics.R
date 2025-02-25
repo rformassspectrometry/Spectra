@@ -65,12 +65,12 @@ setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
 #'
 #' @name spectraVariableMapping
 #'
-#' @export
+#' @exportMethod spectraVariableMapping
 setGeneric("spectraVariableMapping", function(object, ...)
     standardGeneric("spectraVariableMapping"))
 
 #' @rdname spectraVariableMapping
 #'
-#' @export
+#' @exportMethod spectraVariableMapping<-
 setGeneric("spectraVariableMapping<-", function(object, ..., value)
     standardGeneric("spectraVariableMapping<-"))
