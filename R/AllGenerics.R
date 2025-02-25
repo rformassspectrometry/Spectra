@@ -55,12 +55,22 @@ setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
 #'
 #' @param ... Optional parameters.
 #'
+#' @param value For `spectraVariableMapping<-`: a named `character` vector.
+#'
 #' @return A named `character` with names being spectra variable names (use
 #'     [spectraVariables()] for a list of supported names) and values being the
 #'     data field names.
 #'
 #' @author Johannes Rainer
 #'
+#' @name spectraVariableMapping
+#'
 #' @export
 setGeneric("spectraVariableMapping", function(object, ...)
     standardGeneric("spectraVariableMapping"))
+
+#' @rdname spectraVariableMapping
+#'
+#' @export
+setGeneric("spectraVariableMapping<-", function(object, ..., value)
+    standardGeneric("spectraVariableMapping<-"))

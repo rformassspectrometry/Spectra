@@ -1,5 +1,9 @@
 # Spectra 1.17
 
+## Change in 1.17.7
+
+- Add the `spectraVariableMapping<-` generic method.
+
 ## Change in 1.17.6
 
 - Add new `fillCoreSpectraVariables()` function that allows to add eventually
