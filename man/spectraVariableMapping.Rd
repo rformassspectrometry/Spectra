@@ -2,14 +2,19 @@
 % Please edit documentation in R/AllGenerics.R
 \name{spectraVariableMapping}
 \alias{spectraVariableMapping}
+\alias{spectraVariableMapping<-}
 \title{Mapping between spectra variables and data file fields}
 \usage{
 spectraVariableMapping(object, ...)
+
+spectraVariableMapping(object, ...) <- value
 }
 \arguments{
 \item{object}{An instance of an object extending \code{\link[=MsBackend]{MsBackend()}}.}
 
 \item{...}{Optional parameters.}
+
+\item{value}{For \verb{spectraVariableMapping<-}: a named \code{character} vector.}
 }
 \value{
 A named \code{character} with names being spectra variable names (use
