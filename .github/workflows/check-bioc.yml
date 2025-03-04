@@ -40,7 +40,7 @@ env:
   run_pkgdown: 'true'
   has_RUnit: 'false'
   has_BiocCheck: 'false'
-  cache-version: 'cache-v1'
+  cache-version: 'cache-v4'
 
 jobs:
   build-check:
