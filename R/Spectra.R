@@ -639,6 +639,10 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 #'
 #' @param object A `Spectra` object.
 #'
+#' @param return.type For `peaksData()`: `character(1)` allowing to specify if
+#'     the results should be returned as a `SimpleList` or as a `list`.
+#'     Defaults to `return.type = "SimpleList"`.
+#'
 #' @param spectraVars `character()` indicating what spectra variables to add to
 #'     the `DataFrame`. Default is `spectraVariables(object)`, i.e. all
 #'     available variables.
@@ -1203,10 +1207,19 @@ setMethod("mz", "Spectra", function(object, f = processingChunkFactor(object),
 setMethod(
     "peaksData", "Spectra",
     function(object, columns = c("mz", "intensity"),
-             f = processingChunkFactor(object), ..., BPPARAM = bpparam()) {
+             f = processingChunkFactor(object),
+             return.type = c("SimpleList", "list"), ..., BPPARAM = bpparam()) {
+        return.type <- match.arg(return.type)
         if (length(object@processingQueue) || length(f))
-            SimpleList(.peaksapply(object, columns = columns, f = f))
-        else SimpleList(peaksData(object@backend, columns = columns))
+            switch(return.type,
+                   SimpleList = SimpleList(
+                       .peaksapply(object, columns = columns, f = f)),
+                   list = .peaksapply(object, columns = columns, f = f))
+        else
+            switch(return.type,
+                   SimpleList = SimpleList(
+                       peaksData(object@backend, columns = columns)),
+                   list = peaksData(object@backend, columns = columns))
     })
 
 #' @rdname spectraData

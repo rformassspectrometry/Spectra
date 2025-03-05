@@ -2090,3 +2090,11 @@ test_that("applyProcessing works", {
 
     expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")
 })
+
+test_that("peaksData,Spectra works ", {
+    a <- sps_dda[1:3]
+    res <- peaksData(a)
+    expect_s4_class(res, "SimpleList")
+    res <- peaksData(a, return.type = "list")
+    expect_true(is.list(res))
+})

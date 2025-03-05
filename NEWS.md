@@ -1,5 +1,9 @@
 # Spectra 1.17
 
+## Change in 1.17.8
+
+- Add parameter `return.type` to `peaksData()`.
+
 ## Change in 1.17.7
 
 - Add the `spectraVariableMapping<-` generic method.
