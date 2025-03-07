@@ -448,7 +448,8 @@
 #'    for `MsBackend` is available.
 #'
 #' - `filterRt()`: retains spectra of MS level `msLevel` with retention times
-#'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
+#'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`. The filter is applied to all
+#'    spectra if no MS level is specified (the default, `msLevel. = integer()`).
 #'    Implementation of this method is optional since a default implementation
 #'    for `MsBackend` is available.
 #'
@@ -595,7 +596,9 @@
 #'   a `DataFrame`, `spectraData<-` expects a `DataFrame` with the same number
 #'   of rows as there are spectra in `object`. Note that `spectraData()` has to
 #'   return the full data, i.e. also the m/z and intensity values (as a `list`
-#'   or `SimpleList` in columns `"mz"` and `"intensity"`.
+#'   or `SimpleList` in columns `"mz"` and `"intensity"`. See also
+#'   [fillCoreSpectraVariables()] for a function that can *complete* a spectra
+#'   data data frame with eventually missing *core* spectra variables.
 #'
 #' - `spectraNames()`: returns a `character` vector with the names of
 #'   the spectra in `object` or `NULL` if not set. `spectraNames<-` allows to
@@ -1419,12 +1422,17 @@ setMethod("filterRanges", "MsBackend",
 #'
 #' @export
 setMethod("filterRt", "MsBackend",
-          function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
+          function(object, rt = numeric(), msLevel. = integer()) {
               if (length(rt)) {
                   rt <- range(rt)
-                  sel_ms <- msLevel(object) %in% msLevel.
-                  sel_rt <- between(rtime(object), rt) & sel_ms
-                  object[sel_rt | !sel_ms]
+                  if (length(msLevel.)) {
+                      sel_ms <- msLevel(object) %in% msLevel.
+                      sel_rt <- between(rtime(object), rt) & sel_ms
+                      object[sel_rt | !sel_ms]
+                  } else {
+                      sel_rt <- between(rtime(object), rt)
+                      object[sel_rt]
+                  }
               } else object
           })
 

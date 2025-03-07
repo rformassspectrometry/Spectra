@@ -137,6 +137,7 @@ coreSpectraVariables()
   object,
   columns = c("mz", "intensity"),
   f = processingChunkFactor(object),
+  return.type = c("SimpleList", "list"),
   ...,
   BPPARAM = bpparam()
 )
@@ -219,6 +220,10 @@ For \code{peaksData()} accessor: optional \code{character} with requested column
 in the individual \code{matrix} of the returned \code{list}. Defaults to
 \code{c("mz", "value")} but any values returned by \code{peaksVariables(object)}
 with \code{object} being the \code{Spectra} object are supported.}
+
+\item{return.type}{For \code{peaksData()}: \code{character(1)} allowing to specify if
+the results should be returned as a \code{SimpleList} or as a \code{list}.
+Defaults to \code{return.type = "SimpleList"}.}
 
 \item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
 for more information. See also \code{\link[=processingChunkSize]{processingChunkSize()}} for more

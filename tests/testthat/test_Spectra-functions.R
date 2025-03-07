@@ -42,35 +42,36 @@ test_that(".compare_spectra_self work", {
 })
 
 test_that(".compare_spectra_chunk works", {
-    sps <- Spectra(sciex_hd5)[120:126]
-    sps <- setBackend(sps, MsBackendDataFrame())
-
+    sps <- setBackend(filterMsLevel(sps_dda, 2L)[1:20], MsBackendMemory())
     res <- .compare_spectra_chunk(sps, sps)
-    expect_true(ncol(res) == length(sps))
-    expect_true(nrow(res) == length(sps))
-    expect_equal(diag(res), rep(1, length(sps)))
 
-    res_2 <- .compare_spectra_chunk(sps, sps[3])
-    expect_true(ncol(res_2) == 1)
-    expect_true(nrow(res_2) == length(sps))
-    expect_identical(res_2[, 1], res[, 3])
-
-    res_2 <- .compare_spectra_chunk(sps[5], sps)
-    expect_true(ncol(res_2) == length(sps))
-    expect_true(nrow(res_2) == 1)
-    expect_identical(res_2[1, ], res[5, ])
-
-    res_3 <- .compare_spectra_chunk(sps[5], sps, chunkSize = 2)
-    expect_equal(res_2, res_3)
+    expect_true(all(is.nan(res[, 8])))
+    expect_true(all(is.nan(res[8, ])))
+    expect_true(all(diag(res)[-8] == 1))
+    expect_true(nrow(res) == 20)
+    expect_true(ncol(res) == 20)
 
     cor_fun <- function(x, y, ...) {
         cor(x[, 2], y[, 2], use = "pairwise.complete.obs")
     }
     res <- .compare_spectra_chunk(sps[1], sps[1], FUN = cor_fun)
     expect_true(res[1, 1] == 1)
-    res <- .compare_spectra_chunk(sps[1], sps[2], FUN = cor_fun)
-    res_2 <- .compare_spectra_chunk(sps[1], sps[2])
-    expect_true(res[1, 1] > res_2[1, 1])
+    res <- .compare_spectra_chunk(sps[1], sps[3], FUN = cor_fun)
+
+    res <- .compare_spectra_chunk(sps, sps, matchedPeaksCount = TRUE)
+    expect_true(is.array(res))
+    expect_equal(unname(diag(res[, , 2])), lengths(sps))
+
+    res <- .compare_spectra_chunk(sps, sps[5], matchedPeaksCount = FALSE)
+    expect_true(is.matrix(res))
+    expect_true(nrow(res) == 20)
+    expect_true(ncol(res) == 1)
+    expect_true(res[5, 1] == 1)
+
+    res <- .compare_spectra_chunk(sps, sps[5], matchedPeaksCount = TRUE)
+    expect_true(is.array(res))
+    expect_equal(dim(res), c(20, 1, 2))
+    expect_true(res[5, 1, 1] == 1)
 })
 
 test_that(".lapply works", {

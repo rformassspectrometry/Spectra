@@ -191,7 +191,7 @@
   match = c("all", "any")
 )
 
-\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
+\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = integer())
 
 \S4method{filterValues}{MsBackend}(
   object,
@@ -721,7 +721,8 @@ values are within any of the provided ranges are retained).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterRt()}: retains spectra of MS level \code{msLevel} with retention times
-within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
+within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}. The filter is applied to all
+spectra if no MS level is specified (the default, \code{msLevel. = integer()}).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterValues()}: allows filtering of the \code{Spectra} object based on
@@ -841,7 +842,9 @@ metadata (annotation, also called header).  \code{spectraData()} returns
 a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame} with the same number
 of rows as there are spectra in \code{object}. Note that \code{spectraData()} has to
 return the full data, i.e. also the m/z and intensity values (as a \code{list}
-or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}.
+or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}. See also
+\code{\link[=fillCoreSpectraVariables]{fillCoreSpectraVariables()}} for a function that can \emph{complete} a spectra
+data data frame with eventually missing \emph{core} spectra variables.
 \item \code{spectraNames()}: returns a \code{character} vector with the names of
 the spectra in \code{object} or \code{NULL} if not set. \verb{spectraNames<-} allows to
 set spectra names (if the object is not read-only).

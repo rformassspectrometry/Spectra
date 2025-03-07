@@ -217,6 +217,9 @@ test_that("spectraData,MsBackendMemory works", {
     expect_equal(res$mz, IRanges::NumericList(test_df$mz, compress = FALSE))
     expect_equal(res$intensity,
                  IRanges::NumericList(test_df$intensity, compress = FALSE))
+    expect_true(is.integer(res$acquisitionNum))
+    expect_true(all(is.na(res$acquisitionNum)))
+    expect_equal(.valid_column_datatype(res), NULL)
 
     tmp <- test_df
     tmp$pk_anno <- list(c("a", "b", "c"), c("", "d"), letters[12:15])
@@ -231,6 +234,7 @@ test_that("spectraData,MsBackendMemory works", {
     expect_equal(res$intensity,
                  IRanges::NumericList(test_df$intensity, compress = FALSE))
     expect_equal(res$pk_anno, tmp$pk_anno)
+    expect_equal(.valid_column_datatype(res), NULL)
 
     tmp$add_anno <- list(c(1:3), 1:2, 1:4)
     be <- backendInitialize(be, tmp)
@@ -254,6 +258,16 @@ test_that("spectraData,MsBackendMemory works", {
     expect_s4_class(res, "DataFrame")
     expect_equal(colnames(res), "pk_anno")
     expect_equal(res$pk_anno, tmp$pk_anno)
+    res <- spectraData(be, "acquisitionNum")
+    expect_s4_class(res, "DataFrame")
+    expect_equal(colnames(res), "acquisitionNum")
+    expect_true(is.integer(res$acquisitionNum))
+    expect_true(all(is.na(res$acquisitionNum)))
+    res <- spectraData(be, "smoothed")
+    expect_s4_class(res, "DataFrame")
+    expect_equal(colnames(res), "smoothed")
+    expect_true(is.logical(res$smoothed))
+    expect_true(all(is.na(res$smoothed)))
 })
 
 test_that("spectraData<-,MsBackendMemory works", {
@@ -964,4 +978,28 @@ test_that("supportsSetBackend,MsBackendMemory", {
 test_that("backendRequiredSpectraVariables,MsBackendMemory works", {
     expect_equal(backendRequiredSpectraVariables(MsBackendMemory()),
                  "dataStorage")
+})
+
+test_that("filterRt works for MsBackendMemory", {
+    test_df$rtime <- c(1.2, 2.1, 3.1)
+    be <- backendInitialize(MsBackendMemory(), test_df)
+    res <- filterRt(be, c(1, 2))
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), integer())
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), 1:4)
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), 2L)
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 3), 2L)
+    expect_equal(length(res), 2L)
+    expect_equal(rtime(res), c(1.2, 2.1))
 })

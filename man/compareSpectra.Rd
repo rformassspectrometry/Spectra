@@ -14,6 +14,7 @@
   ppm = 20,
   FUN = ndotproduct,
   ...,
+  matchedPeaksCount = FALSE,
   SIMPLIFY = TRUE
 )
 
@@ -25,6 +26,7 @@
   ppm = 20,
   FUN = ndotproduct,
   ...,
+  matchedPeaksCount = FALSE,
   SIMPLIFY = TRUE
 )
 }
@@ -50,9 +52,22 @@ Defaults to \code{\link[MsCoreUtils:distance]{MsCoreUtils::ndotproduct()}}.}
 
 \item{...}{Additional arguments passed to the internal functions.}
 
+\item{matchedPeaksCount}{\code{logical(1)} whether the number of matching peaks
+between the compared spectra should be returned in addition to the
+similarity scores. Note that with \code{matchedPeaksCount = TRUE} a
+3-dimensional \code{array} is returned. See examples below for details.}
+
 \item{SIMPLIFY}{\code{logical(1)} defining  whether the result matrix should be
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
 of length 1).}
+}
+\value{
+For \code{matchedPeaksCount = FALSE} (the default) a \code{matrix} with the
+similarity scores. With \code{matchedPeaksCount = FALSE} and
+\code{SIMPLIFY = TRUE} a \code{numeric} vector. For \code{matchedPeaksCount = TRUE}
+a 3-dimensional array with the scores reported in the first matrix in
+z dimension (\verb{[, , 1]}) and the number of matching peaks in the second
+matrix in z dimension (\verb{[, , 2]}).
 }
 \description{
 \code{compareSpectra()} compares each spectrum in \code{x} with each spectrum in \code{y}
@@ -110,6 +125,19 @@ res <- compareSpectra(sps_ms2[2:3], sps_ms2[10:20])
 ## the second row comparisons of spectrum 3 with spectra 10 to 20
 res
 
+## Setting parameter `matchedPeaksCount = TRUE` returns in addition to the
+## simialrity score also the number of matching peaks between the compared
+## spectra. The results are then returned as a 3-dimensional array, with the
+## first matrix in z dimension (`[, , 1]`) containing the scores and the
+## second matrix in z dimention (`[, , 2]`) the number of matching peaks:
+res <- compareSpectra(sps_ms2[2:3], sps_ms2[10:20], matchedPeaksCount = TRUE)
+
+## the scores
+res[, , 1L]
+
+## the number of matching peaks
+res[, , 2L]
+
 ## We next calculate the pairwise similarity for the first 10 spectra
 compareSpectra(sps_ms2[1:10])
 
@@ -125,6 +153,7 @@ compareSpectra(sps_ms2[2:3], sps_ms2[10:20], ppm = 10, type = "inner",
 ## of the first 20 spectra
 compareSpectra(sps_ms2[1:20], ppm = 10, type = "inner",
     FUN = function(x, y, ...) nrow(x))
+
 }
 \author{
 Sebastian Gibb, Johannes Rainer, Laurent Gatto

@@ -49,14 +49,9 @@ MsBackendMemory <- function() {
         sp_vars <- setdiff(columns, p_vars)
         df_columns <- intersect(sp_vars, colnames(object@spectraData))
         res <- object@spectraData[, df_columns, drop = FALSE]
-        ## Get missing core variables.
         other_columns <- setdiff(sp_vars, colnames(object@spectraData))
-        if (length(other_columns)) {
-            other_res <- lapply(other_columns, .get_column,
-                                x = object@spectraData)
-            names(other_res) <- other_columns
-            res <- cbind(res, as.data.frame(other_res))
-        }
+        if (length(other_columns))
+            res <- fillCoreSpectraVariables(res, other_columns)
         if (any(columns == "mz"))
             res$mz <- mz(object)
         if (any(columns == "intensity"))

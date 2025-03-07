@@ -435,40 +435,14 @@ variable. Columns `"mz"` and `"intensity"` (if requested) have to contain each a
 **must** provide values (even if they are `NA`) for **all** requested spectra
 variables of the backend (**including** the core spectra variables).
 
-This is now a first problem for our toy backend class, since we keep the spectra
-variable data in a simple `data.frame` without any constraints such as required
-columns etc. A simple solution to this (which is also used by all backend
-classes in the `Spectra` package) is to *fill* missing spectra variables
-on-the-fly into the returned `DataFrame`. We thus define below a simple helper
-function that adds columns with missing values (of the correct data type) for
-core spectra variables that are not available within the backend to the result.
+In our toy backend class we keep the spectra variable data in a simple
+`data.frame` without any constraints such as required columns etc. To ensure
+that `spectraData()` always returns all required *core* spectra variables (of
+the correct data type) we can use however the `fillCoreSpectraVariables()`
+function. This function adds eventually missing core spectra variables to
+a `data.frame` thus we use it in our implementation of the `spectraData()`
+method below:
 
-```{r}
-#' @description Add columns with missing core spectra variables.
-#'
-#' @param x `data.frame` or `DataFrame` with some spectra variables.
-#'
-#' @param core_vars `character` with core spectra variable names that should
-#'     be added to `x` if not already present.
-#'
-.fill_core_variables <- function(x, core_vars = names(coreSpectraVariables())) {
-    fill_vars <- setdiff(core_vars, colnames(x))
-    core_type <- coreSpectraVariables()
-    n <- nrow(x)
-    if (length(fill_vars)) {
-        fill <- lapply(fill_vars, function(z) {
-            rep(as(NA, core_type[z]), n)
-        })
-        names(fill) <- fill_vars
-        x <- cbind(x, as.data.frame(fill))
-    }
-    x
-}
-```
-
-We next implement the `spectraData()` method that uses this helper function to
-fill eventually missing core spectra variables. Note also that this function
-should return a `DataFrame` even for a single column.
 
 ```{r}
 setMethod(
@@ -476,14 +450,13 @@ setMethod(
     function(object, columns = spectraVariables(object)) {
         if (!all(columns %in% spectraVariables(object)))
             stop("Some of the requested spectra variables are not available")
+        res <- fillCoreSpectraVariables(
+            object@spectraVars,
+            columns = columns[!columns %in% c("mz", "intensity")])
         ## Add m/z and intensity values to the result
-        res <- DataFrame(object@spectraVars)
         res$mz <- object@mz
         res$intensity <- object@intensity
-        ## Fill with eventually missing core variables
-        res <- .fill_core_variables(
-            res, intersect(columns, names(coreSpectraVariables())))
-        res[, columns, drop = FALSE]
+        as(res[, columns, drop = FALSE], "DataFrame")
 })
 ```
 
@@ -2020,7 +1993,7 @@ a different MS level are returned as well). The default implementation for
 
 ```{r}
 setMethod("filterRt", "MsBackend",
-          function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
+          function(object, rt = numeric(), msLevel. = integer()) {
               if (length(rt)) {
                   rt <- range(rt)
                   sel_ms <- msLevel(object) %in% msLevel.

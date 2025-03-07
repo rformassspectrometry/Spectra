@@ -284,3 +284,36 @@ combinePeaksData <- function(x, intensityFun = base::mean,
     }
     mat
 }
+
+#' Same as `.peaks_compare()` but reports results as array with 3 dimensions,
+#' the 3rd being the number of matching peaks.
+#'
+#' @note
+#'
+#' It's assumed that the `MAPFUN` returns the aligned peak matrices, i.e. that
+#' both peak matrices have the same number of rows and that the individual
+#' peaks match.
+#'
+#' @noRd
+.peaks_compare_npeaks <- function(x, y, MAPFUN = joinPeaks, tolerance = 0,
+                                  ppm = 20, FUN = ndotproduct, xPrecursorMz,
+                                  yPrecursorMz, ...) {
+    mat <- array(NA_real_, dim = c(length(x), length(y), 2),
+                 dimnames = list(names(x), names(y), c("score", "peak_count")))
+    for (i in seq_along(x)) {
+        for (j in seq_along(y)) {
+            peak_map <- MAPFUN(x[[i]], y[[j]],
+                               tolerance = tolerance, ppm = ppm,
+                               xPrecursorMz = xPrecursorMz[i],
+                               yPrecursorMz = yPrecursorMz[j],
+                               .check = FALSE, ...)
+            mat[i, j, 1L] <- FUN(peak_map[[1L]], peak_map[[2L]],
+                                 xPrecursorMz = xPrecursorMz[i],
+                                 yPrecursorMz = yPrecursorMz[j],
+                                 ppm = ppm, tolerance = tolerance, ...)
+            mat[i, j, 2L] <- sum(!is.na(peak_map[[1L]][, 1L] +
+                                        peak_map[[2L]][, 1L]))
+        }
+    }
+    mat
+}
