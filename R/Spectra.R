@@ -1995,8 +1995,9 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'
 #' - `filterRt()`: retains spectra of MS level `msLevel` with retention
 #'   times (in seconds) within (`>=`) `rt[1]` and (`<=`)
-#'   `rt[2]`. Returns the filtered `Spectra` (with spectra in their
-#'   original order).
+#'   `rt[2]`. This retention time filter is applied to all spectra (regardless
+#'   of their MS level) if `msLevel. = integer()` (the default). Returns the
+#'   filtered `Spectra` (with spectra in their original order).
 #'
 #' - `filterValues()`: allows filtering of the `Spectra` object based on
 #'   similarities of *numeric* values of one or more `spectraVariables(object)`
@@ -2741,7 +2742,7 @@ setMethod("filterPrecursorScan", "Spectra",
 
 #' @rdname filterMsLevel
 setMethod("filterRt", "Spectra",
-          function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
+          function(object, rt = numeric(), msLevel. = integer()) {
               if (!is.numeric(msLevel.))
                   stop("Please provide a numeric MS level.")
               if (length(rt) != 2L || !is.numeric(rt) || rt[1] >= rt[2])

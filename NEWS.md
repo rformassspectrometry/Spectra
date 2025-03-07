@@ -1,5 +1,12 @@
 # Spectra 1.17
 
+## Change in 1.17.9
+
+- Allow parameter `msLevel. = integer()` for `filterRt()` to filter spectra of
+  **all** MS levels. This was `msLevel. = uniqueMsLevels()`, which, depending
+  on the backend, can be computationally intense. Add related unit tests to
+  the unit test suite.
+
 ## Change in 1.17.8
 
 - Add parameter `return.type` to `peaksData()`.

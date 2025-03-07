@@ -141,3 +141,31 @@ test_that("filterDataOrigin", {
         expect_equal(a, b)
     }
 })
+
+#' If `msLevel.` is not provided or if it maches all unique MS levels the
+#' filter should be applied to all spectra, otherwise to only the spectra of
+#' the MS level.
+test_that("filterRt works", {
+    ref <- getMethod("filterRt", "MsBackend")
+    rtr <- range(rtime(be))
+    rtr <- range(c(rtr[1L] * 2, rtr[2L] / 2))
+    res_ref <- ref(be, rtr, msLevel. = integer())
+    res <- filterRt(be, rtr, msLevel. = integer())
+    expect_equal(length(res_ref), length(res))
+    expect_equal(rtime(res_ref), rtime(res))
+
+    res_ref <- ref(be, rtr, msLevel. = unique(msLevel(be)))
+    res <- filterRt(be, rtr, msLevel. = unique(msLevel(be)))
+    expect_equal(length(res_ref), length(res))
+    expect_equal(rtime(res_ref), rtime(res))
+
+    res_ref <- ref(be, rtr, msLevel. = 1L)
+    res <- filterRt(be, rtr, msLevel. = 1L)
+    expect_equal(length(res_ref), length(res))
+    expect_equal(rtime(res_ref), rtime(res))
+
+    res_ref <- ref(be, rtr, msLevel. = 2L)
+    res <- filterRt(be, rtr, msLevel. = 2L)
+    expect_equal(length(res_ref), length(res))
+    expect_equal(rtime(res_ref), rtime(res))
+})
