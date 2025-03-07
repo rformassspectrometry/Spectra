@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,31 +40,35 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.17" id="spectra-117">Spectra 1.17<a class="anchor" aria-label="anchor" href="#spectra-117"></a></h2>
 <div class="section level3">
-<h3 id="change-in-1-17">Change in 1.17.8<a class="anchor" aria-label="anchor" href="#change-in-1-17"></a></h3>
+<h3 id="change-in-1-17">Change in 1.17.9<a class="anchor" aria-label="anchor" href="#change-in-1-17"></a></h3>
+<ul><li>Allow parameter <code>msLevel. = integer()</code> for <code><a href="../reference/filterMsLevel.html">filterRt()</a></code> to filter spectra of <strong>all</strong> MS levels. This was <code>msLevel. = uniqueMsLevels()</code>, which, depending on the backend, can be computationally intense. Add related unit tests to the unit test suite.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="change-in-1-17-1">Change in 1.17.8<a class="anchor" aria-label="anchor" href="#change-in-1-17-1"></a></h3>
 <ul><li>Add parameter <code>return.type</code> to <code><a href="../reference/spectraData.html">peaksData()</a></code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-in-1-17-1">Change in 1.17.7<a class="anchor" aria-label="anchor" href="#change-in-1-17-1"></a></h3>
+<h3 id="change-in-1-17-2">Change in 1.17.7<a class="anchor" aria-label="anchor" href="#change-in-1-17-2"></a></h3>
 <ul><li>Add the <code>spectraVariableMapping&lt;-</code> generic method.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-in-1-17-2">Change in 1.17.6<a class="anchor" aria-label="anchor" href="#change-in-1-17-2"></a></h3>
+<h3 id="change-in-1-17-3">Change in 1.17.6<a class="anchor" aria-label="anchor" href="#change-in-1-17-3"></a></h3>
 <ul><li>Add new <code><a href="../reference/fillCoreSpectraVariables.html">fillCoreSpectraVariables()</a></code> function that allows to add eventually missing <em>core</em> spectra variables (with the correct data type) to a data frame.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-in-1-17-3">Change in 1.17.5<a class="anchor" aria-label="anchor" href="#change-in-1-17-3"></a></h3>
+<h3 id="change-in-1-17-4">Change in 1.17.5<a class="anchor" aria-label="anchor" href="#change-in-1-17-4"></a></h3>
 <ul><li>Move generics <code><a href="../reference/processingChunkSize.html">processingChunkSize()</a></code>, <code><a href="../reference/processingChunkSize.html">processingChunkFactor()</a></code> and <code>applyproceesing()</code> to <em>ProtGenerics</em>. Required <em>ProtGenerics</em> version 1.39.2 or higher. These were moved to be able to implement them in the <em>Chromatograms</em> package.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-in-1-17-4">Change in 1.17.4<a class="anchor" aria-label="anchor" href="#change-in-1-17-4"></a></h3>
+<h3 id="change-in-1-17-5">Change in 1.17.4<a class="anchor" aria-label="anchor" href="#change-in-1-17-5"></a></h3>
 <ul><li>Import <code><a href="../reference/MsBackend.html">extractByIndex()</a></code> from <em>ProtGenerics</em>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-in-1-17-5">Change in 1.17.3<a class="anchor" aria-label="anchor" href="#change-in-1-17-5"></a></h3>
+<h3 id="change-in-1-17-6">Change in 1.17.3<a class="anchor" aria-label="anchor" href="#change-in-1-17-6"></a></h3>
 <ul><li>Fix <code><a href="../reference/combineSpectra.html">cbind2()</a></code> unit test for backends that fails if the number of spectra in the tested backend is (by chance) equal to 4.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-in-1-17-6">Change in 1.17.2<a class="anchor" aria-label="anchor" href="#change-in-1-17-6"></a></h3>
+<h3 id="change-in-1-17-7">Change in 1.17.2<a class="anchor" aria-label="anchor" href="#change-in-1-17-7"></a></h3>
 <ul><li>Add <code><a href="../reference/combineSpectra.html">cbind2()</a></code> method to easily add multiple <code>spectraVariables</code> and their content to the <code>spectraData</code> of a <code>Spectra</code> object. See also <a href="https://github.com/rformassspectrometry/Spectra/issues/342" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/342" class="external-link">#342</a>
 </li>
 </ul></div>

@@ -63,7 +63,7 @@ See below for more details about individual backends."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -233,7 +233,7 @@ data files and the remaining spectra variables in memory (in a
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
-<span><span class="fu"><a href="filterMsLevel.html">filterRt</a></span><span class="op">(</span><span class="va">object</span>, rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>, msLevel. <span class="op">=</span> <span class="fu"><a href="spectraData.html">uniqueMsLevels</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="filterMsLevel.html">filterRt</a></span><span class="op">(</span><span class="va">object</span>, rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>, msLevel. <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
 <span><span class="fu"><a href="filterMsLevel.html">filterValues</a></span><span class="op">(</span></span>
@@ -839,7 +839,8 @@ values are within any of the provided ranges are retained).
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code><a href="filterMsLevel.html">filterRt()</a></code>: retains spectra of MS level <code>msLevel</code> with retention times
-within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>) <code>rt[2]</code>.
+within (<code>&gt;=</code>) <code>rt[1]</code> and (<code>&lt;=</code>) <code>rt[2]</code>. The filter is applied to all
+spectra if no MS level is specified (the default, <code>msLevel. = integer()</code>).
 Implementation of this method is optional since a default implementation
 for <code>MsBackend</code> is available.</p></li>
 <li><p><code><a href="filterMsLevel.html">filterValues()</a></code>: allows filtering of the <code>Spectra</code> object based on
