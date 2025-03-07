@@ -59,6 +59,7 @@
 \alias{tic,MsBackendDataFrame-method}
 \alias{$,MsBackendDataFrame-method}
 \alias{$<-,MsBackendDataFrame-method}
+\alias{[,MsBackendDataFrame,ANY,ANY,ANY-method}
 \alias{cbind2,MsBackendDataFrame,dataframeOrDataFrameOrmatrix-method}
 \alias{split,MsBackendDataFrame,ANY-method}
 \alias{filterAcquisitionNum,MsBackendDataFrame-method}
@@ -78,6 +79,7 @@
 \alias{spectraData,MsBackendHdf5Peaks-method}
 \alias{spectraData<-,MsBackendHdf5Peaks-method}
 \alias{$<-,MsBackendHdf5Peaks-method}
+\alias{[,MsBackendHdf5Peaks,ANY,ANY,ANY-method}
 \alias{[,MsBackendHdf5Peaks-method}
 \alias{extractByIndex,MsBackendHdf5Peaks,ANY-method}
 \alias{backendMerge,MsBackendHdf5Peaks-method}
@@ -133,7 +135,7 @@
 \alias{tic,MsBackendMemory-method}
 \alias{$,MsBackendMemory-method}
 \alias{$<-,MsBackendMemory-method}
-\alias{[,MsBackendMemory-method}
+\alias{[,MsBackendMemory,ANY,ANY,ANY-method}
 \alias{cbind2,MsBackendMemory,dataframeOrDataFrameOrmatrix-method}
 \alias{split,MsBackendMemory,ANY-method}
 \alias{filterAcquisitionNum,MsBackendMemory-method}
@@ -272,7 +274,7 @@
 
 \S4method{$}{MsBackendDataFrame}(x, name) <- value
 
-\S4method{[}{MsBackendDataFrame}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendDataFrame,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{cbind2}{MsBackendDataFrame,dataframeOrDataFrameOrmatrix}(x, y = data.frame(), ...)
 
@@ -324,7 +326,7 @@
 
 \S4method{$}{MsBackendHdf5Peaks}(x, name) <- value
 
-\S4method{[}{MsBackendHdf5Peaks}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendHdf5Peaks,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{extractByIndex}{MsBackendHdf5Peaks,ANY}(object, i)
 
@@ -434,7 +436,7 @@
 
 \S4method{$}{MsBackendMemory}(x, name) <- value
 
-\S4method{[}{MsBackendMemory}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendMemory,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{cbind2}{MsBackendMemory,dataframeOrDataFrameOrmatrix}(x, y = data.frame(), ...)
 
