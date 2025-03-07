@@ -146,7 +146,7 @@ filterPrecursorPeaks(
 
 \S4method{filterPrecursorScan}{Spectra}(object, acquisitionNum = integer(), f = dataOrigin(object))
 
-\S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
+\S4method{filterRt}{Spectra}(object, rt = numeric(), msLevel. = integer())
 
 \S4method{filterRanges}{Spectra}(
   object,
@@ -407,8 +407,9 @@ any of the conditions must match (\code{match = "any"}; all spectra for which
 values are within any of the provided ranges are retained).
 \item \code{filterRt()}: retains spectra of MS level \code{msLevel} with retention
 times (in seconds) within (\code{>=}) \code{rt[1]} and (\code{<=})
-\code{rt[2]}. Returns the filtered \code{Spectra} (with spectra in their
-original order).
+\code{rt[2]}. This retention time filter is applied to all spectra (regardless
+of their MS level) if \code{msLevel. = integer()} (the default). Returns the
+filtered \code{Spectra} (with spectra in their original order).
 \item \code{filterValues()}: allows filtering of the \code{Spectra} object based on
 similarities of \emph{numeric} values of one or more \code{spectraVariables(object)}
 (parameter \code{spectraVariables}) to provided values (parameter \code{values})

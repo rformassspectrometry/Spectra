@@ -979,3 +979,27 @@ test_that("backendRequiredSpectraVariables,MsBackendMemory works", {
     expect_equal(backendRequiredSpectraVariables(MsBackendMemory()),
                  "dataStorage")
 })
+
+test_that("filterRt works for MsBackendMemory", {
+    test_df$rtime <- c(1.2, 2.1, 3.1)
+    be <- backendInitialize(MsBackendMemory(), test_df)
+    res <- filterRt(be, c(1, 2))
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), integer())
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), 1:4)
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), 2L)
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 3), 2L)
+    expect_equal(length(res), 2L)
+    expect_equal(rtime(res), c(1.2, 2.1))
+})

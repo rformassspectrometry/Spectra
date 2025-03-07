@@ -190,7 +190,7 @@
   match = c("all", "any")
 )
 
-\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
+\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = integer())
 
 \S4method{filterValues}{MsBackend}(
   object,
@@ -720,7 +720,8 @@ values are within any of the provided ranges are retained).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterRt()}: retains spectra of MS level \code{msLevel} with retention times
-within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
+within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}. The filter is applied to all
+spectra if no MS level is specified (the default, \code{msLevel. = integer()}).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterValues()}: allows filtering of the \code{Spectra} object based on

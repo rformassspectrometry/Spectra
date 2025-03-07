@@ -448,7 +448,8 @@
 #'    for `MsBackend` is available.
 #'
 #' - `filterRt()`: retains spectra of MS level `msLevel` with retention times
-#'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`.
+#'    within (`>=`) `rt[1]` and (`<=`) `rt[2]`. The filter is applied to all
+#'    spectra if no MS level is specified (the default, `msLevel. = integer()`).
 #'    Implementation of this method is optional since a default implementation
 #'    for `MsBackend` is available.
 #'
@@ -1421,12 +1422,17 @@ setMethod("filterRanges", "MsBackend",
 #'
 #' @export
 setMethod("filterRt", "MsBackend",
-          function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
+          function(object, rt = numeric(), msLevel. = integer()) {
               if (length(rt)) {
                   rt <- range(rt)
-                  sel_ms <- msLevel(object) %in% msLevel.
-                  sel_rt <- between(rtime(object), rt) & sel_ms
-                  object[sel_rt | !sel_ms]
+                  if (length(msLevel.)) {
+                      sel_ms <- msLevel(object) %in% msLevel.
+                      sel_rt <- between(rtime(object), rt) & sel_ms
+                      object[sel_rt | !sel_ms]
+                  } else {
+                      sel_rt <- between(rtime(object), rt)
+                      object[sel_rt]
+                  }
               } else object
           })
 

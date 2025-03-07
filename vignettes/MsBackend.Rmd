@@ -1993,7 +1993,7 @@ a different MS level are returned as well). The default implementation for
 
 ```{r}
 setMethod("filterRt", "MsBackend",
-          function(object, rt = numeric(), msLevel. = uniqueMsLevels(object)) {
+          function(object, rt = numeric(), msLevel. = integer()) {
               if (length(rt)) {
                   rt <- range(rt)
                   sel_ms <- msLevel(object) %in% msLevel.
