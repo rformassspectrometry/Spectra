@@ -3,7 +3,7 @@
 
 ## Change in 1.17.10
 
-- Accept labels argument as a `list` instead of a `character` in the 
+- Accept `labels` argument as a `list` instead of a `character` in the 
   plotting functions. 
 
 ## Change in 1.17.9
