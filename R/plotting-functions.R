@@ -136,10 +136,10 @@
 #' plotSpectra(sp, col = c("green", "blue"))
 #'
 #' ## Label each peak with its m/z.
-#' plotSpectra(sp, labels = function(x) lapply(mz(sp), format, digits = 4))
+#' plotSpectra(sp, labels = function(z) lapply(mz(z), format, digits = 4))
 #'
 #' ## Rotate the labels.
-#' plotSpectra(sp, labels = function(x) lapply(mz(sp), format, digits = 4),
+#' plotSpectra(sp, labels = function(z) lapply(mz(z), format, digits = 4),
 #'     labelPos = 2, labelOffset = 0.1, labelSrt = -30)
 #'
 #' ## Add a custom annotation for each peak.
