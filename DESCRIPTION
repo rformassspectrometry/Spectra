@@ -36,6 +36,10 @@ Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
              person(given = "Mar", family = "Garcia-Aloy",
                     email = "mar.garcia@fmach.it",
                     comment = c(ORCID = "0000-0002-1330-6610"),
+                    role = "ctb"),
+            person(given = "Guillaume", family = "Deflandre",
+                    email = "guillaume.deflandre@uclouvain.be",
+                    comment = c(ORCID = "0009-0008-1257-2416"),
                     role = "ctb"))
 Depends:
     R (>= 4.0.0),

@@ -7,3 +7,5 @@ favicon
 logo.png
 _pkgdown.yml
 ^\.git$
+^.*\.Rproj$
+^\.Rproj\.user$
