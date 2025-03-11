@@ -25,14 +25,14 @@ test_that("plotSpectra works", {
     vdiffr::expect_doppelganger(
                 "plotSpectra-color-peaks-label",
                 function() plotSpectra(
-                               s, labels = function(z) unlist(mz(z)),
+                               s, labels = function(z) (mz(z)),
                                labelPos = 2, labelOffset = 0.1, labelSrt = -30,
                                col = list(1:5, 1:4))
             )
     vdiffr::expect_doppelganger(
                 "plotSpectra-color-peaks-label-labelCol",
                 function() plotSpectra(
-                               s, labels = function(z) unlist(mz(z)),
+                               s, labels = function(z) (mz(z)),
                                labelPos = 2, labelOffset = 0.1, labelSrt = -30,
                                col = list(1:5, 1:4), labelCol = "red")
             )
@@ -61,7 +61,7 @@ test_that("plotSpectraOverlay works", {
                 "plotSpectraOverlay-no-axes",
                 function() plotSpectraOverlay(
                                s, axes = FALSE,
-                               labels = function(z) mz(z)[[1L]])
+                               labels = function(z) mz(z))
             )
 })
 
@@ -77,7 +77,7 @@ test_that("plotSpectraMirror works", {
                 "plotSpectraMirror-match-color",
                 function() plotSpectraMirror(s[2], s[1], ppm = 0,
                                              tolerance = 0.1,
-                                             labels = function(z) mz(z)[[1L]],
+                                             labels = function(z) mz(z),
                                              matchCol = "red",
                                              matchLwd = 2, axes = FALSE,
                                              matchPch = 17))
@@ -85,14 +85,14 @@ test_that("plotSpectraMirror works", {
                 "plotSpectraMirror-match-color-labelCol",
                 function() plotSpectraMirror(s[2], s[1], ppm = 0,
                                              tolerance = 0.1,
-                                             labels = function(z) mz(z)[[1L]],
+                                             labels = function(z) mz(z),
                                              matchCol = "red",
                                              matchLwd = 2, axes = FALSE,
                                              matchPch = 17,
                                              labelCol = "blue"))
     expect_error(plotSpectraMirror(s), "have to be of length")
-    expect_error(plotSpectraMirror(s[1], s[1], labels = c("a")),
-                 "only a function")
+    expect_error(plotSpectraMirror(s[1], s[1], labels = list(c("a"))),
+                 "occurs either because")
 })
 
 test_that(".plot_single_spectrum works", {
@@ -124,13 +124,13 @@ test_that(".plot_single_spectrum works", {
             )
 
     .plot_single_spectrum(
-        s[1], labels = function(z) mz(z)[[1L]],
+        s[1], labels = mz(s)[[1L]],
         main = "Spectrum with labels",
         labelSrt = -30, labelPos = 2)
 
     plot(3, 3, xlim = c(0, 1000), ylim = c(0, 1000))
     .plot_single_spectrum(
-        s[1], labels = function(z) mz(z)[[1L]],
+        s[1], labels = mz(s)[[1L]],
         main = "Spectrum with labels",
         labelSrt = -30, labelPos = 2, add = TRUE)
 
