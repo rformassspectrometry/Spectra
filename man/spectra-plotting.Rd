@@ -242,7 +242,7 @@ labels = function(z) {
             lbls[intensity(z)[[i]] <= 15] <- ""
             lbls
      })
- })
+ }
  abline(h = 15, lty = 2)
 
 ## Use different asp values
