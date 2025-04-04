@@ -17,7 +17,7 @@ plotSpectra(
   ylim = numeric(),
   main = character(),
   col = "#00000080",
-  labels = character(),
+  labels = list(),
   labelCex = 1,
   labelSrt = 0,
   labelAdj = NULL,
@@ -37,7 +37,7 @@ plotSpectraOverlay(
   ylim = numeric(),
   main = paste(length(x), "spectra"),
   col = "#00000080",
-  labels = character(),
+  labels = list(),
   labelCex = 1,
   labelSrt = 0,
   labelAdj = NULL,
@@ -59,7 +59,7 @@ plotSpectraOverlay(
   ylim = numeric(),
   main = character(),
   col = "#00000080",
-  labels = character(),
+  labels = list(),
   labelCex = 1,
   labelSrt = 0,
   labelAdj = NULL,
@@ -222,7 +222,7 @@ plotSpectra(sp, labels = sp$label,
     col = list(1:5, 1:4))
 
 ## Plot a single spectrum specifying the label.
-plotSpectra(sp[2], labels = list(c("Gimli", "Legolas", "Aragorn", "Gandalf")))
+plotSpectra(sp[2], labels = list(c("A", "B", "C", "D")))
 
 
 #### --------------------------------------------- ####
