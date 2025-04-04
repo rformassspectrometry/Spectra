@@ -151,7 +151,7 @@
 #'     col = list(1:5, 1:4))
 #'
 #' ## Plot a single spectrum specifying the label.
-#' plotSpectra(sp[2], labels = list(c("Gimli", "Legolas", "Aragorn", "Gandalf")))
+#' plotSpectra(sp[2], labels = list(c("A", "B", "C", "D")))
 #'
 #'
 #' #### --------------------------------------------- ####
@@ -208,7 +208,7 @@ NULL
 plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
                         xlim = numeric(), ylim = numeric(),
                         main = character(), col = "#00000080",
-                        labels = character(), labelCex = 1, labelSrt = 0,
+                        labels = list(), labelCex = 1, labelSrt = 0,
                         labelAdj = NULL, labelPos = NULL, labelOffset = 0.5,
                         labelCol = "#00000080", asp = 1, ...) {
     if (!length(main))
@@ -223,12 +223,13 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
     if (nsp > 1)
         par(mfrow = n2mfrow(nsp, asp = asp))
     if (length(labels)) {
-        if (is.function(labels)) {
+        if (is.function(labels))
             labels <- labels(x)
-        }
+        if (is.character(labels))
+            labels <- list(labels)
         if (length(labels) != length(x))
             stop("Please provide a list of annotations of length equal to 'x'.")
-    } else {labels <- NULL}
+    }
     
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], xlab = xlab, ylab = ylab, type = type,
@@ -247,7 +248,7 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
                                type = "h", xlim = numeric(),
                                ylim = numeric(),
                                main = paste(length(x), "spectra"),
-                               col = "#00000080", labels = character(),
+                               col = "#00000080", labels = list(),
                                labelCex = 1, labelSrt = 0,
                                labelAdj = NULL, labelPos = NULL,
                                labelOffset = 0.5, labelCol = "#00000080",
@@ -273,12 +274,13 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
         box(...)
     title(main = main, xlab = xlab, ylab = ylab, ...)
     if (length(labels)) {
-        if (is.function(labels)) {
+        if (is.function(labels))
             labels <- labels(x)
-        }
+        if (is.character(labels))
+            labels <- list(labels)
         if (length(labels) != length(x))
             stop("Please provide a list of annotations of length equal to 'x'.")
-    } else {labels <- NULL}
+    }
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], add = TRUE, type = type, col = col[[i]],
                               labels = labels[[i]], labelCex = labelCex,
@@ -299,7 +301,7 @@ setMethod(
     function(x, y, xlab = "m/z", ylab = "intensity",
              type = "h", xlim = numeric(),
              ylim = numeric(), main = character(),
-             col = "#00000080", labels = character(),
+             col = "#00000080", labels = list(),
              labelCex = 1, labelSrt = 0,
              labelAdj = NULL, labelPos = NULL,
              labelOffset = 0.5, labelCol = "#00000080",
@@ -331,7 +333,13 @@ setMethod(
         ## See issue: https://github.com/rformassspectrometry/Spectra/issues/346
         if (length(labels)) {
             if (is.function(labels)) {
-                labels <- c(labels(x), labels(y))
+                x_labels <- labels(x)
+                y_labels <- labels(y)
+                if (is.character(x_labels)) {
+                    x_labels <- list(x_labels)
+                    y_labels <- list(y_labels)
+                }
+                labels <- c(x_labels, y_labels)
             } else {
                 if (length(labels) != 2)
                     stop("This Error occurs either because\n1) Annotations are not of length 2\n2) For 'labelFragments', variable modifications are not yet supported.")
@@ -345,7 +353,7 @@ setMethod(
             xlim[1L] <- xlim[1L] - wdths
             xlim[2L] <- xlim[2L] + wdths
             plot.window(xlim = xlim, ylim = ylim, ...)
-        } else {labels <- NULL}
+        }
         if (axes) {
             axis(side = 1, ...)
             axis(side = 2, ...)
@@ -461,8 +469,6 @@ setMethod(
         plot.window(xlim = xlim, ylim = ylim)
     }
     if (length(labels)) {
-        if (is.function(labels))
-            labels <- labels(x)
         wdths <- max(strwidth(labels, cex = labelCex)) / 2
         usr_lim <- par("usr")
         ylim[2L] <- ylim[2L] + wdths * diff(usr_lim[3:4]) / diff(usr_lim[1:2])
