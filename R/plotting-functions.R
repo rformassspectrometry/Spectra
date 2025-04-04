@@ -104,7 +104,7 @@
 #'
 #' @return These functions create a plot.
 #'
-#' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
+#' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto, Guillaume Deflandre
 #'
 #' @name spectra-plotting
 #'
@@ -171,7 +171,7 @@
 #'             lbls[intensity(z)[[i]] <= 15] <- ""
 #'             lbls
 #'      })
-#'  }
+#'  })
 #'  abline(h = 15, lty = 2)
 #'
 #' ## Use different asp values

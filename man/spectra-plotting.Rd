@@ -242,7 +242,7 @@ labels = function(z) {
             lbls[intensity(z)[[i]] <= 15] <- ""
             lbls
      })
- }
+ })
  abline(h = 15, lty = 2)
 
 ## Use different asp values
@@ -270,5 +270,5 @@ plotSpectraMirror(sp[1], sp[2],
 grid()
 }
 \author{
-Johannes Rainer, Sebastian Gibb, Laurent Gatto
+Johannes Rainer, Sebastian Gibb, Laurent Gatto, Guillaume Deflandre
 }
