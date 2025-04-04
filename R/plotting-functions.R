@@ -211,6 +211,7 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
                         labels = list(), labelCex = 1, labelSrt = 0,
                         labelAdj = NULL, labelPos = NULL, labelOffset = 0.5,
                         labelCol = "#00000080", asp = 1, ...) {
+    old_par <- par(no.readonly = TRUE)
     if (!length(main))
         main <- paste0("MS", msLevel(x), " RT: ", round(rtime(x), 1))
     nsp <- length(x)
@@ -229,7 +230,7 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
             labels <- list(labels)
         if (length(labels) != length(x))
             stop("Please provide a list of annotations of length equal to 'x'.")
-    }
+    } else {labels <- NULL}
     
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], xlab = xlab, ylab = ylab, type = type,
@@ -239,6 +240,7 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
                               labelAdj = labelAdj, labelPos = labelPos,
                               labelOffset = labelOffset, labelCol = labelCol,
                               ...)
+    on.exit(par(old_par))
 }
 
 #' @rdname spectra-plotting
@@ -280,7 +282,7 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
             labels <- list(labels)
         if (length(labels) != length(x))
             stop("Please provide a list of annotations of length equal to 'x'.")
-    }
+    } else {labels <- NULL}
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], add = TRUE, type = type, col = col[[i]],
                               labels = labels[[i]], labelCex = labelCex,
@@ -353,7 +355,7 @@ setMethod(
             xlim[1L] <- xlim[1L] - wdths
             xlim[2L] <- xlim[2L] + wdths
             plot.window(xlim = xlim, ylim = ylim, ...)
-        }
+        } else {labels <- NULL}
         if (axes) {
             axis(side = 1, ...)
             axis(side = 2, ...)

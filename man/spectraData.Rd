@@ -77,8 +77,8 @@
 \alias{uniqueMsLevels,Spectra-method}
 \alias{$,Spectra-method}
 \alias{$<-,Spectra-method}
-\alias{[[,Spectra-method}
-\alias{[[<-,Spectra-method}
+\alias{[[,Spectra,ANY,ANY-method}
+\alias{[[<-,Spectra,ANY,ANY-method}
 \title{Accessing mass spectrometry data}
 \usage{
 asDataFrame(
@@ -186,9 +186,9 @@ coreSpectraVariables()
 
 \S4method{$}{Spectra}(x, name) <- value
 
-\S4method{[[}{Spectra}(x, i, j, ...)
+\S4method{[[}{Spectra,ANY,ANY}(x, i, j, ...)
 
-\S4method{[[}{Spectra}(x, i, j, ...) <- value
+\S4method{[[}{Spectra,ANY,ANY}(x, i, j, ...) <- value
 }
 \arguments{
 \item{object}{A \code{Spectra} object.}
