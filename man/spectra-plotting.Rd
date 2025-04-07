@@ -17,7 +17,7 @@ plotSpectra(
   ylim = numeric(),
   main = character(),
   col = "#00000080",
-  labels = character(),
+  labels = list(),
   labelCex = 1,
   labelSrt = 0,
   labelAdj = NULL,
@@ -37,7 +37,7 @@ plotSpectraOverlay(
   ylim = numeric(),
   main = paste(length(x), "spectra"),
   col = "#00000080",
-  labels = character(),
+  labels = list(),
   labelCex = 1,
   labelSrt = 0,
   labelAdj = NULL,
@@ -59,7 +59,7 @@ plotSpectraOverlay(
   ylim = numeric(),
   main = character(),
   col = "#00000080",
-  labels = character(),
+  labels = list(),
   labelCex = 1,
   labelSrt = 0,
   labelAdj = NULL,
@@ -104,10 +104,12 @@ or equal to the number of spectra (to plot each spectrum in a different
 color) or be a \code{list} with colors for each individual peak in each
 spectrum.}
 
-\item{labels}{allows to specify a label for each peak. Can be a \code{character}
-with length equal to the number of peaks, or, ideally, a \code{function} that
-uses one of the \code{Spectra}'s variables (see examples below).
-\code{plotSpectraMirror()} supports only \code{labels} of type \emph{function}.}
+\item{labels}{allows to specify a label for each peak. Needs to be a \code{list()}
+with length equal to the number of spectra (each element of the list
+being a \code{character()} with length equal to the number of peaks for that
+spectrum), or, ideally, a \code{function} that uses one of the \code{Spectra}'s
+variables (see examples below). \code{plotSpectraMirror()} supports only
+\code{labels} of type \emph{function}.}
 
 \item{labelCex}{\code{numeric(1)} giving the amount by which the text should be
 magnified relative to the default. See parameter \code{cex} in \code{\link[=par]{par()}}.}
@@ -205,21 +207,22 @@ plotSpectra(sp, col = list(c(1, 2, 3, 4, 5), 1:4))
 plotSpectra(sp, col = c("green", "blue"))
 
 ## Label each peak with its m/z.
-plotSpectra(sp, labels = function(z) format(unlist(mz(z)), digits = 4))
+plotSpectra(sp, labels = function(z) lapply(mz(z), format, digits = 4))
 
 ## Rotate the labels.
-plotSpectra(sp, labels = function(z) format(unlist(mz(z)), digits = 4),
+plotSpectra(sp, labels = function(z) lapply(mz(z), format, digits = 4),
     labelPos = 2, labelOffset = 0.1, labelSrt = -30)
 
 ## Add a custom annotation for each peak.
 sp$label <- list(c("", "A", "B", "C", "D"),
     c("Frodo", "Bilbo", "Peregrin", "Samwise"))
+    
 ## Plot each peak in a different color
-plotSpectra(sp, labels = function(z) unlist(z$label),
+plotSpectra(sp, labels = sp$label,
     col = list(1:5, 1:4))
 
 ## Plot a single spectrum specifying the label.
-plotSpectra(sp[2], labels = c("A", "B", "C", "D"))
+plotSpectra(sp[2], labels = list(c("A", "B", "C", "D")))
 
 
 #### --------------------------------------------- ####
@@ -233,12 +236,14 @@ plotSpectraOverlay(sp, col = c("#ff000080", "#0000ff80"))
 
 ## Label also the peaks with their m/z if their intensity is above 15.
 plotSpectraOverlay(sp, col = c("#ff000080", "#0000ff80"),
-    labels = function(z) {
-        lbls <- format(mz(z)[[1L]], digits = 4)
-        lbls[intensity(z)[[1L]] <= 15] <- ""
-        lbls
-    })
-abline(h = 15, lty = 2)
+labels = function(z) {
+    lapply(seq_along(mz(z)), function(i) {
+            lbls <- format(mz(z)[[i]], digits = 4)
+            lbls[intensity(z)[[i]] <= 15] <- ""
+            lbls
+     })
+ })
+ abline(h = 15, lty = 2)
 
 ## Use different asp values
 plotSpectra(sp, asp = 1/2)
@@ -252,18 +257,18 @@ plotSpectraMirror(sp[1], sp[2])
 
 ## Label the peaks with their m/z
 plotSpectraMirror(sp[1], sp[2],
-    labels = function(z) format(mz(z)[[1L]], digits = 3),
+    labels = function(z) list(format(mz(z)[[1L]], digits = 3)),
     labelSrt = -30, labelPos = 2, labelOffset = 0.2)
 grid()
 
 ## The same plot with a tolerance of 0.1 and using a different color to
 ## highlight matching peaks
 plotSpectraMirror(sp[1], sp[2],
-    labels = function(z) format(mz(z)[[1L]], digits = 3),
+    labels = function(z) list(format(mz(z)[[1L]], digits = 3)),
     labelSrt = -30, labelPos = 2, labelOffset = 0.2, tolerance = 0.1,
     matchCol = "#ff000080", matchLwd = 2)
 grid()
 }
 \author{
-Johannes Rainer, Sebastian Gibb, Laurent Gatto
+Johannes Rainer, Sebastian Gibb, Laurent Gatto, Guillaume Deflandre
 }

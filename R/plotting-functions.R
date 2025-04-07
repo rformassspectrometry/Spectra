@@ -45,10 +45,12 @@
 #'     color) or be a `list` with colors for each individual peak in each
 #'     spectrum.
 #'
-#' @param labels allows to specify a label for each peak. Can be a `character`
-#'     with length equal to the number of peaks, or, ideally, a `function` that
-#'     uses one of the `Spectra`'s variables (see examples below).
-#'     `plotSpectraMirror()` supports only `labels` of type *function*.
+#' @param labels allows to specify a label for each peak. Needs to be a `list()`
+#'     with length equal to the number of spectra (each element of the list
+#'     being a `character()` with length equal to the number of peaks for that 
+#'     spectrum), or, ideally, a `function` that uses one of the `Spectra`'s 
+#'     variables (see examples below). `plotSpectraMirror()` supports only 
+#'     `labels` of type *function*.
 #'
 #' @param labelCex `numeric(1)` giving the amount by which the text should be
 #'     magnified relative to the default. See parameter `cex` in [par()].
@@ -102,7 +104,7 @@
 #'
 #' @return These functions create a plot.
 #'
-#' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto
+#' @author Johannes Rainer, Sebastian Gibb, Laurent Gatto, Guillaume Deflandre
 #'
 #' @name spectra-plotting
 #'
@@ -134,21 +136,22 @@
 #' plotSpectra(sp, col = c("green", "blue"))
 #'
 #' ## Label each peak with its m/z.
-#' plotSpectra(sp, labels = function(z) format(unlist(mz(z)), digits = 4))
+#' plotSpectra(sp, labels = function(z) lapply(mz(z), format, digits = 4))
 #'
 #' ## Rotate the labels.
-#' plotSpectra(sp, labels = function(z) format(unlist(mz(z)), digits = 4),
+#' plotSpectra(sp, labels = function(z) lapply(mz(z), format, digits = 4),
 #'     labelPos = 2, labelOffset = 0.1, labelSrt = -30)
 #'
 #' ## Add a custom annotation for each peak.
 #' sp$label <- list(c("", "A", "B", "C", "D"),
 #'     c("Frodo", "Bilbo", "Peregrin", "Samwise"))
+#'     
 #' ## Plot each peak in a different color
-#' plotSpectra(sp, labels = function(z) unlist(z$label),
+#' plotSpectra(sp, labels = sp$label,
 #'     col = list(1:5, 1:4))
 #'
 #' ## Plot a single spectrum specifying the label.
-#' plotSpectra(sp[2], labels = c("A", "B", "C", "D"))
+#' plotSpectra(sp[2], labels = list(c("A", "B", "C", "D")))
 #'
 #'
 #' #### --------------------------------------------- ####
@@ -162,12 +165,14 @@
 #'
 #' ## Label also the peaks with their m/z if their intensity is above 15.
 #' plotSpectraOverlay(sp, col = c("#ff000080", "#0000ff80"),
-#'     labels = function(z) {
-#'         lbls <- format(mz(z)[[1L]], digits = 4)
-#'         lbls[intensity(z)[[1L]] <= 15] <- ""
-#'         lbls
-#'     })
-#' abline(h = 15, lty = 2)
+#' labels = function(z) {
+#'     lapply(seq_along(mz(z)), function(i) {
+#'             lbls <- format(mz(z)[[i]], digits = 4)
+#'             lbls[intensity(z)[[i]] <= 15] <- ""
+#'             lbls
+#'      })
+#'  })
+#'  abline(h = 15, lty = 2)
 #'
 #' ## Use different asp values
 #' plotSpectra(sp, asp = 1/2)
@@ -181,14 +186,14 @@
 #'
 #' ## Label the peaks with their m/z
 #' plotSpectraMirror(sp[1], sp[2],
-#'     labels = function(z) format(mz(z)[[1L]], digits = 3),
+#'     labels = function(z) list(format(mz(z)[[1L]], digits = 3)),
 #'     labelSrt = -30, labelPos = 2, labelOffset = 0.2)
 #' grid()
 #'
 #' ## The same plot with a tolerance of 0.1 and using a different color to
 #' ## highlight matching peaks
 #' plotSpectraMirror(sp[1], sp[2],
-#'     labels = function(z) format(mz(z)[[1L]], digits = 3),
+#'     labels = function(z) list(format(mz(z)[[1L]], digits = 3)),
 #'     labelSrt = -30, labelPos = 2, labelOffset = 0.2, tolerance = 0.1,
 #'     matchCol = "#ff000080", matchLwd = 2)
 #' grid()
@@ -203,9 +208,11 @@ NULL
 plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
                         xlim = numeric(), ylim = numeric(),
                         main = character(), col = "#00000080",
-                        labels = character(), labelCex = 1, labelSrt = 0,
+                        labels = list(), labelCex = 1, labelSrt = 0,
                         labelAdj = NULL, labelPos = NULL, labelOffset = 0.5,
                         labelCol = "#00000080", asp = 1, ...) {
+    ## To be added to fix the loss of user's par
+    ## old_par <- par(no.readonly = TRUE)
     if (!length(main))
         main <- paste0("MS", msLevel(x), " RT: ", round(rtime(x), 1))
     nsp <- length(x)
@@ -217,14 +224,24 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
         main <- rep(main[1], nsp)
     if (nsp > 1)
         par(mfrow = n2mfrow(nsp, asp = asp))
+    if (length(labels)) {
+        if (is.function(labels))
+            labels <- labels(x)
+        if (is.character(labels))
+            labels <- list(labels)
+        if (length(labels) != length(x))
+            stop("Please provide a list of annotations of length equal to 'x'.")
+    } else {labels <- NULL}
+    
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], xlab = xlab, ylab = ylab, type = type,
                               xlim = xlim, ylim = ylim, main = main[i],
-                              col = col[[i]], labels = labels,
+                              col = col[[i]], labels = labels[[i]],
                               labelCex = labelCex, labelSrt = labelSrt,
                               labelAdj = labelAdj, labelPos = labelPos,
                               labelOffset = labelOffset, labelCol = labelCol,
                               ...)
+    ## on.exit(par(old_par))
 }
 
 #' @rdname spectra-plotting
@@ -234,7 +251,7 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
                                type = "h", xlim = numeric(),
                                ylim = numeric(),
                                main = paste(length(x), "spectra"),
-                               col = "#00000080", labels = character(),
+                               col = "#00000080", labels = list(),
                                labelCex = 1, labelSrt = 0,
                                labelAdj = NULL, labelPos = NULL,
                                labelOffset = 0.5, labelCol = "#00000080",
@@ -259,9 +276,17 @@ plotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
     if (frame.plot)
         box(...)
     title(main = main, xlab = xlab, ylab = ylab, ...)
+    if (length(labels)) {
+        if (is.function(labels))
+            labels <- labels(x)
+        if (is.character(labels))
+            labels <- list(labels)
+        if (length(labels) != length(x))
+            stop("Please provide a list of annotations of length equal to 'x'.")
+    } else {labels <- NULL}
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], add = TRUE, type = type, col = col[[i]],
-                              labels = labels, labelCex = labelCex,
+                              labels = labels[[i]], labelCex = labelCex,
                               labelSrt = labelSrt, labelAdj = labelAdj,
                               labelPos = labelPos, labelOffset = labelOffset,
                               labelCol = labelCol, ...)
@@ -279,7 +304,7 @@ setMethod(
     function(x, y, xlab = "m/z", ylab = "intensity",
              type = "h", xlim = numeric(),
              ylim = numeric(), main = character(),
-             col = "#00000080", labels = character(),
+             col = "#00000080", labels = list(),
              labelCex = 1, labelSrt = 0,
              labelAdj = NULL, labelPos = NULL,
              labelOffset = 0.5, labelCol = "#00000080",
@@ -288,9 +313,6 @@ setMethod(
              matchLty = 1, matchPch = 16, ...) {
         if (length(x) != 1 || length(y) != 1)
             stop("'x' and 'y' have to be of length 1")
-        if (length(labels) & !is.function(labels))
-            stop("'plotSpectraMirror' supports only a function with ",
-                 "parameter 'labels'")
         if (length(col) != 2)
             col <- rep(col[1], 2)
         if (!length(xlim))
@@ -309,8 +331,23 @@ setMethod(
         on.exit(dev.flush())
         plot.new()
         plot.window(xlim = xlim, ylim = ylim)
+        ## Stop if variable modifications are used
+        ## Will need to be removed once plotSpectra accepts variable modifications
+        ## See issue: https://github.com/rformassspectrometry/Spectra/issues/346
         if (length(labels)) {
-            l <- c(labels(x), labels(y))
+            if (is.function(labels)) {
+                x_labels <- labels(x)
+                y_labels <- labels(y)
+                if (is.character(x_labels)) {
+                    x_labels <- list(x_labels)
+                    y_labels <- list(y_labels)
+                }
+                labels <- c(x_labels, y_labels)
+            } else {
+                if (length(labels) != 2)
+                    stop("This Error occurs either because\n1) Annotations are not of length 2\n2) For 'labelFragments', variable modifications are not yet supported.")
+            }
+            l <- c(labels[[1]], labels[[2]])
             wdths <- max(strwidth(l, cex = labelCex)) / 2
             usr_lim <- par("usr")
             ylim[1L] <- ylim[1L] - wdths *
@@ -319,7 +356,7 @@ setMethod(
             xlim[1L] <- xlim[1L] - wdths
             xlim[2L] <- xlim[2L] + wdths
             plot.window(xlim = xlim, ylim = ylim, ...)
-        }
+        } else {labels <- NULL}
         if (axes) {
             axis(side = 1, ...)
             axis(side = 2, ...)
@@ -331,7 +368,7 @@ setMethod(
         x_data <- peaksData(x)[[1L]]
         y_data <- peaksData(y)[[1L]]
         .plot_single_spectrum(x, add = TRUE, type = type, col = col[[1L]],
-                              labels = labels, labelCex = labelCex,
+                              labels = labels[[1L]], labelCex = labelCex,
                               labelSrt = labelSrt, labelAdj = labelAdj,
                               labelPos = labelPos, labelOffset = labelOffset,
                               labelCol = labelCol, ...)
@@ -349,7 +386,7 @@ setMethod(
             labelPos <- 1
         labelSrt <- -1 * labelSrt
         .plot_single_spectrum(y, add = TRUE, type = type, col = col[[1L]],
-                              labels = labels, labelCex = labelCex,
+                              labels = labels[[2L]], labelCex = labelCex,
                               labelSrt = labelSrt, labelAdj = labelAdj,
                               labelPos = labelPos, labelOffset = labelOffset,
                               orientation = -1, labelCol = labelCol, ...)
@@ -435,8 +472,6 @@ setMethod(
         plot.window(xlim = xlim, ylim = ylim)
     }
     if (length(labels)) {
-        if (is.function(labels))
-            labels <- labels(x)
         wdths <- max(strwidth(labels, cex = labelCex)) / 2
         usr_lim <- par("usr")
         ylim[2L] <- ylim[2L] + wdths * diff(usr_lim[3:4]) / diff(usr_lim[1:2])
