@@ -103,11 +103,10 @@
 \alias{split,MsBackend,ANY-method}
 \alias{supportsSetBackend,MsBackend-method}
 \alias{tic,MsBackend-method}
-\alias{[,MsBackend,ANY,ANY,ANY-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
-\alias{[[,MsBackend,ANY,ANY-method}
-\alias{[[<-,MsBackend,ANY,ANY-method}
+\alias{[[,MsBackend-method}
+\alias{[[<-,MsBackend-method}
 \alias{dataStorageBasePath,MsBackend-method}
 \alias{dataStorageBasePath<-,MsBackend-method}
 \alias{MsBackendDataFrame}
@@ -284,15 +283,15 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend,ANY,ANY,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackend}(x, name)
 
 \S4method{$}{MsBackend}(x, name) <- value
 
-\S4method{[[}{MsBackend,ANY,ANY}(x, i, j, ...)
+\S4method{[[}{MsBackend}(x, i, j, ...)
 
-\S4method{[[}{MsBackend,ANY,ANY}(x, i, j, ...) <- value
+\S4method{[[}{MsBackend}(x, i, j, ...) <- value
 
 \S4method{uniqueMsLevels}{MsBackend}(object, ...)
 
