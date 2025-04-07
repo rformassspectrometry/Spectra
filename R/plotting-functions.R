@@ -211,7 +211,8 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
                         labels = list(), labelCex = 1, labelSrt = 0,
                         labelAdj = NULL, labelPos = NULL, labelOffset = 0.5,
                         labelCol = "#00000080", asp = 1, ...) {
-    old_par <- par(no.readonly = TRUE)
+    ## To be added to fix the loss of user's par
+    ## old_par <- par(no.readonly = TRUE)
     if (!length(main))
         main <- paste0("MS", msLevel(x), " RT: ", round(rtime(x), 1))
     nsp <- length(x)
@@ -240,7 +241,7 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
                               labelAdj = labelAdj, labelPos = labelPos,
                               labelOffset = labelOffset, labelCol = labelCol,
                               ...)
-    on.exit(par(old_par))
+    ## on.exit(par(old_par))
 }
 
 #' @rdname spectra-plotting
