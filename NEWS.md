@@ -1,6 +1,5 @@
 # Spectra 1.17
 
-
 ## Change in 1.17.10
 
 - Accept `labels` argument as a `list` instead of a `character` in the 
