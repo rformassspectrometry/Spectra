@@ -1,9 +1,15 @@
+# Spectra 1.19
+
+## Change in 1.19.1
+
+- Add `precScanNum()` method for `MsBackendCached`.
+
 # Spectra 1.17
 
 ## Change in 1.17.10
 
-- Accept `labels` argument as a `list` instead of a `character` in the 
-  plotting functions. 
+- Accept `labels` argument as a `list` instead of a `character` in the
+  plotting functions.
 
 ## Change in 1.17.9
 

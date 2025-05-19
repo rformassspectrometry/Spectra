@@ -326,3 +326,10 @@ test_that("precursorMz<-,MsBackendCached works", {
     precursorMz(be) <- c(1.1, 1.2, 1.3, 1.34)
     expect_equal(precursorMz(be), c(1.1, 1.2, 1.3, 1.34))
 })
+
+test_that("precScanNum,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 11)
+    expect_identical(precScanNum(be), rep(NA_integer_, 11))
+    be$precScanNum <- 1:11
+    expect_identical(precScanNum(be), 1:11)
+})
