@@ -38,7 +38,7 @@ Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
                     comment = c(ORCID = "0000-0002-1330-6610"),
                     role = "ctb"))
 Depends:
-    R (>= 4.0.0),
+    R (>= 4.1.0),
     S4Vectors,
     BiocParallel
 Imports:

@@ -36,6 +36,7 @@
 \alias{mz,MsBackendCached-method}
 \alias{polarity,MsBackendCached-method}
 \alias{polarity<-,MsBackendCached-method}
+\alias{precScanNum,MsBackendCached-method}
 \alias{precursorCharge,MsBackendCached-method}
 \alias{precursorIntensity,MsBackendCached-method}
 \alias{precursorMz,MsBackendCached-method}
@@ -119,6 +120,8 @@ MsBackendCached()
 \S4method{polarity}{MsBackendCached}(object)
 
 \S4method{polarity}{MsBackendCached}(object) <- value
+
+\S4method{precScanNum}{MsBackendCached}(object)
 
 \S4method{precursorCharge}{MsBackendCached}(object)
 

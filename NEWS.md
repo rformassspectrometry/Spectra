@@ -1,3 +1,9 @@
+# Spectra
+
+## Change in
+
+- Add `precScanNum()` method for `MsBackendCached`.
+
 # Spectra 1.17
 
 ## Change in 1.17.9
