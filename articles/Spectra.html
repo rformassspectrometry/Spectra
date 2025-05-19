@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.17.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,18 +82,18 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.21/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre],
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.22/Spectra" class="external-link">Spectra</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre],
 Laurent Gatto [aut] (ORCID: <a href="https://orcid.org/0000-0002-1520-2268" class="external-link uri">https://orcid.org/0000-0002-1520-2268</a>), Johannes Rainer
 [aut] (ORCID: <a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Sebastian Gibb
 [aut] (ORCID: <a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>), Philippine
 Louail [aut] (ORCID: <a href="https://orcid.org/0009-0007-5429-6846" class="external-link uri">https://orcid.org/0009-0007-5429-6846</a>), Jan Stanstrup
 [ctb] (ORCID: <a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
 [ctb], Mar Garcia-Aloy [ctb] (ORCID: <a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>), Guillaume
-Deflandre [ctb] (ORCID: <a href="https://orcid.org/0009-0008-1257-2416" class="external-link uri">https://orcid.org/0009-0008-1257-2416</a>)<br><strong>Last modified:</strong> 2025-04-07 20:21:20.181731<br><strong>Compiled</strong>: Mon Apr 7 20:35:16 2025</p>
+Deflandre [ctb] (ORCID: <a href="https://orcid.org/0009-0008-1257-2416" class="external-link uri">https://orcid.org/0009-0008-1257-2416</a>)<br><strong>Last modified:</strong> 2025-05-19 06:26:17.481217<br><strong>Compiled</strong>: Mon May 19 06:46:30 2025</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <em><a href="https://bioconductor.org/packages/3.21/Spectra" class="external-link">Spectra</a></em>
+<p>The <em><a href="https://bioconductor.org/packages/3.22/Spectra" class="external-link">Spectra</a></em>
 package provides a scalable and flexible infrastructure to represent,
 retrieve and handle mass spectrometry (MS) data. The
 <code>Spectra</code> object provides the user with a single standardized
@@ -245,7 +245,7 @@ as a <code>list</code> of <code>numeric</code> values.</p>
 spectrometry raw files in mzML/mzXML or CDF format. Below we create a
 <code>Spectra</code> object from two mzML files and define to use a
 <code>MsBackendMzR</code> backend to <em>store</em> the data (note that
-this requires the <em><a href="https://bioconductor.org/packages/3.21/mzR" class="external-link">mzR</a></em> package
+this requires the <em><a href="https://bioconductor.org/packages/3.22/mzR" class="external-link">mzR</a></em> package
 to be installed). This backend, specifically designed for raw MS data,
 keeps only a subset of spectra variables in memory while reading the m/z
 and intensity values from the original data files only on demand. See
@@ -798,8 +798,8 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Mon Apr  7 20:35:21 2025]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s)  [Mon Apr  7 20:35:21 2025]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Mon May 19 06:46:34 2025]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s)  [Mon May 19 06:46:34 2025]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -834,7 +834,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Mon Apr  7 20:35:21 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Mon May 19 06:46:34 2025]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
@@ -927,9 +927,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Mon Apr  7 20:35:21 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Apr  7 20:35:21 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Apr  7 20:35:21 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Mon May 19 06:46:34 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon May 19 06:46:35 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon May 19 06:46:35 2025]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -960,9 +960,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Mon Apr  7 20:35:21 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Apr  7 20:35:21 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Apr  7 20:35:21 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Mon May 19 06:46:34 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon May 19 06:46:35 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon May 19 06:46:35 2025]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code><a href="../reference/spectraData.html">intensity()</a></code> on this object will
 now return intensities that are half of the intensities of the original
@@ -1082,7 +1082,7 @@ spectral matching against reference fragment spectra libraries would be
 a function that removes fragment peaks with an m/z matching the
 precursor m/z of a spectrum. Below we define such a function that takes
 the peaks matrix and the precursor m/z as input and evaluates with the
-<code><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">closest()</a></code> function from the <em><a href="https://bioconductor.org/packages/3.21/MsCoreUtils" class="external-link">MsCoreUtils</a></em>
+<code><a href="https://rdrr.io/pkg/MsCoreUtils/man/matching.html" class="external-link">closest()</a></code> function from the <em><a href="https://bioconductor.org/packages/3.22/MsCoreUtils" class="external-link">MsCoreUtils</a></em>
 whether the spectrum contains peaks with an m/z value matching the one
 of the precursor (given <code>tolerance</code> and <code>ppm</code>).
 The returned peaks matrix contains all peaks except those matching the
@@ -1229,9 +1229,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Mon Apr  7 20:35:21 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Apr  7 20:35:21 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Apr  7 20:35:21 2025]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Mon May 19 06:46:34 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon May 19 06:46:35 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon May 19 06:46:35 2025]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code><a href="../reference/addProcessing.html">applyProcessing()</a></code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1468,7 +1468,7 @@ of matching peaks in the second <code>matrix</code>
 <span><span class="co">## 4 0 0 2 5</span></span></code></pre>
 <p>The above similarity was calculated with the default (normalized)
 dot-product, but also other similarity scores can be used instead.
-Either one of the other metrics provided by the <em><a href="https://bioconductor.org/packages/3.21/MsCoreUtils" class="external-link">MsCoreUtils</a></em>
+Either one of the other metrics provided by the <em><a href="https://bioconductor.org/packages/3.22/MsCoreUtils" class="external-link">MsCoreUtils</a></em>
 could be used (see <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/distance.html" class="external-link">?MsCoreUtils::distance</a></code> for a list of
 available options) or any other external or user-provided similarity
 scoring function. As an example, we use below the spectral entropy
@@ -1589,7 +1589,7 @@ parameters).</p>
 <div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/Spectra.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file1bed37bdf92...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file2329727c0e07...OK</span></span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
@@ -1610,8 +1610,8 @@ and spectra 2 and 4 to another.</p>
 <div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/Spectra.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file1bed77bf5070...OK</span></span>
-<span><span class="co">## Writing file file1bed3e86d9c6...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file232993dbc64...OK</span></span>
+<span><span class="co">## Writing file file23292b78a655...OK</span></span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the <code><a href="../reference/addProcessing.html">smooth()</a></code>
 function) and centroiding (using the <code><a href="../reference/addProcessing.html">pickPeaks()</a></code> function)
@@ -1652,7 +1652,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1862         1   259.752       931</span></span>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Mon Apr  7 20:35:27 2025]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Mon May 19 06:46:40 2025]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
@@ -1697,7 +1697,7 @@ stored (in-memory) in a <code>DataFrame</code>. Keeping the data in
 memory guarantees high performance but has also, depending on the number
 of mass peaks in each spectrum, a much higher memory footprint.</p></li>
 <li><p><code>MsBackendMzR</code>: this backend keeps only general
-spectra variables in memory and relies on the <em><a href="https://bioconductor.org/packages/3.21/mzR" class="external-link">mzR</a></em> package
+spectra variables in memory and relies on the <em><a href="https://bioconductor.org/packages/3.22/mzR" class="external-link">mzR</a></em> package
 to read mass peaks (m/z and intensity values) from the original MS files
 on-demand.</p></li>
 <li><p><code>MsBackendHdf5Peaks</code>: similar to
@@ -1729,7 +1729,7 @@ location of the HDF5 file.</p>
 backends that add support for additional data types or storage options
 is provided below:</p>
 <ul>
-<li><p><code>MsBackendCompDb</code> (package <em><a href="https://bioconductor.org/packages/3.21/CompoundDb" class="external-link">CompoundDb</a></em>):
+<li><p><code>MsBackendCompDb</code> (package <em><a href="https://bioconductor.org/packages/3.22/CompoundDb" class="external-link">CompoundDb</a></em>):
 provides access to spectra data (spectra and peaks variables) from a
 <em>CompDb</em> database. Has a small memory footprint because all data
 (except precursor m/z values) are retrieved on-the-fly from the
@@ -1738,31 +1738,31 @@ database.</p></li>
 allows import of MS data from xml files of the Human Metabolome Database
 (HMDB). Extends the <code>MsBackendDataFrame</code> and keeps thus all
 data, after import, in memory.</p></li>
-<li><p><code>MsBackendMassbank</code> (package <em><a href="https://bioconductor.org/packages/3.21/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>):
+<li><p><code>MsBackendMassbank</code> (package <em><a href="https://bioconductor.org/packages/3.22/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>):
 allows to import/export data in MassBank text file format. Extends the
 <code>MsBackendDataFrame</code> and keeps thus all data, after import,
 in memory.</p></li>
-<li><p><code>MsBackendMassbankSql</code> (package <em><a href="https://bioconductor.org/packages/3.21/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>):
+<li><p><code>MsBackendMassbankSql</code> (package <em><a href="https://bioconductor.org/packages/3.22/MsBackendMassbank" class="external-link">MsBackendMassbank</a></em>):
 allows to directly connect to a MassBank SQL database to retrieve all MS
 data and variables. Has a minimal memory footprint because all data is
 retrieved on-the-fly from the SQL database.</p></li>
 <li><p><code>MsBackendMetaboLights</code> (package
-<code>r   BiocStyle::Biocpkg("MsBackendMetaboLights")</code>): retrieves
+<code>r BiocStyle::Biocpkg("MsBackendMetaboLights")</code>): retrieves
 and caches MS data files from the MetaboLights repository.</p></li>
-<li><p><code>MsBackendMgf</code>: (package <em><a href="https://bioconductor.org/packages/3.21/MsBackendMgf" class="external-link">MsBackendMgf</a></em>):
+<li><p><code>MsBackendMgf</code>: (package <em><a href="https://bioconductor.org/packages/3.22/MsBackendMgf" class="external-link">MsBackendMgf</a></em>):
 support for import/export of mass spectrometry files in mascot generic
 format (MGF).</p></li>
-<li><p><code>MsBackendMsp</code>: (package <em><a href="https://bioconductor.org/packages/3.21/MsBackendMsp" class="external-link">MsBackendMsp</a></em>):
+<li><p><code>MsBackendMsp</code>: (package <em><a href="https://bioconductor.org/packages/3.22/MsBackendMsp" class="external-link">MsBackendMsp</a></em>):
 allows to import/export data in NIST MSP format. Extends the
 <code>MsBackendDataFrame</code> and keeps thus all data, after import,
 in memory.</p></li>
-<li><p><code>MsBackendRawFileReader</code> (package <em><a href="https://bioconductor.org/packages/3.21/MsBackendRawFileReader" class="external-link">MsBackendRawFileReader</a></em>):
+<li><p><code>MsBackendRawFileReader</code> (package <em><a href="https://bioconductor.org/packages/3.22/MsBackendRawFileReader" class="external-link">MsBackendRawFileReader</a></em>):
 implements a backend for reading MS data from Thermo Fisher Scientific’s
 raw data files using the manufacturer’s NewRawFileReader .Net libraries.
-The package generalizes the functionality introduced by the <em><a href="https://bioconductor.org/packages/3.21/rawrr" class="external-link">rawrr</a></em>
+The package generalizes the functionality introduced by the <em><a href="https://bioconductor.org/packages/3.22/rawrr" class="external-link">rawrr</a></em>
 package, see also <span class="citation">(Kockmann and Panse
 2021)</span>.</p></li>
-<li><p><code>MsBackendSql</code> (package <em><a href="https://bioconductor.org/packages/3.21/MsBackendSql" class="external-link">MsBackendSql</a></em>):
+<li><p><code>MsBackendSql</code> (package <em><a href="https://bioconductor.org/packages/3.22/MsBackendSql" class="external-link">MsBackendSql</a></em>):
 stores all MS data in a SQL database and has thus a minimal memory
 footprint.</p></li>
 <li><p><code>MsBackendTimsTof</code> (package <a href="https://github.com/rformassspectrometry/MsBackendTimsTof" class="external-link"><code>MsBackendTimsTof</code></a>:
@@ -1860,9 +1860,9 @@ usable on the second computer.</p>
 </h2>
 <div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R Under development (unstable) (2025-03-08 r87910)</span></span>
+<pre><code><span><span class="co">## R version 4.5.0 (2025-04-11)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 24.04.1 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.2 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -1884,25 +1884,25 @@ usable on the second computer.</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] msdata_0.47.0       msentropy_0.1.4     Rcpp_1.0.14        </span></span>
-<span><span class="co">##  [4] MsCoreUtils_1.19.2  Spectra_1.17.10     BiocParallel_1.41.5</span></span>
-<span><span class="co">##  [7] S4Vectors_0.45.4    BiocGenerics_0.53.6 generics_0.1.3     </span></span>
-<span><span class="co">## [10] BiocStyle_2.35.0   </span></span>
+<span><span class="co">##  [1] msdata_0.49.0       msentropy_0.1.4     Rcpp_1.0.14        </span></span>
+<span><span class="co">##  [4] MsCoreUtils_1.21.0  Spectra_1.19.1      BiocParallel_1.43.0</span></span>
+<span><span class="co">##  [7] S4Vectors_0.47.0    BiocGenerics_0.55.0 generics_0.1.4     </span></span>
+<span><span class="co">## [10] BiocStyle_2.37.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] jsonlite_2.0.0         compiler_4.5.0         BiocManager_1.30.25   </span></span>
-<span><span class="co">##  [4] Biobase_2.67.0         rhdf5filters_1.19.2    parallel_4.5.0        </span></span>
-<span><span class="co">##  [7] cluster_2.1.8.1        jquerylib_0.1.4        systemfonts_1.2.2     </span></span>
-<span><span class="co">## [10] IRanges_2.41.3         textshaping_1.0.0      yaml_2.3.10           </span></span>
-<span><span class="co">## [13] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.39.2   </span></span>
+<span><span class="co">##  [4] Biobase_2.69.0         rhdf5filters_1.21.0    parallel_4.5.0        </span></span>
+<span><span class="co">##  [7] cluster_2.1.8.1        jquerylib_0.1.4        systemfonts_1.2.3     </span></span>
+<span><span class="co">## [10] IRanges_2.43.0         textshaping_1.0.1      yaml_2.3.10           </span></span>
+<span><span class="co">## [13] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.41.0   </span></span>
 <span><span class="co">## [16] knitr_1.50             htmlwidgets_1.6.4      MASS_7.3-65           </span></span>
-<span><span class="co">## [19] bookdown_0.42          desc_1.4.3             bslib_0.9.0           </span></span>
-<span><span class="co">## [22] rlang_1.1.5            cachem_1.1.0           xfun_0.52             </span></span>
-<span><span class="co">## [25] fs_1.6.5               sass_0.4.9             cli_3.6.4             </span></span>
-<span><span class="co">## [28] Rhdf5lib_1.29.2        pkgdown_2.1.1.9000     ncdf4_1.24            </span></span>
-<span><span class="co">## [31] digest_0.6.37          mzR_2.41.4             MetaboCoreUtils_1.15.0</span></span>
-<span><span class="co">## [34] rhdf5_2.51.2           lifecycle_1.0.4        clue_0.3-66           </span></span>
-<span><span class="co">## [37] evaluate_1.0.3         codetools_0.2-20       ragg_1.3.3            </span></span>
+<span><span class="co">## [19] bookdown_0.43          desc_1.4.3             bslib_0.9.0           </span></span>
+<span><span class="co">## [22] rlang_1.1.6            cachem_1.1.0           xfun_0.52             </span></span>
+<span><span class="co">## [25] fs_1.6.6               sass_0.4.10            cli_3.6.5             </span></span>
+<span><span class="co">## [28] Rhdf5lib_1.31.0        pkgdown_2.1.3.9000     ncdf4_1.24            </span></span>
+<span><span class="co">## [31] digest_0.6.37          mzR_2.41.4             MetaboCoreUtils_1.17.1</span></span>
+<span><span class="co">## [34] rhdf5_2.53.0           lifecycle_1.0.4        clue_0.3-66           </span></span>
+<span><span class="co">## [37] evaluate_1.0.3         codetools_0.2-20       ragg_1.4.0            </span></span>
 <span><span class="co">## [40] rmarkdown_2.29         tools_4.5.0            htmltools_0.5.8.1</span></span></code></pre>
 </div>
 <div class="section level2">
@@ -1947,7 +1947,7 @@ Product Similarity for Small-Molecule Compound Identification.”</span>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
 </div>
 
     </footer>
