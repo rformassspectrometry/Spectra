@@ -838,7 +838,7 @@ position relative to the x and y coordinates of the peak.
 
 ```{r plotspectra-label, fig.width = 8, fig.height = 8}
 plotSpectra(sps, main = sps$name,
-            labels = function(z) format(mz(z)[[1L]], digits = 4),
+            labels = function(z) lapply(mz(z), format, digits = 4),
             labelSrt = -30, labelPos = 2, labelOffset = 0.1)
 ```
 
@@ -847,12 +847,13 @@ overplotted. Below we define a *label function* that will only indicate the m/z
 of peaks with an intensity higher than 30.
 
 ```{r plotspectra-label-int, fig.width = 8, fig.height = 8}
-mzLabel <- function(z) {
-    z <- peaksData(z)[[1L]]
-    lbls <- format(z[, "mz"], digits = 4)
-    lbls[z[, "intensity"] < 30] <- ""
-    lbls
-}
+mzLabel = function(z) {
+    lapply(seq_along(mz(z)), function(i) {
+            lbls <- format(mz(z)[[i]], digits = 4)
+            lbls[intensity(z)[[i]] <= 30] <- ""
+            lbls
+     })
+ }
 plotSpectra(sps, main = sps$name, labels = mzLabel,
             labelSrt = -30, labelPos = 2, labelOffset = 0.1)
 ```

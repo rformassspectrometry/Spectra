@@ -6,6 +6,11 @@
 
 # Spectra 1.17
 
+## Change in 1.17.10
+
+- Accept `labels` argument as a `list` instead of a `character` in the 
+  plotting functions. 
+
 ## Change in 1.17.9
 
 - Allow parameter `msLevel. = integer()` for `filterRt()` to filter spectra of
@@ -25,6 +30,7 @@
 
 - Add new `fillCoreSpectraVariables()` function that allows to add eventually
   missing *core* spectra variables (with the correct data type) to a data frame.
+
 
 ## Change in 1.17.5
 
