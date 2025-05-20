@@ -190,6 +190,7 @@ MsBackendMzR <- function() {
     colnames(hdr)[colnames(hdr) == "rtime"] <- "retentionTime"
     colnames(hdr)[colnames(hdr) == "scanIndex"] <- "seqNum"
     colnames(hdr)[colnames(hdr) == "precursorMz"] <- "precursorMZ"
+    colnames(hdr)[colnames(hdr) == "precScanNum"] <- "precursorScanNum"
     colnames(hdr)[colnames(hdr) == "isolationWindowTargetMz"] <-
         "isolationWindowTargetMZ"
     req_cols <- c(acquisitionNum = "numeric",
