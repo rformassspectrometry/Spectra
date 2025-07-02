@@ -28,7 +28,7 @@
 \alias{filterMzValues}
 \alias{dropNaSpectraVariables,Spectra-method}
 \alias{selectSpectraVariables,Spectra-method}
-\alias{[,Spectra,ANY-method}
+\alias{[,Spectra,ANY,ANY-method}
 \alias{filterAcquisitionNum,Spectra-method}
 \alias{filterEmptySpectra,Spectra-method}
 \alias{filterDataOrigin,Spectra-method}
@@ -84,7 +84,7 @@ filterPrecursorPeaks(
   spectraVariables = union(spectraVariables(object), peaksVariables(object))
 )
 
-\S4method{[}{Spectra,ANY}(x, i, j, ..., drop = FALSE)
+\S4method{[}{Spectra,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{filterAcquisitionNum}{Spectra}(
   object,

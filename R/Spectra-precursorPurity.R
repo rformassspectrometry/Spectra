@@ -72,6 +72,8 @@
 #'
 #' [addProcessing()] for other data analysis and manipulation functions.
 #'
+#' @export
+#' 
 #' @examples
 #'
 #' ## Load a test DDA file
