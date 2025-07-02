@@ -103,6 +103,7 @@
 \alias{split,MsBackend,ANY-method}
 \alias{supportsSetBackend,MsBackend-method}
 \alias{tic,MsBackend-method}
+\alias{[,MsBackend,ANY-method}
 \alias{$,MsBackend-method}
 \alias{$<-,MsBackend-method}
 \alias{[[,MsBackend-method}
@@ -283,7 +284,7 @@
 
 \S4method{tic}{MsBackend}(object, initial = TRUE)
 
-\S4method{[}{MsBackend}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackend,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackend}(x, name)
 
