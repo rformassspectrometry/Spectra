@@ -90,7 +90,7 @@ estimatePrecursorMz <- function(object, tolerance = 0.3, ppm = 10,
     if (!inherits(object, "Spectra"))
         stop("'object' needs to be a 'Spectra' object.")
     f <- factor(dataOrigin(object))
-    BPPARAM <- backendBpparam(object)
+    BPPARAM <- backendBpparam(object, BPPARAM = BPPARAM)
     res <- bplapply(split(object, f), .adjust_dda_precursor_mz,
                     tolerance = tolerance, ppm = ppm, BPPARAM = BPPARAM)
     unsplit(res, f = f)

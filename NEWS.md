@@ -1,5 +1,9 @@
 # Spectra 1.19
 
+## Change in 1.19.3
+
+- Fix in `estimatePrecursorMz()` that would ignore parameter `BPPARAM`.
+
 ## Change in 1.19.2
 
 - Fix export of data using `MsBackendMzR`: save also the precursor scan number
