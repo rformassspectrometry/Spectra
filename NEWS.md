@@ -1,5 +1,10 @@
 # Spectra 1.19
 
+## Change in 1.19.3
+
+- Fix passing of `BPPARAM` parameter in `peaksData()` method for `Spectra`. 
+  Now is being passed down to `.peaksapply()`.  
+
 ## Change in 1.19.2
 
 - Fix export of data using `MsBackendMzR`: save also the precursor scan number
@@ -35,7 +40,6 @@
 
 - Add new `fillCoreSpectraVariables()` function that allows to add eventually
   missing *core* spectra variables (with the correct data type) to a data frame.
-
 
 ## Change in 1.17.5
 

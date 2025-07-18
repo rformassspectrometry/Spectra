@@ -24,13 +24,7 @@
   BPPARAM = bpparam()
 )
 
-\S4method{Spectra}{MsBackend}(
-  object,
-  processingQueue = list(),
-  metadata = list(),
-  ...,
-  BPPARAM = bpparam()
-)
+\S4method{Spectra}{MsBackend}(object, processingQueue = list(), metadata = list(), ...)
 
 \S4method{Spectra}{character}(
   object,

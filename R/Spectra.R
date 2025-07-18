@@ -433,8 +433,7 @@ setMethod("Spectra", "missing", function(object, processingQueue = list(),
 
 #' @rdname Spectra
 setMethod("Spectra", "MsBackend", function(object, processingQueue = list(),
-                                           metadata = list(), ...,
-                                           BPPARAM = bpparam()) {
+                                           metadata = list(), ...) {
     new("Spectra", metadata = metadata, processingQueue = processingQueue,
         backend = object)
 })
@@ -1213,8 +1212,10 @@ setMethod(
         if (length(object@processingQueue) || length(f))
             switch(return.type,
                    SimpleList = SimpleList(
-                       .peaksapply(object, columns = columns, f = f)),
-                   list = .peaksapply(object, columns = columns, f = f))
+                       .peaksapply(object, columns = columns, f = f,
+                                   BPPARAM = backendBpparam(object, BPPARAM))),
+                   list = .peaksapply(object, columns = columns, f = f,
+                                    BPPARAM = backendBpparam(object, BPPARAM)))
         else
             switch(return.type,
                    SimpleList = SimpleList(
