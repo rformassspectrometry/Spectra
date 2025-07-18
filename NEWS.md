@@ -1,9 +1,14 @@
 # Spectra 1.19
 
-## Change in 1.19.3
+## Change 1.19.4
 
 - Fix passing of `BPPARAM` parameter in `peaksData()` method for `Spectra`. 
   Now is being passed down to `.peaksapply()`.  
+
+## Change in 1.19.3
+
+- Fix in `estimatePrecursorMz()` that would ignore parameter `BPPARAM`.
+
 
 ## Change in 1.19.2
 
