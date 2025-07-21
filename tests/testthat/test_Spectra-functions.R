@@ -800,3 +800,26 @@ test_that("filterPeaksRanges,Spectra works", {
     a <- peaksData(res)[[2L]]
     expect_true(nrow(a) == 0)
 })
+
+test_that("groupMsFragemnts works", {
+    ## basic test
+    msLevel <- c(1, 2, 1, 2, 2, 1, 2)
+    acquisitionNum <- seq_along(msLevel)
+    is_fragment <- msLevel != 1
+    frag_indices <- which(is_fragment)
+    ms1_indices  <- which(!is_fragment)
+    group_ids <- integer(length(msLevel))
+    group_ids[ms1_indices] <- seq_along(ms1_indices)
+    group_ids[frag_indices] <- group_ids[ms1_indices[findInterval(frag_indices, ms1_indices)]]
+    expect_equal(group_ids, c(1, 1, 2, 2, 2, 3, 3))
+
+    ## sanity checks
+    sp1 <- filterMsLevel(sps_dda, 1L)
+    expect_error(groupMsFragments(sp1), "at least two MS levels")
+
+    res_dda <- groupMsFragments(sps_dda)
+    expect_true(is.factor(res_dda))
+    res_dia <- groupMsFragments(sps_dia)
+    res2 <- groupMsFragments(c(sps_dda, sps_dia))
+    expect_equal(c(res_dda, res_dia), res2)
+    })

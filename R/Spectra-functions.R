@@ -395,7 +395,7 @@ NULL
                                   ppm = 20, FUN = ndotproduct, ...) {
     nx <- length(x)
     m <- matrix(NA_real_, nrow = nx, ncol = nx,
-                  dimnames = list(spectraNames(x), spectraNames(x)))
+                dimnames = list(spectraNames(x), spectraNames(x)))
 
     sv <- .processingQueueVariables(x)
     cb <- which(lower.tri(m, diag = TRUE), arr.ind = TRUE)
@@ -1134,4 +1134,75 @@ filterPeaksRanges <- function(object, ..., keep = TRUE) {
         object@processing, "Filter: ", keep_or_remove, " peaks based on ",
         "user-provided ranges for ", length(variables), " variables")
     object
+}
+
+#' @title Create Fragment Indexes by MS Level from Spectra
+#'
+#' @description
+#' This function generates a `numeric` index grouping MSn (MS level > 1) spectra
+#' with their corresponding MS1 spectra based on acquisition order.
+#' It splits the input `Spectra` object by `dataOrigin`, verifies acquisition order,
+#' and creates numeric group identifiers. MS1-only chunks are assigned sequential IDs.
+#'
+#' @param object A `Spectra` object (from the Spectra package) containing MS data.
+#'               Must include at least two MS levels (`msLevel`) and be ordered
+#'               by `acquisitionNum` within each `dataOrigin`.
+#'
+#' @param BPPARAM A `BiocParallelParam` object for parallel execution.
+#'                Defaults to `SerialParam()`.
+#'
+#' @return A numeric vector of group indices, where each number indicates the group
+#'         associated with each spectrum (MS1 or MSn). Spectra from different `dataOrigin`
+#'         entries are grouped independently.
+#'
+#' @note
+#' - Each file/`dataOrigin` group must contain at least one MS1 spectrum.
+#' - If a group contains only MS1 spectra, each is assigned a unique group ID.
+#' - The user is responsible for ensuring that spectra are **correctly ordered**
+#'  within each file. Improper ordering may lead to incorrect groupings.
+#'
+#' @importFrom BiocParallel bplapply
+#' @export
+#'
+#' @examples
+#' # fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
+#' package = "msdata")
+#' # sps_dda <- Spectra(fl)
+#' # index <- groupMsFragments(sp)
+groupMsFragments <- function(object, BPPARAM = SerialParam()) {
+    if (!inherits(object, "Spectra"))
+        stop("'object' is expected to be a 'Spectra' object.")
+
+    ms_levels <- unique(object$msLevel)
+    if (length(ms_levels) < 2)
+        stop("Spectra must contain at least two MS levels.")
+
+    # Split by dataOrigin
+    f <- factor(object$dataOrigin)
+    group_factors <- bplapply(split(object, f), FUN = function(sp_chunk) {
+        if (is.unsorted(sp_chunk$acquisitionNum))
+            stop("Spectra within each dataOrigin must be ordered by 'acquisitionNum'.")
+
+        is_fragment <- sp_chunk$msLevel != 1
+        frag_indices <- which(is_fragment)
+        ms1_indices  <- which(!is_fragment)
+
+        if (length(frag_indices) == 0)
+            return(seq_len(length(sp_chunk)))
+
+        if (length(ms1_indices) == 0)
+            stop("A file (dataOrigin group) contains no MS1 spectra. This is invalid.")
+
+        # Assign group IDs
+        group_ids <- integer(length(sp_chunk))
+        group_ids[ms1_indices] <- seq_along(ms1_indices)
+        group_ids[frag_indices] <- group_ids[
+            ms1_indices[findInterval(frag_indices, ms1_indices)]
+        ]
+
+        return(group_ids)
+    }, BPPARAM = BPPARAM)
+
+    # Reconstruct full vector in original order
+    unsplit(group_factors, f)
 }
