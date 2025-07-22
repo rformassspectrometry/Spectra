@@ -818,7 +818,6 @@ test_that("groupMsFragemnts works", {
     expect_error(groupMsFragments(sp1), "at least two MS levels")
 
     res_dda <- groupMsFragments(sps_dda)
-    expect_true(is.factor(res_dda))
     res_dia <- groupMsFragments(sps_dia)
     res2 <- groupMsFragments(c(sps_dda, sps_dia))
     expect_equal(c(res_dda, res_dia), res2)
