@@ -1,5 +1,11 @@
 # Spectra 1.19
 
+## Change 1.19.5
+
+- Addition of `groupMsFragments()` function. This function generates a 
+  `numeric` index grouping MSn (MS level > 1) spectra with their corresponding
+  MS1 spectra based on acquisition order.
+
 ## Change 1.19.4
 
 - Fix passing of `BPPARAM` parameter in `peaksData()` method for `Spectra`. 
