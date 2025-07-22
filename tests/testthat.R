@@ -18,7 +18,6 @@ tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 fl <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML",
                   package = "msdata")
 sps_dia <- Spectra(fl)
-sps_dia <- sps_dia[-c(1:8)] ## missing the first MS1 file.
 
 
 fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",

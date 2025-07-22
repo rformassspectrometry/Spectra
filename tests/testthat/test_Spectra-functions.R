@@ -802,6 +802,7 @@ test_that("filterPeaksRanges,Spectra works", {
 })
 
 test_that("groupMsFragemnts works", {
+    sps_dia <- sps_dia[-c(1:8)] ## missing the first MS1 file.
     ## basic test
     msLevel <- c(1, 2, 1, 2, 2, 1, 2)
     acquisitionNum <- seq_along(msLevel)
