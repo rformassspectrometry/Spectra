@@ -1166,7 +1166,7 @@ filterPeaksRanges <- function(object, ..., keep = TRUE) {
 #'
 #' @examples
 #' # fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-#' package = "msdata")
+#' # package = "msdata")
 #' # sps_dda <- Spectra(fl)
 #' # index <- groupMsFragments(sp)
 groupMsFragments <- function(object, BPPARAM = SerialParam()) {
