@@ -150,9 +150,9 @@ NULL
             columns <- union(c("mz", "intensity"), columns)
             pqueue <- c(
                 pqueue, ProcessingStep(
-                            FUN = function(x, scols, ...) {
-                                x[, scols, drop = FALSE]
-                            }, ARGS = list(scols = scols)))
+                    FUN = function(x, scols, ...) {
+                        x[, scols, drop = FALSE]
+                    }, ARGS = list(scols = scols)))
         }
         .local <- function(z, queue, svars) {
             if (length(svars))
@@ -1139,26 +1139,28 @@ filterPeaksRanges <- function(object, ..., keep = TRUE) {
 #' @title Create Fragment Indexes by MS Level from Spectra
 #'
 #' @description
-#' This function generates a `numeric` index grouping MSn (MS level > 1) spectra
-#' with their corresponding MS1 spectra based on acquisition order.
-#' It splits the input `Spectra` object by `dataOrigin`, verifies acquisition order,
-#' and creates numeric group identifiers. MS1-only chunks are assigned sequential IDs.
+#' This function generates a `numeric` index grouping MSn (MS level > 1)
+#' spectra with their corresponding MS1 spectra based on acquisition order.
+#' It splits the input `Spectra` object by `dataOrigin`, verifies acquisition
+#' order, and creates numeric group identifiers. MS1-only chunks are assigned
+#' sequential IDs.
 #'
-#' @param object A `Spectra` object (from the Spectra package) containing MS data.
-#'               Must include at least two MS levels (`msLevel`) and be ordered
-#'               by `acquisitionNum` within each `dataOrigin`.
+#' @param object A `Spectra` object (from the Spectra package) containing MS
+#'               data. Must include at least two MS levels (`msLevel`) and be
+#'               ordered by `acquisitionNum` within each `dataOrigin`.
 #'
 #' @param BPPARAM A `BiocParallelParam` object for parallel execution.
 #'                Defaults to `SerialParam()`.
 #'
-#' @return A numeric vector of group indices, where each number indicates the group
-#'         associated with each spectrum (MS1 or MSn). Spectra from different `dataOrigin`
-#'         entries are grouped independently.
+#' @return A numeric vector of indices, the vector will be of same length as
+#'         the input `Spectra` object. Each number indicates the group
+#'         associated with each spectrum (MS1 or MSn). Spectra from different
+#'         `dataOrigin` entries are grouped independently.
 #'
 #' @note
 #' - Each file/`dataOrigin` group must contain at least one MS1 spectrum.
 #' - If a group contains only MS1 spectra, each is assigned a unique group ID.
-#' - The user is responsible for ensuring that spectra are **correctly ordered**
+#' - The user is responsible for ensuring that spectra are correctly ordered
 #'  within each file. Improper ordering may lead to incorrect groupings.
 #'
 #' @importFrom BiocParallel bplapply
@@ -1177,11 +1179,11 @@ groupMsFragments <- function(object, BPPARAM = SerialParam()) {
     if (length(ms_levels) < 2)
         stop("Spectra must contain at least two MS levels.")
 
-    # Split by dataOrigin
     f <- factor(object$dataOrigin)
     group_factors <- bplapply(split(object, f), FUN = function(sp_chunk) {
         if (is.unsorted(sp_chunk$acquisitionNum))
-            stop("Spectra within each dataOrigin must be ordered by 'acquisitionNum'.")
+            stop("Spectra within each dataOrigin must be ordered by ",
+                 "'acquisitionNum'.")
 
         is_fragment <- sp_chunk$msLevel != 1
         frag_indices <- which(is_fragment)
@@ -1191,7 +1193,8 @@ groupMsFragments <- function(object, BPPARAM = SerialParam()) {
             return(seq_len(length(sp_chunk)))
 
         if (length(ms1_indices) == 0)
-            stop("A file (dataOrigin group) contains no MS1 spectra. This is invalid.")
+            stop("A file (dataOrigin group) contains no MS1 spectra. ",
+                 "This is invalid.")
 
         # Assign group IDs
         group_ids <- integer(length(sp_chunk))
