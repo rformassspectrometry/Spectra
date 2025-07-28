@@ -2098,3 +2098,10 @@ test_that("peaksData,Spectra works ", {
     res <- peaksData(a, return.type = "list")
     expect_true(is.list(res))
 })
+
+test_that("cbind2, Spectra works", {
+    n <- length(sps_dda)
+    df <- data.frame(new1 = rep(1, n), new2 = rep("a", n))
+    tmp <- cbind2(sps_dda, df)
+    expect_true(is(tmp, "Spectra"))
+})
