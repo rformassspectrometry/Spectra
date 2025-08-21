@@ -816,7 +816,7 @@ test_that("fragmentGroupIndex works", {
 
     ## sanity checks
     sp1 <- filterMsLevel(sps_dda, 1L)
-    expect_error(groupMsFragments(sp1), "at least two MS levels")
+    expect_error(fragmentGroupIndex(sp1), "at least two MS levels")
 
     res_dda <- fragmentGroupIndex(sps_dda)
     expect_equal(length(sps_dda), length(res_dda))
