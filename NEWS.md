@@ -2,9 +2,9 @@
 
 ## Change 1.19.5
 
-- Addition of `groupMsFragments()` function. This function generates a 
-  `numeric` index grouping MSn (MS level > 1) spectra with their corresponding
-  MS1 spectra based on acquisition order.
+- Addition of `fragmentGroupIndex()` function. This function generates a 
+  `integer` index grouping MSn (MS level > 1) spectra with their corresponding
+  (unique) MS1 spectra based on acquisition order.
 - Fix on `cbind2()` so that the output is a `Spectra` object and not the 
   backend. 
 

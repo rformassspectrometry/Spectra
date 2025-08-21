@@ -175,9 +175,9 @@ test_that(".concatenate_spectra works", {
     res <- .concatenate_spectra(list(Spectra(tmt_mzr), Spectra(sciex_mzr)))
     expect_identical(msLevel(res), c(msLevel(tmt_mzr), msLevel(sciex_mzr)))
     expect_identical(msLevel(sciex_mzr), msLevel(res[dataStorage(res) %in%
-                                                     sciex_file]))
+                                                         sciex_file]))
     expect_identical(msLevel(tmt_mzr), msLevel(res[dataStorage(res) ==
-                                                   dataStorage(tmt_mzr)[1]]))
+                                                       dataStorage(tmt_mzr)[1]]))
 })
 
 test_that(".combine_spectra works", {
@@ -497,7 +497,7 @@ test_that(".peaksapply works", {
                          intensity = c(0.1, Inf),
                          spectraVariables = c("msLevel", "centroided"))
     expect_true(all(vapply(res_3, nrow, integer(1)) <
-                    vapply(res_2, nrow, integer(1))))
+                        vapply(res_2, nrow, integer(1))))
     expect_true(!any(vapply(res_3, function(z) any(z[, 2] == 0), logical(1))))
 
     sps@processingQueue <- c(sps@processingQueue,
@@ -558,7 +558,7 @@ test_that(".apply_processing_queue works", {
     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
                            logical(1))))
     expect_true(all(vapply(res, nrow, integer(1)) <
-                    vapply(pks, nrow, integer(1))))
+                        vapply(pks, nrow, integer(1))))
 })
 
 test_that(".estimate_precursor_intensity works", {
@@ -725,7 +725,7 @@ test_that("filterPrecursorPeaks,Spectra works", {
 
     res <- filterPrecursorPeaks(x, mz = ">=")
     expect_true(all(lengths(res)[msLevel(x) > 1L] <
-                    lengths(x)[msLevel(x) > 1L]))
+                        lengths(x)[msLevel(x) > 1L]))
     expect_equal(lengths(res)[msLevel(x) == 1L], lengths(x)[msLevel(x) == 1L])
 })
 
@@ -801,10 +801,10 @@ test_that("filterPeaksRanges,Spectra works", {
     expect_true(nrow(a) == 0)
 })
 
-test_that("groupMsFragemnts works", {
+test_that("fragmentGroupIndex works", {
     sps_dia <- sps_dia[-c(1:8)] ## missing the first MS1 file.
     ## basic test
-    msLevel <- c(1, 2, 1, 2, 2, 1, 2)
+    msLevel <- c(1, 2, 3, 3, 1, 2, 3, 3, 2, 3, 1, 2)
     acquisitionNum <- seq_along(msLevel)
     is_fragment <- msLevel != 1
     frag_indices <- which(is_fragment)
@@ -812,14 +812,17 @@ test_that("groupMsFragemnts works", {
     group_ids <- integer(length(msLevel))
     group_ids[ms1_indices] <- seq_along(ms1_indices)
     group_ids[frag_indices] <- group_ids[ms1_indices[findInterval(frag_indices, ms1_indices)]]
-    expect_equal(group_ids, c(1, 1, 2, 2, 2, 3, 3))
+    expect_equal(group_ids, c(1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3))
 
     ## sanity checks
     sp1 <- filterMsLevel(sps_dda, 1L)
     expect_error(groupMsFragments(sp1), "at least two MS levels")
 
-    res_dda <- groupMsFragments(sps_dda)
-    res_dia <- groupMsFragments(sps_dia)
-    res2 <- groupMsFragments(c(sps_dda, sps_dia))
-    expect_equal(c(res_dda, res_dia), res2)
-    })
+    res_dda <- fragmentGroupIndex(sps_dda)
+    expect_equal(length(sps_dda), length(res_dda))
+
+    res_dia <- fragmentGroupIndex(sps_dia)
+    res2 <- fragmentGroupIndex(c(sps_dda, sps_dia))
+    expect_equal(res_dda, res2[1:length(sps_dda)])
+    expect_true(all(res_dia != res2[length(sps_dia):length(res2)]))
+})
