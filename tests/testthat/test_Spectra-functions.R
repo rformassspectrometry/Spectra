@@ -802,7 +802,7 @@ test_that("filterPeaksRanges,Spectra works", {
 })
 
 test_that("fragmentGroupIndex works", {
-    sps_dia <- sps_dia[-c(1:8)] ## missing the first MS1 file.
+
     ## basic test
     msLevel <- c(1, 2, 3, 3, 1, 2, 3, 3, 2, 3, 1, 2)
     acquisitionNum <- seq_along(msLevel)
@@ -815,8 +815,10 @@ test_that("fragmentGroupIndex works", {
     expect_equal(group_ids, c(1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3))
 
     ## sanity checks
-    sp1 <- filterMsLevel(sps_dda, 1L)
-    expect_error(fragmentGroupIndex(sp1), "at least two MS levels")
+    expect_error(fragmentGroupIndex(sps_dia), "The first spectrum")
+    sps_dia <- sps_dia[-c(1:8)] ## missing the first MS1 file.
+    tmp <- filterMsLevel(sps_dda, 1L)
+    expect_error(fragmentGroupIndex(tmp), "at least two MS levels")
 
     res_dda <- fragmentGroupIndex(sps_dda)
     expect_equal(length(sps_dda), length(res_dda))
@@ -825,4 +827,8 @@ test_that("fragmentGroupIndex works", {
     res2 <- fragmentGroupIndex(c(sps_dda, sps_dia))
     expect_equal(res_dda, res2[1:length(sps_dda)])
     expect_true(all(res_dia != res2[length(sps_dia):length(res2)]))
+
+    tmp <- filterMsLevel(sps_dda, 2)
+    expect_error(fragmentGroupIndex(tmp), "contains no MS1")
+
 })
