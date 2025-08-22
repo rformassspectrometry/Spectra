@@ -1,5 +1,13 @@
 # Spectra 1.19
 
+## Change 1.19.5
+
+- Addition of `fragmentGroupIndex()` function. This function generates a 
+  `integer` index grouping MSn (MS level > 1) spectra with their corresponding
+  (unique) MS1 spectra based on acquisition order.
+- Fix on `cbind2()` so that the output is a `Spectra` object and not the 
+  backend. 
+
 ## Change 1.19.4
 
 - Fix passing of `BPPARAM` parameter in `peaksData()` method for `Spectra`. 

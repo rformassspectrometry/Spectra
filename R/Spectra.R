@@ -1708,6 +1708,7 @@ setMethod("cbind2", signature(x = "Spectra",
                               y = "dataframeOrDataFrameOrmatrix"),
           function(x, y, ...) {
               x@backend <- cbind2(x@backend, y, ...)
+              x
           })
 
 #' @rdname combineSpectra

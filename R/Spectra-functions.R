@@ -150,9 +150,9 @@ NULL
             columns <- union(c("mz", "intensity"), columns)
             pqueue <- c(
                 pqueue, ProcessingStep(
-                            FUN = function(x, scols, ...) {
-                                x[, scols, drop = FALSE]
-                            }, ARGS = list(scols = scols)))
+                    FUN = function(x, scols, ...) {
+                        x[, scols, drop = FALSE]
+                    }, ARGS = list(scols = scols)))
         }
         .local <- function(z, queue, svars) {
             if (length(svars))
@@ -395,7 +395,7 @@ NULL
                                   ppm = 20, FUN = ndotproduct, ...) {
     nx <- length(x)
     m <- matrix(NA_real_, nrow = nx, ncol = nx,
-                  dimnames = list(spectraNames(x), spectraNames(x)))
+                dimnames = list(spectraNames(x), spectraNames(x)))
 
     sv <- .processingQueueVariables(x)
     cb <- which(lower.tri(m, diag = TRUE), arr.ind = TRUE)
@@ -1134,4 +1134,96 @@ filterPeaksRanges <- function(object, ..., keep = TRUE) {
         object@processing, "Filter: ", keep_or_remove, " peaks based on ",
         "user-provided ranges for ", length(variables), " variables")
     object
+}
+
+#' @title Mass fragmentation collections of each full scan
+#'
+#' @description
+#' This function generates an `integer` index grouping MS^n spectra
+#' (MS level > 1) with their corresponding MS1 spectra based on acquisition
+#' order. Each group contains exactly one MS1 spectrum and all subsequent
+#' higher-level spectra (MS2, MS3, …) acquired until the next MS1 scan.
+#' MS1-only spectra are also assigned sequential group IDs.
+#'
+#' Note that this function:
+#'
+#' - does not consider the direct relationship between a precursor scan and
+#'   the associated product scans,
+#' - and does not distinguish between different fragmentation trees.
+#' For example, all MS3 scans measured after a given MS1 are grouped together
+#' with all MS2 scans from that MS1, regardless of which MS2 spectrum they
+#' originated from.
+#'
+#' @param object A `Spectra` object (from the **Spectra** package) containing
+#'               MS data. Must include at least two MS levels (`msLevel`) and
+#'               be ordered by `acquisitionNum` within each `dataOrigin`.
+#'
+#' @param BPPARAM A `BiocParallelParam` object for parallel execution.
+#'                Defaults to `SerialParam()`.
+#'
+#' @return An `integer` vector of the same length as `object`.
+#' Each element gives the group index associated with the corresponding
+#' spectrum (MS1 or MS^n). Group indices are unique across all files
+#' (`dataOrigin` values).
+#'
+#' @note
+#' - Each file (`dataOrigin`) must contain at least one MS1 spectrum.
+#' - If a group contains only MS1 spectra, each MS1 is assigned a unique group
+#'   ID.
+#' - The user is responsible for ensuring that spectra are correctly ordered.
+#'   Improper ordering may lead to incorrect groupings.
+#'
+#' @importFrom BiocParallel bplapply
+#' @export
+#'
+#' @seealso [`filterPrecursorScan()`] for a function that instead returns a
+#' `Spectra` object containing each parent (e.g., MS1) and its direct child
+#' scans (e.g., MS2) according to their acquisition numbers.
+#'
+#' @examples
+#' fl_ms3 <- system.file("proteomics", "MS3TMT11.mzML", package = "msdata")
+#' sps_dda <- Spectra(fl_ms3)
+#' idx <- fragmentGroupIndex(sps_dda)
+#' head(idx)
+fragmentGroupIndex <- function(object, BPPARAM = SerialParam()) {
+    if (!inherits(object, "Spectra"))
+        stop("'object' is expected to be a 'Spectra' object.")
+
+    ms_levels <- unique(object$msLevel)
+    if (length(ms_levels) < 2)
+        stop("Spectra must contain at least two MS levels.")
+
+    f <- factor(object$dataOrigin)
+    group_factors <- bplapply(split(object, f), FUN = function(sp_chunk) {
+        if (is.unsorted(sp_chunk$acquisitionNum))
+            stop("Spectra within each dataOrigin must be ordered by ",
+                 "'acquisitionNum'.")
+        ## need to check if the first spectrum is ms1 level
+
+        is_fragment <- sp_chunk$msLevel != 1
+        frag_indices <- which(is_fragment)
+        ms1_indices  <- which(!is_fragment)
+        if (length(ms1_indices) == 0)
+            stop("A file (dataOrigin group) contains no MS1 spectra. ",
+                 "This is invalid.")
+
+        if (ms1_indices[1] != 1L)
+            stop("The first spectrum of a file has to be of level 1L.")
+
+        if (length(frag_indices) == 0)
+            return(seq_len(length(sp_chunk)))
+        # Assign group IDs
+        group_ids <- integer(length(sp_chunk))
+        group_ids[ms1_indices] <- seq_along(ms1_indices)
+        group_ids[frag_indices] <- group_ids[
+            ms1_indices[findInterval(frag_indices, ms1_indices)]
+        ]
+
+        return(group_ids)
+    }, BPPARAM = BPPARAM)
+
+    max_vals <- c(0L, cumsum(vapply(group_factors, max, NA_integer_)))
+
+    res <- unsplit(group_factors, f)
+    res + max_vals[as.integer(f)]
 }
