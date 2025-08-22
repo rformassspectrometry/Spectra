@@ -54,10 +54,14 @@ depending also on the size of the isolation window, different ions (with
 slightly different \emph{m/z}) might be fragmented. The resulting MS2 spectrum
 might thus contain fragments from different ions and hence be less \emph{pure}.
 
-The \code{precursorPurity()} function calculates the \strong{precursor purity}
-of MS2 (fragment) spectra expressed as the ratio between the itensity of the
-highest signal in the isolation window to the sum of intensities of all MS1
-peaks in the isolation window. This information is extracted from the last
+The \code{precursorPurity()} function calculates the \strong{precursor purity} of MS2
+(fragment) spectra expressed as the ratio between the itensity of the highest
+signal in the isolation window to the sum of intensities of all MS1 peaks in
+the isolation window. This is similar to the calculation performed in the
+\href{https://www.bioconductor.org/packages/release/bioc/html/msPurity.html}{\emph{msPurity}}
+Bioconductor package.
+
+The peak intensities within the isolation window is extracted from the last
 MS1 spectrum before the respective MS2 spectrum. The spectra are thus
 expected to be ordered by retention time. For the isolation window either the
 isolation window reported in the \code{Spectra} object is used, or it is
