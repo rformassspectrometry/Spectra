@@ -10,7 +10,7 @@
 \alias{spectraVariables,MsBackendCached-method}
 \alias{spectraData,MsBackendCached-method}
 \alias{spectraData<-,MsBackendCached-method}
-\alias{[,MsBackendCached-method}
+\alias{[,MsBackendCached,ANY,ANY-method}
 \alias{$,MsBackendCached-method}
 \alias{$<-,MsBackendCached-method}
 \alias{selectSpectraVariables,MsBackendCached-method}
@@ -69,7 +69,7 @@ MsBackendCached()
 
 \S4method{spectraData}{MsBackendCached}(object) <- value
 
-\S4method{[}{MsBackendCached}(x, i, j, ..., drop = FALSE)
+\S4method{[}{MsBackendCached,ANY,ANY}(x, i, j, ..., drop = FALSE)
 
 \S4method{$}{MsBackendCached}(x, name)
 

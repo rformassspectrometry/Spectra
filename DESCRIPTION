@@ -97,6 +97,7 @@ Collate:
     'Spectra-functions.R'
     'Spectra.R'
     'Spectra-neutralLoss.R'
+    'Spectra-precursorPurity.R'
     'countIdentifications.R'
     'fft_spectrum.R'
     'functions-util.R'
