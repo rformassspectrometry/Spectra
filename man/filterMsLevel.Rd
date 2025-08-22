@@ -394,8 +394,10 @@ missing precursor m/z value (e.g. MS1 spectra) are dropped.
 \item \code{filterPrecursorScan()}: retains parent (e.g. MS1) and children scans (e.g.
 MS2) of acquisition number \code{acquisitionNum}. Returns the filtered
 \code{Spectra} (with spectra in their original order). Parameter \code{f} allows to
-define which spectra belong to the same sample or original data file (
-defaults to \code{f = dataOrigin(object)}).
+define which spectra belong to the same sample or original data file
+(defaults to \code{f = dataOrigin(object)}). See also \code{\link[=fragmentGroupIndex]{fragmentGroupIndex()}} for
+a function to generate an \code{integer} index grouping MS^n spectra with their
+corresponding MS1 spectra based on acquisition order.
 \item \code{filterRanges()}: allows filtering of the \code{Spectra} object based on user
 defined \emph{numeric} ranges (parameter \code{ranges}) for one or more available
 spectra variables in object (spectra variable names can be specified with
