@@ -9,10 +9,15 @@
 [![build release](http://bioconductor.org/shields/build/release/bioc/Spectra.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/Spectra/)
 [![build devel](http://bioconductor.org/shields/build/devel/bioc/Spectra.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/Spectra/)
 
-The Spectra package defines an efficient infrastructure for storing and handling
-mass spectrometry spectra and functionality to subset, process, visualize and
-compare spectra data. It provides different implementations (backends) to store
-mass spectrometry data. These comprise backends tuned for fast data access and
+The *Spectra* package defines an efficient infrastructure for storing and
+handling mass spectrometry spectra and functionality to subset, process,
+visualize and compare spectra data.
+
+A description of its functionality and design is available in this
+[preprint](https://doi.org/10.31219/osf.io/cwt2v_v2).
+
+*Spectra* provides different implementations (backends) to store mass
+spectrometry data. These comprise backends tuned for fast data access and
 processing and backends for very large data sets ensuring a small memory
 footprint.
 
