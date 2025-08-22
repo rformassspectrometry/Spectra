@@ -9,10 +9,14 @@
 #' slightly different *m/z*) might be fragmented. The resulting MS2 spectrum
 #' might thus contain fragments from different ions and hence be less *pure*.
 #'
-#' The `precursorPurity()` function calculates the **precursor purity** 
-#' of MS2 (fragment) spectra expressed as the ratio between the itensity of the
-#' highest signal in the isolation window to the sum of intensities of all MS1
-#' peaks in the isolation window. This information is extracted from the last
+#' The `precursorPurity()` function calculates the **precursor purity** of MS2
+#' (fragment) spectra expressed as the ratio between the itensity of the highest
+#' signal in the isolation window to the sum of intensities of all MS1 peaks in
+#' the isolation window. This is similar to the calculation performed in the
+#' [*msPurity*](https://www.bioconductor.org/packages/release/bioc/html/msPurity.html)
+#' Bioconductor package.
+#'
+#' The peak intensities within the isolation window is extracted from the last
 #' MS1 spectrum before the respective MS2 spectrum. The spectra are thus
 #' expected to be ordered by retention time. For the isolation window either the
 #' isolation window reported in the `Spectra` object is used, or it is
@@ -53,7 +57,7 @@
 #'     manufacturers report the isolation window with the spectra variables
 #'     `isolationWindowLowerMz` and `isolationWindowTargetMz`, thus the default
 #'     for this parameter is `FALSE`.
-#' 
+#'
 #' @param BPPARAM parallel processing setup. Defaults to
 #'     `BPPARAM = SerialParam()`. See [BiocParallel::SerialParam()] for
 #'     more information.
@@ -73,7 +77,7 @@
 #' [addProcessing()] for other data analysis and manipulation functions.
 #'
 #' @export
-#' 
+#'
 #' @examples
 #'
 #' ## Load a test DDA file
@@ -100,7 +104,7 @@
 #'     head()
 #'
 #' pp_2 <- precursorPurity(sps_dda, useReportedIsolationWindow = TRUE)
-#' 
+#'
 #' head(pp_2[msLevel(sps_dda) == 2])
 precursorPurity <- function(object, tolerance = 0.05, ppm = 0,
                             useReportedIsolationWindow = FALSE,
@@ -119,7 +123,7 @@ precursorPurity <- function(object, tolerance = 0.05, ppm = 0,
 #' @param x `Spectra` with MS1 and MS2 DDA data from a single sample/file (!)
 #'
 #' @param tolerance `numeric(1)` defining the half window size of m/z values
-#'     to extract mass peaks from the MS1 spectrum around the MS2 spectrum's 
+#'     to extract mass peaks from the MS1 spectrum around the MS2 spectrum's
 #'     precursor m/z. The full m/z window is defined as 2 * tolerance, and
 #'     peaks within this window (adjusted by `ppm`) are used to estimate purity.
 #'
@@ -130,12 +134,12 @@ precursorPurity <- function(object, tolerance = 0.05, ppm = 0,
 #' @param useIsolationWindow `logical(1)` whether the actually reported
 #'     isolation window lower and upper m/z from the input spectra object
 #'     should be used **instead** of `tolerance` and `ppm`.
-#' 
-#' @return `numeric` vector of length equal to `length(x)`, with estimated 
-#'     precursor purity values for MS2 spectra and `NA_real_` for MS1 spectra. 
-#'     The purity is calculated as the ratio of the intensity of the most 
-#'     intense peak to the total intensity within the isolation window in 
-#'     the preceding MS1 spectrum. If no MS1 spectrum or peaks are found 
+#'
+#' @return `numeric` vector of length equal to `length(x)`, with estimated
+#'     precursor purity values for MS2 spectra and `NA_real_` for MS1 spectra.
+#'     The purity is calculated as the ratio of the intensity of the most
+#'     intense peak to the total intensity within the isolation window in
+#'     the preceding MS1 spectrum. If no MS1 spectrum or peaks are found
 #'     within the window, `NA_real_` is returned.
 #'
 #' @author Ahlam Mentag, Johannes Rainer
@@ -143,7 +147,7 @@ precursorPurity <- function(object, tolerance = 0.05, ppm = 0,
 #' @importFrom MsCoreUtils ppm
 #'
 #' @importFrom MsCoreUtils between
-#' 
+#'
 #' @noRd
 .precursorPurity <- function(x, tolerance = 0.3, ppm = 0,
                              useIsolationWindow = FALSE) {
@@ -156,7 +160,7 @@ precursorPurity <- function(object, tolerance = 0.05, ppm = 0,
     ms1_idx <- vapply(ms2_idx, function(i) max(ms1_all[ms1_all < i]), NA_real_)
     ms2_idx <- ms2_idx[is.finite(ms1_idx)]
     ms1_idx <- ms1_idx[is.finite(ms1_idx)]
-    
+
     ratios <- rep(NA_real_, length(x))
     if (length(ms1_idx)) {
         if (useIsolationWindow) {

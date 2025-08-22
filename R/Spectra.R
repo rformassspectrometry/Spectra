@@ -1982,8 +1982,10 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #' - `filterPrecursorScan()`: retains parent (e.g. MS1) and children scans (e.g.
 #'   MS2) of acquisition number `acquisitionNum`. Returns the filtered
 #'   `Spectra` (with spectra in their original order). Parameter `f` allows to
-#'   define which spectra belong to the same sample or original data file (
-#'   defaults to `f = dataOrigin(object)`).
+#'   define which spectra belong to the same sample or original data file
+#'   (defaults to `f = dataOrigin(object)`). See also [fragmentGroupIndex()] for
+#'   a function to generate an `integer` index grouping MS^n spectra with their
+#'   corresponding MS1 spectra based on acquisition order.
 #'
 #' - `filterRanges()`: allows filtering of the `Spectra` object based on user
 #'   defined *numeric* ranges (parameter `ranges`) for one or more available

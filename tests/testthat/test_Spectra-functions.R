@@ -829,6 +829,6 @@ test_that("fragmentGroupIndex works", {
     expect_true(all(res_dia != res2[length(sps_dia):length(res2)]))
 
     tmp <- filterMsLevel(sps_dda, 2)
-    expect_error(fragmentGroupIndex(tmp), "contains no MS1")
+    expect_error(fragmentGroupIndex(tmp), "at least two MS levels")
 
 })
