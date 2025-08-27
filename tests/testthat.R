@@ -19,7 +19,6 @@ fl <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML",
                   package = "msdata")
 sps_dia <- Spectra(fl)
 
-
 fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
                   package = "msdata")
 sps_dda <- Spectra(fl)

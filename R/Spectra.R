@@ -618,6 +618,9 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 #'     in the individual `matrix` of the returned `list`. Defaults to
 #'     `c("mz", "value")` but any values returned by `peaksVariables(object)`
 #'     with `object` being the `Spectra` object are supported.
+#'     For `longForm()`: `character` with the spectra and peaks variables to
+#'     include in the returned `data.frame`. Defaults to
+#'     `union(spectraVariables(object), peaksVariables(object))`.
 #'
 #' @param f For `intensity()`, `mz()` and `peaksData()`: factor defining how
 #'     data should be chunk-wise loaded an processed. Defaults to
@@ -752,7 +755,9 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 #'   spectra (with `NA_integer_` if not available).
 #'
 #' - `asDataFrame()`: converts the `Spectra` to a `DataFrame` (in long format)
-#'   contining all data. Returns a `DataFrame`.
+#'   contining all data. Returns a `DataFrame`. See also `longForm()` for a
+#'   potentially more efficient implementation that returns a `data.frame` in
+#'   long form.
 #'
 #' - `centroided()`, `centroided<-`: gets or sets the centroiding
 #'   information of the spectra. `centroided()` returns a `logical`
@@ -815,6 +820,12 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 #' - `lengths()`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum. Returns an `integer` vector (length equal to the
 #'   number of spectra). For empty spectra, `0` is returned.
+#'
+#' - `longForm()`: extract the MS data as a `data.frame` in *long form* with
+#'   columns being spectra and peaks variables and one row per mass peak.
+#'   Parameter `columns` allows to define the spectra and peaks variables that
+#'   should be included in the returned `data.frame` (with the default being
+#'   `columns = union(spectraVariables(object), peaksVariables(object)))`.
 #'
 #' - `msLevel()`: gets the spectra's MS level. Returns an integer vector (names
 #'   being spectrum names, length equal to the number of spectra) with the MS
@@ -1186,6 +1197,27 @@ setMethod("lengths", "Spectra", function(x, use.names = FALSE) {
                    use.names = use.names)
         else lengths(x@backend, use.names = use.names)
     } else integer()
+})
+
+#' @rdname spectraData
+setMethod(
+    "longForm", "Spectra",
+    function(object, columns = union(spectraVariables(object),
+                                     peaksVariables(object))) {
+        pv <- intersect(peaksVariables(object), columns)
+        sv <- intersect(spectraVariables(object), columns)
+        if (length(object@processingQueue)) {
+            if (length(pv)) {
+                if (length(sv))
+                    .long_spectra_data3(
+                        as.data.frame(spectraData(object, sv)),
+                        peaksData(object, columns = pv, return.type = "list"),
+                        pv)
+                else as.data.frame(do.call(
+                         rbind,
+                         peaksData(object, columns = pv, return.type = "list")))
+            } else as.data.frame(spectraData(object, columns))
+        } else longForm(object@backend, columns)
 })
 
 #' @rdname spectraData
