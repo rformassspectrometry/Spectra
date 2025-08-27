@@ -1003,3 +1003,21 @@ test_that("filterRt works for MsBackendMemory", {
     expect_equal(length(res), 2L)
     expect_equal(rtime(res), c(1.2, 2.1))
 })
+
+test_that("longForm,MsBackendMemory works", {
+    test_df$rtime <- c(1.2, 2.1, 3.1)
+    be <- backendInitialize(MsBackendMemory(), test_df)
+
+    res <- longForm(be)
+    expect_true(is.data.frame(res))
+    expect_equal(res$mz, unlist(test_df$mz))
+
+    res <- longForm(be, c("rtime", "mz"))
+    expect_true(is.data.frame(res))
+    expect_equal(res$mz, unlist(test_df$mz))
+    expect_equal(colnames(res), c("rtime", "mz"))
+
+    res <- longForm(be, c("rtime", "msLevel"))
+    expect_equal(colnames(res), c("rtime", "msLevel"))
+    expect_equal(test_df$rtime, res$rtime)
+})

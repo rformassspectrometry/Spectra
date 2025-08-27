@@ -1,5 +1,10 @@
 # Spectra 1.19
 
+## Change 1.19.7
+
+- Add `longForm,MsBackend` mehod (issue
+  [#360](https://github.com/rformassspectrometry/Spectra/issues/360)).
+
 ## Change 1.19.6
 
 - Add a `precursorPurity()` function.

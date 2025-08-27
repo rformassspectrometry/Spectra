@@ -1691,6 +1691,14 @@ setMethod("isCentroided", "MsBackend", function(object, ...) {
 })
 ```
 
+### `longForm()`
+
+This method returns the MS data of a `MsBackend` as a `data.frame` with columns
+being individual spectra or peaks variables and each row representing one mass
+peak. A default implementation is available that converts the `DataFrame`
+returned by a `spectraData()` call into a *long form* `data.frame` by
+repeating spectra variable values to match the number of peaks per
+spectrum.
 
 ### `reset()`
 

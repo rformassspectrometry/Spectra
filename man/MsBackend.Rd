@@ -109,6 +109,7 @@
 \alias{[[<-,MsBackend-method}
 \alias{dataStorageBasePath,MsBackend-method}
 \alias{dataStorageBasePath<-,MsBackend-method}
+\alias{longForm,MsBackend-method}
 \alias{MsBackendDataFrame}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{MsBackendHdf5Peaks}
@@ -299,6 +300,8 @@
 
 \S4method{dataStorageBasePath}{MsBackend}(object) <- value
 
+\S4method{longForm}{MsBackend}(object, columns = spectraVariables(object))
+
 MsBackendDataFrame()
 
 \S4method{backendInitialize}{MsBackendDataFrame}(object, data, peaksVariables = c("mz", "intensity"), ...)
@@ -327,7 +330,10 @@ returned \code{DataFrame}. By default, all columns are returned.
 For \code{peaksData()} accessor: optional \code{character} with requested columns
 in the individual \code{matrix} of the returned \code{list}. Defaults to
 \code{peaksVariables(object)} and depends on what \emph{peaks variables} the
-backend provides.}
+backend provides.
+For \code{longForm()}: the spectra and peaks variables that should be included
+in the returned \code{data.frame}. Defaults to \code{spectraVariables(object)}
+and is thus the union of spectra and peaks variables.}
 
 \item{x}{Object extending \code{MsBackend}.}
 
@@ -597,19 +603,6 @@ returns an empty \code{character()}. The implementation for \code{MsBackendMzR}
 returns \code{c("dataStorage", "scanIndex")} as these two spectra variables
 are required to load the MS data on-the-fly. This method needs only to
 be implemented if a backend requires specific variables to be defined.
-\item \code{dataOrigin()}: gets a \code{character} of length equal to the number of
-spectra in \code{object} with the \emph{data origin} of each spectrum. This could
-e.g. be the mzML file from which the data was read.
-\item \code{dataStorage()}: gets a \code{character} of length equal to the number of
-spectra in \code{object} with the data storage of each spectrum. Note that
-missing values (\code{NA_character_}) are not supported for \code{dataStorage}.
-\item \code{dataStorageBasePath()}, \verb{dataStorageBasePath<-: gets or sets the common *base* path of the directory containing all data files. If supported, the function is expected to return (or accept) a }character\verb{of length 1. Most backends (such as for example the}MsBackendMemory\verb{will not support this function and}dataStorageBasePath()\verb{will return}NA_character_\verb{. For }MsBackendMzR\verb{, this function allows to get or change the path to the directory containing the original data files, which is required if e.g. a serialized }MsBackendMzR` instance gets copied to another computer or
-file system.
-\item \code{dropNaSpectraVariables()}: removes spectra variables (i.e. columns in the
-object's \code{spectraData} that contain only missing values (\code{NA}). Note that
-while columns with only \code{NA}s are removed, a \code{spectraData()} call after
-\code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
-for \emph{core} spectra variables.
 \item \code{cbind2()}: allows to appends multiple new spectra variables to the
 backend at once. The values for the new spectra variables have to
 be in the same order as the spectra in \code{x}. Replacing existing spectra
@@ -628,6 +621,19 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy()}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \verb{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
+\item \code{dataOrigin()}: gets a \code{character} of length equal to the number of
+spectra in \code{object} with the \emph{data origin} of each spectrum. This could
+e.g. be the mzML file from which the data was read.
+\item \code{dataStorage()}: gets a \code{character} of length equal to the number of
+spectra in \code{object} with the data storage of each spectrum. Note that
+missing values (\code{NA_character_}) are not supported for \code{dataStorage}.
+\item \code{dataStorageBasePath()}, \verb{dataStorageBasePath<-: gets or sets the common *base* path of the directory containing all data files. If supported, the function is expected to return (or accept) a }character\verb{of length 1. Most backends (such as for example the}MsBackendMemory\verb{will not support this function and}dataStorageBasePath()\verb{will return}NA_character_\verb{. For }MsBackendMzR\verb{, this function allows to get or change the path to the directory containing the original data files, which is required if e.g. a serialized }MsBackendMzR` instance gets copied to another computer or
+file system.
+\item \code{dropNaSpectraVariables()}: removes spectra variables (i.e. columns in the
+object's \code{spectraData} that contain only missing values (\code{NA}). Note that
+while columns with only \code{NA}s are removed, a \code{spectraData()} call after
+\code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
+for \emph{core} spectra variables.
 \item \code{export()}: exports data from a \code{Spectra} class to a file. This method is
 called by the \verb{export,Spectra} method that passes itself as a second
 argument to the function. The \verb{export,MsBackend} implementation is thus
@@ -767,6 +773,16 @@ only} or does allow also to write/update data.
 \item \code{lengths()}: gets the number of peaks (m/z-intensity values) per
 spectrum.  Returns an \code{integer} vector (length equal to the
 number of spectra). For empty spectra, \code{0} is returned.
+\item \code{longForm()}: extract the MS data in \emph{long form}, i.e., as a \code{data.frame}
+with columns being requested spectra and peak variables and one row per
+mass peak. Parameter \code{columns} can be used to specify the columns (i.e.,
+spectra or peaks variables) that should be returned. The default is
+\code{columns = spectraVariables(object)} and \strong{all} spectra and peak variables
+are returned. It is strongly suggested to extract only selected columns
+and not the full data to avoid potential out-of-memory problems.
+Implementation of this method is optional as a default implementation for
+\code{MsBackend} is available which converts the \code{DataFrame} returned by
+\code{spectraData()} into long form.
 \item \code{msLevel()}: gets the spectra's MS level. Returns an \code{integer}
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).

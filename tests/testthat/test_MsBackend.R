@@ -108,3 +108,18 @@ test_that("dataStorageBasePath,MsExperiment works", {
     tmp <- MsBackendMemory()
     expect_warning(dataStorageBasePath(tmp) <- "/", "not support")
 })
+
+test_that("longForm,MsBackend works with MsBackendMzR", {
+    res <- longForm(sciex_mzr)
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), spectraVariables(sciex_mzr))
+    expect_equal(nrow(res), sum(lengths(sciex_mzr)))
+
+    res_2 <- longForm(sciex_mzr, c("msLevel", "rtime", "intensity"))
+    expect_true(is.data.frame(res_2))
+    expect_equal(colnames(res_2), c("msLevel", "rtime", "intensity"))
+    expect_equal(res$intensity, res_2$intensity)
+
+    expect_error(longForm(sciex_mzr, c(spectraVariables(sciex_mzr), "aaaa")),
+                 "not available")
+})

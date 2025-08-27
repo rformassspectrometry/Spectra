@@ -708,3 +708,17 @@ setMethod("filterAcquisitionNum", "MsBackendMemory",
     sel_acq <- acquisitionNum(object) %in% n & sel_file
     object[sel_acq | !sel_file]
 })
+
+#' @rdname hidden_aliases
+setMethod(
+    "longForm", "MsBackendMemory",
+    function(object, columns = spectraVariables(object)) {
+        if (!all(columns %in% spectraVariables(object)))
+            stop("Some of the requested columns are not available")
+        pv <- intersect(columns, peaksVariables(object))
+        if (!length(pv))
+            return(Spectra:::.df_spectra_data(object, columns))
+        .long_spectra_data3(
+            Spectra:::.df_spectra_data(object, setdiff(columns, pv)),
+            peaksData(object, pv), pv)
+    })
