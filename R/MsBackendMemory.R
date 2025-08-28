@@ -717,8 +717,8 @@ setMethod(
             stop("Some of the requested columns are not available")
         pv <- intersect(columns, peaksVariables(object))
         if (!length(pv))
-            return(Spectra:::.df_spectra_data(object, columns))
+            return(.df_spectra_data(object, columns))
         .long_spectra_data3(
-            Spectra:::.df_spectra_data(object, setdiff(columns, pv)),
+            .df_spectra_data(object, setdiff(columns, pv)),
             peaksData(object, pv), pv)
     })
