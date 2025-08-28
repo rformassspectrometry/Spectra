@@ -27,7 +27,7 @@ replaced (again, using dedicated functions or using $&amp;lt;-)."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,6 +141,12 @@ replaced (again, using dedicated functions or using <code>$&lt;-</code>).</p>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
 <span><span class="fu">lengths</span><span class="op">(</span><span class="va">x</span>, use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'Spectra'</span></span>
+<span><span class="fu">longForm</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">union</a></span><span class="op">(</span><span class="fu">spectraVariables</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>, <span class="fu">peaksVariables</span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
 <span><span class="fu">msLevel</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
@@ -280,7 +286,10 @@ returned <code>DataFrame</code>. By default, all columns are returned.
 For <code>peaksData()</code> accessor: optional <code>character</code> with requested columns
 in the individual <code>matrix</code> of the returned <code>list</code>. Defaults to
 <code>c("mz", "value")</code> but any values returned by <code>peaksVariables(object)</code>
-with <code>object</code> being the <code>Spectra</code> object are supported.</p></dd>
+with <code>object</code> being the <code>Spectra</code> object are supported.
+For <code>longForm()</code>: <code>character</code> with the spectra and peaks variables to
+include in the returned <code>data.frame</code>. Defaults to
+<code>union(spectraVariables(object), peaksVariables(object))</code>.</p></dd>
 
 
 <dt id="arg-return-type">return.type<a class="anchor" aria-label="anchor" href="#arg-return-type"></a></dt>
@@ -401,7 +410,9 @@ backend.</p></li>
 spectrum. Returns an <code>integer</code> of length equal to the number of
 spectra (with <code>NA_integer_</code> if not available).</p></li>
 <li><p><code>asDataFrame()</code>: converts the <code>Spectra</code> to a <code>DataFrame</code> (in long format)
-contining all data. Returns a <code>DataFrame</code>.</p></li>
+contining all data. Returns a <code>DataFrame</code>. See also <code>longForm()</code> for a
+potentially more efficient implementation that returns a <code>data.frame</code> in
+long form.</p></li>
 <li><p><code>centroided()</code>, <code>centroided&lt;-</code>: gets or sets the centroiding
 information of the spectra. <code>centroided()</code> returns a <code>logical</code>
 vector of length equal to the number of spectra with <code>TRUE</code> if a
@@ -450,6 +461,11 @@ upper m/z boundary of the isolation window.</p></li>
 <li><p><code>lengths()</code>: gets the number of peaks (m/z-intensity values) per
 spectrum. Returns an <code>integer</code> vector (length equal to the
 number of spectra). For empty spectra, <code>0</code> is returned.</p></li>
+<li><p><code>longForm()</code>: extract the MS data as a <code>data.frame</code> in <em>long form</em> with
+columns being spectra and peaks variables and one row per mass peak.
+Parameter <code>columns</code> allows to define the spectra and peaks variables that
+should be included in the returned <code>data.frame</code> (with the default being
+<code>columns = union(spectraVariables(object), peaksVariables(object)))</code>.</p></li>
 <li><p><code>msLevel()</code>: gets the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.</p></li>

@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,7 +90,7 @@ Louail [aut] (ORCID: <a href="https://orcid.org/0009-0007-5429-6846" class="exte
 [ctb] (ORCID: <a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
 [ctb], Mar Garcia-Aloy [ctb] (ORCID: <a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>), Guillaume
 Deflandre [ctb] (ORCID: <a href="https://orcid.org/0009-0008-1257-2416" class="external-link uri">https://orcid.org/0009-0008-1257-2416</a>), Ahlam Mentag
-[ctb] (ORCID: <a href="https://orcid.org/0009-0008-5438-7067" class="external-link uri">https://orcid.org/0009-0008-5438-7067</a>)<br><strong>Last modified:</strong> 2025-08-22 08:13:33.149222<br><strong>Compiled</strong>: Fri Aug 22 08:40:48 2025</p>
+[ctb] (ORCID: <a href="https://orcid.org/0009-0008-5438-7067" class="external-link uri">https://orcid.org/0009-0008-5438-7067</a>)<br><strong>Last modified:</strong> 2025-08-28 08:11:58.639989<br><strong>Compiled</strong>: Thu Aug 28 08:25:39 2025</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -2027,6 +2027,18 @@ below.</p>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
+<h4 id="longform">
+<code>longForm()</code><a class="anchor" aria-label="anchor" href="#longform"></a>
+</h4>
+<p>This method returns the MS data of a <code>MsBackend</code> as a
+<code>data.frame</code> with columns being individual spectra or peaks
+variables and each row representing one mass peak. A default
+implementation is available that converts the <code>DataFrame</code>
+returned by a <code><a href="../reference/spectraData.html">spectraData()</a></code> call into a <em>long form</em>
+<code>data.frame</code> by repeating spectra variable values to match
+the number of peaks per spectrum.</p>
+</div>
+<div class="section level4">
 <h4 id="reset">
 <code>reset()</code><a class="anchor" aria-label="anchor" href="#reset"></a>
 </h4>
@@ -2423,7 +2435,7 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] MsCoreUtils_1.21.0  IRanges_2.43.0      Spectra_1.19.6     </span></span>
+<span><span class="co">## [1] MsCoreUtils_1.21.0  IRanges_2.43.0      Spectra_1.19.7     </span></span>
 <span><span class="co">## [4] BiocParallel_1.43.4 S4Vectors_0.47.0    BiocGenerics_0.55.1</span></span>
 <span><span class="co">## [7] generics_0.1.4      BiocStyle_2.37.1   </span></span>
 <span><span class="co">## </span></span>
@@ -2434,7 +2446,7 @@ in our case is an instance of our <code>MsBackendTest</code> class).</p>
 <span><span class="co">## [10] ragg_1.4.0             sass_0.4.10            rmarkdown_2.29        </span></span>
 <span><span class="co">## [13] evaluate_1.0.4         jquerylib_0.1.4        MASS_7.3-65           </span></span>
 <span><span class="co">## [16] fastmap_1.2.0          yaml_2.3.10            lifecycle_1.0.4       </span></span>
-<span><span class="co">## [19] bookdown_0.43          BiocManager_1.30.26    cluster_2.1.8.1       </span></span>
+<span><span class="co">## [19] bookdown_0.44          BiocManager_1.30.26    cluster_2.1.8.1       </span></span>
 <span><span class="co">## [22] compiler_4.5.1         codetools_0.2-20       fs_1.6.6              </span></span>
 <span><span class="co">## [25] htmlwidgets_1.6.4      MetaboCoreUtils_1.17.1 systemfonts_1.2.3     </span></span>
 <span><span class="co">## [28] digest_0.6.37          R6_2.6.1               parallel_4.5.1        </span></span>

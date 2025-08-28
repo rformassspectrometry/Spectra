@@ -63,7 +63,7 @@ See below for more details about individual backends."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -392,6 +392,9 @@ data files and the remaining spectra variables in memory (in a
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
 <span><span class="fu">dataStorageBasePath</span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
 <span></span>
+<span><span class="co"># S4 method for class 'MsBackend'</span></span>
+<span><span class="fu">longForm</span><span class="op">(</span><span class="va">object</span>, columns <span class="op">=</span> <span class="fu"><a href="spectraData.html">spectraVariables</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">MsBackendDataFrame</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendDataFrame'</span></span>
@@ -433,7 +436,10 @@ returned <code>DataFrame</code>. By default, all columns are returned.
 For <code><a href="spectraData.html">peaksData()</a></code> accessor: optional <code>character</code> with requested columns
 in the individual <code>matrix</code> of the returned <code>list</code>. Defaults to
 <code>peaksVariables(object)</code> and depends on what <em>peaks variables</em> the
-backend provides.</p></dd>
+backend provides.
+For <code>longForm()</code>: the spectra and peaks variables that should be included
+in the returned <code>data.frame</code>. Defaults to <code>spectraVariables(object)</code>
+and is thus the union of spectra and peaks variables.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
@@ -716,19 +722,6 @@ returns an empty <code><a href="https://rdrr.io/r/base/character.html" class="ex
 returns <code>c("dataStorage", "scanIndex")</code> as these two spectra variables
 are required to load the MS data on-the-fly. This method needs only to
 be implemented if a backend requires specific variables to be defined.</p></li>
-<li><p><code><a href="spectraData.html">dataOrigin()</a></code>: gets a <code>character</code> of length equal to the number of
-spectra in <code>object</code> with the <em>data origin</em> of each spectrum. This could
-e.g. be the mzML file from which the data was read.</p></li>
-<li><p><code><a href="spectraData.html">dataStorage()</a></code>: gets a <code>character</code> of length equal to the number of
-spectra in <code>object</code> with the data storage of each spectrum. Note that
-missing values (<code>NA_character_</code>) are not supported for <code>dataStorage</code>.</p></li>
-<li><p><code>dataStorageBasePath()</code>, <code>dataStorageBasePath&lt;-: gets or sets the common *base* path of the directory containing all data files. If supported, the function is expected to return (or accept) a </code>character<code>of length 1. Most backends (such as for example the</code>MsBackendMemory<code>will not support this function and</code>dataStorageBasePath()<code>will return</code>NA_character_<code>. For </code>MsBackendMzR<code>, this function allows to get or change the path to the directory containing the original data files, which is required if e.g. a serialized </code>MsBackendMzR` instance gets copied to another computer or
-file system.</p></li>
-<li><p><code><a href="filterMsLevel.html">dropNaSpectraVariables()</a></code>: removes spectra variables (i.e. columns in the
-object's <code>spectraData</code> that contain only missing values (<code>NA</code>). Note that
-while columns with only <code>NA</code>s are removed, a <code><a href="spectraData.html">spectraData()</a></code> call after
-<code><a href="filterMsLevel.html">dropNaSpectraVariables()</a></code> might still show columns containing <code>NA</code> values
-for <em>core</em> spectra variables.</p></li>
 <li><p><code><a href="combineSpectra.html">cbind2()</a></code>: allows to appends multiple new spectra variables to the
 backend at once. The values for the new spectra variables have to
 be in the same order as the spectra in <code>x</code>. Replacing existing spectra
@@ -747,6 +740,19 @@ collision energy for all spectra in <code>object</code>. <code><a href="spectraD
 returns a <code>numeric</code> with length equal to the number of spectra
 (<code>NA_real_</code> if not present/defined), <code>collisionEnergy&lt;-</code> takes a
 <code>numeric</code> of length equal to the number of spectra in <code>object</code>.</p></li>
+<li><p><code><a href="spectraData.html">dataOrigin()</a></code>: gets a <code>character</code> of length equal to the number of
+spectra in <code>object</code> with the <em>data origin</em> of each spectrum. This could
+e.g. be the mzML file from which the data was read.</p></li>
+<li><p><code><a href="spectraData.html">dataStorage()</a></code>: gets a <code>character</code> of length equal to the number of
+spectra in <code>object</code> with the data storage of each spectrum. Note that
+missing values (<code>NA_character_</code>) are not supported for <code>dataStorage</code>.</p></li>
+<li><p><code>dataStorageBasePath()</code>, <code>dataStorageBasePath&lt;-: gets or sets the common *base* path of the directory containing all data files. If supported, the function is expected to return (or accept) a </code>character<code>of length 1. Most backends (such as for example the</code>MsBackendMemory<code>will not support this function and</code>dataStorageBasePath()<code>will return</code>NA_character_<code>. For </code>MsBackendMzR<code>, this function allows to get or change the path to the directory containing the original data files, which is required if e.g. a serialized </code>MsBackendMzR` instance gets copied to another computer or
+file system.</p></li>
+<li><p><code><a href="filterMsLevel.html">dropNaSpectraVariables()</a></code>: removes spectra variables (i.e. columns in the
+object's <code>spectraData</code> that contain only missing values (<code>NA</code>). Note that
+while columns with only <code>NA</code>s are removed, a <code><a href="spectraData.html">spectraData()</a></code> call after
+<code><a href="filterMsLevel.html">dropNaSpectraVariables()</a></code> might still show columns containing <code>NA</code> values
+for <em>core</em> spectra variables.</p></li>
 <li><p><code><a href="Spectra.html">export()</a></code>: exports data from a <code>Spectra</code> class to a file. This method is
 called by the <code>export,Spectra</code> method that passes itself as a second
 argument to the function. The <code>export,MsBackend</code> implementation is thus
@@ -886,6 +892,16 @@ only</em> or does allow also to write/update data.</p></li>
 <li><p><code><a href="spectraData.html">lengths()</a></code>: gets the number of peaks (m/z-intensity values) per
 spectrum.  Returns an <code>integer</code> vector (length equal to the
 number of spectra). For empty spectra, <code>0</code> is returned.</p></li>
+<li><p><code>longForm()</code>: extract the MS data in <em>long form</em>, i.e., as a <code>data.frame</code>
+with columns being requested spectra and peak variables and one row per
+mass peak. Parameter <code>columns</code> can be used to specify the columns (i.e.,
+spectra or peaks variables) that should be returned. The default is
+<code>columns = spectraVariables(object)</code> and <strong>all</strong> spectra and peak variables
+are returned. It is strongly suggested to extract only selected columns
+and not the full data to avoid potential out-of-memory problems.
+Implementation of this method is optional as a default implementation for
+<code>MsBackend</code> is available which converts the <code>DataFrame</code> returned by
+<code><a href="spectraData.html">spectraData()</a></code> into long form.</p></li>
 <li><p><code><a href="spectraData.html">msLevel()</a></code>: gets the spectra's MS level. Returns an <code>integer</code>
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or <code>NA_integer_</code> if not available).</p></li>
