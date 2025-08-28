@@ -2105,3 +2105,70 @@ test_that("cbind2, Spectra works", {
     tmp <- cbind2(sps_dda, df)
     expect_true(is(tmp, "Spectra"))
 })
+
+test_that("longForm,Spectra works", {
+    a <- sps_dda[1:30]
+    ## empty processing queue
+    res <- longForm(a)
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c(spectraVariables(a), peaksVariables(a)))
+    expect_equal(res$mz, unlist(mz(a)))
+    expect_equal(res$intensity, unlist(intensity(a)))
+
+    ## selected columns
+    res <- longForm(a, c("rtime", "mz", "intensity"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("rtime", "mz", "intensity"))
+    expect_equal(res$mz, unlist(mz(a)))
+    expect_equal(res$intensity, unlist(intensity(a)))
+
+    ## no peaks variables
+    res <- longForm(a, c("msLevel", "rtime"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("msLevel", "rtime"))
+    expect_equal(res$msLevel, msLevel(a))
+    expect_equal(res$rtime, rtime(a))
+
+    ## no spectra variables
+    res <- longForm(a, c("mz", "intensity"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("mz", "intensity"))
+    expect_equal(res$mz, unlist(mz(a)))
+    expect_equal(res$intensity, unlist(intensity(a)))
+
+    ## non-existing column
+    expect_error(longForm(a, c("rtime", "aaa"), "not available"))
+
+    ## non-empty processing queue
+    a <- filterIntensity(a, 80)
+    res <- longForm(a)
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c(spectraVariables(a), peaksVariables(a)))
+    expect_equal(res$mz, unname(unlist(mz(a))))
+    expect_equal(res$intensity, unname(unlist(intensity(a))))
+    expect_true(nrow(res) < length(a)) # because we have empty spectra
+
+    ## selected columns
+    res <- longForm(a, c("rtime", "mz", "intensity"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("rtime", "mz", "intensity"))
+    expect_equal(res$mz, unname(unlist(mz(a))))
+    expect_equal(res$intensity, unname(unlist(intensity(a))))
+
+    ## no peaks variables
+    res <- longForm(a, c("msLevel", "rtime"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("msLevel", "rtime"))
+    expect_equal(res$msLevel, msLevel(a))
+    expect_equal(res$rtime, rtime(a))
+
+    ## no spectra variables
+    res <- longForm(a, c("mz", "intensity"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("mz", "intensity"))
+    expect_equal(res$mz, unname(unlist(mz(a))))
+    expect_equal(res$intensity, unname(unlist(intensity(a))))
+
+    ## non-existing column
+    expect_error(longForm(a, c("rtime", "aaa"), "not available"))
+})

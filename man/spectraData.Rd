@@ -52,6 +52,7 @@
 \alias{isolationWindowUpperMz<-,Spectra-method}
 \alias{length,Spectra-method}
 \alias{lengths,Spectra-method}
+\alias{longForm,Spectra-method}
 \alias{msLevel,Spectra-method}
 \alias{mz,Spectra-method}
 \alias{peaksData,Spectra-method}
@@ -128,6 +129,11 @@ coreSpectraVariables()
 \S4method{length}{Spectra}(x)
 
 \S4method{lengths}{Spectra}(x, use.names = FALSE)
+
+\S4method{longForm}{Spectra}(
+  object,
+  columns = union(spectraVariables(object), peaksVariables(object))
+)
 
 \S4method{msLevel}{Spectra}(object)
 
@@ -219,7 +225,10 @@ returned \code{DataFrame}. By default, all columns are returned.
 For \code{peaksData()} accessor: optional \code{character} with requested columns
 in the individual \code{matrix} of the returned \code{list}. Defaults to
 \code{c("mz", "value")} but any values returned by \code{peaksVariables(object)}
-with \code{object} being the \code{Spectra} object are supported.}
+with \code{object} being the \code{Spectra} object are supported.
+For \code{longForm()}: \code{character} with the spectra and peaks variables to
+include in the returned \code{data.frame}. Defaults to
+\code{union(spectraVariables(object), peaksVariables(object))}.}
 
 \item{return.type}{For \code{peaksData()}: \code{character(1)} allowing to specify if
 the results should be returned as a \code{SimpleList} or as a \code{list}.
@@ -351,7 +360,9 @@ backend.
 spectrum. Returns an \code{integer} of length equal to the number of
 spectra (with \code{NA_integer_} if not available).
 \item \code{asDataFrame()}: converts the \code{Spectra} to a \code{DataFrame} (in long format)
-contining all data. Returns a \code{DataFrame}.
+contining all data. Returns a \code{DataFrame}. See also \code{longForm()} for a
+potentially more efficient implementation that returns a \code{data.frame} in
+long form.
 \item \code{centroided()}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided()} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -400,6 +411,11 @@ upper m/z boundary of the isolation window.
 \item \code{lengths()}: gets the number of peaks (m/z-intensity values) per
 spectrum. Returns an \code{integer} vector (length equal to the
 number of spectra). For empty spectra, \code{0} is returned.
+\item \code{longForm()}: extract the MS data as a \code{data.frame} in \emph{long form} with
+columns being spectra and peaks variables and one row per mass peak.
+Parameter \code{columns} allows to define the spectra and peaks variables that
+should be included in the returned \code{data.frame} (with the default being
+\verb{columns = union(spectraVariables(object), peaksVariables(object)))}.
 \item \code{msLevel()}: gets the spectra's MS level. Returns an integer vector (names
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.

@@ -75,6 +75,9 @@
 #'     in the individual `matrix` of the returned `list`. Defaults to
 #'     `peaksVariables(object)` and depends on what *peaks variables* the
 #'     backend provides.
+#'     For `longForm()`: the spectra and peaks variables that should be included
+#'     in the returned `data.frame`. Defaults to `spectraVariables(object)`
+#'     and is thus the union of spectra and peaks variables.
 #'
 #' @param match For `filterRanges()` and `filterValues()`: `character(1) `
 #'     defining whether the condition has to match for all provided
@@ -296,6 +299,27 @@
 #'   are required to load the MS data on-the-fly. This method needs only to
 #'   be implemented if a backend requires specific variables to be defined.
 #'
+#' - `cbind2()`: allows to appends multiple new spectra variables to the
+#'   backend at once. The values for the new spectra variables have to
+#'   be in the same order as the spectra in `x`. Replacing existing spectra
+#'   variables is not supported through this function. For a more controlled
+#'   way of adding spectra variables, the `joinSpectraData()` should be used.
+#'
+#' - `centroided()`, `centroided<-`: gets or sets the centroiding
+#'   information of the spectra. `centroided()` returns a `logical`
+#'   vector of length equal to the number of spectra with `TRUE` if a
+#'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
+#'   if it is undefined. See also `isCentroided()` for estimating from
+#'   the spectrum data whether the spectrum is centroided.  `value`
+#'   for `centroided<-` is either a single `logical` or a `logical` of
+#'   length equal to the number of spectra in `object`.
+#'
+#' - `collisionEnergy()`, `collisionEnergy<-`: gets or sets the
+#'   collision energy for all spectra in `object`. `collisionEnergy()`
+#'   returns a `numeric` with length equal to the number of spectra
+#'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
+#'   `numeric` of length equal to the number of spectra in `object`.
+#'
 #' - `dataOrigin()`: gets a `character` of length equal to the number of
 #'   spectra in `object` with the *data origin* of each spectrum. This could
 #'   e.g. be the mzML file from which the data was read.
@@ -319,27 +343,6 @@
 #'   while columns with only `NA`s are removed, a `spectraData()` call after
 #'   `dropNaSpectraVariables()` might still show columns containing `NA` values
 #'   for *core* spectra variables.
-#'
-#' - `cbind2()`: allows to appends multiple new spectra variables to the
-#'   backend at once. The values for the new spectra variables have to
-#'   be in the same order as the spectra in `x`. Replacing existing spectra
-#'   variables is not supported through this function. For a more controlled
-#'   way of adding spectra variables, the `joinSpectraData()` should be used.
-#'
-#' - `centroided()`, `centroided<-`: gets or sets the centroiding
-#'   information of the spectra. `centroided()` returns a `logical`
-#'   vector of length equal to the number of spectra with `TRUE` if a
-#'   spectrum is centroided, `FALSE` if it is in profile mode and `NA`
-#'   if it is undefined. See also `isCentroided()` for estimating from
-#'   the spectrum data whether the spectrum is centroided.  `value`
-#'   for `centroided<-` is either a single `logical` or a `logical` of
-#'   length equal to the number of spectra in `object`.
-#'
-#' - `collisionEnergy()`, `collisionEnergy<-`: gets or sets the
-#'   collision energy for all spectra in `object`. `collisionEnergy()`
-#'   returns a `numeric` with length equal to the number of spectra
-#'   (`NA_real_` if not present/defined), `collisionEnergy<-` takes a
-#'   `numeric` of length equal to the number of spectra in `object`.
 #'
 #' - `export()`: exports data from a `Spectra` class to a file. This method is
 #'   called by the `export,Spectra` method that passes itself as a second
@@ -507,6 +510,17 @@
 #' - `lengths()`: gets the number of peaks (m/z-intensity values) per
 #'   spectrum.  Returns an `integer` vector (length equal to the
 #'   number of spectra). For empty spectra, `0` is returned.
+#'
+#' - `longForm()`: extract the MS data in *long form*, i.e., as a `data.frame`
+#'   with columns being requested spectra and peak variables and one row per
+#'   mass peak. Parameter `columns` can be used to specify the columns (i.e.,
+#'   spectra or peaks variables) that should be returned. The default is
+#'   `columns = spectraVariables(object)` and **all** spectra and peak variables
+#'   are returned. It is strongly suggested to extract only selected columns
+#'   and not the full data to avoid potential out-of-memory problems.
+#'   Implementation of this method is optional as a default implementation for
+#'   `MsBackend` is available which converts the `DataFrame` returned by
+#'   `spectraData()` into long form.
 #'
 #' - `msLevel()`: gets the spectra's MS level. Returns an `integer`
 #'   vector (of length equal to the number of spectra) with the MS
@@ -2016,4 +2030,18 @@ setReplaceMethod(
         warning(class(object)[1L], " does not support changing",
                 " 'dataStorageBasePath'.")
         object
+    })
+
+#' @exportMethod longForm
+#'
+#' @rdname MsBackend
+#'
+#' @importFrom BiocGenerics longForm
+setMethod(
+    "longForm", "MsBackend",
+    function(object,
+             columns = spectraVariables(object)) {
+        .long_spectra_data2(
+            as.data.frame(spectraData(object, columns = columns)),
+            peaksVariables = peaksVariables(object))
     })

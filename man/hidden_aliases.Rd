@@ -137,6 +137,7 @@
 \alias{cbind2,MsBackendMemory,dataframeOrDataFrameOrmatrix-method}
 \alias{split,MsBackendMemory,ANY-method}
 \alias{filterAcquisitionNum,MsBackendMemory-method}
+\alias{longForm,MsBackendMemory-method}
 \alias{backendRequiredSpectraVariables,MsBackendMzR-method}
 \alias{backendInitialize,MsBackendMzR-method}
 \alias{show,MsBackendMzR-method}
@@ -446,6 +447,8 @@
   dataStorage = character(),
   dataOrigin = character()
 )
+
+\S4method{longForm}{MsBackendMemory}(object, columns = spectraVariables(object))
 
 \S4method{backendRequiredSpectraVariables}{MsBackendMzR}(object, ...)
 

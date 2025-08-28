@@ -47,3 +47,30 @@ test_that(".values_match_mz works", {
     res <- .values_match_mz(pmz, c(NA, 3))
     expect_true(all(pmz[res] == 3))
 })
+
+test_that(".long_spectra_data2 works", {
+    sd <- as.data.frame(spectraData(sciex_mzr))
+    lf <- .long_spectra_data2(sd, peaksVariables(sciex_mzr))
+    expect_true(is.data.frame(lf))
+    expect_equal(colnames(sd), colnames(lf))
+    expect_true(is.numeric(lf$mz))
+    expect_true(is.numeric(lf$intensity))
+    expect_equal(nrow(lf), sum(lengths(sd$mz)))
+
+    lf <- .long_spectra_data2(sd[, c("msLevel", "rtime")],
+                              peaksVariables = character())
+    expect_equal(lf, sd[, c("msLevel", "rtime")])
+
+    lf <- .long_spectra_data2(sd[, c("rtime", "mz")], "mz")
+    expect_true(is.data.frame(lf))
+    expect_equal(colnames(lf), c("rtime", "mz"))
+})
+
+test_that(".long_spectra_data3 works", {
+    a <- as.data.frame(spectraData(sciex_mzr, c("msLevel", "rtime")))
+    b <- peaksData(sciex_mzr)
+    lf <- .long_spectra_data3(a, b)
+    expect_true(is.data.frame(lf))
+    expect_equal(colnames(lf), c("msLevel", "rtime", "mz", "intensity"))
+    expect_equal(nrow(lf), sum(lengths(b) / 2))
+})
