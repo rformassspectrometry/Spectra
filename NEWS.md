@@ -1,5 +1,14 @@
 # Spectra 1.19
 
+## Change 1.19.8
+
+- Add default implementations for `MsBackend` for replacement methods
+  `centroided<-`, `collisionEnergy<-`, `dataOrigin<-`,
+  `isolationWindowLowerMz<-`, `isolationWindowTargetMz<-`,
+  `isolationWindowUpperMz<-`, `msLevel<-`, `polarity<-`, `precursorMz<-`,
+  `rtime<-` and `smoothed<-`. This reduces the amount of methods required to be
+  implemented for new `MsBackend` classes.
+
 ## Change 1.19.7
 
 - Add `longForm,MsBackend` and `longForm,Spectra` methods (issue

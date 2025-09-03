@@ -3331,58 +3331,60 @@ setMethod("addProcessing", "Spectra", function(object, FUN, ...,
 #' @exportMethod applyProcessing
 #'
 #' @rdname addProcessing
-setMethod("applyProcessing",
-          signature(object = "Spectra"),
-          function(object,
-                   f = processingChunkFactor(object),
-                   BPPARAM = bpparam(), ...) {
-              queue <- object@processingQueue
-              if (!length(queue))
-                  return(object)
-              if (isReadOnly(object@backend))
-                  stop(class(object@backend), " is read-only. 'applyProcessing' works ",
-                       "only with backends that support writing data.")
-              BPPARAM <- backendBpparam(object@backend, BPPARAM)
-              svars <- .processingQueueVariables(object)
-              pv <- peaksVariables(object)
-              if (length(f)) {
-                  if (!is.factor(f))
-                      f <- factor(f, levels = unique(f))
-                  if (length(f) != length(object))
-                      stop("length 'f' has to be equal to the length of 'object' (",
-                           length(object), ")")
-                  bknds <- bplapply(
-                      split(object@backend, f = f), function(z, queue, pv, svars) {
-                          if (length(svars))
-                              spd <- as.data.frame(spectraData(z, columns = svars))
-                          else spd <- NULL
-                          peaksData(z) <- .apply_processing_queue(
-                              peaksData(z, columns = pv), spd, queue)
-                          z
-                      }, queue = queue, pv = pv, svars = svars, BPPARAM = BPPARAM)
-                  bknds <- backendMerge(bknds)
-                  if (is.unsorted(f))
-                      bknds <- extractByIndex(
-                          bknds, order(unlist(split(seq_along(bknds), f),
-                                              use.names = FALSE)))
-                  object@backend <- bknds
-              } else {
-                  if (length(svars))
-                      spd <- as.data.frame(spectraData(object@backend, columns = svars))
-                  else spd <- NULL
-                  peaksData(object@backend) <- .apply_processing_queue(
-                      peaksData(object@backend, columns = pv), spd, queue)
-              }
-              object@processing <- .logging(object@processing,
-                                            "Applied processing queue with ",
-                                            length(object@processingQueue),
-                                            " steps")
-              object@processingQueue <- list()
-              if (!.hasSlot(object, "processingQueueVariables"))
-                  object <- updateObject(object, check = FALSE)
-              object@processingQueueVariables <- character()
-              object
-          })
+setMethod(
+    "applyProcessing",
+    signature(object = "Spectra"),
+    function(object,
+             f = processingChunkFactor(object),
+             BPPARAM = bpparam(), ...) {
+        queue <- object@processingQueue
+        if (!length(queue))
+            return(object)
+        if (isReadOnly(object@backend))
+            stop(class(object@backend), " is read-only. 'applyProcessing' ",
+                 "works only with backends that support writing data.")
+        BPPARAM <- backendBpparam(object@backend, BPPARAM)
+        svars <- .processingQueueVariables(object)
+        pv <- peaksVariables(object)
+        if (length(f)) {
+            if (!is.factor(f))
+                f <- factor(f, levels = unique(f))
+            if (length(f) != length(object))
+                stop("length 'f' has to be equal to the length of 'object' (",
+                     length(object), ")")
+            bknds <- bplapply(
+                split(object@backend, f = f), function(z, queue, pv, svars) {
+                    if (length(svars))
+                        spd <- as.data.frame(spectraData(z, columns = svars))
+                    else spd <- NULL
+                    peaksData(z) <- .apply_processing_queue(
+                        peaksData(z, columns = pv), spd, queue)
+                    z
+                }, queue = queue, pv = pv, svars = svars, BPPARAM = BPPARAM)
+            bknds <- backendMerge(bknds)
+            if (is.unsorted(f))
+                bknds <- extractByIndex(
+                    bknds, order(unlist(split(seq_along(bknds), f),
+                                        use.names = FALSE)))
+            object@backend <- bknds
+        } else {
+            if (length(svars))
+                spd <- as.data.frame(spectraData(object@backend,
+                                                 columns = svars))
+            else spd <- NULL
+            peaksData(object@backend) <- .apply_processing_queue(
+                peaksData(object@backend, columns = pv), spd, queue)
+        }
+        object@processing <- .logging(object@processing,
+                                      "Applied processing queue with ",
+                                      length(object@processingQueue),
+                                      " steps")
+        object@processingQueue <- list()
+        if (!.hasSlot(object, "processingQueueVariables"))
+            object <- updateObject(object, check = FALSE)
+        object@processingQueueVariables <- character()
+        object
+    })
 
 #' @rdname addProcessing
 #'
