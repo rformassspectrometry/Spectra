@@ -1096,7 +1096,8 @@ setMethod("centroided", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("centroided", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    object$centroided <- value
+    object
 })
 
 #' @exportMethod collisionEnergy
@@ -1118,7 +1119,8 @@ setMethod("collisionEnergy", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    object$collisionEnergy <- value
+    object
 })
 
 #' @exportMethod dataOrigin
@@ -1140,7 +1142,8 @@ setMethod("dataOrigin", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    object$dataOrigin <- value
+    object
 })
 
 #' @exportMethod dataStorage
@@ -1575,10 +1578,11 @@ setMethod("isolationWindowLowerMz", "MsBackend", function(object) {
 #' @rdname MsBackend
 #'
 #' @export
-setReplaceMethod("isolationWindowLowerMz", "MsBackend", function(object,
-                                                                 value) {
-    stop("Not implemented for ", class(object), ".")
-})
+setReplaceMethod("isolationWindowLowerMz", "MsBackend",
+                 function(object, value) {
+                     object$isolationWindowLowerMz <- value
+                     object
+                 })
 
 #' @exportMethod isolationWindowTargetMz
 #'
@@ -1598,10 +1602,11 @@ setMethod("isolationWindowTargetMz", "MsBackend", function(object) {
 #' @rdname MsBackend
 #'
 #' @export
-setReplaceMethod("isolationWindowTargetMz", "MsBackend", function(object,
-                                                                  value) {
-    stop("Not implemented for ", class(object), ".")
-})
+setReplaceMethod("isolationWindowTargetMz", "MsBackend",
+                 function(object, value) {
+                     object$isolationWindowTargetMz <- value
+                     object
+                 })
 
 #' @exportMethod isolationWindowUpperMz
 #'
@@ -1621,10 +1626,11 @@ setMethod("isolationWindowUpperMz", "MsBackend", function(object) {
 #' @rdname MsBackend
 #'
 #' @export
-setReplaceMethod("isolationWindowUpperMz", "MsBackend", function(object,
-                                                                 value) {
-    stop("Not implemented for ", class(object), ".")
-})
+setReplaceMethod("isolationWindowUpperMz", "MsBackend",
+                 function(object, value) {
+                     object$isolationWindowUpperMz <- value
+                     object
+                 })
 
 #' @exportMethod isReadOnly
 #'
@@ -1663,7 +1669,8 @@ setMethod("msLevel", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("msLevel", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    object$msLevel <- as.integer(value)
+    object
 })
 
 #' @exportMethod mz
@@ -1712,7 +1719,9 @@ setMethod("polarity", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("polarity", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    if (is.numeric(value)) value <- as.integer(value)
+    object$polarity <- value
+    object
 })
 
 #' @exportMethod precScanNum
@@ -1810,7 +1819,8 @@ setMethod("rtime", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("rtime", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    object$rtime <- value
+    object
 })
 
 #' @exportMethod scanIndex
@@ -1856,7 +1866,8 @@ setMethod("smoothed", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("smoothed", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    object$smoothed <- value
+    object
 })
 
 #' @exportMethod spectraData

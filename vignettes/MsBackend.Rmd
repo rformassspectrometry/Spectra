@@ -1199,8 +1199,8 @@ be$new_var <- c("a", "b", "c")
 be$new_var
 ```
 
-Replacement methods for all *core* spectra variables can be implemented
-similarly.
+For all *core* spectra variables default replacement methods exist that use the
+`$<-` to replace values.
 
 
 ### `selectSpectraVariables()`
@@ -1269,75 +1269,6 @@ intensity(be2)
 ```
 
 
-### `centroided<-`
-
-Replace the value for the *centroided* core spectra variable. The provided data
-type **must** be a logical. We re-use the function `.sv_valid_data_type` which
-was defined above for `backendInitialize()` to check for the correct data type
-of core spectra variables.
-
-```{r}
-setReplaceMethod("centroided", "MsBackendTest", function(object, value) {
-    object@spectraVars[["centroided"]] <- value
-    .sv_valid_data_type(object@spectraVars, "centroided")
-    object
-})
-```
-
-Alternatively, we could also simply re-use the `$<-` replacement method
-above. This would make the whole code base for our backend cleaner as replacing
-or adding spectra variables would be handled in a single central function.
-
-```{r}
-setReplaceMethod("centroided", "MsBackendTest", function(object, value) {
-    object$centroided <- value
-    object
-})
-```
-
-```{r}
-centroided(be) <- c(TRUE, FALSE, TRUE)
-centroided(be)
-```
-
-
-### `collisionEnergy<-`
-
-Replace the values for the collision energy. Parameter `value` has to be of type
-`numeric`.
-
-```{r}
-setReplaceMethod("collisionEnergy", "MsBackendTest", function(object, value) {
-    object$collisionEnergy <- value
-    object
-})
-```
-
-```{r}
-collisionEnergy(be) <- c(NA_real_, 20.0, 20.0)
-collisionEnergy(be)
-```
-
-
-### `dataOrigin<-`
-
-Replace the values for the data origin spectra variable. Parameter `value` has
-to be of type `character`.
-
-```{r}
-setReplaceMethod("dataOrigin", "MsBackendTest", function(object, value) {
-    object$dataOrigin <- value
-    object
-})
-```
-
-```{r}
-dataOrigin(be)
-dataOrigin(be) <- c("unknown", "file a", "file b")
-dataOrigin(be)
-```
-
-
 ### `dataStorage<-`
 
 Replace the values for the data storage spectra variable. Parameter `value` has
@@ -1359,150 +1290,6 @@ dataStorage(be)
 dataStorage(be) <- c("", "", "")
 dataStorage(be)
 ```
-
-
-### `isolationWindowLowerMz<-`
-
-Replace the values for the *isolation window lower m/z* spectra
-variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
-values are supported, e.g. for MS1 spectra).
-
-```{r}
-setReplaceMethod(
-    "isolationWindowLowerMz", "MsBackendTest", function(object, value) {
-        object$isolationWindowLowerMz <- value
-        object
-    })
-```
-
-```{r}
-isolationWindowLowerMz(be) <- c(NA_real_, 245.3, NA_real_)
-isolationWindowLowerMz(be)
-```
-
-
-### `isolationWindowTargetMz<-`
-
-Replace the values for the *isolation window target m/z* spectra
-variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
-values are supported, e.g. for MS1 spectra).
-
-```{r}
-setReplaceMethod(
-    "isolationWindowTargetMz", "MsBackendTest", function(object, value) {
-        object$isolationWindowTargetMz <- value
-        object
-    })
-```
-
-```{r}
-isolationWindowTargetMz(be) <- c(NA_real_, 245.4, NA_real_)
-isolationWindowTargetMz(be)
-```
-
-
-### `isolationWindowUpperMz<-`
-
-Replace the values for the *isolation window upper m/z* spectra
-variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
-values are supported, e.g. for MS1 spectra).
-
-```{r}
-setReplaceMethod(
-    "isolationWindowUpperMz", "MsBackendTest", function(object, value) {
-        object$isolationWindowUpperMz <- value
-        object
-    })
-```
-
-```{r}
-isolationWindowUpperMz(be) <- c(NA_real_, 245.5, NA_real_)
-isolationWindowUpperMz(be)
-```
-
-
-### `msLevel<-`
-
-Replace the MS level of spectra in a backend. Parameter `value` has to be of
-type `integer`. Missing values (`NA_integer_`) are supported.
-
-```{r}
-setReplaceMethod("msLevel", "MsBackendTest", function(object, value) {
-    object$msLevel <- value
-    object
-})
-```
-
-```{r}
-msLevel(be)
-msLevel(be) <- c(1L, 1L, 2L)
-msLevel(be)
-```
-
-
-### `polarity<-`
-
-Replace the values for the polarity spectra variables. Parameter `value` has to
-be of type `integer` and should ideally also use the *standard* encoding `0L`
-and `1L` for negative and positive polarity (and `NA_integer` for
-missing). Thus, in our implementation we also make sure the input parameter
-contains the expected values (although this is not a strictly required).
-
-```{r}
-setReplaceMethod("polarity", "MsBackendTest", function(object, value) {
-    if (!all(value %in% c(0, 1, NA)))
-        stop("'polarity' should be encoded as 0L (negative), 1L (positive) ",
-             "with missing values being NA_integer_")
-    object$polarity <- value
-    object
-})
-```
-
-```{r}
-polarity(be) <- c(0L, 0L, 0L)
-polarity(be)
-```
-
-
-### `rtime<-`
-
-Replace the retention times for the spectra represented by the
-backend. Parameter `value` must be of type `numeric`. Also, although it is not a
-strict requirement, retention times should ideally be ordered increasingly *per
-sample* and their unit should be seconds.
-
-```{r}
-setReplaceMethod("rtime", "MsBackendTest", function(object, value) {
-    object$rtime <- value
-    object
-})
-```
-
-```{r}
-rtime(be)
-rtime(be) <- rtime(be) + 2
-rtime(be)
-```
-
-
-### `smoothed<-`
-
-Replace the spectra variable *smoothed* that indicates whether some data
-smoothing operation was performed on the spectra. Parameter `value` must be of
-type `logical`.
-
-```{r}
-setReplaceMethod("smoothed", "MsBackendTest", function(object, value) {
-    object$smoothed <- value
-    object
-})
-```
-
-```{r}
-smoothed(be) <- rep(TRUE, 3)
-smoothed(be)
-```
-
 
 ### `spectraNames<-`
 
@@ -1579,6 +1366,56 @@ The implementation for `MsBackendMzR` returns `c("dataStorage", "scanIndex")` as
 the backend needs these two spectra variables to load the MS data on-the-fly
 from the original data files.
 
+### `centroided<-`
+
+Replace the value for the *centroided* core spectra variable. The provided data
+type **must** be a logical. The default implementation of this method is:
+
+```{r}
+setReplaceMethod("centroided", "MsBackend", function(object, value) {
+    object$centroided <- value
+    object
+})
+```
+
+```{r}
+centroided(be) <- c(TRUE, FALSE, TRUE)
+centroided(be)
+```
+
+
+### `collisionEnergy<-`
+
+Replace the values for the collision energy. Parameter `value` has to be of type
+`numeric`. The default implementation of this method is:
+
+```{r}
+setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
+    object$collisionEnergy <- value
+    object
+})
+```
+
+
+### `dataOrigin<-`
+
+Replace the values for the data origin spectra variable. Parameter `value` has
+to be of type `character`. The default implementation of this method is:
+
+```{r}
+setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
+    object$dataOrigin <- value
+    object
+})
+```
+
+```{r}
+dataOrigin(be)
+dataOrigin(be) <- c("unknown", "file a", "file b")
+dataOrigin(be)
+```
+
+
 
 ### `dropNaSpectraVariables()`
 
@@ -1605,6 +1442,69 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
 })
 ```
 
+### `isolationWindowLowerMz<-`
+
+Replace the values for the *isolation window lower m/z* spectra
+variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
+values are supported, e.g. for MS1 spectra). The default implementation of this
+method is:
+
+```{r}
+setReplaceMethod(
+    "isolationWindowLowerMz", "MsBackend", function(object, value) {
+        object$isolationWindowLowerMz <- value
+        object
+    })
+```
+
+```{r}
+isolationWindowLowerMz(be) <- c(NA_real_, 245.3, NA_real_)
+isolationWindowLowerMz(be)
+```
+
+
+### `isolationWindowTargetMz<-`
+
+Replace the values for the *isolation window target m/z* spectra
+variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
+values are supported, e.g. for MS1 spectra). The default implementation of this
+method is:
+
+```{r}
+setReplaceMethod(
+    "isolationWindowTargetMz", "MsBackend", function(object, value) {
+        object$isolationWindowTargetMz <- value
+        object
+    })
+```
+
+```{r}
+isolationWindowTargetMz(be) <- c(NA_real_, 245.4, NA_real_)
+isolationWindowTargetMz(be)
+```
+
+
+### `isolationWindowUpperMz<-`
+
+Replace the values for the *isolation window upper m/z* spectra
+variable. Parameter `value` has to be of type `numeric` (`NA_real_` missing
+values are supported, e.g. for MS1 spectra). The default implementation of this
+method is:
+
+```{r}
+setReplaceMethod(
+    "isolationWindowUpperMz", "MsBackend", function(object, value) {
+        object$isolationWindowUpperMz <- value
+        object
+    })
+```
+
+```{r}
+isolationWindowUpperMz(be) <- c(NA_real_, 245.5, NA_real_)
+isolationWindowUpperMz(be)
+```
+
+
 ### `isReadOnly()`
 
 `isReadOnly()` is expected to return a `logical(1)` with either `TRUE` or
@@ -1615,6 +1515,24 @@ default implementation is shown below.
 setMethod("isReadOnly", "MsBackend", function(object) {
     object@readonly
 })
+```
+
+### `msLevel<-`
+
+Replace the MS level of spectra in a backend. Parameter `value` has to be of
+type `integer`. Missing values (`NA_integer_`) are supported.
+
+```{r}
+setReplaceMethod("msLevel", "MsBackend", function(object, value) {
+    object$msLevel <- value
+    object
+})
+```
+
+```{r}
+msLevel(be)
+msLevel(be) <- c(1L, 1L, 2L)
+msLevel(be)
 ```
 
 
@@ -1632,6 +1550,26 @@ setMethod("peaksVariables", "MsBackend", function(object) {
     c("mz", "intensity")
 })
 ```
+
+### `polarity<-`
+
+Replace the values for the polarity spectra variables. Parameter `value` has to
+be of type `integer` and should ideally also use the *standard* encoding `0L`
+and `1L` for negative and positive polarity (and `NA_integer` for
+missing).
+
+```{r}
+setReplaceMethod("polarity", "MsBackend", function(object, value) {
+    object$polarity <- value
+    object
+})
+```
+
+```{r}
+polarity(be) <- c(0L, 0L, 0L)
+polarity(be)
+```
+
 
 
 ### `uniqueMsLevels()`
@@ -1746,6 +1684,46 @@ setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
 
 See alternatively also the `r Biocpkg("MsBackendMgf")` package for an
 implementation for the `MsBackendMgf` backend.
+
+
+### `rtime<-`
+
+Replace the retention times for the spectra represented by the
+backend. Parameter `value` must be of type `numeric`. Also, although it is not a
+strict requirement, retention times should ideally be ordered increasingly *per
+sample* and their unit should be seconds. The default implementation is:
+
+```{r}
+setReplaceMethod("rtime", "MsBackend", function(object, value) {
+    object$rtime <- value
+    object
+})
+```
+
+```{r}
+rtime(be)
+rtime(be) <- rtime(be) + 2
+rtime(be)
+```
+
+
+### `smoothed<-`
+
+Replace the spectra variable *smoothed* that indicates whether some data
+smoothing operation was performed on the spectra. Parameter `value` must be of
+type `logical`. The default implementation is:
+
+```{r}
+setReplaceMethod("smoothed", "MsBackend", function(object, value) {
+    object$smoothed <- value
+    object
+})
+```
+
+```{r}
+smoothed(be) <- rep(TRUE, 3)
+smoothed(be)
+```
 
 
 ### `split()`

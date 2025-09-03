@@ -17,34 +17,25 @@
 \alias{show,MsBackendCached-method}
 \alias{acquisitionNum,MsBackendCached-method}
 \alias{centroided,MsBackendCached-method}
-\alias{centroided<-,MsBackendCached-method}
 \alias{collisionEnergy,MsBackendCached-method}
-\alias{collisionEnergy<-,MsBackendCached-method}
 \alias{dataOrigin,MsBackendCached-method}
-\alias{dataOrigin<-,MsBackendCached-method}
 \alias{msLevel,MsBackendCached-method}
 \alias{intensity,MsBackendCached-method}
 \alias{ionCount,MsBackendCached-method}
 \alias{isEmpty,MsBackendCached-method}
 \alias{isolationWindowLowerMz,MsBackendCached-method}
-\alias{isolationWindowLowerMz<-,MsBackendCached-method}
 \alias{isolationWindowTargetMz,MsBackendCached-method}
-\alias{isolationWindowTargetMz<-,MsBackendCached-method}
 \alias{isolationWindowUpperMz,MsBackendCached-method}
-\alias{isolationWindowUpperMz<-,MsBackendCached-method}
 \alias{lengths,MsBackendCached-method}
 \alias{mz,MsBackendCached-method}
 \alias{polarity,MsBackendCached-method}
-\alias{polarity<-,MsBackendCached-method}
 \alias{precScanNum,MsBackendCached-method}
 \alias{precursorCharge,MsBackendCached-method}
 \alias{precursorIntensity,MsBackendCached-method}
 \alias{precursorMz,MsBackendCached-method}
 \alias{rtime,MsBackendCached-method}
-\alias{rtime<-,MsBackendCached-method}
 \alias{scanIndex,MsBackendCached-method}
 \alias{smoothed,MsBackendCached-method}
-\alias{smoothed<-,MsBackendCached-method}
 \title{Base MsBackend class providing data caching mechanism}
 \usage{
 MsBackendCached()
@@ -83,15 +74,9 @@ MsBackendCached()
 
 \S4method{centroided}{MsBackendCached}(object)
 
-\S4method{centroided}{MsBackendCached}(object) <- value
-
 \S4method{collisionEnergy}{MsBackendCached}(object)
 
-\S4method{collisionEnergy}{MsBackendCached}(object) <- value
-
 \S4method{dataOrigin}{MsBackendCached}(object)
-
-\S4method{dataOrigin}{MsBackendCached}(object) <- value
 
 \S4method{msLevel}{MsBackendCached}(object)
 
@@ -103,23 +88,15 @@ MsBackendCached()
 
 \S4method{isolationWindowLowerMz}{MsBackendCached}(object)
 
-\S4method{isolationWindowLowerMz}{MsBackendCached}(object) <- value
-
 \S4method{isolationWindowTargetMz}{MsBackendCached}(object)
 
-\S4method{isolationWindowTargetMz}{MsBackendCached}(object) <- value
-
 \S4method{isolationWindowUpperMz}{MsBackendCached}(object)
-
-\S4method{isolationWindowUpperMz}{MsBackendCached}(object) <- value
 
 \S4method{lengths}{MsBackendCached}(x, use.names = FALSE)
 
 \S4method{mz}{MsBackendCached}(object)
 
 \S4method{polarity}{MsBackendCached}(object)
-
-\S4method{polarity}{MsBackendCached}(object) <- value
 
 \S4method{precScanNum}{MsBackendCached}(object)
 
@@ -131,13 +108,9 @@ MsBackendCached()
 
 \S4method{rtime}{MsBackendCached}(object)
 
-\S4method{rtime}{MsBackendCached}(object) <- value
-
 \S4method{scanIndex}{MsBackendCached}(object)
 
 \S4method{smoothed}{MsBackendCached}(object)
-
-\S4method{smoothed}{MsBackendCached}(object) <- value
 }
 \arguments{
 \item{object}{A \code{MsBackendCached} object.}

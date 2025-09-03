@@ -443,31 +443,13 @@ setMethod("centroided", "MsBackendCached", function(object) {
 })
 
 #' @rdname MsBackendCached
-setReplaceMethod("centroided", "MsBackendCached", function(object, value) {
-    object$centroided <- value
-    object
-})
-
-#' @rdname MsBackendCached
 setMethod("collisionEnergy", "MsBackendCached", function(object) {
     spectraData(object, "collisionEnergy")[, 1]
 })
 
 #' @rdname MsBackendCached
-setReplaceMethod("collisionEnergy", "MsBackendCached", function(object, value) {
-    object$collisionEnergy <- value
-    object
-})
-
-#' @rdname MsBackendCached
 setMethod("dataOrigin", "MsBackendCached", function(object) {
     spectraData(object, "dataOrigin")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("dataOrigin", "MsBackendCached", function(object, value) {
-    object$dataOrigin <- value
-    object
 })
 
 #' @rdname MsBackendCached
@@ -500,35 +482,14 @@ setMethod("isolationWindowLowerMz", "MsBackendCached", function(object) {
 })
 
 #' @rdname MsBackendCached
-setReplaceMethod("isolationWindowLowerMz", "MsBackendCached",
-                 function(object, value) {
-                     object$isolationWindowLowerMz <- value
-                     object
-                 })
-
-#' @rdname MsBackendCached
 setMethod("isolationWindowTargetMz", "MsBackendCached", function(object) {
     spectraData(object, "isolationWindowTargetMz")[, 1]
 })
 
 #' @rdname MsBackendCached
-setReplaceMethod("isolationWindowTargetMz", "MsBackendCached",
-                 function(object, value) {
-                     object$isolationWindowTargetMz <- value
-                     object
-                 })
-
-#' @rdname MsBackendCached
 setMethod("isolationWindowUpperMz", "MsBackendCached", function(object) {
     spectraData(object, "isolationWindowUpperMz")[, 1]
 })
-
-#' @rdname MsBackendCached
-setReplaceMethod("isolationWindowUpperMz", "MsBackendCached",
-                 function(object, value) {
-                     object$isolationWindowUpperMz <- value
-                     object
-                 })
 
 #' @rdname MsBackendCached
 setMethod("lengths", "MsBackendCached", function(x, use.names = FALSE) {
@@ -543,13 +504,6 @@ setMethod("mz", "MsBackendCached", function(object) {
 #' @rdname MsBackendCached
 setMethod("polarity", "MsBackendCached", function(object) {
     spectraData(object, "polarity")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("polarity", "MsBackendCached", function(object, value) {
-    if (is.numeric(value)) value <- as.integer(value)
-    object$polarity <- value
-    object
 })
 
 #' @rdname MsBackendCached
@@ -578,12 +532,6 @@ setMethod("rtime", "MsBackendCached", function(object) {
 })
 
 #' @rdname MsBackendCached
-setReplaceMethod("rtime", "MsBackendCached", function(object, value) {
-    object$rtime <- value
-    object
-})
-
-#' @rdname MsBackendCached
 setMethod("scanIndex", "MsBackendCached", function(object) {
     spectraData(object, "scanIndex")[, 1]
 })
@@ -591,10 +539,4 @@ setMethod("scanIndex", "MsBackendCached", function(object) {
 #' @rdname MsBackendCached
 setMethod("smoothed", "MsBackendCached", function(object) {
     spectraData(object, "smoothed")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("smoothed", "MsBackendCached", function(object, value) {
-    object$smoothed <- value
-    object
 })
