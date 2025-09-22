@@ -124,7 +124,7 @@ NULL
 #'
 #' The MS data which can be accessed through the `Spectra` object is
 #' *represented* by its backend, which means that this backend defines how
-#' and where the data is stored (e.g. in memory or on disk). The `Specrta`
+#' and where the data is stored (e.g. in memory or on disk). The `Spectra`
 #' object relies on the backend to provide the MS data whenever it needs it
 #' for data processing.
 #' Different backends with different properties, such as minimal memory
