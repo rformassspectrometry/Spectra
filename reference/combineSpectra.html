@@ -141,7 +141,7 @@ of Spectra objects.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -418,8 +418,8 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 102         1    27.902       100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Aug 28 08:24:24 2025]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Merge 2 Spectra into one [Thu Aug 28 08:24:24 2025] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Sep 24 08:14:49 2025]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Merge 2 Spectra into one [Wed Sep 24 08:14:49 2025] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The new `Spectra` objects contains the union of spectra variables from</span></span></span>
 <span class="r-in"><span><span class="co">## both:</span></span></span>
@@ -434,26 +434,26 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15] "isolationWindowLowerMz"   "isolationWindowTargetMz" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [17] "isolationWindowUpperMz"   "peaksCount"              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [19] "totIonCurrent"            "basePeakMZ"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "basePeakIntensity"        "ionisationEnergy"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "lowMZ"                    "highMZ"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "mergedScan"               "mergedResultScanNum"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "mergedResultStartScanNum" "mergedResultEndScanNum"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "injectionTime"            "filterString"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "spectrumId"               "ionMobilityDriftTime"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "scanWindowLowerLimit"     "scanWindowUpperLimit"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "electronBeamEnergy"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "basePeakIntensity"        "electronBeamEnergy"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "ionisationEnergy"         "lowMZ"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "highMZ"                   "mergedScan"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "mergedResultScanNum"      "mergedResultStartScanNum"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "mergedResultEndScanNum"   "injectionTime"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "filterString"             "spectrumId"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "ionMobilityDriftTime"     "scanWindowLowerLimit"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "scanWindowUpperLimit"    </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The spectra variables that were not present in `s`:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">spectraVariables</a></span><span class="op">(</span><span class="va">all</span><span class="op">)</span>, <span class="fu"><a href="spectraData.html">spectraVariables</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "peaksCount"               "totIonCurrent"           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "basePeakMZ"               "basePeakIntensity"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ionisationEnergy"         "lowMZ"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "highMZ"                   "mergedScan"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "mergedResultScanNum"      "mergedResultStartScanNum"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "mergedResultEndScanNum"   "injectionTime"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "filterString"             "spectrumId"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "ionMobilityDriftTime"     "scanWindowLowerLimit"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "scanWindowUpperLimit"     "electronBeamEnergy"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "electronBeamEnergy"       "ionisationEnergy"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "lowMZ"                    "highMZ"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "mergedScan"               "mergedResultScanNum"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "mergedResultStartScanNum" "mergedResultEndScanNum"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "injectionTime"            "filterString"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "spectrumId"               "ionMobilityDriftTime"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "scanWindowLowerLimit"     "scanWindowUpperLimit"    </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The values for these were filled with missing values for spectra from</span></span></span>
 <span class="r-in"><span><span class="co">## `s`:</span></span></span>
@@ -516,7 +516,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         1      0.28         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Aug 28 08:24:24 2025] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Sep 24 08:14:49 2025] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`1`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -528,7 +528,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     1.396         5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Aug 28 08:24:24 2025] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Sep 24 08:14:49 2025] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`2`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:</span>
@@ -539,7 +539,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         1     2.233         8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Aug 28 08:24:24 2025] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Sep 24 08:14:49 2025] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`3`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -551,7 +551,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     3.349        12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Aug 28 08:24:24 2025] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Sep 24 08:14:49 2025] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`4`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -563,7 +563,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     4.465        16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Aug 28 08:24:24 2025] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Sep 24 08:14:49 2025] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`5`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:</span>
@@ -574,7 +574,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         1     5.302        19</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Aug 28 08:24:24 2025] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Sep 24 08:14:49 2025] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -613,14 +613,14 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15] "isolationWindowLowerMz"   "isolationWindowTargetMz" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [17] "isolationWindowUpperMz"   "peaksCount"              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [19] "totIonCurrent"            "basePeakMZ"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "basePeakIntensity"        "ionisationEnergy"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "lowMZ"                    "highMZ"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "mergedScan"               "mergedResultScanNum"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "mergedResultStartScanNum" "mergedResultEndScanNum"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "injectionTime"            "filterString"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "spectrumId"               "ionMobilityDriftTime"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "scanWindowLowerLimit"     "scanWindowUpperLimit"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "electronBeamEnergy"       "var1"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "basePeakIntensity"        "electronBeamEnergy"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "ionisationEnergy"         "lowMZ"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "highMZ"                   "mergedScan"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "mergedResultScanNum"      "mergedResultStartScanNum"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "mergedResultEndScanNum"   "injectionTime"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "filterString"             "spectrumId"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "ionMobilityDriftTime"     "scanWindowLowerLimit"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "scanWindowUpperLimit"     "var1"                    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [37] "var2"                    </span>
 <span class="r-in"><span><span class="fu"><a href="spectraData.html">spectraData</a></span><span class="op">(</span><span class="va">sciex2</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">13</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spectrumId"</span>, <span class="st">"var1"</span>, <span class="st">"var2"</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 13 rows and 3 columns</span>
