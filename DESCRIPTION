@@ -81,7 +81,7 @@ BugReports: https://github.com/RforMassSpectrometry/Spectra/issues
 URL: https://github.com/RforMassSpectrometry/Spectra
 biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Roxygen: list(markdown=TRUE)
 Collate:
     'hidden_aliases.R'

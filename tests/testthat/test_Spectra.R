@@ -1477,7 +1477,7 @@ test_that("pickPeaks,Spectra works", {
           100, 40, 12))
     a <- Spectra(a)
     ## Default: report the max peak.
-    res <- pickPeaks(a, halfWindowSize = 5L)
+    res <- pickPeaks(a, halfWindowSize = 2L)
     expect_equal(unlist(intensity(res)), c(200, 400.1))
     expect_equal(unlist(mz(res)), c(100.101, 200.2))
     ## Refine the m/z
