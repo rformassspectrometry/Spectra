@@ -1467,6 +1467,24 @@ test_that("pickPeaks,Spectra works", {
     expect_true(length(intensity(res2[1L])[[1L]]) <
                 length(intensity(res3[1L])[[1L]]))
 
+    ## Check that m/z refinement works
+    a <- data.frame(msLevel = 1L, rtime = 1.1)
+    a$mz <- list(
+        c(34.1, 56.3, 100.1, 100.101, 100.105, 100.2, 200.2,
+          200.205, 300.2, 350.2))
+    a$intensity <- list(
+        c(3.1, 2.3, 100, 200, 130, 120, 400.1,
+          100, 40, 12))
+    a <- Spectra(a)
+    ## Default: report the max peak.
+    res <- pickPeaks(a, halfWindowSize = 5L)
+    expect_equal(unlist(intensity(res)), c(200, 400.1))
+    expect_equal(unlist(mz(res)), c(100.101, 200.2))
+    ## Refine the m/z
+    res <- pickPeaks(a, halfWindowSize = 2L, k = 2L)
+    expect_equal(res$mz[[1L]][1L],
+                 weighted.mean(c(56.3, 100.1, 100.101, 100.105, 100.2),
+                               c(2.3, 100, 200, 130, 120)))
 })
 
 test_that("smooth,Spectra works", {
