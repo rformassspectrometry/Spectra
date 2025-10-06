@@ -66,7 +66,7 @@ matrix. Peaks are grouped by their m/z values with the \code{group()} function
 from the \code{MsCoreUtils} package. In brief, all peaks in all provided
 spectra are first ordered by their m/z and consecutively grouped into one
 group if the (pairwise) difference between them is smaller than specified
-with parameter \code{tolerance} and \code{ppm} (see \code{\link[=group]{group()}} for grouping details
+with parameter \code{tolerance} and \code{ppm} (see \code{\link[MsCoreUtils:group]{MsCoreUtils::group()}} for grouping details
 and examples).
 
 The m/z and intensity values for the resulting peak matrix are calculated

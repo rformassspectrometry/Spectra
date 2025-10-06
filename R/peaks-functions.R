@@ -430,8 +430,8 @@ joinPeaksNone <- function(x, y, ...) {
 
     if (k > 0L) {
         cbind(mz = MsCoreUtils::refineCentroids(x = x[, 1L], y = x[, 2L], p = p,
-                                   k = k, threshold = threshold,
-                                   descending = descending),
+                                                k = k, threshold = threshold,
+                                                descending = descending),
               intensity = x[p, 2L])
     } else {
         x[p, , drop = FALSE]

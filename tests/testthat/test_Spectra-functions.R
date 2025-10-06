@@ -270,6 +270,40 @@ test_that("combineSpectra works", {
     expect_true(length(sps2@processingQueue) == 1)
     expect_true(validObject(sps2))
     expect_error(mz(sps2), "have changed")
+
+    ## Combining and refining the m/z values
+    a <- DataFrame(rtime = c(1.1, 1.2, 1.3, 1.4, 1.5), msLevel = 2L)
+    a$mz <- IRanges::NumericList(
+        c(12.1, 113.1, 200.1),
+        c(12.12, 113.104, 300.3),
+        c(113.11, 123.1, 200.2),
+        c(113.2, 300.1),
+        c(12.103, 113.201, 144.1, 145.2),
+        compress = FALSE)
+    a$intensity <- IRanges::NumericList(
+        c(1.1, 2.2, 3.3),
+        c(1.1, 2.2, 3.3),
+        c(1.1, 2.2, 3.3),
+        c(1.1, 2.2),
+        c(1.1, 2.2, 3.3, 4.4),
+        compress = FALSE)
+    a <- Spectra(data = a)
+    res <- combineSpectra(a, peaks = "union", ppm = 0, tolerance = 0)
+    expect_s4_class(res, "Spectra")
+    expect_true(length(res) == 1L)
+    expect_equal(unname(unlist(res$mz)), sort(unlist(a$mz)))
+    res <- combineSpectra(a, peaks = "union", ppm = 10)
+    expect_true(lengths(res) < sum(lengths(a)))
+
+    res <- combineSpectra(a, peaks = "intersect", minProp = 0.9, ppm = 0,
+                          tolerance = 0.1)
+    expect_true(length(res) == 1L)
+    expect_true(lengths(res) == 1L)
+    expect_equal(unname(mz(res)[[1L]]), mean(c(113.1, 113.104,
+                                               113.11, 113.2, 113.201)))
+    res_2 <- combineSpectra(a, peaks = "intersect", minProp = 0.9,
+                            weighted = TRUE, ppm = 0, tolerance = 0.1)
+    expect_false(unname(res$mz[[1L]]) == unname(res_2$mz[[1L]]))
 })
 
 test_that("dropNaSpectraVariables works", {

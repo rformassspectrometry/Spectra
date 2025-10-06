@@ -513,7 +513,7 @@ value of parameter \code{mz}: for \verb{mz = ==" (the default) peaks with matchi
 (given \code{ppm} and \code{tolerance}) in each spectrum only the mass peak with the
 highest intensity removing all other peaks hence \emph{reducing} each
 spectrum to the highest intensity peaks per \emph{peak group}.
-Peak groups are defined using the \code{\link[=group]{group()}} function from the
+Peak groups are defined using the \code{\link[MsCoreUtils:group]{MsCoreUtils::group()}} function from the
 \emph{MsCoreUtils} package. See also the \code{\link[=combinePeaks]{combinePeaks()}} function for an
 alternative function to combine peaks within each spectrum.
 }
