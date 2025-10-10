@@ -1912,6 +1912,18 @@ setReplaceMethod("spectraNames", "MsBackend", function(object, value) {
     stop("Not implemented for ", class(object), ".")
 })
 
+#' @rdname spectraVariableMapping
+#'
+setMethod("spectraVariableMapping", "MsBackend", function(object) {
+    stop("'spectraVariableMapping' is not supported for ", class(object), ".")
+})
+
+#' @rdname spectraVariableMapping
+#'
+setReplaceMethod("spectraVariableMapping", "MsBackend", function(object, value){
+    stop("'spectraVariableMapping' is not supported for ", class(object), ".")
+})
+
 #' @exportMethod spectraVariables
 #'
 #' @importMethodsFrom ProtGenerics spectraVariables

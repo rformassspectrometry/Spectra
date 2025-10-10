@@ -2190,3 +2190,10 @@ test_that("longForm,Spectra works", {
     ## non-existing column
     expect_error(longForm(a, c("rtime", "aaa"), "not available"))
 })
+
+test_that("spectraVariableMapping,Spectra works", {
+    df <- DataFrame(msLevel = c(1L, 2L))
+    s <- Spectra(df)
+    expect_error(spectraVariableMapping(s), "not supported")
+    expect_error(spectraVariableMapping(s) <- 323, "not supported")
+})

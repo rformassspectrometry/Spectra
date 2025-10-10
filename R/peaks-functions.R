@@ -466,7 +466,7 @@ joinPeaksNone <- function(x, y, ...) {
 #' @description
 #'
 #' Removes (Orbitrap) FFT artefacts (peaks) from a spectrum keeping peaks
-#' potentially representing [13]C isotopes.
+#' potentially representing `[13]C` isotopes.
 #'
 #' @param x peaks matrix
 #'

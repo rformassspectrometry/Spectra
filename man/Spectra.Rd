@@ -196,7 +196,7 @@ With \code{...} additional arguments can be passed to the backend's
 
 The MS data which can be accessed through the \code{Spectra} object is
 \emph{represented} by its backend, which means that this backend defines how
-and where the data is stored (e.g. in memory or on disk). The \code{Specrta}
+and where the data is stored (e.g. in memory or on disk). The \code{Spectra}
 object relies on the backend to provide the MS data whenever it needs it
 for data processing.
 Different backends with different properties, such as minimal memory
