@@ -1,5 +1,10 @@
 # Spectra 1.19
 
+## Change 1.19.9
+
+- Add implementations of `spectraVariableMapping()` and
+  `spectraVariableMapping<-` for `MsBackend` and `Spectra` objects.
+
 ## Change 1.19.8
 
 - Add default implementations for `MsBackend` for replacement methods

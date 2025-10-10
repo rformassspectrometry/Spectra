@@ -1397,6 +1397,17 @@ setMethod("spectraVariables", "Spectra", function(object) {
     setdiff(spectraVariables(object@backend), peaksVariables(object@backend))
 })
 
+#' @rdname spectraVariableMapping
+setReplaceMethod("spectraVariableMapping", "Spectra", function(object, value) {
+    spectraVariableMapping(object@backend) <- value
+    object
+})
+
+#' @rdname spectraVariableMapping
+setMethod("spectraVariableMapping", "Spectra", function(object) {
+    spectraVariableMapping(object@backend)
+})
+
 #' @rdname spectraData
 setMethod("tic", "Spectra", function(object, initial = TRUE) {
     if (!length(object))

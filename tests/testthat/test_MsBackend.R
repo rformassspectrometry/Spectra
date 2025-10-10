@@ -123,3 +123,11 @@ test_that("longForm,MsBackend works with MsBackendMzR", {
     expect_error(longForm(sciex_mzr, c(spectraVariables(sciex_mzr), "aaaa")),
                  "not available")
 })
+
+test_that("spectraVariableMapping,MsBackend", {
+    setClass("DummyBackend",
+             contains = "MsBackend")
+    dm <- new("DummyBackend")
+    expect_error(spectraVariableMapping(dm), "not supported")
+    expect_error(spectraVariableMapping(dm) <- 43, "not supported")
+})
