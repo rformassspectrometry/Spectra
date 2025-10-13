@@ -990,7 +990,8 @@ setMethod("backendMerge", "list", function(object, ...) {
 #'
 #' @export
 setMethod("backendMerge", "MsBackend", function(object, ...) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'backendMerge()' is not implemented for ", class(object), ".",
+         .call = FALSE)
 })
 
 #' @importMethodsFrom ProtGenerics backendParallelFactor
@@ -1026,7 +1027,7 @@ setMethod("export", "MsBackend", function(object, ...) {
 #'
 #' @export
 setMethod("acquisitionNum", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "acquisitionNum")[, 1L]
 })
 
 #' @exportMethod peaksData
@@ -1038,7 +1039,8 @@ setMethod("acquisitionNum", "MsBackend", function(object) {
 #' @export
 setMethod("peaksData", "MsBackend", function(object,
                                              columns = c("mz", "intensity")) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'peaksData()' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod peaksVariables
@@ -1053,7 +1055,8 @@ setMethod("peaksVariables", "MsBackend", function(object) {
 })
 
 
-setClassUnion("dataframeOrDataFrameOrmatrix", c("data.frame", "DataFrame", "matrix"))
+setClassUnion("dataframeOrDataFrameOrmatrix",
+              c("data.frame", "DataFrame", "matrix"))
 #' @exportMethod cbind2
 #'
 #' @importMethodsFrom methods cbind2
@@ -1085,7 +1088,7 @@ setMethod("cbind2", signature = c("MsBackend", "dataframeOrDataFrameOrmatrix"),
 #'
 #' @export
 setMethod("centroided", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "centroided")[, 1L]
 })
 
 #' @exportMethod centroided<-
@@ -1108,7 +1111,7 @@ setReplaceMethod("centroided", "MsBackend", function(object, value) {
 #'
 #' @export
 setMethod("collisionEnergy", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "collisionEnergy")[, 1L]
 })
 
 #' @exportMethod collisionEnergy<-
@@ -1131,7 +1134,7 @@ setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
 #'
 #' @export
 setMethod("dataOrigin", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "dataOrigin")[, 1L]
 })
 
 #' @exportMethod dataOrigin<-
@@ -1154,7 +1157,7 @@ setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
 #'
 #' @export
 setMethod("dataStorage", "MsBackend", function(object) {
-    stop("Method 'dataStorage' is not implemented for ", class(object), ".")
+    spectraData(object, "dataStorage")[, 1L]
 })
 
 #' @exportMethod dataStorage<-
@@ -1165,7 +1168,8 @@ setMethod("dataStorage", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
-    stop("Method 'dataStorage' is not implemented for ", class(object), ".")
+    stop("Method 'dataStorage()<-' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod dropNaSpectraVariables
@@ -1197,7 +1201,8 @@ setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
 setMethod("extractByIndex", c("MsBackend", "ANY"), function(object, i) {
     if (existsMethod("[", class(object)[1L]))
         object[i = i]
-    else stop("'extractByIndex' not implemented for ", class(object)[1L], ".")
+    else stop("'extractByIndex()' not implemented for ",
+              class(object)[1L], ".", .call = FALSE)
 })
 
 #' @rdname MsBackend
@@ -1215,7 +1220,8 @@ setMethod("extractByIndex", c("MsBackend", "missing"), function(object, i) {
 #'
 #' @export
 setMethod("filterAcquisitionNum", "MsBackend", function(object, n, file, ...) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'filterAcquisitionNum()' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod filterDataOrigin
@@ -1510,7 +1516,8 @@ setMethod("filterValues", "MsBackend",
 #'
 #' @export
 setMethod("intensity", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'intensity()' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod intensity<-
@@ -1521,7 +1528,8 @@ setMethod("intensity", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("intensity", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'intensity()<-' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod ionCount
@@ -1557,7 +1565,7 @@ setMethod("isCentroided", "MsBackend", function(object, ...) {
 #'
 #' @export
 setMethod("isEmpty", "MsBackend", function(x) {
-    stop("Not implemented for ", class(x), ".")
+    lengths(x) == 0L
 })
 
 #' @exportMethod isolationWindowLowerMz
@@ -1568,7 +1576,7 @@ setMethod("isEmpty", "MsBackend", function(x) {
 #'
 #' @export
 setMethod("isolationWindowLowerMz", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "isolationWindowLowerMz")[, 1L]
 })
 
 #' @exportMethod isolationWindowLowerMz<-
@@ -1592,7 +1600,7 @@ setReplaceMethod("isolationWindowLowerMz", "MsBackend",
 #'
 #' @export
 setMethod("isolationWindowTargetMz", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "isolationWindowTargetMz")[, 1L]
 })
 
 #' @exportMethod isolationWindowTargetMz<-
@@ -1616,7 +1624,7 @@ setReplaceMethod("isolationWindowTargetMz", "MsBackend",
 #'
 #' @export
 setMethod("isolationWindowUpperMz", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "isolationWindowUpperMz")[, 1L]
 })
 
 #' @exportMethod isolationWindowUpperMz<-
@@ -1649,7 +1657,7 @@ setMethod("isReadOnly", "MsBackend", function(object) {
 #'
 #' @export
 setMethod("length", "MsBackend", function(x) {
-    stop("Not implemented for ", class(x), ".")
+    nrow(spectraData(x))
 })
 
 #' @exportMethod msLevel
@@ -1660,7 +1668,7 @@ setMethod("length", "MsBackend", function(x) {
 #'
 #' @export
 setMethod("msLevel", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "msLevel")[, 1L]
 })
 
 #' @importMethodsFrom ProtGenerics msLevel<-
@@ -1681,7 +1689,7 @@ setReplaceMethod("msLevel", "MsBackend", function(object, value) {
 #'
 #' @export
 setMethod("mz", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'mz()' is not implemented for ", class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod mz<-
@@ -1692,12 +1700,12 @@ setMethod("mz", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("mz", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'mz()<-' is not implemented for ", class(object), ".", .call = FALSE)
 })
 
 #' @rdname MsBackend
 setMethod("lengths", "MsBackend", function(x, use.names = FALSE) {
-    stop("Not implemented for ", class(x), ".")
+    vapply(peaksData(x), nrow, NA_integer_)
 })
 
 #' @exportMethod polarity
@@ -1708,7 +1716,7 @@ setMethod("lengths", "MsBackend", function(x, use.names = FALSE) {
 #'
 #' @export
 setMethod("polarity", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "polarity")[, 1L]
 })
 
 #' @exportMethod polarity<-
@@ -1732,7 +1740,7 @@ setReplaceMethod("polarity", "MsBackend", function(object, value) {
 #'
 #' @export
 setMethod("precScanNum", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "precScanNum")[, 1L]
 })
 
 #' @exportMethod precursorCharge
@@ -1743,7 +1751,7 @@ setMethod("precScanNum", "MsBackend", function(object) {
 #'
 #' @export
 setMethod("precursorCharge", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "precursorCharge")[, 1L]
 })
 
 #' @exportMethod precursorIntensity
@@ -1754,7 +1762,7 @@ setMethod("precursorCharge", "MsBackend", function(object) {
 #'
 #' @export
 setMethod("precursorIntensity", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "precursorIntensity")[, 1L]
 })
 
 #' @exportMethod precursorMz
@@ -1765,7 +1773,7 @@ setMethod("precursorIntensity", "MsBackend", function(object) {
 #'
 #' @export
 setMethod("precursorMz", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "precursorMz")[, 1L]
 })
 
 #' @exportMethod precursorMz<-
@@ -1788,7 +1796,8 @@ setReplaceMethod("precursorMz", "MsBackend", function(object, ..., value) {
 #'
 #' @export
 setReplaceMethod("peaksData", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'peaksData()<-' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod reset
@@ -1808,7 +1817,7 @@ setMethod("reset", "MsBackend", function(object) {
 #'
 #' @export
 setMethod("rtime", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "rtime")[, 1L]
 })
 
 #' @exportMethod rtime<-
@@ -1831,7 +1840,7 @@ setReplaceMethod("rtime", "MsBackend", function(object, value) {
 #'
 #' @export
 setMethod("scanIndex", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "scanIndex")[, 1L]
 })
 
 #' @exportMethod selectSpectraVariables
@@ -1842,7 +1851,8 @@ setMethod("scanIndex", "MsBackend", function(object) {
 setMethod(
     "selectSpectraVariables", "MsBackend",
     function(object, spectraVariables = spectraVariables(object)) {
-        stop("Not implemented for ", class(object), ".")
+        stop("'selectSpectraVariables()' is not implemented for ",
+             class(object), ".", .call = FALSE)
     })
 
 #' @exportMethod smoothed
@@ -1853,7 +1863,7 @@ setMethod(
 #'
 #' @export
 setMethod("smoothed", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    spectraData(object, "smoothed")[, 1L]
 })
 
 #' @exportMethod smoothed<-
@@ -1878,7 +1888,8 @@ setReplaceMethod("smoothed", "MsBackend", function(object, value) {
 setMethod(
     "spectraData", "MsBackend",
     function(object, columns = spectraVariables(object)) {
-        stop("Not implemented for ", class(object), ".")
+        stop("'spectraData()' is not implemented for ", class(object), ".",
+             .call = FALSE)
     })
 
 #' @exportMethod spectraData<-
@@ -1887,7 +1898,8 @@ setMethod(
 #'
 #' @export
 setReplaceMethod("spectraData", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'spectraData()<-' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod spectraNames
@@ -1898,7 +1910,8 @@ setReplaceMethod("spectraData", "MsBackend", function(object, value) {
 #'
 #' @export
 setMethod("spectraNames", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'spectraNames()' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod spectraNames<-
@@ -1909,7 +1922,8 @@ setMethod("spectraNames", "MsBackend", function(object) {
 #'
 #' @export
 setReplaceMethod("spectraNames", "MsBackend", function(object, value) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'spectraNames()<-' is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @rdname spectraVariableMapping
@@ -1932,7 +1946,8 @@ setReplaceMethod("spectraVariableMapping", "MsBackend", function(object, value){
 #'
 #' @export
 setMethod("spectraVariables", "MsBackend", function(object) {
-    stop("Not implemented for ", class(object), ".")
+    stop("'spectraVariables()` is not implemented for ",
+         class(object), ".", .call = FALSE)
 })
 
 #' @exportMethod split
@@ -1965,7 +1980,11 @@ setMethod("supportsSetBackend", "MsBackend", function(object, ...) {
 #'
 #' @export
 setMethod("tic", "MsBackend", function(object, initial = TRUE) {
-    stop("Not implemented for ", class(object), ".")
+    if (initial) {
+        if (any(spectraVariables(object) == "totIonCurrent"))
+            spectraData(object, "totIonCurrent")[, 1L]
+        else rep(NA_real_, length(object))
+    } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
 })
 
 #' @exportMethod [
@@ -1983,7 +2002,7 @@ setMethod("[", "MsBackend", function(x, i, j, ..., drop = FALSE) {
 #'
 #' @export
 setMethod("$", "MsBackend", function(x, name) {
-    stop("Not implemented for ", class(x), ".")
+    spectraData(x, columns = name)[, 1L]
 })
 
 #' @exportMethod $<-
@@ -1992,7 +2011,7 @@ setMethod("$", "MsBackend", function(x, name) {
 #'
 #' @export
 setReplaceMethod("$", "MsBackend", function(x, name, value) {
-    stop("Not implemented for ", class(x), ".")
+    stop("'$' is not implemented for ", class(x), ".", .call = FALSE)
 })
 
 #' @exportMethod [[

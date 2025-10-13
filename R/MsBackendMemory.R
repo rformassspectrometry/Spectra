@@ -251,11 +251,6 @@ setMethod("ionCount", "MsBackendMemory", function(object) {
 })
 
 #' @rdname hidden_aliases
-setMethod("isEmpty", "MsBackendMemory", function(x) {
-    lengths(intensity(x)) == 0
-})
-
-#' @rdname hidden_aliases
 setMethod("isolationWindowLowerMz", "MsBackendMemory", function(object) {
     .get_column(object@spectraData, "isolationWindowLowerMz")
 })
@@ -309,13 +304,6 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackendMemory",
 #' @rdname hidden_aliases
 setMethod("length", "MsBackendMemory", function(x) {
     nrow(x@spectraData)
-})
-
-#' @rdname hidden_aliases
-setMethod("lengths", "MsBackendMemory", function(x, use.names = FALSE) {
-    if (length(x))
-        as.integer(lengths(x@peaksData) / ncol(x@peaksData[[1L]]))
-    else integer()
 })
 
 #' @rdname hidden_aliases

@@ -183,16 +183,6 @@ setMethod("isCentroided", "MsBackendHdf5Peaks", function(object, ...) {
 })
 
 #' @rdname hidden_aliases
-setMethod("isEmpty", "MsBackendHdf5Peaks", function(x) {
-    lengths(x) == 0
-})
-
-#' @rdname hidden_aliases
-setMethod("lengths", "MsBackendHdf5Peaks", function(x, use.names = FALSE) {
-    as.integer(lengths(peaksData(x)) / 2L)
-})
-
-#' @rdname hidden_aliases
 setMethod("mz", "MsBackendHdf5Peaks", function(object) {
     NumericList(lapply(peaksData(object), "[", , 1), compress = FALSE)
 })

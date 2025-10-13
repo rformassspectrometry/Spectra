@@ -1,5 +1,12 @@
 # Spectra 1.19
 
+## Change 1.19.10
+
+- Add default implementation of methods for the `MsBackend` class (issue
+  [#338](https://github.com/rformassspectrometry/Spectra/issues/338)). This
+  reduced code redundancy in *Spectra* and simplifies implementation of new
+  `MsBackend` classes considerably.
+
 ## Change 1.19.9
 
 - Add implementations of `spectraVariableMapping()` and

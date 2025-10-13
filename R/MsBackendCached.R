@@ -221,8 +221,6 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'     For `selectSpectraVariables()`: `character` specifying the spectra
 #'     variables to keep.
 #'
-#' @param use.names For `lengths()`: whether spectrum names should be used.
-#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
@@ -365,7 +363,12 @@ setMethod("[", "MsBackendCached", function(x, i, j, ..., drop = FALSE) {
 setMethod("$", "MsBackendCached", function(x, name) {
     if (!any(spectraVariables(x) == name))
         stop("Spectra variable '", name, "' not available.")
-    spectraData(x, name)[, 1]
+    spectraData(x, name)[, 1L]
+})
+
+#' @rdname hidden_aliases
+setMethod("lengths", "MsBackendCached", function(x, use.names = FALSE) {
+    lengths(mz(x))
 })
 
 #' @rdname MsBackendCached
@@ -433,33 +436,8 @@ setMethod("show", "MsBackendCached", function(object) {
 ## ------------- DEFAULT IMPLEMENTATIONS OF ACCESSORS --------------------------
 
 #' @rdname MsBackendCached
-setMethod("acquisitionNum", "MsBackendCached", function(object) {
-    spectraData(object, "acquisitionNum")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("centroided", "MsBackendCached", function(object) {
-    spectraData(object, "centroided")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("collisionEnergy", "MsBackendCached", function(object) {
-    spectraData(object, "collisionEnergy")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("dataOrigin", "MsBackendCached", function(object) {
-    spectraData(object, "dataOrigin")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("msLevel", "MsBackendCached", function(object) {
-    spectraData(object, "msLevel")[, 1]
-})
-
-#' @rdname MsBackendCached
 setMethod("intensity", "MsBackendCached", function(object) {
-    spectraData(object, "intensity")[, 1]
+    spectraData(object, "intensity")[, 1L]
 })
 
 #' @importFrom MsCoreUtils vapply1d
@@ -469,74 +447,7 @@ setMethod("ionCount", "MsBackendCached", function(object) {
     vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
-#' @importMethodsFrom S4Vectors isEmpty
-#'
-#' @rdname MsBackendCached
-setMethod("isEmpty", "MsBackendCached", function(x) {
-    lengths(intensity(x)) == 0
-})
-
-#' @rdname MsBackendCached
-setMethod("isolationWindowLowerMz", "MsBackendCached", function(object) {
-    spectraData(object, "isolationWindowLowerMz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("isolationWindowTargetMz", "MsBackendCached", function(object) {
-    spectraData(object, "isolationWindowTargetMz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("isolationWindowUpperMz", "MsBackendCached", function(object) {
-    spectraData(object, "isolationWindowUpperMz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("lengths", "MsBackendCached", function(x, use.names = FALSE) {
-    lengths(mz(x))
-})
-
 #' @rdname MsBackendCached
 setMethod("mz", "MsBackendCached", function(object) {
     spectraData(object, "mz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("polarity", "MsBackendCached", function(object) {
-    spectraData(object, "polarity")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("precScanNum", "MsBackendCached", function(object) {
-    spectraData(object, "precScanNum")[, 1L]
-})
-
-#' @rdname MsBackendCached
-setMethod("precursorCharge", "MsBackendCached", function(object) {
-    spectraData(object, "precursorCharge")[, 1L]
-})
-
-#' @rdname MsBackendCached
-setMethod("precursorIntensity", "MsBackendCached", function(object) {
-    spectraData(object, "precursorIntensity")[, 1L]
-})
-
-#' @rdname MsBackendCached
-setMethod("precursorMz", "MsBackendCached", function(object) {
-    spectraData(object, "precursorMz")[, 1L]
-})
-
-#' @rdname MsBackendCached
-setMethod("rtime", "MsBackendCached", function(object) {
-    spectraData(object, "rtime")[, 1L]
-})
-
-#' @rdname MsBackendCached
-setMethod("scanIndex", "MsBackendCached", function(object) {
-    spectraData(object, "scanIndex")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("smoothed", "MsBackendCached", function(object) {
-    spectraData(object, "smoothed")[, 1]
 })
