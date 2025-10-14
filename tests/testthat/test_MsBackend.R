@@ -68,7 +68,7 @@ test_that("extractByIndex not implemented fallback", {
              contains = "MsBackend",
              slots = c(d = "integer"))
     dm <- new("DummyBackend")
-    expect_error(extractByIndex(dm, 1L), "'extractByIndex' not implemented")
+    expect_error(extractByIndex(dm, 1L), " not implemented")
 
     dm@d <- 1:4
 

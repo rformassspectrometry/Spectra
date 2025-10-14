@@ -129,16 +129,6 @@ setMethod("isCentroided", "MsBackendMzR", function(object, ...) {
 })
 
 #' @rdname hidden_aliases
-setMethod("isEmpty", "MsBackendMzR", function(x) {
-    lengths(x) == 0
-})
-
-#' @rdname hidden_aliases
-setMethod("lengths", "MsBackendMzR", function(x, use.names = FALSE) {
-    as.integer(lengths(peaksData(x)) / 2L)
-})
-
-#' @rdname hidden_aliases
 setMethod("mz", "MsBackendMzR", function(object) {
     NumericList(lapply(peaksData(object), "[", , 1), compress = FALSE)
 })

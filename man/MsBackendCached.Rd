@@ -15,27 +15,9 @@
 \alias{$<-,MsBackendCached-method}
 \alias{selectSpectraVariables,MsBackendCached-method}
 \alias{show,MsBackendCached-method}
-\alias{acquisitionNum,MsBackendCached-method}
-\alias{centroided,MsBackendCached-method}
-\alias{collisionEnergy,MsBackendCached-method}
-\alias{dataOrigin,MsBackendCached-method}
-\alias{msLevel,MsBackendCached-method}
 \alias{intensity,MsBackendCached-method}
 \alias{ionCount,MsBackendCached-method}
-\alias{isEmpty,MsBackendCached-method}
-\alias{isolationWindowLowerMz,MsBackendCached-method}
-\alias{isolationWindowTargetMz,MsBackendCached-method}
-\alias{isolationWindowUpperMz,MsBackendCached-method}
-\alias{lengths,MsBackendCached-method}
 \alias{mz,MsBackendCached-method}
-\alias{polarity,MsBackendCached-method}
-\alias{precScanNum,MsBackendCached-method}
-\alias{precursorCharge,MsBackendCached-method}
-\alias{precursorIntensity,MsBackendCached-method}
-\alias{precursorMz,MsBackendCached-method}
-\alias{rtime,MsBackendCached-method}
-\alias{scanIndex,MsBackendCached-method}
-\alias{smoothed,MsBackendCached-method}
 \title{Base MsBackend class providing data caching mechanism}
 \usage{
 MsBackendCached()
@@ -70,47 +52,11 @@ MsBackendCached()
 
 \S4method{show}{MsBackendCached}(object)
 
-\S4method{acquisitionNum}{MsBackendCached}(object)
-
-\S4method{centroided}{MsBackendCached}(object)
-
-\S4method{collisionEnergy}{MsBackendCached}(object)
-
-\S4method{dataOrigin}{MsBackendCached}(object)
-
-\S4method{msLevel}{MsBackendCached}(object)
-
 \S4method{intensity}{MsBackendCached}(object)
 
 \S4method{ionCount}{MsBackendCached}(object)
 
-\S4method{isEmpty}{MsBackendCached}(x)
-
-\S4method{isolationWindowLowerMz}{MsBackendCached}(object)
-
-\S4method{isolationWindowTargetMz}{MsBackendCached}(object)
-
-\S4method{isolationWindowUpperMz}{MsBackendCached}(object)
-
-\S4method{lengths}{MsBackendCached}(x, use.names = FALSE)
-
 \S4method{mz}{MsBackendCached}(object)
-
-\S4method{polarity}{MsBackendCached}(object)
-
-\S4method{precScanNum}{MsBackendCached}(object)
-
-\S4method{precursorCharge}{MsBackendCached}(object)
-
-\S4method{precursorIntensity}{MsBackendCached}(object)
-
-\S4method{precursorMz}{MsBackendCached}(object)
-
-\S4method{rtime}{MsBackendCached}(object)
-
-\S4method{scanIndex}{MsBackendCached}(object)
-
-\S4method{smoothed}{MsBackendCached}(object)
 }
 \arguments{
 \item{object}{A \code{MsBackendCached} object.}
@@ -144,8 +90,6 @@ method description or expected data type.}
 \item{drop}{For \code{[}: not considered.}
 
 \item{name}{For \verb{$<-}: the name of the spectra variable to set.}
-
-\item{use.names}{For \code{lengths()}: whether spectrum names should be used.}
 }
 \value{
 See documentation of respective function.
