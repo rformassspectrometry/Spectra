@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,28 +40,32 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.19" id="spectra-119">Spectra 1.19<a class="anchor" aria-label="anchor" href="#spectra-119"></a></h2>
 <div class="section level3">
-<h3 id="change-1-19">Change 1.19.9<a class="anchor" aria-label="anchor" href="#change-1-19"></a></h3>
+<h3 id="change-1-19">Change 1.19.10<a class="anchor" aria-label="anchor" href="#change-1-19"></a></h3>
+<ul><li>Add default implementation of methods for the <code>MsBackend</code> class (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/338" class="external-link">#338</a>). This reduced code redundancy in <em>Spectra</em> and simplifies implementation of new <code>MsBackend</code> classes considerably.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="change-1-19-1">Change 1.19.9<a class="anchor" aria-label="anchor" href="#change-1-19-1"></a></h3>
 <ul><li>Add implementations of <code><a href="../reference/spectraVariableMapping.html">spectraVariableMapping()</a></code> and <code>spectraVariableMapping&lt;-</code> for <code>MsBackend</code> and <code>Spectra</code> objects.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-19-1">Change 1.19.8<a class="anchor" aria-label="anchor" href="#change-1-19-1"></a></h3>
+<h3 id="change-1-19-2">Change 1.19.8<a class="anchor" aria-label="anchor" href="#change-1-19-2"></a></h3>
 <ul><li>Add default implementations for <code>MsBackend</code> for replacement methods <code>centroided&lt;-</code>, <code>collisionEnergy&lt;-</code>, <code>dataOrigin&lt;-</code>, <code>isolationWindowLowerMz&lt;-</code>, <code>isolationWindowTargetMz&lt;-</code>, <code>isolationWindowUpperMz&lt;-</code>, <code>msLevel&lt;-</code>, <code>polarity&lt;-</code>, <code>precursorMz&lt;-</code>, <code>rtime&lt;-</code> and <code>smoothed&lt;-</code>. This reduces the amount of methods required to be implemented for new <code>MsBackend</code> classes.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-19-2">Change 1.19.7<a class="anchor" aria-label="anchor" href="#change-1-19-2"></a></h3>
+<h3 id="change-1-19-3">Change 1.19.7<a class="anchor" aria-label="anchor" href="#change-1-19-3"></a></h3>
 <ul><li>Add <code>longForm,MsBackend</code> and <code>longForm,Spectra</code> methods (issue <a href="https://github.com/rformassspectrometry/Spectra/issues/360" class="external-link">#360</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-19-3">Change 1.19.6<a class="anchor" aria-label="anchor" href="#change-1-19-3"></a></h3>
+<h3 id="change-1-19-4">Change 1.19.6<a class="anchor" aria-label="anchor" href="#change-1-19-4"></a></h3>
 <ul><li>Add a <code><a href="../reference/precursorPurity.html">precursorPurity()</a></code> function.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-19-4">Change 1.19.5<a class="anchor" aria-label="anchor" href="#change-1-19-4"></a></h3>
+<h3 id="change-1-19-5">Change 1.19.5<a class="anchor" aria-label="anchor" href="#change-1-19-5"></a></h3>
 <ul><li>Addition of <code><a href="../reference/fragmentGroupIndex.html">fragmentGroupIndex()</a></code> function. This function generates a <code>integer</code> index grouping MSn (MS level &gt; 1) spectra with their corresponding (unique) MS1 spectra based on acquisition order.</li>
 <li>Fix on <code><a href="../reference/combineSpectra.html">cbind2()</a></code> so that the output is a <code>Spectra</code> object and not the backend.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-19-5">Change 1.19.4<a class="anchor" aria-label="anchor" href="#change-1-19-5"></a></h3>
+<h3 id="change-1-19-6">Change 1.19.4<a class="anchor" aria-label="anchor" href="#change-1-19-6"></a></h3>
 <ul><li>Fix passing of <code>BPPARAM</code> parameter in <code><a href="../reference/spectraData.html">peaksData()</a></code> method for <code>Spectra</code>. Now is being passed down to <code>.peaksapply()</code>.</li>
 </ul></div>
 <div class="section level3">

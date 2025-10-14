@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Internal page for hidden aliases</h1>
-      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/hidden_aliases.R" class="external-link"><code>R/hidden_aliases.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/MsBackendDataFrame.R" class="external-link"><code>R/MsBackendDataFrame.R</code></a>, and 4 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/hidden_aliases.R" class="external-link"><code>R/hidden_aliases.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/RforMassSpectrometry/Spectra/blob/main/R/MsBackendCached.R" class="external-link"><code>R/MsBackendCached.R</code></a>, and 5 more</small>
       <div class="d-none name"><code>hidden_aliases.Rd</code></div>
     </div>
 
@@ -54,6 +54,9 @@
 <span>  returnMids <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  .check <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'MsBackendCached'</span></span>
+<span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">x</span>, use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendDataFrame'</span></span>
 <span><span class="fu">show</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
@@ -257,12 +260,6 @@
 <span><span class="fu"><a href="spectraData.html">isCentroided</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendHdf5Peaks'</span></span>
-<span><span class="fu"><a href="spectraData.html">isEmpty</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'MsBackendHdf5Peaks'</span></span>
-<span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">x</span>, use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'MsBackendHdf5Peaks'</span></span>
 <span><span class="fu"><a href="spectraData.html">mz</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendHdf5Peaks'</span></span>
@@ -338,9 +335,6 @@
 <span><span class="fu"><a href="spectraData.html">ionCount</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendMemory'</span></span>
-<span><span class="fu"><a href="spectraData.html">isEmpty</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'MsBackendMemory'</span></span>
 <span><span class="fu"><a href="spectraData.html">isolationWindowLowerMz</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendMemory'</span></span>
@@ -360,9 +354,6 @@
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendMemory'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'MsBackendMemory'</span></span>
-<span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">x</span>, use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendMemory'</span></span>
 <span><span class="fu"><a href="spectraData.html">msLevel</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -488,12 +479,6 @@
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendMzR'</span></span>
 <span><span class="fu"><a href="spectraData.html">isCentroided</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'MsBackendMzR'</span></span>
-<span><span class="fu"><a href="spectraData.html">isEmpty</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'MsBackendMzR'</span></span>
-<span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">x</span>, use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackendMzR'</span></span>
 <span><span class="fu"><a href="spectraData.html">mz</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
