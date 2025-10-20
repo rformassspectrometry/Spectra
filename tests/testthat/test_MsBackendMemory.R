@@ -1021,3 +1021,19 @@ test_that("longForm,MsBackendMemory works", {
     expect_equal(colnames(res), c("rtime", "msLevel"))
     expect_equal(test_df$rtime, res$rtime)
 })
+
+test_that("longForm,MsBackendMemory and MsBackendMzR give same results", {
+    sciex_mem <- setBackend(Spectra(sciex_mzr), MsBackendMemory())@backend
+
+    ref <- longForm(sciex_mzr, c("rtime", "mz", "intensity"))
+    res <- longForm(sciex_mem, c("rtime", "mz", "intensity"))
+    expect_equal(ref, res)
+
+    ref <- longForm(sciex_mzr, c("msLevel"))
+    res <- longForm(sciex_mem, c("msLevel"))
+    expect_equal(ref, res)
+
+    ref <- longForm(sciex_mzr, c("intensity", "mz"))
+    res <- longForm(sciex_mem, c("intensity", "mz"))
+    expect_equal(ref, res)
+})
