@@ -134,6 +134,9 @@ sanitize_file_name <- function(x) {
 .long_spectra_data3 <- function(spectraData, peaksData,
                                 peaksVariables = colnames(peaksData[[1L]])) {
     ls <- lengths(peaksData) / length(peaksVariables)
-    cbind.data.frame(base::as.data.frame(lapply(spectraData, rep, times = ls)),
-                     base::as.data.frame(do.call(base::rbind, peaksData)))
+    if (ncol(spectraData))
+        cbind.data.frame(
+            base::as.data.frame(lapply(spectraData, rep, times = ls)),
+            base::as.data.frame(do.call(base::rbind, peaksData)))
+    else base::as.data.frame(do.call(base::rbind, peaksData))
 }

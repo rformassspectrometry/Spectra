@@ -1,5 +1,10 @@
 # Spectra 1.19
 
+## Change 1.19.11
+
+- Fix in `longForm()` method for `MsBackendMemory` if only peaks variables are
+  extracted.
+
 ## Change 1.19.10
 
 - Add default implementation of methods for the `MsBackend` class (issue

@@ -73,4 +73,9 @@ test_that(".long_spectra_data3 works", {
     expect_true(is.data.frame(lf))
     expect_equal(colnames(lf), c("msLevel", "rtime", "mz", "intensity"))
     expect_equal(nrow(lf), sum(lengths(b) / 2))
+
+    a <- a[, integer()]
+    res <- .long_spectra_data3(a, b)
+    expect_true(is.data.frame(lf))
+    expect_equal(lf$mz, res$mz)
 })
