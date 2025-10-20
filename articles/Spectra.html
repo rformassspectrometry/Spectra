@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,7 +90,7 @@ Louail [aut] (ORCID: <a href="https://orcid.org/0009-0007-5429-6846" class="exte
 [ctb] (ORCID: <a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
 [ctb], Mar Garcia-Aloy [ctb] (ORCID: <a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>), Guillaume
 Deflandre [ctb] (ORCID: <a href="https://orcid.org/0009-0008-1257-2416" class="external-link uri">https://orcid.org/0009-0008-1257-2416</a>), Ahlam Mentag
-[ctb] (ORCID: <a href="https://orcid.org/0009-0008-5438-7067" class="external-link uri">https://orcid.org/0009-0008-5438-7067</a>)<br><strong>Last modified:</strong> 2025-10-14 05:36:39.146621<br><strong>Compiled</strong>: Tue Oct 14 05:52:25 2025</p>
+[ctb] (ORCID: <a href="https://orcid.org/0009-0008-5438-7067" class="external-link uri">https://orcid.org/0009-0008-5438-7067</a>)<br><strong>Last modified:</strong> 2025-10-20 06:18:54.88346<br><strong>Compiled</strong>: Mon Oct 20 06:36:24 2025</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -799,8 +799,8 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## 20171016_POOL_POS_3_105-134.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Tue Oct 14 05:52:30 2025]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s)  [Tue Oct 14 05:52:30 2025]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML [Mon Oct 20 06:36:29 2025]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s)  [Mon Oct 20 06:36:29 2025]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -835,7 +835,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Oct 14 05:52:30 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Mon Oct 20 06:36:29 2025]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
@@ -928,9 +928,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Oct 14 05:52:30 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Oct 14 05:52:30 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Oct 14 05:52:30 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Mon Oct 20 06:36:29 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Oct 20 06:36:29 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Oct 20 06:36:29 2025]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -961,9 +961,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Oct 14 05:52:30 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Oct 14 05:52:30 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Oct 14 05:52:30 2025]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Mon Oct 20 06:36:29 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Oct 20 06:36:29 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Oct 20 06:36:29 2025]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code><a href="../reference/spectraData.html">intensity()</a></code> on this object will
 now return intensities that are half of the intensities of the original
@@ -1230,9 +1230,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Oct 14 05:52:30 2025]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Oct 14 05:52:30 2025]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Oct 14 05:52:30 2025]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Mon Oct 20 06:36:29 2025]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Mon Oct 20 06:36:29 2025]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Oct 20 06:36:29 2025]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code><a href="../reference/addProcessing.html">applyProcessing()</a></code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1254,7 +1254,7 @@ the <code>sps</code> object using their names (as provided in spectra
 variable <code>"name"</code>) as plot titles.</p>
 <div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps</span>, main <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/plotspectra-1.png" width="768"></p>
+<p><img src="Spectra_files/figure-html/plotspectra-1.png" class="r-plt" width="768"></p>
 <p>It is also possible to label individual peaks in each plot. Below we
 use the m/z value of each peak as its label. In the example we define a
 function that accesses information from each spectrum (<code>z</code>)
@@ -1267,7 +1267,7 @@ of the peak.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps</span>, main <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>,</span>
 <span>            labels <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">mz</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>, <span class="va">format</span>, digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
 <span>            labelSrt <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, labelPos <span class="op">=</span> <span class="fl">2</span>, labelOffset <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/plotspectra-label-1.png" width="768"></p>
+<p><img src="Spectra_files/figure-html/plotspectra-label-1.png" class="r-plt" width="768"></p>
 <p>These plots are rather busy and for some peaks the m/z values are
 overplotted. Below we define a <em>label function</em> that will only
 indicate the m/z of peaks with an intensity higher than 30.</p>
@@ -1281,7 +1281,7 @@ indicate the m/z of peaks with an intensity higher than 30.</p>
 <span> <span class="op">}</span></span>
 <span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps</span>, main <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, labels <span class="op">=</span> <span class="va">mzLabel</span>,</span>
 <span>            labelSrt <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, labelPos <span class="op">=</span> <span class="fl">2</span>, labelOffset <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/plotspectra-label-int-1.png" width="768"></p>
+<p><img src="Spectra_files/figure-html/plotspectra-label-int-1.png" class="r-plt" width="768"></p>
 <p>Sometimes it might be of interest to plot multiple spectra into the
 <strong>same</strong> plot (e.g. to directly compare peaks from multiple
 spectra). This can be done with <code><a href="../reference/spectra-plotting.html">plotSpectraOverlay()</a></code> which
@@ -1291,14 +1291,14 @@ spectra, using a different color for each spectrum.</p>
 <code class="sourceCode R"><span><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#E41A1C80"</span>, <span class="st">"#377EB880"</span>, <span class="st">"#4DAF4A80"</span>, <span class="st">"#984EA380"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraOverlay</a></span><span class="op">(</span><span class="va">sps</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>, col <span class="op">=</span> <span class="va">cols</span>, legend <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, pch <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/plotspectraoverlay-1.png" width="576"></p>
+<p><img src="Spectra_files/figure-html/plotspectraoverlay-1.png" class="r-plt" width="576"></p>
 <p>Lastly, <code><a href="../reference/spectra-plotting.html">plotSpectraMirror()</a></code> allows to plot two spectra
 against each other as a <em>mirror plot</em> which is ideal to visualize
 spectra comparison results. Below we plot a spectrum of
 1-Methylhistidine against one of Caffeine.</p>
 <div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraMirror</a></span><span class="op">(</span><span class="va">sps</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">sps</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/plotspectramirror-1.png" width="576"></p>
+<p><img src="Spectra_files/figure-html/plotspectramirror-1.png" class="r-plt" width="576"></p>
 <p>The upper panel shows the spectrum from 1-Methylhistidine, the lower
 the one of Caffeine. None of the peaks of the two spectra match. Below
 we plot the two spectra of 1-Methylhistidine and the two of Caffeine
@@ -1307,7 +1307,7 @@ against each other matching peaks with a <code>ppm</code> of 50.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraMirror</a></span><span class="op">(</span><span class="va">sps</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">sps</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"1-Methylhistidine"</span>, ppm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectraMirror</a></span><span class="op">(</span><span class="va">sps</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">sps</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, main <span class="op">=</span> <span class="st">"Caffeine"</span>, ppm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/plotspectramirror-ppm-1.png" width="1152"></p>
+<p><img src="Spectra_files/figure-html/plotspectramirror-ppm-1.png" class="r-plt" width="1152"></p>
 <p>See also <code><a href="../reference/spectra-plotting.html">?plotSpectra</a></code> for more plotting options and
 examples.</p>
 </div>
@@ -1345,7 +1345,7 @@ which spectra should be grouped together.</p>
 <p>As a result, the 4 spectra got aggregated into two.</p>
 <div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps_agg</span>, main <span class="op">=</span> <span class="va">sps_agg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/unnamed-chunk-16-1.png" width="384"></p>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" width="384"></p>
 <p>By default, all peaks present in all spectra are reported. As an
 alternative, by specifying <code>peaks = "intersect"</code> and
 <code>minProp = 1</code>, we could combine the spectra keeping only
@@ -1353,7 +1353,7 @@ peaks that are present in <strong>both</strong> input spectra.</p>
 <div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sps_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combineSpectra.html">combineSpectra</a></span><span class="op">(</span><span class="va">sps</span>, f <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, peaks <span class="op">=</span> <span class="st">"intersect"</span>, minProp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps_agg</span>, main <span class="op">=</span> <span class="va">sps_agg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/unnamed-chunk-17-1.png" width="384"></p>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" width="384"></p>
 <p>This results thus in a single peak for 1-methylhistidine and none for
 caffeine - why? The reason for that is that the difference of the peaks’
 m/z values is larger than the default tolerance used for the peak
@@ -1369,7 +1369,7 @@ in their m/z values.</p>
 <code class="sourceCode R"><span><span class="va">sps_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combineSpectra.html">combineSpectra</a></span><span class="op">(</span><span class="va">sps</span>, f <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, peaks <span class="op">=</span> <span class="st">"intersect"</span>,</span>
 <span>                          minProp <span class="op">=</span> <span class="fl">1</span>, tolerance <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps_agg</span>, main <span class="op">=</span> <span class="va">sps_agg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/unnamed-chunk-18-1.png" width="384"></p>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" width="384"></p>
 <p>Whether in a real analysis we would be OK with such a large tolerance
 is however questionable. Note: which m/z and intensity is reported for
 the aggregated spectra can be defined with the parameters
@@ -1400,7 +1400,7 @@ select for each compound the spectrum with the largest TIC.</p>
 <div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sps_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combineSpectra.html">combineSpectra</a></span><span class="op">(</span><span class="va">sps</span>, f <span class="op">=</span> <span class="va">sps</span><span class="op">$</span><span class="va">name</span>, FUN <span class="op">=</span> <span class="va">maxTic</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/spectra-plotting.html">plotSpectra</a></span><span class="op">(</span><span class="va">sps_agg</span>, main <span class="op">=</span> <span class="va">sps_agg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/unnamed-chunk-20-1.png" width="384"></p>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" width="384"></p>
 </div>
 <div class="section level3">
 <h3 id="comparing-spectra">Comparing spectra<a class="anchor" aria-label="anchor" href="#comparing-spectra"></a>
@@ -1557,7 +1557,7 @@ use these as column names for the intensity matrix.</p>
 spectra based on their peak intensities.</p>
 <div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">heatmap</a></span><span class="op">(</span><span class="va">intmat</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Spectra_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
+<p><img src="Spectra_files/figure-html/unnamed-chunk-29-1.png" class="r-plt" width="700"></p>
 <p>As expected, the first 2 and the last 2 spectra are more similar and
 are clustered together.</p>
 </div>
@@ -1590,7 +1590,7 @@ parameters).</p>
 <div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/Spectra.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file1f191028465b...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file5d476bca2bea...OK</span></span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
@@ -1611,8 +1611,8 @@ and spectra 2 and 4 to another.</p>
 <div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/Spectra.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file1f193099a4c0...OK</span></span>
-<span><span class="co">## Writing file file1f1959d9003c...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file5d4727733118...OK</span></span>
+<span><span class="co">## Writing file file5d47cfdcc1d...OK</span></span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the <code><a href="../reference/addProcessing.html">smooth()</a></code>
 function) and centroiding (using the <code><a href="../reference/addProcessing.html">pickPeaks()</a></code> function)
@@ -1653,7 +1653,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1862         1   259.752       931</span></span>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Tue Oct 14 05:52:36 2025]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Mon Oct 20 06:36:35 2025]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
@@ -1885,13 +1885,13 @@ usable on the second computer.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">##  [1] msdata_0.49.0       msentropy_0.1.4     Rcpp_1.1.0         </span></span>
-<span><span class="co">##  [4] MsCoreUtils_1.21.0  Spectra_1.19.10     BiocParallel_1.43.4</span></span>
-<span><span class="co">##  [7] S4Vectors_0.47.4    BiocGenerics_0.55.3 generics_0.1.4     </span></span>
+<span><span class="co">##  [4] MsCoreUtils_1.21.0  Spectra_1.19.11     BiocParallel_1.43.4</span></span>
+<span><span class="co">##  [7] S4Vectors_0.47.4    BiocGenerics_0.55.4 generics_0.1.4     </span></span>
 <span><span class="co">## [10] BiocStyle_2.37.1   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] jsonlite_2.0.0         compiler_4.5.1         BiocManager_1.30.26   </span></span>
-<span><span class="co">##  [4] Biobase_2.69.1         rhdf5filters_1.21.0    parallel_4.5.1        </span></span>
+<span><span class="co">##  [4] Biobase_2.69.1         rhdf5filters_1.21.4    parallel_4.5.1        </span></span>
 <span><span class="co">##  [7] cluster_2.1.8.1        jquerylib_0.1.4        systemfonts_1.3.1     </span></span>
 <span><span class="co">## [10] IRanges_2.43.5         textshaping_1.0.4      yaml_2.3.10           </span></span>
 <span><span class="co">## [13] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.41.0   </span></span>
@@ -1899,7 +1899,7 @@ usable on the second computer.</p>
 <span><span class="co">## [19] bookdown_0.45          desc_1.4.3             bslib_0.9.0           </span></span>
 <span><span class="co">## [22] rlang_1.1.6            cachem_1.1.0           xfun_0.53             </span></span>
 <span><span class="co">## [25] fs_1.6.6               sass_0.4.10            cli_3.6.5             </span></span>
-<span><span class="co">## [28] Rhdf5lib_1.31.0        pkgdown_2.1.3.9000     ncdf4_1.24            </span></span>
+<span><span class="co">## [28] Rhdf5lib_1.31.1        pkgdown_2.1.3.9000     ncdf4_1.24            </span></span>
 <span><span class="co">## [31] digest_0.6.37          mzR_2.43.3             MetaboCoreUtils_1.17.1</span></span>
 <span><span class="co">## [34] rhdf5_2.53.6           lifecycle_1.0.4        clue_0.3-66           </span></span>
 <span><span class="co">## [37] evaluate_1.0.5         codetools_0.2-20       ragg_1.5.0            </span></span>

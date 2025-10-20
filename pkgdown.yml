@@ -1,11 +1,11 @@
 pandoc: 3.8.1
 pkgdown: 2.1.3.9000
-pkgdown_sha: 1f2f7401ca3d9d1983eb705a2203c4c4abd4184d
+pkgdown_sha: 31943d6c878f4c64a3a910925e6a9c81b3776327
 articles:
   MsBackend: MsBackend.html
   Spectra-large-scale: Spectra-large-scale.html
   Spectra: Spectra.html
-last_built: 2025-10-14T05:50Z
+last_built: 2025-10-20T06:34Z
 urls:
   reference: https://rformassspectrometry.github.io/Spectra/reference
   article: https://rformassspectrometry.github.io/Spectra/articles
