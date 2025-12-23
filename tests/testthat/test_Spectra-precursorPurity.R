@@ -3,39 +3,53 @@ sps_dda_mem <- setBackend(sps_dda, MsBackendMemory())
 test_that("precursorPurity works", {
     expect_error(precursorPurity(4), "needs to be a 'Spectra' object")
 
-    res <- precursorPurity(sps_dda, tolerance = 0.1)
-    res_2 <- precursorPurity(sps_dda, useReportedIsolationWindow = TRUE)
+    res <- precursorPurity(sps_dda_mem, tolerance = 0.1)
+    res_2 <- precursorPurity(sps_dda_mem, useReportedIsolationWindow = TRUE)
     ## purity is expected to be smaller for larger isolation window
     expect_true(length(which(res_2 < res)) > length(which(res_2 > res)))
 })
 
 test_that(".precursorPurity works", {
     ## error
-    expect_error(.precursorPurity(sps_dda[c(34, 1, 34)]), "not increasingly")
-    
+    expect_error(.precursorPurity(sps_dda_mem[c(34, 1, 34)]),
+                 "not increasingly")
+
     ## Small tolerance
-    res <- .precursorPurity(sps_dda, tolerance = 0.05, ppm = 10)
+    res <- .precursorPurity(sps_dda_mem, tolerance = 0.05, ppm = 10)
     expect_true(is.numeric(res))
-    expect_equal(length(res), length(sps_dda))
-    expect_true(all(is.na(res[msLevel(sps_dda) == 1L])))
-    expect_true(all(!is.na(res[msLevel(sps_dda) == 2L])))
-    
+    expect_equal(length(res), length(sps_dda_mem))
+    expect_true(all(is.na(res[msLevel(sps_dda_mem) == 1L])))
+    expect_true(all(!is.na(res[msLevel(sps_dda_mem) == 2L])))
+
     ## Large tolerance
-    res_2 <- .precursorPurity(sps_dda, tolerance = 1, ppm = 10)
+    res_2 <- .precursorPurity(sps_dda_mem, tolerance = 1, ppm = 10)
     expect_true(is.numeric(res_2))
-    expect_equal(length(res_2), length(sps_dda))
-    expect_true(all(is.na(res_2[msLevel(sps_dda) == 1L])))
-    expect_true(all(!is.na(res_2[msLevel(sps_dda) == 2L])))
+    expect_equal(length(res_2), length(sps_dda_mem))
+    expect_true(all(is.na(res_2[msLevel(sps_dda_mem) == 1L])))
+    expect_true(all(!is.na(res_2[msLevel(sps_dda_mem) == 2L])))
     ## Purity is generally lower for larger isolation window
     expect_true(length(which(res_2 < res)) > length(which(res_2 > res)))
 
     ## reported isolation window
-    res_3 <- .precursorPurity(sps_dda, useIsolationWindow = TRUE)
+    res_3 <- .precursorPurity(sps_dda_mem, useIsolationWindow = TRUE)
     expect_false(all(res_3 == res_2))
     expect_false(all(res_3 == res))
     expect_true(length(which(res_3 < res)) > length(which(res_3 > res)))
 
     ## No MS2 data
-    tmp <- filterMsLevel(sps_dda, 1L)
+    tmp <- filterMsLevel(sps_dda_mem, 1L)
     expect_true(all(is.na(.precursorPurity(tmp, tolerance = 0.3))))
+})
+
+test_that("precursorPurity works with empty spectra", {
+    a <- sps_dda_mem[c(which(sps_dda_mem$msLevel == 1L)[1:4],
+                       which(sps_dda_mem$msLevel == 2L)[1:6])]
+    a <- applyProcessing(filterIntensity(a, intensity = 0.03))
+    res <- precursorPurity(a)
+    expect_true(all(is.na(res[1:4])))
+    expect_true(all(!is.na(res[5:10])))
+    ## Without MS1 peak in previous spectrum
+    a$precursorMz[5] <- 1000.23
+    res <- precursorPurity(a)
+    expect_true(is.na(res[5]))
 })
