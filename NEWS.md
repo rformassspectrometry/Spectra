@@ -1,3 +1,10 @@
+# Spectra 1.20
+
+## Change 1.20.1
+
+- Fix in `precursorPurity()` if no MS1 peak with an m/z similar to an MS2
+  spectra's precursor m/z is found.
+
 # Spectra 1.19
 
 ## Change 1.19.11
