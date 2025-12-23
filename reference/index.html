@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.19.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,8 +41,7 @@
 
 
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -53,145 +52,169 @@
 
         </dt>
         <dd>Mass spectrometry data backends</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="MsBackendCached.html">MsBackendCached()</a></code> <code><a href="MsBackendCached.html">backendInitialize(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">dataStorage(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">extractByIndex(<i>&lt;MsBackendCached&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code> <code><a href="MsBackendCached.html">length(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">spectraVariables(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">spectraData(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">`spectraData&lt;-`(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">`[`(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">`$`(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">`$&lt;-`(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">selectSpectraVariables(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">show(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">intensity(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">ionCount(<i>&lt;MsBackendCached&gt;</i>)</a></code> <code><a href="MsBackendCached.html">mz(<i>&lt;MsBackendCached&gt;</i>)</a></code>
 
         </dt>
         <dd>Base MsBackend class providing data caching mechanism</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Spectra.html">Spectra(<i>&lt;missing&gt;</i>)</a></code> <code><a href="Spectra.html">Spectra(<i>&lt;MsBackend&gt;</i>)</a></code> <code><a href="Spectra.html">Spectra(<i>&lt;character&gt;</i>)</a></code> <code><a href="Spectra.html">Spectra(<i>&lt;ANY&gt;</i>)</a></code> <code><a href="Spectra.html">setBackend(<i>&lt;Spectra&gt;</i>,<i>&lt;MsBackend&gt;</i>)</a></code> <code><a href="Spectra.html">export(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="Spectra.html">dataStorageBasePath(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="Spectra.html">`dataStorageBasePath&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code>
 
         </dt>
         <dd>The Spectra class to manage and access MS data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="addProcessing.html">processingLog()</a></code> <code><a href="addProcessing.html">scalePeaks()</a></code> <code><a href="addProcessing.html">addProcessing(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">applyProcessing(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">bin(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">containsMz(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">containsNeutralLoss(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">entropy(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">entropy(<i>&lt;ANY&gt;</i>)</a></code> <code><a href="addProcessing.html">pickPeaks(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">replaceIntensitiesBelow(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">reset(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">smooth(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="addProcessing.html">spectrapply(<i>&lt;Spectra&gt;</i>)</a></code>
 
         </dt>
         <dd>Data manipulation and analysis methods</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="chunkapply.html">chunkapply()</a></code>
 
         </dt>
         <dd>Apply a function stepwise to chunks of data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="combinePeaks.html">combinePeaks(<i>&lt;Spectra&gt;</i>)</a></code>
 
         </dt>
         <dd>Aggregating and combining mass peaks data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="combinePeaksData.html">combinePeaksData()</a></code>
 
         </dt>
         <dd>Combine peaks with similar m/z across spectra</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="combineSpectra.html">concatenateSpectra()</a></code> <code><a href="combineSpectra.html">combineSpectra()</a></code> <code><a href="combineSpectra.html">joinSpectraData()</a></code> <code><a href="combineSpectra.html">c(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="combineSpectra.html">cbind2(<i>&lt;Spectra&gt;</i>,<i>&lt;dataframeOrDataFrameOrmatrix&gt;</i>)</a></code> <code><a href="combineSpectra.html">split(<i>&lt;Spectra&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code>
 
         </dt>
         <dd>Merging, aggregating and splitting Spectra</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="compareSpectra.html">compareSpectra(<i>&lt;Spectra&gt;</i>,<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="compareSpectra.html">compareSpectra(<i>&lt;Spectra&gt;</i>,<i>&lt;missing&gt;</i>)</a></code>
 
         </dt>
         <dd>Spectra similarity calculations</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="countIdentifications.html">countIdentifications()</a></code>
 
         </dt>
         <dd>Count the number of identifications per scan</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="estimatePrecursorIntensity.html">estimatePrecursorIntensity(<i>&lt;Spectra&gt;</i>)</a></code>
 
         </dt>
         <dd>Estimate Precursor Intensities</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="estimatePrecursorMz.html">estimatePrecursorMz()</a></code>
 
         </dt>
         <dd>Estimating precursor m/z valus for DDA data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="fillCoreSpectraVariables.html">fillCoreSpectraVariables()</a></code>
 
         </dt>
         <dd>Fill spectra data with columns for missing core variables</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="filterFourierTransformArtefacts.html">filterFourierTransformArtefacts</a></code> <code><a href="filterFourierTransformArtefacts.html">fft_spectrum</a></code>
 
         </dt>
         <dd>Fast fourier transform artefact filter</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="filterMsLevel.html">deisotopeSpectra()</a></code> <code><a href="filterMsLevel.html">reduceSpectra()</a></code> <code><a href="filterMsLevel.html">filterPrecursorMaxIntensity()</a></code> <code><a href="filterMsLevel.html">filterPrecursorIsotopes()</a></code> <code><a href="filterMsLevel.html">filterPrecursorPeaks()</a></code> <code><a href="filterMsLevel.html">dropNaSpectraVariables(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">selectSpectraVariables(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">`[`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterAcquisitionNum(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterEmptySpectra(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterDataOrigin(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterDataStorage(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterFourierTransformArtefacts(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterIntensity(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterIsolationWindow(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterMsLevel(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterMzRange(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterMzValues(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterPolarity(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterPrecursorMz(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterPrecursorMzRange(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterPrecursorMzValues(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterPrecursorCharge(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterPrecursorScan(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterRt(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterRanges(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="filterMsLevel.html">filterValues(<i>&lt;Spectra&gt;</i>)</a></code>
 
         </dt>
         <dd>Filter and subset Spectra objects</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="filterPeaksRanges.html">filterPeaksRanges()</a></code>
 
         </dt>
         <dd>Filter peaks based on spectra and peaks variable ranges</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="fragmentGroupIndex.html">fragmentGroupIndex()</a></code>
 
         </dt>
         <dd>Mass fragmentation collections of each full scan</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="joinPeaks.html">joinPeaks()</a></code> <code><a href="joinPeaks.html">joinPeaksGnps()</a></code> <code><a href="joinPeaks.html">joinPeaksNone()</a></code>
 
         </dt>
         <dd>Join (map) peaks of two spectra</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="neutralLoss.html">PrecursorMzParam()</a></code> <code><a href="neutralLoss.html">neutralLoss(<i>&lt;Spectra&gt;</i>,<i>&lt;PrecursorMzParam&gt;</i>)</a></code>
 
         </dt>
         <dd>Calculate Neutral Loss Spectra</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="plotMzDelta.html">computeMzDeltas()</a></code> <code><a href="plotMzDelta.html">plotMzDelta()</a></code>
 
         </dt>
         <dd>MZ delta Quality Control</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="precursorPurity.html">precursorPurity()</a></code>
 
         </dt>
         <dd>Calculating Precursor Purity for MS2 spectra</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="processingChunkSize.html">processingChunkSize(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="processingChunkSize.html">`processingChunkSize&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="processingChunkSize.html">processingChunkFactor(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="processingChunkSize.html">backendBpparam(<i>&lt;Spectra&gt;</i>)</a></code>
 
         </dt>
         <dd>Parallel and chunk-wise processing of <code>Spectra</code></dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="spectra-plotting.html">plotSpectra()</a></code> <code><a href="spectra-plotting.html">plotSpectraOverlay()</a></code> <code><a href="spectra-plotting.html">plotSpectraMirror(<i>&lt;Spectra&gt;</i>)</a></code>
 
         </dt>
         <dd>Plotting Spectra</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="spectraData.html">asDataFrame()</a></code> <code><a href="spectraData.html">acquisitionNum(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">centroided(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`centroided&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">collisionEnergy(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`collisionEnergy&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">coreSpectraVariables()</a></code> <code><a href="spectraData.html">dataOrigin(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`dataOrigin&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">dataStorage(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">intensity(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">ionCount(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">isCentroided(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">isEmpty(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">isolationWindowLowerMz(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`isolationWindowLowerMz&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">isolationWindowTargetMz(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`isolationWindowTargetMz&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">isolationWindowUpperMz(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`isolationWindowUpperMz&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">length(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">lengths(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">longForm(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">msLevel(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">mz(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">peaksData(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">peaksVariables(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">polarity(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`polarity&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">precScanNum(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">precursorCharge(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">precursorIntensity(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">precursorMz(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`precursorMz&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">rtime(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`rtime&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">scanIndex(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">smoothed(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`smoothed&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">spectraData(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`spectraData&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">spectraNames(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`spectraNames&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">spectraVariables(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">tic(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">uniqueMsLevels(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`$`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`$&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`[[`(<i>&lt;Spectra&gt;</i>)</a></code> <code><a href="spectraData.html">`[[&lt;-`(<i>&lt;Spectra&gt;</i>)</a></code>
 
         </dt>
         <dd>Accessing mass spectrometry data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="spectraVariableMapping.html">spectraVariableMapping()</a></code> <code><a href="spectraVariableMapping.html">`spectraVariableMapping&lt;-`()</a></code>
 
@@ -206,7 +229,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
 </div>
 
     </footer></div>
