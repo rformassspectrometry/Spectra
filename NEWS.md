@@ -1,3 +1,9 @@
+# Spectra 1.21
+
+## Change 1.21.1
+
+- Fix `precursorPurity()` for empty spectra.
+
 # Spectra 1.19
 
 ## Change 1.19.11

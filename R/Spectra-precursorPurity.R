@@ -181,7 +181,7 @@ precursorPurity <- function(object, tolerance = 0.05, ppm = 0,
             if (nrow(p)) {
                 intensities <- p[, 2L]
                 ratio <- max(intensities) / sum(intensities)
-            }
+            } else ratio <- NA_real_
             ratios[ms2_idx[i]] <- ratio
         }
     }
