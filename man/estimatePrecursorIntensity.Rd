@@ -62,8 +62,8 @@ previous and next MS1 spectrum. See below for an example.
 ## in these cases to calculate the precursor intensity on MS1 data. Below
 ## we load an mzML file from a vendor providing precursor intensities and
 ## compare the estimated and reported precursor intensities.
-tmt <- Spectra(msdata::proteomics(full.names = TRUE)[5],
-    backend = MsBackendMzR())
+f <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
+tmt <- Spectra(f, backend = MsBackendMzR())
 pmi <- estimatePrecursorIntensity(tmt)
 plot(pmi, precursorIntensity(tmt))
 

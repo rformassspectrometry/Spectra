@@ -85,9 +85,7 @@ The spectra in \code{object} have to be ordered by their retention time.
 \examples{
 
 ## Load a test DDA file
-library(msdata)
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-                 package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
 sps_dda <- Spectra(fl)
 
 ## Define the isolation window based on the MS2 spectra's precursor m/z

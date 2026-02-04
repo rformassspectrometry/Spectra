@@ -288,7 +288,7 @@ NULL
 #' @examples
 #'
 #' library(Spectra)
-#' fl <- system.file("TripleTOF-SWATH/PestMix1_SWATH.mzML", package = "msdata")
+#' fl <- MsDataHub::PestMix1_SWATH.mzML()
 #' sps <- Spectra(fl, source = MsBackendMzR())
 #'
 #' sps <- sps[1:10]
@@ -1191,8 +1191,8 @@ filterPeaksRanges <- function(object, ..., keep = TRUE) {
 #'
 #' @examples
 #'
-#' fl_ms3 <- system.file("proteomics", "MS3TMT11.mzML", package = "msdata")
-#' sps_dda <- Spectra(fl_ms3)
+#' fl <- MsDataHub::PestMix1_DDA.mzML()
+#' sps_dda <- Spectra(fl)
 #' idx <- fragmentGroupIndex(sps_dda)
 #' head(idx)
 fragmentGroupIndex <- function(object, BPPARAM = SerialParam()) {

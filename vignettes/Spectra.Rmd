@@ -8,7 +8,7 @@ vignette: >
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
     %\VignettePackage{Spectra}
-    %\VignetteDepends{Spectra,mzR,BiocStyle,msdata,msentropy}
+    %\VignetteDepends{Spectra,mzR,BiocStyle,MsDataHub,msentropy}
 bibliography: references.bib
 ---
 
@@ -150,7 +150,10 @@ data files only on demand. See section [Backends](#backends) for more details
 on backends and their properties.
 
 ```{r spectra-msbackendmzr, message = FALSE}
-fls <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+#' define the file names of the data to import; data provided through
+#' the MsDataHub package
+fls <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+         MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 sps_sciex <- Spectra(fls, source = MsBackendMzR())
 sps_sciex
 ```
@@ -1251,8 +1254,7 @@ With the example below we load the data from a single mzML file and use a
 us to specify the storage location of the HDF5 file.
 
 ```{r hdf5}
-library(msdata)
-fl <- proteomics(full.names = TRUE)[5]
+fl <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
 
 sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
 head(basename(dataStorage(sps_tmt)))

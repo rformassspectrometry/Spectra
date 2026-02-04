@@ -50,8 +50,8 @@ Improper ordering may lead to incorrect groupings.
 }
 \examples{
 
-fl_ms3 <- system.file("proteomics", "MS3TMT11.mzML", package = "msdata")
-sps_dda <- Spectra(fl_ms3)
+fl <- MsDataHub::PestMix1_DDA.mzML()
+sps_dda <- Spectra(fl)
 idx <- fragmentGroupIndex(sps_dda)
 head(idx)
 }
