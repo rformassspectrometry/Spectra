@@ -1,26 +1,26 @@
 library("testthat")
 library("patrick")
 library("Spectra")
+library("MsDataHub")
 
 register(SerialParam())
 
-sciex_file <- normalizePath(
-    dir(system.file("sciex", package = "msdata"), full.names = TRUE))
-cdf_file <- normalizePath(
-    dir(system.file("cdf", package = "msdata"), full.names = TRUE))
+## MsDataHub
+cdf_file <- unname(MsDataHub::ko15.CDF())
 
+sciex_file <- unname(c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+                       MsDataHub::X20171016_POOL_POS_3_105.134.mzML()))
 sciex_mzr <- backendInitialize(MsBackendMzR(), files = sciex_file)
 sciex_pks <- peaksData(sciex_mzr)
-fl <- normalizePath(
-    dir(system.file("proteomics", package = "msdata"), full.names = TRUE))
-tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl[5])
 
-fl <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML",
-                  package = "msdata")
+fl <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
+tmt_mzr <- backendInitialize(MsBackendMzR(), files = fl)
+sps_tmt <- setBackend(Spectra(tmt_mzr), MsBackendMemory())
+
+fl <- MsDataHub::PestMix1_SWATH.mzML()
 sps_dia <- Spectra(fl)
 
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-                  package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
 sps_dda <- Spectra(fl)
 
 sciex_hd5 <- backendInitialize(MsBackendHdf5Peaks(),

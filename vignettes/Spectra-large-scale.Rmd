@@ -8,7 +8,7 @@ vignette: >
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
     %\VignettePackage{Spectra}
-    %\VignetteDepends{Spectra,mzR,BiocStyle,msdata}
+    %\VignetteDepends{Spectra,mzR,BiocStyle,MsDataHub}
 bibliography: references.bib
 ---
 
@@ -50,19 +50,18 @@ as the `MsBackendMemory` and `MsBackendDataFrame`) or for low memory requirement
 (such as the `MsBackendMzR`, or the `MsBackendOfflineSql` implemented in the
 `r Biocpkg("MsBackendSql")` package, that through the smallest possible memory
 footprint enables also the analysis of very large data sets). Below we load MS
-data from 4 test files into a `Spectra` using a `MsBackendMzR` backend.
+data from 4 test files provided through the *MsDataHub* package into a
+`Spectra` object using an `MsBackendMzR` backend.
 
 ```{r}
 library(Spectra)
 
 #' Define the file names from which to import the data
 fls <- c(
-    system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata"),
-    system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML", package = "msdata"),
-    system.file("sciex", "20171016_POOL_POS_1_105-134.mzML",
-                package = "msdata"),
-    system.file("sciex", "20171016_POOL_POS_3_105-134.mzML",
-                package = "msdata"))
+    MsDataHub::PestMix1_DDA.mzML(),
+    MsDataHub::PestMix1_SWATH.mzML(),
+    MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+    MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 
 #' Creating a Spectra object representing the MS data
 sps_mzr <- Spectra(fls, source = MsBackendMzR())

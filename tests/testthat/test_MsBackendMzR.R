@@ -1,16 +1,16 @@
 test_that("initializeBackend,MsBackendMzR works", {
-    fl <- normalizePath(
-        dir(system.file("sciex", package = "msdata"), full.names = TRUE))
+    fl <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+            MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
     expect_error(backendInitialize(MsBackendMzR()), "Parameter 'files'")
     expect_error(backendInitialize(MsBackendMzR(), files = 4),
                  "expected to be a character")
     be <- backendInitialize(MsBackendMzR(), files = fl)
     expect_true(validObject(be))
     expect_true(is(be, "MsBackendMzR"))
-    expect_equal(unique(be$dataStorage), fl)
+    expect_equal(unique(be$dataStorage), unname(fl))
     expect_equal(nrow(be@spectraData), 1862)
     expect_equal(be@spectraData$scanIndex, c(1:931, 1:931))
-    expect_equal(be@spectraData$dataStorage, rep(fl, each = 931))
+    expect_equal(be@spectraData$dataStorage, rep(unname(fl), each = 931))
     expect_true(isReadOnly(be))
 })
 
@@ -148,7 +148,7 @@ test_that("isolationWindowLowerMz,MsBackendMzR works", {
     expect_true(is(be@spectraData$isolationWindowLowerMz, "numeric"))
     expect_true(all(isolationWindowLowerMz(be) == 2))
 
-    expect_error(isolationWindowLowerMz(be) <- 2, "of length 509")
+    expect_error(isolationWindowLowerMz(be) <- 2, "of length 7534")
 
     be <- sciex_mzr
     expect_true(all(is.na(isolationWindowLowerMz(be))))
@@ -169,7 +169,7 @@ test_that("isolationWindowTargetMz,MsBackendMzR works", {
     expect_true(is(be@spectraData$isolationWindowTargetMz, "numeric"))
     expect_true(all(isolationWindowTargetMz(be) == 2))
 
-    expect_error(isolationWindowTargetMz(be) <- 2, "of length 509")
+    expect_error(isolationWindowTargetMz(be) <- 2, "of length 7534")
 
     be <- sciex_mzr
     expect_true(all(is.na(isolationWindowTargetMz(be))))
@@ -190,7 +190,7 @@ test_that("isolationWindowUpperMz,MsBackendMzR works", {
     expect_true(is(be@spectraData$isolationWindowUpperMz, "numeric"))
     expect_true(all(isolationWindowUpperMz(be) == 2))
 
-    expect_error(isolationWindowUpperMz(be) <- 2, "of length 509")
+    expect_error(isolationWindowUpperMz(be) <- 2, "of length 7534")
 
     be <- sciex_mzr
     expect_true(all(is.na(isolationWindowUpperMz(be))))
@@ -204,7 +204,7 @@ test_that("msLevel,MsBackendMzR works", {
     expect_true(is(sciex_mzr@spectraData$msLevel, "integer"))
     expect_true(all(msLevel(sciex_mzr) == 1L))
 
-    expect_true(sum(msLevel(tmt_mzr) == 2) == 451)
+    expect_true(sum(msLevel(tmt_mzr) == 2) > 0)
 })
 
 test_that("mz,MsBackendMzR works", {

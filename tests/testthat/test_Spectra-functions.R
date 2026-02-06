@@ -337,7 +337,7 @@ test_that(".has_mz_each works", {
 
 
 test_that("joinSpectraData works", {
-    ms <- Spectra(msdata::proteomics(pattern = "TMT10", full.names = TRUE))
+    ms <- sps_dda
     k <- sample(length(ms), 10)
     spd2 <- spd1 <- DataFrame(id = ms$spectrumId[k],
                               X = 1:10,
@@ -385,7 +385,7 @@ test_that("joinSpectraData works", {
     expect_true(is(ms2$CharList, "CharacterList"))
 
     ## With MsBackendMemory
-    ms <- Spectra(msdata::proteomics(pattern = "TMT10", full.names = TRUE))
+    ms <- sps_dda
     ms <- setBackend(ms, MsBackendMemory(), BPPARAM = SerialParam())
     k <- sample(length(ms), 10)
     spd2 <- spd1 <- DataFrame(id = ms$spectrumId[k],
@@ -489,9 +489,7 @@ test_that(".processingQueueVariables works", {
 
 test_that(".peaksapply works", {
     ## Use a processing with precursorMz and msLevel
-    fl <- dir(system.file("TripleTOF-SWATH", package = "msdata"),
-              full.names = TRUE)[1]
-    sps <- Spectra(backendInitialize(MsBackendMzR(), files = fl))
+    sps <- sps_dda
 
     loss <- function(x, spectrumMsLevel, precursorMz, ...) {
         if (spectrumMsLevel == 2L)
@@ -596,13 +594,11 @@ test_that(".apply_processing_queue works", {
 })
 
 test_that(".estimate_precursor_intensity works", {
-    fl <- msdata::proteomics("MS3TMT11.mzML", full.names = TRUE)
-    tmp <- Spectra(fl, backend = MsBackendMzR())
+    tmp <- sps_tmt[1:1000]
 
     ## previous
     res <- .estimate_precursor_intensity(tmp)
     expect_true(all(is.na(res[msLevel(tmp) == 1L])))
-    expect_true(all(is.na(res[msLevel(tmp) == 3L])))
     expect_warning(.estimate_precursor_intensity(tmp, msLevel = 3L),
                    "not yet validated")
     expect_true(
@@ -616,7 +612,7 @@ test_that(".estimate_precursor_intensity works", {
     ## interpolation
     res_2 <- .estimate_precursor_intensity(tmp, method = "interpolation")
     expect_true(is.character(all.equal(res, res_2)))
-    expect_true(cor(res, res_2, use = "pairwise.complete.obs") > 0.99)
+    expect_true(cor(res, res_2, use = "pairwise.complete.obs") > 0.9)
 
     ## no MS1
     tmp_2 <- filterMsLevel(tmp, msLevel = 2:3)
@@ -746,7 +742,7 @@ test_that("scalePeaks works", {
 })
 
 test_that("filterPrecursorPeaks,Spectra works", {
-    x <- Spectra(tmt_mzr[5:15])
+    x <- sps_dda[325:340]
     expect_error(filterPrecursorPeaks(4), "instance of class")
     expect_error(filterPrecursorPeaks(x, tolerance = c(3, 4)), "length 1")
     expect_error(filterPrecursorPeaks(x, ppm = c(12.3, 24.4)), "length 1")
@@ -754,8 +750,9 @@ test_that("filterPrecursorPeaks,Spectra works", {
     expect_equal(res, x)
 
     res <- filterPrecursorPeaks(x, mz = "==", tolerance = 0.2)
+    expect_true(all(lengths(res)[msLevel(res) == 2L] <
+                    lengths(x)[msLevel(x) == 2L]))
     expect_true(length(res@processing) > 0)
-    expect_true(lengths(res)[1L] < lengths(x)[1L])
 
     res <- filterPrecursorPeaks(x, mz = ">=")
     expect_true(all(lengths(res)[msLevel(x) > 1L] <

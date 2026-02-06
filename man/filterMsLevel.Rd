@@ -522,8 +522,7 @@ alternative function to combine peaks within each spectrum.
 \examples{
 
 ## Load a `Spectra` object with LC-MS/MS data.
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-    package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
 sps_dda <- Spectra(fl)
 sps_dda
 

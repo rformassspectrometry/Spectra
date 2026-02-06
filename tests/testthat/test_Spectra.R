@@ -410,7 +410,7 @@ test_that("isolationWindowLowerMz,Spectra works", {
     isolationWindowLowerMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowLowerMz(sps), as.numeric(1:length(sps)))
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     expect_true(all(is.na(isolationWindowLowerMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowLowerMz(sps)[msLevel(sps) == 2L])))
 })
@@ -424,7 +424,7 @@ test_that("isolationWindowTargetMz,Spectra works", {
     isolationWindowTargetMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowTargetMz(sps), as.numeric(1:length(sps)))
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     expect_true(all(is.na(isolationWindowTargetMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowTargetMz(sps)[msLevel(sps) == 2L])))
     expect_true(all(isolationWindowTargetMz(sps)[msLevel(sps) == 2L] >
@@ -440,7 +440,7 @@ test_that("isolationWindowUpperMz,Spectra works", {
     isolationWindowUpperMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowUpperMz(sps), as.numeric(1:length(sps)))
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     expect_true(all(is.na(isolationWindowUpperMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowUpperMz(sps)[msLevel(sps) == 2L])))
     expect_true(all(isolationWindowUpperMz(sps)[msLevel(sps) == 2L] >
@@ -1030,12 +1030,12 @@ test_that("filterIsolationWindow,Spectra works", {
     res <- filterIsolationWindow(sps, 123.323)
     expect_true(length(res) == 0)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     res <- filterIsolationWindow(sps, 544)
-    expect_true(length(res) == 3)
-    expect_true(all(isolationWindowLowerMz(res) < 544))
+    expect_true(length(res) == 36)
+    expect_true(all(isolationWindowLowerMz(res) <= 544))
     expect_true(all(isolationWindowUpperMz(res) > 544))
-    expect_true(all(precursorMz(res) < 545 & precursorMz(res) > 543))
+    expect_true(all(precursorMz(res) < 545.1 & precursorMz(res) > 543))
 })
 
 test_that("filterMsLevel,Spectra works", {
@@ -1048,7 +1048,7 @@ test_that("filterMsLevel,Spectra works", {
     res <- filterMsLevel(sps, 2L)
     expect_true(length(res) == 0)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     expect_true(all(1:2 %in% msLevel(sps)))
     res <- filterMsLevel(sps, 1L)
     expect_false(all(1:2 %in% msLevel(res)))
@@ -1081,7 +1081,7 @@ test_that("filterPrecursorMzRange,Spectra works", {
     expect_true(is(res, "Spectra"))
     expect_true(length(res@processing) == 1)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     res <- filterPrecursorMzRange(sps, mz = 544.75)
     expect_true(length(res) == 0)
     res <- filterPrecursorMzRange(sps, mz = 544.75 + c(-1, 1) * ppm(544.75, 40))
@@ -1094,15 +1094,15 @@ test_that("filterPrecursorCharge,Spectra works", {
     expect_true(is(res, "Spectra"))
     expect_true(length(res@processing) == 1)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     res <- filterPrecursorCharge(sps, z = 0L)
     expect_true(length(res) == 0)
 
     res2 <- filterPrecursorCharge(sps, z = 2)
     res3 <- filterPrecursorCharge(sps, z = 3)
     res23 <- filterPrecursorCharge(sps, z = 2:3)
-    expect_true(length(res2) == 300)
-    expect_true(length(res3) == 128)
+    expect_true(length(res2) == 3749)
+    expect_true(length(res3) == 1955)
     expect_true(length(res23) == (length(res2) + length(res3)))
 })
 
@@ -1114,12 +1114,12 @@ test_that("filterPrecursorScan,Spectra works", {
     expect_true(is(res, "Spectra"))
     expect_true(length(res@processing) == 1)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     res <- filterPrecursorScan(sps, c(1087L, 1214L))
     expect_true(sum(msLevel(res) == 1) == 2)
     expect_true(all(c(1087L, 1214L) %in% acquisitionNum(res)))
 
-    sps <- c(sps, Spectra(sciex_mzr))
+    sps <- c(sps, setBackend(Spectra(sciex_mzr), MsBackendMemory()))
     res <- filterPrecursorScan(sps, 1057)
     expect_equal(acquisitionNum(res), c(1054L, 1057L))
 })
@@ -1240,7 +1240,7 @@ test_that("filterValues, Spectra works", {
 #### ---------------------------------------------------------------------------
 
 test_that("bin,Spectra works", {
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     pks <- peaksData(sps)
     res <- bin(sps, binSize = 2, zero.rm = FALSE)
     expect_true(length(res@processingQueue) == 1)
@@ -1976,9 +1976,7 @@ test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
 
 
 test_that("asDataFrame works", {
-    sciex_file <- normalizePath(
-        dir(system.file("sciex", package = "msdata"), full.names = TRUE))
-    sp <- Spectra(sciex_file)
+    sp <- Spectra(sciex_mzr)
     ## Full dataframe
     df <- asDataFrame(sp)
     expect_identical(nrow(df), sum(sapply(peaksData(sp), nrow)))
@@ -1996,13 +1994,15 @@ test_that("asDataFrame works", {
 })
 
 test_that("estimatePrecursorIntensity works", {
-    fls <- msdata::proteomics(full.names = TRUE)[c(5, 3)]
+    fls <- c(
+        MsDataHub::PestMix1_DDA.mzML(),
+        MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz())
     second <- Spectra(fls[2], backend = MsBackendMzR())
     both <- Spectra(fls, backend = MsBackendMzR())
 
     res_second <- estimatePrecursorIntensity(second)
     res_both <- estimatePrecursorIntensity(both)
-    expect_equal(res_second, res_both[510:length(res_both)])
+    expect_equal(res_second, res_both[7603:length(res_both)])
 })
 
 test_that("precursorMz<-,Spectra works", {

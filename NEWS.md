@@ -1,5 +1,9 @@
 # Spectra 1.21
 
+## Change 1.21.2
+
+- Replace *msdata* with *MsDataHub* package.
+
 ## Change 1.21.1
 
 - Fix `precursorPurity()` for empty spectra.

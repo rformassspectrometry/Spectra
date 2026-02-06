@@ -293,9 +293,9 @@ data <- Spectra(spd)
 data
 
 ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
-## backend.
-sciex_file <- dir(system.file("sciex", package = "msdata"),
-    full.names = TRUE)
+## backend. Example mzML files are provided by the *MsDataHub* package.
+sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+                MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 sciex
 

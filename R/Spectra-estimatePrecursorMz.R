@@ -66,7 +66,7 @@
 #'
 #' ## Load a DDA test data set. For the present data set no large differences
 #' ## between the reported and the *actual* precursor m/z are expected.
-#' fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata")
+#' fl <- MsDataHub::PestMix1_DDA.mzML()
 #' s <- Spectra(fl)
 #'
 #' pmz <- estimatePrecursorMz(s)

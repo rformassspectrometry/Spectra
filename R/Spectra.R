@@ -261,9 +261,9 @@ NULL
 #' data
 #'
 #' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
-#' ## backend.
-#' sciex_file <- dir(system.file("sciex", package = "msdata"),
-#'     full.names = TRUE)
+#' ## backend. Example mzML files are provided by the *MsDataHub* package.
+#' sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+#'                 MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 #' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 #' sciex
 #'
@@ -935,9 +935,9 @@ setReplaceMethod("dataStorageBasePath", "Spectra", function(object, value) {
 #' @examples
 #'
 #' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
-#' ## backend.
-#' sciex_file <- dir(system.file("sciex", package = "msdata"),
-#'     full.names = TRUE)
+#' ## backend. Example mzML files are provided by the *MsDataHub* package.
+#' sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+#'                 MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 #' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 #' sciex
 #'
@@ -1640,9 +1640,10 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #' s
 #'
 #' ## Create a second Spectra from mzML files and use the `MsBackendMzR`
-#' ## on-disk backend.
-#' sciex_file <- dir(system.file("sciex", package = "msdata"),
-#'     full.names = TRUE)
+#' ## on-disk backend. Example mzML files are provided by the *MsDataHub*
+#' ## package.
+#' sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+#'                 MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 #' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 #' sciex
 #'
@@ -1840,9 +1841,9 @@ setMethod("split", "Spectra", function(x, f, drop = FALSE, ...) {
 #' @examples
 #'
 #' ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
-#' ## backend.
-#' sciex_file <- dir(system.file("sciex", package = "msdata"),
-#'     full.names = TRUE)
+#' ## backend. Example mzML files are provided by the *MsDataHub* package.
+#' sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+#'                 MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 #' sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 #'
 #' ## Combine mass peaks per spectrum with a difference in their m/z value
@@ -2326,8 +2327,7 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #' @examples
 #'
 #' ## Load a `Spectra` object with LC-MS/MS data.
-#' fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-#'     package = "msdata")
+#' fl <- MsDataHub::PestMix1_DDA.mzML()
 #' sps_dda <- Spectra(fl)
 #' sps_dda
 #'
@@ -3187,8 +3187,7 @@ setMethod("filterValues", "Spectra",
 #' @examples
 #'
 #' ## Load a `Spectra` object with LC-MS/MS data.
-#' fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-#'     package = "msdata")
+#' fl <- MsDataHub::PestMix1_DDA.mzML()
 #' sps_dda <- Spectra(fl)
 #' sps_dda
 #'
@@ -3785,8 +3784,8 @@ setMethod("processingChunkFactor", "Spectra", function(object) {
 #' ## in these cases to calculate the precursor intensity on MS1 data. Below
 #' ## we load an mzML file from a vendor providing precursor intensities and
 #' ## compare the estimated and reported precursor intensities.
-#' tmt <- Spectra(msdata::proteomics(full.names = TRUE)[5],
-#'     backend = MsBackendMzR())
+#' f <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
+#' tmt <- Spectra(f, backend = MsBackendMzR())
 #' pmi <- estimatePrecursorIntensity(tmt)
 #' plot(pmi, precursorIntensity(tmt))
 #'
@@ -3909,8 +3908,7 @@ setMethod(
 #' @examples
 #'
 #' ## Load a `Spectra` object with LC-MS/MS data.
-#' fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-#'     package = "msdata")
+#' fl <- MsDataHub::PestMix1_DDA.mzML()
 #' sps_dda <- Spectra(fl)
 #' sps_dda
 #'
