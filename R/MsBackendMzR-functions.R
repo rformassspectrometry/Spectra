@@ -17,7 +17,7 @@ MsBackendMzR <- function() {
 #'
 #' @importFrom MsCoreUtils vapply1l
 #'
-#' @return `DataFrame` with the header.
+#' @return `data.frame` with the header.
 #'
 #' @noRd
 .mzR_header <- function(x = character()) {
@@ -42,10 +42,10 @@ MsBackendMzR <- function() {
     hdr$isolationWindowUpperOffset <- NULL
     hdr$isolationWindowLowerOffset <- NULL
     ## Remove core spectra variables that contain only `NA`
-    S4Vectors::DataFrame(hdr[, !(vapply1l(hdr, function(z) all(is.na(z))) &
+    hdr[, !(vapply1l(hdr, function(z) all(is.na(z))) &
                                  colnames(hdr) %in%
-                                 names(.SPECTRA_DATA_COLUMNS))
-                             ])
+            names(.SPECTRA_DATA_COLUMNS))
+        ]
 }
 
 #' Read peaks from a single mzML file.

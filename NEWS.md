@@ -1,5 +1,10 @@
 # Spectra 1.21
 
+## Change 1.21.3
+
+- Use `data.table::rbindfill()` for merging of `MsBackendMemory` instances and
+  for `backendInitialize()` for `MsBackendMzR`.
+
 ## Change 1.21.2
 
 - Replace *msdata* with *MsDataHub* package.
