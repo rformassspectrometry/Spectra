@@ -3,7 +3,8 @@
 ## Change 1.21.3
 
 - Use `data.table::rbindfill()` for merging of `MsBackendMemory` instances and
-  for `backendInitialize()` for `MsBackendMzR`.
+  for `backendInitialize()` for `MsBackendMzR`. This adds *data.table* as a
+  dependency but improves performance for the above mentioned functionality.
 
 ## Change 1.21.2
 

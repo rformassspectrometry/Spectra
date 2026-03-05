@@ -63,11 +63,11 @@ setMethod("backendInitialize", "MsBackendMzR",
               msg <- .valid_ms_backend_files_exist(files)
               if (length(msg))
                   stop(msg)
-              spectraData <- as.data.frame(rbindlist(
+              spectraData <- rbindlist(
                   bplapply(files, FUN = function(fl) {
                       cbind(Spectra:::.mzR_header(fl),
                             dataStorage = fl)
-                  }, BPPARAM = BPPARAM), use.names = TRUE, fill = TRUE))
+                  }, BPPARAM = BPPARAM), use.names = TRUE, fill = TRUE)
               spectraData$dataOrigin <- spectraData$dataStorage
               object@spectraData <- DataFrame(spectraData)
               validObject(object)
