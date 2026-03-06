@@ -833,7 +833,6 @@ test_that("filterPeaksRanges,Spectra works", {
 })
 
 test_that("fragmentGroupIndex works", {
-
     ## basic test
     msLevel <- c(1, 2, 3, 3, 1, 2, 3, 3, 2, 3, 1, 2)
     acquisitionNum <- seq_along(msLevel)
@@ -842,7 +841,8 @@ test_that("fragmentGroupIndex works", {
     ms1_indices  <- which(!is_fragment)
     group_ids <- integer(length(msLevel))
     group_ids[ms1_indices] <- seq_along(ms1_indices)
-    group_ids[frag_indices] <- group_ids[ms1_indices[findInterval(frag_indices, ms1_indices)]]
+    group_ids[frag_indices] <- group_ids[ms1_indices[findInterval(frag_indices,
+                                                                  ms1_indices)]]
     expect_equal(group_ids, c(1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3))
 
     ## sanity checks
@@ -855,9 +855,23 @@ test_that("fragmentGroupIndex works", {
     expect_equal(length(sps_dda), length(res_dda))
 
     res_dia <- fragmentGroupIndex(sps_dia)
+    expect_equal(length(sps_dia), length(res_dia))
+
+    ## DIA has for every MS1 MS2 spectra.
+    expect_equal(sum(msLevel(sps_dia) == 1L), length(table(res_dia)))
+    expect_true(length(table(res_dia)) < length(table(res_dda)))
+
     res2 <- fragmentGroupIndex(c(sps_dda, sps_dia))
+    expect_equal(length(res2), length(sps_dda) + length(sps_dia))
     expect_equal(res_dda, res2[1:length(sps_dda)])
-    expect_true(all(res_dia != res2[length(sps_dia):length(res2)]))
+    expect_equal(res_dia + max(res_dda),
+                 res2[(length(sps_dda) + 1):length(res2)])
+    ## reverse order
+    res2 <- fragmentGroupIndex(c(sps_dia, sps_dda))
+    expect_equal(length(res2), length(sps_dda) + length(sps_dia))
+    expect_equal(res_dia, res2[1:length(sps_dia)])
+    expect_equal(res_dda + max(res_dia),
+                 res2[(length(sps_dia) + 1):length(res2)])
 
     tmp <- filterMsLevel(sps_dda, 2)
     expect_error(fragmentGroupIndex(tmp), "at least two MS levels")
