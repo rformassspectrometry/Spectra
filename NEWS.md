@@ -1,5 +1,10 @@
 # Spectra 1.20
 
+## Change 1.20.2
+
+- Fix bug in `fragmentGroupIndex()` that would return the indices in a wrong
+  order.
+
 ## Change 1.20.1
 
 - Fix in `precursorPurity()` if no MS1 peak with an m/z similar to an MS2
