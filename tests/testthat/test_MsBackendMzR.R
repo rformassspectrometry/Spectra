@@ -15,7 +15,8 @@ test_that("initializeBackend,MsBackendMzR works", {
 })
 
 test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
-    splt <- split(sciex_mzr, dataStorage(sciex_mzr))
+    splt <- split(sciex_mzr, factor(dataStorage(sciex_mzr),
+                                    unique(dataStorage(sciex_mzr))))
     expect_equal(peaksData(splt[[1]]), sciex_pks[1:931])
     expect_equal(peaksData(splt[[2]]), sciex_pks[932:1862])
     res <- backendMerge(splt)

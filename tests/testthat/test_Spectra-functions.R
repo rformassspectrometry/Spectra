@@ -17,7 +17,8 @@ test_that("addProcessing works", {
 test_that(".check_ms_level works", {
     expect_true(.check_ms_level(sciex_mzr, 1))
     expect_warning(.check_ms_level(sciex_mzr, 2))
-    expect_false(.check_ms_level(sciex_mzr, 2))
+    expect_warning(expect_false(.check_ms_level(sciex_mzr, 2)),
+                   "MS levels 2")
     expect_error(.check_ms_level(sciex_mzr, "a"), "must be numeric")
 
     expect_true(.check_ms_level(tmt_mzr, 1))

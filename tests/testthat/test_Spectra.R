@@ -151,7 +151,7 @@ test_that("setBackend,Spectra works", {
     expect_identical(dataOrigin(res), dataStorage(sps))
 
     ## switch from DataFrame to hdf5
-    tdir <- normalizePath(paste0(tempdir(), "/a"))
+    tdir <- suppressWarnings(normalizePath(paste0(tempdir(), "/a")))
     res <- setBackend(sps, MsBackendHdf5Peaks(), hdf5path = tdir)
     expect_identical(rtime(sps), rtime(res))
     expect_identical(peaksData(sps), peaksData(res))
@@ -1203,13 +1203,14 @@ test_that("filterValues, Spectra works", {
                                                                "peaksCount"),
                                  values = c(200, 400, 350),
                                  tolerance = c(100, 100, 100),
-                                 ppm = c(0 ,30, 0))
-    filt_recycle <- filterValues(sps_dia, spectraVariables = c("rtime",
-                                                               "precursorMz",
-                                                               "peaksCount"),
-                                 values = c(200, 400, 350),
-                                 tolerance = 100,
-                                 ppm = c(0, 40, 0))
+                                 ppm = c(0, 30, 0))
+    expect_warning(
+        filt_recycle <- filterValues(
+            sps_dia, spectraVariables = c("rtime", "precursorMz", "peaksCount"),
+            values = c(200, 400, 350),
+            tolerance = 100,
+            ppm = c(0, 40, 0)),
+        "does not match the ")
     expect_equal(length(filt_spectra), length(filt_recycle))
     expect_true(length(sps_dia) > length(filt_spectra))
     #' expect warning
