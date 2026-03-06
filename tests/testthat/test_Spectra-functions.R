@@ -175,10 +175,12 @@ test_that(".concatenate_spectra works", {
     ## BackendMzR
     res <- .concatenate_spectra(list(Spectra(tmt_mzr), Spectra(sciex_mzr)))
     expect_identical(msLevel(res), c(msLevel(tmt_mzr), msLevel(sciex_mzr)))
-    expect_identical(msLevel(sciex_mzr), msLevel(res[dataStorage(res) %in%
-                                                         sciex_file]))
-    expect_identical(msLevel(tmt_mzr), msLevel(res[dataStorage(res) ==
-                                                       dataStorage(tmt_mzr)[1]]))
+    expect_identical(msLevel(sciex_mzr),
+                     msLevel(res[basename(dataStorage(res)) %in%
+                                 basename(sciex_file)]))
+    expect_identical(msLevel(tmt_mzr),
+                     msLevel(res[basename(dataStorage(res)) ==
+                                 basename(dataStorage(tmt_mzr))[1]]))
 })
 
 test_that(".combine_spectra works", {

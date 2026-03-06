@@ -306,7 +306,7 @@ test_that("dataStorage,Spectra works", {
 
     sps <- Spectra(sciex_mzr)
     res <- dataStorage(sps)
-    expect_identical(res, rep(sciex_file, each = 931))
+    expect_identical(res, rep(normalizePath(sciex_file), each = 931))
 })
 
 test_that("length,Spectra works", {
@@ -955,7 +955,7 @@ test_that("filterDataOrigin,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- filterDataOrigin(sps, dataOrigin = "2")
     expect_true(length(res) == 0)
-    res <- filterDataOrigin(sps, sciex_file[1])
+    res <- filterDataOrigin(sps, normalizePath(sciex_file[1]))
     expect_identical(rtime(res), rtime(sps)[1:931])
     expect_true(length(res@processing) > length(sps@processing))
 

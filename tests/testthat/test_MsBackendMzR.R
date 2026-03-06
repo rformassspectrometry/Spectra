@@ -7,10 +7,11 @@ test_that("initializeBackend,MsBackendMzR works", {
     be <- backendInitialize(MsBackendMzR(), files = fl)
     expect_true(validObject(be))
     expect_true(is(be, "MsBackendMzR"))
-    expect_equal(unique(be$dataStorage), unname(fl))
+    expect_equal(unique(be$dataStorage), unname(normalizePath(fl)))
     expect_equal(nrow(be@spectraData), 1862)
     expect_equal(be@spectraData$scanIndex, c(1:931, 1:931))
-    expect_equal(be@spectraData$dataStorage, rep(unname(fl), each = 931))
+    expect_equal(be@spectraData$dataStorage,
+                 rep(unname(normalizePath(fl)), each = 931))
     expect_true(isReadOnly(be))
 })
 
@@ -87,7 +88,8 @@ test_that("dataStorage,MsBackendMzR works", {
 
     expect_true(is(dataStorage(sciex_mzr), "character"))
     expect_true(is(sciex_mzr@spectraData$dataStorage, "character"))
-    expect_equal(dataStorage(sciex_mzr), rep(sciex_file, each = 931))
+    expect_equal(dataStorage(sciex_mzr),
+                 rep(normalizePath(sciex_file), each = 931))
 })
 
 test_that("intensity,MsBackendMzR works", {
