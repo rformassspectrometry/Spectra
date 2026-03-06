@@ -923,12 +923,12 @@ test_that("[,Spectra works", {
     expect_true(length(res) == 0)
 
     sps <- Spectra(sciex_mzr)
-    tmp <- sps[dataStorage(sps) == sciex_file[2], ]
-    expect_true(all(dataStorage(tmp) == sciex_file[2]))
+    tmp <- sps[dataStorage(sps) == normalizePath(sciex_file[2]), ]
+    expect_true(all(dataStorage(tmp) == normalizePath(sciex_file[2])))
     expect_equal(unique(tmp$dataStorage), normalizePath(sciex_file[2]))
     expect_equal(rtime(tmp),
-                 rtime(sps)[basename(dataStorage(sps)) ==
-                            basename(sciex_file[2])])
+                 rtime(sps)[dataStorage(sps) ==
+                            normalizePath(sciex_file[2])])
 })
 
 test_that("filterAcquisitionNum,Spectra works", {
@@ -938,7 +938,8 @@ test_that("filterAcquisitionNum,Spectra works", {
     expect_equal(length(res@processing), 1)
 
     sps <- Spectra(sciex_mzr)
-    res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = sciex_file[2])
+    res <- filterAcquisitionNum(
+        sps, n = 1:10, dataStorage = normalizePath(sciex_file[2]))
     expect_equal(acquisitionNum(res),
                  c(1:sum(basename(dataStorage(sps)) == basename(sciex_file[1])),
                    1:10))
