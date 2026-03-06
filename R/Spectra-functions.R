@@ -1203,7 +1203,8 @@ fragmentGroupIndex <- function(object, BPPARAM = SerialParam()) {
     if (length(ms_levels) < 2)
         stop("Spectra must contain at least two MS levels.")
 
-    f <- factor(object$dataOrigin)
+    f <- dataOrigin(object)
+    f <- factor(f, levels = unique(f))
     group_factors <- bplapply(split(object, f), FUN = function(sp_chunk) {
         if (is.unsorted(sp_chunk$acquisitionNum))
             stop("Spectra within each dataOrigin must be ordered by ",
@@ -1233,7 +1234,5 @@ fragmentGroupIndex <- function(object, BPPARAM = SerialParam()) {
     }, BPPARAM = BPPARAM)
 
     max_vals <- c(0L, cumsum(vapply(group_factors, max, NA_integer_)))
-
-    res <- unsplit(group_factors, f)
-    res + max_vals[as.integer(f)]
+    unname(unlist(group_factors, use.names = FALSE) + max_vals[as.integer(f)])
 }

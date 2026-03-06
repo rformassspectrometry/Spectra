@@ -56,7 +56,7 @@ test_that("Spectra,character works", {
 
     res <- Spectra(sciex_file, source = MsBackendMzR())
     expect_true(is(res@backend, "MsBackendMzR"))
-    expect_equal(unique(res@backend$dataStorage), sciex_file)
+    expect_equal(unique(res@backend$dataStorage), normalizePath(sciex_file))
     expect_identical(rtime(res), rtime(sciex_mzr))
 
     res_2 <- Spectra(sciex_file, source = MsBackendMzR(),
@@ -151,7 +151,7 @@ test_that("setBackend,Spectra works", {
     expect_identical(dataOrigin(res), dataStorage(sps))
 
     ## switch from DataFrame to hdf5
-    tdir <- normalizePath(paste0(tempdir(), "/a"))
+    tdir <- suppressWarnings(normalizePath(paste0(tempdir(), "/a")))
     res <- setBackend(sps, MsBackendHdf5Peaks(), hdf5path = tdir)
     expect_identical(rtime(sps), rtime(res))
     expect_identical(peaksData(sps), peaksData(res))
@@ -306,7 +306,7 @@ test_that("dataStorage,Spectra works", {
 
     sps <- Spectra(sciex_mzr)
     res <- dataStorage(sps)
-    expect_identical(res, rep(sciex_file, each = 931))
+    expect_identical(res, rep(normalizePath(sciex_file), each = 931))
 })
 
 test_that("length,Spectra works", {
@@ -923,10 +923,12 @@ test_that("[,Spectra works", {
     expect_true(length(res) == 0)
 
     sps <- Spectra(sciex_mzr)
-    tmp <- sps[dataStorage(sps) == sciex_file[2], ]
-    expect_true(all(dataStorage(tmp) == sciex_file[2]))
-    expect_equal(unique(tmp$dataStorage), sciex_file[2])
-    expect_equal(rtime(tmp), rtime(sps)[dataStorage(sps) == sciex_file[2]])
+    tmp <- sps[dataStorage(sps) == normalizePath(sciex_file[2]), ]
+    expect_true(all(dataStorage(tmp) == normalizePath(sciex_file[2])))
+    expect_equal(unique(tmp$dataStorage), normalizePath(sciex_file[2]))
+    expect_equal(rtime(tmp),
+                 rtime(sps)[dataStorage(sps) ==
+                            normalizePath(sciex_file[2])])
 })
 
 test_that("filterAcquisitionNum,Spectra works", {
@@ -936,9 +938,11 @@ test_that("filterAcquisitionNum,Spectra works", {
     expect_equal(length(res@processing), 1)
 
     sps <- Spectra(sciex_mzr)
-    res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = sciex_file[2])
+    res <- filterAcquisitionNum(
+        sps, n = 1:10, dataStorage = normalizePath(sciex_file[2]))
     expect_equal(acquisitionNum(res),
-                 c(1:sum(dataStorage(sps) == sciex_file[1]), 1:10))
+                 c(1:sum(basename(dataStorage(sps)) == basename(sciex_file[1])),
+                   1:10))
 
     expect_error(filterAcquisitionNum(sps, dataStorage = 2), "type character")
     expect_error(filterAcquisitionNum(sps, dataOrigin = 2), "type character")
@@ -955,7 +959,7 @@ test_that("filterDataOrigin,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- filterDataOrigin(sps, dataOrigin = "2")
     expect_true(length(res) == 0)
-    res <- filterDataOrigin(sps, sciex_file[1])
+    res <- filterDataOrigin(sps, normalizePath(sciex_file[1]))
     expect_identical(rtime(res), rtime(sps)[1:931])
     expect_true(length(res@processing) > length(sps@processing))
 
@@ -1203,13 +1207,14 @@ test_that("filterValues, Spectra works", {
                                                                "peaksCount"),
                                  values = c(200, 400, 350),
                                  tolerance = c(100, 100, 100),
-                                 ppm = c(0 ,30, 0))
-    filt_recycle <- filterValues(sps_dia, spectraVariables = c("rtime",
-                                                               "precursorMz",
-                                                               "peaksCount"),
-                                 values = c(200, 400, 350),
-                                 tolerance = 100,
-                                 ppm = c(0, 40, 0))
+                                 ppm = c(0, 30, 0))
+    expect_warning(
+        filt_recycle <- filterValues(
+            sps_dia, spectraVariables = c("rtime", "precursorMz", "peaksCount"),
+            values = c(200, 400, 350),
+            tolerance = 100,
+            ppm = c(0, 40, 0)),
+        "does not match the ")
     expect_equal(length(filt_spectra), length(filt_recycle))
     expect_true(length(sps_dia) > length(filt_spectra))
     #' expect warning

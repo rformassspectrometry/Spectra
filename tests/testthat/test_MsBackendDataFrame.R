@@ -990,7 +990,21 @@ test_that("filterRt,MsBackendDataFrame works", {
 
 test_that("split,MsBackendDataFrame works", {
     msb <- sciex_mzr
-    msbl <- split(msb, f = msb$dataStorage)
+    msbl <- split(msb, f = factor(msb$dataStorage,
+                                  levels = unique(msb$dataStorage)))
+    expect_true(is(msbl[[1]], "MsBackendDataFrame"))
+    expect_identical(msLevel(msb)[msb$dataStorage == msb$dataStorage[1]],
+                     msLevel(msbl[[1]]))
+    expect_identical(intensity(msb)[msb$dataStorage == msb$dataStorage[1]],
+                     intensity(msbl[[1]]))
+
+    msb2 <- backendMerge(msbl)
+    expect_identical(msb2, msb)
+
+    ## Different order of files.
+    msb <- backendInitialize(MsBackendMzR(), sciex_file[c(2, 1)])
+    msbl <- split(msb, f = factor(msb$dataStorage,
+                                  levels = unique(msb$dataStorage)))
     expect_true(is(msbl[[1]], "MsBackendDataFrame"))
     expect_identical(msLevel(msb)[msb$dataStorage == msb$dataStorage[1]],
                      msLevel(msbl[[1]]))

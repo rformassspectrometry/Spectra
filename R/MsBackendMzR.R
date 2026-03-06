@@ -44,6 +44,8 @@ setMethod("backendRequiredSpectraVariables", "MsBackendMzR",
 #'
 #' @importFrom MsCoreUtils rbindFill
 #'
+#' @importFrom data.table rbindlist
+#'
 #' @importMethodsFrom BiocParallel bpmapply
 #'
 #' @importFrom BiocParallel bpparam
@@ -61,14 +63,13 @@ setMethod("backendInitialize", "MsBackendMzR",
               msg <- .valid_ms_backend_files_exist(files)
               if (length(msg))
                   stop(msg)
-              spectraData <- do.call(
-                  rbindFill, bplapply(files,
-                                  FUN = function(fl) {
-                                      cbind(Spectra:::.mzR_header(fl),
-                                            dataStorage = fl)
-                                  }, BPPARAM = BPPARAM))
+              spectraData <- rbindlist(
+                  bplapply(files, FUN = function(fl) {
+                      cbind(Spectra:::.mzR_header(fl),
+                            dataStorage = fl)
+                  }, BPPARAM = BPPARAM), use.names = TRUE, fill = TRUE)
               spectraData$dataOrigin <- spectraData$dataStorage
-              object@spectraData <- spectraData
+              object@spectraData <- DataFrame(spectraData)
               validObject(object)
               object
           })
