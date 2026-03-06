@@ -56,7 +56,7 @@ test_that("Spectra,character works", {
 
     res <- Spectra(sciex_file, source = MsBackendMzR())
     expect_true(is(res@backend, "MsBackendMzR"))
-    expect_equal(unique(res@backend$dataStorage), sciex_file)
+    expect_equal(unique(res@backend$dataStorage), normalizePath(sciex_file))
     expect_identical(rtime(res), rtime(sciex_mzr))
 
     res_2 <- Spectra(sciex_file, source = MsBackendMzR(),
@@ -925,8 +925,10 @@ test_that("[,Spectra works", {
     sps <- Spectra(sciex_mzr)
     tmp <- sps[dataStorage(sps) == sciex_file[2], ]
     expect_true(all(dataStorage(tmp) == sciex_file[2]))
-    expect_equal(unique(tmp$dataStorage), sciex_file[2])
-    expect_equal(rtime(tmp), rtime(sps)[dataStorage(sps) == sciex_file[2]])
+    expect_equal(unique(tmp$dataStorage), normalizePath(sciex_file[2]))
+    expect_equal(rtime(tmp),
+                 rtime(sps)[basename(dataStorage(sps)) ==
+                            basename(sciex_file[2])])
 })
 
 test_that("filterAcquisitionNum,Spectra works", {
@@ -938,7 +940,8 @@ test_that("filterAcquisitionNum,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = sciex_file[2])
     expect_equal(acquisitionNum(res),
-                 c(1:sum(dataStorage(sps) == sciex_file[1]), 1:10))
+                 c(1:sum(basename(dataStorage(sps)) == basename(sciex_file[1])),
+                   1:10))
 
     expect_error(filterAcquisitionNum(sps, dataStorage = 2), "type character")
     expect_error(filterAcquisitionNum(sps, dataOrigin = 2), "type character")
