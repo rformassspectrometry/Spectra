@@ -2,6 +2,21 @@
 
 ## Spectra 1.21
 
+### Change 1.21.3
+
+- Use `data.table::rbindfill()` for merging of `MsBackendMemory`
+  instances and for
+  [`backendInitialize()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
+  for `MsBackendMzR`. This adds *data.table* as a dependency but
+  improves performance for the above mentioned functionality.
+- Fix bug in
+  [`fragmentGroupIndex()`](https://rformassspectrometry.github.io/Spectra/reference/fragmentGroupIndex.md)
+  that would return the indices in a wrong order.
+
+### Change 1.21.2
+
+- Replace *msdata* with *MsDataHub* package.
+
 ### Change 1.21.1
 
 - Fix

@@ -1,7 +1,7 @@
 # Creating new \`MsBackend\` classes
 
 **Package**:
-*[Spectra](https://bioconductor.org/packages/3.23/Spectra)*  
+*[Spectra](https://bioconductor.org/packages/3.23/Spectra)*\
 **Authors**: RforMassSpectrometry Package Maintainer \[cre\], Laurent
 Gatto \[aut\] (ORCID: <https://orcid.org/0000-0002-1520-2268>), Johannes
 Rainer \[aut\] (ORCID: <https://orcid.org/0000-0002-6977-7147>),
@@ -12,9 +12,9 @@ Philippine Louail \[aut\] (ORCID:
 Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
-<https://orcid.org/0009-0008-5438-7067>)  
-**Last modified:** 2025-12-23 13:01:48.121851  
-**Compiled**: Tue Dec 23 13:21:43 2025
+<https://orcid.org/0009-0008-5438-7067>)\
+**Last modified:** 2026-03-06 16:11:41.748315\
+**Compiled**: Fri Mar 6 16:51:45 2026
 
 ## Introduction
 
@@ -2623,9 +2623,9 @@ test_dir(test_suite, stop_on_failure = TRUE)
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2025-12-21 r89216)
+    ## R Under development (unstable) (2026-03-01 r89508)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -2647,23 +2647,24 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsCoreUtils_1.23.2  IRanges_2.45.0      Spectra_1.21.1     
+    ## [1] MsCoreUtils_1.23.2  IRanges_2.45.0      Spectra_1.21.3     
     ## [4] BiocParallel_1.45.0 S4Vectors_0.49.0    BiocGenerics_0.57.0
     ## [7] generics_0.1.4      BiocStyle_2.39.0   
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] jsonlite_2.0.0         compiler_4.6.0         BiocManager_1.30.27   
-    ##  [4] parallel_4.6.0         cluster_2.1.8.1        jquerylib_0.1.4       
-    ##  [7] systemfonts_1.3.1      textshaping_1.0.4      yaml_2.3.12           
+    ##  [4] parallel_4.6.0         cluster_2.1.8.2        jquerylib_0.1.4       
+    ##  [7] systemfonts_1.3.2      textshaping_1.0.5      yaml_2.3.12           
     ## [10] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.43.0   
     ## [13] knitr_1.51             htmlwidgets_1.6.4      MASS_7.3-65           
-    ## [16] bookdown_0.46          desc_1.4.3             bslib_0.9.0           
-    ## [19] rlang_1.1.6            cachem_1.1.0           xfun_0.55             
-    ## [22] fs_1.6.6               sass_0.4.10            otel_0.2.0            
+    ## [16] bookdown_0.46          desc_1.4.3             bslib_0.10.0          
+    ## [19] rlang_1.1.7            cachem_1.1.0           xfun_0.56             
+    ## [22] fs_1.6.7               sass_0.4.10            otel_0.2.0            
     ## [25] cli_3.6.5              pkgdown_2.2.0.9000     digest_0.6.39         
-    ## [28] MetaboCoreUtils_1.19.1 lifecycle_1.0.4        clue_0.3-66           
-    ## [31] evaluate_1.0.5         codetools_0.2-20       ragg_1.5.0            
-    ## [34] rmarkdown_2.30         tools_4.6.0            htmltools_0.5.9
+    ## [28] MetaboCoreUtils_1.19.2 lifecycle_1.0.5        clue_0.3-67           
+    ## [31] data.table_1.18.2.1    evaluate_1.0.5         codetools_0.2-20      
+    ## [34] ragg_1.5.1             rmarkdown_2.30         tools_4.6.0           
+    ## [37] htmltools_0.5.9
 
 ## References
 

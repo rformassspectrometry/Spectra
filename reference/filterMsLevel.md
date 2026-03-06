@@ -625,8 +625,9 @@ Shahaf
 ``` r
 
 ## Load a `Spectra` object with LC-MS/MS data.
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-    package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
 sps_dda <- Spectra(fl)
 sps_dda
 #> MSn data (Spectra) with 7602 spectra in a MsBackendMzR backend:
@@ -646,7 +647,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 
 
 ##  --------  SUBSET SPECTRA  --------
@@ -663,7 +664,7 @@ tmp
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 length(tmp)
 #> [1] 3
 
@@ -687,7 +688,7 @@ sps_dda[msLevel(sps_dda) == 2L]
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 filterMsLevel(sps_dda, 2L)
 #> MSn data (Spectra) with 2975 spectra in a MsBackendMzR backend:
 #>        msLevel     rtime scanIndex
@@ -706,9 +707,9 @@ filterMsLevel(sps_dda, 2L)
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 #> Processing:
-#>  Filter: select MS level(s) 2 [Tue Dec 23 13:21:21 2025] 
+#>  Filter: select MS level(s) 2 [Fri Mar  6 16:51:17 2026] 
 
 ## Filter the object keeping only MS2 spectra with an precursor m/z value
 ## between a specified range:
@@ -730,9 +731,9 @@ filterPrecursorMzRange(sps_dda, c(80, 90))
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 #> Processing:
-#>  Filter: select spectra with a precursor m/z within [80, 90] [Tue Dec 23 13:21:21 2025] 
+#>  Filter: select spectra with a precursor m/z within [80, 90] [Fri Mar  6 16:51:17 2026] 
 
 ## Filter the object to MS2 spectra with an precursor m/z matching a
 ## pre-defined value (given ppm and tolerance)
@@ -754,9 +755,9 @@ filterPrecursorMzValues(sps_dda, 85, ppm = 5, tolerance = 0.1)
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 #> Processing:
-#>  Filter: select spectra with precursor m/z matching 85 [Tue Dec 23 13:21:21 2025] 
+#>  Filter: select spectra with precursor m/z matching 85 [Fri Mar  6 16:51:18 2026] 
 
 ## The `filterRanges()` function allows to filter a `Spectra` based on
 ## numerical ranges of any of its (numerical) spectra variables.
@@ -783,11 +784,11 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 #> Processing:
-#>  Filter: select spectra with a rtime within: [30, 350] [Tue Dec 23 13:21:21 2025]
-#>  Filter: select spectra with a precursorMz within: [200, 500] [Tue Dec 23 13:21:21 2025]
-#>  Filter: select spectra with a peaksCount within: [350, 600] [Tue Dec 23 13:21:21 2025] 
+#>  Filter: select spectra with a rtime within: [30, 350] [Fri Mar  6 16:51:18 2026]
+#>  Filter: select spectra with a precursorMz within: [200, 500] [Fri Mar  6 16:51:18 2026]
+#>  Filter: select spectra with a peaksCount within: [350, 600] [Fri Mar  6 16:51:18 2026] 
 
 ## `filterRanges()` can also be used to filter a `Spectra` object with
 ## multiple ranges for the same `spectraVariable` (e.g, here `"rtime"`)
@@ -813,10 +814,10 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 #> Processing:
-#>  Filter: select spectra with a rtime within: [30, 100] [Tue Dec 23 13:21:21 2025]
-#>  Filter: select spectra with a rtime within: [200, 300] [Tue Dec 23 13:21:21 2025] 
+#>  Filter: select spectra with a rtime within: [30, 100] [Fri Mar  6 16:51:18 2026]
+#>  Filter: select spectra with a rtime within: [200, 300] [Fri Mar  6 16:51:18 2026] 
 
 ## While `filterRanges()` filtered on numeric ranges, `filterValues()`
 ## allows to filter an object matching spectra variable values to user
@@ -846,10 +847,10 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 #> Processing:
-#>  Filter: select spectra with a rtime similar to: 350 [Tue Dec 23 13:21:21 2025]
-#>  Filter: select spectra with a precursorMz similar to: 80 [Tue Dec 23 13:21:21 2025] 
+#>  Filter: select spectra with a rtime similar to: 350 [Fri Mar  6 16:51:18 2026]
+#>  Filter: select spectra with a precursorMz similar to: 80 [Fri Mar  6 16:51:18 2026] 
 
 
 ##  --------  FILTER SPECTRA DATA  --------
@@ -931,7 +932,7 @@ fft_spectrum
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
 #>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]
-#>  Remove fast fourier artefacts. [Tue Dec 23 13:21:24 2025] 
+#>  Remove fast fourier artefacts. [Fri Mar  6 16:51:21 2026] 
 plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
 
@@ -953,8 +954,8 @@ fft_spectrum_filtered
 #> Lazy evaluation queue: 2 processing step(s)
 #> Processing:
 #>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]
-#>  Remove fast fourier artefacts. [Tue Dec 23 13:21:24 2025]
-#>  Remove fast fourier artefacts. [Tue Dec 23 13:21:24 2025] 
+#>  Remove fast fourier artefacts. [Fri Mar  6 16:51:21 2026]
+#>  Remove fast fourier artefacts. [Fri Mar  6 16:51:21 2026] 
 length(mz(fft_spectrum_filtered)[[1]])
 #> [1] 297
 plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))

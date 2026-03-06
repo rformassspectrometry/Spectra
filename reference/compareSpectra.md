@@ -145,8 +145,9 @@ Sebastian Gibb, Johannes Rainer, Laurent Gatto
 ``` r
 
 ## Load a `Spectra` object with LC-MS/MS data.
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-    package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
 sps_dda <- Spectra(fl)
 sps_dda
 #> MSn data (Spectra) with 7602 spectra in a MsBackendMzR backend:
@@ -166,7 +167,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 
 ## Restrict to MS2 (fragment) spectra:
 sps_ms2 <- filterMsLevel(sps_dda, msLevel = 2L)

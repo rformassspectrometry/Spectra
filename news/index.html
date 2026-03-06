@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,16 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.21" id="spectra-121">Spectra 1.21<a class="anchor" aria-label="anchor" href="#spectra-121"></a></h2>
 <div class="section level3">
-<h3 id="change-1-21">Change 1.21.1<a class="anchor" aria-label="anchor" href="#change-1-21"></a></h3>
+<h3 id="change-1-21">Change 1.21.3<a class="anchor" aria-label="anchor" href="#change-1-21"></a></h3>
+<ul><li>Use <code>data.table::rbindfill()</code> for merging of <code>MsBackendMemory</code> instances and for <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> for <code>MsBackendMzR</code>. This adds <em>data.table</em> as a dependency but improves performance for the above mentioned functionality.</li>
+<li>Fix bug in <code><a href="../reference/fragmentGroupIndex.html">fragmentGroupIndex()</a></code> that would return the indices in a wrong order.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="change-1-21-1">Change 1.21.2<a class="anchor" aria-label="anchor" href="#change-1-21-1"></a></h3>
+<ul><li>Replace <em>msdata</em> with <em>MsDataHub</em> package.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="change-1-21-2">Change 1.21.1<a class="anchor" aria-label="anchor" href="#change-1-21-2"></a></h3>
 <ul><li>Fix <code><a href="../reference/precursorPurity.html">precursorPurity()</a></code> for empty spectra.</li>
 </ul></div>
 </div>

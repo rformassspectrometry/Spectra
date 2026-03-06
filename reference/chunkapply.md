@@ -57,15 +57,15 @@ res <- chunkapply(x, sqrt, chunkSize = 200)
 length(res)
 #> [1] 1000
 head(res)
-#> [1] 22.37457 22.38634 22.31991 22.35515 22.35522 22.35436
+#> [1] 22.32935 22.36639 22.30611 22.36056 22.37457 22.38634
 
 ## For such a calculation the vectorized `sqrt` would however be recommended
 system.time(sqrt(x))
 #>    user  system elapsed 
-#>   0.001   0.000   0.000 
+#>       0       0       0 
 system.time(chunkapply(x, sqrt, chunkSize = 200))
 #>    user  system elapsed 
-#>   0.001   0.000   0.001 
+#>       0       0       0 
 
 ## Simple example splitting a numeric vector into chunks of 200 and
 ## aggregating the values within the chunk using the `mean`. Due to the

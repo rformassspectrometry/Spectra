@@ -58,7 +58,7 @@ fft_spectrum
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
 #>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]
-#>  Remove fast fourier artefacts. [Tue Dec 23 13:21:20 2025] 
+#>  Remove fast fourier artefacts. [Fri Mar  6 16:51:16 2026] 
 plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
 

@@ -504,8 +504,9 @@ Shahaf, Mar Garcia-Aloy
 ``` r
 
 ## Load a `Spectra` object with LC-MS/MS data.
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-    package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
 sps_dda <- Spectra(fl)
 sps_dda
 #> MSn data (Spectra) with 7602 spectra in a MsBackendMzR backend:
@@ -525,7 +526,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 
 
 ##  --------  FUNCTIONS RETURNING A SPECTRA  --------
@@ -550,10 +551,10 @@ sps_mod
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
-#>  Signal <= 20 in MS level(s) 1, 2 set to 0 [Tue Dec 23 13:20:11 2025] 
+#>  Signal <= 20 in MS level(s) 1, 2 set to 0 [Fri Mar  6 16:49:22 2026] 
 
 ## Get the intensities of the first spectrum before and after the
 ## operation
@@ -689,10 +690,10 @@ tmp
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> PestMix1_DDA.mzML
+#> 1d781e31dd5d_7861
 #> Processing:
-#>  Scale peak intensities in spectra of MS level(s) 2. [Tue Dec 23 13:20:14 2025]
-#>  Reset object. [Tue Dec 23 13:20:15 2025] 
+#>  Scale peak intensities in spectra of MS level(s) 2. [Fri Mar  6 16:49:25 2026]
+#>  Reset object. [Fri Mar  6 16:49:26 2026] 
 lengths(sps_dda) |> head()
 #> [1] 223 211 227 210 220 228
 lengths(sps_mod) |> head()
@@ -726,9 +727,9 @@ sps_mod
 #> 7602         1   899.993      7602
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:17 2025]
-#>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Tue Dec 23 13:20:17 2025]
-#>  Applied processing queue with 1 steps [Tue Dec 23 13:20:18 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:29 2026]
+#>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Fri Mar  6 16:49:29 2026]
+#>  Applied processing queue with 1 steps [Fri Mar  6 16:49:29 2026] 
 
 ## While we can't *undo* this filtering operation now using the `reset()`
 ## function, accessing the data would now be faster, because the operation

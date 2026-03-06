@@ -112,9 +112,9 @@ Ahlam Mentag, Johannes Rainer
 ``` r
 
 ## Load a test DDA file
-library(msdata)
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML",
-                 package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
 sps_dda <- Spectra(fl)
 
 ## Define the isolation window based on the MS2 spectra's precursor m/z

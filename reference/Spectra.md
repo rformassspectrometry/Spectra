@@ -382,9 +382,13 @@ data
 #>  ... 16 more variables/columns.
 
 ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
-## backend.
-sciex_file <- dir(system.file("sciex", package = "msdata"),
-    full.names = TRUE)
+## backend. Example mzML files are provided by the *MsDataHub* package.
+sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+                MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
 sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 sciex
 #> MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
@@ -404,8 +408,8 @@ sciex
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 20171016_POOL_POS_1_105-134.mzML
-#> 20171016_POOL_POS_3_105-134.mzML
+#> 1d785e18111b_7859
+#> 1d784b2d5578_7860
 
 
 ##  --------  CHANGING DATA REPRESENTATIONS  --------
@@ -431,7 +435,7 @@ sciex_im
 #> 1862         1   259.752       931
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:10 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:19 2026] 
 
 ## The `MsBackendMemory()` supports the `setBackend()` method:
 supportsSetBackend(MsBackendMemory())
@@ -447,9 +451,9 @@ supportsSetBackend(MsBackendMzR())
 ## MS peak data in memory. The `sciex_im` object in contrast keeps all the
 ## data in memory and its size is thus much larger.
 object.size(sciex)
-#> 411016 bytes
+#> 410760 bytes
 object.size(sciex_im)
-#> 55817368 bytes
+#> 55817240 bytes
 
 ## The spectra variable `dataStorage` returns for each spectrum the location
 ## where the data is stored. For in-memory objects:
@@ -459,30 +463,30 @@ head(dataStorage(sciex_im))
 ## While objects that use an on-disk backend will list the files where the
 ## data is stored.
 head(dataStorage(sciex))
-#> [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
 
 ## The spectra variable `dataOrigin` returns for each spectrum the *origin*
 ## of the data. If the data is read from e.g. mzML files, this will be the
 ## original mzML file name:
 head(dataOrigin(sciex))
-#> [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
 head(dataOrigin(sciex_im))
-#> [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
-#> [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"
+#> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
 
 
 ##  -------- DATA EXPORT  --------

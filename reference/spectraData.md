@@ -569,9 +569,13 @@ Sebastian Gibb, Johannes Rainer, Laurent Gatto, Philippine Louail
 ``` r
 
 ## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk
-## backend.
-sciex_file <- dir(system.file("sciex", package = "msdata"),
-    full.names = TRUE)
+## backend. Example mzML files are provided by the *MsDataHub* package.
+sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+                MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
 sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 sciex
 #> MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
@@ -591,8 +595,8 @@ sciex
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 20171016_POOL_POS_1_105-134.mzML
-#> 20171016_POOL_POS_3_105-134.mzML
+#> 1d785e18111b_7859
+#> 1d784b2d5578_7860
 
 ## Get the number of spectra in the data set
 length(sciex)

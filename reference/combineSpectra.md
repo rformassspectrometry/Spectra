@@ -212,9 +212,14 @@ s
 #>  ... 16 more variables/columns.
 
 ## Create a second Spectra from mzML files and use the `MsBackendMzR`
-## on-disk backend.
-sciex_file <- dir(system.file("sciex", package = "msdata"),
-    full.names = TRUE)
+## on-disk backend. Example mzML files are provided by the *MsDataHub*
+## package.
+sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+                MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
 sciex <- Spectra(sciex_file, backend = MsBackendMzR())
 sciex
 #> MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
@@ -234,8 +239,8 @@ sciex
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 20171016_POOL_POS_1_105-134.mzML
-#> 20171016_POOL_POS_3_105-134.mzML
+#> 1d785e18111b_7859
+#> 1d784b2d5578_7860
 
 ## Subset to the first 100 spectra to reduce running time of the examples
 sciex <- sciex[1:100]
@@ -270,8 +275,8 @@ all
 #> 102         1    27.902       100
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:26 2025]
-#>  Merge 2 Spectra into one [Tue Dec 23 13:20:26 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026]
+#>  Merge 2 Spectra into one [Fri Mar  6 16:49:41 2026] 
 
 ## The new `Spectra` objects contains the union of spectra variables from
 ## both:
@@ -369,7 +374,7 @@ sciex_split |> head()
 #> 1         1      0.28         1
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:26 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
 #> 
 #> $`1`
 #> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
@@ -381,7 +386,7 @@ sciex_split |> head()
 #> 4         1     1.396         5
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:26 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
 #> 
 #> $`2`
 #> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:
@@ -392,7 +397,7 @@ sciex_split |> head()
 #> 3         1     2.233         8
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:26 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
 #> 
 #> $`3`
 #> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
@@ -404,7 +409,7 @@ sciex_split |> head()
 #> 4         1     3.349        12
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:26 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
 #> 
 #> $`4`
 #> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
@@ -416,7 +421,7 @@ sciex_split |> head()
 #> 4         1     4.465        16
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:26 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
 #> 
 #> $`5`
 #> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:
@@ -427,7 +432,7 @@ sciex_split |> head()
 #> 3         1     5.302        19
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:26 2025] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
 #> 
 
 
@@ -442,16 +447,16 @@ spv
 #> DataFrame with 10 rows and 3 columns
 #>                spectrumId       var1        var2
 #>               <character>  <numeric> <character>
-#> 1  sample=1 period=1 cy..  1.1970777           p
-#> 2  sample=1 period=1 cy.. -0.5486274           o
-#> 3  sample=1 period=1 cy..  0.3030457           r
-#> 4  sample=1 period=1 cy.. -0.0569705           q
-#> 5  sample=1 period=1 cy.. -0.9578494           z
-#> 6  sample=1 period=1 cy..  0.5910619           e
-#> 7  sample=1 period=1 cy..  0.1731049           c
-#> 8  sample=1 period=1 cy..  1.3997834           f
-#> 9  sample=1 period=1 cy..  0.1174596           k
-#> 10 sample=1 period=1 cy.. -0.3315458           x
+#> 1  sample=1 period=1 cy.. -0.8468964           p
+#> 2  sample=1 period=1 cy..  1.1970777           o
+#> 3  sample=1 period=1 cy.. -0.5486274           r
+#> 4  sample=1 period=1 cy..  0.3030457           q
+#> 5  sample=1 period=1 cy.. -0.0569705           z
+#> 6  sample=1 period=1 cy.. -0.9578494           e
+#> 7  sample=1 period=1 cy..  0.5910619           c
+#> 8  sample=1 period=1 cy..  0.1731049           f
+#> 9  sample=1 period=1 cy..  1.3997834           k
+#> 10 sample=1 period=1 cy..  0.1174596           x
 
 sciex2 <- joinSpectraData(sciex1, spv, by.y = "spectrumId")
 
@@ -481,14 +486,14 @@ spectraData(sciex2)[1:13, c("spectrumId", "var1", "var2")]
 #>                <character> <numeric> <character>
 #> 1   sample=1 period=1 cy..        NA          NA
 #> 2   sample=1 period=1 cy..        NA          NA
-#> 3   sample=1 period=1 cy..  1.197078           p
-#> 4   sample=1 period=1 cy.. -0.548627           o
-#> 5   sample=1 period=1 cy..  0.303046           r
+#> 3   sample=1 period=1 cy.. -0.846896           p
+#> 4   sample=1 period=1 cy..  1.197078           o
+#> 5   sample=1 period=1 cy.. -0.548627           r
 #> ...                    ...       ...         ...
-#> 9   sample=1 period=1 cy..  0.173105           c
-#> 10  sample=1 period=1 cy..  1.399783           f
-#> 11  sample=1 period=1 cy..  0.117460           k
-#> 12  sample=1 period=1 cy.. -0.331546           x
+#> 9   sample=1 period=1 cy..  0.591062           c
+#> 10  sample=1 period=1 cy..  0.173105           f
+#> 11  sample=1 period=1 cy..  1.399783           k
+#> 12  sample=1 period=1 cy..  0.117460           x
 #> 13  sample=1 period=1 cy..        NA          NA
 
 ## Append new spectra variables with cbind2()

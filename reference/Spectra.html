@@ -47,7 +47,7 @@ compareSpectra() for spectra similarity calculations.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -383,9 +383,13 @@ parameter <code>backend</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 16 more variables/columns.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create a Spectra from mzML files and use the `MsBackendMzR` on-disk</span></span></span>
-<span class="r-in"><span><span class="co">## backend.</span></span></span>
-<span class="r-in"><span><span class="va">sciex_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"sciex"</span>, package <span class="op">=</span> <span class="st">"msdata"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## backend. Example mzML files are provided by the *MsDataHub* package.</span></span></span>
+<span class="r-in"><span><span class="va">sciex_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">MsDataHub</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/MsDataHub/reference/sciex.html" class="external-link">X20171016_POOL_POS_1_105.134.mzML</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                <span class="fu">MsDataHub</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/MsDataHub/reference/sciex.html" class="external-link">X20171016_POOL_POS_3_105.134.mzML</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?MsDataHub and browseVignettes('MsDataHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?MsDataHub and browseVignettes('MsDataHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
 <span class="r-in"><span><span class="va">sciex</span> <span class="op">&lt;-</span> <span class="fu">Spectra</span><span class="op">(</span><span class="va">sciex_file</span>, backend <span class="op">=</span> <span class="fu"><a href="MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sciex</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:</span>
@@ -405,8 +409,8 @@ parameter <code>backend</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20171016_POOL_POS_1_105-134.mzML</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20171016_POOL_POS_3_105-134.mzML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1d785e18111b_7859</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1d784b2d5578_7860</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##  --------  CHANGING DATA REPRESENTATIONS  --------</span></span></span>
@@ -432,7 +436,7 @@ parameter <code>backend</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1862         1   259.752       931</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Tue Dec 23 13:20:10 2025] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:19 2026] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory()` supports the `setBackend()` method:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="MsBackend.html">supportsSetBackend</a></span><span class="op">(</span><span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -448,9 +452,9 @@ parameter <code>backend</code>.</p></li>
 <span class="r-in"><span><span class="co">## MS peak data in memory. The `sciex_im` object in contrast keeps all the</span></span></span>
 <span class="r-in"><span><span class="co">## data in memory and its size is thus much larger.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sciex</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 411016 bytes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 410760 bytes</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">sciex_im</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55817368 bytes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55817240 bytes</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The spectra variable `dataStorage` returns for each spectrum the location</span></span></span>
 <span class="r-in"><span><span class="co">## where the data is stored. For in-memory objects:</span></span></span>
@@ -460,30 +464,30 @@ parameter <code>backend</code>.</p></li>
 <span class="r-in"><span><span class="co">## While objects that use an on-disk backend will list the files where the</span></span></span>
 <span class="r-in"><span><span class="co">## data is stored.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">sciex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The spectra variable `dataOrigin` returns for each spectrum the *origin*</span></span></span>
 <span class="r-in"><span><span class="co">## of the data. If the data is read from e.g. mzML files, this will be the</span></span></span>
 <span class="r-in"><span><span class="co">## original mzML file name:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sciex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sciex_im</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##  -------- DATA EXPORT  --------</span></span></span>

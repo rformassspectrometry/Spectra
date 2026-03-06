@@ -94,8 +94,9 @@ Laurent Gatto with contributions (to MSnbase) of Guangchuang Yu.
 
 ``` r
 
-library(msdata)
-f <- proteomics(pattern = "TMT.+20141210.mzML.gz", full.names = TRUE)
+f <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
 sp <- Spectra(f)
 
 d <- computeMzDeltas(sp[1:1000])

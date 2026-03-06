@@ -1,7 +1,7 @@
 # Large-scale data handling and processing with Spectra
 
 **Package**:
-*[Spectra](https://bioconductor.org/packages/3.23/Spectra)*  
+*[Spectra](https://bioconductor.org/packages/3.23/Spectra)*\
 **Authors**: RforMassSpectrometry Package Maintainer \[cre\], Laurent
 Gatto \[aut\] (ORCID: <https://orcid.org/0000-0002-1520-2268>), Johannes
 Rainer \[aut\] (ORCID: <https://orcid.org/0000-0002-6977-7147>),
@@ -12,9 +12,9 @@ Philippine Louail \[aut\] (ORCID:
 Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
-<https://orcid.org/0009-0008-5438-7067>)  
-**Last modified:** 2025-12-23 13:01:48.121851  
-**Compiled**: Tue Dec 23 13:21:58 2025
+<https://orcid.org/0009-0008-5438-7067>)\
+**Last modified:** 2026-03-06 16:11:41.748315\
+**Compiled**: Fri Mar 6 16:52:00 2026
 
 ## Introduction
 
@@ -42,7 +42,8 @@ optimized for performance (such as the `MsBackendMemory` and
 *[MsBackendSql](https://bioconductor.org/packages/3.23/MsBackendSql)*
 package, that through the smallest possible memory footprint enables
 also the analysis of very large data sets). Below we load MS data from 4
-test files into a `Spectra` using a `MsBackendMzR` backend.
+test files provided through the *MsDataHub* package into a `Spectra`
+object using an `MsBackendMzR` backend.
 
 ``` r
 
@@ -50,12 +51,29 @@ library(Spectra)
 
 #' Define the file names from which to import the data
 fls <- c(
-    system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata"),
-    system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML", package = "msdata"),
-    system.file("sciex", "20171016_POOL_POS_1_105-134.mzML",
-                package = "msdata"),
-    system.file("sciex", "20171016_POOL_POS_3_105-134.mzML",
-                package = "msdata"))
+    MsDataHub::PestMix1_DDA.mzML(),
+    MsDataHub::PestMix1_SWATH.mzML(),
+    MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+    MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
+```
+
+    ## see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+
+    ## loading from cache
+
+    ## see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+
+    ## loading from cache
+
+    ## see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+
+    ## loading from cache
+
+    ## see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+
+    ## loading from cache
+
+``` r
 
 #' Creating a Spectra object representing the MS data
 sps_mzr <- Spectra(fls, source = MsBackendMzR())
@@ -79,9 +97,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## PestMix1_DDA.mzML
-    ## PestMix1_SWATH.mzML
-    ## 20171016_POOL_POS_1_105-134.mzML
+    ## 1d781e31dd5d_7861
+    ## 1d783c930fa7_7862
+    ## 1d785e18111b_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -176,14 +194,14 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ##      /__w/_temp/Library/msdata/TripleTOF-SWATH/PestMix1_DDA.mzML 
-    ##                                                             7602 
-    ##    /__w/_temp/Library/msdata/TripleTOF-SWATH/PestMix1_SWATH.mzML 
-    ##                                                             8999 
-    ## /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_1_105-134.mzML 
-    ##                                                              931 
-    ## /__w/_temp/Library/msdata/sciex/20171016_POOL_POS_3_105-134.mzML 
-    ##                                                              931
+    ## /github/home/.cache/R/ExperimentHub/1d781e31dd5d_7861 
+    ##                                                  7602 
+    ## /github/home/.cache/R/ExperimentHub/1d783c930fa7_7862 
+    ##                                                  8999 
+    ## /github/home/.cache/R/ExperimentHub/1d785e18111b_7859 
+    ##                                                   931 
+    ## /github/home/.cache/R/ExperimentHub/1d784b2d5578_7860 
+    ##                                                   931
 
 The data would thus be split and processed by the original file, from
 which the data is imported. We next specifically define the chunk-size
@@ -318,9 +336,9 @@ i.e., based on the `processingChunkFactor`:
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2025-12-21 r89216)
+    ## R Under development (unstable) (2026-03-01 r89508)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -342,21 +360,34 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] Spectra_1.21.1      BiocParallel_1.45.0 S4Vectors_0.49.0   
-    ## [4] BiocGenerics_0.57.0 generics_0.1.4      BiocStyle_2.39.0   
+    ## [1] MsDataHub_1.11.1    Spectra_1.21.3      BiocParallel_1.45.0
+    ## [4] S4Vectors_0.49.0    BiocGenerics_0.57.0 generics_0.1.4     
+    ## [7] BiocStyle_2.39.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] jsonlite_2.0.0         compiler_4.6.0         BiocManager_1.30.27   
-    ##  [4] Rcpp_1.1.0.8.1         Biobase_2.71.0         parallel_4.6.0        
-    ##  [7] cluster_2.1.8.1        jquerylib_0.1.4        systemfonts_1.3.1     
-    ## [10] IRanges_2.45.0         textshaping_1.0.4      yaml_2.3.12           
-    ## [13] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.43.0   
-    ## [16] knitr_1.51             htmlwidgets_1.6.4      MASS_7.3-65           
-    ## [19] bookdown_0.46          desc_1.4.3             bslib_0.9.0           
-    ## [22] rlang_1.1.6            cachem_1.1.0           xfun_0.55             
-    ## [25] fs_1.6.6               MsCoreUtils_1.23.2     sass_0.4.10           
-    ## [28] otel_0.2.0             cli_3.6.5              pkgdown_2.2.0.9000    
-    ## [31] ncdf4_1.24             digest_0.6.39          mzR_2.43.3            
-    ## [34] MetaboCoreUtils_1.19.1 lifecycle_1.0.4        clue_0.3-66           
-    ## [37] evaluate_1.0.5         codetools_0.2-20       ragg_1.5.0            
-    ## [40] rmarkdown_2.30         tools_4.6.0            htmltools_0.5.9
+    ##  [1] KEGGREST_1.51.1        xfun_0.56              bslib_0.10.0          
+    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      Biobase_2.71.0        
+    ##  [7] vctrs_0.7.1            tools_4.6.0            curl_7.0.0            
+    ## [10] parallel_4.6.0         tibble_3.3.1           AnnotationDbi_1.73.0  
+    ## [13] RSQLite_2.4.6          cluster_2.1.8.2        blob_1.3.0            
+    ## [16] pkgconfig_2.0.3        data.table_1.18.2.1    dbplyr_2.5.2          
+    ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.6.0        
+    ## [22] Biostrings_2.79.4      textshaping_1.0.5      Seqinfo_1.1.0         
+    ## [25] codetools_0.2-20       ncdf4_1.24             clue_0.3-67           
+    ## [28] htmltools_0.5.9        sass_0.4.10            yaml_2.3.12           
+    ## [31] crayon_1.5.3           pkgdown_2.2.0.9000     pillar_1.11.1         
+    ## [34] jquerylib_0.1.4        MASS_7.3-65            cachem_1.1.0          
+    ## [37] MetaboCoreUtils_1.19.2 ExperimentHub_3.1.0    AnnotationHub_4.1.0   
+    ## [40] tidyselect_1.2.1       digest_0.6.39          purrr_1.2.1           
+    ## [43] dplyr_1.2.0            bookdown_0.46          BiocVersion_3.23.1    
+    ## [46] fastmap_1.2.0          cli_3.6.5              magrittr_2.0.4        
+    ## [49] withr_3.0.2            filelock_1.0.3         rappdirs_0.3.4        
+    ## [52] bit64_4.6.0-1          XVector_0.51.0         httr_1.4.8            
+    ## [55] rmarkdown_2.30         bit_4.6.0              otel_0.2.0            
+    ## [58] png_0.1-8              ragg_1.5.1             memoise_2.0.1         
+    ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.45.0        
+    ## [64] BiocFileCache_3.1.0    rlang_1.1.7            Rcpp_1.1.1            
+    ## [67] glue_1.8.0             DBI_1.3.0              mzR_2.43.3            
+    ## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              
+    ## [73] systemfonts_1.3.2      fs_1.6.7               ProtGenerics_1.43.0   
+    ## [76] MsCoreUtils_1.23.2

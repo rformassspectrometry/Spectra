@@ -70,10 +70,11 @@ Philippine Louail
 
 ``` r
 
-fl_ms3 <- system.file("proteomics", "MS3TMT11.mzML", package = "msdata")
-sps_dda <- Spectra(fl_ms3)
+fl <- MsDataHub::PestMix1_DDA.mzML()
+#> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> loading from cache
+sps_dda <- Spectra(fl)
 idx <- fragmentGroupIndex(sps_dda)
 head(idx)
-#>             
-#> 1 1 1 1 1 1 
+#> [1] 1 2 3 4 5 6
 ```
