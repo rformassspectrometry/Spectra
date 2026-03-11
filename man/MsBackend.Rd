@@ -387,7 +387,7 @@ recycled.}
 
 \item{tolerance}{For \code{filterPrecursorMzValues()}: \code{numeric(1)} with the
 maximal absolute acceptable difference for a m/z value to be considered
-matching. See \code{\link[MsCoreUtils:matching]{MsCoreUtils::closest()}} for details.
+matching. See documentation \code{\link[MsCoreUtils:matching]{MsCoreUtils::closest()}} for details.
 For \code{filterValues()}: \code{numeric}
 accepted tolerance between the \code{values} and the spectra variables.
 Defaults to \code{tolerance = 0}. If it is not equal to the length of the

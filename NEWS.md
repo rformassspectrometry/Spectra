@@ -1,5 +1,13 @@
 # Spectra 1.21
 
+## Change 1.21.4
+
+- Refactor `compareSpectra()` to support spectra similarity functions returning
+  the similarity score **and** the number of peak pairs on which the score was
+  calculated. This allows to correctly report the number of peak pairs used by
+  e.g. the modified cosine (GNPS) similarity score. See also [issue
+  #350](https://github.com/rformassspectrometry/Spectra/issues/350).
+
 ## Change 1.21.3
 
 - Use `data.table::rbindfill()` for merging of `MsBackendMemory` instances and

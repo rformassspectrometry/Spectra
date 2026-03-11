@@ -35,9 +35,9 @@
 
 \item{y}{A \code{Spectra} object.}
 
-\item{MAPFUN}{For \code{compareSpectra()}: function to map/match peaks between
-the two compared spectra. See \code{\link[=joinPeaks]{joinPeaks()}} for more information and
-possible functions. Defaults to \code{\link[=joinPeaks]{joinPeaks()}}.}
+\item{MAPFUN}{function to map/match peaks between the two compared spectra.
+See \code{\link[=joinPeaks]{joinPeaks()}} for more information and possible functions. Defaults
+to \code{MAPFUN = joinPeaks}.}
 
 \item{tolerance}{\code{numeric(1)} allowing to define a constant maximal
 accepted difference between m/z values for peaks to be matched. This
@@ -47,15 +47,20 @@ parameter is directly passed to \code{MAPFUN}.}
 accepted difference between m/z values for peaks to be matched. This
 parameter is directly passed to \code{MAPFUN}.}
 
-\item{FUN}{function to compare intensities of peaks between two spectra.
-Defaults to \code{\link[MsCoreUtils:distance]{MsCoreUtils::ndotproduct()}}.}
+\item{FUN}{function to compare intensities of peaks between two spectra. See
+\code{\link[MsCoreUtils:distance]{MsCoreUtils::distance()}} for directly supported similarity functions.
+Defaults to \code{MsCoreUtils::ndotproduct}.}
 
 \item{...}{Additional arguments passed to the internal functions.}
 
 \item{matchedPeaksCount}{\code{logical(1)} whether the number of matching peaks
-between the compared spectra should be returned in addition to the
-similarity scores. Note that with \code{matchedPeaksCount = TRUE} a
-3-dimensional \code{array} is returned. See examples below for details.}
+between the compared pairs of spectra should be returned in addition
+to the similarity scores. Note that with \code{matchedPeaksCount = TRUE} a
+3-dimensional \code{array} is returned. See examples below for details.
+This requires that the spectra similarity function defined with \code{FUN}
+has a parameter \code{matchedPeaksCount} and that it returns, for
+\code{matchedPeaksCount = TRUE} a \code{numeric(2)} with the similarity score
+and the number of matched peaks.}
 
 \item{SIMPLIFY}{\code{logical(1)} defining  whether the result matrix should be
 \emph{simplified} to a \code{numeric} if possible (i.e. if either \code{x} or \code{y} is
@@ -84,11 +89,13 @@ information and examples). The \code{MAPFUN} function should have parameters
 the function.
 
 In addition to \code{joinPeaks()} also \code{\link[=joinPeaksGnps]{joinPeaksGnps()}} is supported for
-GNPS-like similarity score calculations. Note that \code{joinPeaksGnps()} should
-only be used in combination with \code{FUN = MsCoreUtils::gnps}
-(see \code{\link[=joinPeaksGnps]{joinPeaksGnps()}} for more information and details). Use
-\code{MAPFUN = joinPeaksNone} to disable internal peak matching/mapping if a
-similarity scoring function is used that performs the matching internally.
+GNPS-like similarity score calculations (i.e., the \emph{modified cosine}
+similarity). Note that \code{joinPeaksGnps()} should only be used in combination
+with \code{FUN = MsCoreUtils::gnps} (see \code{\link[=joinPeaksGnps]{joinPeaksGnps()}} for more information
+and details). Use \code{MAPFUN = joinPeaksNone} to disable internal peak
+matching/mapping if a similarity scoring function is used that performs
+the matching internally (such as e.g. the \code{msentropy_similarity()} function
+from the \emph{msentropy} package).
 
 \code{FUN} is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
@@ -96,16 +103,60 @@ matrices with columns \code{"mz"} and \code{"intensity"} as input and is suppose
 to return a single numeric as result. In addition to the two peak matrices
 the spectra's precursor m/z values are passed to the function as parameters
 \code{xPrecursorMz} (precursor m/z of the \code{x} peak matrix) and \code{yPrecursorMz}
-(precursor m/z of the \code{y} peak matrix). Additional parameters to functions
-\code{FUN} and \code{MAPFUN} can be passed with \code{...}. Parameters \code{ppm} and
+(precursor m/z of the \code{y} peak matrix). Finally, the parameter
+\code{matchedPeaksCount} is passed to the function. Additional parameters to
+functions \code{FUN} and \code{MAPFUN} can be passed with \code{...}. Parameters \code{ppm} and
 \code{tolerance} are passed to both \code{MAPFUN} and \code{FUN}.
-The function returns a \code{matrix} with the results of \code{FUN} for each
-comparison, number of rows equal to \code{length(x)} and number of columns
-equal \code{length(y)} (i.e. element in row 2 and column 3 is the result from
-the comparison of \code{x[2]} with \code{y[3]}). If \code{SIMPLIFY = TRUE} the \code{matrix}
-is \emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one. See also
-the vignette for additional examples, such as using spectral entropy
-similarity in the scoring.
+
+By default, with \code{matchedPeaksCount = FALSE}, \code{compareSpectra()} returns
+a \code{matrix} with the results of \code{FUN} for each pairwise spectra comparison.
+The number of rows of this \code{matrix} is equal to \code{length(x)} and the number
+of columns equal to \code{length(y)} (i.e., the value reported in row 2 and
+column 3 is the result from the comparison of \code{x[2]} with \code{y[3]}).
+
+For \code{matchedPeaksCount = TRUE} a 3-dimensional \code{array} is returned, with
+the first \code{matrix} in z-dimension (i.e., \code{res[, , 1L]}) being the similarity
+matrix and the second \code{matrix} (i.e., \code{res[, , 2L]}) the number of matched
+peaks for each compared peak pair.
+
+If \code{SIMPLIFY = TRUE} and \code{matchedPeaksCount = FALSE}, the \code{matrix} is
+\emph{simplified} to a \code{numeric} if length of \code{x} or \code{y} is one.
+
+See also the vignette for additional examples, such as using spectral
+entropy similarity in the scoring.
+}
+\details{
+\code{compareSpectra()} supports custom functions for peak matching and
+similarity calculation that can be provided with parameters \code{MAPFUN} and
+\code{FUN}, respectively. The parameters passed from \code{compareSpectra()} to these
+functions are:
+\itemize{
+\item for \code{MAPFUN}: \code{x} (peak matrix of the first spectrum), \code{y} (peak matrix of
+the second spectrum), \code{tolerance} (the absolute acceptable tolerance for
+peaks to be considered matching), \code{ppm} (the m/z-relative difference),
+\code{xPrecursorMz} (the precursor m/z of the first spectrum), \code{yPrecursorMz}
+(the precursor m/z of the second spectrum).
+\item for \code{FUN}: \code{x} (peak matrix aligned with peaks from the second spectrum,
+i.e., the result from \code{MAPFUN}), \code{y} (peak matrix aligned with peaks from
+the first spectrum), \code{xPrecursorMz} (precursor m/z of the first spectrum),
+\code{yPrecursorMz} (precursor m/z of the second spectrum), \code{tolerance}, \code{ppm},
+\code{matchedPeaksCount} (\code{logical(1)} whether the number of peak pairs on
+which the similarity was calculated should be returned in addition; if
+set to \code{TRUE} the function is expected to return a \code{numeric(2)} with
+the similarity score and the number of matched peaks).
+}
+
+\code{compareSpectra()}, before calculating the spectra similarity, will apply
+all eventually present data modification operations cached in the processing
+queue of the two compared \code{Spectra}.
+Internally, the calculations are performed in a memory-saving manner loading,
+for a large number of spectra, data only for a smaller \emph{chunk} of data at a
+time.
+}
+\note{
+The \code{compareSpectra(x)} function to calculate similarities between each
+spectrum within the \strong{same} \code{Spectra} uses a memory efficient calculation
+which can however be considerably slower than \code{compareSpectra(x, x)}.
 }
 \examples{
 
