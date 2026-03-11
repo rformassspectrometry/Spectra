@@ -250,6 +250,13 @@ NULL
 #' and, especially for `ppm`, the maximal accepted difference depend thus on
 #' the m/z values from the second spectrum.
 #'
+#' For `matchedPeaksCount = TRUE` it is expected that the similarity function
+#' used also supports this parameter and returns a `numeric(2)` with the first
+#' element being the similarity score and the second the number of matched
+#' peaks (i.e., the number of peak pairs on which the score was calculated).
+#' All similarity functions from *MsCoreUtils* version >= 1.23.3 (such as
+#' `ndotproduct()` or `gnps()`) support this parameter.
+#'
 #' @param x [Spectra()]
 #'
 #' @param y [Spectra()]
@@ -392,13 +399,23 @@ NULL
 #'
 #' @noRd
 .compare_spectra_self <- function(x, MAPFUN = joinPeaks, tolerance = 0,
-                                  ppm = 20, FUN = ndotproduct, ...) {
+                                  ppm = 20, FUN = ndotproduct,
+                                  matchedPeaksCount = FALSE, ...) {
     nx <- length(x)
-    m <- matrix(NA_real_, nrow = nx, ncol = nx,
-                dimnames = list(spectraNames(x), spectraNames(x)))
+    if (matchedPeaksCount) {
+        dn <- list(spectraNames(x), spectraNames(x),
+                   c("score", "matched_peaks_count"))
+        dims <- c(nx, nx, 2L)
+        z_chunk <- 1:2
+    } else {
+        dn <- list(spectraNames(x), spectraNames(x))
+        dims <- c(nx, nx, 1L)
+        z_chunk <- 1L
+    }
+    m <- array(NA_real_, dim = dims, dimnames = dn)
 
     sv <- .processingQueueVariables(x)
-    cb <- which(lower.tri(m, diag = TRUE), arr.ind = TRUE)
+    cb <- which(lower.tri(matrix(NA, nx, nx), diag = TRUE), arr.ind = TRUE)
     pmz <- precursorMz(x)
     bpp <- SerialParam()
     for (i in seq_len(nrow(cb))) {
@@ -415,11 +432,15 @@ NULL
         map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm,
                       xPrecursorMz = pmzx, yPrecursorMz = pmzy,
                       .check = FALSE,...)
-        m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
-            FUN(map[[1L]], map[[2L]], xPrecursorMz = pmzx,
-                yPrecursorMz = pmzy, ppm = ppm, tolerance = tolerance, ...)
+        res <- FUN(map[[1L]], map[[2L]], xPrecursorMz = pmzx,
+                   yPrecursorMz = pmzy, ppm = ppm, tolerance = tolerance,
+                   matchedPeaksCount = matchedPeaksCount, ...)
+        m[cb[i, 1L], cur, seq_along(res)] <-
+            m[cur, cb[i, 1L], seq_along(res)] <- res
     }
-    m
+    if (matchedPeaksCount)
+        m
+    else as.matrix(m[, , 1L])
 }
 
 #' @description

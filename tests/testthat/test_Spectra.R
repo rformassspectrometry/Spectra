@@ -1324,7 +1324,7 @@ test_that("filterIntensity,Spectra works", {
 
 test_that("compareSpectra works", {
     sps <- Spectra(sciex_hd5[1:20])
-    sps <- setBackend(sps, MsBackendDataFrame())
+    sps <- setBackend(sps, MsBackendMemory())
 
     res <- compareSpectra(sps[c(1, 20)], sps[15:20])
     expect_true(nrow(res) == 2)
@@ -1418,6 +1418,24 @@ test_that("compareSpectra works", {
     res <- compareSpectra(sp[1], sp[2], MAPFUN = joinPeaksGnps,
                           FUN = MsCoreUtils::gnps, tolerance = 0.1)
     expect_equal(round(res, 2), 0.86)
+})
+
+test_that("compareSpectra works with matchedPeaksCount", {
+    sps <- filterMsLevel(sps_dda, 2L)
+    sps <- sps[lengths(sps) > 0][1:200]
+    ref <- compareSpectra(sps, sps)
+    expect_true(all(diag(ref) == 1))
+    expect_true(nrow(ref) == ncol(ref))
+    expect_equal(nrow(ref), length(sps))
+
+    res <- compareSpectra(sps, sps, matchedPeaksCount = TRUE)
+    expect_equal(dim(res), c(length(sps), length(sps), 2L))
+    expect_equal(unname(ref), unname(res[, , 1L]))
+    expect_equal(diag(res[, , 2L]), lengths(sps))
+
+    res <- compareSpectra(sps[1:20], matchedPeaksCount = TRUE)
+    expect_equal(res[, , 1L], unname(ref[1:20, 1:20]))
+    expect_equal(diag(res[, , 2L]), lengths(sps)[1:20])
 })
 
 test_that("pickPeaks,Spectra works", {

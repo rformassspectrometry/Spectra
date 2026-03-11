@@ -175,7 +175,7 @@
 #'
 #' @param tolerance For `filterPrecursorMzValues()`: `numeric(1)` with the
 #'     maximal absolute acceptable difference for a m/z value to be considered
-#'     matching. See [MsCoreUtils::closest()] for details.
+#'     matching. See documentation [MsCoreUtils::closest()] for details.
 #'     For `filterValues()`: `numeric`
 #'     accepted tolerance between the `values` and the spectra variables.
 #'     Defaults to `tolerance = 0`. If it is not equal to the length of the

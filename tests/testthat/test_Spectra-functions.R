@@ -28,18 +28,30 @@ test_that(".check_ms_level works", {
 })
 
 test_that(".compare_spectra_self work", {
-    sps <- Spectra(sciex_hd5)[120:126]
-    sps <- setBackend(sps, MsBackendDataFrame())
+    sps <- filterMsLevel(sps_dda, 2L)
+    sps <- sps[lengths(sps) > 2][1:100]
+    sps <- setBackend(sps, MsBackendMemory())
 
     res <- .compare_spectra_chunk(sps, sps)
     expect_true(ncol(res) == length(sps))
     expect_true(nrow(res) == length(sps))
-    expect_equal(diag(res), rep(1, length(sps)))
+    expect_equal(unname(diag(res)), rep(1, length(sps)))
 
     res_2 <- .compare_spectra_self(sps)
     expect_equal(dim(res), dim(res_2))
     expect_identical(diag(res), diag(res_2))
     expect_identical(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
+
+    ## with matched peak count
+    ref <- .compare_spectra_chunk(sps, sps, matchedPeaksCount = TRUE)
+    res <- .compare_spectra_self(sps, matchedPeaksCount = TRUE)
+    expect_equal(dim(ref), dim(res))
+    expect_equal(dim(res)[1L], 100)
+    expect_equal(dim(res)[3L], 2)
+    expect_equal(diag(res[, , 1L]), diag(ref[, , 1L]))
+    expect_equal(unname(diag(res[, , 2L])), lengths(sps))
+    expect_equal(res[, , 2L], ref[, , 2L])
+    expect_equal(res[, , 1L], ref[, , 1L])
 })
 
 test_that(".compare_spectra_chunk works", {

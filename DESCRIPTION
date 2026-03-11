@@ -1,6 +1,6 @@
 Package: Spectra
 Title: Spectra Infrastructure for Mass Spectrometry Data
-Version: 1.21.3
+Version: 1.21.4
 Description: The Spectra package defines an efficient infrastructure
    for storing and handling mass spectrometry spectra and functionality to
    subset, process, visualize and compare spectra data. It provides different
@@ -53,7 +53,7 @@ Imports:
     ProtGenerics (>= 1.39.2),
     methods,
     IRanges,
-    MsCoreUtils (>= 1.7.5),
+    MsCoreUtils (>= 1.23.3),
     graphics,
     grDevices,
     stats,

@@ -18,8 +18,8 @@ NULL
 #' from the `MsCoreUtils` package. In brief, all peaks in all provided
 #' spectra are first ordered by their m/z and consecutively grouped into one
 #' group if the (pairwise) difference between them is smaller than specified
-#' with parameter `tolerance` and `ppm` (see [group()] for grouping details
-#' and examples).
+#' with parameter `tolerance` and `ppm` (see [MsCoreUtils::group()] for
+#' grouping details and examples).
 #'
 #' The m/z and intensity values for the resulting peak matrix are calculated
 #' using the `mzFun` and `intensityFun` on the grouped m/z and intensity values.
@@ -279,7 +279,7 @@ combinePeaksData <- function(x, intensityFun = base::mean,
             mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
                              xPrecursorMz = xPrecursorMz[i],
                              yPrecursorMz = yPrecursorMz[j],
-                             ppm = ppm, tolerance = tolerance, ...)
+                             ppm = ppm, tolerance = tolerance, ...)[1L]
         }
     }
     mat
@@ -307,12 +307,12 @@ combinePeaksData <- function(x, intensityFun = base::mean,
                                xPrecursorMz = xPrecursorMz[i],
                                yPrecursorMz = yPrecursorMz[j],
                                .check = FALSE, ...)
-            mat[i, j, 1L] <- FUN(peak_map[[1L]], peak_map[[2L]],
+            res <- FUN(peak_map[[1L]], peak_map[[2L]],
                                  xPrecursorMz = xPrecursorMz[i],
                                  yPrecursorMz = yPrecursorMz[j],
-                                 ppm = ppm, tolerance = tolerance, ...)
-            mat[i, j, 2L] <- sum(!is.na(peak_map[[1L]][, 1L] +
-                                        peak_map[[2L]][, 1L]))
+                       ppm = ppm, tolerance = tolerance,
+                       matchedPeaksCount = TRUE, ...)
+            mat[i, j, seq_along(res)] <- res
         }
     }
     mat
