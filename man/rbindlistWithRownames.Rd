@@ -40,8 +40,8 @@ function for a fast concatenation (row-binding) of a \code{list} of provided
 The parameters are the same as for \code{rbindlist()}.
 }
 \note{
-No sanitizing of row names is performed, i.e., after merging duplicated
-names might be present.
+Row names are dropped if duplicated row names are present, or if row
+names are not defined for all \code{data.frame}s in \code{l}.
 
 The function uses \code{.row_names_info()} to guess wheter row names are \emph{really}
 set or just the default \code{seq_len(nrow(x))} are used.
