@@ -271,11 +271,21 @@ test_that("joinPeaksGnps works", {
                intensity = c(35, 5, 16, 999, 450))
     b_pmz <- 105
 
-    expect_equal(joinPeaksGnps(a, b), joinPeaks(a, b))
-    expect_equal(joinPeaksGnps(a, b, xPrecursorMz = 91),
-                 joinPeaks(a, b))
-    expect_equal(joinPeaksGnps(a, b, xPrecursorMz = 3, yPrecursorMz = 3),
-                 joinPeaks(a, b))
+    .canonicalize_join <- function(j) {
+        pairs <- data.frame(x = j$x[, 1L], y = j$y[, 1L])
+        ord <- order(pairs$x, pairs$y, na.last = TRUE)
+        j$x <- j$x[ord, , drop = FALSE]
+        j$y <- j$y[ord, , drop = FALSE]
+        j
+    }
+
+    ref <- .canonicalize_join(joinPeaks(a, b))
+    res <- .canonicalize_join(joinPeaksGnps(a, b))
+    expect_equal(ref, res)
+    res <- .canonicalize_join(joinPeaksGnps(a, b, xPrecursorMz = 91))
+    expect_equal(ref, res)
+    res <- .canonicalize_join(joinPeaksGnps(a, b, 3, 3))
+    expect_equal(res, ref)
 
     res <- joinPeaksGnps(a, b, xPrecursorMz = a_pmz, yPrecursorMz = b_pmz,
                          type = "left")
@@ -310,8 +320,11 @@ test_that("joinPeaksGnps works", {
                intensity = 1:6)
     b_pmz <- 8
 
-    exp_a <- c(10, 10, 12, 12, 14, 16, 19, NA, NA)
-    exp_b <- c(10, 14, NA, 16, 14, 16, 19, 17, 22)
+    ## peaks 10, 14, 16, 19 match as is.
+    ## peaks not matching: 12-NA, NA-17, NA-22
+    ## pairs based on precursor difference: 10-14, 12-16
+    exp_a <- c(10, 12, 14, 16, 19, 10, 12, NA, NA)
+    exp_b <- c(10, NA, 14, 16, 19, 14, 16, 17, 22)
 
     res <- joinPeaksGnps(a, b, a_pmz, b_pmz, type = "outer")
     expect_equal(res$x[, 1], exp_a)

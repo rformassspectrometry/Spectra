@@ -140,3 +140,65 @@ sanitize_file_name <- function(x) {
             base::as.data.frame(do.call(base::rbind, peaksData)))
     else base::as.data.frame(do.call(base::rbind, peaksData))
 }
+
+#' @title Fast *rbind-ing* `data.frame`s preserving row names
+#'
+#' @description
+#'
+#' The `rbindlistWithRownames()` function uses the [data.table::rbindlist()]
+#' function for a fast concatenation (row-binding) of a `list` of provided
+#' `data.frame`s and in addition also preserves their row names (if set).
+#'
+#' The parameters are the same as for `rbindlist()`.
+#'
+#' @param l A `list` containing `data.frame`s that should be combined.
+#'
+#' @param use.names If `TRUE` binds by matching column names, if `FALSE` by
+#'     position. `"check"` (default) warns if not all items have the same names
+#'     in the same order. See [data.table::rbindlist()] for details.
+#'
+#' @param fill `logical(1)`: if `TRUE` fills missing columns with NAs or `NULL`
+#'     for missing list columns. By defalt `FALSE`.
+#'
+#' @param idcol Creates a column in the result showing which list item those
+#'     rows cam from. See [data.table::rbindlist()] for details.
+#'
+#' @param ignore.attr `logical(1)`, default `FALSE`. When `TRUE`, allows
+#'     binding columns with different attributes (e.g. class).
+#'
+#' @note
+#'
+#' Row names are dropped if duplicated row names are present, or if row
+#' names are not defined for all `data.frame`s in `l`.
+#'
+#' The function uses `.row_names_info()` to guess wheter row names are *really*
+#' set or just the default `seq_len(nrow(x))` are used.
+#'
+#' @return
+#'
+#' A combined `data.frame` with row names (if present in all `data.frame`s
+#' provided).
+#'
+#' @seealso [data.table::rbindlist()]
+#'
+#' @author Johannes Rainer
+#'
+#' @export
+rbindlistWithRownames <- function(l, use.names = TRUE, fill = FALSE,
+                                  idcol = NULL, ignore.attr = FALSE) {
+    rn <- unlist(lapply(l, function(z) {
+        if (.row_names_info(z) < 0) NULL else attr(z, "row.names")
+    }), use.names = FALSE, recursive = FALSE)
+    if (anyDuplicated(rn))
+        rn <- rn[1L]
+    lrn <- length(rn)
+    r <- as.data.frame(rbindlist(l, use.names = use.names, fill = fill,
+                                 idcol = idcol, ignore.attr = ignore.attr))
+    if (lrn) {
+        if (lrn == nrow(r))
+            attr(r, "row.names") <- rn
+        else warning("Dropping rownames: duplicated rownames present or ",
+                     "rownames not available for all data.frames")
+    }
+    r
+}

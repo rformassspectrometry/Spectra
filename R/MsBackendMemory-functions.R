@@ -99,9 +99,9 @@ MsBackendMemory <- function() {
     res <- objects[[1]]
     pv <- peaksVariables(res)
     for (i in 2:length(objects)) {
-        res@spectraData <- as.data.frame(rbindlist(
+        res@spectraData <- rbindlistWithRownames(
             list(res@spectraData, objects[[i]]@spectraData),
-            use.names = TRUE, fill = TRUE))
+            use.names = TRUE, fill = TRUE)
         pv2 <- peaksVariables(objects[[i]])
         if (length(pv) == length(pv2) && all(pv == pv2)) {
             res@peaksData <- c(res@peaksData, objects[[i]]@peaksData)

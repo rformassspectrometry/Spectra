@@ -79,3 +79,32 @@ test_that(".long_spectra_data3 works", {
     expect_true(is.data.frame(lf))
     expect_equal(lf$mz, res$mz)
 })
+
+test_that("rbindlistWithRownames works", {
+    a <- data.frame(a = 1:100, b = "A")
+    b <- data.frame(a = 5:8, b = "B")
+
+    ## both have no rownames
+    res <- rbindlistWithRownames(list(a, b))
+    expect_equal(nrow(res), nrow(a) + nrow(b))
+    expect_equal(rownames(res), as.character(seq_len(nrow(res))))
+
+    ## one has and one doesn't have rownames
+    rownames(b) <- paste0("b_", seq_len(nrow(b)))
+    expect_warning(res <- rbindlistWithRownames(list(a, b)), "not available")
+    expect_equal(nrow(res), nrow(a) + nrow(b))
+    expect_equal(rownames(res), as.character(seq_len(nrow(res))))
+
+    ## both have rownames
+    rownames(a) <- seq_len(nrow(a))
+    res <- rbindlistWithRownames(list(a, b))
+    expect_equal(nrow(res), nrow(a) + nrow(b))
+    expect_equal(rownames(res), c(rownames(a), rownames(b)))
+
+    ## duplicated rownames
+    rownames(a) <- seq_len(nrow(a))
+    rownames(b) <- seq_len(nrow(b))
+    expect_warning(res <- rbindlistWithRownames(list(a, b)), "not available")
+    expect_equal(nrow(res), nrow(a) + nrow(b))
+    expect_equal(rownames(res), as.character(seq_len(nrow(res))))
+})
