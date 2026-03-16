@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-03-06 16:11:41.748315\
-**Compiled**: Fri Mar 6 16:52:00 2026
+**Last modified:** 2026-03-16 14:51:06.36364\
+**Compiled**: Mon Mar 16 15:24:06 2026
 
 ## Introduction
 
@@ -57,6 +57,10 @@ fls <- c(
     MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 ```
 
+    ## Registered S3 method overwritten by 'bit64':
+    ##   method          from 
+    ##   print.bitstring tools
+
     ## see ?MsDataHub and browseVignettes('MsDataHub') for documentation
 
     ## loading from cache
@@ -97,9 +101,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 1d781e31dd5d_7861
-    ## 1d783c930fa7_7862
-    ## 1d785e18111b_7859
+    ## 25445e109d79_7861
+    ## 2544358c44_7862
+    ## 254428ba8725_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -194,13 +198,13 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/1d781e31dd5d_7861 
+    ## /github/home/.cache/R/ExperimentHub/25445e109d79_7861 
     ##                                                  7602 
-    ## /github/home/.cache/R/ExperimentHub/1d783c930fa7_7862 
+    ##   /github/home/.cache/R/ExperimentHub/2544358c44_7862 
     ##                                                  8999 
-    ## /github/home/.cache/R/ExperimentHub/1d785e18111b_7859 
+    ## /github/home/.cache/R/ExperimentHub/254428ba8725_7859 
     ##                                                   931 
-    ## /github/home/.cache/R/ExperimentHub/1d784b2d5578_7860 
+    ## /github/home/.cache/R/ExperimentHub/25445303ac2f_7860 
     ##                                                   931
 
 The data would thus be split and processed by the original file, from
@@ -336,7 +340,7 @@ i.e., based on the `processingChunkFactor`:
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-03-01 r89508)
+    ## R Under development (unstable) (2026-03-15 r89629)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -360,7 +364,7 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.11.1    Spectra_1.21.3      BiocParallel_1.45.0
+    ## [1] MsDataHub_1.11.1    Spectra_1.21.5      BiocParallel_1.45.0
     ## [4] S4Vectors_0.49.0    BiocGenerics_0.57.0 generics_0.1.4     
     ## [7] BiocStyle_2.39.0   
     ## 
@@ -372,7 +376,7 @@ sessionInfo()
     ## [13] RSQLite_2.4.6          cluster_2.1.8.2        blob_1.3.0            
     ## [16] pkgconfig_2.0.3        data.table_1.18.2.1    dbplyr_2.5.2          
     ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.6.0        
-    ## [22] Biostrings_2.79.4      textshaping_1.0.5      Seqinfo_1.1.0         
+    ## [22] Biostrings_2.79.5      textshaping_1.0.5      Seqinfo_1.1.0         
     ## [25] codetools_0.2-20       ncdf4_1.24             clue_0.3-67           
     ## [28] htmltools_0.5.9        sass_0.4.10            yaml_2.3.12           
     ## [31] crayon_1.5.3           pkgdown_2.2.0.9000     pillar_1.11.1         
@@ -384,10 +388,10 @@ sessionInfo()
     ## [49] withr_3.0.2            filelock_1.0.3         rappdirs_0.3.4        
     ## [52] bit64_4.6.0-1          XVector_0.51.0         httr_1.4.8            
     ## [55] rmarkdown_2.30         bit_4.6.0              otel_0.2.0            
-    ## [58] png_0.1-8              ragg_1.5.1             memoise_2.0.1         
+    ## [58] png_0.1-9              ragg_1.5.1             memoise_2.0.1         
     ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.45.0        
     ## [64] BiocFileCache_3.1.0    rlang_1.1.7            Rcpp_1.1.1            
     ## [67] glue_1.8.0             DBI_1.3.0              mzR_2.43.3            
     ## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              
     ## [73] systemfonts_1.3.2      fs_1.6.7               ProtGenerics_1.43.0   
-    ## [76] MsCoreUtils_1.23.2
+    ## [76] MsCoreUtils_1.23.6

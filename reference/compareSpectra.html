@@ -12,27 +12,36 @@ information and examples). The MAPFUN function should have parameters
 x, y, xPrecursorMz and yPrecursorMz as these values are passed to
 the function.
 In addition to joinPeaks() also joinPeaksGnps() is supported for
-GNPS-like similarity score calculations. Note that joinPeaksGnps() should
-only be used in combination with FUN = MsCoreUtils::gnps
-(see joinPeaksGnps() for more information and details). Use
-MAPFUN = joinPeaksNone to disable internal peak matching/mapping if a
-similarity scoring function is used that performs the matching internally.
+GNPS-like similarity score calculations (i.e., the modified cosine
+similarity). Note that joinPeaksGnps() should only be used in combination
+with FUN = MsCoreUtils::gnps (see joinPeaksGnps() for more information
+and details). Use MAPFUN = joinPeaksNone to disable internal peak
+matching/mapping if a similarity scoring function is used that performs
+the matching internally (such as e.g. the msentropy_similarity() function
+from the msentropy package).
 FUN is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
 matrices with columns &quot;mz&quot; and &quot;intensity&quot; as input and is supposed
 to return a single numeric as result. In addition to the two peak matrices
 the spectra's precursor m/z values are passed to the function as parameters
 xPrecursorMz (precursor m/z of the x peak matrix) and yPrecursorMz
-(precursor m/z of the y peak matrix). Additional parameters to functions
-FUN and MAPFUN can be passed with .... Parameters ppm and
+(precursor m/z of the y peak matrix). Finally, the parameter
+matchedPeaksCount is passed to the function. Additional parameters to
+functions FUN and MAPFUN can be passed with .... Parameters ppm and
 tolerance are passed to both MAPFUN and FUN.
-The function returns a matrix with the results of FUN for each
-comparison, number of rows equal to length(x) and number of columns
-equal length(y) (i.e. element in row 2 and column 3 is the result from
-the comparison of x[2] with y[3]). If SIMPLIFY = TRUE the matrix
-is simplified to a numeric if length of x or y is one. See also
-the vignette for additional examples, such as using spectral entropy
-similarity in the scoring."><meta property="og:description" content="compareSpectra() compares each spectrum in x with each spectrum in y
+By default, with matchedPeaksCount = FALSE, compareSpectra() returns
+a matrix with the results of FUN for each pairwise spectra comparison.
+The number of rows of this matrix is equal to length(x) and the number
+of columns equal to length(y) (i.e., the value reported in row 2 and
+column 3 is the result from the comparison of x[2] with y[3]).
+For matchedPeaksCount = TRUE a 3-dimensional array is returned, with
+the first matrix in z-dimension (i.e., res[, , 1L]) being the similarity
+matrix and the second matrix (i.e., res[, , 2L]) the number of matched
+peaks for each compared peak pair.
+If SIMPLIFY = TRUE and matchedPeaksCount = FALSE, the matrix is
+simplified to a numeric if length of x or y is one.
+See also the vignette for additional examples, such as using spectral
+entropy similarity in the scoring."><meta property="og:description" content="compareSpectra() compares each spectrum in x with each spectrum in y
 using the function provided with FUN (defaults to
 MsCoreUtils::ndotproduct()). If y is missing, each spectrum in x is
 compared with each other spectrum in x.
@@ -45,27 +54,36 @@ information and examples). The MAPFUN function should have parameters
 x, y, xPrecursorMz and yPrecursorMz as these values are passed to
 the function.
 In addition to joinPeaks() also joinPeaksGnps() is supported for
-GNPS-like similarity score calculations. Note that joinPeaksGnps() should
-only be used in combination with FUN = MsCoreUtils::gnps
-(see joinPeaksGnps() for more information and details). Use
-MAPFUN = joinPeaksNone to disable internal peak matching/mapping if a
-similarity scoring function is used that performs the matching internally.
+GNPS-like similarity score calculations (i.e., the modified cosine
+similarity). Note that joinPeaksGnps() should only be used in combination
+with FUN = MsCoreUtils::gnps (see joinPeaksGnps() for more information
+and details). Use MAPFUN = joinPeaksNone to disable internal peak
+matching/mapping if a similarity scoring function is used that performs
+the matching internally (such as e.g. the msentropy_similarity() function
+from the msentropy package).
 FUN is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
 matrices with columns &quot;mz&quot; and &quot;intensity&quot; as input and is supposed
 to return a single numeric as result. In addition to the two peak matrices
 the spectra's precursor m/z values are passed to the function as parameters
 xPrecursorMz (precursor m/z of the x peak matrix) and yPrecursorMz
-(precursor m/z of the y peak matrix). Additional parameters to functions
-FUN and MAPFUN can be passed with .... Parameters ppm and
+(precursor m/z of the y peak matrix). Finally, the parameter
+matchedPeaksCount is passed to the function. Additional parameters to
+functions FUN and MAPFUN can be passed with .... Parameters ppm and
 tolerance are passed to both MAPFUN and FUN.
-The function returns a matrix with the results of FUN for each
-comparison, number of rows equal to length(x) and number of columns
-equal length(y) (i.e. element in row 2 and column 3 is the result from
-the comparison of x[2] with y[3]). If SIMPLIFY = TRUE the matrix
-is simplified to a numeric if length of x or y is one. See also
-the vignette for additional examples, such as using spectral entropy
-similarity in the scoring."><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
+By default, with matchedPeaksCount = FALSE, compareSpectra() returns
+a matrix with the results of FUN for each pairwise spectra comparison.
+The number of rows of this matrix is equal to length(x) and the number
+of columns equal to length(y) (i.e., the value reported in row 2 and
+column 3 is the result from the comparison of x[2] with y[3]).
+For matchedPeaksCount = TRUE a 3-dimensional array is returned, with
+the first matrix in z-dimension (i.e., res[, , 1L]) being the similarity
+matrix and the second matrix (i.e., res[, , 2L]) the number of matched
+peaks for each compared peak pair.
+If SIMPLIFY = TRUE and matchedPeaksCount = FALSE, the matrix is
+simplified to a numeric if length of x or y is one.
+See also the vignette for additional examples, such as using spectral
+entropy similarity in the scoring."><meta property="og:image" content="https://rformassspectrometry.github.io/Spectra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -73,7 +91,7 @@ similarity in the scoring."><meta property="og:image" content="https://rformasss
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,27 +136,36 @@ information and examples). The <code>MAPFUN</code> function should have paramete
 <code>x</code>, <code>y</code>, <code>xPrecursorMz</code> and <code>yPrecursorMz</code> as these values are passed to
 the function.</p>
 <p>In addition to <code><a href="joinPeaks.html">joinPeaks()</a></code> also <code><a href="joinPeaks.html">joinPeaksGnps()</a></code> is supported for
-GNPS-like similarity score calculations. Note that <code><a href="joinPeaks.html">joinPeaksGnps()</a></code> should
-only be used in combination with <code>FUN = MsCoreUtils::gnps</code>
-(see <code><a href="joinPeaks.html">joinPeaksGnps()</a></code> for more information and details). Use
-<code>MAPFUN = joinPeaksNone</code> to disable internal peak matching/mapping if a
-similarity scoring function is used that performs the matching internally.</p>
+GNPS-like similarity score calculations (i.e., the <em>modified cosine</em>
+similarity). Note that <code><a href="joinPeaks.html">joinPeaksGnps()</a></code> should only be used in combination
+with <code>FUN = MsCoreUtils::gnps</code> (see <code><a href="joinPeaks.html">joinPeaksGnps()</a></code> for more information
+and details). Use <code>MAPFUN = joinPeaksNone</code> to disable internal peak
+matching/mapping if a similarity scoring function is used that performs
+the matching internally (such as e.g. the <code>msentropy_similarity()</code> function
+from the <em>msentropy</em> package).</p>
 <p><code>FUN</code> is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take two
 matrices with columns <code>"mz"</code> and <code>"intensity"</code> as input and is supposed
 to return a single numeric as result. In addition to the two peak matrices
 the spectra's precursor m/z values are passed to the function as parameters
 <code>xPrecursorMz</code> (precursor m/z of the <code>x</code> peak matrix) and <code>yPrecursorMz</code>
-(precursor m/z of the <code>y</code> peak matrix). Additional parameters to functions
-<code>FUN</code> and <code>MAPFUN</code> can be passed with <code>...</code>. Parameters <code>ppm</code> and
-<code>tolerance</code> are passed to both <code>MAPFUN</code> and <code>FUN</code>.
-The function returns a <code>matrix</code> with the results of <code>FUN</code> for each
-comparison, number of rows equal to <code>length(x)</code> and number of columns
-equal <code>length(y)</code> (i.e. element in row 2 and column 3 is the result from
-the comparison of <code>x[2]</code> with <code>y[3]</code>). If <code>SIMPLIFY = TRUE</code> the <code>matrix</code>
-is <em>simplified</em> to a <code>numeric</code> if length of <code>x</code> or <code>y</code> is one. See also
-the vignette for additional examples, such as using spectral entropy
-similarity in the scoring.</p>
+(precursor m/z of the <code>y</code> peak matrix). Finally, the parameter
+<code>matchedPeaksCount</code> is passed to the function. Additional parameters to
+functions <code>FUN</code> and <code>MAPFUN</code> can be passed with <code>...</code>. Parameters <code>ppm</code> and
+<code>tolerance</code> are passed to both <code>MAPFUN</code> and <code>FUN</code>.</p>
+<p>By default, with <code>matchedPeaksCount = FALSE</code>, <code>compareSpectra()</code> returns
+a <code>matrix</code> with the results of <code>FUN</code> for each pairwise spectra comparison.
+The number of rows of this <code>matrix</code> is equal to <code>length(x)</code> and the number
+of columns equal to <code>length(y)</code> (i.e., the value reported in row 2 and
+column 3 is the result from the comparison of <code>x[2]</code> with <code>y[3]</code>).</p>
+<p>For <code>matchedPeaksCount = TRUE</code> a 3-dimensional <code>array</code> is returned, with
+the first <code>matrix</code> in z-dimension (i.e., <code>res[, , 1L]</code>) being the similarity
+matrix and the second <code>matrix</code> (i.e., <code>res[, , 2L]</code>) the number of matched
+peaks for each compared peak pair.</p>
+<p>If <code>SIMPLIFY = TRUE</code> and <code>matchedPeaksCount = FALSE</code>, the <code>matrix</code> is
+<em>simplified</em> to a <code>numeric</code> if length of <code>x</code> or <code>y</code> is one.</p>
+<p>See also the vignette for additional examples, such as using spectral
+entropy similarity in the scoring.</p>
     </div>
 
     <div class="section level2">
@@ -183,9 +210,9 @@ similarity in the scoring.</p>
 
 
 <dt id="arg-mapfun">MAPFUN<a class="anchor" aria-label="anchor" href="#arg-mapfun"></a></dt>
-<dd><p>For <code>compareSpectra()</code>: function to map/match peaks between
-the two compared spectra. See <code><a href="joinPeaks.html">joinPeaks()</a></code> for more information and
-possible functions. Defaults to <code><a href="joinPeaks.html">joinPeaks()</a></code>.</p></dd>
+<dd><p>function to map/match peaks between the two compared spectra.
+See <code><a href="joinPeaks.html">joinPeaks()</a></code> for more information and possible functions. Defaults
+to <code>MAPFUN = joinPeaks</code>.</p></dd>
 
 
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
@@ -201,8 +228,9 @@ parameter is directly passed to <code>MAPFUN</code>.</p></dd>
 
 
 <dt id="arg-fun">FUN<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
-<dd><p>function to compare intensities of peaks between two spectra.
-Defaults to <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/distance.html" class="external-link">MsCoreUtils::ndotproduct()</a></code>.</p></dd>
+<dd><p>function to compare intensities of peaks between two spectra. See
+<code><a href="https://rdrr.io/pkg/MsCoreUtils/man/distance.html" class="external-link">MsCoreUtils::distance()</a></code> for directly supported similarity functions.
+Defaults to <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/distance.html" class="external-link">MsCoreUtils::ndotproduct</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -211,9 +239,13 @@ Defaults to <code><a href="https://rdrr.io/pkg/MsCoreUtils/man/distance.html" cl
 
 <dt id="arg-matchedpeakscount">matchedPeaksCount<a class="anchor" aria-label="anchor" href="#arg-matchedpeakscount"></a></dt>
 <dd><p><code>logical(1)</code> whether the number of matching peaks
-between the compared spectra should be returned in addition to the
-similarity scores. Note that with <code>matchedPeaksCount = TRUE</code> a
-3-dimensional <code>array</code> is returned. See examples below for details.</p></dd>
+between the compared pairs of spectra should be returned in addition
+to the similarity scores. Note that with <code>matchedPeaksCount = TRUE</code> a
+3-dimensional <code>array</code> is returned. See examples below for details.
+This requires that the spectra similarity function defined with <code>FUN</code>
+has a parameter <code>matchedPeaksCount</code> and that it returns, for
+<code>matchedPeaksCount = TRUE</code> a <code>numeric(2)</code> with the similarity score
+and the number of matched peaks.</p></dd>
 
 
 <dt id="arg-simplify">SIMPLIFY<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
@@ -230,6 +262,37 @@ similarity scores. With <code>matchedPeaksCount = FALSE</code> and
 a 3-dimensional array with the scores reported in the first matrix in
 z dimension (<code>[, , 1]</code>) and the number of matching peaks in the second
 matrix in z dimension (<code>[, , 2]</code>).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><code>compareSpectra()</code> supports custom functions for peak matching and
+similarity calculation that can be provided with parameters <code>MAPFUN</code> and
+<code>FUN</code>, respectively. The parameters passed from <code>compareSpectra()</code> to these
+functions are:</p><ul><li><p>for <code>MAPFUN</code>: <code>x</code> (peak matrix of the first spectrum), <code>y</code> (peak matrix of
+the second spectrum), <code>tolerance</code> (the absolute acceptable tolerance for
+peaks to be considered matching), <code>ppm</code> (the m/z-relative difference),
+<code>xPrecursorMz</code> (the precursor m/z of the first spectrum), <code>yPrecursorMz</code>
+(the precursor m/z of the second spectrum).</p></li>
+<li><p>for <code>FUN</code>: <code>x</code> (peak matrix aligned with peaks from the second spectrum,
+i.e., the result from <code>MAPFUN</code>), <code>y</code> (peak matrix aligned with peaks from
+the first spectrum), <code>xPrecursorMz</code> (precursor m/z of the first spectrum),
+<code>yPrecursorMz</code> (precursor m/z of the second spectrum), <code>tolerance</code>, <code>ppm</code>,
+<code>matchedPeaksCount</code> (<code>logical(1)</code> whether the number of peak pairs on
+which the similarity was calculated should be returned in addition; if
+set to <code>TRUE</code> the function is expected to return a <code>numeric(2)</code> with
+the similarity score and the number of matched peaks).</p></li>
+</ul><p><code>compareSpectra()</code>, before calculating the spectra similarity, will apply
+all eventually present data modification operations cached in the processing
+queue of the two compared <code>Spectra</code>.
+Internally, the calculations are performed in a memory-saving manner loading,
+for a large number of spectra, data only for a smaller <em>chunk</em> of data at a
+time.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>The <code>compareSpectra(x)</code> function to calculate similarities between each
+spectrum within the <strong>same</strong> <code>Spectra</code> uses a memory efficient calculation
+which can however be considerably slower than <code>compareSpectra(x, x)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -262,7 +325,7 @@ matrix in z dimension (<code>[, , 2]</code>).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1d781e31dd5d_7861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25445e109d79_7861</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Restrict to MS2 (fragment) spectra:</span></span></span>
 <span class="r-in"><span><span class="va">sps_ms2</span> <span class="op">&lt;-</span> <span class="fu"><a href="filterMsLevel.html">filterMsLevel</a></span><span class="op">(</span><span class="va">sps_dda</span>, msLevel <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>

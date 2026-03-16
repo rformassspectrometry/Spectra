@@ -236,6 +236,11 @@
 
   Parallel and chunk-wise processing of `Spectra`
 
+- [`rbindlistWithRownames()`](https://rformassspectrometry.github.io/Spectra/reference/rbindlistWithRownames.md)
+  :
+
+  Fast *rbind-ing* `data.frame`s preserving row names
+
 - [`plotSpectra()`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)
   [`plotSpectraOverlay()`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)
   [`plotSpectraMirror(`*`<Spectra>`*`)`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)

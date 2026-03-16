@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-03-06 16:11:41.748315\
-**Compiled**: Fri Mar 6 16:51:45 2026
+**Last modified:** 2026-03-16 14:51:06.36364\
+**Compiled**: Mon Mar 16 15:23:51 2026
 
 ## Introduction
 
@@ -2623,7 +2623,7 @@ test_dir(test_suite, stop_on_failure = TRUE)
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-03-01 r89508)
+    ## R Under development (unstable) (2026-03-15 r89629)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -2647,7 +2647,7 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsCoreUtils_1.23.2  IRanges_2.45.0      Spectra_1.21.3     
+    ## [1] MsCoreUtils_1.23.6  IRanges_2.45.0      Spectra_1.21.5     
     ## [4] BiocParallel_1.45.0 S4Vectors_0.49.0    BiocGenerics_0.57.0
     ## [7] generics_0.1.4      BiocStyle_2.39.0   
     ## 

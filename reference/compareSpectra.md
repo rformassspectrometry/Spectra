@@ -20,13 +20,15 @@ In addition to
 [`joinPeaks()`](https://rformassspectrometry.github.io/Spectra/reference/joinPeaks.md)
 also
 [`joinPeaksGnps()`](https://rformassspectrometry.github.io/Spectra/reference/joinPeaks.md)
-is supported for GNPS-like similarity score calculations. Note that
+is supported for GNPS-like similarity score calculations (i.e., the
+*modified cosine* similarity). Note that
 [`joinPeaksGnps()`](https://rformassspectrometry.github.io/Spectra/reference/joinPeaks.md)
 should only be used in combination with `FUN = MsCoreUtils::gnps` (see
 [`joinPeaksGnps()`](https://rformassspectrometry.github.io/Spectra/reference/joinPeaks.md)
 for more information and details). Use `MAPFUN = joinPeaksNone` to
 disable internal peak matching/mapping if a similarity scoring function
-is used that performs the matching internally.
+is used that performs the matching internally (such as e.g. the
+`msentropy_similarity()` function from the *msentropy* package).
 
 `FUN` is supposed to be a function to compare intensities of (matched)
 peaks of the two spectra that are compared. The function needs to take
@@ -35,15 +37,28 @@ supposed to return a single numeric as result. In addition to the two
 peak matrices the spectra's precursor m/z values are passed to the
 function as parameters `xPrecursorMz` (precursor m/z of the `x` peak
 matrix) and `yPrecursorMz` (precursor m/z of the `y` peak matrix).
+Finally, the parameter `matchedPeaksCount` is passed to the function.
 Additional parameters to functions `FUN` and `MAPFUN` can be passed with
 `...`. Parameters `ppm` and `tolerance` are passed to both `MAPFUN` and
-`FUN`. The function returns a `matrix` with the results of `FUN` for
-each comparison, number of rows equal to `length(x)` and number of
-columns equal `length(y)` (i.e. element in row 2 and column 3 is the
-result from the comparison of `x[2]` with `y[3]`). If `SIMPLIFY = TRUE`
-the `matrix` is *simplified* to a `numeric` if length of `x` or `y` is
-one. See also the vignette for additional examples, such as using
-spectral entropy similarity in the scoring.
+`FUN`.
+
+By default, with `matchedPeaksCount = FALSE`, `compareSpectra()` returns
+a `matrix` with the results of `FUN` for each pairwise spectra
+comparison. The number of rows of this `matrix` is equal to `length(x)`
+and the number of columns equal to `length(y)` (i.e., the value reported
+in row 2 and column 3 is the result from the comparison of `x[2]` with
+`y[3]`).
+
+For `matchedPeaksCount = TRUE` a 3-dimensional `array` is returned, with
+the first `matrix` in z-dimension (i.e., `res[, , 1L]`) being the
+similarity matrix and the second `matrix` (i.e., `res[, , 2L]`) the
+number of matched peaks for each compared peak pair.
+
+If `SIMPLIFY = TRUE` and `matchedPeaksCount = FALSE`, the `matrix` is
+*simplified* to a `numeric` if length of `x` or `y` is one.
+
+See also the vignette for additional examples, such as using spectral
+entropy similarity in the scoring.
 
 ## Usage
 
@@ -87,11 +102,10 @@ compareSpectra(
 
 - MAPFUN:
 
-  For `compareSpectra()`: function to map/match peaks between the two
-  compared spectra. See
+  function to map/match peaks between the two compared spectra. See
   [`joinPeaks()`](https://rformassspectrometry.github.io/Spectra/reference/joinPeaks.md)
   for more information and possible functions. Defaults to
-  [`joinPeaks()`](https://rformassspectrometry.github.io/Spectra/reference/joinPeaks.md).
+  `MAPFUN = joinPeaks`.
 
 - tolerance:
 
@@ -107,9 +121,10 @@ compareSpectra(
 
 - FUN:
 
-  function to compare intensities of peaks between two spectra. Defaults
-  to
-  [`MsCoreUtils::ndotproduct()`](https://rdrr.io/pkg/MsCoreUtils/man/distance.html).
+  function to compare intensities of peaks between two spectra. See
+  [`MsCoreUtils::distance()`](https://rdrr.io/pkg/MsCoreUtils/man/distance.html)
+  for directly supported similarity functions. Defaults to
+  [`MsCoreUtils::ndotproduct`](https://rdrr.io/pkg/MsCoreUtils/man/distance.html).
 
 - ...:
 
@@ -118,9 +133,13 @@ compareSpectra(
 - matchedPeaksCount:
 
   `logical(1)` whether the number of matching peaks between the compared
-  spectra should be returned in addition to the similarity scores. Note
-  that with `matchedPeaksCount = TRUE` a 3-dimensional `array` is
-  returned. See examples below for details.
+  pairs of spectra should be returned in addition to the similarity
+  scores. Note that with `matchedPeaksCount = TRUE` a 3-dimensional
+  `array` is returned. See examples below for details. This requires
+  that the spectra similarity function defined with `FUN` has a
+  parameter `matchedPeaksCount` and that it returns, for
+  `matchedPeaksCount = TRUE` a `numeric(2)` with the similarity score
+  and the number of matched peaks.
 
 - SIMPLIFY:
 
@@ -135,6 +154,44 @@ similarity scores. With `matchedPeaksCount = FALSE` and
 3-dimensional array with the scores reported in the first matrix in z
 dimension (`[, , 1]`) and the number of matching peaks in the second
 matrix in z dimension (`[, , 2]`).
+
+## Details
+
+`compareSpectra()` supports custom functions for peak matching and
+similarity calculation that can be provided with parameters `MAPFUN` and
+`FUN`, respectively. The parameters passed from `compareSpectra()` to
+these functions are:
+
+- for `MAPFUN`: `x` (peak matrix of the first spectrum), `y` (peak
+  matrix of the second spectrum), `tolerance` (the absolute acceptable
+  tolerance for peaks to be considered matching), `ppm` (the
+  m/z-relative difference), `xPrecursorMz` (the precursor m/z of the
+  first spectrum), `yPrecursorMz` (the precursor m/z of the second
+  spectrum).
+
+- for `FUN`: `x` (peak matrix aligned with peaks from the second
+  spectrum, i.e., the result from `MAPFUN`), `y` (peak matrix aligned
+  with peaks from the first spectrum), `xPrecursorMz` (precursor m/z of
+  the first spectrum), `yPrecursorMz` (precursor m/z of the second
+  spectrum), `tolerance`, `ppm`, `matchedPeaksCount` (`logical(1)`
+  whether the number of peak pairs on which the similarity was
+  calculated should be returned in addition; if set to `TRUE` the
+  function is expected to return a `numeric(2)` with the similarity
+  score and the number of matched peaks).
+
+`compareSpectra()`, before calculating the spectra similarity, will
+apply all eventually present data modification operations cached in the
+processing queue of the two compared `Spectra`. Internally, the
+calculations are performed in a memory-saving manner loading, for a
+large number of spectra, data only for a smaller *chunk* of data at a
+time.
+
+## Note
+
+The `compareSpectra(x)` function to calculate similarities between each
+spectrum within the **same** `Spectra` uses a memory efficient
+calculation which can however be considerably slower than
+`compareSpectra(x, x)`.
 
 ## Author
 
@@ -167,7 +224,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 1d781e31dd5d_7861
+#> 25445e109d79_7861
 
 ## Restrict to MS2 (fragment) spectra:
 sps_ms2 <- filterMsLevel(sps_dda, msLevel = 2L)

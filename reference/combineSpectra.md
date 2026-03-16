@@ -239,8 +239,8 @@ sciex
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 1d785e18111b_7859
-#> 1d784b2d5578_7860
+#> 254428ba8725_7859
+#> 25445303ac2f_7860
 
 ## Subset to the first 100 spectra to reduce running time of the examples
 sciex <- sciex[1:100]
@@ -275,8 +275,8 @@ all
 #> 102         1    27.902       100
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026]
-#>  Merge 2 Spectra into one [Fri Mar  6 16:49:41 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:47 2026]
+#>  Merge 2 Spectra into one [Mon Mar 16 15:21:47 2026] 
 
 ## The new `Spectra` objects contains the union of spectra variables from
 ## both:
@@ -374,7 +374,7 @@ sciex_split |> head()
 #> 1         1      0.28         1
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:47 2026] 
 #> 
 #> $`1`
 #> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
@@ -386,7 +386,7 @@ sciex_split |> head()
 #> 4         1     1.396         5
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:47 2026] 
 #> 
 #> $`2`
 #> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:
@@ -397,7 +397,7 @@ sciex_split |> head()
 #> 3         1     2.233         8
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:47 2026] 
 #> 
 #> $`3`
 #> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
@@ -409,7 +409,7 @@ sciex_split |> head()
 #> 4         1     3.349        12
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:47 2026] 
 #> 
 #> $`4`
 #> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
@@ -421,7 +421,7 @@ sciex_split |> head()
 #> 4         1     4.465        16
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:47 2026] 
 #> 
 #> $`5`
 #> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:
@@ -432,7 +432,7 @@ sciex_split |> head()
 #> 3         1     5.302        19
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:41 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:47 2026] 
 #> 
 
 

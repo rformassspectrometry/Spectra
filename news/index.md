@@ -2,10 +2,34 @@
 
 ## Spectra 1.21
 
+### Change 1.21.5
+
+- Fix potential issue by introducing concatenation of `data.frame`s with
+  [`data.table::rbindlist()`](https://rdrr.io/pkg/data.table/man/rbindlist.html)
+  in version 1.21.3: new function
+  [`rbindlistWithRownames()`](https://rformassspectrometry.github.io/Spectra/reference/rbindlistWithRownames.md)
+  added which uses `rbindlist()` but preserves also the row names of the
+  `data.frame`s.
+- Fix unit tests for
+  [`joinPeaksGnps()`](https://rformassspectrometry.github.io/Spectra/reference/joinPeaks.md)
+  to follow recent updates in *MsCoreUtils*.
+
+### Change 1.21.4
+
+- Refactor
+  [`compareSpectra()`](https://rformassspectrometry.github.io/Spectra/reference/compareSpectra.md)
+  to support spectra similarity functions returning the similarity score
+  **and** the number of peak pairs on which the score was calculated.
+  This allows to correctly report the number of peak pairs used by
+  e.g. the modified cosine (GNPS) similarity score. See also
+  [issue](https://github.com/rformassspectrometry/Spectra/issues/350)
+  [\#350](https://github.com/RforMassSpectrometry/Spectra/issues/350).
+
 ### Change 1.21.3
 
-- Use `data.table::rbindfill()` for merging of `MsBackendMemory`
-  instances and for
+- Use
+  [`data.table::rbindlist()`](https://rdrr.io/pkg/data.table/man/rbindlist.html)
+  for merging of `MsBackendMemory` instances and for
   [`backendInitialize()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
   for `MsBackendMzR`. This adds *data.table* as a dependency but
   improves performance for the above mentioned functionality.

@@ -385,6 +385,9 @@ data
 ## backend. Example mzML files are provided by the *MsDataHub* package.
 sciex_file <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
                 MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
+#> Registered S3 method overwritten by 'bit64':
+#>   method          from 
+#>   print.bitstring tools
 #> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
 #> loading from cache
 #> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
@@ -408,8 +411,8 @@ sciex
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 1d785e18111b_7859
-#> 1d784b2d5578_7860
+#> 254428ba8725_7859
+#> 25445303ac2f_7860
 
 
 ##  --------  CHANGING DATA REPRESENTATIONS  --------
@@ -435,7 +438,7 @@ sciex_im
 #> 1862         1   259.752       931
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:19 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:26 2026] 
 
 ## The `MsBackendMemory()` supports the `setBackend()` method:
 supportsSetBackend(MsBackendMemory())
@@ -463,30 +466,30 @@ head(dataStorage(sciex_im))
 ## While objects that use an on-disk backend will list the files where the
 ## data is stored.
 head(dataStorage(sciex))
-#> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [1] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
 
 ## The spectra variable `dataOrigin` returns for each spectrum the *origin*
 ## of the data. If the data is read from e.g. mzML files, this will be the
 ## original mzML file name:
 head(dataOrigin(sciex))
-#> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [1] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
 head(dataOrigin(sciex_im))
-#> [1] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [2] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [3] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [4] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [5] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
-#> [6] "/github/home/.cache/R/ExperimentHub/1d785e18111b_7859"
+#> [1] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/254428ba8725_7859"
 
 
 ##  -------- DATA EXPORT  --------

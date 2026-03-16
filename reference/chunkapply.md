@@ -65,7 +65,7 @@ system.time(sqrt(x))
 #>       0       0       0 
 system.time(chunkapply(x, sqrt, chunkSize = 200))
 #>    user  system elapsed 
-#>       0       0       0 
+#>   0.001   0.000   0.000 
 
 ## Simple example splitting a numeric vector into chunks of 200 and
 ## aggregating the values within the chunk using the `mean`. Due to the

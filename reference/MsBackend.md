@@ -453,7 +453,7 @@ MsBackendMzR()
   For
   [`filterPrecursorMzValues()`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md):
   `numeric(1)` with the maximal absolute acceptable difference for a m/z
-  value to be considered matching. See
+  value to be considered matching. See documentation
   [`MsCoreUtils::closest()`](https://rdrr.io/pkg/MsCoreUtils/man/matching.html)
   for details. For
   [`filterValues()`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md):

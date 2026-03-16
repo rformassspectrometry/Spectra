@@ -526,7 +526,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 1d781e31dd5d_7861
+#> 25445e109d79_7861
 
 
 ##  --------  FUNCTIONS RETURNING A SPECTRA  --------
@@ -551,10 +551,10 @@ sps_mod
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 1d781e31dd5d_7861
+#> 25445e109d79_7861
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
-#>  Signal <= 20 in MS level(s) 1, 2 set to 0 [Fri Mar  6 16:49:22 2026] 
+#>  Signal <= 20 in MS level(s) 1, 2 set to 0 [Mon Mar 16 15:21:28 2026] 
 
 ## Get the intensities of the first spectrum before and after the
 ## operation
@@ -690,10 +690,10 @@ tmp
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 1d781e31dd5d_7861
+#> 25445e109d79_7861
 #> Processing:
-#>  Scale peak intensities in spectra of MS level(s) 2. [Fri Mar  6 16:49:25 2026]
-#>  Reset object. [Fri Mar  6 16:49:26 2026] 
+#>  Scale peak intensities in spectra of MS level(s) 2. [Mon Mar 16 15:21:31 2026]
+#>  Reset object. [Mon Mar 16 15:21:32 2026] 
 lengths(sps_dda) |> head()
 #> [1] 223 211 227 210 220 228
 lengths(sps_mod) |> head()
@@ -727,9 +727,9 @@ sps_mod
 #> 7602         1   899.993      7602
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Mar  6 16:49:29 2026]
-#>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Fri Mar  6 16:49:29 2026]
-#>  Applied processing queue with 1 steps [Fri Mar  6 16:49:29 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:34 2026]
+#>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Mon Mar 16 15:21:34 2026]
+#>  Applied processing queue with 1 steps [Mon Mar 16 15:21:35 2026] 
 
 ## While we can't *undo* this filtering operation now using the `reset()`
 ## function, accessing the data would now be faster, because the operation
