@@ -1,5 +1,14 @@
 # Spectra 1.21
 
+## Change 1.21.5
+
+- Fix potential issue by introducing concatenation of `data.frame`s with
+  `data.table::rbindlist()` in version 1.21.3: new function
+  `rbindlistWithRownames()` added which uses `rbindlist()` but preserves also
+  the row names of the `data.frame`s.
+- Fix unit tests for `joinPeaksGnps()` to follow recent updates in
+  *MsCoreUtils*.
+
 ## Change 1.21.4
 
 - Refactor `compareSpectra()` to support spectra similarity functions returning
@@ -10,7 +19,7 @@
 
 ## Change 1.21.3
 
-- Use `data.table::rbindfill()` for merging of `MsBackendMemory` instances and
+- Use `data.table::rbindlist()` for merging of `MsBackendMemory` instances and
   for `backendInitialize()` for `MsBackendMzR`. This adds *data.table* as a
   dependency but improves performance for the above mentioned functionality.
 - Fix bug in `fragmentGroupIndex()` that would return the indices in a wrong
