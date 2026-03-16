@@ -85,7 +85,6 @@ test_that("rbindlistWithRownames works", {
     b <- data.frame(a = 5:8, b = "B")
 
     ## both have no rownames
-    rownames(b) <- NULL
     res <- rbindlistWithRownames(list(a, b))
     expect_equal(nrow(res), nrow(a) + nrow(b))
     expect_equal(rownames(res), as.character(seq_len(nrow(res))))
@@ -101,4 +100,11 @@ test_that("rbindlistWithRownames works", {
     res <- rbindlistWithRownames(list(a, b))
     expect_equal(nrow(res), nrow(a) + nrow(b))
     expect_equal(rownames(res), c(rownames(a), rownames(b)))
+
+    ## duplicated rownames
+    rownames(a) <- seq_len(nrow(a))
+    rownames(b) <- seq_len(nrow(b))
+    expect_warning(res <- rbindlistWithRownames(list(a, b)), "not available")
+    expect_equal(nrow(res), nrow(a) + nrow(b))
+    expect_equal(rownames(res), as.character(seq_len(nrow(res))))
 })

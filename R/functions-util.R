@@ -168,8 +168,8 @@ sanitize_file_name <- function(x) {
 #'
 #' @note
 #'
-#' No sanitizing of row names is performed, i.e., after merging duplicated
-#' names might be present.
+#' Row names are dropped if duplicated row names are present, or if row
+#' names are not defined for all `data.frame`s in `l`.
 #'
 #' The function uses `.row_names_info()` to guess wheter row names are *really*
 #' set or just the default `seq_len(nrow(x))` are used.
@@ -189,14 +189,16 @@ rbindlistWithRownames <- function(l, use.names = TRUE, fill = FALSE,
     rn <- unlist(lapply(l, function(z) {
         if (.row_names_info(z) < 0) NULL else attr(z, "row.names")
     }), use.names = FALSE, recursive = FALSE)
+    if (anyDuplicated(rn))
+        rn <- rn[1L]
     lrn <- length(rn)
     r <- as.data.frame(rbindlist(l, use.names = use.names, fill = fill,
                                  idcol = idcol, ignore.attr = ignore.attr))
     if (lrn) {
         if (lrn == nrow(r))
             attr(r, "row.names") <- rn
-        else warning("Dropping rownames: rownames not available for all",
-                     " data.frames")
+        else warning("Dropping rownames: duplicated rownames present or ",
+                     "rownames not available for all data.frames")
     }
     r
 }
