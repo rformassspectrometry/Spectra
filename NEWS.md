@@ -3,6 +3,7 @@
 ## Change 1.21.6
 
 - Add `shiftPeaks()` function.
+- Add parameter `onlyCore = FALSE` to `dropNaSpectraVariables()`.
 
 ## Change 1.21.5
 

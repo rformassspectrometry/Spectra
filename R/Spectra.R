@@ -2068,7 +2068,10 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'   while columns with only `NA`s are removed, a `spectraData()` call after
 #'   `dropNaSpectraVariables()` might still show columns containing `NA` values
 #'   for *core* spectra variables. The total number of spectra is not changed
-#'   by this function.
+#'   by this function. By setting parameter `onlyCore = TRUE` only core spectra
+#'   variables (`coreSpectraVariables()`) are evaluated for removal. Any spectra
+#'   variable added by the user will be retained, even if they contain only
+#'   `NA` values. Defaults to `onlyCore = FALSE`.
 #'
 #' - `selectSpectraVariables()`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
@@ -2236,10 +2239,16 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'     the default) or mass peaks with a m/z that is equal or larger
 #'     (`mz = ">="`) should be removed.
 #'
-#' @param n for `filterAcquisitionNum()`: `integer` with the acquisition
+#' @param n For `filterAcquisitionNum()`: `integer` with the acquisition
 #'     numbers to filter for.
 #'
 #' @param object `Spectra` object.
+#'
+#' @param onlyCore For `dropNaSpectraVariables()`: `logical(1)` whether only
+#'     *core* spectra variables (i.e., `coreSpectraVariables()`) are evaluated
+#'     for removal. For `onlyCore = TRUE` any user-added spectra variables will
+#'     be retained even if they contain only missing values. Defaults to
+#'     `onlyCore = FALSE`.
 #'
 #' @param polarity for `filterPolarity()`: `integer` specifying the polarity to
 #'     to subset `object`.
@@ -2257,12 +2266,12 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'     value provided with parameter `spectraVariables`, `ppm[1]` will be
 #'     recycled.
 #'
-#' @param ranges for `filterRanges()`: A `numeric` vector of paired values
+#' @param ranges For `filterRanges()`: A `numeric` vector of paired values
 #'     (upper and lower boundary) that define the ranges to filter the `object`.
 #'     These paired values need to be in the same order as the
 #'     `spectraVariables` parameter (see below).
 #'
-#' @param rt for `filterRt()`: `numeric(2)` defining the retention time range to
+#' @param rt For `filterRt()`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
 #' @param spectraVariables For `selectSpectraVariables()`: `character` with the
@@ -2489,10 +2498,11 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 NULL
 
 #' @rdname filterMsLevel
-setMethod("dropNaSpectraVariables", "Spectra", function(object) {
-    object@backend <- dropNaSpectraVariables(object@backend)
-    object
-})
+setMethod(
+    "dropNaSpectraVariables", "Spectra", function(object, onlyCore = FALSE) {
+        object@backend <- dropNaSpectraVariables(object@backend, onlyCore)
+        object
+    })
 
 #' @rdname filterMsLevel
 setMethod(

@@ -76,7 +76,7 @@ filterPrecursorPeaks(
   msLevel. = uniqueMsLevels(object)
 )
 
-\S4method{dropNaSpectraVariables}{Spectra}(object)
+\S4method{dropNaSpectraVariables}{Spectra}(object, onlyCore = FALSE)
 
 \S4method{selectSpectraVariables}{Spectra}(
   object,
@@ -224,6 +224,12 @@ the function should be applied (defaults to all MS levels of \code{object}.
 For \code{filterMsLevel()}: the MS level to which \code{object} should be
 subsetted.}
 
+\item{onlyCore}{For \code{dropNaSpectraVariables()}: \code{logical(1)} whether only
+\emph{core} spectra variables (i.e., \code{coreSpectraVariables()}) are evaluated
+for removal. For \code{onlyCore = TRUE} any user-added spectra variables will
+be retained even if they contain only missing values. Defaults to
+\code{onlyCore = FALSE}.}
+
 \item{spectraVariables}{For \code{selectSpectraVariables()}: \code{character} with the
 names of the spectra variables to which the backend should be
 subsetted. For \code{filterRanges()} and \code{filterValues()}: \code{character}
@@ -240,7 +246,7 @@ object.}
 
 \item{drop}{For \code{[}: not considered.}
 
-\item{n}{for \code{filterAcquisitionNum()}: \code{integer} with the acquisition
+\item{n}{For \code{filterAcquisitionNum()}: \code{integer} with the acquisition
 numbers to filter for.}
 
 \item{dataStorage}{For \code{filterDataStorage()}: \code{character} to define which
@@ -298,10 +304,10 @@ subsetted.}
 belong to the same original data file (sample): Defaults to
 \code{f = dataOrigin(x)}.}
 
-\item{rt}{for \code{filterRt()}: \code{numeric(2)} defining the retention time range to
+\item{rt}{For \code{filterRt()}: \code{numeric(2)} defining the retention time range to
 be used to subset/filter \code{object}.}
 
-\item{ranges}{for \code{filterRanges()}: A \code{numeric} vector of paired values
+\item{ranges}{For \code{filterRanges()}: A \code{numeric} vector of paired values
 (upper and lower boundary) that define the ranges to filter the \code{object}.
 These paired values need to be in the same order as the
 \code{spectraVariables} parameter (see below).}
@@ -435,7 +441,10 @@ object's \code{spectraData} that contain only missing values (\code{NA}). Note t
 while columns with only \code{NA}s are removed, a \code{spectraData()} call after
 \code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
 for \emph{core} spectra variables. The total number of spectra is not changed
-by this function.
+by this function. By setting parameter \code{onlyCore = TRUE} only core spectra
+variables (\code{coreSpectraVariables()}) are evaluated for removal. Any spectra
+variable added by the user will be retained, even if they contain only
+\code{NA} values. Defaults to \code{onlyCore = FALSE}.
 \item \code{selectSpectraVariables()}: reduces the information within the object to
 the selected spectra variables: all data for variables not specified will
 be dropped. For mandatory columns (i.e., those listed by
