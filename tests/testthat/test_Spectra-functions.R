@@ -892,3 +892,30 @@ test_that("fragmentGroupIndex works", {
     expect_error(fragmentGroupIndex(tmp), "at least two MS levels")
 
 })
+
+test_that("shiftPeaks works", {
+    a <- sps_dda[50:60]
+    res <- shiftPeaks(a, 10)
+    expect_true(length(res@processingQueue) == 1L)
+    ref_mz <- mz(a)
+    res_mz <- mz(res)
+    expect_equal(res_mz, ref_mz + 10)
+
+    res <- shiftPeaks(a, offset = "precursorMz")
+    res_mz <- mz(res)
+    expect_equal(res_mz[[9]], mz(a)[[9]] + a$precursorMz[9])
+
+    a$shift_offset <- seq_along(a)
+    res <- shiftPeaks(a, offset = "shift_offset")
+    res_mz <- mz(res)
+    expect_equal(res_mz, mz(a) + seq_along(a))
+
+    expect_error(shiftPeaks(a, offset = "what"), "No spectra variable")
+    expect_error(shiftPeaks(a, offset = 1:2), "single value")
+
+    ## Simulating longer processing queue
+    a@processingQueueVariables <- c("msLevel", "precursorMz")
+    res <- shiftPeaks(a, offset = "shift_offset")
+    res_mz <- mz(res)
+    expect_equal(res_mz, mz(a) + seq_along(a))
+})

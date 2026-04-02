@@ -586,7 +586,20 @@ function can be used to retain only specified spectra variables.
 ## Data manipulations
 
 Some analyses require manipulation of the mass peak data (i.e. the m/z and/or
-intensity values). One example would be to remove all peaks from a spectrum that
+intensity values). The available functions are:
+
+- `addProcessing()`: apply any arbitrary function to modify the `peaksData()` of
+  each spectrum.
+- `bin()`: aggregates peaks in each spectrum into discrete m/z bins.
+- `neutralLoss()`: create neutral loss versions of spectra.
+- `pickPeaks()`: centroiding of spectrum data.
+- `replaceIntensitiesBelow()`: replaces intensities below a specified threshold
+  with a value.\
+- `scalePeaks()`: scales peak intensities.
+- `shiftPeaks()`: shifts peaks by an offset along m/z dimension.
+- `smooth()`: smooths spectra.
+
+One example would be to remove all peaks from a spectrum that
 have an intensity lower than a certain threshold. Below we perform such an
 operation with the `replaceIntensitiesBelow()` function to replace peak
 intensities below 10 in each spectrum in `sps` with a value of 0.
@@ -681,15 +694,17 @@ define spectra variables that should be passed (in addition to the peaks matrix)
 to the user-provided function. This would enable for example to calculate
 *neutral loss* spectra from a `Spectra` by subtracting the precursor m/z from
 each m/z of a spectrum (note that there would also be a dedicated
-`neutralLoss()` function to perform this operation more efficiently). Our tool
-example does not have precursor m/z values defined, thus we first set them to
-arbitrary values. Then we define a function `neutral_loss` that calculates the
-difference between the precursor m/z and the fragment peak's m/z. In addition we
-need to ensure the peaks in the resulting spectra are ordered by (the delta) m/z
-values. Note that, in order to be able to access the precursor m/z of the
-spectrum within our function, we have to add a parameter to the function that
-has the same name as the spectrum variable we want to access (in our case
-`precursorMz`).
+`neutralLoss()` function to perform this operation more efficiently - or the
+`shiftPeaks()` function could be used too).
+
+Our toy example does not have precursor m/z values defined, thus we first set
+them to arbitrary values. Then we define a function `neutral_loss` that
+calculates the difference between the precursor m/z and the fragment peak's
+m/z. In addition we need to ensure the peaks in the resulting spectra are
+ordered by (the delta) m/z values. Note that, in order to be able to access the
+precursor m/z of the spectrum within our function, we have to add a parameter to
+the function that has the same name as the spectrum variable we want to access
+(in our case `precursorMz`).
 
 ```{r set-precursor-mz}
 sps_rep$precursorMz <- c(170.5, 170.5, 195.1, 195.1)

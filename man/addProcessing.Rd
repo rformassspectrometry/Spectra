@@ -3,6 +3,7 @@
 \name{processingLog}
 \alias{processingLog}
 \alias{scalePeaks}
+\alias{shiftPeaks}
 \alias{addProcessing}
 \alias{applyProcessing}
 \alias{bin}
@@ -31,6 +32,8 @@
 processingLog(x)
 
 scalePeaks(x, by = sum, msLevel. = uniqueMsLevels(x))
+
+shiftPeaks(object, offset = 0, ...)
 
 \S4method{addProcessing}{Spectra}(object, FUN, ..., spectraVariables = character())
 
@@ -123,14 +126,18 @@ the function should be applied (defaults to all MS levels of \code{object}.}
 
 \item{object}{A \code{Spectra} object.}
 
+\item{offset}{For \code{shiftPeaks()}: \code{numeric(1)} offset or \code{character(1)} with
+the name of a spectra variable containing a (per spectrum) offset value
+to shift the peaks.}
+
+\item{...}{Additional arguments passed to internal and downstream functions.}
+
 \item{FUN}{For \code{addProcessing()}: function to be applied to the peak matrix
 of each spectrum in \code{object}.
 For \code{bin()}: function to aggregate intensity values of peaks falling
 into the same bin. Defaults to \code{FUN = sum} thus summing up intensities.
 For \code{spectrapply()} and \code{chunkapply()}: function to be applied to
 each individual or each chunk of \code{Spectra}.}
-
-\item{...}{Additional arguments passed to internal and downstream functions.}
 
 \item{spectraVariables}{For \code{addProcessing()}: \code{character} with additional
 spectra variables that should be passed along to the function defined
@@ -309,6 +316,12 @@ intensities is thus 1 for each spectrum after scaling. Parameter
 \code{msLevel.} allows to apply the scaling of spectra of a certain MS level.
 By default (\code{msLevel. = uniqueMsLevels(x)}) intensities for all
 spectra will be scaled.
+\item \code{shiftPeaks()}: shifts peaks of each spectrum along \emph{m/z} dimension
+by an offset. The resulting m/z values are the original m/z \code{+ offset}.
+Parameter \code{offset} can be a \code{numeric(1)}, or a \code{character(1)} with the
+name of a spectra variable containing an \code{offset} for each spectrum. For
+example, to add the precursor m/z value of a spectrum to the peak's m/z
+values use \code{offset = "precursorMz"}. See examples below for more details.
 \item \code{smooth()}: smooths individual spectra using a moving window-based approach
 (window size = \code{2 * halfWindowSize}). Currently, the
 Moving-Average- (\code{method = "MovingAverage"}),
@@ -469,6 +482,19 @@ sps_mod |>
 sps_mod |>
     filterMsLevel(2L) |>
     intensity()
+
+## The `shiftPeaks()` function allows to shift peaks in each spectrum by
+## an offset value in m/z dimension. As an example we below substract the
+## precursor m/z value from the peaks' m/z of each MS2 spectrum to create
+## spectra for a *neutral loss* comparison
+
+## Add the negative precursor m/z as a new spectra variable
+sps_mod$precursor_offset <- -sps_mod$precursorMz
+nl_ms2 <- sps_mod |>
+    filterMsLevel(2L) |>
+    shiftPeaks(offset = "precursor_offset")
+## m/z values are shifted
+mz(nl_ms2)
 
 ## Since data manipulation operations are by default not directly applied to
 ## the data but only cached in the internal processing queue, it is also
