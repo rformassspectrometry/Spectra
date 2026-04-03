@@ -129,6 +129,12 @@
 #'     lower and upper m/z boundary. For `filterPrecursorMzValues()`: `numeric`
 #'     with the m/z value(s) to filter the object.
 #'
+#' @param onlyCore For `dropNaSpectraVariables()`: `logical(1)` whether only
+#'     *core* spectra variables (i.e., `coreSpectraVariables()`) are evaluated
+#'     for removal. For `onlyCore = TRUE` any user-added spectra variables will
+#'     be retained even if they contain only missing values. Defaults to
+#'     `onlyCore = FALSE`.
+#'
 #' @param peaksVariables For `backendInitialize()` for `MsBackendMemory`:
 #'     `character` specifying which of the columns of the provided `data`
 #'     contain *peaks variables* (i.e. information for individual mass
@@ -342,7 +348,9 @@
 #'   object's `spectraData` that contain only missing values (`NA`). Note that
 #'   while columns with only `NA`s are removed, a `spectraData()` call after
 #'   `dropNaSpectraVariables()` might still show columns containing `NA` values
-#'   for *core* spectra variables.
+#'   for *core* spectra variables. With parameter `onlyCore = TRUE` only *core*
+#'   spectra variables are evaluated for removal. Any other spectra variable
+#'   added by the user with only `NA` values will be retained.
 #'
 #' - `export()`: exports data from a `Spectra` class to a file. This method is
 #'   called by the `export,Spectra` method that passes itself as a second
@@ -1177,19 +1185,25 @@ setReplaceMethod("dataStorage", "MsBackend", function(object, value) {
 #' @rdname MsBackend
 #'
 #' @export
-setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
-    svs <- spectraVariables(object)
-    req_cols <- c(backendRequiredSpectraVariables(object), c("mz", "intensity"))
-    svs <- svs[!(svs %in% req_cols)]
-    spd <- spectraData(object, columns = svs)
-    keep <- !vapply1l(spd, function(z) {
-        allna <- all(is.na(z))
-        if (length(allna) > 1)
-            FALSE
-        else allna
-    })
-    selectSpectraVariables(object, c(svs[keep], req_cols))
-})
+setMethod("dropNaSpectraVariables", "MsBackend",
+          function(object, onlyCore = FALSE) {
+              svs <- spectraVariables(object)
+              req_cols <- c(backendRequiredSpectraVariables(object),
+                            c("mz", "intensity"))
+              if (onlyCore) {
+                  cvs <- names(coreSpectraVariables())
+                  req_cols <- union(req_cols, svs[!svs %in% cvs])
+              }
+              svs <- svs[!(svs %in% req_cols)]
+              spd <- spectraData(object, columns = svs)
+              keep <- !vapply1l(spd, function(z) {
+                  allna <- all(is.na(z))
+                  if (length(allna) > 1)
+                      FALSE
+                  else allna
+              })
+              selectSpectraVariables(object, c(svs[keep], req_cols))
+          })
 
 #' @rdname MsBackend
 #'

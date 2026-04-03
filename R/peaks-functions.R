@@ -747,3 +747,21 @@ joinPeaksNone <- function(x, y, ...) {
                               condFun = any, ...) {
     condFun(common(mz, x[, "mz"], tolerance = tolerance, ppm = ppm))
 }
+
+#' Add `numeric(1)` offset to each peak's m/z.
+#'
+#' @noRd
+.peaks_shift_mz <- function(x, offset, ...) {
+    x[, 1L] <- x[, 1L] + offset
+    x
+}
+
+#' Add offset extracted from the spectra variable defined with `character(1)`
+#' offset to each peak's m/z.
+#'
+#' @noRd
+.peaks_shift_mz_variable <- function(x, offset, ...) {
+    offset <- list(...)[[offset]]
+    x[, 1L] <- x[, 1L] + offset
+    x
+}

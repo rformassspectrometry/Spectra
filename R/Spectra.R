@@ -2068,7 +2068,10 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'   while columns with only `NA`s are removed, a `spectraData()` call after
 #'   `dropNaSpectraVariables()` might still show columns containing `NA` values
 #'   for *core* spectra variables. The total number of spectra is not changed
-#'   by this function.
+#'   by this function. By setting parameter `onlyCore = TRUE` only core spectra
+#'   variables (`coreSpectraVariables()`) are evaluated for removal. Any spectra
+#'   variable added by the user will be retained, even if they contain only
+#'   `NA` values. Defaults to `onlyCore = FALSE`.
 #'
 #' - `selectSpectraVariables()`: reduces the information within the object to
 #'   the selected spectra variables: all data for variables not specified will
@@ -2236,10 +2239,16 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'     the default) or mass peaks with a m/z that is equal or larger
 #'     (`mz = ">="`) should be removed.
 #'
-#' @param n for `filterAcquisitionNum()`: `integer` with the acquisition
+#' @param n For `filterAcquisitionNum()`: `integer` with the acquisition
 #'     numbers to filter for.
 #'
 #' @param object `Spectra` object.
+#'
+#' @param onlyCore For `dropNaSpectraVariables()`: `logical(1)` whether only
+#'     *core* spectra variables (i.e., `coreSpectraVariables()`) are evaluated
+#'     for removal. For `onlyCore = TRUE` any user-added spectra variables will
+#'     be retained even if they contain only missing values. Defaults to
+#'     `onlyCore = FALSE`.
 #'
 #' @param polarity for `filterPolarity()`: `integer` specifying the polarity to
 #'     to subset `object`.
@@ -2257,12 +2266,12 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 #'     value provided with parameter `spectraVariables`, `ppm[1]` will be
 #'     recycled.
 #'
-#' @param ranges for `filterRanges()`: A `numeric` vector of paired values
+#' @param ranges For `filterRanges()`: A `numeric` vector of paired values
 #'     (upper and lower boundary) that define the ranges to filter the `object`.
 #'     These paired values need to be in the same order as the
 #'     `spectraVariables` parameter (see below).
 #'
-#' @param rt for `filterRt()`: `numeric(2)` defining the retention time range to
+#' @param rt For `filterRt()`: `numeric(2)` defining the retention time range to
 #'     be used to subset/filter `object`.
 #'
 #' @param spectraVariables For `selectSpectraVariables()`: `character` with the
@@ -2489,10 +2498,11 @@ setMethod("combinePeaks", "Spectra", function(object, tolerance = 0, ppm = 20,
 NULL
 
 #' @rdname filterMsLevel
-setMethod("dropNaSpectraVariables", "Spectra", function(object) {
-    object@backend <- dropNaSpectraVariables(object@backend)
-    object
-})
+setMethod(
+    "dropNaSpectraVariables", "Spectra", function(object, onlyCore = FALSE) {
+        object@backend <- dropNaSpectraVariables(object@backend, onlyCore)
+        object
+    })
 
 #' @rdname filterMsLevel
 setMethod(
@@ -2856,6 +2866,7 @@ setMethod("filterValues", "Spectra",
 #' @aliases reset
 #' @aliases smooth
 #' @aliases spectrapply
+#' @aliases shiftPeaks
 #'
 #' @description
 #'
@@ -2947,6 +2958,13 @@ setMethod("filterValues", "Spectra",
 #'   `msLevel.` allows to apply the scaling of spectra of a certain MS level.
 #'   By default (`msLevel. = uniqueMsLevels(x)`) intensities for all
 #'   spectra will be scaled.
+#'
+#' - `shiftPeaks()`: shifts peaks of each spectrum along *m/z* dimension
+#'   by an offset. The resulting m/z values are the original m/z `+ offset`.
+#'   Parameter `offset` can be a `numeric(1)`, or a `character(1)` with the
+#'   name of a spectra variable containing an `offset` for each spectrum. For
+#'   example, to add the precursor m/z value of a spectrum to the peak's m/z
+#'   values use `offset = "precursorMz"`. See examples below for more details.
 #'
 #' - `smooth()`: smooths individual spectra using a moving window-based approach
 #'   (window size = `2 * halfWindowSize`). Currently, the
@@ -3127,6 +3145,10 @@ setMethod("filterValues", "Spectra",
 #'
 #' @param object A `Spectra` object.
 #'
+#' @param offset For `shiftPeaks()`: `numeric(1)` offset or `character(1)` with
+#'     the name of a spectra variable containing an (per spectrum) offset value
+#'     to shift the peaks.
+#'
 #' @param ppm For `containsMz()` and `neutralLoss()`: `numeric(1)` defining a
 #'     relative, m/z-dependent, maximal accepted difference between m/z values
 #'     for peaks to be matched.
@@ -3240,6 +3262,19 @@ setMethod("filterValues", "Spectra",
 #' sps_mod |>
 #'     filterMsLevel(2L) |>
 #'     intensity()
+#'
+#' ## The `shiftPeaks()` function allows to shift peaks in each spectrum by
+#' ## an offset value in m/z dimension. As an example we below substract the
+#' ## precursor m/z value from the peaks' m/z of each MS2 spectrum to create
+#' ## spectra for a *neutral loss* comparison
+#'
+#' ## Add the negative precursor m/z as a new spectra variable
+#' sps_mod$precursor_offset <- -sps_mod$precursorMz
+#' nl_ms2 <- sps_mod |>
+#'     filterMsLevel(2L) |>
+#'     shiftPeaks(offset = "precursor_offset")
+#' ## m/z values are shifted
+#' mz(nl_ms2)
 #'
 #' ## Since data manipulation operations are by default not directly applied to
 #' ## the data but only cached in the internal processing queue, it is also

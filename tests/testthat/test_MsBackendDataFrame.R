@@ -1033,6 +1033,13 @@ test_that("dropNaSpectraVariables works with MsBackendDataFrame", {
     b$other_col <- NA
     res <- dropNaSpectraVariables(b)
     expect_true(!any(spectraVariables(res) == "other_col"))
+
+    ## onlyCore
+    res <- dropNaSpectraVariables(b, onlyCore = TRUE)
+    expect_false(!any(spectraVariables(res) == "other_col"))
+    expect_equal(colnames(res@spectraData),
+                 c("msLevel", "scanIndex", "dataStorage", "mz",
+                   "intensity", "other_col"))
 })
 
 test_that("[[,[[<-,MsBackendDataFrame works", {

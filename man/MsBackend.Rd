@@ -154,7 +154,7 @@
 
 \S4method{dataStorage}{MsBackend}(object) <- value
 
-\S4method{dropNaSpectraVariables}{MsBackend}(object)
+\S4method{dropNaSpectraVariables}{MsBackend}(object, onlyCore = FALSE)
 
 \S4method{extractByIndex}{MsBackend,ANY}(object, i)
 
@@ -344,6 +344,12 @@ in \code{x}.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
+
+\item{onlyCore}{For \code{dropNaSpectraVariables()}: \code{logical(1)} whether only
+\emph{core} spectra variables (i.e., \code{coreSpectraVariables()}) are evaluated
+for removal. For \code{onlyCore = TRUE} any user-added spectra variables will
+be retained even if they contain only missing values. Defaults to
+\code{onlyCore = FALSE}.}
 
 \item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
 
@@ -633,7 +639,9 @@ file system.
 object's \code{spectraData} that contain only missing values (\code{NA}). Note that
 while columns with only \code{NA}s are removed, a \code{spectraData()} call after
 \code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
-for \emph{core} spectra variables.
+for \emph{core} spectra variables. With parameter \code{onlyCore = TRUE} only \emph{core}
+spectra variables are evaluated for removal. Any other spectra variable
+added by the user with only \code{NA} values will be retained.
 \item \code{export()}: exports data from a \code{Spectra} class to a file. This method is
 called by the \verb{export,Spectra} method that passes itself as a second
 argument to the function. The \verb{export,MsBackend} implementation is thus

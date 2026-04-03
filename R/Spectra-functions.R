@@ -43,7 +43,7 @@ NULL
                                          colnames(spectraData))
         for (i in seq_along(x)) {
             if (ls)
-                args <- as.list(spectraData[i, ])
+                args <- as.list(spectraData[i, , drop = FALSE])
             for (pStep in queue) {
                 x[[i]] <- do.call(pStep@FUN, args = c(x[i], args, pStep@ARGS))
             }
@@ -1256,4 +1256,29 @@ fragmentGroupIndex <- function(object, BPPARAM = SerialParam()) {
 
     max_vals <- c(0L, cumsum(vapply(group_factors, max, NA_integer_)))
     unname(unlist(group_factors, use.names = FALSE) + max_vals[as.integer(f)])
+}
+
+#' @rdname addProcessing
+#'
+#' @export
+shiftPeaks <- function(object, offset = 0.0, ...) {
+    if (!inherits(object, "Spectra"))
+        stop("'object' should be a Spectra object")
+    if (length(offset) != 1L)
+        stop("'offset' has to be a single value")
+    ## support `offset` being a `numeric(1)` or the name of a spectra variable
+    if (!is.numeric(offset)) {
+        if (!offset %in% spectraVariables(object))
+            stop("No spectra variable \"", offset, "\" in 'object'")
+        fun <- .peaks_shift_mz_variable
+        sv <- offset
+    } else {
+        sv <- character()
+        fun <- .peaks_shift_mz
+    }
+    object <- addProcessing(object, FUN = fun, offset = offset,
+                            spectraVariables = sv)
+    object@processing <- .logging(
+        object@processing, "Shift peaks by ", offset)
+    object
 }

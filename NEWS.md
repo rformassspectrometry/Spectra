@@ -1,5 +1,10 @@
 # Spectra 1.21
 
+## Change 1.21.6
+
+- Add `shiftPeaks()` function.
+- Add parameter `onlyCore = FALSE` to `dropNaSpectraVariables()`.
+
 ## Change 1.21.5
 
 - Fix potential issue by introducing concatenation of `data.frame`s with
