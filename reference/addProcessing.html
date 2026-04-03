@@ -25,7 +25,7 @@ memory demand, a chunk-wise processing of the data is performed."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,6 +74,8 @@ memory demand, a chunk-wise processing of the data is performed.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">processingLog</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">scalePeaks</span><span class="op">(</span><span class="va">x</span>, by <span class="op">=</span> <span class="va">sum</span>, msLevel. <span class="op">=</span> <span class="fu"><a href="spectraData.html">uniqueMsLevels</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">shiftPeaks</span><span class="op">(</span><span class="va">object</span>, offset <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'Spectra'</span></span>
 <span><span class="fu">addProcessing</span><span class="op">(</span><span class="va">object</span>, <span class="va">FUN</span>, <span class="va">...</span>, spectraVariables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -190,6 +192,16 @@ the function should be applied (defaults to all MS levels of <code>object</code>
 <dd><p>A <code>Spectra</code> object.</p></dd>
 
 
+<dt id="arg-offset">offset<a class="anchor" aria-label="anchor" href="#arg-offset"></a></dt>
+<dd><p>For <code>shiftPeaks()</code>: <code>numeric(1)</code> offset or <code>character(1)</code> with
+the name of a spectra variable containing an (per spectrum) offset value
+to shift the peaks.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Additional arguments passed to internal and downstream functions.</p></dd>
+
+
 <dt id="arg-fun">FUN<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
 <dd><p>For <code>addProcessing()</code>: function to be applied to the peak matrix
 of each spectrum in <code>object</code>.
@@ -197,10 +209,6 @@ For <code>bin()</code>: function to aggregate intensity values of peaks falling
 into the same bin. Defaults to <code>FUN = sum</code> thus summing up intensities.
 For <code>spectrapply()</code> and <code><a href="chunkapply.html">chunkapply()</a></code>: function to be applied to
 each individual or each chunk of <code>Spectra</code>.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to internal and downstream functions.</p></dd>
 
 
 <dt id="arg-spectravariables">spectraVariables<a class="anchor" aria-label="anchor" href="#arg-spectravariables"></a></dt>
@@ -408,6 +416,12 @@ intensities is thus 1 for each spectrum after scaling. Parameter
 <code>msLevel.</code> allows to apply the scaling of spectra of a certain MS level.
 By default (<code>msLevel. = uniqueMsLevels(x)</code>) intensities for all
 spectra will be scaled.</p></li>
+<li><p><code>shiftPeaks()</code>: shifts peaks of each spectrum along <em>m/z</em> dimension
+by an offset. The resulting m/z values are the original m/z <code>+ offset</code>.
+Parameter <code>offset</code> can be a <code>numeric(1)</code>, or a <code>character(1)</code> with the
+name of a spectra variable containing an <code>offset</code> for each spectrum. For
+example, to add the precursor m/z value of a spectrum to the peak's m/z
+values use <code>offset = "precursorMz"</code>. See examples below for more details.</p></li>
 <li><p><code>smooth()</code>: smooths individual spectra using a moving window-based approach
 (window size = <code>2 * halfWindowSize</code>). Currently, the
 Moving-Average- (<code>method = "MovingAverage"</code>),
@@ -545,7 +559,7 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25445e109d79_7861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24b416eb0254_7861</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##  --------  FUNCTIONS RETURNING A SPECTRA  --------</span></span></span>
@@ -570,10 +584,10 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25445e109d79_7861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24b416eb0254_7861</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 20 in MS level(s) 1, 2 set to 0 [Mon Mar 16 15:21:28 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 20 in MS level(s) 1, 2 set to 0 [Fri Apr  3 07:57:23 2026] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get the intensities of the first spectrum before and after the</span></span></span>
 <span class="r-in"><span><span class="co">## operation</span></span></span>
@@ -687,6 +701,32 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;2965 more elements&gt;</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## The `shiftPeaks()` function allows to shift peaks in each spectrum by</span></span></span>
+<span class="r-in"><span><span class="co">## an offset value in m/z dimension. As an example we below substract the</span></span></span>
+<span class="r-in"><span><span class="co">## precursor m/z value from the peaks' m/z of each MS2 spectrum to create</span></span></span>
+<span class="r-in"><span><span class="co">## spectra for a *neutral loss* comparison</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add the negative precursor m/z as a new spectra variable</span></span></span>
+<span class="r-in"><span><span class="va">sps_mod</span><span class="op">$</span><span class="va">precursor_offset</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="va">sps_mod</span><span class="op">$</span><span class="va">precursorMz</span></span></span>
+<span class="r-in"><span><span class="va">nl_ms2</span> <span class="op">&lt;-</span> <span class="va">sps_mod</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="filterMsLevel.html">filterMsLevel</a></span><span class="op">(</span><span class="fl">2L</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu">shiftPeaks</span><span class="op">(</span>offset <span class="op">=</span> <span class="st">"precursor_offset"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## m/z values are shifted</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="spectraData.html">mz</a></span><span class="op">(</span><span class="va">nl_ms2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NumericList of length 2975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]] -82.0285986585411 -59.013259760836 0.0519563036171178</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]] -1.00573234490617 -0.00669746331437437 0.0246364600254694</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]] -36.0046517944781 -34.0088746643511 -17.0021073914019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]] -76.1317126081412 -59.1327959821646 -16.0412890241568</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[5]] mz=-0.001742357662188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[6]] -70.0788284197396 -60.1176505938119 ... -0.0103660479134646</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[7]] -356.046184168698 -330.111713038327 ... -88.1004749401824</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[8]] numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[9]] -70.0153168713068 -43.9991120373224 ... 0.00284871707215473</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[10]] -0.0707756760776732 0.00257713764302991 0.00934059589498304 0.0332854506313112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;2965 more elements&gt;</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Since data manipulation operations are by default not directly applied to</span></span></span>
 <span class="r-in"><span><span class="co">## the data but only cached in the internal processing queue, it is also</span></span></span>
 <span class="r-in"><span><span class="co">## possible to remove these data manipulations with the `reset()` function:</span></span></span>
@@ -706,13 +746,13 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7600         1   899.747      7600</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7601         1   899.872      7601</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7602         1   899.993      7602</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 35 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25445e109d79_7861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24b416eb0254_7861</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Scale peak intensities in spectra of MS level(s) 2. [Mon Mar 16 15:21:31 2026]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Mon Mar 16 15:21:32 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Scale peak intensities in spectra of MS level(s) 2. [Fri Apr  3 07:57:26 2026]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Fri Apr  3 07:57:28 2026] </span>
 <span class="r-in"><span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">sps_dda</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 223 211 227 210 220 228</span>
 <span class="r-in"><span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">sps_mod</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -746,9 +786,9 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7602         1   899.993      7602</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Mar 16 15:21:34 2026]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Mon Mar 16 15:21:34 2026]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Applied processing queue with 1 steps [Mon Mar 16 15:21:35 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Apr  3 07:57:30 2026]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Fri Apr  3 07:57:30 2026]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Applied processing queue with 1 steps [Fri Apr  3 07:57:31 2026] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## While we can't *undo* this filtering operation now using the `reset()`</span></span></span>
 <span class="r-in"><span><span class="co">## function, accessing the data would now be faster, because the operation</span></span></span>

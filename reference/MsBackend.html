@@ -63,7 +63,7 @@ See below for more details about individual backends."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -180,7 +180,7 @@ data files and the remaining spectra variables in memory (in a
 <span><span class="fu"><a href="spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend'</span></span>
-<span><span class="fu"><a href="filterMsLevel.html">dropNaSpectraVariables</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span><span class="fu"><a href="filterMsLevel.html">dropNaSpectraVariables</a></span><span class="op">(</span><span class="va">object</span>, onlyCore <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'MsBackend,ANY'</span></span>
 <span><span class="fu">extractByIndex</span><span class="op">(</span><span class="va">object</span>, <span class="va">i</span><span class="op">)</span></span>
@@ -456,6 +456,14 @@ in <code>x</code>.</p></dd>
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>replacement value for <code>&lt;-</code> methods. See individual
 method description or expected data type.</p></dd>
+
+
+<dt id="arg-onlycore">onlyCore<a class="anchor" aria-label="anchor" href="#arg-onlycore"></a></dt>
+<dd><p>For <code><a href="filterMsLevel.html">dropNaSpectraVariables()</a></code>: <code>logical(1)</code> whether only
+<em>core</em> spectra variables (i.e., <code><a href="spectraData.html">coreSpectraVariables()</a></code>) are evaluated
+for removal. For <code>onlyCore = TRUE</code> any user-added spectra variables will
+be retained even if they contain only missing values. Defaults to
+<code>onlyCore = FALSE</code>.</p></dd>
 
 
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
@@ -752,7 +760,9 @@ file system.</p></li>
 object's <code>spectraData</code> that contain only missing values (<code>NA</code>). Note that
 while columns with only <code>NA</code>s are removed, a <code><a href="spectraData.html">spectraData()</a></code> call after
 <code><a href="filterMsLevel.html">dropNaSpectraVariables()</a></code> might still show columns containing <code>NA</code> values
-for <em>core</em> spectra variables.</p></li>
+for <em>core</em> spectra variables. With parameter <code>onlyCore = TRUE</code> only <em>core</em>
+spectra variables are evaluated for removal. Any other spectra variable
+added by the user with only <code>NA</code> values will be retained.</p></li>
 <li><p><code><a href="Spectra.html">export()</a></code>: exports data from a <code>Spectra</code> class to a file. This method is
 called by the <code>export,Spectra</code> method that passes itself as a second
 argument to the function. The <code>export,MsBackend</code> implementation is thus

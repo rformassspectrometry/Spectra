@@ -126,6 +126,7 @@
 
 - [`processingLog()`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
   [`scalePeaks()`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
+  [`shiftPeaks()`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
   [`addProcessing(`*`<Spectra>`*`)`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
   [`applyProcessing(`*`<Spectra>`*`)`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
   [`bin(`*`<Spectra>`*`)`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)

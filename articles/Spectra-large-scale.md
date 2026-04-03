@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-03-16 14:51:06.36364\
-**Compiled**: Mon Mar 16 15:24:06 2026
+**Last modified:** 2026-04-03 07:18:43.053554\
+**Compiled**: Fri Apr 3 07:59:52 2026
 
 ## Introduction
 
@@ -101,9 +101,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 25445e109d79_7861
-    ## 2544358c44_7862
-    ## 254428ba8725_7859
+    ## 24b416eb0254_7861
+    ## 24b4162f9cc7_7862
+    ## 24b44671a5e7_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -198,13 +198,13 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/25445e109d79_7861 
+    ## /github/home/.cache/R/ExperimentHub/24b416eb0254_7861 
     ##                                                  7602 
-    ##   /github/home/.cache/R/ExperimentHub/2544358c44_7862 
+    ## /github/home/.cache/R/ExperimentHub/24b4162f9cc7_7862 
     ##                                                  8999 
-    ## /github/home/.cache/R/ExperimentHub/254428ba8725_7859 
+    ## /github/home/.cache/R/ExperimentHub/24b44671a5e7_7859 
     ##                                                   931 
-    ## /github/home/.cache/R/ExperimentHub/25445303ac2f_7860 
+    ## /github/home/.cache/R/ExperimentHub/24b452774097_7860 
     ##                                                   931
 
 The data would thus be split and processed by the original file, from
@@ -340,7 +340,7 @@ i.e., based on the `processingChunkFactor`:
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-03-15 r89629)
+    ## R Under development (unstable) (2026-03-28 r89738)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -364,20 +364,20 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.11.1    Spectra_1.21.5      BiocParallel_1.45.0
+    ## [1] MsDataHub_1.11.2    Spectra_1.21.6      BiocParallel_1.45.0
     ## [4] S4Vectors_0.49.0    BiocGenerics_0.57.0 generics_0.1.4     
     ## [7] BiocStyle_2.39.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] KEGGREST_1.51.1        xfun_0.56              bslib_0.10.0          
+    ##  [1] KEGGREST_1.51.1        xfun_0.57              bslib_0.10.0          
     ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      Biobase_2.71.0        
-    ##  [7] vctrs_0.7.1            tools_4.6.0            curl_7.0.0            
-    ## [10] parallel_4.6.0         tibble_3.3.1           AnnotationDbi_1.73.0  
+    ##  [7] vctrs_0.7.2            tools_4.7.0            curl_7.0.0            
+    ## [10] parallel_4.7.0         tibble_3.3.1           AnnotationDbi_1.73.0  
     ## [13] RSQLite_2.4.6          cluster_2.1.8.2        blob_1.3.0            
     ## [16] pkgconfig_2.0.3        data.table_1.18.2.1    dbplyr_2.5.2          
-    ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.6.0        
+    ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.7.0        
     ## [22] Biostrings_2.79.5      textshaping_1.0.5      Seqinfo_1.1.0         
-    ## [25] codetools_0.2-20       ncdf4_1.24             clue_0.3-67           
+    ## [25] codetools_0.2-20       ncdf4_1.24             clue_0.3-68           
     ## [28] htmltools_0.5.9        sass_0.4.10            yaml_2.3.12           
     ## [31] crayon_1.5.3           pkgdown_2.2.0.9000     pillar_1.11.1         
     ## [34] jquerylib_0.1.4        MASS_7.3-65            cachem_1.1.0          
@@ -387,11 +387,11 @@ sessionInfo()
     ## [46] fastmap_1.2.0          cli_3.6.5              magrittr_2.0.4        
     ## [49] withr_3.0.2            filelock_1.0.3         rappdirs_0.3.4        
     ## [52] bit64_4.6.0-1          XVector_0.51.0         httr_1.4.8            
-    ## [55] rmarkdown_2.30         bit_4.6.0              otel_0.2.0            
-    ## [58] png_0.1-9              ragg_1.5.1             memoise_2.0.1         
+    ## [55] rmarkdown_2.31         bit_4.6.0              otel_0.2.0            
+    ## [58] png_0.1-9              ragg_1.5.2             memoise_2.0.1         
     ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.45.0        
     ## [64] BiocFileCache_3.1.0    rlang_1.1.7            Rcpp_1.1.1            
-    ## [67] glue_1.8.0             DBI_1.3.0              mzR_2.43.3            
+    ## [67] glue_1.8.0             DBI_1.3.0              mzR_2.45.1            
     ## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              
-    ## [73] systemfonts_1.3.2      fs_1.6.7               ProtGenerics_1.43.0   
+    ## [73] systemfonts_1.3.2      fs_2.0.1               ProtGenerics_1.43.0   
     ## [76] MsCoreUtils_1.23.6

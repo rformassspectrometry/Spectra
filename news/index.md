@@ -2,6 +2,14 @@
 
 ## Spectra 1.21
 
+### Change 1.21.6
+
+- Add
+  [`shiftPeaks()`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
+  function.
+- Add parameter `onlyCore = FALSE` to
+  [`dropNaSpectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md).
+
 ### Change 1.21.5
 
 - Fix potential issue by introducing concatenation of `data.frame`s with

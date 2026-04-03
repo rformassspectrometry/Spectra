@@ -95,7 +95,7 @@ dataStorage(object)
 dataStorage(object) <- value
 
 # S4 method for class 'MsBackend'
-dropNaSpectraVariables(object)
+dropNaSpectraVariables(object, onlyCore = FALSE)
 
 # S4 method for class 'MsBackend,ANY'
 extractByIndex(object, i)
@@ -375,6 +375,16 @@ MsBackendMzR()
 
   replacement value for `<-` methods. See individual method description
   or expected data type.
+
+- onlyCore:
+
+  For
+  [`dropNaSpectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md):
+  `logical(1)` whether only *core* spectra variables (i.e.,
+  [`coreSpectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md))
+  are evaluated for removal. For `onlyCore = TRUE` any user-added
+  spectra variables will be retained even if they contain only missing
+  values. Defaults to `onlyCore = FALSE`.
 
 - i:
 
@@ -749,7 +759,9 @@ for detailed description and examples):
   call after
   [`dropNaSpectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)
   might still show columns containing `NA` values for *core* spectra
-  variables.
+  variables. With parameter `onlyCore = TRUE` only *core* spectra
+  variables are evaluated for removal. Any other spectra variable added
+  by the user with only `NA` values will be retained.
 
 - [`export()`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md):
   exports data from a `Spectra` class to a file. This method is called

@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-03-16 14:51:06.36364\
-**Compiled**: Mon Mar 16 15:23:51 2026
+**Last modified:** 2026-04-03 07:18:43.053554\
+**Compiled**: Fri Apr 3 07:59:38 2026
 
 ## Introduction
 
@@ -2623,7 +2623,7 @@ test_dir(test_suite, stop_on_failure = TRUE)
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-03-15 r89629)
+    ## R Under development (unstable) (2026-03-28 r89738)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -2647,23 +2647,23 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsCoreUtils_1.23.6  IRanges_2.45.0      Spectra_1.21.5     
+    ## [1] MsCoreUtils_1.23.6  IRanges_2.45.0      Spectra_1.21.6     
     ## [4] BiocParallel_1.45.0 S4Vectors_0.49.0    BiocGenerics_0.57.0
     ## [7] generics_0.1.4      BiocStyle_2.39.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] jsonlite_2.0.0         compiler_4.6.0         BiocManager_1.30.27   
-    ##  [4] parallel_4.6.0         cluster_2.1.8.2        jquerylib_0.1.4       
+    ##  [1] jsonlite_2.0.0         compiler_4.7.0         BiocManager_1.30.27   
+    ##  [4] parallel_4.7.0         cluster_2.1.8.2        jquerylib_0.1.4       
     ##  [7] systemfonts_1.3.2      textshaping_1.0.5      yaml_2.3.12           
     ## [10] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.43.0   
     ## [13] knitr_1.51             htmlwidgets_1.6.4      MASS_7.3-65           
     ## [16] bookdown_0.46          desc_1.4.3             bslib_0.10.0          
-    ## [19] rlang_1.1.7            cachem_1.1.0           xfun_0.56             
-    ## [22] fs_1.6.7               sass_0.4.10            otel_0.2.0            
+    ## [19] rlang_1.1.7            cachem_1.1.0           xfun_0.57             
+    ## [22] fs_2.0.1               sass_0.4.10            otel_0.2.0            
     ## [25] cli_3.6.5              pkgdown_2.2.0.9000     digest_0.6.39         
-    ## [28] MetaboCoreUtils_1.19.2 lifecycle_1.0.5        clue_0.3-67           
+    ## [28] MetaboCoreUtils_1.19.2 lifecycle_1.0.5        clue_0.3-68           
     ## [31] data.table_1.18.2.1    evaluate_1.0.5         codetools_0.2-20      
-    ## [34] ragg_1.5.1             rmarkdown_2.30         tools_4.6.0           
+    ## [34] ragg_1.5.2             rmarkdown_2.31         tools_4.7.0           
     ## [37] htmltools_0.5.9
 
 ## References

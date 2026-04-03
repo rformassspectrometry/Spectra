@@ -48,7 +48,7 @@ filterPrecursorPeaks(
 )
 
 # S4 method for class 'Spectra'
-dropNaSpectraVariables(object)
+dropNaSpectraVariables(object, onlyCore = FALSE)
 
 # S4 method for class 'Spectra'
 selectSpectraVariables(
@@ -238,6 +238,15 @@ filterValues(
   function should be applied (defaults to all MS levels of `object`. For
   `filterMsLevel()`: the MS level to which `object` should be subsetted.
 
+- onlyCore:
+
+  For `dropNaSpectraVariables()`: `logical(1)` whether only *core*
+  spectra variables (i.e.,
+  [`coreSpectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md))
+  are evaluated for removal. For `onlyCore = TRUE` any user-added
+  spectra variables will be retained even if they contain only missing
+  values. Defaults to `onlyCore = FALSE`.
+
 - spectraVariables:
 
   For `selectSpectraVariables()`: `character` with the names of the
@@ -265,7 +274,7 @@ filterValues(
 
 - n:
 
-  for `filterAcquisitionNum()`: `integer` with the acquisition numbers
+  For `filterAcquisitionNum()`: `integer` with the acquisition numbers
   to filter for.
 
 - dataStorage:
@@ -353,12 +362,12 @@ filterValues(
 
 - rt:
 
-  for `filterRt()`: `numeric(2)` defining the retention time range to be
+  For `filterRt()`: `numeric(2)` defining the retention time range to be
   used to subset/filter `object`.
 
 - ranges:
 
-  for `filterRanges()`: A `numeric` vector of paired values (upper and
+  For `filterRanges()`: A `numeric` vector of paired values (upper and
   lower boundary) that define the ranges to filter the `object`. These
   paired values need to be in the same order as the `spectraVariables`
   parameter (see below).
@@ -500,7 +509,12 @@ spectra.
   [`spectraData()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
   call after `dropNaSpectraVariables()` might still show columns
   containing `NA` values for *core* spectra variables. The total number
-  of spectra is not changed by this function.
+  of spectra is not changed by this function. By setting parameter
+  `onlyCore = TRUE` only core spectra variables
+  ([`coreSpectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md))
+  are evaluated for removal. Any spectra variable added by the user will
+  be retained, even if they contain only `NA` values. Defaults to
+  `onlyCore = FALSE`.
 
 - `selectSpectraVariables()`: reduces the information within the object
   to the selected spectra variables: all data for variables not
@@ -647,7 +661,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 
 
 ##  --------  SUBSET SPECTRA  --------
@@ -664,7 +678,7 @@ tmp
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 length(tmp)
 #> [1] 3
 
@@ -688,7 +702,7 @@ sps_dda[msLevel(sps_dda) == 2L]
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 filterMsLevel(sps_dda, 2L)
 #> MSn data (Spectra) with 2975 spectra in a MsBackendMzR backend:
 #>        msLevel     rtime scanIndex
@@ -707,9 +721,9 @@ filterMsLevel(sps_dda, 2L)
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 #> Processing:
-#>  Filter: select MS level(s) 2 [Mon Mar 16 15:23:24 2026] 
+#>  Filter: select MS level(s) 2 [Fri Apr  3 07:59:13 2026] 
 
 ## Filter the object keeping only MS2 spectra with an precursor m/z value
 ## between a specified range:
@@ -731,9 +745,9 @@ filterPrecursorMzRange(sps_dda, c(80, 90))
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 #> Processing:
-#>  Filter: select spectra with a precursor m/z within [80, 90] [Mon Mar 16 15:23:24 2026] 
+#>  Filter: select spectra with a precursor m/z within [80, 90] [Fri Apr  3 07:59:13 2026] 
 
 ## Filter the object to MS2 spectra with an precursor m/z matching a
 ## pre-defined value (given ppm and tolerance)
@@ -755,9 +769,9 @@ filterPrecursorMzValues(sps_dda, 85, ppm = 5, tolerance = 0.1)
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 #> Processing:
-#>  Filter: select spectra with precursor m/z matching 85 [Mon Mar 16 15:23:24 2026] 
+#>  Filter: select spectra with precursor m/z matching 85 [Fri Apr  3 07:59:13 2026] 
 
 ## The `filterRanges()` function allows to filter a `Spectra` based on
 ## numerical ranges of any of its (numerical) spectra variables.
@@ -784,11 +798,11 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 #> Processing:
-#>  Filter: select spectra with a rtime within: [30, 350] [Mon Mar 16 15:23:24 2026]
-#>  Filter: select spectra with a precursorMz within: [200, 500] [Mon Mar 16 15:23:24 2026]
-#>  Filter: select spectra with a peaksCount within: [350, 600] [Mon Mar 16 15:23:24 2026] 
+#>  Filter: select spectra with a rtime within: [30, 350] [Fri Apr  3 07:59:13 2026]
+#>  Filter: select spectra with a precursorMz within: [200, 500] [Fri Apr  3 07:59:13 2026]
+#>  Filter: select spectra with a peaksCount within: [350, 600] [Fri Apr  3 07:59:13 2026] 
 
 ## `filterRanges()` can also be used to filter a `Spectra` object with
 ## multiple ranges for the same `spectraVariable` (e.g, here `"rtime"`)
@@ -814,10 +828,10 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 #> Processing:
-#>  Filter: select spectra with a rtime within: [30, 100] [Mon Mar 16 15:23:24 2026]
-#>  Filter: select spectra with a rtime within: [200, 300] [Mon Mar 16 15:23:24 2026] 
+#>  Filter: select spectra with a rtime within: [30, 100] [Fri Apr  3 07:59:13 2026]
+#>  Filter: select spectra with a rtime within: [200, 300] [Fri Apr  3 07:59:13 2026] 
 
 ## While `filterRanges()` filtered on numeric ranges, `filterValues()`
 ## allows to filter an object matching spectra variable values to user
@@ -847,10 +861,10 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 25445e109d79_7861
+#> 24b416eb0254_7861
 #> Processing:
-#>  Filter: select spectra with a rtime similar to: 350 [Mon Mar 16 15:23:24 2026]
-#>  Filter: select spectra with a precursorMz similar to: 80 [Mon Mar 16 15:23:24 2026] 
+#>  Filter: select spectra with a rtime similar to: 350 [Fri Apr  3 07:59:13 2026]
+#>  Filter: select spectra with a precursorMz similar to: 80 [Fri Apr  3 07:59:13 2026] 
 
 
 ##  --------  FILTER SPECTRA DATA  --------
@@ -932,7 +946,7 @@ fft_spectrum
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
 #>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]
-#>  Remove fast fourier artefacts. [Mon Mar 16 15:23:27 2026] 
+#>  Remove fast fourier artefacts. [Fri Apr  3 07:59:16 2026] 
 plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
 
@@ -954,8 +968,8 @@ fft_spectrum_filtered
 #> Lazy evaluation queue: 2 processing step(s)
 #> Processing:
 #>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]
-#>  Remove fast fourier artefacts. [Mon Mar 16 15:23:27 2026]
-#>  Remove fast fourier artefacts. [Mon Mar 16 15:23:27 2026] 
+#>  Remove fast fourier artefacts. [Fri Apr  3 07:59:16 2026]
+#>  Remove fast fourier artefacts. [Fri Apr  3 07:59:16 2026] 
 length(mz(fft_spectrum_filtered)[[1]])
 #> [1] 297
 plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
