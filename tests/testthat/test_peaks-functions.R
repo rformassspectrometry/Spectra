@@ -763,6 +763,11 @@ test_that(".peaks_shift_mz works", {
     expect_equal(res[, 1L], pks[, 1L] - 200)
     expect_equal(res[, 2L], 1:5)
 
-    res <- .peaks_shift_mz(pks, offset = "what", what = 3)
+})
+
+test_that(".peaks_shift_mz_variable works", {
+    pks <- cbind(mz = c(12.3, 42.4, 54.2, 59.3, 65.23),
+                 intensity = 1:5)
+    res <- .peaks_shift_mz_variable(pks, offset = "what", what = 3)
     expect_equal(res[, 1L], pks[, 1L] + 3)
 })

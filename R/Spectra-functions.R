@@ -1266,12 +1266,17 @@ shiftPeaks <- function(object, offset = 0.0, ...) {
         stop("'object' should be a Spectra object")
     if (length(offset) != 1L)
         stop("'offset' has to be a single value")
+    ## support `offset` being a `numeric(1)` or the name of a spectra variable
     if (!is.numeric(offset)) {
         if (!offset %in% spectraVariables(object))
             stop("No spectra variable \"", offset, "\" in 'object'")
+        fun <- .peaks_shift_mz_variable
         sv <- offset
-    } else sv <- character()
-    object <- addProcessing(object, FUN = .peaks_shift_mz, offset = offset,
+    } else {
+        sv <- character()
+        fun <- .peaks_shift_mz
+    }
+    object <- addProcessing(object, FUN = fun, offset = offset,
                             spectraVariables = sv)
     object@processing <- .logging(
         object@processing, "Shift peaks by ", offset)

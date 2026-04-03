@@ -127,7 +127,7 @@ the function should be applied (defaults to all MS levels of \code{object}.}
 \item{object}{A \code{Spectra} object.}
 
 \item{offset}{For \code{shiftPeaks()}: \code{numeric(1)} offset or \code{character(1)} with
-the name of a spectra variable containing a (per spectrum) offset value
+the name of a spectra variable containing an (per spectrum) offset value
 to shift the peaks.}
 
 \item{...}{Additional arguments passed to internal and downstream functions.}

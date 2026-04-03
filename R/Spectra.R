@@ -3146,7 +3146,7 @@ setMethod("filterValues", "Spectra",
 #' @param object A `Spectra` object.
 #'
 #' @param offset For `shiftPeaks()`: `numeric(1)` offset or `character(1)` with
-#'     the name of a spectra variable containing a (per spectrum) offset value
+#'     the name of a spectra variable containing an (per spectrum) offset value
 #'     to shift the peaks.
 #'
 #' @param ppm For `containsMz()` and `neutralLoss()`: `numeric(1)` defining a
