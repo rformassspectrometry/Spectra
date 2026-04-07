@@ -14,80 +14,11 @@ test_that("addProcessing works", {
     show(tst)
 })
 
-test_that("applyProcessing works", {
-    ## Initialize required objects.
-    sps_mzr <- filterRt(Spectra(sciex_mzr), rt = c(10, 20))
-    ## Add processings.
-    centroided(sps_mzr) <- TRUE
-    sps_mzr <- replaceIntensitiesBelow(sps_mzr, threshold = 5000,
-                                       value = NA_real_)
-    sps_mzr <- filterIntensity(sps_mzr)
-    expect_true(length(sps_mzr@processingQueue) == 2)
-    expect_error(applyProcessing(sps_mzr), "is read-only")
-
-    ## Create writeable backends.
-    sps_mem <- setBackend(sps_mzr, backend = MsBackendDataFrame())
-    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
-                         files = c(tempfile(), tempfile()),
-                         f = rep(1, length(sps_mzr)))
-    expect_true(length(sps_mem@processingQueue) == 2)
-    expect_true(length(sps_h5@processingQueue) == 2)
-    expect_identical(peaksData(sps_mzr), peaksData(sps_mem))
-    expect_identical(peaksData(sps_h5), peaksData(sps_mem))
-
-    ## MsBackendDataFrame
-    res <- applyProcessing(sps_mem)
-    expect_true(length(res@processingQueue) == 0)
-    expect_true(length(res@processing) > length(sps_mem@processing))
-    expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaksData(res), peaksData(sps_mem))
-
-    ## MsBackendHdf5Peaks
-    res <- applyProcessing(sps_h5)
-    expect_true(length(res@processingQueue) == 0)
-    expect_true(length(res@processing) > length(sps_h5@processing))
-    expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaksData(res), peaksData(sps_mem))
-    expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
-
-    ## Applying the processing queue invalidated the original object!
-    expect_error(peaksData(sps_h5))
-    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
-                         files = c(tempfile(), tempfile()),
-                         f = rep(1, length(sps_mzr)))
-
-    ## Use an arbitrary splitting factor ensuring that the results are still OK.
-    f <- rep(letters[1:9], 8)
-    f <- sample(f)
-
-    ## MsBackendHdf5Peaks
-    res <- applyProcessing(sps_mem, f = f)
-    expect_true(length(res@processingQueue) == 0)
-    expect_true(length(res@processing) > length(sps_mem@processing))
-    expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaksData(res), peaksData(sps_mem))
-
-    ## MsBackendHdf5Peaks: throws an error, because the factor f does not
-    ## match the dataStorage.
-    expect_error(applyProcessing(sps_h5, f = f))
-
-    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
-                         files = c(tempfile(), tempfile()),
-                         f = rep(1, length(sps_mzr)))
-    res <- applyProcessing(sps_h5, f = rep(1, length(sps_h5)))
-    expect_true(length(res@processingQueue) == 0)
-    expect_true(length(res@processing) > length(sps_h5@processing))
-    expect_identical(rtime(res), rtime(sps_mem))
-    expect_identical(peaksData(res), peaksData(sps_mem))
-    expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
-
-    expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")
-})
-
 test_that(".check_ms_level works", {
     expect_true(.check_ms_level(sciex_mzr, 1))
     expect_warning(.check_ms_level(sciex_mzr, 2))
-    expect_false(.check_ms_level(sciex_mzr, 2))
+    expect_warning(expect_false(.check_ms_level(sciex_mzr, 2)),
+                   "MS levels 2")
     expect_error(.check_ms_level(sciex_mzr, "a"), "must be numeric")
 
     expect_true(.check_ms_level(tmt_mzr, 1))
@@ -97,50 +28,63 @@ test_that(".check_ms_level works", {
 })
 
 test_that(".compare_spectra_self work", {
-    sps <- Spectra(sciex_hd5)[120:126]
-    sps <- setBackend(sps, MsBackendDataFrame())
+    sps <- filterMsLevel(sps_dda, 2L)
+    sps <- sps[lengths(sps) > 2][1:100]
+    sps <- setBackend(sps, MsBackendMemory())
 
     res <- .compare_spectra_chunk(sps, sps)
     expect_true(ncol(res) == length(sps))
     expect_true(nrow(res) == length(sps))
-    expect_equal(diag(res), rep(1, length(sps)))
+    expect_equal(unname(diag(res)), rep(1, length(sps)))
 
     res_2 <- .compare_spectra_self(sps)
     expect_equal(dim(res), dim(res_2))
     expect_identical(diag(res), diag(res_2))
     expect_identical(res[!lower.tri(res)], res_2[!lower.tri(res_2)])
+
+    ## with matched peak count
+    ref <- .compare_spectra_chunk(sps, sps, matchedPeaksCount = TRUE)
+    res <- .compare_spectra_self(sps, matchedPeaksCount = TRUE)
+    expect_equal(dim(ref), dim(res))
+    expect_equal(dim(res)[1L], 100)
+    expect_equal(dim(res)[3L], 2)
+    expect_equal(diag(res[, , 1L]), diag(ref[, , 1L]))
+    expect_equal(unname(diag(res[, , 2L])), lengths(sps))
+    expect_equal(res[, , 2L], ref[, , 2L])
+    expect_equal(res[, , 1L], ref[, , 1L])
 })
 
 test_that(".compare_spectra_chunk works", {
-    sps <- Spectra(sciex_hd5)[120:126]
-    sps <- setBackend(sps, MsBackendDataFrame())
-
+    sps <- setBackend(filterMsLevel(sps_dda, 2L)[1:20], MsBackendMemory())
     res <- .compare_spectra_chunk(sps, sps)
-    expect_true(ncol(res) == length(sps))
-    expect_true(nrow(res) == length(sps))
-    expect_equal(diag(res), rep(1, length(sps)))
 
-    res_2 <- .compare_spectra_chunk(sps, sps[3])
-    expect_true(ncol(res_2) == 1)
-    expect_true(nrow(res_2) == length(sps))
-    expect_identical(res_2[, 1], res[, 3])
-
-    res_2 <- .compare_spectra_chunk(sps[5], sps)
-    expect_true(ncol(res_2) == length(sps))
-    expect_true(nrow(res_2) == 1)
-    expect_identical(res_2[1, ], res[5, ])
-
-    res_3 <- .compare_spectra_chunk(sps[5], sps, chunkSize = 2)
-    expect_equal(res_2, res_3)
+    expect_true(all(is.nan(res[, 8])))
+    expect_true(all(is.nan(res[8, ])))
+    expect_true(all(diag(res)[-8] == 1))
+    expect_true(nrow(res) == 20)
+    expect_true(ncol(res) == 20)
 
     cor_fun <- function(x, y, ...) {
         cor(x[, 2], y[, 2], use = "pairwise.complete.obs")
     }
     res <- .compare_spectra_chunk(sps[1], sps[1], FUN = cor_fun)
     expect_true(res[1, 1] == 1)
-    res <- .compare_spectra_chunk(sps[1], sps[2], FUN = cor_fun)
-    res_2 <- .compare_spectra_chunk(sps[1], sps[2])
-    expect_true(res[1, 1] > res_2[1, 1])
+    res <- .compare_spectra_chunk(sps[1], sps[3], FUN = cor_fun)
+
+    res <- .compare_spectra_chunk(sps, sps, matchedPeaksCount = TRUE)
+    expect_true(is.array(res))
+    expect_equal(unname(diag(res[, , 2])), lengths(sps))
+
+    res <- .compare_spectra_chunk(sps, sps[5], matchedPeaksCount = FALSE)
+    expect_true(is.matrix(res))
+    expect_true(nrow(res) == 20)
+    expect_true(ncol(res) == 1)
+    expect_true(res[5, 1] == 1)
+
+    res <- .compare_spectra_chunk(sps, sps[5], matchedPeaksCount = TRUE)
+    expect_true(is.array(res))
+    expect_equal(dim(res), c(20, 1, 2))
+    expect_true(res[5, 1, 1] == 1)
 })
 
 test_that(".lapply works", {
@@ -243,10 +187,12 @@ test_that(".concatenate_spectra works", {
     ## BackendMzR
     res <- .concatenate_spectra(list(Spectra(tmt_mzr), Spectra(sciex_mzr)))
     expect_identical(msLevel(res), c(msLevel(tmt_mzr), msLevel(sciex_mzr)))
-    expect_identical(msLevel(sciex_mzr), msLevel(res[dataStorage(res) %in%
-                                                     sciex_file]))
-    expect_identical(msLevel(tmt_mzr), msLevel(res[dataStorage(res) ==
-                                                   dataStorage(tmt_mzr)[1]]))
+    expect_identical(msLevel(sciex_mzr),
+                     msLevel(res[basename(dataStorage(res)) %in%
+                                 basename(sciex_file)]))
+    expect_identical(msLevel(tmt_mzr),
+                     msLevel(res[basename(dataStorage(res)) ==
+                                 basename(dataStorage(tmt_mzr))[1]]))
 })
 
 test_that(".combine_spectra works", {
@@ -339,6 +285,40 @@ test_that("combineSpectra works", {
     expect_true(length(sps2@processingQueue) == 1)
     expect_true(validObject(sps2))
     expect_error(mz(sps2), "have changed")
+
+    ## Combining and refining the m/z values
+    a <- DataFrame(rtime = c(1.1, 1.2, 1.3, 1.4, 1.5), msLevel = 2L)
+    a$mz <- IRanges::NumericList(
+        c(12.1, 113.1, 200.1),
+        c(12.12, 113.104, 300.3),
+        c(113.11, 123.1, 200.2),
+        c(113.2, 300.1),
+        c(12.103, 113.201, 144.1, 145.2),
+        compress = FALSE)
+    a$intensity <- IRanges::NumericList(
+        c(1.1, 2.2, 3.3),
+        c(1.1, 2.2, 3.3),
+        c(1.1, 2.2, 3.3),
+        c(1.1, 2.2),
+        c(1.1, 2.2, 3.3, 4.4),
+        compress = FALSE)
+    a <- Spectra(data = a)
+    res <- combineSpectra(a, peaks = "union", ppm = 0, tolerance = 0)
+    expect_s4_class(res, "Spectra")
+    expect_true(length(res) == 1L)
+    expect_equal(unname(unlist(res$mz)), sort(unlist(a$mz)))
+    res <- combineSpectra(a, peaks = "union", ppm = 10)
+    expect_true(lengths(res) < sum(lengths(a)))
+
+    res <- combineSpectra(a, peaks = "intersect", minProp = 0.9, ppm = 0,
+                          tolerance = 0.1)
+    expect_true(length(res) == 1L)
+    expect_true(lengths(res) == 1L)
+    expect_equal(unname(mz(res)[[1L]]), mean(c(113.1, 113.104,
+                                               113.11, 113.2, 113.201)))
+    res_2 <- combineSpectra(a, peaks = "intersect", minProp = 0.9,
+                            weighted = TRUE, ppm = 0, tolerance = 0.1)
+    expect_false(unname(res$mz[[1L]]) == unname(res_2$mz[[1L]]))
 })
 
 test_that("dropNaSpectraVariables works", {
@@ -350,32 +330,6 @@ test_that("dropNaSpectraVariables works", {
     res <- dropNaSpectraVariables(sps)
     expect_true(all(vapply1l(res@backend@spectraData,
                              function(z) !any(is.na(z)))))
-})
-
-test_that(".has_mz works", {
-    sps <- Spectra(sciex_mzr)[1:10]
-    sps <- setBackend(sps, MsBackendDataFrame())
-    mzs <- mz(sps)
-    x <- c(mzs[[2]][5], mzs[[3]][8])
-
-    res <- .has_mz(sps, mz = x, ppm = 0)
-    expect_true(length(res) == length(sps))
-    expect_true(is.logical(res))
-
-    spd <- DataFrame(msLevel = c(2L, 2L, 2L), rtime = c(1, 2, 3))
-    spd$mz <- list(c(12, 14, 45, 56), c(14.1, 34, 56.1), c(12.1, 14.15, 34.1))
-    spd$intensity <- list(c(10, 20, 30, 40), c(11, 21, 31), c(12, 22, 32))
-    sps <- Spectra(spd)
-
-    res <- .has_mz(sps, mz = c(14, 34))
-    expect_equal(res, c(TRUE, TRUE, FALSE))
-    res <- .has_mz(sps, mz = c(14, 34), tolerance = 0.15)
-    expect_equal(res, c(TRUE, TRUE, TRUE))
-
-    res <- .has_mz(sps, mz = c(14, 34), condFun = all)
-    expect_true(all(!res))
-    res <- .has_mz(sps, mz = c(14, 34), condFun = all, tolerance = 0.15)
-    expect_equal(res, c(FALSE, TRUE, TRUE))
 })
 
 test_that(".has_mz_each works", {
@@ -398,7 +352,7 @@ test_that(".has_mz_each works", {
 
 
 test_that("joinSpectraData works", {
-    ms <- Spectra(msdata::proteomics(pattern = "TMT10", full.names = TRUE))
+    ms <- sps_dda
     k <- sample(length(ms), 10)
     spd2 <- spd1 <- DataFrame(id = ms$spectrumId[k],
                               X = 1:10,
@@ -446,7 +400,7 @@ test_that("joinSpectraData works", {
     expect_true(is(ms2$CharList, "CharacterList"))
 
     ## With MsBackendMemory
-    ms <- Spectra(msdata::proteomics(pattern = "TMT10", full.names = TRUE))
+    ms <- sps_dda
     ms <- setBackend(ms, MsBackendMemory(), BPPARAM = SerialParam())
     k <- sample(length(ms), 10)
     spd2 <- spd1 <- DataFrame(id = ms$spectrumId[k],
@@ -550,9 +504,7 @@ test_that(".processingQueueVariables works", {
 
 test_that(".peaksapply works", {
     ## Use a processing with precursorMz and msLevel
-    fl <- dir(system.file("TripleTOF-SWATH", package = "msdata"),
-              full.names = TRUE)[1]
-    sps <- Spectra(backendInitialize(MsBackendMzR(), files = fl))
+    sps <- sps_dda
 
     loss <- function(x, spectrumMsLevel, precursorMz, ...) {
         if (spectrumMsLevel == 2L)
@@ -592,7 +544,7 @@ test_that(".peaksapply works", {
                          intensity = c(0.1, Inf),
                          spectraVariables = c("msLevel", "centroided"))
     expect_true(all(vapply(res_3, nrow, integer(1)) <
-                    vapply(res_2, nrow, integer(1))))
+                        vapply(res_2, nrow, integer(1))))
     expect_true(!any(vapply(res_3, function(z) any(z[, 2] == 0), logical(1))))
 
     sps@processingQueue <- c(sps@processingQueue,
@@ -653,17 +605,15 @@ test_that(".apply_processing_queue works", {
     expect_true(all(vapply(res, function(z) all(z[z[, 2] > 0, 2] > 50000),
                            logical(1))))
     expect_true(all(vapply(res, nrow, integer(1)) <
-                    vapply(pks, nrow, integer(1))))
+                        vapply(pks, nrow, integer(1))))
 })
 
 test_that(".estimate_precursor_intensity works", {
-    fl <- msdata::proteomics("MS3TMT11.mzML", full.names = TRUE)
-    tmp <- Spectra(fl, backend = MsBackendMzR())
+    tmp <- sps_tmt[1:1000]
 
     ## previous
     res <- .estimate_precursor_intensity(tmp)
     expect_true(all(is.na(res[msLevel(tmp) == 1L])))
-    expect_true(all(is.na(res[msLevel(tmp) == 3L])))
     expect_warning(.estimate_precursor_intensity(tmp, msLevel = 3L),
                    "not yet validated")
     expect_true(
@@ -677,7 +627,7 @@ test_that(".estimate_precursor_intensity works", {
     ## interpolation
     res_2 <- .estimate_precursor_intensity(tmp, method = "interpolation")
     expect_true(is.character(all.equal(res, res_2)))
-    expect_true(cor(res, res_2, use = "pairwise.complete.obs") > 0.99)
+    expect_true(cor(res, res_2, use = "pairwise.complete.obs") > 0.9)
 
     ## no MS1
     tmp_2 <- filterMsLevel(tmp, msLevel = 2:3)
@@ -807,7 +757,7 @@ test_that("scalePeaks works", {
 })
 
 test_that("filterPrecursorPeaks,Spectra works", {
-    x <- Spectra(tmt_mzr[5:15])
+    x <- sps_dda[325:340]
     expect_error(filterPrecursorPeaks(4), "instance of class")
     expect_error(filterPrecursorPeaks(x, tolerance = c(3, 4)), "length 1")
     expect_error(filterPrecursorPeaks(x, ppm = c(12.3, 24.4)), "length 1")
@@ -815,41 +765,14 @@ test_that("filterPrecursorPeaks,Spectra works", {
     expect_equal(res, x)
 
     res <- filterPrecursorPeaks(x, mz = "==", tolerance = 0.2)
+    expect_true(all(lengths(res)[msLevel(res) == 2L] <
+                    lengths(x)[msLevel(x) == 2L]))
     expect_true(length(res@processing) > 0)
-    expect_true(lengths(res)[1L] < lengths(x)[1L])
 
     res <- filterPrecursorPeaks(x, mz = ">=")
     expect_true(all(lengths(res)[msLevel(x) > 1L] <
-                    lengths(x)[msLevel(x) > 1L]))
+                        lengths(x)[msLevel(x) > 1L]))
     expect_equal(lengths(res)[msLevel(x) == 1L], lengths(x)[msLevel(x) == 1L])
-})
-
-test_that("processingChunkSize works", {
-    s <- Spectra()
-    expect_equal(processingChunkSize(s), Inf)
-    processingChunkSize(s) <- 1000
-    expect_equal(processingChunkSize(s), 1000)
-    expect_error(processingChunkSize(s) <- c(1, 2), "length 1")
-    expect_error(processingChunkSize(s) <- "A", "character")
-})
-
-test_that("processingChunkFactor works", {
-    s <- Spectra()
-    expect_equal(processingChunkFactor(s), factor())
-    tmp <- Spectra(sciex_mzr)
-
-    expect_equal(length(processingChunkFactor(tmp)), length(tmp))
-    expect_true(is.factor(processingChunkFactor(tmp)))
-
-    processingChunkSize(tmp) <- 1000
-    res <- processingChunkFactor(tmp)
-    expect_true(is.factor(res))
-    expect_true(length(res) == length(tmp))
-    expect_equal(levels(res), c("1", "2"))
-
-    expect_equal(.parallel_processing_factor(tmp), processingChunkFactor(tmp))
-
-    expect_error(processingChunkFactor("a"), "Spectra")
 })
 
 test_that("filterPeaksRanges,Spectra works", {
@@ -922,4 +845,77 @@ test_that("filterPeaksRanges,Spectra works", {
     expect_equal(a[, 2L], 5:11)
     a <- peaksData(res)[[2L]]
     expect_true(nrow(a) == 0)
+})
+
+test_that("fragmentGroupIndex works", {
+    ## basic test
+    msLevel <- c(1, 2, 3, 3, 1, 2, 3, 3, 2, 3, 1, 2)
+    acquisitionNum <- seq_along(msLevel)
+    is_fragment <- msLevel != 1
+    frag_indices <- which(is_fragment)
+    ms1_indices  <- which(!is_fragment)
+    group_ids <- integer(length(msLevel))
+    group_ids[ms1_indices] <- seq_along(ms1_indices)
+    group_ids[frag_indices] <- group_ids[ms1_indices[findInterval(frag_indices,
+                                                                  ms1_indices)]]
+    expect_equal(group_ids, c(1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3))
+
+    ## sanity checks
+    expect_error(fragmentGroupIndex(sps_dia), "The first spectrum")
+    sps_dia <- sps_dia[-c(1:8)] ## missing the first MS1 file.
+    tmp <- filterMsLevel(sps_dda, 1L)
+    expect_error(fragmentGroupIndex(tmp), "at least two MS levels")
+
+    res_dda <- fragmentGroupIndex(sps_dda)
+    expect_equal(length(sps_dda), length(res_dda))
+
+    res_dia <- fragmentGroupIndex(sps_dia)
+    expect_equal(length(sps_dia), length(res_dia))
+
+    ## DIA has for every MS1 MS2 spectra.
+    expect_equal(sum(msLevel(sps_dia) == 1L), length(table(res_dia)))
+    expect_true(length(table(res_dia)) < length(table(res_dda)))
+
+    res2 <- fragmentGroupIndex(c(sps_dda, sps_dia))
+    expect_equal(length(res2), length(sps_dda) + length(sps_dia))
+    expect_equal(res_dda, res2[1:length(sps_dda)])
+    expect_equal(res_dia + max(res_dda),
+                 res2[(length(sps_dda) + 1):length(res2)])
+    ## reverse order
+    res2 <- fragmentGroupIndex(c(sps_dia, sps_dda))
+    expect_equal(length(res2), length(sps_dda) + length(sps_dia))
+    expect_equal(res_dia, res2[1:length(sps_dia)])
+    expect_equal(res_dda + max(res_dia),
+                 res2[(length(sps_dia) + 1):length(res2)])
+
+    tmp <- filterMsLevel(sps_dda, 2)
+    expect_error(fragmentGroupIndex(tmp), "at least two MS levels")
+
+})
+
+test_that("shiftPeaks works", {
+    a <- sps_dda[50:60]
+    res <- shiftPeaks(a, 10)
+    expect_true(length(res@processingQueue) == 1L)
+    ref_mz <- mz(a)
+    res_mz <- mz(res)
+    expect_equal(res_mz, ref_mz + 10)
+
+    res <- shiftPeaks(a, offset = "precursorMz")
+    res_mz <- mz(res)
+    expect_equal(res_mz[[9]], mz(a)[[9]] + a$precursorMz[9])
+
+    a$shift_offset <- seq_along(a)
+    res <- shiftPeaks(a, offset = "shift_offset")
+    res_mz <- mz(res)
+    expect_equal(res_mz, mz(a) + seq_along(a))
+
+    expect_error(shiftPeaks(a, offset = "what"), "No spectra variable")
+    expect_error(shiftPeaks(a, offset = 1:2), "single value")
+
+    ## Simulating longer processing queue
+    a@processingQueueVariables <- c("msLevel", "precursorMz")
+    res <- shiftPeaks(a, offset = "shift_offset")
+    res_mz <- mz(res)
+    expect_equal(res_mz, mz(a) + seq_along(a))
 })

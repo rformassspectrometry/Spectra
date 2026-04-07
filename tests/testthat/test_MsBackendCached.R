@@ -41,7 +41,7 @@ test_that(".spectra_data MsBackendCached works", {
 
     res <- .spectra_data(be)
     expect_true(nrow(res) == 0)
-    expect_equal(sort(colnames(res)), sort(names(Spectra:::.SPECTRA_DATA_COLUMNS)))
+    expect_equal(sort(colnames(res)), sort(names(.SPECTRA_DATA_COLUMNS)))
 
     df <- data.frame(a = 1:4, msLevel = c(1L, 2L, 1L, 3L))
     be <- backendInitialize(be, data = df)
@@ -80,6 +80,23 @@ test_that(".spectra_data MsBackendCached works", {
     expect_true(is.null(res))
 })
 
+test_that("spectraData,MsBackendCached works", {
+    be <- new("MsBackendCached")
+    be@nspectra <- 14L
+    res <- spectraData(be)
+    expect_s4_class(res, "DataFrame")
+    expect_equal(.valid_column_datatype(res), NULL)
+    expect_true(all(names(.SPECTRA_DATA_COLUMNS) %in% colnames(res)))
+
+    expect_error(spectraData(be, "other_col"), "not available")
+
+    res <- spectraData(be, "smoothed")
+    expect_s4_class(res, "DataFrame")
+    expect_equal(colnames(res), "smoothed")
+    expect_true(all(is.na(res$smoothed)))
+    expect_true(is.logical(res$smoothed))
+})
+
 test_that("[,MsBackendCached works", {
     be <- MsBackendCached()
 
@@ -87,12 +104,24 @@ test_that("[,MsBackendCached works", {
     res <- be[c(1, 4, 3), ]
     expect_true(length(res) == 3)
     expect_true(nrow(res@localData) == 3)
+    res_2 <- extractByIndex(be, c(1, 4, 3))
+    expect_equal(res, res_2)
 
     df <- data.frame(msLevel = 1L, b = 1:6)
     be <- backendInitialize(be, data = df)
     res <- be[c(6, 1, 3)]
     expect_true(length(res) == 3)
     expect_equal(res@localData$b, c(6, 1, 3))
+    res_2 <- extractByIndex(be, c(6, 1, 3))
+    expect_equal(res, res_2)
+
+    res <- be[c(6, 1, 3, 1)]
+    expect_true(length(res) == 4)
+    expect_equal(res@localData$b, c(6, 1, 3, 1))
+    res_2 <- extractByIndex(be, c(6, 1, 3, 1))
+    expect_equal(res, res_2)
+
+    expect_equal(extractByIndex(be), be)
 })
 
 test_that("$,MsBackendCached works", {
@@ -289,4 +318,18 @@ test_that("lengths,MsBackendCached works", {
     be <- backendInitialize(MsBackendCached(), nspectra = 4)
     res <- lengths(be)
     expect_true(all(res == 0))
+})
+
+test_that("precursorMz<-,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 4)
+    expect_true(all(is.na(precursorMz(be))))
+    precursorMz(be) <- c(1.1, 1.2, 1.3, 1.34)
+    expect_equal(precursorMz(be), c(1.1, 1.2, 1.3, 1.34))
+})
+
+test_that("precScanNum,MsBackendCached works", {
+    be <- backendInitialize(MsBackendCached(), nspectra = 11)
+    expect_identical(precScanNum(be), rep(NA_integer_, 11))
+    be$precScanNum <- 1:11
+    expect_identical(precScanNum(be), 1:11)
 })

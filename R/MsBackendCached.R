@@ -104,7 +104,7 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   the mzML file from which the data was read.
 #'
 #' - `intensity()`: gets the intensity values from the spectra. Returns
-#'   a [NumericList()] of `numeric` vectors (intensity values for each
+#'   a [IRanges::NumericList()] of `numeric` vectors (intensity values for each
 #'   spectrum). The length of the `list` is equal to the number of
 #'   `spectra` in `object`.
 #'
@@ -136,8 +136,8 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'   level for each spectrum (or `NA_integer_` if not available).
 #'
 #' - `mz()`: gets the mass-to-charge ratios (m/z) from the
-#'   spectra. Returns a [NumericList()] or length equal to the number of
-#'   spectra, each element a `numeric` vector with the m/z values of
+#'   spectra. Returns a [IRanges::NumericList()] or length equal to the
+#'   number of spectra, each element a `numeric` vector with the m/z values of
 #'   one spectrum.
 #'
 #' - `polarity()`, `polarity<-`: gets or sets the polarity for each
@@ -221,8 +221,6 @@ setClassUnion("characterOrInteger", c("character", "integer"))
 #'     For `selectSpectraVariables()`: `character` specifying the spectra
 #'     variables to keep.
 #'
-#' @param use.names For `lengths()`: whether spectrum names should be used.
-#'
 #' @param value replacement value for `<-` methods. See individual
 #'     method description or expected data type.
 #'
@@ -295,6 +293,15 @@ setMethod("dataStorage", "MsBackendCached", function(object) {
 })
 
 #' @rdname MsBackendCached
+setMethod("extractByIndex", c("MsBackendCached", "ANY"),
+          function(object, i) {
+    slot(object, "localData", check = FALSE) <-
+        object@localData[i, , drop = FALSE]
+    object@nspectra <- nrow(object@localData)
+    object
+})
+
+#' @rdname MsBackendCached
 setMethod("length", "MsBackendCached", function(x) {
     x@nspectra
 })
@@ -314,30 +321,11 @@ setMethod("spectraVariables", "MsBackendCached", function(object) {
     columns <- columns[!columns %in% x@spectraVariables]
     core_cols <- intersect(columns, names(.SPECTRA_DATA_COLUMNS))
     core_cols <- core_cols[!core_cols %in% c(local_cols, x@spectraVariables)]
-    res <- NULL
+    res <- base::as.data.frame(matrix(ncol = 0, nrow = x@nspectra))
     if (length(local_cols))
-        res <- as(x@localData[, local_cols, drop = FALSE], "DataFrame")
+        res <- x@localData[, local_cols, drop = FALSE]
     if (length(core_cols)) {
-        mzvals <- NULL
-        intvals <- NULL
-        lst <- NumericList(numeric(), compress = FALSE)
-        if (any(core_cols == "mz")) {
-            core_cols <- core_cols[core_cols != "mz"]
-            mzvals <- lst[rep(1, times = length(x))]
-        }
-        if (any(core_cols == "intensity")) {
-            core_cols <- core_cols[core_cols != "intensity"]
-            intvals <- lst[rep(1, times = length(x))]
-        }
-        if (length(core_cols))
-            tmp <- DataFrame(lapply(.SPECTRA_DATA_COLUMNS[core_cols],
-                                    function(z, n) rep(as(NA, z), n), length(x)))
-        else tmp <- make_zero_col_DFrame(x@nspectra)
-        tmp$mz <- mzvals
-        tmp$intensity <- intvals
-        if (length(res))
-            res <- cbind(res, tmp)
-        else res <- tmp
+        res <- fillCoreSpectraVariables(res, columns = core_cols)
         if (any(core_cols == "dataStorage"))
             res$dataStorage <- dataStorage(x)
     }
@@ -375,7 +363,12 @@ setMethod("[", "MsBackendCached", function(x, i, j, ..., drop = FALSE) {
 setMethod("$", "MsBackendCached", function(x, name) {
     if (!any(spectraVariables(x) == name))
         stop("Spectra variable '", name, "' not available.")
-    spectraData(x, name)[, 1]
+    spectraData(x, name)[, 1L]
+})
+
+#' @rdname hidden_aliases
+setMethod("lengths", "MsBackendCached", function(x, use.names = FALSE) {
+    lengths(mz(x))
 })
 
 #' @rdname MsBackendCached
@@ -428,7 +421,7 @@ setMethod("show", "MsBackendCached", function(object) {
     cat(class(object), "with", n, "spectra\n")
     if (n) {
         idx <- unique(c(1L:min(6L, n), max(1L, n-5L):n))
-        spd <- spectraData(object[idx, ],
+        spd <- spectraData(extractByIndex(object, idx),
                            c("msLevel", "precursorMz", "polarity"))
         if (!length(rownames(spd)))
             rownames(spd) <- idx
@@ -443,54 +436,8 @@ setMethod("show", "MsBackendCached", function(object) {
 ## ------------- DEFAULT IMPLEMENTATIONS OF ACCESSORS --------------------------
 
 #' @rdname MsBackendCached
-setMethod("acquisitionNum", "MsBackendCached", function(object) {
-    spectraData(object, "acquisitionNum")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("centroided", "MsBackendCached", function(object) {
-    spectraData(object, "centroided")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("centroided", "MsBackendCached", function(object, value) {
-    object$centroided <- value
-    validObject(object)
-    object
-})
-
-#' @rdname MsBackendCached
-setMethod("collisionEnergy", "MsBackendCached", function(object) {
-    spectraData(object, "collisionEnergy")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("collisionEnergy", "MsBackendCached", function(object, value) {
-    object$collisionEnergy <- value
-    validObject(object)
-    object
-})
-
-#' @rdname MsBackendCached
-setMethod("dataOrigin", "MsBackendCached", function(object) {
-    spectraData(object, "dataOrigin")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("dataOrigin", "MsBackendCached", function(object, value) {
-    object$dataOrigin <- value
-    validObject(object)
-    object
-})
-
-#' @rdname MsBackendCached
-setMethod("msLevel", "MsBackendCached", function(object) {
-    spectraData(object, "msLevel")[, 1]
-})
-
-#' @rdname MsBackendCached
 setMethod("intensity", "MsBackendCached", function(object) {
-    spectraData(object, "intensity")[, 1]
+    spectraData(object, "intensity")[, 1L]
 })
 
 #' @importFrom MsCoreUtils vapply1d
@@ -500,115 +447,7 @@ setMethod("ionCount", "MsBackendCached", function(object) {
     vapply1d(intensity(object), sum, na.rm = TRUE)
 })
 
-#' @importMethodsFrom S4Vectors isEmpty
-#'
-#' @rdname MsBackendCached
-setMethod("isEmpty", "MsBackendCached", function(x) {
-    lengths(intensity(x)) == 0
-})
-
-#' @rdname MsBackendCached
-setMethod("isolationWindowLowerMz", "MsBackendCached", function(object) {
-    spectraData(object, "isolationWindowLowerMz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("isolationWindowLowerMz", "MsBackendCached",
-                 function(object, value) {
-                     object$isolationWindowLowerMz <- value
-                     validObject(object)
-                     object
-                 })
-
-#' @rdname MsBackendCached
-setMethod("isolationWindowTargetMz", "MsBackendCached", function(object) {
-    spectraData(object, "isolationWindowTargetMz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("isolationWindowTargetMz", "MsBackendCached",
-                 function(object, value) {
-                     object$isolationWindowTargetMz <- value
-                     validObject(object)
-                     object
-                 })
-
-#' @rdname MsBackendCached
-setMethod("isolationWindowUpperMz", "MsBackendCached", function(object) {
-    spectraData(object, "isolationWindowUpperMz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("isolationWindowUpperMz", "MsBackendCached",
-                 function(object, value) {
-                     object$isolationWindowUpperMz <- value
-                     validObject(object)
-                     object
-                 })
-
-#' @rdname MsBackendCached
-setMethod("lengths", "MsBackendCached", function(x, use.names = FALSE) {
-    lengths(mz(x))
-})
-
 #' @rdname MsBackendCached
 setMethod("mz", "MsBackendCached", function(object) {
     spectraData(object, "mz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("polarity", "MsBackendCached", function(object) {
-    spectraData(object, "polarity")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("polarity", "MsBackendCached", function(object, value) {
-    if (is.numeric(value)) value <- as.integer(value)
-    object$polarity <- value
-    validObject(object)
-    object
-})
-
-#' @rdname MsBackendCached
-setMethod("precursorCharge", "MsBackendCached", function(object) {
-    spectraData(object, "precursorCharge")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("precursorIntensity", "MsBackendCached", function(object) {
-    spectraData(object, "precursorIntensity")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("precursorMz", "MsBackendCached", function(object) {
-    spectraData(object, "precursorMz")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("rtime", "MsBackendCached", function(object) {
-    spectraData(object, "rtime")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("rtime", "MsBackendCached", function(object, value) {
-    object$rtime <- value
-    validObject(object)
-    object
-})
-
-#' @rdname MsBackendCached
-setMethod("scanIndex", "MsBackendCached", function(object) {
-    spectraData(object, "scanIndex")[, 1]
-})
-
-#' @rdname MsBackendCached
-setMethod("smoothed", "MsBackendCached", function(object) {
-    spectraData(object, "smoothed")[, 1]
-})
-
-#' @rdname MsBackendCached
-setReplaceMethod("smoothed", "MsBackendCached", function(object, value) {
-    object$smoothed <- value
-    validObject(object)
-    object
 })

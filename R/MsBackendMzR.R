@@ -24,8 +24,8 @@ setClass("MsBackendMzR",
          prototype = prototype(version = "0.1", readonly = TRUE))
 
 setValidity("MsBackendMzR", function(object) {
-    msg <- .valid_spectra_data_required_columns(object@spectraData,
-                                                c("dataStorage", "scanIndex"))
+    msg <- .valid_spectra_data_required_columns(
+        object@spectraData, backendRequiredSpectraVariables(object))
     msg <- c(msg, .valid_ms_backend_files_exist(
                       unique(object@spectraData$dataStorage)))
     if (length(msg)) msg
@@ -33,34 +33,43 @@ setValidity("MsBackendMzR", function(object) {
 })
 
 #' @rdname hidden_aliases
+setMethod("backendRequiredSpectraVariables", "MsBackendMzR",
+          function(object, ...) {
+              c("dataStorage", "scanIndex")
+          })
+
+#' @rdname hidden_aliases
 #'
 #' @importFrom methods callNextMethod
 #'
 #' @importFrom MsCoreUtils rbindFill
+#'
+#' @importFrom data.table rbindlist
 #'
 #' @importMethodsFrom BiocParallel bpmapply
 #'
 #' @importFrom BiocParallel bpparam
 setMethod("backendInitialize", "MsBackendMzR",
           function(object, files, ..., BPPARAM = bpparam()) {
-              if (missing(files) || !length(files))
+              if (missing(files))
                   stop("Parameter 'files' is mandatory for 'MsBackendMzR'")
               if (!is.character(files))
                   stop("Parameter 'files' is expected to be a character vector",
                        " with the files names from where data should be",
                        " imported")
+              if (!length(files))
+                  return(object)
               files <- normalizePath(files, mustWork = FALSE)
               msg <- .valid_ms_backend_files_exist(files)
               if (length(msg))
                   stop(msg)
-              spectraData <- do.call(
-                  rbindFill, bplapply(files,
-                                  FUN = function(fl) {
-                                      cbind(Spectra:::.mzR_header(fl),
-                                            dataStorage = fl)
-                                  }, BPPARAM = BPPARAM))
+              spectraData <- rbindlistWithRownames(
+                  bplapply(files, FUN = function(fl) {
+                      cbind(Spectra:::.mzR_header(fl),
+                            dataStorage = fl)
+                  }, BPPARAM = BPPARAM), use.names = TRUE, fill = TRUE)
               spectraData$dataOrigin <- spectraData$dataStorage
-              object@spectraData <- spectraData
+              object@spectraData <- DataFrame(spectraData)
               validObject(object)
               object
           })
@@ -118,16 +127,6 @@ setMethod("ionCount", "MsBackendMzR", function(object) {
 #' @rdname hidden_aliases
 setMethod("isCentroided", "MsBackendMzR", function(object, ...) {
     vapply1l(peaksData(object), .peaks_is_centroided)
-})
-
-#' @rdname hidden_aliases
-setMethod("isEmpty", "MsBackendMzR", function(x) {
-    lengths(x) == 0
-})
-
-#' @rdname hidden_aliases
-setMethod("lengths", "MsBackendMzR", function(x, use.names = FALSE) {
-    as.integer(lengths(peaksData(x)) / 2L)
 })
 
 #' @rdname hidden_aliases

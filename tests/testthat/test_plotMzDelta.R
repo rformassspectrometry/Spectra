@@ -24,8 +24,7 @@ test_that("computeMzDeltas works", {
 
 
 test_that("computeMzDeltas works", {
-    f <- msdata::proteomics(pattern = "TMT.+20141210.mzML.gz", full.names = TRUE)
-    sp <- Spectra(f)
+    sp <- sps_tmt
     d <- computeMzDeltas(sp[1:1000])
     vdiffr::expect_doppelganger(
                 "plotMzDelta_1000",

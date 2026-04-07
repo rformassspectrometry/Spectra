@@ -1,46 +1,38 @@
 #' @include hidden_aliases.R
 NULL
 
+setGeneric("backendRequiredSpectraVariables", function(object, ...)
+          standardGeneric("backendRequiredSpectraVariables"))
 #' @rdname hidden_aliases
 setMethod("bin", "numeric", MsCoreUtils::bin)
 setGeneric("combinePeaks", function(object, ...)
            standardGeneric("combinePeaks"))
-#' @rdname hidden_aliases
 setGeneric("containsMz", function(object, ...)
     standardGeneric("containsMz"))
-#' @rdname hidden_aliases
 setGeneric("containsNeutralLoss", function(object, ...)
     standardGeneric("containsNeutralLoss"))
 setGeneric("dataStorageBasePath", function(object, ...)
     standardGeneric("dataStorageBasePath"))
 setGeneric("dataStorageBasePath<-", function(object, ..., value)
     standardGeneric("dataStorageBasePath<-"))
-#' @rdname hidden_aliases
 setGeneric("dropNaSpectraVariables", function(object, ...)
     standardGeneric("dropNaSpectraVariables"))
-#' @rdname hidden_aliases
 setGeneric("entropy", function(object, ...)
   standardGeneric("entropy"))
-#' @rdname hidden_aliases
 setGeneric("export", function(object, ...)
     standardGeneric("export"))
 setGeneric("filterFourierTransformArtefacts", function(object, ...)
     standardGeneric("filterFourierTransformArtefacts"))
-#' @rdname neutralLoss
 setGeneric("neutralLoss", function(object, param, ...)
     standardGeneric("neutralLoss"))
-#' @rdname hidden_aliases
 setGeneric("pickPeaks", function(object, ...)
     standardGeneric("pickPeaks"))
 setGeneric("plotSpectraMirror", function(x, y, ...)
     standardGeneric("plotSpectraMirror"))
-#' @rdname hidden_aliases
 setGeneric("replaceIntensitiesBelow", function(object, threshold = min, ...)
     standardGeneric("replaceIntensitiesBelow"))
-#' @rdname hidden_aliases
 setGeneric("reset", function(object, ...)
     standardGeneric("reset"))
-#' @rdname hidden_aliases
 setGeneric("selectSpectraVariables", function(object, ...)
     standardGeneric("selectSpectraVariables"))
 setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
@@ -63,12 +55,22 @@ setGeneric("Spectra", function(object, ...) standardGeneric("Spectra"))
 #'
 #' @param ... Optional parameters.
 #'
+#' @param value For `spectraVariableMapping<-`: a named `character` vector.
+#'
 #' @return A named `character` with names being spectra variable names (use
 #'     [spectraVariables()] for a list of supported names) and values being the
 #'     data field names.
 #'
 #' @author Johannes Rainer
 #'
-#' @export
+#' @name spectraVariableMapping
+#'
+#' @exportMethod spectraVariableMapping
 setGeneric("spectraVariableMapping", function(object, ...)
     standardGeneric("spectraVariableMapping"))
+
+#' @rdname spectraVariableMapping
+#'
+#' @exportMethod spectraVariableMapping<-
+setGeneric("spectraVariableMapping<-", function(object, ..., value)
+    standardGeneric("spectraVariableMapping<-"))

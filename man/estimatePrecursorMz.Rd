@@ -19,7 +19,8 @@ precursorMz +/- (tolerance + ppm(precursorMz, ppm)) are considered.}
 m/z. See documentation of parameter \code{tolerance} for more information.}
 
 \item{BPPARAM}{parallel processing setup. Defaults to
-\code{BPPARAM = SerialParam()}. See \code{\link[=SerialParam]{SerialParam()}} for more information.}
+\code{BPPARAM = SerialParam()}. See \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}} for
+more information.}
 }
 \value{
 \code{numeric} of length equal to the number of spectra in \code{object} with
@@ -63,7 +64,7 @@ they feel comfortable with.
 
 ## Load a DDA test data set. For the present data set no large differences
 ## between the reported and the *actual* precursor m/z are expected.
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
 s <- Spectra(fl)
 
 pmz <- estimatePrecursorMz(s)
@@ -82,6 +83,9 @@ plot(precursorMz(s), precursorMz(s) - pmz, xlab = "precursor m/z",
 
 ## we could then replace the reported precursor m/z values
 s$precursorMz <- pmz
+}
+\seealso{
+\code{\link[=addProcessing]{addProcessing()}} for other data analysis and manipulation functions.
 }
 \author{
 Mar Garcia-Aloy, Johannes Rainer

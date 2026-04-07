@@ -56,6 +56,33 @@ test_that("MsBackend methods throw errors", {
     expect_error(dm[1], "implemented for")
     expect_error(dm$a, "implemented for")
     expect_error(dm$a <- "a", "implemented for")
+    expect_error(extractByIndex(dm, 1), "implemented for")
+    expect_equal(backendRequiredSpectraVariables(dm), character())
+    expect_error(precursorMz(dm) <- 12.3, "implemented for")
+})
+
+test_that("extractByIndex not implemented fallback", {
+    ## Backends that don't implement a dedicated `extractByIndex` method should
+    ## fall back to the [ method.
+    setClass("DummyBackend",
+             contains = "MsBackend",
+             slots = c(d = "integer"))
+    dm <- new("DummyBackend")
+    expect_error(extractByIndex(dm, 1L), " not implemented")
+
+    dm@d <- 1:4
+
+    ## Have an implementation for [ but not extractByIndex:
+    setMethod("[", "DummyBackend", function(x, i, j, ..., drop = FALSE) {
+        x@d <- x@d[i]
+        x
+    })
+
+    res <- dm[c(3, 1)]
+    expect_equal(res@d, c(3L, 1L))
+
+    res <- extractByIndex(dm, c(3, 1))
+    expect_equal(res@d, c(3L, 1L))
 })
 
 test_that("reset,MsBackend works", {
@@ -80,4 +107,27 @@ test_that("dataStorageBasePath,MsExperiment works", {
     expect_identical(dataStorageBasePath(MsBackendMemory()), NA_character_)
     tmp <- MsBackendMemory()
     expect_warning(dataStorageBasePath(tmp) <- "/", "not support")
+})
+
+test_that("longForm,MsBackend works with MsBackendMzR", {
+    res <- longForm(sciex_mzr)
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), spectraVariables(sciex_mzr))
+    expect_equal(nrow(res), sum(lengths(sciex_mzr)))
+
+    res_2 <- longForm(sciex_mzr, c("msLevel", "rtime", "intensity"))
+    expect_true(is.data.frame(res_2))
+    expect_equal(colnames(res_2), c("msLevel", "rtime", "intensity"))
+    expect_equal(res$intensity, res_2$intensity)
+
+    expect_error(longForm(sciex_mzr, c(spectraVariables(sciex_mzr), "aaaa")),
+                 "not available")
+})
+
+test_that("spectraVariableMapping,MsBackend", {
+    setClass("DummyBackend",
+             contains = "MsBackend")
+    dm <- new("DummyBackend")
+    expect_error(spectraVariableMapping(dm), "not supported")
+    expect_error(spectraVariableMapping(dm) <- 43, "not supported")
 })

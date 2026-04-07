@@ -122,6 +122,12 @@ setMethod("backendMerge", "MsBackendMemory", function(object, ...) {
     res
 })
 
+#' @rdname hidden_aliases
+setMethod("backendRequiredSpectraVariables", "MsBackendMemory",
+          function(object, ...) {
+              "dataStorage"
+          })
+
 ## Data accessors
 
 #' @rdname hidden_aliases
@@ -193,6 +199,18 @@ setReplaceMethod("dataStorage", "MsBackendMemory", function(object, value) {
 })
 
 #' @rdname hidden_aliases
+setMethod("extractByIndex", c("MsBackendMemory", "ANY"), function(object, i) {
+    slot(object, "spectraData", check = FALSE) <-
+        object@spectraData[i, , drop = FALSE]
+    if (length(object@peaksData))
+        slot(object, "peaksData", check = FALSE) <- object@peaksData[i]
+    if (length(object@peaksDataFrame))
+        slot(object, "peaksDataFrame", check = FALSE) <-
+            object@peaksDataFrame[i]
+    object
+})
+
+#' @rdname hidden_aliases
 setMethod("intensity", "MsBackendMemory", function(object) {
     if (length(object)) {
         NumericList(.df_pdata_column(object@peaksData, "intensity"),
@@ -230,11 +248,6 @@ setReplaceMethod("intensity", "MsBackendMemory", function(object, value) {
 #' @importFrom MsCoreUtils vapply1d
 setMethod("ionCount", "MsBackendMemory", function(object) {
     vapply1d(intensity(object), sum, na.rm = TRUE)
-})
-
-#' @rdname hidden_aliases
-setMethod("isEmpty", "MsBackendMemory", function(x) {
-    lengths(intensity(x)) == 0
 })
 
 #' @rdname hidden_aliases
@@ -291,13 +304,6 @@ setReplaceMethod("isolationWindowUpperMz", "MsBackendMemory",
 #' @rdname hidden_aliases
 setMethod("length", "MsBackendMemory", function(x) {
     nrow(x@spectraData)
-})
-
-#' @rdname hidden_aliases
-setMethod("lengths", "MsBackendMemory", function(x, use.names = FALSE) {
-    if (length(x))
-        as.integer(lengths(x@peaksData) / ncol(x@peaksData[[1L]]))
-    else integer()
 })
 
 #' @rdname hidden_aliases
@@ -502,7 +508,8 @@ setMethod("selectSpectraVariables", "MsBackendMemory",
                                   z[, keep, drop = FALSE])
                   }
               }
-              msg <- .valid_spectra_data_required_columns(object@spectraData)
+              msg <- .valid_spectra_data_required_columns(
+                  object@spectraData, backendRequiredSpectraVariables(object))
               if (length(msg))
                   stop(msg)
               validObject(object)
@@ -651,6 +658,26 @@ setMethod("[", "MsBackendMemory", function(x, i, j, ..., drop = FALSE) {
     .df_subset(x, i)
 })
 
+#' @importMethodsFrom methods cbind2
+#'
+#' @rdname hidden_aliases
+setMethod("cbind2", signature = c("MsBackendMemory",
+                                  "dataframeOrDataFrameOrmatrix"),
+          function(x, y = data.frame(), ...) {
+              if (is(y, "matrix"))
+                  y <- as.data.frame(y)
+              if (any(spectraVariables(x) %in% colnames(y)))
+                  stop("spectra variables in 'y' are already present in 'x' ",
+                       "replacing them is not allowed")
+
+              if (nrow(y) != length(x))
+                  stop("Number of row in'y' does not match the number of ",
+                       "spectra in 'x'")
+              x@spectraData <- cbind(x@spectraData, y)
+              validObject(x)
+              x
+          })
+
 #' @rdname hidden_aliases
 setMethod("split", "MsBackendMemory", function(x, f, drop = FALSE, ...) {
     if (!is.factor(f))
@@ -669,3 +696,17 @@ setMethod("filterAcquisitionNum", "MsBackendMemory",
     sel_acq <- acquisitionNum(object) %in% n & sel_file
     object[sel_acq | !sel_file]
 })
+
+#' @rdname hidden_aliases
+setMethod(
+    "longForm", "MsBackendMemory",
+    function(object, columns = spectraVariables(object)) {
+        if (!all(columns %in% spectraVariables(object)))
+            stop("Some of the requested columns are not available")
+        pv <- intersect(columns, peaksVariables(object))
+        if (!length(pv))
+            .df_spectra_data(object, columns)
+        else .long_spectra_data3(
+                 .df_spectra_data(object, setdiff(columns, pv)),
+                 peaksData(object, pv), pv)
+    })

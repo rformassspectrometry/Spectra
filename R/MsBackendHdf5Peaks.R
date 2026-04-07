@@ -26,8 +26,8 @@ setClass("MsBackendHdf5Peaks",
          prototype = prototype(version = "0.1", readonly = FALSE))
 
 setValidity("MsBackendHdf5Peaks", function(object) {
-    msg <- .valid_spectra_data_required_columns(object@spectraData,
-                                                c("dataStorage", "scanIndex"))
+    msg <- .valid_spectra_data_required_columns(
+        object@spectraData, backendRequiredSpectraVariables(object))
     fls <- unique(object@spectraData$dataStorage)
     msg <- c(msg, .valid_ms_backend_mod_count(object@modCount, fls))
     msg <- c(msg, .valid_ms_backend_files_exist(fls))
@@ -35,6 +35,12 @@ setValidity("MsBackendHdf5Peaks", function(object) {
     if (is.null(msg)) TRUE
     else msg
 })
+
+#' @rdname hidden_aliases
+setMethod("backendRequiredSpectraVariables", "MsBackendHdf5Peaks",
+          function(object, ...) {
+              c("dataStorage", "scanIndex")
+          })
 
 #' @rdname hidden_aliases
 #'
@@ -177,16 +183,6 @@ setMethod("isCentroided", "MsBackendHdf5Peaks", function(object, ...) {
 })
 
 #' @rdname hidden_aliases
-setMethod("isEmpty", "MsBackendHdf5Peaks", function(x) {
-    lengths(x) == 0
-})
-
-#' @rdname hidden_aliases
-setMethod("lengths", "MsBackendHdf5Peaks", function(x, use.names = FALSE) {
-    as.integer(lengths(peaksData(x)) / 2L)
-})
-
-#' @rdname hidden_aliases
 setMethod("mz", "MsBackendHdf5Peaks", function(object) {
     NumericList(lapply(peaksData(object), "[", , 1), compress = FALSE)
 })
@@ -289,6 +285,20 @@ setMethod("[", "MsBackendHdf5Peaks", function(x, i, j, ..., drop = FALSE) {
     slot(x, "modCount", check = FALSE) <-
         x@modCount[match(unique(x@spectraData$dataStorage), fls)]
     x
+})
+
+#' @rdname hidden_aliases
+#'
+#' @aliases [,MsBackendHdf5Peaks-method
+setMethod("extractByIndex", c("MsBackendHdf5Peaks", "ANY"),
+          function(object, i) {
+              fls <- unique(object@spectraData$dataStorage)
+              slot(object, "spectraData", check = FALSE) <-
+                  extractROWS(object@spectraData, i)
+              slot(object, "modCount", check = FALSE) <-
+                  object@modCount[match(
+                             unique(object@spectraData$dataStorage), fls)]
+              object
 })
 
 #' @rdname hidden_aliases

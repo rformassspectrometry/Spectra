@@ -43,7 +43,7 @@ NULL
                                          colnames(spectraData))
         for (i in seq_along(x)) {
             if (ls)
-                args <- as.list(spectraData[i, ])
+                args <- as.list(spectraData[i, , drop = FALSE])
             for (pStep in queue) {
                 x[[i]] <- do.call(pStep@FUN, args = c(x[i], args, pStep@ARGS))
             }
@@ -63,7 +63,13 @@ NULL
 #' @description
 #'
 #' This function applies the processing queue and an arbitrary function to
-#' the peaks matrix of each spectrum of the `Spectra` object `object`.
+#' the peaks matrix of each spectrum of the `Spectra` object `object`. It has
+#' build-in parallel and/or chunk-wise processing enabled through parameter
+#' `f`, that allows to define how the `Spectra` (or rather its backend) needs
+#' to be splitted. The default `f = .parallel_processing_factor(object)` splits
+#' the backend by chunk (if a finite chunk size is defined for the `Spectra`)
+#' or by it's optimal parallel processing factor. See the description of
+#' the `.parallel_processing_factor()` function below for information.
 #'
 #' @param object `Spectra` object.
 #'
@@ -78,7 +84,8 @@ NULL
 #'
 #' @param f `factor` or `vector` that can be coerced to one defining how the
 #'     data should be split for parallel processing. Set to `NULL` or
-#'     `factor()` to disable splitting and parallel processing.
+#'     `factor()` to disable splitting and parallel processing. See function
+#'     description above for details and information.
 #'
 #' @param columns `character` defining the columns that should be returned.
 #'     This will be passed to the backend's `peaksData` function.
@@ -143,9 +150,9 @@ NULL
             columns <- union(c("mz", "intensity"), columns)
             pqueue <- c(
                 pqueue, ProcessingStep(
-                            FUN = function(x, scols, ...) {
-                                x[, scols, drop = FALSE]
-                            }, ARGS = list(scols = scols)))
+                    FUN = function(x, scols, ...) {
+                        x[, scols, drop = FALSE]
+                    }, ARGS = list(scols = scols)))
         }
         .local <- function(z, queue, svars) {
             if (length(svars))
@@ -191,7 +198,8 @@ NULL
 #' @param ... Additional parameters for `FUN`.
 #'
 #' @param BPPARAM Optional settings for `BiocParallel`-based parallel
-#'     processing. See [bpparam()] for more informations and options.
+#'     processing. See [BiocParallel::bpparam()] for more informations and
+#'     options.
 #'
 #' @return A `list` with the result of `FUN`.
 #'
@@ -203,58 +211,6 @@ NULL
 .lapply <- function(x, FUN, f = as.factor(dataStorage(x)), ...,
                     BPPARAM = SerialParam()) {
     bplapply(split(x, f), FUN = FUN, ..., BPPARAM = BPPARAM)
-}
-
-#' @export applyProcessing
-#'
-#' @rdname Spectra
-applyProcessing <- function(object, f = processingChunkFactor(object),
-                            BPPARAM = bpparam(), ...) {
-    queue <- object@processingQueue
-    if (!length(queue))
-        return(object)
-    if (isReadOnly(object@backend))
-        stop(class(object@backend), " is read-only. 'applyProcessing' works ",
-             "only with backends that support writing data.")
-    BPPARAM <- backendBpparam(object@backend, BPPARAM)
-    svars <- .processingQueueVariables(object)
-    pv <- peaksVariables(object)
-    if (length(f)) {
-        if (!is.factor(f))
-            f <- factor(f, levels = unique(f))
-        if (length(f) != length(object))
-            stop("length 'f' has to be equal to the length of 'object' (",
-                 length(object), ")")
-        bknds <- bplapply(
-            split(object@backend, f = f), function(z, queue, pv, svars) {
-                if (length(svars))
-                    spd <- as.data.frame(spectraData(z, columns = svars))
-                else spd <- NULL
-                peaksData(z) <- .apply_processing_queue(
-                    peaksData(z, columns = pv), spd, queue)
-                z
-            }, queue = queue, pv = pv, svars = svars, BPPARAM = BPPARAM)
-        bknds <- backendMerge(bknds)
-        if (is.unsorted(f))
-            bknds <- bknds[order(unlist(split(seq_along(bknds), f),
-                                        use.names = FALSE))]
-        object@backend <- bknds
-    } else {
-        if (length(svars))
-            spd <- as.data.frame(spectraData(object@backend, columns = svars))
-        else spd <- NULL
-        peaksData(object@backend) <- .apply_processing_queue(
-            peaksData(object@backend, columns = pv), spd, queue)
-    }
-    object@processing <- .logging(object@processing,
-                                  "Applied processing queue with ",
-                                  length(object@processingQueue),
-                                  " steps")
-    object@processingQueue <- list()
-    if (!.hasSlot(object, "processingQueueVariables"))
-        object <- updateObject(object, check = FALSE)
-    object@processingQueueVariables <- character()
-    object
 }
 
 #' @description
@@ -294,6 +250,13 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
 #' and, especially for `ppm`, the maximal accepted difference depend thus on
 #' the m/z values from the second spectrum.
 #'
+#' For `matchedPeaksCount = TRUE` it is expected that the similarity function
+#' used also supports this parameter and returns a `numeric(2)` with the first
+#' element being the similarity score and the second the number of matched
+#' peaks (i.e., the number of peak pairs on which the score was calculated).
+#' All similarity functions from *MsCoreUtils* version >= 1.23.3 (such as
+#' `ndotproduct()` or `gnps()`) support this parameter.
+#'
 #' @param x [Spectra()]
 #'
 #' @param y [Spectra()]
@@ -315,19 +278,24 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
 #'     `chunkSize` will result in faster processing, small `chunkSize` in
 #'     lower memory demand. Defaults to `chunkSize = 10000`.
 #'
+#' @param matchedPeaksCount `logical(1)` whether the number of matched peaks
+#'     between the compared spectra should also be reported. These will be
+#'     reported in `[, , 2]` of the returned `array`.
+#'
 #' @param ... additional parameters passed to `FUN` and `MAPFUN`.
 #'
 #' @return
 #'
 #' `matrix` with number of rows equal to length of `x` and number of columns
-#' equal `length(y)`.
+#' equal `length(y)`. If `matchedPeaksCount = TRUE` a 3 dimensional `array`
+#' will be returned with the matched peaks count reported in `[, , 2]`.
 #'
 #' @importFrom stats cor
 #'
 #' @examples
 #'
 #' library(Spectra)
-#' fl <- system.file("TripleTOF-SWATH/PestMix1_SWATH.mzML", package = "msdata")
+#' fl <- MsDataHub::PestMix1_SWATH.mzML()
 #' sps <- Spectra(fl, source = MsBackendMzR())
 #'
 #' sps <- sps[1:10]
@@ -341,9 +309,22 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
                                    tolerance = 0, ppm = 20,
                                    FUN = ndotproduct,
                                    chunkSize = 10000, ...,
+                                   matchedPeaksCount = FALSE,
                                    BPPARAM = bpparam()) {
     nx <- length(x)
     ny <- length(y)
+    if (matchedPeaksCount) {
+        compare_fun <- .peaks_compare_npeaks
+        dn <- list(spectraNames(x), spectraNames(y),
+                   c("score", "matched_peaks_count"))
+        dims <- c(nx, ny, 2L)
+        z_chunk <- 1:2
+    } else {
+        compare_fun <- .peaks_compare
+        dn <- list(spectraNames(x), spectraNames(y))
+        dims <- c(nx, ny, 1L)
+        z_chunk <- 1L
+    }
     bppx <- backendBpparam(x@backend, BPPARAM)
     if (is(bppx, "SerialParam"))
         fx <- NULL
@@ -355,13 +336,13 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
     else fy <- backendParallelFactor(y@backend)
     pqvy <- .processingQueueVariables(y)
     if (nx <= chunkSize && ny <= chunkSize) {
-        mat <- .peaks_compare(
+        mat <- compare_fun(
             .peaksapply(x, f = fx, spectraVariables = pqvx, BPPARAM = bppx),
             .peaksapply(y, f = fy, spectraVariables = pqvy, BPPARAM = bppy),
             MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
             FUN = FUN, xPrecursorMz = precursorMz(x),
             yPrecursorMz = precursorMz(y), ...)
-        dimnames(mat) <- list(spectraNames(x), spectraNames(y))
+        dimnames(mat) <- dn
         return(mat)
     }
 
@@ -373,8 +354,7 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
     y_chunks <- split(y_idx, ceiling(y_idx / chunkSize))
     rm(y_idx)
 
-    mat <- matrix(NA_real_, nrow = nx, ncol = ny,
-                  dimnames = list(spectraNames(x), spectraNames(y)))
+    mat <- array(NA_real_, dim = dims, dimnames = dn)
     for (x_chunk in x_chunks) {
         x_buff <- x[x_chunk]
         if (length(fx))
@@ -387,7 +367,7 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
             if (length(fy))
                 fyc <- backendParallelFactor(y_buff@backend)
             else fyc <- NULL
-            mat[x_chunk, y_chunk] <- .peaks_compare(
+            mat[x_chunk, y_chunk, z_chunk] <- compare_fun(
                 x_peaks, .peaksapply(y_buff, f = fyc, spectraVariables = pqvy,
                                      BPPARAM = bppy),
                 MAPFUN = MAPFUN, tolerance = tolerance, ppm = ppm,
@@ -395,7 +375,9 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
                 yPrecursorMz = precursorMz(y_buff), ...)
         }
     }
-    mat
+    if (matchedPeaksCount)
+        mat
+    else as.matrix(mat[, , 1L])
 }
 
 #' @description
@@ -417,13 +399,23 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
 #'
 #' @noRd
 .compare_spectra_self <- function(x, MAPFUN = joinPeaks, tolerance = 0,
-                                  ppm = 20, FUN = ndotproduct, ...) {
+                                  ppm = 20, FUN = ndotproduct,
+                                  matchedPeaksCount = FALSE, ...) {
     nx <- length(x)
-    m <- matrix(NA_real_, nrow = nx, ncol = nx,
-                  dimnames = list(spectraNames(x), spectraNames(x)))
+    if (matchedPeaksCount) {
+        dn <- list(spectraNames(x), spectraNames(x),
+                   c("score", "matched_peaks_count"))
+        dims <- c(nx, nx, 2L)
+        z_chunk <- 1:2
+    } else {
+        dn <- list(spectraNames(x), spectraNames(x))
+        dims <- c(nx, nx, 1L)
+        z_chunk <- 1L
+    }
+    m <- array(NA_real_, dim = dims, dimnames = dn)
 
     sv <- .processingQueueVariables(x)
-    cb <- which(lower.tri(m, diag = TRUE), arr.ind = TRUE)
+    cb <- which(lower.tri(matrix(NA, nx, nx), diag = TRUE), arr.ind = TRUE)
     pmz <- precursorMz(x)
     bpp <- SerialParam()
     for (i in seq_len(nrow(cb))) {
@@ -440,11 +432,15 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
         map <- MAPFUN(px, py, tolerance = tolerance, ppm = ppm,
                       xPrecursorMz = pmzx, yPrecursorMz = pmzy,
                       .check = FALSE,...)
-        m[cb[i, 1L], cur] <- m[cur, cb[i, 1L]] <-
-            FUN(map[[1L]], map[[2L]], xPrecursorMz = pmzx,
-                yPrecursorMz = pmzy, ppm = ppm, tolerance = tolerance, ...)
+        res <- FUN(map[[1L]], map[[2L]], xPrecursorMz = pmzx,
+                   yPrecursorMz = pmzy, ppm = ppm, tolerance = tolerance,
+                   matchedPeaksCount = matchedPeaksCount, ...)
+        m[cb[i, 1L], cur, seq_along(res)] <-
+            m[cur, cb[i, 1L], seq_along(res)] <- res
     }
-    m
+    if (matchedPeaksCount)
+        m
+    else as.matrix(m[, , 1L])
 }
 
 #' @description
@@ -538,14 +534,14 @@ applyProcessing <- function(object, f = processingChunkFactor(object),
 
 #' @export concatenateSpectra
 #'
-#' @rdname Spectra
+#' @rdname combineSpectra
 concatenateSpectra <- function(x, ...) {
     .concatenate_spectra(unlist(unname(list(unname(x), ...))))
 }
 
 #' @export combineSpectra
 #'
-#' @rdname Spectra
+#' @rdname combineSpectra
 combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
                            FUN = combinePeaksData, ..., BPPARAM = bpparam()) {
     if (!is.factor(f))
@@ -570,39 +566,8 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
 
 #' @description
 #'
-#' Internal function to check if any (or all) of the provided `mz` values are
-#' in the spectras' m/z.
-#'
-#' @param x `Spectra` object
-#'
-#' @param mz `numeric` of m/z value(s) to check in each spectrum of `x`.
-#'
-#' @param tolarance `numeric(1)` with the tolerance.
-#'
-#' @param ppm `numeric(1)` with the ppm.
-#'
-#' @param condFun `function` such as `any` or `all`.
-#'
-#' @param parallel `BiocParallel` parameter object.
-#'
-#' @return `logical` same length than `x`.
-#'
-#' @author Johannes Rainer
-#'
-#' @importFrom MsCoreUtils common
-#'
-#' @noRd
-.has_mz <- function(x, mz = numeric(), tolerance = 0, ppm = 20, condFun = any,
-                    parallel = SerialParam()) {
-    mzs <- mz(x, BPPARAM = parallel)
-    vapply(mzs, FUN = function(z)
-        condFun(common(mz, z, tolerance = tolerance, ppm = ppm)), logical(1))
-}
-
-#' @description
-#'
-#' Same as `.has_mz` only that a different `mz` is used for each spectrum in
-#' `x`. Length of `mz` is thus expected to be equal to length of `x`.
+#' Check for presence of an m/z value in each spectrum. Each spectrum gets
+#' its own m/z.
 #'
 #' @param mz `numeric` **same length as `x`**.
 #'
@@ -622,7 +587,7 @@ combineSpectra <- function(x, f = x$dataStorage, p = x$dataStorage,
 
 #' @export joinSpectraData
 #'
-#' @rdname Spectra
+#' @rdname combineSpectra
 joinSpectraData <- function(x, y,
                             by.x = "spectrumId",
                             by.y,
@@ -685,7 +650,7 @@ joinSpectraData <- function(x, y,
 
 #' @export
 #'
-#' @rdname Spectra
+#' @rdname addProcessing
 processingLog <- function(x) {
     x@processing
 }
@@ -831,9 +796,7 @@ chunkapply <- function(x, FUN, ..., chunkSize = 1000L, chunks = factor()) {
     as.factor(rep(1:ceiling(len / chunkSize), each = chunkSize)[seq_len(len)])
 }
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf, Johannes Rainer
+#' @rdname filterMsLevel
 #'
 #' @export
 deisotopeSpectra <-
@@ -845,9 +808,7 @@ deisotopeSpectra <-
                       substDefinition = im, charge = charge)
     }
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf, Johannes Rainer
+#' @rdname filterMsLevel
 #'
 #' @export
 reduceSpectra <- function(x, tolerance = 0, ppm = 20) {
@@ -856,9 +817,7 @@ reduceSpectra <- function(x, tolerance = 0, ppm = 20) {
     addProcessing(x, .peaks_reduce, tolerance = tolerance, ppm = ppm)
 }
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf
+#' @rdname filterMsLevel
 #'
 #' @export
 filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 20) {
@@ -891,9 +850,7 @@ filterPrecursorMaxIntensity <- function(x, tolerance = 0, ppm = 20) {
     x
 }
 
-#' @rdname Spectra
-#'
-#' @author Nir Shahaf
+#' @rdname filterMsLevel
 #'
 #' @export
 filterPrecursorIsotopes <-
@@ -926,9 +883,7 @@ filterPrecursorIsotopes <-
         x
 }
 
-#' @rdname Spectra
-#'
-#' @author Johannes Rainer
+#' @rdname addProcessing
 #'
 #' @export
 scalePeaks <- function(x, by = sum, msLevel. = uniqueMsLevels(x)) {
@@ -941,7 +896,7 @@ scalePeaks <- function(x, by = sum, msLevel. = uniqueMsLevels(x)) {
     x
 }
 
-#' @rdname Spectra
+#' @rdname filterMsLevel
 #'
 #' @export
 filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
@@ -992,6 +947,11 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
 #'   per file parallel processing if `f` or `chunkSize` is not defined.
 #'   Other on-disk backends: only if requested by the user.
 #'
+#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
+#'     for more information.
+#'
+#' @param object `Spectra` object.
+#'
 #' @param x `Spectra` object.
 #'
 #' @param chunkSize `integer` defining the size of chunks into which `x` should
@@ -1010,102 +970,6 @@ filterPrecursorPeaks <- function(object, tolerance = 0, ppm = 20,
     else backendParallelFactor(x@backend)
 }
 
-#' @title Parallel and chunk-wise processing of `Spectra`
-#'
-#' @description
-#'
-#' Many operations on `Spectra` objects, specifically those working with
-#' the actual MS data (peaks data), allow a chunk-wise processing in which
-#' the `Spectra` is splitted into smaller parts (chunks) that are
-#' iteratively processed. This enables parallel processing of the data (by
-#' data chunk) and also reduces the memory demand  since only the MS data
-#' of the currently processed subset is loaded into memory and processed.
-#' This chunk-wise processing, which is by default disabled, can be enabled
-#' by setting the processing chunk size of a `Spectra` with the
-#' `processingChunkSize()` function to a value which is smaller than the
-#' length of the `Spectra` object. Setting `processingChunkSize(sps) <- 1000`
-#' will cause any data manipulation operation on the `sps`, such as
-#' `filterIntensity()` or `bin()`, to be performed eventually in parallel for
-#' sets of 1000 spectra in each iteration.
-#'
-#' Such chunk-wise processing is specifically useful for `Spectra` objects
-#' using an *on-disk* backend or for very large experiments. For small data
-#' sets or `Spectra` using an in-memory backend, a direct processing might
-#' however be more efficient. Setting the chunk size to `Inf` will disable
-#' the chunk-wise processing.
-#'
-#' For some backends a certain type of splitting and chunk-wise processing
-#' might be preferable. The `MsBackendMzR` backend for example needs to load
-#' the MS data from the original (mzML) files, hence chunk-wise processing
-#' on a per-file basis would be ideal. The [backendParallelFactor()] function
-#' for `MsBackend` allows backends to suggest a preferred splitting of the
-#' data by returning a `factor` defining the respective data chunks. The
-#' `MsBackendMzR` returns for example a `factor` based on the *dataStorage*
-#' spectra variable. A `factor` of length 0 is returned if no particular
-#' preferred splitting should be performed. The suggested chunk definition
-#' will be used if no finite `processingChunkSize()` is defined. Setting
-#' the `processingChunkSize` overrides `backendParallelFactor`.
-#'
-#' See the *Large-scale data handling and processing with Spectra* for more
-#' information and examples.
-#'
-#' Functions to configure parallel or chunk-wise processing:
-#'
-#' - `processingChunkSize()`: allows to get or set the size of the chunks for
-#'   parallel processing or chunk-wise processing of a `Spectra` in general.
-#'   With a value of `Inf` (the default) no chunk-wise processing will be
-#'   performed.
-#'
-#' - `processingChunkFactor()`: returns a `factor` defining the chunks into
-#'   which a `Spectra` will be split for chunk-wise (parallel) processing.
-#'   A `factor` of length 0 indicates that no chunk-wise processing will be
-#'   performed.
-#'
-#' @note
-#'
-#' Some backends might not support parallel processing at all.
-#' For these, the `backendBpparam()` function will always return a
-#' `SerialParam()` independently on how parallel processing was defined.
-#'
-#' @param x `Spectra`.
-#'
-#' @param value `integer(1)` defining the chunk size.
-#'
-#' @return `processingChunkSize()` returns the currently defined processing
-#'     chunk size (or `Inf` if it is not defined). `processingChunkFactor()`
-#'     returns a `factor` defining the chunks into which `x` will be split
-#'     for (parallel) chunk-wise processing or a `factor` of length 0 if
-#'     no splitting is defined.
-#'
-#' @author Johannes Rainer
-#'
-#' @export
-processingChunkSize <- function(x) {
-    if (.hasSlot(x, "processingChunkSize"))
-        x@processingChunkSize
-    else Inf
-}
-
-#' @rdname processingChunkSize
-#'
-#' @export
-`processingChunkSize<-` <- function(x, value) {
-    if (length(value) != 1L)
-        stop("'value' has to be of length 1")
-    if (!.hasSlot(x, "processingChunkSize"))
-        x <- updateObject(x)
-    x@processingChunkSize <- value
-    x
-}
-
-#' @rdname processingChunkSize
-#'
-#' @export
-processingChunkFactor <- function(x) {
-    if (!inherits(x, "Spectra"))
-        stop("'x' is supposed to be a 'Spectra' object")
-    .parallel_processing_factor(x)
-}
 
 #' @title Filter peaks based on spectra and peaks variable ranges
 #'
@@ -1290,5 +1154,131 @@ filterPeaksRanges <- function(object, ..., keep = TRUE) {
     object@processing <- .logging(
         object@processing, "Filter: ", keep_or_remove, " peaks based on ",
         "user-provided ranges for ", length(variables), " variables")
+    object
+}
+
+#' @title Mass fragmentation collections of each full scan
+#'
+#' @description
+#'
+#' This function generates an `integer` index grouping MS^n spectra
+#' (MS level > 1) with their corresponding MS1 spectra based on acquisition
+#' order. Each group contains exactly one MS1 spectrum and all subsequent
+#' higher-level spectra (MS2, MS3, ...) acquired until the next MS1 scan.
+#' MS1-only spectra are also assigned sequential group IDs.
+#'
+#' Note that this function:
+#'
+#' - does not consider the direct relationship between a precursor scan and
+#'   the associated product scans,
+#' - and does not distinguish between different fragmentation trees.
+#'
+#' For example, all MS3 scans measured after a given MS1 are grouped together
+#' with all MS2 scans from that MS1, regardless of which MS2 spectrum they
+#' originated from. See [filterPrecursorScan()] for a function that considers
+#' relationships between fragment and precursor scans.
+#'
+#' @param object A `Spectra` object (from the **Spectra** package) containing
+#'               MS data. Must include at least two MS levels (`msLevel`) and
+#'               be ordered by `acquisitionNum` within each `dataOrigin`.
+#'
+#' @param BPPARAM A `BiocParallelParam` object for parallel execution.
+#'                Defaults to `SerialParam()`.
+#'
+#' @return
+#'
+#' An `integer` vector of the same length as `object`.
+#' Each element gives the group index associated with the corresponding
+#' spectrum (MS1 or MS^n). Group indices are unique across all files
+#' (`dataOrigin` values).
+#'
+#' @note
+#'
+#' - Each file (`dataOrigin`) must contain at least one MS1 spectrum.
+#' - If a group contains only MS1 spectra, each MS1 is assigned a unique group
+#'   ID.
+#' - The user is responsible for ensuring that spectra are correctly ordered.
+#'   Improper ordering may lead to incorrect groupings.
+#'
+#' @author Philippine Louail
+#'
+#' @importFrom BiocParallel bplapply
+#'
+#' @export
+#'
+#' @seealso [`filterPrecursorScan()`] for a function that instead returns a
+#' `Spectra` object containing each parent (e.g., MS1) and its direct child
+#' scans (e.g., MS2) according to their acquisition numbers.
+#'
+#' @examples
+#'
+#' fl <- MsDataHub::PestMix1_DDA.mzML()
+#' sps_dda <- Spectra(fl)
+#' idx <- fragmentGroupIndex(sps_dda)
+#' head(idx)
+fragmentGroupIndex <- function(object, BPPARAM = SerialParam()) {
+    if (!inherits(object, "Spectra"))
+        stop("'object' is expected to be a 'Spectra' object.")
+
+    ms_levels <- unique(object$msLevel)
+    if (length(ms_levels) < 2)
+        stop("Spectra must contain at least two MS levels.")
+
+    f <- dataOrigin(object)
+    f <- factor(f, levels = unique(f))
+    group_factors <- bplapply(split(object, f), FUN = function(sp_chunk) {
+        if (is.unsorted(sp_chunk$acquisitionNum))
+            stop("Spectra within each dataOrigin must be ordered by ",
+                 "'acquisitionNum'.")
+        ## need to check if the first spectrum is ms1 level
+
+        is_fragment <- sp_chunk$msLevel != 1
+        frag_indices <- which(is_fragment)
+        ms1_indices  <- which(!is_fragment)
+        if (length(ms1_indices) == 0)
+            stop("A file (dataOrigin group) contains no MS1 spectra. ",
+                 "This is invalid.")
+
+        if (ms1_indices[1] != 1L)
+            stop("The first spectrum of a file has to be of level 1L.")
+
+        if (length(frag_indices) == 0)
+            return(seq_len(length(sp_chunk)))
+        # Assign group IDs
+        group_ids <- integer(length(sp_chunk))
+        group_ids[ms1_indices] <- seq_along(ms1_indices)
+        group_ids[frag_indices] <- group_ids[
+            ms1_indices[findInterval(frag_indices, ms1_indices)]
+        ]
+
+        return(group_ids)
+    }, BPPARAM = BPPARAM)
+
+    max_vals <- c(0L, cumsum(vapply(group_factors, max, NA_integer_)))
+    unname(unlist(group_factors, use.names = FALSE) + max_vals[as.integer(f)])
+}
+
+#' @rdname addProcessing
+#'
+#' @export
+shiftPeaks <- function(object, offset = 0.0, ...) {
+    if (!inherits(object, "Spectra"))
+        stop("'object' should be a Spectra object")
+    if (length(offset) != 1L)
+        stop("'offset' has to be a single value")
+    ## support `offset` being a `numeric(1)` or the name of a spectra variable
+    if (!is.numeric(offset)) {
+        if (!offset %in% spectraVariables(object))
+            stop("No spectra variable \"", offset, "\" in 'object'")
+        fun <- .peaks_shift_mz_variable
+        sv <- offset
+    } else {
+        sv <- character()
+        fun <- .peaks_shift_mz
+    }
+    object <- addProcessing(object, FUN = fun, offset = offset,
+                            spectraVariables = sv)
+    object@processing <- .logging(
+        object@processing, "Shift peaks by ", offset)
     object
 }

@@ -5,6 +5,7 @@
 \alias{MsBackendCached-class}
 \alias{backendInitialize,MsBackendCached-method}
 \alias{dataStorage,MsBackendCached-method}
+\alias{extractByIndex,MsBackendCached,ANY-method}
 \alias{length,MsBackendCached-method}
 \alias{spectraVariables,MsBackendCached-method}
 \alias{spectraData,MsBackendCached-method}
@@ -14,35 +15,9 @@
 \alias{$<-,MsBackendCached-method}
 \alias{selectSpectraVariables,MsBackendCached-method}
 \alias{show,MsBackendCached-method}
-\alias{acquisitionNum,MsBackendCached-method}
-\alias{centroided,MsBackendCached-method}
-\alias{centroided<-,MsBackendCached-method}
-\alias{collisionEnergy,MsBackendCached-method}
-\alias{collisionEnergy<-,MsBackendCached-method}
-\alias{dataOrigin,MsBackendCached-method}
-\alias{dataOrigin<-,MsBackendCached-method}
-\alias{msLevel,MsBackendCached-method}
 \alias{intensity,MsBackendCached-method}
 \alias{ionCount,MsBackendCached-method}
-\alias{isEmpty,MsBackendCached-method}
-\alias{isolationWindowLowerMz,MsBackendCached-method}
-\alias{isolationWindowLowerMz<-,MsBackendCached-method}
-\alias{isolationWindowTargetMz,MsBackendCached-method}
-\alias{isolationWindowTargetMz<-,MsBackendCached-method}
-\alias{isolationWindowUpperMz,MsBackendCached-method}
-\alias{isolationWindowUpperMz<-,MsBackendCached-method}
-\alias{lengths,MsBackendCached-method}
 \alias{mz,MsBackendCached-method}
-\alias{polarity,MsBackendCached-method}
-\alias{polarity<-,MsBackendCached-method}
-\alias{precursorCharge,MsBackendCached-method}
-\alias{precursorIntensity,MsBackendCached-method}
-\alias{precursorMz,MsBackendCached-method}
-\alias{rtime,MsBackendCached-method}
-\alias{rtime<-,MsBackendCached-method}
-\alias{scanIndex,MsBackendCached-method}
-\alias{smoothed,MsBackendCached-method}
-\alias{smoothed<-,MsBackendCached-method}
 \title{Base MsBackend class providing data caching mechanism}
 \usage{
 MsBackendCached()
@@ -56,6 +31,8 @@ MsBackendCached()
 )
 
 \S4method{dataStorage}{MsBackendCached}(object)
+
+\S4method{extractByIndex}{MsBackendCached,ANY}(object, i)
 
 \S4method{length}{MsBackendCached}(x)
 
@@ -75,63 +52,11 @@ MsBackendCached()
 
 \S4method{show}{MsBackendCached}(object)
 
-\S4method{acquisitionNum}{MsBackendCached}(object)
-
-\S4method{centroided}{MsBackendCached}(object)
-
-\S4method{centroided}{MsBackendCached}(object) <- value
-
-\S4method{collisionEnergy}{MsBackendCached}(object)
-
-\S4method{collisionEnergy}{MsBackendCached}(object) <- value
-
-\S4method{dataOrigin}{MsBackendCached}(object)
-
-\S4method{dataOrigin}{MsBackendCached}(object) <- value
-
-\S4method{msLevel}{MsBackendCached}(object)
-
 \S4method{intensity}{MsBackendCached}(object)
 
 \S4method{ionCount}{MsBackendCached}(object)
 
-\S4method{isEmpty}{MsBackendCached}(x)
-
-\S4method{isolationWindowLowerMz}{MsBackendCached}(object)
-
-\S4method{isolationWindowLowerMz}{MsBackendCached}(object) <- value
-
-\S4method{isolationWindowTargetMz}{MsBackendCached}(object)
-
-\S4method{isolationWindowTargetMz}{MsBackendCached}(object) <- value
-
-\S4method{isolationWindowUpperMz}{MsBackendCached}(object)
-
-\S4method{isolationWindowUpperMz}{MsBackendCached}(object) <- value
-
-\S4method{lengths}{MsBackendCached}(x, use.names = FALSE)
-
 \S4method{mz}{MsBackendCached}(object)
-
-\S4method{polarity}{MsBackendCached}(object)
-
-\S4method{polarity}{MsBackendCached}(object) <- value
-
-\S4method{precursorCharge}{MsBackendCached}(object)
-
-\S4method{precursorIntensity}{MsBackendCached}(object)
-
-\S4method{precursorMz}{MsBackendCached}(object)
-
-\S4method{rtime}{MsBackendCached}(object)
-
-\S4method{rtime}{MsBackendCached}(object) <- value
-
-\S4method{scanIndex}{MsBackendCached}(object)
-
-\S4method{smoothed}{MsBackendCached}(object)
-
-\S4method{smoothed}{MsBackendCached}(object) <- value
 }
 \arguments{
 \item{object}{A \code{MsBackendCached} object.}
@@ -150,6 +75,8 @@ variables to keep.}
 
 \item{...}{ignored}
 
+\item{i}{For \code{[}: \code{integer} with the indices to subset the object.}
+
 \item{x}{A \code{MsBackendCached} object.}
 
 \item{columns}{For \code{spectraData()}: \code{character} with the names of the spectra
@@ -158,15 +85,11 @@ variables to retrieve.}
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
 
-\item{i}{For \code{[}: \code{integer} with the indices to subset the object.}
-
 \item{j}{For \code{[}: ignored.}
 
 \item{drop}{For \code{[}: not considered.}
 
 \item{name}{For \verb{$<-}: the name of the spectra variable to set.}
-
-\item{use.names}{For \code{lengths()}: whether spectrum names should be used.}
 }
 \value{
 See documentation of respective function.
@@ -266,7 +189,7 @@ returns a \code{numeric} with length equal to the number of spectra
 in \code{object} with the \emph{data origin} of each spectrum. This could e.g. be
 the mzML file from which the data was read.
 \item \code{intensity()}: gets the intensity values from the spectra. Returns
-a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
+a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
 \item \code{ionCount()}: returns a \code{numeric} with the sum of intensities for
@@ -289,8 +212,8 @@ number of spectra). For empty spectra, \code{0} is returned.
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
 \item \code{mz()}: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
-spectra, each element a \code{numeric} vector with the m/z values of
+spectra. Returns a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} or length equal to the
+number of spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
 \item \code{polarity()}, \verb{polarity<-}: gets or sets the polarity for each
 spectrum.  \code{polarity} returns an \code{integer} vector (length equal

@@ -22,7 +22,8 @@ setClass("MsBackendDataFrame",
                                version = "0.2"))
 
 setValidity("MsBackendDataFrame", function(object) {
-    msg <- .valid_spectra_data_required_columns(object@spectraData)
+    msg <- .valid_spectra_data_required_columns(
+        object@spectraData, backendRequiredSpectraVariables(object))
     if (length(msg))
         return(msg)
     msg <- c(
@@ -91,6 +92,12 @@ setMethod("backendMerge", "MsBackendDataFrame", function(object, ...) {
     validObject(res)
     res
 })
+
+#' @rdname hidden_aliases
+setMethod("backendRequiredSpectraVariables", "MsBackendDataFrame",
+          function(object, ...) {
+              "dataStorage"
+          })
 
 ## Data accessors
 
@@ -180,6 +187,14 @@ setReplaceMethod("dataStorage", "MsBackendDataFrame", function(object, value) {
     validObject(object)
     object
 })
+
+#' @rdname hidden_aliases
+setMethod("extractByIndex", c("MsBackendDataFrame", "ANY"),
+          function(object, i) {
+              slot(object, "spectraData", check = FALSE) <-
+                  extractROWS(object@spectraData, i)
+              object
+          })
 
 #' @rdname hidden_aliases
 setMethod("intensity", "MsBackendDataFrame", function(object) {
@@ -405,14 +420,16 @@ setMethod("selectSpectraVariables", "MsBackendDataFrame",
                        paste(spectraVariables[!(spectraVariables %in%
                                                 spectraVariables(object))],
                              collapse = ", "), " not available")
+              bv <- backendRequiredSpectraVariables(object)
+              if (!all(bv %in% spectraVariables))
+                  stop("Spectra variables ",
+                       paste(bv[!bv %in% spectraVariables], collapse = ","),
+                       " are required by the backend")
               keep <- spectraVariables[spectraVariables %in%
                                        colnames(object@spectraData)]
               if (length(keep))
                   object@spectraData <- object@spectraData[, keep,
                                                            drop = FALSE]
-              msg <- .valid_spectra_data_required_columns(object@spectraData)
-              if (length(msg))
-                  stop(msg)
               object@peaksVariables <- intersect(object@peaksVariables,
                                                  spectraVariables)
               validObject(object)
@@ -450,21 +467,12 @@ setMethod("spectraData", "MsBackendDataFrame",
               df_columns <- intersect(columns,colnames(object@spectraData))
               res <- object@spectraData[, df_columns, drop = FALSE]
               other_columns <- setdiff(columns,colnames(object@spectraData))
-              if (length(other_columns)) {
-                  other_res <- lapply(other_columns, .get_column,
-                                      x = object@spectraData)
-                  names(other_res) <- other_columns
-                  is_mz_int <- names(other_res) %in% c("mz", "intensity")
-                  if (!all(is_mz_int))
-                      res <- cbind(res, as(other_res[!is_mz_int], "DataFrame"))
-                  if (any(names(other_res) == "mz"))
-                      res$mz <- if (length(other_res$mz)) other_res$mz
-                                else NumericList(compress = FALSE)
-                  if (any(names(other_res) == "intensity"))
-                      res$intensity <- if (length(other_res$intensity))
-                                           other_res$intensity
-                                       else NumericList(compress = FALSE)
-              }
+              if (length(other_columns))
+                  res <- fillCoreSpectraVariables(res, columns = other_columns)
+              if (!all(columns %in% colnames(res)))
+                  stop("Column(s) ", paste0(columns[!columns %in% names(res)],
+                                            collapse = ", "), " not available.",
+                       call. = FALSE)
               res[, columns, drop = FALSE]
           })
 
@@ -544,9 +552,30 @@ setReplaceMethod("$", "MsBackendDataFrame", function(x, name, value) {
 #' @importFrom MsCoreUtils i2index
 #'
 #' @rdname hidden_aliases
+#'
+#' @export
 setMethod("[", "MsBackendDataFrame", function(x, i, j, ..., drop = FALSE) {
     .subset_backend_data_frame(x, i)
 })
+
+#' @importMethodsFrom methods cbind2
+#'
+#' @rdname hidden_aliases
+setMethod("cbind2", signature = c("MsBackendDataFrame",
+                                  "dataframeOrDataFrameOrmatrix"),
+          function(x, y = data.frame(), ...) {
+              if (is(y, "matrix"))
+                  y <- as.data.frame(y)
+              if (any(spectraVariables(x) %in% colnames(y)))
+                  stop("spectra variables in 'y' are already present in 'x' ",
+                       "replacing them is not allowed")
+              if (nrow(y) != length(x))
+                  stop("Number of row in 'y' does not match the number of ",
+                       "spectra in 'x'")
+              x@spectraData <- cbind(x@spectraData, y)
+              validObject(x)
+              x
+          })
 
 #' @rdname hidden_aliases
 setMethod("split", "MsBackendDataFrame", function(x, f, drop = FALSE, ...) {
@@ -564,5 +593,5 @@ setMethod("filterAcquisitionNum", "MsBackendDataFrame",
                              "acquisition number(s) for sub-setting")
     sel_file <- .sel_file(object, dataStorage, dataOrigin)
     sel_acq <- acquisitionNum(object) %in% n & sel_file
-    object[sel_acq | !sel_file]
+    extractByIndex(object, which(sel_acq | !sel_file))
 })

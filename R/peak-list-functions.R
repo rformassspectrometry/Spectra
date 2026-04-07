@@ -18,8 +18,8 @@ NULL
 #' from the `MsCoreUtils` package. In brief, all peaks in all provided
 #' spectra are first ordered by their m/z and consecutively grouped into one
 #' group if the (pairwise) difference between them is smaller than specified
-#' with parameter `tolerance` and `ppm` (see [group()] for grouping details
-#' and examples).
+#' with parameter `tolerance` and `ppm` (see [MsCoreUtils::group()] for
+#' grouping details and examples).
 #'
 #' The m/z and intensity values for the resulting peak matrix are calculated
 #' using the `mzFun` and `intensityFun` on the grouped m/z and intensity values.
@@ -339,7 +339,40 @@ combinePeaksData <- function(x, intensityFun = base::mean,
             mat[i, j] <- FUN(peak_map[[1L]], peak_map[[2L]],
                              xPrecursorMz = xPrecursorMz[i],
                              yPrecursorMz = yPrecursorMz[j],
-                             ppm = ppm, tolerance = tolerance, ...)
+                             ppm = ppm, tolerance = tolerance, ...)[1L]
+        }
+    }
+    mat
+}
+
+#' Same as `.peaks_compare()` but reports results as array with 3 dimensions,
+#' the 3rd being the number of matching peaks.
+#'
+#' @note
+#'
+#' It's assumed that the `MAPFUN` returns the aligned peak matrices, i.e. that
+#' both peak matrices have the same number of rows and that the individual
+#' peaks match.
+#'
+#' @noRd
+.peaks_compare_npeaks <- function(x, y, MAPFUN = joinPeaks, tolerance = 0,
+                                  ppm = 20, FUN = ndotproduct, xPrecursorMz,
+                                  yPrecursorMz, ...) {
+    mat <- array(NA_real_, dim = c(length(x), length(y), 2),
+                 dimnames = list(names(x), names(y), c("score", "peak_count")))
+    for (i in seq_along(x)) {
+        for (j in seq_along(y)) {
+            peak_map <- MAPFUN(x[[i]], y[[j]],
+                               tolerance = tolerance, ppm = ppm,
+                               xPrecursorMz = xPrecursorMz[i],
+                               yPrecursorMz = yPrecursorMz[j],
+                               .check = FALSE, ...)
+            res <- FUN(peak_map[[1L]], peak_map[[2L]],
+                                 xPrecursorMz = xPrecursorMz[i],
+                                 yPrecursorMz = yPrecursorMz[j],
+                       ppm = ppm, tolerance = tolerance,
+                       matchedPeaksCount = TRUE, ...)
+            mat[i, j, seq_along(res)] <- res
         }
     }
     mat

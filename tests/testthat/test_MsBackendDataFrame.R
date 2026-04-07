@@ -576,24 +576,42 @@ test_that("show,MsBackendDataFrame works", {
 test_that("[,MsBackendDataFrame works", {
     be <- MsBackendDataFrame()
     expect_error(be[1])
+
+    expect_equal(extractByIndex(be), be)
+
     df <- DataFrame(scanIndex = 1:2, a = "a", b = "b")
     be <- backendInitialize(be, df)
     res <- be[1]
     expect_true(validObject(res))
     expect_equal(be@spectraData[1, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 1)
+    expect_equal(res, res_2)
     res <- be[2]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 2)
+    expect_equal(res, res_2)
     res <- be[2:1]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2:1, ], res@spectraData)
+    res_2 <- extractByIndex(be, 2:1)
+    expect_equal(res, res_2)
+
+    res <- be[c(2, 1, 2)]
+    expect_equal(res$scanIndex, c(2, 1, 2))
+    res_2 <- extractByIndex(be, c(2, 1, 2))
+    expect_equal(res, res_2)
 
     res <- be[c(FALSE, FALSE)]
     expect_true(validObject(res))
     expect_true(length(res) == 0)
+    res_2 <- extractByIndex(be, integer())
+    expect_equal(res, res_2)
     res <- be[c(FALSE, TRUE)]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 2)
+    expect_equal(res, res_2)
 
     expect_error(be[TRUE], "match the length of")
     expect_error(be["a"], "does not have names")
@@ -606,11 +624,31 @@ test_that("[,MsBackendDataFrame works", {
     expect_true(validObject(res))
     expect_equal(dataStorage(res), "2")
     expect_equal(res@spectraData$file, "b")
+    res_2 <- extractByIndex(be, 3)
+    expect_equal(res, res_2)
 
     res <- be[c(3, 1)]
     expect_true(validObject(res))
     expect_equal(dataStorage(res), c("2", "1"))
     expect_equal(res@spectraData$file, c("b", "a"))
+    res_2 <- extractByIndex(be, c(3, 1))
+    expect_equal(res, res_2)
+})
+
+test_that("cbind2, MsBackendDataFrame works", {
+    be <- MsBackendDataFrame()
+    df <- DataFrame(scanIndex = 1:2, a = "a", b = "b")
+    be <- backendInitialize(be, df)
+    df2 <- data.frame(cola = 3:4, colb = "b", colz = "z")
+    res <- cbind2(be, df2)
+    expect_true(validObject(res))
+    expect_equal(ncol(spectraData(res)), ncol(spectraData(be)) +3)
+    expect_equal(res$cola, c(3, 4))
+    expect_equal(res$colb, c("b", "b"))
+    expect_equal(res$colz, c("z", "z"))
+    expect_equal(res$scanIndex, 1:2)
+    df3 <- data.frame(colv = 1:6, colw = "b")
+    expect_error(cbind2(be, df3), "does not match")
 })
 
 test_that("selectSpectraVariables,MsBackendDataFrame works", {
@@ -631,7 +669,7 @@ test_that("selectSpectraVariables,MsBackendDataFrame works", {
     expect_equal(colnames(res@spectraData), c("dataStorage", "rtime"))
     expect_equal(res@peaksVariables, be@peaksVariables)
 
-    expect_error(selectSpectraVariables(be, "rtime"), "dataStorage is/are missing")
+    expect_error(selectSpectraVariables(be, "rtime"), "are required")
     expect_error(selectSpectraVariables(be, "something"),
                  "something not available")
 
@@ -952,7 +990,21 @@ test_that("filterRt,MsBackendDataFrame works", {
 
 test_that("split,MsBackendDataFrame works", {
     msb <- sciex_mzr
-    msbl <- split(msb, f = msb$dataStorage)
+    msbl <- split(msb, f = factor(msb$dataStorage,
+                                  levels = unique(msb$dataStorage)))
+    expect_true(is(msbl[[1]], "MsBackendDataFrame"))
+    expect_identical(msLevel(msb)[msb$dataStorage == msb$dataStorage[1]],
+                     msLevel(msbl[[1]]))
+    expect_identical(intensity(msb)[msb$dataStorage == msb$dataStorage[1]],
+                     intensity(msbl[[1]]))
+
+    msb2 <- backendMerge(msbl)
+    expect_identical(msb2, msb)
+
+    ## Different order of files.
+    msb <- backendInitialize(MsBackendMzR(), sciex_file[c(2, 1)])
+    msbl <- split(msb, f = factor(msb$dataStorage,
+                                  levels = unique(msb$dataStorage)))
     expect_true(is(msbl[[1]], "MsBackendDataFrame"))
     expect_identical(msLevel(msb)[msb$dataStorage == msb$dataStorage[1]],
                      msLevel(msbl[[1]]))
@@ -981,6 +1033,13 @@ test_that("dropNaSpectraVariables works with MsBackendDataFrame", {
     b$other_col <- NA
     res <- dropNaSpectraVariables(b)
     expect_true(!any(spectraVariables(res) == "other_col"))
+
+    ## onlyCore
+    res <- dropNaSpectraVariables(b, onlyCore = TRUE)
+    expect_false(!any(spectraVariables(res) == "other_col"))
+    expect_equal(colnames(res@spectraData),
+                 c("msLevel", "scanIndex", "dataStorage", "mz",
+                   "intensity", "other_col"))
 })
 
 test_that("[[,[[<-,MsBackendDataFrame works", {
@@ -1001,4 +1060,9 @@ test_that("[[,[[<-,MsBackendDataFrame works", {
 
 test_that("supportsSetBackend,MsBackendDataFrame", {
     expect_true(supportsSetBackend(MsBackendDataFrame()))
+})
+
+test_that("backendRequiredSpectraVariables,MsBackendDataFrame works", {
+    expect_equal(backendRequiredSpectraVariables(MsBackendDataFrame()),
+                 "dataStorage")
 })

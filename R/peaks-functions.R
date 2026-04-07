@@ -255,9 +255,9 @@ NULL
 #'   matrices might be reported multiple times. Note that if one of
 #'   `xPrecursorMz` or `yPrecursorMz` are `NA` or if both are the same, the
 #'   results are the same as with [joinPeaks()]. To calculate GNPS similarity
-#'   scores, [gnps()] should be called on the aligned peak matrices (i.e.
-#'   `compareSpectra` should be called with `MAPFUN = joinPeaksGnps` and
-#'   `FUN = MsCoreUtils::gnps`).
+#'   scores, [MsCoreUtils::gnps()] should be called on the aligned peak
+#'   matrices (i.e. `compareSpectra` should be called with
+#'   `MAPFUN = joinPeaksGnps` and `FUN = MsCoreUtils::gnps`).
 #'
 #' - `joinPeaksNone()`: does not perform any peak matching but simply returns
 #'   the peak matrices in a `list`. This function should be used with the
@@ -308,7 +308,13 @@ NULL
 #'
 #' @author Johannes Rainer, Michael Witting
 #'
-#' @seealso [gnps()]
+#' @seealso
+#'
+#' - [compareSpectra()] for the function to calculate similarities between
+#'   spectra.
+#'
+#' - [MsCoreUtils::gnps()] in the *MsCoreUtils* package for more information
+#'   on the GNPS similarity score.
 #'
 #' @importFrom MsCoreUtils join ppm
 #'
@@ -424,8 +430,8 @@ joinPeaksNone <- function(x, y, ...) {
 
     if (k > 0L) {
         cbind(mz = MsCoreUtils::refineCentroids(x = x[, 1L], y = x[, 2L], p = p,
-                                   k = k, threshold = threshold,
-                                   descending = descending),
+                                                k = k, threshold = threshold,
+                                                descending = descending),
               intensity = x[p, 2L])
     } else {
         x[p, , drop = FALSE]
@@ -460,7 +466,7 @@ joinPeaksNone <- function(x, y, ...) {
 #' @description
 #'
 #' Removes (Orbitrap) FFT artefacts (peaks) from a spectrum keeping peaks
-#' potentially representing [13]C isotopes.
+#' potentially representing `[13]C` isotopes.
 #'
 #' @param x peaks matrix
 #'
@@ -730,4 +736,32 @@ joinPeaksNone <- function(x, y, ...) {
     }
     if (keep) x[sel, , drop = FALSE]
     else x[!sel, , drop = FALSE]
+}
+
+#' Check for presence of peaks defined by their m/z value. Note that this
+#' function does **not** return a peak matrix, but only a logical of length 1!
+#'
+#' @return `logical(1)`
+#' @noRd
+.peaks_contain_mz <- function(x, mz = numeric(), tolerance = 0, ppm = 20,
+                              condFun = any, ...) {
+    condFun(common(mz, x[, "mz"], tolerance = tolerance, ppm = ppm))
+}
+
+#' Add `numeric(1)` offset to each peak's m/z.
+#'
+#' @noRd
+.peaks_shift_mz <- function(x, offset, ...) {
+    x[, 1L] <- x[, 1L] + offset
+    x
+}
+
+#' Add offset extracted from the spectra variable defined with `character(1)`
+#' offset to each peak's m/z.
+#'
+#' @noRd
+.peaks_shift_mz_variable <- function(x, offset, ...) {
+    offset <- list(...)[[offset]]
+    x[, 1L] <- x[, 1L] + offset
+    x
 }

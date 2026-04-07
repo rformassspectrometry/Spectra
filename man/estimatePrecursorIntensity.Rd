@@ -2,6 +2,7 @@
 % Please edit documentation in R/Spectra.R
 \name{estimatePrecursorIntensity,Spectra-method}
 \alias{estimatePrecursorIntensity,Spectra-method}
+\alias{estimatePrecursorIntensity}
 \title{Estimate Precursor Intensities}
 \usage{
 \S4method{estimatePrecursorIntensity}{Spectra}(
@@ -37,9 +38,9 @@ should be estimated. Defaults to \code{2L}.}
 spectra belong to the same original data file (sample).
 Defaults to \code{f = dataOrigin(x)}.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[=bpparam]{bpparam()}} for more
-information. This is passed directly to the \code{\link[=backendInitialize]{backendInitialize()}} method
-of the \linkS4class{MsBackend}.}
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+for more information. This is passed directly to the
+\code{\link[=backendInitialize]{backendInitialize()}} method of the \linkS4class{MsBackend}.}
 }
 \description{
 Some MS instrument manufacturers don't provide precursor intensities for
@@ -61,8 +62,8 @@ previous and next MS1 spectrum. See below for an example.
 ## in these cases to calculate the precursor intensity on MS1 data. Below
 ## we load an mzML file from a vendor providing precursor intensities and
 ## compare the estimated and reported precursor intensities.
-tmt <- Spectra(msdata::proteomics(full.names = TRUE)[5],
-    backend = MsBackendMzR())
+f <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
+tmt <- Spectra(f, backend = MsBackendMzR())
 pmi <- estimatePrecursorIntensity(tmt)
 plot(pmi, precursorIntensity(tmt))
 

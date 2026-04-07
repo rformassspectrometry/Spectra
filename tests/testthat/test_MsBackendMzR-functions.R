@@ -1,21 +1,23 @@
 test_that(".mzR_header works", {
-    sc <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+    sc <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+            MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
     expect_error(.mzR_header(sc), "should have length 1")
     expect_error(.mzR_header(), "should have length 1")
     hdr <- .mzR_header(sc[1])
-    expect_true(inherits(hdr, "DataFrame"))
+    expect_true(is.data.frame(hdr))
     expect_equal(nrow(hdr), 931)
     expect_equal(hdr$scanIndex, 1:931)
 
-    fl <- dir(system.file("cdf", package = "msdata"), full.names = TRUE)
+    fl <- MsDataHub::ko15.CDF()
     hdr <- .mzR_header(fl)
-    expect_true(inherits(hdr, "DataFrame"))
+    expect_true(is.data.frame(hdr))
     expect_equal(nrow(hdr), 1278)
     expect_equal(hdr$scanIndex, 1:1278)
 })
 
 test_that(".mzR_peaks work", {
-    fls <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+    fls <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+             MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
     hdr <- .mzR_header(fls[1])
 
     res <- .mzR_peaks(fls[1], 1)

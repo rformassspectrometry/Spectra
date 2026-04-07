@@ -1,4 +1,188 @@
+# Spectra 1.21
+
+## Change 1.21.6
+
+- Add `shiftPeaks()` function.
+- Add parameter `onlyCore = FALSE` to `dropNaSpectraVariables()`.
+
+## Change 1.21.5
+
+- Fix potential issue by introducing concatenation of `data.frame`s with
+  `data.table::rbindlist()` in version 1.21.3: new function
+  `rbindlistWithRownames()` added which uses `rbindlist()` but preserves also
+  the row names of the `data.frame`s.
+- Fix unit tests for `joinPeaksGnps()` to follow recent updates in
+  *MsCoreUtils*.
+
+## Change 1.21.4
+
+- Refactor `compareSpectra()` to support spectra similarity functions returning
+  the similarity score **and** the number of peak pairs on which the score was
+  calculated. This allows to correctly report the number of peak pairs used by
+  e.g. the modified cosine (GNPS) similarity score. See also [issue
+  #350](https://github.com/rformassspectrometry/Spectra/issues/350).
+
+## Change 1.21.3
+
+- Use `data.table::rbindlist()` for merging of `MsBackendMemory` instances and
+  for `backendInitialize()` for `MsBackendMzR`. This adds *data.table* as a
+  dependency but improves performance for the above mentioned functionality.
+- Fix bug in `fragmentGroupIndex()` that would return the indices in a wrong
+  order.
+
+## Change 1.21.2
+
+- Replace *msdata* with *MsDataHub* package.
+
+## Change 1.21.1
+
+- Fix `precursorPurity()` for empty spectra.
+
+# Spectra 1.19
+
+## Change 1.19.11
+
+- Fix in `longForm()` method for `MsBackendMemory` if only peaks variables are
+  extracted.
+
+## Change 1.19.10
+
+- Add default implementation of methods for the `MsBackend` class (issue
+  [#338](https://github.com/rformassspectrometry/Spectra/issues/338)). This
+  reduced code redundancy in *Spectra* and simplifies implementation of new
+  `MsBackend` classes considerably.
+
+## Change 1.19.9
+
+- Add implementations of `spectraVariableMapping()` and
+  `spectraVariableMapping<-` for `MsBackend` and `Spectra` objects.
+
+## Change 1.19.8
+
+- Add default implementations for `MsBackend` for replacement methods
+  `centroided<-`, `collisionEnergy<-`, `dataOrigin<-`,
+  `isolationWindowLowerMz<-`, `isolationWindowTargetMz<-`,
+  `isolationWindowUpperMz<-`, `msLevel<-`, `polarity<-`, `precursorMz<-`,
+  `rtime<-` and `smoothed<-`. This reduces the amount of methods required to be
+  implemented for new `MsBackend` classes.
+
+## Change 1.19.7
+
+- Add `longForm,MsBackend` and `longForm,Spectra` methods (issue
+  [#360](https://github.com/rformassspectrometry/Spectra/issues/360)).
+
+## Change 1.19.6
+
+- Add a `precursorPurity()` function.
+
+## Change 1.19.5
+
+- Addition of `fragmentGroupIndex()` function. This function generates a
+  `integer` index grouping MSn (MS level > 1) spectra with their corresponding
+  (unique) MS1 spectra based on acquisition order.
+- Fix on `cbind2()` so that the output is a `Spectra` object and not the
+  backend.
+
+## Change 1.19.4
+
+- Fix passing of `BPPARAM` parameter in `peaksData()` method for `Spectra`.
+  Now is being passed down to `.peaksapply()`.
+
+## Change in 1.19.3
+
+- Fix in `estimatePrecursorMz()` that would ignore parameter `BPPARAM`.
+
+
+## Change in 1.19.2
+
+- Fix export of data using `MsBackendMzR`: save also the precursor scan number
+  for MSn data (spectra variable `"precScanNum"`).
+
+## Change in 1.19.1
+
+- Add `precScanNum()` method for `MsBackendCached`.
+
+# Spectra 1.17
+
+## Change in 1.17.10
+
+- Accept `labels` argument as a `list` instead of a `character` in the
+  plotting functions.
+
+## Change in 1.17.9
+
+- Allow parameter `msLevel. = integer()` for `filterRt()` to filter spectra of
+  **all** MS levels. This was `msLevel. = uniqueMsLevels()`, which, depending
+  on the backend, can be computationally intense. Add related unit tests to
+  the unit test suite.
+
+## Change in 1.17.8
+
+- Add parameter `return.type` to `peaksData()`.
+
+## Change in 1.17.7
+
+- Add the `spectraVariableMapping<-` generic method.
+
+## Change in 1.17.6
+
+- Add new `fillCoreSpectraVariables()` function that allows to add eventually
+  missing *core* spectra variables (with the correct data type) to a data frame.
+
+## Change in 1.17.5
+
+- Move generics `processingChunkSize()`, `processingChunkFactor()` and
+  `applyproceesing()` to *ProtGenerics*. Required *ProtGenerics* version
+  1.39.2 or higher. These were moved to be able to implement them in the
+  *Chromatograms* package.
+
+## Change in 1.17.4
+
+- Import `extractByIndex()` from *ProtGenerics*.
+
+## Change in 1.17.3
+
+- Fix `cbind2()` unit test for backends that fails if the number of spectra in
+  the tested backend is (by chance) equal to 4.
+
+## Change in 1.17.2
+
+- Add `cbind2()` method to easily add multiple `spectraVariables` and their
+  content to the `spectraData` of a `Spectra` object.
+  See also [issue #342](https://github.com/rformassspectrometry/Spectra/issues/342)
+
+## Changes in 1.17.1
+
+- Refactor `containsMz()` to support chunk-wise processing.
+
 # Spectra 1.15
+
+## Changes in 1.15.13
+
+- Add `precursorMz<-` method [issue #336](https://github.com/rformassspectrometry/Spectra/issues/336).
+
+## Changes in 1.15.12
+
+- Add generic `backendRequiredSpectraVariables()` to allow definition of
+  mandatory spectra variables for a backend.
+
+## Changes in 1.15.11
+
+- Add reference to `MsBackendMetaboLights`.
+
+## Changes in 1.15.10
+
+- Add new `extractSpectra()` generic and implementation for `MsBackend`. Fixes
+  [issue #5](https://github.com/rformassspectrometry/MsBackendMetaboLights/issues/5).
+
+## Changes in 1.15.9
+
+- Restructure and reorganize documentation for `Spectra`.
+
+## Changes in 1.15.8
+
+- Refactor the `Spectra()` constructor method: better support for
+  initialization of backends that define their own specific parameters.
 
 ## Changes in 1.15.7
 

@@ -13,34 +13,50 @@ test_that("Spectra,ANY works", {
 
     df$polarity <- "NEG"
     expect_error(Spectra(df), "wrong data type: polarity")
+
+    res <- Spectra(files = sciex_file, source = MsBackendMzR())
+    expect_s4_class(res@backend, "MsBackendMzR")
+    expect_true(length(res) > 1)
 })
 
 test_that("Spectra,missing works", {
     res <- Spectra()
     expect_true(length(res) == 0)
+    expect_s4_class(res@backend, "MsBackendMemory")
+
+    res <- Spectra(backend = MsBackendDataFrame())
+    expect_true(length(res) == 0)
+    expect_s4_class(res@backend, "MsBackendDataFrame")
+
+    res <- Spectra(source = MsBackendDataFrame())
+    expect_true(length(res) == 0)
+    expect_s4_class(res@backend, "MsBackendDataFrame")
 
     be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
                                                             fromFile = 1L))
     res <- Spectra(backend = be)
+    expect_s4_class(res@backend, "MsBackendDataFrame")
     expect_true(length(res) == 2)
     expect_identical(msLevel(res), c(1L, 2L))
 })
 
 test_that("Spectra,MsBackend works", {
-    res <- Spectra()
-    expect_true(length(res) == 0)
-
-    be <- backendInitialize(MsBackendDataFrame(), DataFrame(msLevel = c(1L, 2L),
-                                                            fromFile = 1L))
+    be <- backendInitialize(MsBackendDataFrame(),
+                            DataFrame(msLevel = c(1L, 2L),
+                                      fromFile = 1L))
     res <- Spectra(be)
     expect_true(length(res) == 2)
     expect_identical(msLevel(res), c(1L, 2L))
 })
 
 test_that("Spectra,character works", {
-    res <- Spectra(sciex_file, backend = MsBackendMzR())
+    res <- Spectra(sciex_file)
     expect_true(is(res@backend, "MsBackendMzR"))
-    expect_equal(unique(res@backend$dataStorage), sciex_file)
+    expect_true(length(res) > 0)
+
+    res <- Spectra(sciex_file, source = MsBackendMzR())
+    expect_true(is(res@backend, "MsBackendMzR"))
+    expect_equal(unique(res@backend$dataStorage), normalizePath(sciex_file))
     expect_identical(rtime(res), rtime(sciex_mzr))
 
     res_2 <- Spectra(sciex_file, source = MsBackendMzR(),
@@ -51,7 +67,7 @@ test_that("Spectra,character works", {
     show(res)
 
     ## Empty character
-    res <- Spectra(character(), backend = MsBackendMzR())
+    res <- Spectra(character())
     expect_s4_class(res, "Spectra")
     expect_s4_class(res@backend, "MsBackendMzR")
     expect_true(length(res) == 0)
@@ -60,6 +76,37 @@ test_that("Spectra,character works", {
     expect_s4_class(res, "Spectra")
     expect_s4_class(res@backend, "MsBackendDataFrame")
     expect_true(length(res) == 0)
+})
+
+test_that(".create_spectra works, ", {
+    ## missing object
+    res <- .create_spectra()
+    expect_true(length(res) == 0)
+    expect_s4_class(res@backend, "MsBackendMemory")
+    expect_error(res <- .create_spectra(backend = MsBackendMzR()), "mandatory")
+
+    ## object being a character, backend a MsBackendMemory -> error
+    res <- expect_error(.create_spectra(sciex_file), "DataFrame")
+    ## object being a character, backend a MsBackendMzR
+    res <- .create_spectra(sciex_file, backend = MsBackendMzR())
+    expect_s4_class(res@backend, "MsBackendMzR")
+    dta <- spectraData(res@backend)
+
+    ## object being a DataFrame, backend a MsBackendDataFrame
+    res <- .create_spectra(dta, backend = MsBackendDataFrame())
+    expect_s4_class(res@backend, "MsBackendDataFrame")
+    expect_equal(res$msLevel, dta$msLevel)
+
+    ## object missing but providing files
+    res <- .create_spectra(files = sciex_file, backend = MsBackendMzR())
+    expect_s4_class(res@backend, "MsBackendMzR")
+    expect_equal(res$msLevel, dta$msLevel)
+
+    ## object missing but providing data
+    res <- .create_spectra(data = dta, backend = MsBackendMemory())
+    expect_s4_class(res@backend, "MsBackendMemory")
+    expect_equal(res$msLevel, dta$msLevel)
+
 })
 
 test_that("setBackend,Spectra works", {
@@ -104,7 +151,7 @@ test_that("setBackend,Spectra works", {
     expect_identical(dataOrigin(res), dataStorage(sps))
 
     ## switch from DataFrame to hdf5
-    tdir <- normalizePath(paste0(tempdir(), "/a"))
+    tdir <- suppressWarnings(normalizePath(paste0(tempdir(), "/a")))
     res <- setBackend(sps, MsBackendHdf5Peaks(), hdf5path = tdir)
     expect_identical(rtime(sps), rtime(res))
     expect_identical(peaksData(sps), peaksData(res))
@@ -259,7 +306,7 @@ test_that("dataStorage,Spectra works", {
 
     sps <- Spectra(sciex_mzr)
     res <- dataStorage(sps)
-    expect_identical(res, rep(sciex_file, each = 931))
+    expect_identical(res, rep(normalizePath(sciex_file), each = 931))
 })
 
 test_that("length,Spectra works", {
@@ -363,7 +410,7 @@ test_that("isolationWindowLowerMz,Spectra works", {
     isolationWindowLowerMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowLowerMz(sps), as.numeric(1:length(sps)))
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     expect_true(all(is.na(isolationWindowLowerMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowLowerMz(sps)[msLevel(sps) == 2L])))
 })
@@ -377,7 +424,7 @@ test_that("isolationWindowTargetMz,Spectra works", {
     isolationWindowTargetMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowTargetMz(sps), as.numeric(1:length(sps)))
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     expect_true(all(is.na(isolationWindowTargetMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowTargetMz(sps)[msLevel(sps) == 2L])))
     expect_true(all(isolationWindowTargetMz(sps)[msLevel(sps) == 2L] >
@@ -393,7 +440,7 @@ test_that("isolationWindowUpperMz,Spectra works", {
     isolationWindowUpperMz(sps) <- as.numeric(1:length(sps))
     expect_identical(isolationWindowUpperMz(sps), as.numeric(1:length(sps)))
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     expect_true(all(is.na(isolationWindowUpperMz(sps)[msLevel(sps) == 1L])))
     expect_true(all(!is.na(isolationWindowUpperMz(sps)[msLevel(sps) == 2L])))
     expect_true(all(isolationWindowUpperMz(sps)[msLevel(sps) == 2L] >
@@ -876,10 +923,12 @@ test_that("[,Spectra works", {
     expect_true(length(res) == 0)
 
     sps <- Spectra(sciex_mzr)
-    tmp <- sps[dataStorage(sps) == sciex_file[2], ]
-    expect_true(all(dataStorage(tmp) == sciex_file[2]))
-    expect_equal(unique(tmp$dataStorage), sciex_file[2])
-    expect_equal(rtime(tmp), rtime(sps)[dataStorage(sps) == sciex_file[2]])
+    tmp <- sps[dataStorage(sps) == normalizePath(sciex_file[2]), ]
+    expect_true(all(dataStorage(tmp) == normalizePath(sciex_file[2])))
+    expect_equal(unique(tmp$dataStorage), normalizePath(sciex_file[2]))
+    expect_equal(rtime(tmp),
+                 rtime(sps)[dataStorage(sps) ==
+                            normalizePath(sciex_file[2])])
 })
 
 test_that("filterAcquisitionNum,Spectra works", {
@@ -889,9 +938,11 @@ test_that("filterAcquisitionNum,Spectra works", {
     expect_equal(length(res@processing), 1)
 
     sps <- Spectra(sciex_mzr)
-    res <- filterAcquisitionNum(sps, n = 1:10, dataStorage = sciex_file[2])
+    res <- filterAcquisitionNum(
+        sps, n = 1:10, dataStorage = normalizePath(sciex_file[2]))
     expect_equal(acquisitionNum(res),
-                 c(1:sum(dataStorage(sps) == sciex_file[1]), 1:10))
+                 c(1:sum(basename(dataStorage(sps)) == basename(sciex_file[1])),
+                   1:10))
 
     expect_error(filterAcquisitionNum(sps, dataStorage = 2), "type character")
     expect_error(filterAcquisitionNum(sps, dataOrigin = 2), "type character")
@@ -908,7 +959,7 @@ test_that("filterDataOrigin,Spectra works", {
     sps <- Spectra(sciex_mzr)
     res <- filterDataOrigin(sps, dataOrigin = "2")
     expect_true(length(res) == 0)
-    res <- filterDataOrigin(sps, sciex_file[1])
+    res <- filterDataOrigin(sps, normalizePath(sciex_file[1]))
     expect_identical(rtime(res), rtime(sps)[1:931])
     expect_true(length(res@processing) > length(sps@processing))
 
@@ -983,12 +1034,12 @@ test_that("filterIsolationWindow,Spectra works", {
     res <- filterIsolationWindow(sps, 123.323)
     expect_true(length(res) == 0)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     res <- filterIsolationWindow(sps, 544)
-    expect_true(length(res) == 3)
-    expect_true(all(isolationWindowLowerMz(res) < 544))
+    expect_true(length(res) == 36)
+    expect_true(all(isolationWindowLowerMz(res) <= 544))
     expect_true(all(isolationWindowUpperMz(res) > 544))
-    expect_true(all(precursorMz(res) < 545 & precursorMz(res) > 543))
+    expect_true(all(precursorMz(res) < 545.1 & precursorMz(res) > 543))
 })
 
 test_that("filterMsLevel,Spectra works", {
@@ -1001,7 +1052,7 @@ test_that("filterMsLevel,Spectra works", {
     res <- filterMsLevel(sps, 2L)
     expect_true(length(res) == 0)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     expect_true(all(1:2 %in% msLevel(sps)))
     res <- filterMsLevel(sps, 1L)
     expect_false(all(1:2 %in% msLevel(res)))
@@ -1034,7 +1085,7 @@ test_that("filterPrecursorMzRange,Spectra works", {
     expect_true(is(res, "Spectra"))
     expect_true(length(res@processing) == 1)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     res <- filterPrecursorMzRange(sps, mz = 544.75)
     expect_true(length(res) == 0)
     res <- filterPrecursorMzRange(sps, mz = 544.75 + c(-1, 1) * ppm(544.75, 40))
@@ -1047,15 +1098,15 @@ test_that("filterPrecursorCharge,Spectra works", {
     expect_true(is(res, "Spectra"))
     expect_true(length(res@processing) == 1)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     res <- filterPrecursorCharge(sps, z = 0L)
     expect_true(length(res) == 0)
 
     res2 <- filterPrecursorCharge(sps, z = 2)
     res3 <- filterPrecursorCharge(sps, z = 3)
     res23 <- filterPrecursorCharge(sps, z = 2:3)
-    expect_true(length(res2) == 300)
-    expect_true(length(res3) == 128)
+    expect_true(length(res2) == 3749)
+    expect_true(length(res3) == 1955)
     expect_true(length(res23) == (length(res2) + length(res3)))
 })
 
@@ -1067,12 +1118,12 @@ test_that("filterPrecursorScan,Spectra works", {
     expect_true(is(res, "Spectra"))
     expect_true(length(res@processing) == 1)
 
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     res <- filterPrecursorScan(sps, c(1087L, 1214L))
     expect_true(sum(msLevel(res) == 1) == 2)
     expect_true(all(c(1087L, 1214L) %in% acquisitionNum(res)))
 
-    sps <- c(sps, Spectra(sciex_mzr))
+    sps <- c(sps, setBackend(Spectra(sciex_mzr), MsBackendMemory()))
     res <- filterPrecursorScan(sps, 1057)
     expect_equal(acquisitionNum(res), c(1054L, 1057L))
 })
@@ -1156,13 +1207,14 @@ test_that("filterValues, Spectra works", {
                                                                "peaksCount"),
                                  values = c(200, 400, 350),
                                  tolerance = c(100, 100, 100),
-                                 ppm = c(0 ,30, 0))
-    filt_recycle <- filterValues(sps_dia, spectraVariables = c("rtime",
-                                                               "precursorMz",
-                                                               "peaksCount"),
-                                 values = c(200, 400, 350),
-                                 tolerance = 100,
-                                 ppm = c(0, 40, 0))
+                                 ppm = c(0, 30, 0))
+    expect_warning(
+        filt_recycle <- filterValues(
+            sps_dia, spectraVariables = c("rtime", "precursorMz", "peaksCount"),
+            values = c(200, 400, 350),
+            tolerance = 100,
+            ppm = c(0, 40, 0)),
+        "does not match the ")
     expect_equal(length(filt_spectra), length(filt_recycle))
     expect_true(length(sps_dia) > length(filt_spectra))
     #' expect warning
@@ -1193,7 +1245,7 @@ test_that("filterValues, Spectra works", {
 #### ---------------------------------------------------------------------------
 
 test_that("bin,Spectra works", {
-    sps <- Spectra(tmt_mzr)
+    sps <- sps_tmt
     pks <- peaksData(sps)
     res <- bin(sps, binSize = 2, zero.rm = FALSE)
     expect_true(length(res@processingQueue) == 1)
@@ -1272,7 +1324,7 @@ test_that("filterIntensity,Spectra works", {
 
 test_that("compareSpectra works", {
     sps <- Spectra(sciex_hd5[1:20])
-    sps <- setBackend(sps, MsBackendDataFrame())
+    sps <- setBackend(sps, MsBackendMemory())
 
     res <- compareSpectra(sps[c(1, 20)], sps[15:20])
     expect_true(nrow(res) == 2)
@@ -1368,6 +1420,24 @@ test_that("compareSpectra works", {
     expect_equal(round(res, 2), 0.86)
 })
 
+test_that("compareSpectra works with matchedPeaksCount", {
+    sps <- filterMsLevel(sps_dda, 2L)
+    sps <- sps[lengths(sps) > 0][1:200]
+    ref <- compareSpectra(sps, sps)
+    expect_true(all(diag(ref) == 1))
+    expect_true(nrow(ref) == ncol(ref))
+    expect_equal(nrow(ref), length(sps))
+
+    res <- compareSpectra(sps, sps, matchedPeaksCount = TRUE)
+    expect_equal(dim(res), c(length(sps), length(sps), 2L))
+    expect_equal(unname(ref), unname(res[, , 1L]))
+    expect_equal(diag(res[, , 2L]), lengths(sps))
+
+    res <- compareSpectra(sps[1:20], matchedPeaksCount = TRUE)
+    expect_equal(res[, , 1L], unname(ref[1:20, 1:20]))
+    expect_equal(diag(res[, , 2L]), lengths(sps)[1:20])
+})
+
 test_that("pickPeaks,Spectra works", {
     sps <- Spectra()
     expect_error(pickPeaks(sps, halfWindowSize = 1), "integer")
@@ -1420,6 +1490,24 @@ test_that("pickPeaks,Spectra works", {
     expect_true(length(intensity(res2[1L])[[1L]]) <
                 length(intensity(res3[1L])[[1L]]))
 
+    ## Check that m/z refinement works
+    a <- data.frame(msLevel = 1L, rtime = 1.1)
+    a$mz <- list(
+        c(34.1, 56.3, 100.1, 100.101, 100.105, 100.2, 200.2,
+          200.205, 300.2, 350.2))
+    a$intensity <- list(
+        c(3.1, 2.3, 100, 200, 130, 120, 400.1,
+          100, 40, 12))
+    a <- Spectra(a)
+    ## Default: report the max peak.
+    res <- pickPeaks(a, halfWindowSize = 2L)
+    expect_equal(unlist(intensity(res)), c(200, 400.1))
+    expect_equal(unlist(mz(res)), c(100.101, 200.2))
+    ## Refine the m/z
+    res <- pickPeaks(a, halfWindowSize = 2L, k = 2L)
+    expect_equal(res$mz[[1L]][1L],
+                 weighted.mean(c(56.3, 100.1, 100.101, 100.105, 100.2),
+                               c(2.3, 100, 200, 130, 120)))
 })
 
 test_that("smooth,Spectra works", {
@@ -1911,9 +1999,7 @@ test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
 
 
 test_that("asDataFrame works", {
-    sciex_file <- normalizePath(
-        dir(system.file("sciex", package = "msdata"), full.names = TRUE))
-    sp <- Spectra(sciex_file)
+    sp <- Spectra(sciex_mzr)
     ## Full dataframe
     df <- asDataFrame(sp)
     expect_identical(nrow(df), sum(sapply(peaksData(sp), nrow)))
@@ -1931,11 +2017,206 @@ test_that("asDataFrame works", {
 })
 
 test_that("estimatePrecursorIntensity works", {
-    fls <- msdata::proteomics(full.names = TRUE)[c(5, 3)]
+    fls <- c(
+        MsDataHub::PestMix1_DDA.mzML(),
+        MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz())
     second <- Spectra(fls[2], backend = MsBackendMzR())
     both <- Spectra(fls, backend = MsBackendMzR())
 
     res_second <- estimatePrecursorIntensity(second)
     res_both <- estimatePrecursorIntensity(both)
-    expect_equal(res_second, res_both[510:length(res_both)])
+    expect_equal(res_second, res_both[7603:length(res_both)])
+})
+
+test_that("precursorMz<-,Spectra works", {
+    a <- sps_dda[1:3]
+    precursorMz(a) <- c(12.3, 1.1, 34.3)
+    expect_equal(precursorMz(a), c(12.3, 1.1, 34.3))
+})
+
+test_that("processingChunkSize works", {
+    s <- Spectra()
+    expect_equal(processingChunkSize(s), Inf)
+    processingChunkSize(s) <- 1000
+    expect_equal(processingChunkSize(s), 1000)
+    expect_error(processingChunkSize(s) <- c(1, 2), "length 1")
+    expect_error(processingChunkSize(s) <- "A", "character")
+})
+
+test_that("processingChunkFactor works", {
+    s <- Spectra()
+    expect_equal(processingChunkFactor(s), factor())
+    tmp <- Spectra(sciex_mzr)
+
+    expect_equal(length(processingChunkFactor(tmp)), length(tmp))
+    expect_true(is.factor(processingChunkFactor(tmp)))
+
+    processingChunkSize(tmp) <- 1000
+    res <- processingChunkFactor(tmp)
+    expect_true(is.factor(res))
+    expect_true(length(res) == length(tmp))
+    expect_equal(levels(res), c("1", "2"))
+
+    expect_equal(.parallel_processing_factor(tmp), processingChunkFactor(tmp))
+
+    expect_error(processingChunkFactor("a"), "signature")
+})
+
+test_that("applyProcessing works", {
+    ## Initialize required objects.
+    sps_mzr <- filterRt(Spectra(sciex_mzr), rt = c(10, 20))
+    ## Add processings.
+    centroided(sps_mzr) <- TRUE
+    sps_mzr <- replaceIntensitiesBelow(sps_mzr, threshold = 5000,
+                                       value = NA_real_)
+    sps_mzr <- filterIntensity(sps_mzr)
+    expect_true(length(sps_mzr@processingQueue) == 2)
+    expect_error(applyProcessing(sps_mzr), "is read-only")
+
+    ## Create writeable backends.
+    sps_mem <- setBackend(sps_mzr, backend = MsBackendDataFrame())
+    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
+                         files = c(tempfile(), tempfile()),
+                         f = rep(1, length(sps_mzr)))
+    expect_true(length(sps_mem@processingQueue) == 2)
+    expect_true(length(sps_h5@processingQueue) == 2)
+    expect_identical(peaksData(sps_mzr), peaksData(sps_mem))
+    expect_identical(peaksData(sps_h5), peaksData(sps_mem))
+
+    ## MsBackendDataFrame
+    res <- applyProcessing(sps_mem)
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) > length(sps_mem@processing))
+    expect_identical(rtime(res), rtime(sps_mem))
+    expect_identical(peaksData(res), peaksData(sps_mem))
+
+    ## MsBackendHdf5Peaks
+    res <- applyProcessing(sps_h5)
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) > length(sps_h5@processing))
+    expect_identical(rtime(res), rtime(sps_mem))
+    expect_identical(peaksData(res), peaksData(sps_mem))
+    expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
+
+    ## Applying the processing queue invalidated the original object!
+    expect_error(peaksData(sps_h5))
+    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
+                         files = c(tempfile(), tempfile()),
+                         f = rep(1, length(sps_mzr)))
+
+    ## Use an arbitrary splitting factor ensuring that the results are still OK.
+    f <- rep(letters[1:9], 8)
+    f <- sample(f)
+
+    ## MsBackendHdf5Peaks
+    res <- applyProcessing(sps_mem, f = f)
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) > length(sps_mem@processing))
+    expect_identical(rtime(res), rtime(sps_mem))
+    expect_identical(peaksData(res), peaksData(sps_mem))
+
+    ## MsBackendHdf5Peaks: throws an error, because the factor f does not
+    ## match the dataStorage.
+    expect_error(applyProcessing(sps_h5, f = f))
+
+    sps_h5 <- setBackend(sps_mzr, backend = MsBackendHdf5Peaks(),
+                         files = c(tempfile(), tempfile()),
+                         f = rep(1, length(sps_mzr)))
+    res <- applyProcessing(sps_h5, f = rep(1, length(sps_h5)))
+    expect_true(length(res@processingQueue) == 0)
+    expect_true(length(res@processing) > length(sps_h5@processing))
+    expect_identical(rtime(res), rtime(sps_mem))
+    expect_identical(peaksData(res), peaksData(sps_mem))
+    expect_true(all(res@backend@modCount > sps_h5@backend@modCount))
+
+    expect_error(applyProcessing(sps_mem, f = 1:2), "has to be equal to the")
+})
+
+test_that("peaksData,Spectra works ", {
+    a <- sps_dda[1:3]
+    res <- peaksData(a)
+    expect_s4_class(res, "SimpleList")
+    res <- peaksData(a, return.type = "list")
+    expect_true(is.list(res))
+})
+
+test_that("cbind2, Spectra works", {
+    n <- length(sps_dda)
+    df <- data.frame(new1 = rep(1, n), new2 = rep("a", n))
+    tmp <- cbind2(sps_dda, df)
+    expect_true(is(tmp, "Spectra"))
+})
+
+test_that("longForm,Spectra works", {
+    a <- sps_dda[1:30]
+    ## empty processing queue
+    res <- longForm(a)
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c(spectraVariables(a), peaksVariables(a)))
+    expect_equal(res$mz, unlist(mz(a)))
+    expect_equal(res$intensity, unlist(intensity(a)))
+
+    ## selected columns
+    res <- longForm(a, c("rtime", "mz", "intensity"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("rtime", "mz", "intensity"))
+    expect_equal(res$mz, unlist(mz(a)))
+    expect_equal(res$intensity, unlist(intensity(a)))
+
+    ## no peaks variables
+    res <- longForm(a, c("msLevel", "rtime"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("msLevel", "rtime"))
+    expect_equal(res$msLevel, msLevel(a))
+    expect_equal(res$rtime, rtime(a))
+
+    ## no spectra variables
+    res <- longForm(a, c("mz", "intensity"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("mz", "intensity"))
+    expect_equal(res$mz, unlist(mz(a)))
+    expect_equal(res$intensity, unlist(intensity(a)))
+
+    ## non-existing column
+    expect_error(longForm(a, c("rtime", "aaa"), "not available"))
+
+    ## non-empty processing queue
+    a <- filterIntensity(a, 80)
+    res <- longForm(a)
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c(spectraVariables(a), peaksVariables(a)))
+    expect_equal(res$mz, unname(unlist(mz(a))))
+    expect_equal(res$intensity, unname(unlist(intensity(a))))
+    expect_true(nrow(res) < length(a)) # because we have empty spectra
+
+    ## selected columns
+    res <- longForm(a, c("rtime", "mz", "intensity"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("rtime", "mz", "intensity"))
+    expect_equal(res$mz, unname(unlist(mz(a))))
+    expect_equal(res$intensity, unname(unlist(intensity(a))))
+
+    ## no peaks variables
+    res <- longForm(a, c("msLevel", "rtime"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("msLevel", "rtime"))
+    expect_equal(res$msLevel, msLevel(a))
+    expect_equal(res$rtime, rtime(a))
+
+    ## no spectra variables
+    res <- longForm(a, c("mz", "intensity"))
+    expect_true(is.data.frame(res))
+    expect_equal(colnames(res), c("mz", "intensity"))
+    expect_equal(res$mz, unname(unlist(mz(a))))
+    expect_equal(res$intensity, unname(unlist(intensity(a))))
+
+    ## non-existing column
+    expect_error(longForm(a, c("rtime", "aaa"), "not available"))
+})
+
+test_that("spectraVariableMapping,Spectra works", {
+    df <- DataFrame(msLevel = c(1L, 2L))
+    s <- Spectra(df)
+    expect_error(spectraVariableMapping(s), "not supported")
+    expect_error(spectraVariableMapping(s) <- 323, "not supported")
 })

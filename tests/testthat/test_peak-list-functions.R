@@ -138,3 +138,19 @@ test_that(".peaks_compare works", {
     expect_true(nrow(res_2) == 1)
     expect_identical(res_2[1, ], res[5, ])
 })
+
+test_that(".peaks_compare_npeaks works", {
+    pl <- .peaksapply(filterMsLevel(sps_dda, 2L)[1:20])
+
+    res <- .peaks_compare_npeaks(pl, pl)
+    ref <- .peaks_compare(pl, pl)
+    expect_equal(dim(res), c(20, 20, 2))
+    expect_true(is.array(res))
+    expect_equal(res[, , 1], unname(ref))
+    expect_equal(vapply(pl, nrow, NA_integer_), diag(res[, , 2]))
+
+    res_2 <- .peaks_compare_npeaks(pl, pl[3])
+    expect_equal(dim(res_2), c(20, 1, 2))
+    expect_equal(res_2[, , 1], res[, 3, 1])
+    expect_equal(res_2[, , 2], res[, 3, 2])
+})

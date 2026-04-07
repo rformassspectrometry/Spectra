@@ -8,7 +8,7 @@ vignette: >
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
     %\VignettePackage{Spectra}
-    %\VignetteDepends{Spectra,mzR,BiocStyle,msdata,msentropy}
+    %\VignetteDepends{Spectra,mzR,BiocStyle,MsDataHub,msentropy}
 bibliography: references.bib
 ---
 
@@ -150,7 +150,10 @@ data files only on demand. See section [Backends](#backends) for more details
 on backends and their properties.
 
 ```{r spectra-msbackendmzr, message = FALSE}
-fls <- dir(system.file("sciex", package = "msdata"), full.names = TRUE)
+#' define the file names of the data to import; data provided through
+#' the MsDataHub package
+fls <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+         MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 sps_sciex <- Spectra(fls, source = MsBackendMzR())
 sps_sciex
 ```
@@ -583,7 +586,20 @@ function can be used to retain only specified spectra variables.
 ## Data manipulations
 
 Some analyses require manipulation of the mass peak data (i.e. the m/z and/or
-intensity values). One example would be to remove all peaks from a spectrum that
+intensity values). The available functions are:
+
+- `addProcessing()`: apply any arbitrary function to modify the `peaksData()` of
+  each spectrum.
+- `bin()`: aggregates peaks in each spectrum into discrete m/z bins.
+- `neutralLoss()`: create neutral loss versions of spectra.
+- `pickPeaks()`: centroiding of spectrum data.
+- `replaceIntensitiesBelow()`: replaces intensities below a specified threshold
+  with a value.\
+- `scalePeaks()`: scales peak intensities.
+- `shiftPeaks()`: shifts peaks by an offset along m/z dimension.
+- `smooth()`: smooths spectra.
+
+One example would be to remove all peaks from a spectrum that
 have an intensity lower than a certain threshold. Below we perform such an
 operation with the `replaceIntensitiesBelow()` function to replace peak
 intensities below 10 in each spectrum in `sps` with a value of 0.
@@ -678,15 +694,17 @@ define spectra variables that should be passed (in addition to the peaks matrix)
 to the user-provided function. This would enable for example to calculate
 *neutral loss* spectra from a `Spectra` by subtracting the precursor m/z from
 each m/z of a spectrum (note that there would also be a dedicated
-`neutralLoss()` function to perform this operation more efficiently). Our tool
-example does not have precursor m/z values defined, thus we first set them to
-arbitrary values. Then we define a function `neutral_loss` that calculates the
-difference between the precursor m/z and the fragment peak's m/z. In addition we
-need to ensure the peaks in the resulting spectra are ordered by (the delta) m/z
-values. Note that, in order to be able to access the precursor m/z of the
-spectrum within our function, we have to add a parameter to the function that
-has the same name as the spectrum variable we want to access (in our case
-`precursorMz`).
+`neutralLoss()` function to perform this operation more efficiently - or the
+`shiftPeaks()` function could be used too).
+
+Our toy example does not have precursor m/z values defined, thus we first set
+them to arbitrary values. Then we define a function `neutral_loss` that
+calculates the difference between the precursor m/z and the fragment peak's
+m/z. In addition we need to ensure the peaks in the resulting spectra are
+ordered by (the delta) m/z values. Note that, in order to be able to access the
+precursor m/z of the spectrum within our function, we have to add a parameter to
+the function that has the same name as the spectrum variable we want to access
+(in our case `precursorMz`).
 
 ```{r set-precursor-mz}
 sps_rep$precursorMz <- c(170.5, 170.5, 195.1, 195.1)
@@ -838,7 +856,7 @@ position relative to the x and y coordinates of the peak.
 
 ```{r plotspectra-label, fig.width = 8, fig.height = 8}
 plotSpectra(sps, main = sps$name,
-            labels = function(z) format(mz(z)[[1L]], digits = 4),
+            labels = function(z) lapply(mz(z), format, digits = 4),
             labelSrt = -30, labelPos = 2, labelOffset = 0.1)
 ```
 
@@ -847,12 +865,13 @@ overplotted. Below we define a *label function* that will only indicate the m/z
 of peaks with an intensity higher than 30.
 
 ```{r plotspectra-label-int, fig.width = 8, fig.height = 8}
-mzLabel <- function(z) {
-    z <- peaksData(z)[[1L]]
-    lbls <- format(z[, "mz"], digits = 4)
-    lbls[z[, "intensity"] < 30] <- ""
-    lbls
-}
+mzLabel = function(z) {
+    lapply(seq_along(mz(z)), function(i) {
+            lbls <- format(mz(z)[[i]], digits = 4)
+            lbls[intensity(z)[[i]] <= 30] <- ""
+            lbls
+     })
+ }
 plotSpectra(sps, main = sps$name, labels = mzLabel,
             labelSrt = -30, labelPos = 2, labelOffset = 0.1)
 ```
@@ -1015,6 +1034,22 @@ be calculated with calls in the form of `compareSpectra(a, b)` with `a` and `b`
 being the two `Spectra` objects to compare. As a result a *n x m* matrix will be
 returned with *n* (rows) being the spectra in `a` and *m* (columns) being the
 spectra in `b`.
+
+By setting parameter `matchedPeaksCount = TRUE` in addition to the similarity
+scores, also the number of matching peaks between the compared spectra are
+returned. The result is then a 3-dimensional `array` with the similarity scores
+in the first `matrix` in z dimension (`[, , 1]`) and the number of matching
+peaks in the second `matrix` (`[, , 2]`):
+
+```{r}
+sim <- compareSpectra(sps, sps, ppm = 40, matchedPeaksCount = TRUE)
+
+#' The similarity scores:
+sim[, , 1L]
+
+#' The number of matching peaks:
+sim[, , 2L]
+```
 
 The above similarity was calculated with the default (normalized) dot-product,
 but also other similarity scores can be used instead. Either one of the other
@@ -1234,8 +1269,7 @@ With the example below we load the data from a single mzML file and use a
 us to specify the storage location of the HDF5 file.
 
 ```{r hdf5}
-library(msdata)
-fl <- proteomics(full.names = TRUE)[5]
+fl <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
 
 sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
 head(basename(dataStorage(sps_tmt)))
@@ -1244,38 +1278,51 @@ head(basename(dataStorage(sps_tmt)))
 A (possibly incomplete) list of R packages providing additional backends that
 add support for additional data types or storage options is provided below:
 
-- `r BiocStyle::Biocpkg("MsBackendMgf")`: support for import/export of mass
-  spectrometry files in mascot generic format (MGF).
-- `r BiocStyle::Biocpkg("MsBackendMsp")`: allows to import/export data in NIST
-  MSP format. Extends the `MsBackendDataFrame` and keeps thus all data, after
-  import, in memory.
-- `MsBackendMassbank` (package `r BiocStyle::Biocpkg("MsBackendMassbank")`):
-  allows to import/export data in MassBank text file format. Extends the
-  `MsBackendDataFrame` and keeps thus all data, after import, in memory.
-- `MsBackendMassbankSql` (package `r BiocStyle::Biocpkg("MsBackendMassbank")`):
-  allows to directly connect to a MassBank SQL database to retrieve all MS data
-  and variables. Has a minimal memory footprint because all data is retrieved
-  on-the-fly from the SQL database.
-- `r BiocStyle::Biocpkg("MsBackendSql")`: stores all MS data in a SQL database
-  and has thus a minimal memory footprint.
 - `MsBackendCompDb` (package `r BiocStyle::Biocpkg("CompoundDb")`): provides
   access to spectra data (spectra and peaks variables) from a *CompDb*
   database. Has a small memory footprint because all data (except precursor m/z
   values) are retrieved on-the-fly from the database.
-- `r Biocpkg("MsBackendRawFileReader")`: implements a backend for reading MS
-  data from Thermo Fisher Scientific's raw data files using the manufacturer's
-  NewRawFileReader .Net libraries. The package generalizes the functionality
-  introduced by the `r Biocpkg("rawrr")` package, see also
-  [@kockmann_rawrr_2021].
+
 - `MsBackendHmdbXml` (package
   [`MsbackendHmdb`](https://github.com/rformassspectrometry/MsBackendHmdb)):
   allows import of MS data from xml files of the Human Metabolome Database
   (HMDB). Extends the `MsBackendDataFrame` and keeps thus all data, after
   import, in memory.
+
+- `MsBackendMassbank` (package `r BiocStyle::Biocpkg("MsBackendMassbank")`):
+  allows to import/export data in MassBank text file format. Extends the
+  `MsBackendDataFrame` and keeps thus all data, after import, in memory.
+
+- `MsBackendMassbankSql` (package `r BiocStyle::Biocpkg("MsBackendMassbank")`):
+  allows to directly connect to a MassBank SQL database to retrieve all MS data
+  and variables. Has a minimal memory footprint because all data is retrieved
+  on-the-fly from the SQL database.
+
+- `MsBackendMetaboLights` (package `r
+  BiocStyle::Biocpkg("MsBackendMetaboLights")`): retrieves and caches MS data
+  files from the MetaboLights repository.
+
+- `MsBackendMgf`: (package `r BiocStyle::Biocpkg("MsBackendMgf")`): support for
+  import/export of mass spectrometry files in mascot generic format (MGF).
+
+- `MsBackendMsp`: (package `r BiocStyle::Biocpkg("MsBackendMsp")`): allows to
+  import/export data in NIST MSP format. Extends the `MsBackendDataFrame` and
+  keeps thus all data, after import, in memory.
+
+- `MsBackendRawFileReader` (package `r Biocpkg("MsBackendRawFileReader")`):
+  implements a backend for reading MS data from Thermo Fisher Scientific's raw
+  data files using the manufacturer's NewRawFileReader .Net libraries. The
+  package generalizes the functionality introduced by the `r Biocpkg("rawrr")`
+  package, see also [@kockmann_rawrr_2021].
+
+- `MsBackendSql` (package `r BiocStyle::Biocpkg("MsBackendSql")`): stores all MS
+  data in a SQL database and has thus a minimal memory footprint.
+
 - `MsBackendTimsTof` (package
   [`MsBackendTimsTof`](https://github.com/rformassspectrometry/MsBackendTimsTof):
   allows import of data from Bruker TimsTOF raw data files (using the
   `opentimsr` R package).
+
 - `MsBackendWeizMass` (package
   [`MsBackendWeizMass`](https://github.com/rformassspectrometry/MsBackendWeizMass):
   allows to access MS data from WeizMass MS/MS spectral databases.

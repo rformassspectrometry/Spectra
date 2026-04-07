@@ -201,7 +201,7 @@ MsBackendHdf5Peaks <- function() {
         stop("lengths of 'x' and 'scanIndex' have to match")
     if (any(duplicated(scanIndex)))
         stop("no duplicated values in 'scanIndex' allowed")
-    requireNamespace("rhdf5", quitely = TRUE)
+    requireNamespace("rhdf5", quietly = TRUE)
     h5 <- rhdf5::H5Fopen(h5file)
     on.exit(invisible(rhdf5::H5Fclose(h5)))
     comp_level <- .hdf5_compression_level()

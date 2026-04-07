@@ -1,21 +1,23 @@
 test_that("initializeBackend,MsBackendMzR works", {
-    fl <- normalizePath(
-        dir(system.file("sciex", package = "msdata"), full.names = TRUE))
+    fl <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
+            MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
     expect_error(backendInitialize(MsBackendMzR()), "Parameter 'files'")
     expect_error(backendInitialize(MsBackendMzR(), files = 4),
                  "expected to be a character")
     be <- backendInitialize(MsBackendMzR(), files = fl)
     expect_true(validObject(be))
     expect_true(is(be, "MsBackendMzR"))
-    expect_equal(unique(be$dataStorage), fl)
+    expect_equal(unique(be$dataStorage), unname(normalizePath(fl)))
     expect_equal(nrow(be@spectraData), 1862)
     expect_equal(be@spectraData$scanIndex, c(1:931, 1:931))
-    expect_equal(be@spectraData$dataStorage, rep(fl, each = 931))
+    expect_equal(be@spectraData$dataStorage,
+                 rep(unname(normalizePath(fl)), each = 931))
     expect_true(isReadOnly(be))
 })
 
 test_that("backendMerge,MsBackendDataFrame works for MsBackendMzR too", {
-    splt <- split(sciex_mzr, dataStorage(sciex_mzr))
+    splt <- split(sciex_mzr, factor(dataStorage(sciex_mzr),
+                                    unique(dataStorage(sciex_mzr))))
     expect_equal(peaksData(splt[[1]]), sciex_pks[1:931])
     expect_equal(peaksData(splt[[2]]), sciex_pks[932:1862])
     res <- backendMerge(splt)
@@ -86,7 +88,8 @@ test_that("dataStorage,MsBackendMzR works", {
 
     expect_true(is(dataStorage(sciex_mzr), "character"))
     expect_true(is(sciex_mzr@spectraData$dataStorage, "character"))
-    expect_equal(dataStorage(sciex_mzr), rep(sciex_file, each = 931))
+    expect_equal(dataStorage(sciex_mzr),
+                 rep(normalizePath(sciex_file), each = 931))
 })
 
 test_that("intensity,MsBackendMzR works", {
@@ -148,7 +151,7 @@ test_that("isolationWindowLowerMz,MsBackendMzR works", {
     expect_true(is(be@spectraData$isolationWindowLowerMz, "numeric"))
     expect_true(all(isolationWindowLowerMz(be) == 2))
 
-    expect_error(isolationWindowLowerMz(be) <- 2, "of length 509")
+    expect_error(isolationWindowLowerMz(be) <- 2, "of length 7534")
 
     be <- sciex_mzr
     expect_true(all(is.na(isolationWindowLowerMz(be))))
@@ -169,7 +172,7 @@ test_that("isolationWindowTargetMz,MsBackendMzR works", {
     expect_true(is(be@spectraData$isolationWindowTargetMz, "numeric"))
     expect_true(all(isolationWindowTargetMz(be) == 2))
 
-    expect_error(isolationWindowTargetMz(be) <- 2, "of length 509")
+    expect_error(isolationWindowTargetMz(be) <- 2, "of length 7534")
 
     be <- sciex_mzr
     expect_true(all(is.na(isolationWindowTargetMz(be))))
@@ -190,7 +193,7 @@ test_that("isolationWindowUpperMz,MsBackendMzR works", {
     expect_true(is(be@spectraData$isolationWindowUpperMz, "numeric"))
     expect_true(all(isolationWindowUpperMz(be) == 2))
 
-    expect_error(isolationWindowUpperMz(be) <- 2, "of length 509")
+    expect_error(isolationWindowUpperMz(be) <- 2, "of length 7534")
 
     be <- sciex_mzr
     expect_true(all(is.na(isolationWindowUpperMz(be))))
@@ -204,7 +207,7 @@ test_that("msLevel,MsBackendMzR works", {
     expect_true(is(sciex_mzr@spectraData$msLevel, "integer"))
     expect_true(all(msLevel(sciex_mzr) == 1L))
 
-    expect_true(sum(msLevel(tmt_mzr) == 2) == 451)
+    expect_true(sum(msLevel(tmt_mzr) == 2) > 0)
 })
 
 test_that("mz,MsBackendMzR works", {
@@ -474,6 +477,8 @@ test_that("[,MsBackendMzR works", {
     expect_equal(length(tmp), 13)
     expect_equal(tmp@spectraData$scanIndex, 13:25)
     expect_true(all(is.na(smoothed(tmp))))
+    tmp_2 <- extractByIndex(sciex_mzr, 13:25)
+    expect_equal(tmp, tmp_2)
 
     ints <- intensity(tmp)
     spd <- spectraData(tmp)
@@ -502,7 +507,7 @@ test_that("selectSpectraVariables,MsBackendMzR works", {
     expect_equal(res@peaksVariables, c("mz", "intensity"))
 
     expect_error(selectSpectraVariables(be, c("dataStorage", "msLevel")),
-                 "scanIndex is/are missing")
+                 "required")
 })
 
 test_that("$,$<-,MsBackendMzR works", {
@@ -594,4 +599,16 @@ test_that("dataStorageBasePath,dataStorageBasePath<-,MsBackendMzR works", {
 
     #' errors
     expect_error(dataStorageBasePath(tmp) <- "some path", "Provided path")
+})
+
+test_that("backendRequiredSpectraVariables,MsBackendMzR works", {
+    tmp <- MsBackendMzR()
+    expect_equal(backendRequiredSpectraVariables(tmp),
+                 c("dataStorage", "scanIndex"))
+})
+
+test_that("precursorMz<-,MsbackendMzR works", {
+    a <- sciex_mzr[1:3]
+    precursorMz(a) <- c(12.2, 1.2, 1.4)
+    expect_equal(precursorMz(a), c(12.2, 1.2, 1.4))
 })

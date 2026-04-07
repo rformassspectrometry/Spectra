@@ -217,6 +217,9 @@ test_that("spectraData,MsBackendMemory works", {
     expect_equal(res$mz, IRanges::NumericList(test_df$mz, compress = FALSE))
     expect_equal(res$intensity,
                  IRanges::NumericList(test_df$intensity, compress = FALSE))
+    expect_true(is.integer(res$acquisitionNum))
+    expect_true(all(is.na(res$acquisitionNum)))
+    expect_equal(.valid_column_datatype(res), NULL)
 
     tmp <- test_df
     tmp$pk_anno <- list(c("a", "b", "c"), c("", "d"), letters[12:15])
@@ -231,6 +234,7 @@ test_that("spectraData,MsBackendMemory works", {
     expect_equal(res$intensity,
                  IRanges::NumericList(test_df$intensity, compress = FALSE))
     expect_equal(res$pk_anno, tmp$pk_anno)
+    expect_equal(.valid_column_datatype(res), NULL)
 
     tmp$add_anno <- list(c(1:3), 1:2, 1:4)
     be <- backendInitialize(be, tmp)
@@ -254,6 +258,16 @@ test_that("spectraData,MsBackendMemory works", {
     expect_s4_class(res, "DataFrame")
     expect_equal(colnames(res), "pk_anno")
     expect_equal(res$pk_anno, tmp$pk_anno)
+    res <- spectraData(be, "acquisitionNum")
+    expect_s4_class(res, "DataFrame")
+    expect_equal(colnames(res), "acquisitionNum")
+    expect_true(is.integer(res$acquisitionNum))
+    expect_true(all(is.na(res$acquisitionNum)))
+    res <- spectraData(be, "smoothed")
+    expect_s4_class(res, "DataFrame")
+    expect_equal(colnames(res), "smoothed")
+    expect_true(is.logical(res$smoothed))
+    expect_true(all(is.na(res$smoothed)))
 })
 
 test_that("spectraData<-,MsBackendMemory works", {
@@ -501,41 +515,83 @@ test_that("$<-,MsBackendMemory works", {
 
 test_that("[,MsBackendMemory works", {
     be <- new("MsBackendMemory")
+    res <- extractByIndex(be)
+    expect_equal(res, be)
+
     df <- data.frame(scanIndex = 1:2, a = "a", b = "b")
     be <- backendInitialize(be, df)
     res <- be[1]
     expect_true(validObject(res))
     expect_equal(be@spectraData[1, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 1)
+    expect_equal(res, res_2)
+
     res <- be[2]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 2)
+    expect_equal(res, res_2)
+
     res <- be[2:1]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2:1, ], res@spectraData)
+    res_2 <- extractByIndex(be, 2:1)
+    expect_equal(res, res_2)
 
     res <- be[c(FALSE, FALSE)]
     expect_true(validObject(res))
     expect_true(length(res) == 0)
+    res_2 <- extractByIndex(be, integer())
+    expect_equal(res, res_2)
+
     res <- be[c(FALSE, TRUE)]
     expect_true(validObject(res))
     expect_equal(be@spectraData[2, ], res@spectraData[1, ])
+    res_2 <- extractByIndex(be, 2)
+    expect_equal(res, res_2)
 
     expect_error(be[TRUE], "match the length of")
     expect_error(be["a"], "names")
 
     df <- data.frame(scanIndex = c(1L, 2L, 1L, 2L),
-                     file = c("a", "a", "b", "b"))
+                     file = c("a", "a", "b", "b"),
+                     idx = 1:4)
     be <- backendInitialize(be, df)
     dataStorage(be) <- c("1", "1", "2", "2")
     res <- be[3]
     expect_true(validObject(res))
     expect_equal(dataStorage(res), "2")
     expect_equal(res@spectraData$file, "b")
+    res_2 <- extractByIndex(be, 3)
+    expect_equal(res, res_2)
 
     res <- be[c(3, 1)]
     expect_true(validObject(res))
     expect_equal(dataStorage(res), c("2", "1"))
     expect_equal(res@spectraData$file, c("b", "a"))
+    res_2 <- extractByIndex(be, c(3, 1))
+    expect_equal(res, res_2)
+
+    res <- be[c(3, 1, 3)]
+    expect_equal(res$idx, c(3, 1, 3))
+    res_2 <- extractByIndex(be, c(3, 1, 3))
+    expect_equal(res, res_2)
+})
+
+test_that("cbind2, MsBackendMemory works", {
+    be <- new("MsBackendMemory")
+    df <- data.frame(scanIndex = 1:2, a = "a", b = "b")
+    be <- backendInitialize(be, df)
+    df2 <- data.frame(cola = 3:4, colb = "b", colz = "z")
+    res <- cbind2(be, df2)
+    expect_true(validObject(res))
+    expect_equal(ncol(spectraData(res)), ncol(spectraData(be)) +3)
+    expect_equal(res$cola, c(3, 4))
+    expect_equal(res$colb, c("b", "b"))
+    expect_equal(res$colz, c("z", "z"))
+    expect_equal(res$scanIndex, 1:2)
+    df3 <- data.frame(colv = 1:6, colw = "b")
+    expect_error(cbind2(be, df3), "does not match")
 })
 
 test_that("split,MsBackendMemory works", {
@@ -917,4 +973,67 @@ test_that("tic,MsBackendMemory works", {
 
 test_that("supportsSetBackend,MsBackendMemory", {
     expect_true(supportsSetBackend(MsBackendMemory()))
+})
+
+test_that("backendRequiredSpectraVariables,MsBackendMemory works", {
+    expect_equal(backendRequiredSpectraVariables(MsBackendMemory()),
+                 "dataStorage")
+})
+
+test_that("filterRt works for MsBackendMemory", {
+    test_df$rtime <- c(1.2, 2.1, 3.1)
+    be <- backendInitialize(MsBackendMemory(), test_df)
+    res <- filterRt(be, c(1, 2))
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), integer())
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), 1:4)
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 2), 2L)
+    expect_equal(length(res), 1L)
+    expect_equal(rtime(res), 1.2)
+
+    res <- filterRt(be, c(1, 3), 2L)
+    expect_equal(length(res), 2L)
+    expect_equal(rtime(res), c(1.2, 2.1))
+})
+
+test_that("longForm,MsBackendMemory works", {
+    test_df$rtime <- c(1.2, 2.1, 3.1)
+    be <- backendInitialize(MsBackendMemory(), test_df)
+
+    res <- longForm(be)
+    expect_true(is.data.frame(res))
+    expect_equal(res$mz, unlist(test_df$mz))
+
+    res <- longForm(be, c("rtime", "mz"))
+    expect_true(is.data.frame(res))
+    expect_equal(res$mz, unlist(test_df$mz))
+    expect_equal(colnames(res), c("rtime", "mz"))
+
+    res <- longForm(be, c("rtime", "msLevel"))
+    expect_equal(colnames(res), c("rtime", "msLevel"))
+    expect_equal(test_df$rtime, res$rtime)
+})
+
+test_that("longForm,MsBackendMemory and MsBackendMzR give same results", {
+    sciex_mem <- setBackend(Spectra(sciex_mzr), MsBackendMemory())@backend
+
+    ref <- longForm(sciex_mzr, c("rtime", "mz", "intensity"))
+    res <- longForm(sciex_mem, c("rtime", "mz", "intensity"))
+    expect_equal(ref, res)
+
+    ref <- longForm(sciex_mzr, c("msLevel"))
+    res <- longForm(sciex_mem, c("msLevel"))
+    expect_equal(ref, res)
+
+    ref <- longForm(sciex_mzr, c("intensity", "mz"))
+    res <- longForm(sciex_mem, c("intensity", "mz"))
+    expect_equal(ref, res)
 })

@@ -1,6 +1,7 @@
 ^\.github$
 .editorconfig
 .travis.yml
+man/figures*
 local_data
 favicon
 logo.png

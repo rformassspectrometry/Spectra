@@ -46,7 +46,8 @@
 #'     m/z. See documentation of parameter `tolerance` for more information.
 #'
 #' @param BPPARAM parallel processing setup. Defaults to
-#'     `BPPARAM = SerialParam()`. See [SerialParam()] for more information.
+#'     `BPPARAM = SerialParam()`. See [BiocParallel::SerialParam()] for
+#'     more information.
 #'
 #' @return `numeric` of length equal to the number of spectra in `object` with
 #'     the fragment spectra's estimated precursor m/z values. For MS1 spectra
@@ -55,13 +56,17 @@
 #'
 #' @author Mar Garcia-Aloy, Johannes Rainer
 #'
+#' @seealso
+#'
+#' [addProcessing()] for other data analysis and manipulation functions.
+#'
 #' @export
 #'
 #' @examples
 #'
 #' ## Load a DDA test data set. For the present data set no large differences
 #' ## between the reported and the *actual* precursor m/z are expected.
-#' fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata")
+#' fl <- MsDataHub::PestMix1_DDA.mzML()
 #' s <- Spectra(fl)
 #'
 #' pmz <- estimatePrecursorMz(s)
@@ -85,7 +90,7 @@ estimatePrecursorMz <- function(object, tolerance = 0.3, ppm = 10,
     if (!inherits(object, "Spectra"))
         stop("'object' needs to be a 'Spectra' object.")
     f <- factor(dataOrigin(object))
-    BPPARAM <- backendBpparam(object)
+    BPPARAM <- backendBpparam(object, BPPARAM = BPPARAM)
     res <- bplapply(split(object, f), .adjust_dda_precursor_mz,
                     tolerance = tolerance, ppm = ppm, BPPARAM = BPPARAM)
     unsplit(res, f = f)

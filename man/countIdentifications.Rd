@@ -109,6 +109,9 @@ sp <- countIdentifications(sp)
 ## and three PSMs respectively.
 table(sp$countIdentifications, sp$msLevel)
 }
+\seealso{
+\code{\link[=addProcessing]{addProcessing()}} for other data analysis functions.
+}
 \author{
 Laurent Gatto
 }

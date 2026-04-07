@@ -15,12 +15,17 @@
 \alias{supportsSetBackend}
 \alias{backendBpparam}
 \alias{backendInitialize}
+\alias{backendParallelFactor}
 \alias{backendParallelFactor,MsBackendMzR-method}
 \alias{backendParallelFactor,MsBackendHdf5Peaks-method}
 \alias{dataStorageBasePath}
 \alias{dataStorageBasePath,MsBackendMzR-method}
 \alias{dataStorageBasePath<-}
 \alias{dataStorageBasePath<-,MsBackendMzR-method}
+\alias{extractByIndex}
+\alias{msLeveL<-,MsBackend-method}
+\alias{backendRequiredSpectraVariables}
+\alias{backendRequiredSpectraVariables,MsBackend-method}
 \alias{backendBpparam,MsBackend-method}
 \alias{backendInitialize,MsBackend-method}
 \alias{backendMerge,list-method}
@@ -30,6 +35,7 @@
 \alias{acquisitionNum,MsBackend-method}
 \alias{peaksData,MsBackend-method}
 \alias{peaksVariables,MsBackend-method}
+\alias{cbind2,MsBackend,dataframeOrDataFrameOrmatrix-method}
 \alias{centroided,MsBackend-method}
 \alias{centroided<-,MsBackend-method}
 \alias{collisionEnergy,MsBackend-method}
@@ -39,6 +45,8 @@
 \alias{dataStorage,MsBackend-method}
 \alias{dataStorage<-,MsBackend-method}
 \alias{dropNaSpectraVariables,MsBackend-method}
+\alias{extractByIndex,MsBackend,ANY-method}
+\alias{extractByIndex,MsBackend,missing-method}
 \alias{filterAcquisitionNum,MsBackend-method}
 \alias{filterDataOrigin,MsBackend-method}
 \alias{filterDataStorage,MsBackend-method}
@@ -68,6 +76,7 @@
 \alias{isReadOnly,MsBackend-method}
 \alias{length,MsBackend-method}
 \alias{msLevel,MsBackend-method}
+\alias{msLevel<-,MsBackend-method}
 \alias{mz,MsBackend-method}
 \alias{mz<-,MsBackend-method}
 \alias{lengths,MsBackend-method}
@@ -77,6 +86,7 @@
 \alias{precursorCharge,MsBackend-method}
 \alias{precursorIntensity,MsBackend-method}
 \alias{precursorMz,MsBackend-method}
+\alias{precursorMz<-,MsBackend-method}
 \alias{peaksData<-,MsBackend-method}
 \alias{reset,MsBackend-method}
 \alias{rtime,MsBackend-method}
@@ -99,6 +109,7 @@
 \alias{[[<-,MsBackend-method}
 \alias{dataStorageBasePath,MsBackend-method}
 \alias{dataStorageBasePath<-,MsBackend-method}
+\alias{longForm,MsBackend-method}
 \alias{MsBackendDataFrame}
 \alias{backendInitialize,MsBackendDataFrame-method}
 \alias{MsBackendHdf5Peaks}
@@ -125,6 +136,8 @@
 
 \S4method{peaksVariables}{MsBackend}(object)
 
+\S4method{cbind2}{MsBackend,dataframeOrDataFrameOrmatrix}(x, y = data.frame(), ...)
+
 \S4method{centroided}{MsBackend}(object)
 
 \S4method{centroided}{MsBackend}(object) <- value
@@ -141,7 +154,11 @@
 
 \S4method{dataStorage}{MsBackend}(object) <- value
 
-\S4method{dropNaSpectraVariables}{MsBackend}(object)
+\S4method{dropNaSpectraVariables}{MsBackend}(object, onlyCore = FALSE)
+
+\S4method{extractByIndex}{MsBackend,ANY}(object, i)
+
+\S4method{extractByIndex}{MsBackend,missing}(object, i)
 
 \S4method{filterAcquisitionNum}{MsBackend}(object, n, file, ...)
 
@@ -174,7 +191,7 @@
   match = c("all", "any")
 )
 
-\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = uniqueMsLevels(object))
+\S4method{filterRt}{MsBackend}(object, rt = numeric(), msLevel. = integer())
 
 \S4method{filterValues}{MsBackend}(
   object,
@@ -213,6 +230,8 @@
 
 \S4method{msLevel}{MsBackend}(object)
 
+\S4method{msLevel}{MsBackend}(object) <- value
+
 \S4method{mz}{MsBackend}(object)
 
 \S4method{mz}{MsBackend}(object) <- value
@@ -230,6 +249,8 @@
 \S4method{precursorIntensity}{MsBackend}(object)
 
 \S4method{precursorMz}{MsBackend}(object)
+
+\S4method{precursorMz}{MsBackend}(object, ...) <- value
 
 \S4method{peaksData}{MsBackend}(object) <- value
 
@@ -279,6 +300,8 @@
 
 \S4method{dataStorageBasePath}{MsBackend}(object) <- value
 
+\S4method{longForm}{MsBackend}(object, columns = spectraVariables(object))
+
 MsBackendDataFrame()
 
 \S4method{backendInitialize}{MsBackendDataFrame}(object, data, peaksVariables = c("mz", "intensity"), ...)
@@ -296,8 +319,8 @@ MsBackendMzR()
 
 \item{BPPARAM}{for \code{backendBpparam()}: parameter object from the
 \code{BiocParallel} package defining the parallel processing setup.
-Defaults to \code{BPPARAM = bpparam()}. See \code{\link[=bpparam]{bpparam()}} for more
-information.}
+Defaults to \code{BPPARAM = bpparam()}. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+for more information.}
 
 \item{...}{Additional arguments.}
 
@@ -307,10 +330,28 @@ returned \code{DataFrame}. By default, all columns are returned.
 For \code{peaksData()} accessor: optional \code{character} with requested columns
 in the individual \code{matrix} of the returned \code{list}. Defaults to
 \code{peaksVariables(object)} and depends on what \emph{peaks variables} the
-backend provides.}
+backend provides.
+For \code{longForm()}: the spectra and peaks variables that should be included
+in the returned \code{data.frame}. Defaults to \code{spectraVariables(object)}
+and is thus the union of spectra and peaks variables.}
+
+\item{x}{Object extending \code{MsBackend}.}
+
+\item{y}{For \code{cbind2()}: A \code{data.frame} or \code{DataFrame} with the
+spectra variables to be added to the backend. The number of rows of \code{y}
+and their order have to match the number of spectra and their order
+in \code{x}.}
 
 \item{value}{replacement value for \verb{<-} methods. See individual
 method description or expected data type.}
+
+\item{onlyCore}{For \code{dropNaSpectraVariables()}: \code{logical(1)} whether only
+\emph{core} spectra variables (i.e., \code{coreSpectraVariables()}) are evaluated
+for removal. For \code{onlyCore = TRUE} any user-added spectra variables will
+be retained even if they contain only missing values. Defaults to
+\code{onlyCore = FALSE}.}
+
+\item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
 
 \item{n}{for \code{filterAcquisitionNum()}: \code{integer} with the acquisition
 numbers to filter for.}
@@ -343,7 +384,7 @@ to subset \code{object}.}
 
 \item{ppm}{For \code{filterPrecursorMzValues()}: \code{numeric(1)} with the
 m/z-relative maximal acceptable difference for a m/z to be considered
-matching. See \code{\link[=closest]{closest()}} for details.
+matching. See \code{\link[MsCoreUtils:matching]{MsCoreUtils::closest()}} for details.
 For \code{filterValues()}: \code{numeric} of any length allowing to define
 a maximal accepted difference between user input \code{values} and the
 \code{spectraVariables} values.  If it is not equal to the length of the
@@ -352,7 +393,8 @@ recycled.}
 
 \item{tolerance}{For \code{filterPrecursorMzValues()}: \code{numeric(1)} with the
 maximal absolute acceptable difference for a m/z value to be considered
-matching. See \code{\link[=closest]{closest()}} for details. For \code{filterValues()}: \code{numeric}
+matching. See documentation \code{\link[MsCoreUtils:matching]{MsCoreUtils::closest()}} for details.
+For \code{filterValues()}: \code{numeric}
 accepted tolerance between the \code{values} and the spectra variables.
 Defaults to \code{tolerance = 0}. If it is not equal to the length of the
 value provided with parameter \code{spectraVariables}, \code{tolerance[1]} will
@@ -392,11 +434,9 @@ to be used to subset/filter \code{object}.}
 
 \item{msLevel.}{same as \code{msLevel} above.}
 
-\item{values}{for \code{filterValues()}: A \code{numeric} vector that define the
+\item{values}{For \code{filterValues()}: A \code{numeric} vector that define the
 values to filter the \code{object}. \code{values} needs to be of same length than
 parameter \code{spectraVariables} and in the same order.}
-
-\item{x}{Object extending \code{MsBackend}.}
 
 \item{use.names}{For \code{lengths()}: whether spectrum names should be used.}
 
@@ -406,8 +446,6 @@ parameter \code{spectraVariables} and in the same order.}
 reported total ion current should be reported, or whether the
 total ion current should be (re)calculated on the actual data
 (\code{initial = FALSE}).}
-
-\item{i}{For \code{[}: \code{integer}, \code{logical} or \code{character} to subset the object.}
 
 \item{j}{For \code{[}: not supported.}
 
@@ -517,7 +555,9 @@ detailed description and examples):
 allowed. Parameter \code{i} should support \code{integer} indices and \code{logical}
 and should throw an error if \code{i} is out of bounds. The
 \code{MsCoreUtils::i2index} could be used to check the input \code{i}.
-For \code{i = integer()} an empty backend should be returned.
+For \code{i = integer()} an empty backend should be returned. Implementation
+of this method is optional, as the default calls the \code{extractByIndex()}
+method (which has to be implemented as the main subsetting method).
 \item \code{$}, \verb{$<-}: access or set/add a single spectrum variable (column) in the
 backend. Using a \code{value} of \code{NULL} should allow deleting the specified
 spectra variable. An error should be thrown if the spectra variable is not
@@ -563,19 +603,17 @@ The default implementation returns a factor of length 0 (\code{factor()})
 providing thus no default splitting. \code{backendParallelFactor()} for
 \code{MsBackendMzR} on the other hand returns \code{factor(dataStorage(object))}
 hence suggesting to split the object by data file.
-\item \code{dataOrigin()}: gets a \code{character} of length equal to the number of
-spectra in \code{object} with the \emph{data origin} of each spectrum. This could
-e.g. be the mzML file from which the data was read.
-\item \code{dataStorage()}: gets a \code{character} of length equal to the number of
-spectra in \code{object} with the data storage of each spectrum. Note that
-missing values (\code{NA_character_}) are not supported for \code{dataStorage}.
-\item \code{dataStorageBasePath()}, \verb{dataStorageBasePath<-: gets or sets the common *base* path of the directory containing all data files. If supported, the function is expected to return (or accept) a }character\verb{of length 1. Most backends (such as for example the}MsBackendMemory\verb{will not support this function and}dataStorageBasePath()\verb{will return}NA_character_\verb{. For }MsBackendMzR\verb{, this function allows to get or change the path to the directory containing the original data files, which is required if e.g. a serialized }MsBackendMzR` instance gets copied to another computer or
-file system.
-\item \code{dropNaSpectraVariables()}: removes spectra variables (i.e. columns in the
-object's \code{spectraData} that contain only missing values (\code{NA}). Note that
-while columns with only \code{NA}s are removed, a \code{spectraData()} call after
-\code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
-for \emph{core} spectra variables.
+\item \code{backendRequiredSpectraVariables()}: returns a \code{character} with spectra
+variable names that are mandatory for a specific backend. The default
+returns an empty \code{character()}. The implementation for \code{MsBackendMzR}
+returns \code{c("dataStorage", "scanIndex")} as these two spectra variables
+are required to load the MS data on-the-fly. This method needs only to
+be implemented if a backend requires specific variables to be defined.
+\item \code{cbind2()}: allows to appends multiple new spectra variables to the
+backend at once. The values for the new spectra variables have to
+be in the same order as the spectra in \code{x}. Replacing existing spectra
+variables is not supported through this function. For a more controlled
+way of adding spectra variables, the \code{joinSpectraData()} should be used.
 \item \code{centroided()}, \verb{centroided<-}: gets or sets the centroiding
 information of the spectra. \code{centroided()} returns a \code{logical}
 vector of length equal to the number of spectra with \code{TRUE} if a
@@ -589,6 +627,21 @@ collision energy for all spectra in \code{object}. \code{collisionEnergy()}
 returns a \code{numeric} with length equal to the number of spectra
 (\code{NA_real_} if not present/defined), \verb{collisionEnergy<-} takes a
 \code{numeric} of length equal to the number of spectra in \code{object}.
+\item \code{dataOrigin()}: gets a \code{character} of length equal to the number of
+spectra in \code{object} with the \emph{data origin} of each spectrum. This could
+e.g. be the mzML file from which the data was read.
+\item \code{dataStorage()}: gets a \code{character} of length equal to the number of
+spectra in \code{object} with the data storage of each spectrum. Note that
+missing values (\code{NA_character_}) are not supported for \code{dataStorage}.
+\item \code{dataStorageBasePath()}, \verb{dataStorageBasePath<-: gets or sets the common *base* path of the directory containing all data files. If supported, the function is expected to return (or accept) a }character\verb{of length 1. Most backends (such as for example the}MsBackendMemory\verb{will not support this function and}dataStorageBasePath()\verb{will return}NA_character_\verb{. For }MsBackendMzR\verb{, this function allows to get or change the path to the directory containing the original data files, which is required if e.g. a serialized }MsBackendMzR` instance gets copied to another computer or
+file system.
+\item \code{dropNaSpectraVariables()}: removes spectra variables (i.e. columns in the
+object's \code{spectraData} that contain only missing values (\code{NA}). Note that
+while columns with only \code{NA}s are removed, a \code{spectraData()} call after
+\code{dropNaSpectraVariables()} might still show columns containing \code{NA} values
+for \emph{core} spectra variables. With parameter \code{onlyCore = TRUE} only \emph{core}
+spectra variables are evaluated for removal. Any other spectra variable
+added by the user with only \code{NA} values will be retained.
 \item \code{export()}: exports data from a \code{Spectra} class to a file. This method is
 called by the \verb{export,Spectra} method that passes itself as a second
 argument to the function. The \verb{export,MsBackend} implementation is thus
@@ -600,6 +653,16 @@ queue) are applied prior to export - this would not be possible with only a
 for the \code{MsBackendMzR} backend that supports export of the data in
 \emph{mzML} or \emph{mzXML} format. See the documentation for the \code{MsBackendMzR}
 class below for more information.
+\item \code{extractByIndex()}: function to subset a backend to selected elements
+defined by the provided index. Similar to \code{[}, this method should allow
+extracting (or to subset) the data in any order. In contrast to \code{[},
+however, \code{i} is expected to be an \code{integer} (while \code{[} should also
+support \code{logical} and eventually \code{character}). While being apparently
+redundant to \code{[}, this methods avoids package namespace errors/problems
+that can result in implementations of \code{[} being not found by R (which
+can happen sometimes in parallel processing using the
+\code{\link[BiocParallel:SnowParam-class]{BiocParallel::SnowParam()}}). This method is used internally by \code{Spectra}
+to extract/subset its backend. Implementation of this method is mandatory.
 \item \code{filterAcquisitionNum()}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
 \code{dataStorage} is also provided, \code{object} is subsetted to the spectra with
@@ -671,7 +734,8 @@ values are within any of the provided ranges are retained).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterRt()}: retains spectra of MS level \code{msLevel} with retention times
-within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}.
+within (\code{>=}) \code{rt[1]} and (\code{<=}) \code{rt[2]}. The filter is applied to all
+spectra if no MS level is specified (the default, \code{msLevel. = integer()}).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{filterValues()}: allows filtering of the \code{Spectra} object based on
@@ -685,13 +749,13 @@ values are within any of the provided ranges are retained).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{intensity()}: gets the intensity values from the spectra. Returns
-a \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors (intensity values for each
+a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
 \item \verb{intensity<-}: replaces the intensity values. \code{value} has to be a \code{list}
-(or \code{\link[=NumericList]{NumericList()}}) of length equal to the number of spectra and the
-number of values within each list element identical to the number of
-peaks in each spectrum (i.e. the \code{lengths(x)}). Note that just
+(or \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}}) of length equal to the number of spectra
+and the number of values within each list element identical to the
+number of peaks in each spectrum (i.e. the \code{lengths(x)}). Note that just
 writeable backends support this method.
 \item \code{ionCount()}: returns a \code{numeric} with the sum of intensities for
 each spectrum. If the spectrum is empty (see \code{isEmpty()}),
@@ -717,12 +781,23 @@ only} or does allow also to write/update data.
 \item \code{lengths()}: gets the number of peaks (m/z-intensity values) per
 spectrum.  Returns an \code{integer} vector (length equal to the
 number of spectra). For empty spectra, \code{0} is returned.
+\item \code{longForm()}: extract the MS data in \emph{long form}, i.e., as a \code{data.frame}
+with columns being requested spectra and peak variables and one row per
+mass peak. Parameter \code{columns} can be used to specify the columns (i.e.,
+spectra or peaks variables) that should be returned. The default is
+\code{columns = spectraVariables(object)} and \strong{all} spectra and peak variables
+are returned. It is strongly suggested to extract only selected columns
+and not the full data to avoid potential out-of-memory problems.
+Implementation of this method is optional as a default implementation for
+\code{MsBackend} is available which converts the \code{DataFrame} returned by
+\code{spectraData()} into long form.
 \item \code{msLevel()}: gets the spectra's MS level. Returns an \code{integer}
 vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
+\item \verb{msLevel<-}: replaces the spectra's MS level.
 \item \code{mz()}: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a \code{\link[=NumericList]{NumericList()}} or length equal to the number of
-spectra, each element a \code{numeric} vector with the m/z values of
+spectra. Returns a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} or length equal to the
+number of spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
 \item \verb{mz<-}: replaces the m/z values. \code{value} has to be a \code{list} of length equal
 to the number of spectra and the number of values within each list element
@@ -790,7 +865,9 @@ metadata (annotation, also called header).  \code{spectraData()} returns
 a \code{DataFrame}, \verb{spectraData<-} expects a \code{DataFrame} with the same number
 of rows as there are spectra in \code{object}. Note that \code{spectraData()} has to
 return the full data, i.e. also the m/z and intensity values (as a \code{list}
-or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}.
+or \code{SimpleList} in columns \code{"mz"} and \code{"intensity"}. See also
+\code{\link[=fillCoreSpectraVariables]{fillCoreSpectraVariables()}} for a function that can \emph{complete} a spectra
+data data frame with eventually missing \emph{core} spectra variables.
 \item \code{spectraNames()}: returns a \code{character} vector with the names of
 the spectra in \code{object} or \code{NULL} if not set. \verb{spectraNames<-} allows to
 set spectra names (if the object is not read-only).
@@ -897,10 +974,10 @@ containing the precursor of a (MS2) spectrum.
 precursor.
 \item \code{"precursorCharge"}: \code{integer} with the charge of the precursor.
 \item \code{"collisionEnergy"}: \code{numeric} with the collision energy.
-\item \code{"mz"}: \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors representing the m/z values
-for each spectrum.
-\item \code{"intensity"}: \code{\link[=NumericList]{NumericList()}} of \code{numeric} vectors representing the
-intensity values for each spectrum.
+\item \code{"mz"}: \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors representing the
+m/z values for each spectrum.
+\item \code{"intensity"}: \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors
+representing the intensity values for each spectrum.
 }
 
 Additional columns are allowed too.
@@ -938,7 +1015,7 @@ This backend provides an \code{export()} method to export data from a \code{Spec
 The parameters are:
 \itemize{
 \item \code{object}: an instance of the \code{MsBackendMzR} class.
-\item \code{x}: the \linkS4class{Spectra} object to be exported.
+\item \code{x}: the \link{Spectra} object to be exported.
 \item \code{file}: \code{character} with the (full) output file name(s). Should be
 of length 1 or equal \code{length(x)}. If a single file is specified, all
 spectra are exported to that file. Alternatively it is possible to specify
@@ -952,7 +1029,7 @@ backend and if \code{dataOrigin(x)} contains the original MS data file names.
 \item \code{BPPARAM}: parallel processing settings.
 }
 
-See examples in \linkS4class{Spectra} or the vignette for more details and
+See examples in \link{Spectra} or the vignette for more details and
 examples.
 
 The \code{MsBackendMzR} ignores parameter \code{columns} of the \code{peaksData()}
