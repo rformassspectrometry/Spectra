@@ -201,109 +201,109 @@ combinePeaksData <- function(x, intensityFun = base::mean,
                              group_method = c("group", "group_mz_int"),
                              peaks = c("union", "intersect"), main = integer(),
                              minProp = 0.5, ...) {
-  peaks <- match.arg(peaks)
-  lenx <- length(x)
-  if (lenx == 1)
-    return(x[[1]])
-  mzs <- lapply(x, "[", , y = 1)
-  mzs_lens <- lengths(mzs)
-  mzs <- unlist(mzs, use.names = FALSE)
-  mz_order <- order(mzs)
-  mzs <- mzs[mz_order]
-  ints <- unlist(lapply(x, "[", , y = 2), use.names = FALSE)[mz_order]
-  
-  
-  #New lines start--------   
-  if (group_method == "group") {
-    #New lines end --------    
-    if (timeDomain)
-      mz_groups <- group(sqrt(mzs), tolerance = tolerance, ppm = ppm)
-    else
-      mz_groups <- group(mzs, tolerance = tolerance, ppm = ppm)
-    #New lines start--------    
-  } else if (group_method == "group_mz_int") {
-    
-    if (timeDomain)
-      mz_groups <- group_mz_int(sqrt(mzs), ints, lenx, tolerance = tolerance, ppm = ppm)
-    else
-      mz_groups <- group_mz_int(mzs, ints, lenx, tolerance = tolerance, ppm = ppm)
-    
-  }
-  #New lines end--------  
-  
-  if (length(main)) {
-    if (main < 1 || main > lenx)
-      stop("'main' has to be larger than 1 and smaller than ", lenx)
-    ## Keep only mz groups present in the *main* spectrum
-    is_in_main <- rep.int(seq_along(mzs_lens), mzs_lens)[mz_order] == main
-    keep <- mz_groups %in% mz_groups[is_in_main]
-    ## Keep only values for which a m/z in main is present.
-    mz_groups <- mz_groups[keep]
-    mzs <- mzs[keep]
-    ints <- ints[keep]
-  }
-  
-  #New lines start-------- 
-  mzs <- mzs[mz_groups != -1]
-  ints <- ints[mz_groups != -1]
-  mz_groups <- mz_groups[mz_groups != -1]
-  #New lines end--------
-  mzs <- split(mzs, mz_groups)
-  ints <- split(ints, mz_groups)
-  
-  
-  # --- New lines start for keeping the mz within the tolerance ----------------------
-  tolerance <- tolerance + sqrt(.Machine$double.eps)
-  if (ppm > 0)
-    tolerance <- tolerance + ppm(x[-length(x)], ppm)
-  
-  
-  idx_above <- which(unlist(lapply(mzs, max)) - unlist(lapply(mzs, min)) > tolerance)
-  
-  for (i in idx_above) {
+    peaks <- match.arg(peaks)
+    lenx <- length(x)
+    if (lenx == 1)
+        return(x[[1]])
+    mzs <- lapply(x, "[", , y = 1)
+    mzs_lens <- lengths(mzs)
+    mzs <- unlist(mzs, use.names = FALSE)
+    mz_order <- order(mzs)
+    mzs <- mzs[mz_order]
+    ints <- unlist(lapply(x, "[", , y = 2), use.names = FALSE)[mz_order]
     
     
-    ints_max_idx <- which.max(ints[[i]]) 
-    mz_corres <- mzs[[i]][ints_max_idx]
+    #New lines start--------   
+    if (group_method == "group") {
+        #New lines end --------    
+        if (timeDomain)
+            mz_groups <- group(sqrt(mzs), tolerance = tolerance, ppm = ppm)
+        else
+            mz_groups <- group(mzs, tolerance = tolerance, ppm = ppm)
+        #New lines start--------    
+    } else if (group_method == "group_mz_int") {
+        
+        if (timeDomain)
+            mz_groups <- group_mz_int(sqrt(mzs), ints, lenx, tolerance = tolerance, ppm = ppm)
+        else
+            mz_groups <- group_mz_int(mzs, ints, lenx, tolerance = tolerance, ppm = ppm)
+        
+    }
+    #New lines end--------  
     
-    mzs_idx_keep <- which(abs(mzs[[i]] - mz_corres) <= tolerance)
+    if (length(main)) {
+        if (main < 1 || main > lenx)
+            stop("'main' has to be larger than 1 and smaller than ", lenx)
+        ## Keep only mz groups present in the *main* spectrum
+        is_in_main <- rep.int(seq_along(mzs_lens), mzs_lens)[mz_order] == main
+        keep <- mz_groups %in% mz_groups[is_in_main]
+        ## Keep only values for which a m/z in main is present.
+        mz_groups <- mz_groups[keep]
+        mzs <- mzs[keep]
+        ints <- ints[keep]
+    }
     
-    mzs[[i]] <- mzs[[i]][mzs_idx_keep]
-    ints[[i]] <- ints[[i]][mzs_idx_keep]
+    #New lines start-------- 
+    mzs <- mzs[mz_groups != -1]
+    ints <- ints[mz_groups != -1]
+    mz_groups <- mz_groups[mz_groups != -1]
+    #New lines end--------
+    mzs <- split(mzs, mz_groups)
+    ints <- split(ints, mz_groups)
     
-  }
-  
-  # --------------- New lines end ------------------------------------------
-  # --------------- New lines start again ----------------------------------
-  
-  
-  if (peaks == "intersect") {
-    keep <- lengths(mzs) >= (lenx * minProp)
-    if (any(keep)) {
-      mzs <- mzs[keep]
-      ints <- ints[keep]
+    
+    # --- New lines start for keeping the mz within the tolerance ----------------------
+    tolerance <- tolerance + sqrt(.Machine$double.eps)
+    if (ppm > 0)
+        tolerance <- tolerance + ppm(x[-length(x)], ppm)
+    
+    
+    idx_above <- which(unlist(lapply(mzs, max)) - unlist(lapply(mzs, min)) > tolerance)
+    
+    for (i in idx_above) {
+        
+        
+        ints_max_idx <- which.max(ints[[i]]) 
+        mz_corres <- mzs[[i]][ints_max_idx]
+        
+        mzs_idx_keep <- which(abs(mzs[[i]] - mz_corres) <= tolerance)
+        
+        mzs[[i]] <- mzs[[i]][mzs_idx_keep]
+        ints[[i]] <- ints[[i]][mzs_idx_keep]
+        
+    }
+    
+    # --------------- New lines end ------------------------------------------
+    # --------------- New lines start again ----------------------------------
+    
+    
+    if (peaks == "intersect") {
+        keep <- lengths(mzs) >= (lenx * minProp)
+        if (any(keep)) {
+            mzs <- mzs[keep]
+            ints <- ints[keep]
+        } else
+            return(cbind(mz = numeric(), intensity = numeric()))
+    }
+    if (weighted) {
+        wm <- stats::weighted.mean
+        mzs <- mapply(mzs, ints, FUN = function(mz, w)
+            wm(mz, w + 1, na.rm = TRUE, USE.NAMES = FALSE))
     } else
-      return(cbind(mz = numeric(), intensity = numeric()))
-  }
-  if (weighted) {
-    wm <- stats::weighted.mean
-    mzs <- mapply(mzs, ints, FUN = function(mz, w)
-      wm(mz, w + 1, na.rm = TRUE, USE.NAMES = FALSE))
-  } else
-    mzs <- vapply1d(mzs, FUN  = mzFun)
-  
-#New lines start ---------------------------------------------
-  ints <- vapply1d(ints, FUN = intensityFun)
-  mz_order <- order(mzs)
-  mzs <- mzs[mz_order]
-  ints <- ints[mz_order]
-#New lines end ------------------------------------------------
-  
-  if (is.unsorted(mzs))
-    stop("m/z values of combined spectrum are not ordered increasingly")
-#Modifies line below  
-  #cbind(mz = mzs, intensity = vapply1d(ints, FUN = intensityFun))
-  cbind(mz = mzs, intensity = ints)
+        mzs <- vapply1d(mzs, FUN  = mzFun)
+    
+    #New lines start ---------------------------------------------
+    ints <- vapply1d(ints, FUN = intensityFun)
+    mz_order <- order(mzs)
+    mzs <- mzs[mz_order]
+    ints <- ints[mz_order]
+    #New lines end ------------------------------------------------
+    
+    if (is.unsorted(mzs))
+        stop("m/z values of combined spectrum are not ordered increasingly")
+    #Modifies line below  
+    #cbind(mz = mzs, intensity = vapply1d(ints, FUN = intensityFun))
+    cbind(mz = mzs, intensity = ints)
 }
 
 #' pairwise comparison of peak matrices. Parameters `xPrecursorMz` and
