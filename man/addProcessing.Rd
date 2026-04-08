@@ -33,7 +33,7 @@ processingLog(x)
 
 scalePeaks(x, by = sum, msLevel. = uniqueMsLevels(x))
 
-shiftPeaks(object, offset = 0, ...)
+shiftPeaks(object, offset = 0, direction = c("right", "left"), ...)
 
 \S4method{addProcessing}{Spectra}(object, FUN, ..., spectraVariables = character())
 
@@ -130,6 +130,12 @@ the function should be applied (defaults to all MS levels of \code{object}.}
 the name of a spectra variable containing an (per spectrum) offset value
 to shift the peaks.}
 
+\item{direction}{For \code{shiftPeaks()}: \code{character(1)} defining the direction
+of the shift. Can be either \code{shiftPeaks = "right"} (the default) which
+will shift peaks to the right (i.e., peaks' m/z + offset) or
+\code{shiftPeaks = "left"} that will shift peaks to the left by subtracting
+\code{offset} from the peaks' m/z.}
+
 \item{...}{Additional arguments passed to internal and downstream functions.}
 
 \item{FUN}{For \code{addProcessing()}: function to be applied to the peak matrix
@@ -212,7 +218,7 @@ higher than \code{snr * noise} to be considered as peak.}
 the peak that should be considered in the weighted mean calculation.}
 
 \item{descending}{For \code{pickPeaks()}: \code{logical}, if \code{TRUE} just values
-betwee the nearest valleys around the peak centroids are used.}
+between the nearest valleys around the peak centroids are used.}
 
 \item{threshold}{For \code{pickPeaks()}: a \code{numeric(1)} defining the proportion
 of the maximal peak intensity. Only values above the threshold are
@@ -317,7 +323,10 @@ intensities is thus 1 for each spectrum after scaling. Parameter
 By default (\code{msLevel. = uniqueMsLevels(x)}) intensities for all
 spectra will be scaled.
 \item \code{shiftPeaks()}: shifts peaks of each spectrum along \emph{m/z} dimension
-by an offset. The resulting m/z values are the original m/z \code{+ offset}.
+by an offset. The \emph{direction} of this shift can be defined with parameter
+\code{direction}. The default \code{direction = "right"} will replace the peak's
+m/z with m/z + \code{offset}, \code{direction = "left"} subtracts the offset from
+the peak's m/z (m/z - \code{offset}).
 Parameter \code{offset} can be a \code{numeric(1)}, or a \code{character(1)} with the
 name of a spectra variable containing an \code{offset} for each spectrum. For
 example, to add the precursor m/z value of a spectrum to the peak's m/z
@@ -488,11 +497,9 @@ sps_mod |>
 ## precursor m/z value from the peaks' m/z of each MS2 spectrum to create
 ## spectra for a *neutral loss* comparison
 
-## Add the negative precursor m/z as a new spectra variable
-sps_mod$precursor_offset <- -sps_mod$precursorMz
 nl_ms2 <- sps_mod |>
     filterMsLevel(2L) |>
-    shiftPeaks(offset = "precursor_offset")
+    shiftPeaks(offset = "precursorMz", direction = "left")
 ## m/z values are shifted
 mz(nl_ms2)
 

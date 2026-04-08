@@ -901,9 +901,19 @@ test_that("shiftPeaks works", {
     res_mz <- mz(res)
     expect_equal(res_mz, ref_mz + 10)
 
+    res <- shiftPeaks(a, 10, direction = "left")
+    expect_true(length(res@processingQueue) == 1L)
+    ref_mz <- mz(a)
+    res_mz <- mz(res)
+    expect_equal(res_mz, ref_mz - 10)
+
     res <- shiftPeaks(a, offset = "precursorMz")
     res_mz <- mz(res)
     expect_equal(res_mz[[9]], mz(a)[[9]] + a$precursorMz[9])
+
+    res <- shiftPeaks(a, offset = "precursorMz", direction = "left")
+    res_mz <- mz(res)
+    expect_equal(res_mz[[9]], mz(a)[[9]] - a$precursorMz[9])
 
     a$shift_offset <- seq_along(a)
     res <- shiftPeaks(a, offset = "shift_offset")
