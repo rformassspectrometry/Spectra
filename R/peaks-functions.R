@@ -751,8 +751,13 @@ joinPeaksNone <- function(x, y, ...) {
 #' Add `numeric(1)` offset to each peak's m/z.
 #'
 #' @noRd
-.peaks_shift_mz <- function(x, offset, ...) {
+.peaks_shift_mz_right <- function(x, offset, ...) {
     x[, 1L] <- x[, 1L] + offset
+    x
+}
+
+.peaks_shift_mz_left <- function(x, offset, ...) {
+    x[, 1L] <- x[, 1L] - offset
     x
 }
 
@@ -760,8 +765,14 @@ joinPeaksNone <- function(x, y, ...) {
 #' offset to each peak's m/z.
 #'
 #' @noRd
-.peaks_shift_mz_variable <- function(x, offset, ...) {
+.peaks_shift_mz_variable_right <- function(x, offset, ...) {
     offset <- list(...)[[offset]]
     x[, 1L] <- x[, 1L] + offset
+    x
+}
+
+.peaks_shift_mz_variable_left <- function(x, offset, ...) {
+    offset <- list(...)[[offset]]
+    x[, 1L] <- x[, 1L] - offset
     x
 }

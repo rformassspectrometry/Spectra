@@ -749,25 +749,26 @@ test_that(".peaks_contain_mz works", {
                                   tolerance = 0.1))
 })
 
-test_that(".peaks_shift_mz works", {
+test_that(".peaks_shift_mz_x works", {
     pks <- cbind(mz = c(12.3, 42.4, 54.2, 59.3, 65.23),
                  intensity = 1:5)
 
-    res <- .peaks_shift_mz(pks, 0.0)
+    res <- .peaks_shift_mz_right(pks, 0.0)
     expect_equal(res, pks)
-    res <- .peaks_shift_mz(pks, 10)
+    res <- .peaks_shift_mz_right(pks, 10)
     expect_equal(res[, 1L], pks[, 1L] + 10)
-    res <- .peaks_shift_mz(pks, -55)
+    res <- .peaks_shift_mz_left(pks, 55)
     expect_equal(res[, 1L], pks[, 1L] - 55)
-    res <- .peaks_shift_mz(pks, -200)
+    res <- .peaks_shift_mz_left(pks, 200)
     expect_equal(res[, 1L], pks[, 1L] - 200)
     expect_equal(res[, 2L], 1:5)
-
 })
 
-test_that(".peaks_shift_mz_variable works", {
+test_that(".peaks_shift_mz_variable_x works", {
     pks <- cbind(mz = c(12.3, 42.4, 54.2, 59.3, 65.23),
                  intensity = 1:5)
-    res <- .peaks_shift_mz_variable(pks, offset = "what", what = 3)
+    res <- .peaks_shift_mz_variable_right(pks, offset = "what", what = 3)
     expect_equal(res[, 1L], pks[, 1L] + 3)
+    res <- .peaks_shift_mz_variable_left(pks, offset = "what", what = 3)
+    expect_equal(res[, 1L], pks[, 1L] - 3)
 })
