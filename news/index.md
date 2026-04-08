@@ -2,6 +2,13 @@
 
 ## Spectra 1.21
 
+### Change 1.21.7
+
+- Add parameter `direction` to
+  [`shiftPeaks()`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
+  allowing to define whether peaks should be shifted *left* or *right*
+  (default).
+
 ### Change 1.21.6
 
 - Add

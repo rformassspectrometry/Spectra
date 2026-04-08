@@ -62,10 +62,10 @@ head(res)
 ## For such a calculation the vectorized `sqrt` would however be recommended
 system.time(sqrt(x))
 #>    user  system elapsed 
-#>       0       0       0 
+#>   0.002   0.000   0.002 
 system.time(chunkapply(x, sqrt, chunkSize = 200))
 #>    user  system elapsed 
-#>   0.001   0.000   0.000 
+#>   0.002   0.000   0.002 
 
 ## Simple example splitting a numeric vector into chunks of 200 and
 ## aggregating the values within the chunk using the `mean`. Due to the

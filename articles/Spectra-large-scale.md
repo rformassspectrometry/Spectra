@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-04-03 07:18:43.053554\
-**Compiled**: Fri Apr 3 07:59:52 2026
+**Last modified:** 2026-04-08 05:58:07.146138\
+**Compiled**: Wed Apr 8 06:22:23 2026
 
 ## Introduction
 
@@ -101,9 +101,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 24b416eb0254_7861
-    ## 24b4162f9cc7_7862
-    ## 24b44671a5e7_7859
+    ## d731c8dc749_7861
+    ## d734d176166_7862
+    ## d736d227665_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -198,14 +198,14 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/24b416eb0254_7861 
-    ##                                                  7602 
-    ## /github/home/.cache/R/ExperimentHub/24b4162f9cc7_7862 
-    ##                                                  8999 
-    ## /github/home/.cache/R/ExperimentHub/24b44671a5e7_7859 
-    ##                                                   931 
-    ## /github/home/.cache/R/ExperimentHub/24b452774097_7860 
-    ##                                                   931
+    ## /github/home/.cache/R/ExperimentHub/d731c8dc749_7861 
+    ##                                                 7602 
+    ## /github/home/.cache/R/ExperimentHub/d734d176166_7862 
+    ##                                                 8999 
+    ## /github/home/.cache/R/ExperimentHub/d736d227665_7859 
+    ##                                                  931 
+    ## /github/home/.cache/R/ExperimentHub/d731ef6885f_7860 
+    ##                                                  931
 
 The data would thus be split and processed by the original file, from
 which the data is imported. We next specifically define the chunk-size
@@ -340,7 +340,7 @@ i.e., based on the `processingChunkFactor`:
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-03-28 r89738)
+    ## R Under development (unstable) (2026-04-05 r89793)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -364,8 +364,8 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.11.2    Spectra_1.21.6      BiocParallel_1.45.0
-    ## [4] S4Vectors_0.49.0    BiocGenerics_0.57.0 generics_0.1.4     
+    ## [1] MsDataHub_1.11.3    Spectra_1.21.7      BiocParallel_1.45.0
+    ## [4] S4Vectors_0.49.1    BiocGenerics_0.57.0 generics_0.1.4     
     ## [7] BiocStyle_2.39.0   
     ## 
     ## loaded via a namespace (and not attached):
@@ -383,15 +383,15 @@ sessionInfo()
     ## [34] jquerylib_0.1.4        MASS_7.3-65            cachem_1.1.0          
     ## [37] MetaboCoreUtils_1.19.2 ExperimentHub_3.1.0    AnnotationHub_4.1.0   
     ## [40] tidyselect_1.2.1       digest_0.6.39          purrr_1.2.1           
-    ## [43] dplyr_1.2.0            bookdown_0.46          BiocVersion_3.23.1    
-    ## [46] fastmap_1.2.0          cli_3.6.5              magrittr_2.0.4        
+    ## [43] dplyr_1.2.1            bookdown_0.46          BiocVersion_3.23.1    
+    ## [46] fastmap_1.2.0          cli_3.6.5              magrittr_2.0.5        
     ## [49] withr_3.0.2            filelock_1.0.3         rappdirs_0.3.4        
     ## [52] bit64_4.6.0-1          XVector_0.51.0         httr_1.4.8            
     ## [55] rmarkdown_2.31         bit_4.6.0              otel_0.2.0            
     ## [58] png_0.1-9              ragg_1.5.2             memoise_2.0.1         
     ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.45.0        
-    ## [64] BiocFileCache_3.1.0    rlang_1.1.7            Rcpp_1.1.1            
+    ## [64] BiocFileCache_3.1.0    rlang_1.2.0            Rcpp_1.1.1            
     ## [67] glue_1.8.0             DBI_1.3.0              mzR_2.45.1            
     ## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              
     ## [73] systemfonts_1.3.2      fs_2.0.1               ProtGenerics_1.43.0   
-    ## [76] MsCoreUtils_1.23.6
+    ## [76] MsCoreUtils_1.23.7

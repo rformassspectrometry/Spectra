@@ -47,7 +47,7 @@ compareSpectra() for spectra similarity calculations.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -412,8 +412,8 @@ parameter <code>backend</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24b44671a5e7_7859</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24b452774097_7860</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> d736d227665_7859</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> d731ef6885f_7860</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##  --------  CHANGING DATA REPRESENTATIONS  --------</span></span></span>
@@ -439,7 +439,7 @@ parameter <code>backend</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1862         1   259.752       931</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Apr  3 07:57:21 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Apr  8 06:19:37 2026] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory()` supports the `setBackend()` method:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="MsBackend.html">supportsSetBackend</a></span><span class="op">(</span><span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -467,30 +467,30 @@ parameter <code>backend</code>.</p></li>
 <span class="r-in"><span><span class="co">## While objects that use an on-disk backend will list the files where the</span></span></span>
 <span class="r-in"><span><span class="co">## data is stored.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">sciex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The spectra variable `dataOrigin` returns for each spectrum the *origin*</span></span></span>
 <span class="r-in"><span><span class="co">## of the data. If the data is read from e.g. mzML files, this will be the</span></span></span>
 <span class="r-in"><span><span class="co">## original mzML file name:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sciex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sciex_im</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/24b44671a5e7_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/d736d227665_7859"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##  -------- DATA EXPORT  --------</span></span></span>

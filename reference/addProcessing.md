@@ -19,7 +19,7 @@ processingLog(x)
 
 scalePeaks(x, by = sum, msLevel. = uniqueMsLevels(x))
 
-shiftPeaks(object, offset = 0, ...)
+shiftPeaks(object, offset = 0, direction = c("right", "left"), ...)
 
 # S4 method for class 'Spectra'
 addProcessing(object, FUN, ..., spectraVariables = character())
@@ -139,6 +139,14 @@ spectrapply(
   For `shiftPeaks()`: `numeric(1)` offset or `character(1)` with the
   name of a spectra variable containing an (per spectrum) offset value
   to shift the peaks.
+
+- direction:
+
+  For `shiftPeaks()`: `character(1)` defining the direction of the
+  shift. Can be either `shiftPeaks = "right"` (the default) which will
+  shift peaks to the right (i.e., peaks' m/z + offset) or
+  `shiftPeaks = "left"` that will shift peaks to the left by subtracting
+  `offset` from the peaks' m/z.
 
 - ...:
 
@@ -264,8 +272,8 @@ spectrapply(
 
 - descending:
 
-  For `pickPeaks()`: `logical`, if `TRUE` just values betwee the nearest
-  valleys around the peak centroids are used.
+  For `pickPeaks()`: `logical`, if `TRUE` just values between the
+  nearest valleys around the peak centroids are used.
 
 - threshold:
 
@@ -374,12 +382,14 @@ The methods listed here return a `Spectra` object as a result.
   intensities for all spectra will be scaled.
 
 - `shiftPeaks()`: shifts peaks of each spectrum along *m/z* dimension by
-  an offset. The resulting m/z values are the original m/z `+ offset`.
-  Parameter `offset` can be a `numeric(1)`, or a `character(1)` with the
-  name of a spectra variable containing an `offset` for each spectrum.
-  For example, to add the precursor m/z value of a spectrum to the
-  peak's m/z values use `offset = "precursorMz"`. See examples below for
-  more details.
+  an offset. The *direction* of this shift can be defined with parameter
+  `direction`. The default `direction = "right"` will replace the peak's
+  m/z with m/z + `offset`, `direction = "left"` subtracts the offset
+  from the peak's m/z (m/z - `offset`). Parameter `offset` can be a
+  `numeric(1)`, or a `character(1)` with the name of a spectra variable
+  containing an `offset` for each spectrum. For example, to add the
+  precursor m/z value of a spectrum to the peak's m/z values use
+  `offset = "precursorMz"`. See examples below for more details.
 
 - `smooth()`: smooths individual spectra using a moving window-based
   approach (window size = `2 * halfWindowSize`). Currently, the
@@ -542,7 +552,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 24b416eb0254_7861
+#> d731c8dc749_7861
 
 
 ##  --------  FUNCTIONS RETURNING A SPECTRA  --------
@@ -567,10 +577,10 @@ sps_mod
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 24b416eb0254_7861
+#> d731c8dc749_7861
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
-#>  Signal <= 20 in MS level(s) 1, 2 set to 0 [Fri Apr  3 07:57:23 2026] 
+#>  Signal <= 20 in MS level(s) 1, 2 set to 0 [Wed Apr  8 06:19:40 2026] 
 
 ## Get the intensities of the first spectrum before and after the
 ## operation
@@ -689,11 +699,9 @@ sps_mod |>
 ## precursor m/z value from the peaks' m/z of each MS2 spectrum to create
 ## spectra for a *neutral loss* comparison
 
-## Add the negative precursor m/z as a new spectra variable
-sps_mod$precursor_offset <- -sps_mod$precursorMz
 nl_ms2 <- sps_mod |>
     filterMsLevel(2L) |>
-    shiftPeaks(offset = "precursor_offset")
+    shiftPeaks(offset = "precursorMz", direction = "left")
 ## m/z values are shifted
 mz(nl_ms2)
 #> NumericList of length 2975
@@ -729,13 +737,13 @@ tmp
 #> 7600         1   899.747      7600
 #> 7601         1   899.872      7601
 #> 7602         1   899.993      7602
-#>  ... 35 more variables/columns.
+#>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 24b416eb0254_7861
+#> d731c8dc749_7861
 #> Processing:
-#>  Scale peak intensities in spectra of MS level(s) 2. [Fri Apr  3 07:57:26 2026]
-#>  Reset object. [Fri Apr  3 07:57:28 2026] 
+#>  Scale peak intensities in spectra of MS level(s) 2. [Wed Apr  8 06:19:43 2026]
+#>  Reset object. [Wed Apr  8 06:19:44 2026] 
 lengths(sps_dda) |> head()
 #> [1] 223 211 227 210 220 228
 lengths(sps_mod) |> head()
@@ -769,9 +777,9 @@ sps_mod
 #> 7602         1   899.993      7602
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Apr  3 07:57:30 2026]
-#>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Fri Apr  3 07:57:30 2026]
-#>  Applied processing queue with 1 steps [Fri Apr  3 07:57:31 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Apr  8 06:19:47 2026]
+#>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Wed Apr  8 06:19:47 2026]
+#>  Applied processing queue with 1 steps [Wed Apr  8 06:19:47 2026] 
 
 ## While we can't *undo* this filtering operation now using the `reset()`
 ## function, accessing the data would now be faster, because the operation

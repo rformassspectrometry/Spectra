@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.21.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,30 +40,34 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.21" id="spectra-121">Spectra 1.21<a class="anchor" aria-label="anchor" href="#spectra-121"></a></h2>
 <div class="section level3">
-<h3 id="change-1-21">Change 1.21.6<a class="anchor" aria-label="anchor" href="#change-1-21"></a></h3>
+<h3 id="change-1-21">Change 1.21.7<a class="anchor" aria-label="anchor" href="#change-1-21"></a></h3>
+<ul><li>Add parameter <code>direction</code> to <code><a href="../reference/addProcessing.html">shiftPeaks()</a></code> allowing to define whether peaks should be shifted <em>left</em> or <em>right</em> (default).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="change-1-21-1">Change 1.21.6<a class="anchor" aria-label="anchor" href="#change-1-21-1"></a></h3>
 <ul><li>Add <code><a href="../reference/addProcessing.html">shiftPeaks()</a></code> function.</li>
 <li>Add parameter <code>onlyCore = FALSE</code> to <code><a href="../reference/filterMsLevel.html">dropNaSpectraVariables()</a></code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-21-1">Change 1.21.5<a class="anchor" aria-label="anchor" href="#change-1-21-1"></a></h3>
+<h3 id="change-1-21-2">Change 1.21.5<a class="anchor" aria-label="anchor" href="#change-1-21-2"></a></h3>
 <ul><li>Fix potential issue by introducing concatenation of <code>data.frame</code>s with <code><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">data.table::rbindlist()</a></code> in version 1.21.3: new function <code><a href="../reference/rbindlistWithRownames.html">rbindlistWithRownames()</a></code> added which uses <code>rbindlist()</code> but preserves also the row names of the <code>data.frame</code>s.</li>
 <li>Fix unit tests for <code><a href="../reference/joinPeaks.html">joinPeaksGnps()</a></code> to follow recent updates in <em>MsCoreUtils</em>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-21-2">Change 1.21.4<a class="anchor" aria-label="anchor" href="#change-1-21-2"></a></h3>
+<h3 id="change-1-21-3">Change 1.21.4<a class="anchor" aria-label="anchor" href="#change-1-21-3"></a></h3>
 <ul><li>Refactor <code><a href="../reference/compareSpectra.html">compareSpectra()</a></code> to support spectra similarity functions returning the similarity score <strong>and</strong> the number of peak pairs on which the score was calculated. This allows to correctly report the number of peak pairs used by e.g. the modified cosine (GNPS) similarity score. See also <a href="https://github.com/rformassspectrometry/Spectra/issues/350" class="external-link">issue </a><a href="https://github.com/RforMassSpectrometry/Spectra/issues/350" class="external-link">#350</a>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-21-3">Change 1.21.3<a class="anchor" aria-label="anchor" href="#change-1-21-3"></a></h3>
+<h3 id="change-1-21-4">Change 1.21.3<a class="anchor" aria-label="anchor" href="#change-1-21-4"></a></h3>
 <ul><li>Use <code><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">data.table::rbindlist()</a></code> for merging of <code>MsBackendMemory</code> instances and for <code><a href="../reference/MsBackend.html">backendInitialize()</a></code> for <code>MsBackendMzR</code>. This adds <em>data.table</em> as a dependency but improves performance for the above mentioned functionality.</li>
 <li>Fix bug in <code><a href="../reference/fragmentGroupIndex.html">fragmentGroupIndex()</a></code> that would return the indices in a wrong order.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-21-4">Change 1.21.2<a class="anchor" aria-label="anchor" href="#change-1-21-4"></a></h3>
+<h3 id="change-1-21-5">Change 1.21.2<a class="anchor" aria-label="anchor" href="#change-1-21-5"></a></h3>
 <ul><li>Replace <em>msdata</em> with <em>MsDataHub</em> package.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="change-1-21-5">Change 1.21.1<a class="anchor" aria-label="anchor" href="#change-1-21-5"></a></h3>
+<h3 id="change-1-21-6">Change 1.21.1<a class="anchor" aria-label="anchor" href="#change-1-21-6"></a></h3>
 <ul><li>Fix <code><a href="../reference/precursorPurity.html">precursorPurity()</a></code> for empty spectra.</li>
 </ul></div>
 </div>
