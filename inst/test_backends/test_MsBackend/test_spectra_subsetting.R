@@ -61,21 +61,27 @@ test_that("[", {
 
 test_that("cbind2 works", {
     seql <- length(be)
+    original_sv <- spectraVariables(be)
     df <- data.frame(cola = seq_len(seql), colb = "b", colz = "z")
     res <- cbind2(be, df)
     expect_true(validObject(res))
-    expect_equal(ncol(spectraData(res)), length(spectraVariables(be)) + 3)
+    expect_equal(ncol(spectraData(res)), length(original_sv) + 3)
     expect_equal(res$cola, seq_len(seql))
     expect_equal(res$colb, rep("b", seql))
     expect_equal(res$colz, rep("z", seql))
+    ## drop variables again
+    res$cola <- NULL
+    res$colb <- NULL
+    res$colz <- NULL
     df2  <- data.frame(cola = seq_len(length(be) / 2), colb = "b", colz = "z")
     expect_error(cbind2(be, df2), "does not match")
     ## with matrix
     m <- matrix(1:seql, ncol = 1, dimnames = list(NULL, "m"))
     res <- cbind2(be, m)
     expect_true(validObject(res))
-    expect_equal(ncol(spectraData(res)), length(spectraVariables(be)) + 1)
+    expect_equal(ncol(spectraData(res)), length(original_sv) + 1)
     expect_equal(res$m, 1:seql)
+    res$m <- NULL
     ## no replacing
     expect_error(cbind2(be, data.frame(scanIndex = 1:seql)),
                  "are already present")

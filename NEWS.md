@@ -1,5 +1,9 @@
 # Spectra 1.21
 
+## Change 1.21.8
+
+- Small fixes in the unit test suite for `MsBackend` implementations.
+
 ## Change 1.21.7
 
 - Add parameter `direction` to `shiftPeaks()` allowing to define whether peaks
