@@ -1261,7 +1261,9 @@ fragmentGroupIndex <- function(object, BPPARAM = SerialParam()) {
 #' @rdname addProcessing
 #'
 #' @export
-shiftPeaks <- function(object, offset = 0.0, ...) {
+shiftPeaks <- function(object, offset = 0.0,
+                       direction = c("right", "left"), ...) {
+    direction <- match.arg(direction)
     if (!inherits(object, "Spectra"))
         stop("'object' should be a Spectra object")
     if (length(offset) != 1L)
@@ -1270,11 +1272,13 @@ shiftPeaks <- function(object, offset = 0.0, ...) {
     if (!is.numeric(offset)) {
         if (!offset %in% spectraVariables(object))
             stop("No spectra variable \"", offset, "\" in 'object'")
-        fun <- .peaks_shift_mz_variable
+        fun <- ifelse(direction == "right", .peaks_shift_mz_variable_right,
+                      .peaks_shift_mz_variable_left)
         sv <- offset
     } else {
         sv <- character()
-        fun <- .peaks_shift_mz
+        fun <- ifelse(direction == "right", .peaks_shift_mz_right,
+                      .peaks_shift_mz_left)
     }
     object <- addProcessing(object, FUN = fun, offset = offset,
                             spectraVariables = sv)

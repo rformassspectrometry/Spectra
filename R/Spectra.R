@@ -2960,7 +2960,10 @@ setMethod("filterValues", "Spectra",
 #'   spectra will be scaled.
 #'
 #' - `shiftPeaks()`: shifts peaks of each spectrum along *m/z* dimension
-#'   by an offset. The resulting m/z values are the original m/z `+ offset`.
+#'   by an offset. The *direction* of this shift can be defined with parameter
+#'   `direction`. The default `direction = "right"` will replace the peak's
+#'   m/z with m/z + `offset`, `direction = "left"` subtracts the offset from
+#'   the peak's m/z (m/z - `offset`).
 #'   Parameter `offset` can be a `numeric(1)`, or a `character(1)` with the
 #'   name of a spectra variable containing an `offset` for each spectrum. For
 #'   example, to add the precursor m/z value of a spectrum to the peak's m/z
@@ -3096,8 +3099,14 @@ setMethod("filterValues", "Spectra",
 #'     `f` and `BPPARAM`.
 #'
 #' @param descending For `pickPeaks()`: `logical`, if `TRUE` just values
-#'     betwee the nearest valleys around the peak centroids are used.
-#
+#'     between the nearest valleys around the peak centroids are used.
+#'
+#' @param direction For `shiftPeaks()`: `character(1)` defining the direction
+#'     of the shift. Can be either `shiftPeaks = "right"` (the default) which
+#'     will shift peaks to the right (i.e., peaks' m/z + offset) or
+#'     `shiftPeaks = "left"` that will shift peaks to the left by subtracting
+#'     `offset` from the peaks' m/z.
+#'
 #' @param f For `spectrapply()` and `applyProcessing()`: `factor` defining
 #'     how `object` should be splitted for eventual parallel processing.
 #'     Defaults to `factor()` for `spectrapply()` hence the object is not
@@ -3268,11 +3277,9 @@ setMethod("filterValues", "Spectra",
 #' ## precursor m/z value from the peaks' m/z of each MS2 spectrum to create
 #' ## spectra for a *neutral loss* comparison
 #'
-#' ## Add the negative precursor m/z as a new spectra variable
-#' sps_mod$precursor_offset <- -sps_mod$precursorMz
 #' nl_ms2 <- sps_mod |>
 #'     filterMsLevel(2L) |>
-#'     shiftPeaks(offset = "precursor_offset")
+#'     shiftPeaks(offset = "precursorMz", direction = "left")
 #' ## m/z values are shifted
 #' mz(nl_ms2)
 #'
