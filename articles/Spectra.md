@@ -1,7 +1,7 @@
 # Description and usage of Spectra objects
 
 **Package**:
-*[Spectra](https://bioconductor.org/packages/3.23/Spectra)*\
+*[Spectra](https://bioconductor.org/packages/3.24/Spectra)*\
 **Authors**: RforMassSpectrometry Package Maintainer \[cre\], Laurent
 Gatto \[aut\] (ORCID: <https://orcid.org/0000-0002-1520-2268>), Johannes
 Rainer \[aut\] (ORCID: <https://orcid.org/0000-0002-6977-7147>),
@@ -13,12 +13,12 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-04-08 05:58:07.146138\
-**Compiled**: Wed Apr 8 06:22:42 2026
+**Last modified:** 2026-06-02 12:52:25.972528\
+**Compiled**: Tue Jun 2 13:34:18 2026
 
 ## Introduction
 
-The *[Spectra](https://bioconductor.org/packages/3.23/Spectra)* package
+The *[Spectra](https://bioconductor.org/packages/3.24/Spectra)* package
 provides a scalable and flexible infrastructure to represent, retrieve
 and handle mass spectrometry (MS) data. The `Spectra` object provides
 the user with a single standardized interface to access and manipulate
@@ -145,7 +145,7 @@ Alternatively, it is possible to import spectra data from mass
 spectrometry raw files in mzML/mzXML or CDF format. Below we create a
 `Spectra` object from two mzML files and define to use a `MsBackendMzR`
 backend to *store* the data (note that this requires the
-*[mzR](https://bioconductor.org/packages/3.23/mzR)* package to be
+*[mzR](https://bioconductor.org/packages/3.24/mzR)* package to be
 installed). This backend, specifically designed for raw MS data, keeps
 only a subset of spectra variables in memory while reading the m/z and
 intensity values from the original data files only on demand. See
@@ -179,8 +179,8 @@ sps_sciex
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## d736d227665_7859
-    ## d731ef6885f_7860
+    ## 7a453e85b8e_7859
+    ## 7a42dc50d57_7860
 
 The `Spectra` object `sps_sciex` allows now to access spectra data from
 1862 MS1 spectra and uses `MsBackendMzR` as backend (the `Spectra`
@@ -438,8 +438,8 @@ data from mzML files, in contrast, returns the originating file names:
 head(basename(dataOrigin(sps_sciex)))
 ```
 
-    ## [1] "d736d227665_7859" "d736d227665_7859" "d736d227665_7859" "d736d227665_7859"
-    ## [5] "d736d227665_7859" "d736d227665_7859"
+    ## [1] "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859"
+    ## [5] "7a453e85b8e_7859" "7a453e85b8e_7859"
 
 The current data storage location of a spectrum can be retrieved with
 the `dataStorage` variable, which will return an arbitrary string for
@@ -458,8 +458,8 @@ dataStorage(sps)
 head(basename(dataStorage(sps_sciex)))
 ```
 
-    ## [1] "d736d227665_7859" "d736d227665_7859" "d736d227665_7859" "d736d227665_7859"
-    ## [5] "d736d227665_7859" "d736d227665_7859"
+    ## [1] "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859"
+    ## [5] "7a453e85b8e_7859" "7a453e85b8e_7859"
 
 Certain backends (such as the `MsBackendMemory` and
 `MsBackendDataFrame`) support also additional peaks variables. At
@@ -811,7 +811,7 @@ sps_sciex[sps_sciex$dataOrigin == fls[2] &
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## d731ef6885f_7860
+    ## 7a42dc50d57_7860
 
 The equivalent using filter function is shown below, with the added
 benefit that the filtering is recorded in the processing slot.
@@ -840,10 +840,10 @@ sps_sciex |>
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## d731ef6885f_7860
+    ## 7a42dc50d57_7860
     ## Processing:
-    ##  Filter: select data origin(s) /github/home/.cache/R/ExperimentHub/d731ef6885f_7860 [Wed Apr  8 06:22:52 2026]
-    ##  Filter: select retention time [175..189] on MS level(s)  [Wed Apr  8 06:22:52 2026]
+    ##  Filter: select data origin(s) /github/home/.cache/R/ExperimentHub/7a42dc50d57_7860 [Tue Jun  2 13:34:26 2026]
+    ##  Filter: select retention time [175..189] on MS level(s)  [Tue Jun  2 13:34:26 2026]
 
 Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
@@ -888,7 +888,7 @@ sps
     ## 4         2        NA        NA
     ##  ... 20 more variables/columns.
     ## Processing:
-    ##  Merge 2 Spectra into one [Wed Apr  8 06:22:52 2026]
+    ##  Merge 2 Spectra into one [Tue Jun  2 13:34:26 2026]
 
 The resulting object contains now the data for all 4 MS2 spectra and an
 union of all spectra variables from both objects.
@@ -1039,9 +1039,9 @@ sps_rep
     ##  ... 20 more variables/columns.
     ## Lazy evaluation queue: 2 processing step(s)
     ## Processing:
-    ##  Merge 2 Spectra into one [Wed Apr  8 06:22:52 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Wed Apr  8 06:22:52 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Apr  8 06:22:52 2026]
+    ##  Merge 2 Spectra into one [Tue Jun  2 13:34:26 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Tue Jun  2 13:34:26 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 13:34:27 2026]
 
 It is possible to add also custom functions to the processing queue of a
 `Spectra` object. Such a function must take a peaks matrix as its first
@@ -1076,9 +1076,9 @@ sps_2
     ##  ... 20 more variables/columns.
     ## Lazy evaluation queue: 3 processing step(s)
     ## Processing:
-    ##  Merge 2 Spectra into one [Wed Apr  8 06:22:52 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Wed Apr  8 06:22:52 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Apr  8 06:22:52 2026]
+    ##  Merge 2 Spectra into one [Tue Jun  2 13:34:26 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Tue Jun  2 13:34:26 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 13:34:27 2026]
 
 Object `sps_2` has now 3 processing steps in its lazy evaluation queue.
 Calling
@@ -1110,8 +1110,8 @@ intensity(sps_rep)
 
 Alternatively we could define a function that returns the maximum peak
 from each spectrum (note: we use the
-[`unname()`](https://rdrr.io/r/base/unname.html) function to remove any
-names from the results):
+[`unname()`](https://rdrr.io/pkg/S4Vectors/man/Vector-class.html)
+function to remove any names from the results):
 
 ``` r
 
@@ -1244,7 +1244,7 @@ m/z of a spectrum. Below we define such a function that takes the peaks
 matrix and the precursor m/z as input and evaluates with the
 [`closest()`](https://rdrr.io/pkg/MsCoreUtils/man/matching.html)
 function from the
-*[MsCoreUtils](https://bioconductor.org/packages/3.23/MsCoreUtils)*
+*[MsCoreUtils](https://bioconductor.org/packages/3.24/MsCoreUtils)*
 whether the spectrum contains peaks with an m/z value matching the one
 of the precursor (given `tolerance` and `ppm`). The returned peaks
 matrix contains all peaks except those matching the precursor m/z.
@@ -1436,9 +1436,9 @@ sps_rep
     ## 4         2        NA        NA
     ##  ... 20 more variables/columns.
     ## Processing:
-    ##  Merge 2 Spectra into one [Wed Apr  8 06:22:52 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Wed Apr  8 06:22:52 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Apr  8 06:22:52 2026]
+    ##  Merge 2 Spectra into one [Tue Jun  2 13:34:26 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Tue Jun  2 13:34:26 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 13:34:27 2026]
     ##  ...1 more processings. Use 'processingLog' to list all.
 
 Before
@@ -1772,7 +1772,7 @@ sim[, , 2L]
 The above similarity was calculated with the default (normalized)
 dot-product, but also other similarity scores can be used instead.
 Either one of the other metrics provided by the
-*[MsCoreUtils](https://bioconductor.org/packages/3.23/MsCoreUtils)*
+*[MsCoreUtils](https://bioconductor.org/packages/3.24/MsCoreUtils)*
 could be used (see
 [`?MsCoreUtils::distance`](https://rdrr.io/pkg/MsCoreUtils/man/distance.html)
 for a list of available options) or any other external or user-provided
@@ -1946,7 +1946,7 @@ fl <- tempfile()
 export(sps, MsBackendMzR(), file = fl)
 ```
 
-    ## Writing file file269722f2c20b...OK
+    ## Writing file file25b13c3e1717...OK
 
 To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
@@ -1976,8 +1976,8 @@ fls <- c(tempfile(), tempfile())
 export(sps, MsBackendMzR(), file = fls[c(1, 2, 1, 2)])
 ```
 
-    ## Writing file file269730ae0be9...OK
-    ## Writing file file26977e88661c...OK
+    ## Writing file file25b12abcd5d9...OK
+    ## Writing file file25b1275c373f...OK
 
 A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the
@@ -2027,7 +2027,7 @@ sps_sciex
     ## 1862         1   259.752       931
     ##  ... 34 more variables/columns.
     ## Processing:
-    ##  Switch backend from MsBackendMzR to MsBackendMemory [Wed Apr  8 06:22:58 2026]
+    ##  Switch backend from MsBackendMzR to MsBackendMemory [Tue Jun  2 13:34:32 2026]
 
 With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
@@ -2055,8 +2055,8 @@ head(dataStorage(sps_sciex))
 head(basename(dataOrigin(sps_sciex)))
 ```
 
-    ## [1] "d736d227665_7859" "d736d227665_7859" "d736d227665_7859" "d736d227665_7859"
-    ## [5] "d736d227665_7859" "d736d227665_7859"
+    ## [1] "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859"
+    ## [5] "7a453e85b8e_7859" "7a453e85b8e_7859"
 
 ## Backends
 
@@ -2083,7 +2083,7 @@ base `MsBackend` class could be used instead. The default backends are:
 
 - `MsBackendMzR`: this backend keeps only general spectra variables in
   memory and relies on the
-  *[mzR](https://bioconductor.org/packages/3.23/mzR)* package to read
+  *[mzR](https://bioconductor.org/packages/3.24/mzR)* package to read
   mass peaks (m/z and intensity values) from the original MS files
   on-demand.
 
@@ -2115,15 +2115,15 @@ sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
 head(basename(dataStorage(sps_tmt)))
 ```
 
-    ## [1] "d737e571666_7858.h5" "d737e571666_7858.h5" "d737e571666_7858.h5"
-    ## [4] "d737e571666_7858.h5" "d737e571666_7858.h5" "d737e571666_7858.h5"
+    ## [1] "7a463467784_7858.h5" "7a463467784_7858.h5" "7a463467784_7858.h5"
+    ## [4] "7a463467784_7858.h5" "7a463467784_7858.h5" "7a463467784_7858.h5"
 
 A (possibly incomplete) list of R packages providing additional backends
 that add support for additional data types or storage options is
 provided below:
 
 - `MsBackendCompDb` (package
-  *[CompoundDb](https://bioconductor.org/packages/3.23/CompoundDb)*):
+  *[CompoundDb](https://bioconductor.org/packages/3.24/CompoundDb)*):
   provides access to spectra data (spectra and peaks variables) from a
   *CompDb* database. Has a small memory footprint because all data
   (except precursor m/z values) are retrieved on-the-fly from the
@@ -2136,12 +2136,12 @@ provided below:
   data, after import, in memory.
 
 - `MsBackendMassbank` (package
-  *[MsBackendMassbank](https://bioconductor.org/packages/3.23/MsBackendMassbank)*):
+  *[MsBackendMassbank](https://bioconductor.org/packages/3.24/MsBackendMassbank)*):
   allows to import/export data in MassBank text file format. Extends the
   `MsBackendDataFrame` and keeps thus all data, after import, in memory.
 
 - `MsBackendMassbankSql` (package
-  *[MsBackendMassbank](https://bioconductor.org/packages/3.23/MsBackendMassbank)*):
+  *[MsBackendMassbank](https://bioconductor.org/packages/3.24/MsBackendMassbank)*):
   allows to directly connect to a MassBank SQL database to retrieve all
   MS data and variables. Has a minimal memory footprint because all data
   is retrieved on-the-fly from the SQL database.
@@ -2151,25 +2151,25 @@ provided below:
   MS data files from the MetaboLights repository.
 
 - `MsBackendMgf`: (package
-  *[MsBackendMgf](https://bioconductor.org/packages/3.23/MsBackendMgf)*):
+  *[MsBackendMgf](https://bioconductor.org/packages/3.24/MsBackendMgf)*):
   support for import/export of mass spectrometry files in mascot generic
   format (MGF).
 
 - `MsBackendMsp`: (package
-  *[MsBackendMsp](https://bioconductor.org/packages/3.23/MsBackendMsp)*):
+  *[MsBackendMsp](https://bioconductor.org/packages/3.24/MsBackendMsp)*):
   allows to import/export data in NIST MSP format. Extends the
   `MsBackendDataFrame` and keeps thus all data, after import, in memory.
 
 - `MsBackendRawFileReader` (package
-  *[MsBackendRawFileReader](https://bioconductor.org/packages/3.23/MsBackendRawFileReader)*):
+  *[MsBackendRawFileReader](https://bioconductor.org/packages/3.24/MsBackendRawFileReader)*):
   implements a backend for reading MS data from Thermo Fisher
   Scientific’s raw data files using the manufacturer’s NewRawFileReader
   .Net libraries. The package generalizes the functionality introduced
-  by the *[rawrr](https://bioconductor.org/packages/3.23/rawrr)*
+  by the *[rawrr](https://bioconductor.org/packages/3.24/rawrr)*
   package, see also (Kockmann and Panse 2021).
 
 - `MsBackendSql` (package
-  *[MsBackendSql](https://bioconductor.org/packages/3.23/MsBackendSql)*):
+  *[MsBackendSql](https://bioconductor.org/packages/3.24/MsBackendSql)*):
   stores all MS data in a SQL database and has thus a minimal memory
   footprint.
 
@@ -2280,7 +2280,7 @@ computer.
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-04-05 r89793)
+    ## R version 4.6.0 (2026-04-24)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -2304,38 +2304,38 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] msentropy_0.1.4     Rcpp_1.1.1          MsCoreUtils_1.23.7 
-    ##  [4] MsDataHub_1.11.3    Spectra_1.21.7      BiocParallel_1.45.0
-    ##  [7] S4Vectors_0.49.1    BiocGenerics_0.57.0 generics_0.1.4     
-    ## [10] BiocStyle_2.39.0   
+    ##  [1] msentropy_0.1.4     Rcpp_1.1.1-1.1      MsCoreUtils_1.25.4 
+    ##  [4] MsDataHub_1.13.0    Spectra_1.23.0      BiocParallel_1.47.0
+    ##  [7] S4Vectors_0.51.2    BiocGenerics_0.59.3 generics_0.1.4     
+    ## [10] BiocStyle_2.41.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] KEGGREST_1.51.1        xfun_0.57              bslib_0.10.0          
-    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      rhdf5_2.55.16         
-    ##  [7] Biobase_2.71.0         rhdf5filters_1.23.3    vctrs_0.7.2           
-    ## [10] tools_4.7.0            curl_7.0.0             parallel_4.7.0        
-    ## [13] tibble_3.3.1           AnnotationDbi_1.73.0   RSQLite_2.4.6         
+    ##  [1] KEGGREST_1.53.0        xfun_0.58              bslib_0.11.0          
+    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      rhdf5_2.57.0          
+    ##  [7] Biobase_2.73.1         rhdf5filters_1.25.0    vctrs_0.7.3           
+    ## [10] tools_4.6.0            curl_7.1.0             parallel_4.6.0        
+    ## [13] tibble_3.3.1           AnnotationDbi_1.75.0   RSQLite_3.53.1        
     ## [16] cluster_2.1.8.2        blob_1.3.0             pkgconfig_2.0.3       
-    ## [19] data.table_1.18.2.1    dbplyr_2.5.2           desc_1.4.3            
-    ## [22] lifecycle_1.0.5        compiler_4.7.0         Biostrings_2.79.5     
-    ## [25] textshaping_1.0.5      Seqinfo_1.1.0          codetools_0.2-20      
+    ## [19] data.table_1.18.4      dbplyr_2.5.2           desc_1.4.3            
+    ## [22] lifecycle_1.0.5        compiler_4.6.0         Biostrings_2.81.2     
+    ## [25] textshaping_1.0.5      Seqinfo_1.3.0          codetools_0.2-20      
     ## [28] ncdf4_1.24             clue_0.3-68            htmltools_0.5.9       
     ## [31] sass_0.4.10            yaml_2.3.12            crayon_1.5.3          
     ## [34] pkgdown_2.2.0.9000     pillar_1.11.1          jquerylib_0.1.4       
-    ## [37] MASS_7.3-65            cachem_1.1.0           MetaboCoreUtils_1.19.2
-    ## [40] ExperimentHub_3.1.0    AnnotationHub_4.1.0    tidyselect_1.2.1      
-    ## [43] digest_0.6.39          purrr_1.2.1            dplyr_1.2.1           
-    ## [46] bookdown_0.46          BiocVersion_3.23.1     fastmap_1.2.0         
-    ## [49] cli_3.6.5              magrittr_2.0.5         withr_3.0.2           
-    ## [52] filelock_1.0.3         rappdirs_0.3.4         bit64_4.6.0-1         
-    ## [55] XVector_0.51.0         httr_1.4.8             rmarkdown_2.31        
+    ## [37] MASS_7.3-65            cachem_1.1.0           MetaboCoreUtils_1.21.1
+    ## [40] ExperimentHub_3.3.0    AnnotationHub_4.3.0    tidyselect_1.2.1      
+    ## [43] digest_0.6.39          purrr_1.2.2            dplyr_1.2.1           
+    ## [46] bookdown_0.46          BiocVersion_3.24.0     fastmap_1.2.0         
+    ## [49] cli_3.6.6              magrittr_2.0.5         withr_3.0.2           
+    ## [52] filelock_1.0.3         rappdirs_0.3.4         bit64_4.8.2           
+    ## [55] XVector_0.53.0         httr_1.4.8             rmarkdown_2.31        
     ## [58] bit_4.6.0              otel_0.2.0             png_0.1-9             
     ## [61] ragg_1.5.2             memoise_2.0.1          evaluate_1.0.5        
-    ## [64] knitr_1.51             IRanges_2.45.0         BiocFileCache_3.1.0   
-    ## [67] rlang_1.2.0            glue_1.8.0             DBI_1.3.0             
+    ## [64] knitr_1.51             IRanges_2.47.1         BiocFileCache_3.3.0   
+    ## [67] rlang_1.2.0            glue_1.8.1             DBI_1.3.0             
     ## [70] mzR_2.45.1             BiocManager_1.30.27    jsonlite_2.0.0        
-    ## [73] Rhdf5lib_1.33.6        R6_2.6.1               systemfonts_1.3.2     
-    ## [76] fs_2.0.1               ProtGenerics_1.43.0
+    ## [73] Rhdf5lib_2.1.0         R6_2.6.1               systemfonts_1.3.2     
+    ## [76] fs_2.1.0               ProtGenerics_1.45.0
 
 ## References
 

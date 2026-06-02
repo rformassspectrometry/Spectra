@@ -1,7 +1,7 @@
 # Creating new \`MsBackend\` classes
 
 **Package**:
-*[Spectra](https://bioconductor.org/packages/3.23/Spectra)*\
+*[Spectra](https://bioconductor.org/packages/3.24/Spectra)*\
 **Authors**: RforMassSpectrometry Package Maintainer \[cre\], Laurent
 Gatto \[aut\] (ORCID: <https://orcid.org/0000-0002-1520-2268>), Johannes
 Rainer \[aut\] (ORCID: <https://orcid.org/0000-0002-6977-7147>),
@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-04-08 05:58:07.146138\
-**Compiled**: Wed Apr 8 06:22:08 2026
+**Last modified:** 2026-06-02 12:52:25.972528\
+**Compiled**: Tue Jun 2 13:33:46 2026
 
 ## Introduction
 
@@ -44,7 +44,7 @@ them seamlessly into a `Spectra`-based data analysis workflow.
 
 This concept is an extension of the of *in-memory* and *on-disk* data
 representations from the
-*[MSnbase](https://bioconductor.org/packages/3.23/MSnbase)* package
+*[MSnbase](https://bioconductor.org/packages/3.24/MSnbase)* package
 (Gatto et al. 2020).
 
 ### Conventions and definitions
@@ -82,13 +82,13 @@ General conventions for MS data of a `Spectra` are:
   spectra variables, but not the peaks data (i.e. the m/z and intensity
   values). Also, backends for purely read-only resources could extend
   the `MsBackendCached` from the
-  *[Spectra](https://bioconductor.org/packages/3.23/Spectra)* package to
+  *[Spectra](https://bioconductor.org/packages/3.24/Spectra)* package to
   enable support for modifying (or adding) spectra variables. Any
   changes to spectra variables will be internally cached by the
   `MsBackendCached` without the need of them being propagating to the
   underlying data resource (see for example the `MsBackendMassbankSql`
   from the
-  *[MsBackendMassbank](https://bioconductor.org/packages/3.23/MsBackendMassbank)*
+  *[MsBackendMassbank](https://bioconductor.org/packages/3.24/MsBackendMassbank)*
   package).
 
 ### Notes on parallel processing
@@ -215,7 +215,7 @@ Note that a *backend* class does not necessarily need to contain all the
 data like the one from our example. Backends such as the `MsBackendMzR`
 for example retrieve the data on the fly from the raw MS data files or
 the `MsBackendSql` from the
-*[MsBackendSql](https://bioconductor.org/packages/3.23/MsBackendSql)* a
+*[MsBackendSql](https://bioconductor.org/packages/3.24/MsBackendSql)* a
 SQL database.
 
 ### Required methods
@@ -232,7 +232,7 @@ The
 [`spectraData()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 method should return the **full** spectra data within a backend as a
 `DataFrame` object (defined in the
-*[S4Vectors](https://bioconductor.org/packages/3.23/S4Vectors)*
+*[S4Vectors](https://bioconductor.org/packages/3.24/S4Vectors)*
 package). The second parameter `columns` allows to define the names of
 the spectra variables that should be returned in the `DataFrame`. Each
 row in this data frame should represent one spectrum, each column a
@@ -556,12 +556,12 @@ case. The
 method of the `MsBackendMzR` backend takes for example the file names of
 the raw mzML, mzXML or CDF files as input and initializes the backend by
 importing part of the data from these. Also the backends defined by the
-*[MsBackendMgf](https://bioconductor.org/packages/3.23/MsBackendMgf)* or
+*[MsBackendMgf](https://bioconductor.org/packages/3.24/MsBackendMgf)* or
 `r Biocpkg("MsBackendMsp")` packages work in the same way and thus allow
 to import MS data from these specific file formats. The
 [`backendInitialize()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
 method of the backend defined in the
-*[MsBackendSql](https://bioconductor.org/packages/3.23/MsBackendSql)* on
+*[MsBackendSql](https://bioconductor.org/packages/3.24/MsBackendSql)* on
 the other hand takes only the connection to a database containing the
 data as input and performs some sanity checks on the data but does not
 load the data into the backend. Any subsequent data access is handled by
@@ -993,7 +993,7 @@ might even extend the `MsBackendCached` backend defined in the `Spectra`
 package that provides a mechanism to cache (spectra variable) data in a
 `data.frame` within the object. The `MsBackendMassbankSql` implemented
 in the
-*[MsBackendMassbank](https://bioconductor.org/packages/3.23/MsBackendMassbank)*
+*[MsBackendMassbank](https://bioconductor.org/packages/3.24/MsBackendMassbank)*
 package extends for example this backend and thus allows modifying some
 spectra variables without changing the original data in the MassBank SQL
 database.
@@ -2075,7 +2075,7 @@ don’t necessary have to. This method will be called by the
 `reset,Spectra` method and is supposed to restore the data to its
 original state. The default implementation for `MsBackend` shown below
 simply returns the backend as-is. The `MsBackendSql` backend from the
-*[MsBackendSql](https://bioconductor.org/packages/3.23/MsBackendSql)*
+*[MsBackendSql](https://bioconductor.org/packages/3.24/MsBackendSql)*
 package in contrast re-initializes the data using the data from the
 database.
 
@@ -2117,7 +2117,7 @@ setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
 ```
 
 See alternatively also the
-*[MsBackendMgf](https://bioconductor.org/packages/3.23/MsBackendMgf)*
+*[MsBackendMgf](https://bioconductor.org/packages/3.24/MsBackendMgf)*
 package for an implementation for the `MsBackendMgf` backend.
 
 #### `rtime()`
@@ -2595,9 +2595,9 @@ would need to be implemented for the new class: this new
 would then call the code to import the data from the new file format and
 store it within the available slots of the `MsBackendMemory` object.
 Examples would be the backends provided by the
-*[MsBackendMgf](https://bioconductor.org/packages/3.23/MsBackendMgf)*
+*[MsBackendMgf](https://bioconductor.org/packages/3.24/MsBackendMgf)*
 and
-*[MsBackendMsp](https://bioconductor.org/packages/3.23/MsBackendMsp)*
+*[MsBackendMsp](https://bioconductor.org/packages/3.24/MsBackendMsp)*
 classes.
 
 ## Testing the validity of the backend
@@ -2623,7 +2623,7 @@ test_dir(test_suite, stop_on_failure = TRUE)
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-04-05 r89793)
+    ## R version 4.6.0 (2026-04-24)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -2647,23 +2647,23 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsCoreUtils_1.23.7  IRanges_2.45.0      Spectra_1.21.7     
-    ## [4] BiocParallel_1.45.0 S4Vectors_0.49.1    BiocGenerics_0.57.0
-    ## [7] generics_0.1.4      BiocStyle_2.39.0   
+    ## [1] MsCoreUtils_1.25.4  IRanges_2.47.1      Spectra_1.23.0     
+    ## [4] BiocParallel_1.47.0 S4Vectors_0.51.2    BiocGenerics_0.59.3
+    ## [7] generics_0.1.4      BiocStyle_2.41.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] jsonlite_2.0.0         compiler_4.7.0         BiocManager_1.30.27   
-    ##  [4] parallel_4.7.0         cluster_2.1.8.2        jquerylib_0.1.4       
+    ##  [1] jsonlite_2.0.0         compiler_4.6.0         BiocManager_1.30.27   
+    ##  [4] parallel_4.6.0         cluster_2.1.8.2        jquerylib_0.1.4       
     ##  [7] systemfonts_1.3.2      textshaping_1.0.5      yaml_2.3.12           
-    ## [10] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.43.0   
+    ## [10] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.45.0   
     ## [13] knitr_1.51             htmlwidgets_1.6.4      MASS_7.3-65           
-    ## [16] bookdown_0.46          desc_1.4.3             bslib_0.10.0          
-    ## [19] rlang_1.2.0            cachem_1.1.0           xfun_0.57             
-    ## [22] fs_2.0.1               sass_0.4.10            otel_0.2.0            
-    ## [25] cli_3.6.5              pkgdown_2.2.0.9000     digest_0.6.39         
-    ## [28] MetaboCoreUtils_1.19.2 lifecycle_1.0.5        clue_0.3-68           
-    ## [31] data.table_1.18.2.1    evaluate_1.0.5         codetools_0.2-20      
-    ## [34] ragg_1.5.2             rmarkdown_2.31         tools_4.7.0           
+    ## [16] bookdown_0.46          desc_1.4.3             bslib_0.11.0          
+    ## [19] rlang_1.2.0            cachem_1.1.0           xfun_0.58             
+    ## [22] fs_2.1.0               sass_0.4.10            otel_0.2.0            
+    ## [25] cli_3.6.6              pkgdown_2.2.0.9000     digest_0.6.39         
+    ## [28] MetaboCoreUtils_1.21.1 lifecycle_1.0.5        clue_0.3-68           
+    ## [31] data.table_1.18.4      evaluate_1.0.5         codetools_0.2-20      
+    ## [34] ragg_1.5.2             rmarkdown_2.31         tools_4.6.0           
     ## [37] htmltools_0.5.9
 
 ## References

@@ -1,7 +1,7 @@
 # Large-scale data handling and processing with Spectra
 
 **Package**:
-*[Spectra](https://bioconductor.org/packages/3.23/Spectra)*\
+*[Spectra](https://bioconductor.org/packages/3.24/Spectra)*\
 **Authors**: RforMassSpectrometry Package Maintainer \[cre\], Laurent
 Gatto \[aut\] (ORCID: <https://orcid.org/0000-0002-1520-2268>), Johannes
 Rainer \[aut\] (ORCID: <https://orcid.org/0000-0002-6977-7147>),
@@ -13,18 +13,18 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-04-08 05:58:07.146138\
-**Compiled**: Wed Apr 8 06:22:23 2026
+**Last modified:** 2026-06-02 12:52:25.972528\
+**Compiled**: Tue Jun 2 13:34:00 2026
 
 ## Introduction
 
-The *[Spectra](https://bioconductor.org/packages/3.23/Spectra)* package
+The *[Spectra](https://bioconductor.org/packages/3.24/Spectra)* package
 supports handling and processing of also very large mass spectrometry
 (MS) data sets. Through dedicated backends, that only load MS data when
 requested/needed, the memory demand can be minimized. Examples for such
 backends are the `MsBackendMzR` and the `MsBackendOfflineSql` (defined
 in the
-*[MsBackendSql](https://bioconductor.org/packages/3.23/MsBackendSql)*
+*[MsBackendSql](https://bioconductor.org/packages/3.24/MsBackendSql)*
 package). In addition, `Spectra` supports chunk-wise data processing,
 hence only parts of the data are loaded into memory and processed at a
 time. In this document we provide information on how large scale data
@@ -39,7 +39,7 @@ implementations of the `MsBackend` class are available, that either are
 optimized for performance (such as the `MsBackendMemory` and
 `MsBackendDataFrame`) or for low memory requirement (such as the
 `MsBackendMzR`, or the `MsBackendOfflineSql` implemented in the
-*[MsBackendSql](https://bioconductor.org/packages/3.23/MsBackendSql)*
+*[MsBackendSql](https://bioconductor.org/packages/3.24/MsBackendSql)*
 package, that through the smallest possible memory footprint enables
 also the analysis of very large data sets). Below we load MS data from 4
 test files provided through the *MsDataHub* package into a `Spectra`
@@ -56,10 +56,6 @@ fls <- c(
     MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
     MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
 ```
-
-    ## Registered S3 method overwritten by 'bit64':
-    ##   method          from 
-    ##   print.bitstring tools
 
     ## see ?MsDataHub and browseVignettes('MsDataHub') for documentation
 
@@ -101,9 +97,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## d731c8dc749_7861
-    ## d734d176166_7862
-    ## d736d227665_7859
+    ## 7a43ab62f56_7861
+    ## 7a47aea6658_7862
+    ## 7a453e85b8e_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -198,13 +194,13 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/d731c8dc749_7861 
+    ## /github/home/.cache/R/ExperimentHub/7a43ab62f56_7861 
     ##                                                 7602 
-    ## /github/home/.cache/R/ExperimentHub/d734d176166_7862 
+    ## /github/home/.cache/R/ExperimentHub/7a47aea6658_7862 
     ##                                                 8999 
-    ## /github/home/.cache/R/ExperimentHub/d736d227665_7859 
+    ## /github/home/.cache/R/ExperimentHub/7a453e85b8e_7859 
     ##                                                  931 
-    ## /github/home/.cache/R/ExperimentHub/d731ef6885f_7860 
+    ## /github/home/.cache/R/ExperimentHub/7a42dc50d57_7860 
     ##                                                  931
 
 The data would thus be split and processed by the original file, from
@@ -279,7 +275,7 @@ on the *Spectra* github repository.
   processing (if not already used, as with `MsBackendMzR`).
 
 - `Spectra` uses the
-  *[BiocParallel](https://bioconductor.org/packages/3.23/BiocParallel)*
+  *[BiocParallel](https://bioconductor.org/packages/3.24/BiocParallel)*
   package for parallel processing. The parallel processing setup can be
   configured globally by *registering* the preferred setup using the
   [`register()`](https://rdrr.io/pkg/BiocParallel/man/register.html)
@@ -340,7 +336,7 @@ i.e., based on the `processingChunkFactor`:
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-04-05 r89793)
+    ## R version 4.6.0 (2026-04-24)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -364,34 +360,34 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.11.3    Spectra_1.21.7      BiocParallel_1.45.0
-    ## [4] S4Vectors_0.49.1    BiocGenerics_0.57.0 generics_0.1.4     
-    ## [7] BiocStyle_2.39.0   
+    ## [1] MsDataHub_1.13.0    Spectra_1.23.0      BiocParallel_1.47.0
+    ## [4] S4Vectors_0.51.2    BiocGenerics_0.59.3 generics_0.1.4     
+    ## [7] BiocStyle_2.41.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] KEGGREST_1.51.1        xfun_0.57              bslib_0.10.0          
-    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      Biobase_2.71.0        
-    ##  [7] vctrs_0.7.2            tools_4.7.0            curl_7.0.0            
-    ## [10] parallel_4.7.0         tibble_3.3.1           AnnotationDbi_1.73.0  
-    ## [13] RSQLite_2.4.6          cluster_2.1.8.2        blob_1.3.0            
-    ## [16] pkgconfig_2.0.3        data.table_1.18.2.1    dbplyr_2.5.2          
-    ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.7.0        
-    ## [22] Biostrings_2.79.5      textshaping_1.0.5      Seqinfo_1.1.0         
+    ##  [1] KEGGREST_1.53.0        xfun_0.58              bslib_0.11.0          
+    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      Biobase_2.73.1        
+    ##  [7] vctrs_0.7.3            tools_4.6.0            curl_7.1.0            
+    ## [10] parallel_4.6.0         tibble_3.3.1           AnnotationDbi_1.75.0  
+    ## [13] RSQLite_3.53.1         cluster_2.1.8.2        blob_1.3.0            
+    ## [16] pkgconfig_2.0.3        data.table_1.18.4      dbplyr_2.5.2          
+    ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.6.0        
+    ## [22] Biostrings_2.81.2      textshaping_1.0.5      Seqinfo_1.3.0         
     ## [25] codetools_0.2-20       ncdf4_1.24             clue_0.3-68           
     ## [28] htmltools_0.5.9        sass_0.4.10            yaml_2.3.12           
     ## [31] crayon_1.5.3           pkgdown_2.2.0.9000     pillar_1.11.1         
     ## [34] jquerylib_0.1.4        MASS_7.3-65            cachem_1.1.0          
-    ## [37] MetaboCoreUtils_1.19.2 ExperimentHub_3.1.0    AnnotationHub_4.1.0   
-    ## [40] tidyselect_1.2.1       digest_0.6.39          purrr_1.2.1           
-    ## [43] dplyr_1.2.1            bookdown_0.46          BiocVersion_3.23.1    
-    ## [46] fastmap_1.2.0          cli_3.6.5              magrittr_2.0.5        
+    ## [37] MetaboCoreUtils_1.21.1 ExperimentHub_3.3.0    AnnotationHub_4.3.0   
+    ## [40] tidyselect_1.2.1       digest_0.6.39          purrr_1.2.2           
+    ## [43] dplyr_1.2.1            bookdown_0.46          BiocVersion_3.24.0    
+    ## [46] fastmap_1.2.0          cli_3.6.6              magrittr_2.0.5        
     ## [49] withr_3.0.2            filelock_1.0.3         rappdirs_0.3.4        
-    ## [52] bit64_4.6.0-1          XVector_0.51.0         httr_1.4.8            
+    ## [52] bit64_4.8.2            XVector_0.53.0         httr_1.4.8            
     ## [55] rmarkdown_2.31         bit_4.6.0              otel_0.2.0            
     ## [58] png_0.1-9              ragg_1.5.2             memoise_2.0.1         
-    ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.45.0        
-    ## [64] BiocFileCache_3.1.0    rlang_1.2.0            Rcpp_1.1.1            
-    ## [67] glue_1.8.0             DBI_1.3.0              mzR_2.45.1            
+    ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.47.1        
+    ## [64] BiocFileCache_3.3.0    rlang_1.2.0            Rcpp_1.1.1-1.1        
+    ## [67] glue_1.8.1             DBI_1.3.0              mzR_2.45.1            
     ## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              
-    ## [73] systemfonts_1.3.2      fs_2.0.1               ProtGenerics_1.43.0   
-    ## [76] MsCoreUtils_1.23.7
+    ## [73] systemfonts_1.3.2      fs_2.1.0               ProtGenerics_1.45.0   
+    ## [76] MsCoreUtils_1.25.4

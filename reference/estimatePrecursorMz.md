@@ -90,6 +90,8 @@ Mar Garcia-Aloy, Johannes Rainer
 fl <- MsDataHub::PestMix1_DDA.mzML()
 #> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
 #> loading from cache
+#> Error while performing HEAD request.
+#>    Proceeding without cache information.
 s <- Spectra(fl)
 
 pmz <- estimatePrecursorMz(s)
