@@ -234,7 +234,7 @@ include in the returned \code{data.frame}. Defaults to
 the results should be returned as a \code{SimpleList} or as a \code{list}.
 Defaults to \code{return.type = "SimpleList"}.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}}
 for more information. See also \code{\link[=processingChunkSize]{processingChunkSize()}} for more
 information on parallel processing.}
 
@@ -386,7 +386,7 @@ values for the data origin of each spectrum.
 \item \code{dataStorage()}: returns a \code{character} vector (same length than \code{object})
 with the data storage location of each spectrum.
 \item \code{intensity()}: gets the intensity values from the spectra. Returns
-a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors (intensity values for each
+a \code{\link[IRanges:NumericList]{IRanges::NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the list is equal to the number of
 \code{spectra} in \code{object}.
 \item \code{ionCount()}: returns a \code{numeric} with the sum of intensities for
@@ -420,13 +420,13 @@ should be included in the returned \code{data.frame} (with the default being
 being spectrum names, length equal to the number of spectra) with the MS
 level for each spectrum.
 \item \code{mz()}: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} or length equal to the number
+spectra. Returns a \code{\link[IRanges:NumericList]{IRanges::NumericList()}} or length equal to the number
 of spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
 \item \code{peaksData()}: gets the \emph{peaks} data for all spectra in \code{object}. Peaks
 data consist of the m/z and intensity values as well as possible additional
 annotations (variables) of all peaks of each spectrum. The function
-returns a \code{\link[S4Vectors:SimpleList-class]{S4Vectors::SimpleList()}} of two dimensional arrays (either
+returns a \code{\link[S4Vectors:SimpleList]{S4Vectors::SimpleList()}} of two dimensional arrays (either
 \code{matrix} or \code{data.frame}), with each array providing the values for the
 requested \emph{peak variables} (by default \code{"mz"} and \code{"intensity"}).
 Optional parameter \code{columns} is passed to the backend's \code{peaksData()}

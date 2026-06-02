@@ -34,7 +34,7 @@ manufacturers report the isolation window with the spectra variables
 for this parameter is \code{FALSE}.}
 
 \item{BPPARAM}{parallel processing setup. Defaults to
-\code{BPPARAM = SerialParam()}. See \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}} for
+\code{BPPARAM = SerialParam()}. See \code{\link[BiocParallel:SerialParam]{BiocParallel::SerialParam()}} for
 more information.}
 }
 \value{

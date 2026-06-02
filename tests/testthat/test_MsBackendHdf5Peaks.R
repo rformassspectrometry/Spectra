@@ -418,3 +418,9 @@ test_that("backendRequiredSpectraVariables,MsBackendHdf5Peaks works", {
     expect_equal(backendRequiredSpectraVariables(MsBackendHdf5Peaks()),
                  c("dataStorage", "scanIndex"))
 })
+
+test_that("dataStorageBasePath works with MsBackendHdf5Peaks", {
+    res <- dataStorageBasePath(sciex_hd5)
+    expect_equal(normalizePath(res),
+                 normalizePath(dirname(dataStorage(sciex_hd5)[1L])))
+})

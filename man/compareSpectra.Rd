@@ -77,7 +77,7 @@ matrix in z dimension (\verb{[, , 2]}).
 \description{
 \code{compareSpectra()} compares each spectrum in \code{x} with each spectrum in \code{y}
 using the function provided with \code{FUN} (defaults to
-\code{\link[MsCoreUtils:distance]{MsCoreUtils::ndotproduct()}}). If \code{y} is missing, each spectrum in \code{x} is
+\code{\link[MsCoreUtils:ndotproduct]{MsCoreUtils::ndotproduct()}}). If \code{y} is missing, each spectrum in \code{x} is
 compared with each other spectrum in \code{x}.
 The matching/mapping of peaks between the compared spectra is done with the
 \code{MAPFUN} function. The default \code{\link[=joinPeaks]{joinPeaks()}} matches peaks of both spectra
