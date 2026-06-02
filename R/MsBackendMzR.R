@@ -218,10 +218,13 @@ setClassUnion("OnDiskBackends",
               c("MsBackendMzR", "MsBackendHdf5Peaks"))
 
 #' @importFrom MsCoreUtils common_path
+#'
+#' @rdname hidden_aliases
 setMethod("dataStorageBasePath", "OnDiskBackends", function(object) {
     common_path(dataStorage(object))
 })
 
+#' @rdname hidden_aliases
 setReplaceMethod(
     "dataStorageBasePath", "OnDiskBackends", function(object, value) {
         ds <- dataStorage(object)
