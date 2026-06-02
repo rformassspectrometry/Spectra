@@ -39,7 +39,7 @@ between m/z values of peaks from the two spectra to be matched/mapped.}
 difference between m/z values of peaks from the two spectra to be
 matched/mapped.}
 
-\item{...}{optional parameters passed to the \code{\link[MsCoreUtils:matching]{MsCoreUtils::join()}} function.}
+\item{...}{optional parameters passed to the \code{\link[MsCoreUtils:join]{MsCoreUtils::join()}} function.}
 
 \item{xPrecursorMz}{for \code{joinPeaksGnps()}: \code{numeric(1)} with the precursor
 m/z of the spectrum \code{x}.}

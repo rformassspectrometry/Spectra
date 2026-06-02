@@ -66,26 +66,26 @@ object and initialize the with data.. See section on creation of
 \code{Spectra} objects for details. For all other methods a \code{Spectra} object.}
 
 \item{processingQueue}{For \code{Spectra()}: optional \code{list} of
-\link[ProtGenerics:ProcessingStep]{ProtGenerics::ProcessingStep} objects.}
+\link[ProtGenerics:ProcessingStep-class]{ProtGenerics::ProcessingStep} objects.}
 
 \item{metadata}{For \code{Spectra()}: optional \code{list} with metadata information.}
 
 \item{...}{Additional arguments.}
 
-\item{backend}{For \code{Spectra()}: \linkS4class{MsBackend} to be used as backend. See
+\item{backend}{For \code{Spectra()}: \link[=MsBackend-class]{MsBackend} to be used as backend. See
 section on creation of \code{Spectra} objects for details. For \code{setBackend()}:
-instance of \linkS4class{MsBackend} that supports \code{setBackend()} (i.e. for
+instance of \link[=MsBackend-class]{MsBackend} that supports \code{setBackend()} (i.e. for
 which \code{supportsSetBackend()} returns \code{TRUE}). Such backends have a
 parameter \code{data} in their \code{backendInitialize()} function that support
 passing the full spectra data to the initialize method. See section on
 creation of \code{Spectra} objects for details.
-For \code{export()}: \linkS4class{MsBackend} to be used to export the data.}
+For \code{export()}: \link[=MsBackend-class]{MsBackend} to be used to export the data.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}}
 for more information. This is passed directly to the
-\code{\link[=backendInitialize]{backendInitialize()}} method of the \linkS4class{MsBackend}.}
+\code{\link[=backendInitialize]{backendInitialize()}} method of the \link[=MsBackend-class]{MsBackend}.}
 
-\item{source}{For \code{Spectra()}: instance of \linkS4class{MsBackend} that can be
+\item{source}{For \code{Spectra()}: instance of \link[=MsBackend-class]{MsBackend} that can be
 used to import spectrum data from the provided files. See section
 \emph{Creation of objects} for more details.}
 
@@ -172,23 +172,23 @@ which supports the following formats:
 \item parameter \code{object} is a \code{data.frame} or \code{DataFrame} containing the
 full spectrum data (spectra variables in columns as well as columns
 with the individual MS peak data, \emph{m/z} and intensity). The provided
-\code{backend} (by default a \linkS4class{MsBackendMemory}) will be initialized
+\code{backend} (by default a \link[=MsBackendMemory-class]{MsBackendMemory}) will be initialized
 with that data.
-\item parameter \code{object} is a \linkS4class{MsBackend} (assumed to be already
+\item parameter \code{object} is a \link[=MsBackend-class]{MsBackend} (assumed to be already
 initialized).
 \item parameter \code{object} is missing, in which case it is supposed that the data
-is provided by the \linkS4class{MsBackend} class passed along with the \code{backend}
+is provided by the \link[=MsBackend-class]{MsBackend} class passed along with the \code{backend}
 argument.
 \item parameter \code{object} is of type \code{character} and is expected to be the file
 names(s) from which spectra should be imported. Parameter \code{source} allows
-to define a \linkS4class{MsBackend} that is able to import the data from the
+to define a \link[=MsBackend-class]{MsBackend} that is able to import the data from the
 provided source files. The default value for \code{source} is \code{\link[=MsBackendMzR]{MsBackendMzR()}}
 which allows to import spectra data from mzML, mzXML or CDF files.
 }
 
 With \code{...} additional arguments can be passed to the backend's
 \code{\link[=backendInitialize]{backendInitialize()}} method. Parameter \code{backend} allows to specify which
-\linkS4class{MsBackend} should be used for data representation and storage.
+\link[=MsBackend-class]{MsBackend} should be used for data representation and storage.
 }
 
 \section{Data representation of a \code{Spectra}}{
@@ -249,7 +249,7 @@ are advised to use the default setting.
 \item \code{...}: optional additional arguments passed to the \code{\link[=backendInitialize]{backendInitialize()}}
 method of the new \code{backend}.
 \item \code{BPPARAM}: setup for the parallel processing. See
-\code{\link[BiocParallel:register]{BiocParallel::bpparam()}} for details.
+\code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}} for details.
 }
 }
 
@@ -263,7 +263,7 @@ parameter \code{backend} which defines also the format in which the data
 is exported. Note however that not all backend classes support
 export of data. From the \code{MsBackend} classes in the \code{Spectra} package
 currently only the \code{MsBackendMzR} backend supports data export (to
-mzML/mzXML file(s)); see the help page of the \linkS4class{MsBackend} for
+mzML/mzXML file(s)); see the help page of the \link[=MsBackend-class]{MsBackend} for
 information on its arguments or the examples below or the vignette
 for examples.
 

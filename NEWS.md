@@ -1,4 +1,16 @@
+# Spectra 1.23
+
+## Changes in 1.23.1
+
+- Add support for `dataStorageBasePath()` and `dataStorageBasePath<-` to
+  `MsBackendHdf5Peaks`.
+
+
 # Spectra 1.21
+
+## Change 1.21.8
+
+- Small fixes in the unit test suite for `MsBackend` implementations.
 
 ## Change 1.21.7
 

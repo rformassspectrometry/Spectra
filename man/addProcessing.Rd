@@ -156,9 +156,9 @@ splitted while it defaults to \code{f = processingChunkSize(object)} for
 \code{applyProcessing()} splitting thus the object by default into chunks
 depending on \code{\link[=processingChunkSize]{processingChunkSize()}}.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}}
 for more information. This is passed directly to the
-\code{\link[=backendInitialize]{backendInitialize()}} method of the \linkS4class{MsBackend}. See also
+\code{\link[=backendInitialize]{backendInitialize()}} method of the \link[=MsBackend-class]{MsBackend}. See also
 \code{\link[=processingChunkSize]{processingChunkSize()}} for additional information on parallel
 processing.}
 
@@ -193,7 +193,7 @@ value which should be subtracted from the spectrum's precursor m/z.}
 
 \item{normalized}{for \code{entropy()}: \code{logical(1)} whether the normalized
 entropy should be calculated (default). See also
-\code{\link[MsCoreUtils:entropy]{MsCoreUtils::nentropy()}} for details.}
+\code{\link[MsCoreUtils:nentropy]{MsCoreUtils::nentropy()}} for details.}
 
 \item{halfWindowSize}{For \code{pickPeaks()}: \code{integer(1)}, used in the
 identification of the mass peaks: a local maximum has to be the
@@ -354,7 +354,7 @@ calculations a chunk-wise processing is generally performed.
 \code{\link[=chunkapply]{chunkapply()}} for details and examples.
 \item \code{containsMz()}: checks for each of the spectra whether they contain mass
 peaks with an m/z equal to \code{mz} (given acceptable difference as defined by
-parameters \code{tolerance} and \code{ppm} - see \code{\link[MsCoreUtils:matching]{MsCoreUtils::common()}} for
+parameters \code{tolerance} and \code{ppm} - see \code{\link[MsCoreUtils:common]{MsCoreUtils::common()}} for
 details). Parameter
 \code{which} allows to define whether any (\code{which = "any"}, the default) or
 all (\code{which = "all"}) of the \code{mz} have to match. The function returns
@@ -365,7 +365,7 @@ acceptable difference as defined by parameters \code{tolerance} and \code{ppm}).
 Returns \code{NA} for MS1 spectra (or spectra without a precursor m/z).
 \item \code{entropy()}: calculates the entropy of each spectra based on the metrics
 suggested by Li et al. (https://doi.org/10.1038/s41592-021-01331-z).
-See also \code{\link[MsCoreUtils:entropy]{MsCoreUtils::nentropy()}} in the \emph{MsCoreUtils} package for
+See also \code{\link[MsCoreUtils:nentropy]{MsCoreUtils::nentropy()}} in the \emph{MsCoreUtils} package for
 details.
 \item \code{estimatePrecursorIntensity()}: defines the precursor intensities for MS2
 spectra using the intensity of the matching MS1 peak from the

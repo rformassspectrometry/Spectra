@@ -152,6 +152,8 @@
 \alias{spectraVariables,MsBackendMzR-method}
 \alias{$<-,MsBackendMzR-method}
 \alias{export,MsBackendMzR-method}
+\alias{dataStorageBasePath,OnDiskBackends-method}
+\alias{dataStorageBasePath<-,OnDiskBackends-method}
 \alias{show,Spectra-method}
 \alias{combinePeaks,list-method}
 \title{Internal page for hidden aliases}
@@ -479,6 +481,10 @@
   copy = FALSE,
   BPPARAM = bpparam()
 )
+
+\S4method{dataStorageBasePath}{OnDiskBackends}(object)
+
+\S4method{dataStorageBasePath}{OnDiskBackends}(object) <- value
 
 \S4method{show}{Spectra}(object)
 
