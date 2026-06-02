@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-02 12:52:25.972528\
-**Compiled**: Tue Jun 2 13:34:00 2026
+**Last modified:** 2026-06-02 18:51:33.819899\
+**Compiled**: Tue Jun 2 19:20:46 2026
 
 ## Introduction
 
@@ -97,9 +97,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 7a43ab62f56_7861
-    ## 7a47aea6658_7862
-    ## 7a453e85b8e_7859
+    ## 81948142b6a_7861
+    ## 8194defcf68_7862
+    ## 819144c79ca_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -194,13 +194,13 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/7a43ab62f56_7861 
+    ## /github/home/.cache/R/ExperimentHub/81948142b6a_7861 
     ##                                                 7602 
-    ## /github/home/.cache/R/ExperimentHub/7a47aea6658_7862 
+    ## /github/home/.cache/R/ExperimentHub/8194defcf68_7862 
     ##                                                 8999 
-    ## /github/home/.cache/R/ExperimentHub/7a453e85b8e_7859 
+    ## /github/home/.cache/R/ExperimentHub/819144c79ca_7859 
     ##                                                  931 
-    ## /github/home/.cache/R/ExperimentHub/7a42dc50d57_7860 
+    ##  /github/home/.cache/R/ExperimentHub/8194a77c84_7860 
     ##                                                  931
 
 The data would thus be split and processed by the original file, from
@@ -360,8 +360,8 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.13.0    Spectra_1.23.0      BiocParallel_1.47.0
-    ## [4] S4Vectors_0.51.2    BiocGenerics_0.59.3 generics_0.1.4     
+    ## [1] MsDataHub_1.13.0    Spectra_1.23.1      BiocParallel_1.47.0
+    ## [4] S4Vectors_0.51.3    BiocGenerics_0.59.6 generics_0.1.4     
     ## [7] BiocStyle_2.41.0   
     ## 
     ## loaded via a namespace (and not attached):
@@ -385,7 +385,7 @@ sessionInfo()
     ## [52] bit64_4.8.2            XVector_0.53.0         httr_1.4.8            
     ## [55] rmarkdown_2.31         bit_4.6.0              otel_0.2.0            
     ## [58] png_0.1-9              ragg_1.5.2             memoise_2.0.1         
-    ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.47.1        
+    ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.47.2        
     ## [64] BiocFileCache_3.3.0    rlang_1.2.0            Rcpp_1.1.1-1.1        
     ## [67] glue_1.8.1             DBI_1.3.0              mzR_2.45.1            
     ## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              

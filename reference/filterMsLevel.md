@@ -661,7 +661,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 
 
 ##  --------  SUBSET SPECTRA  --------
@@ -678,7 +678,7 @@ tmp
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 length(tmp)
 #> [1] 3
 
@@ -702,7 +702,7 @@ sps_dda[msLevel(sps_dda) == 2L]
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 filterMsLevel(sps_dda, 2L)
 #> MSn data (Spectra) with 2975 spectra in a MsBackendMzR backend:
 #>        msLevel     rtime scanIndex
@@ -721,9 +721,9 @@ filterMsLevel(sps_dda, 2L)
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 #> Processing:
-#>  Filter: select MS level(s) 2 [Tue Jun  2 13:33:19 2026] 
+#>  Filter: select MS level(s) 2 [Tue Jun  2 19:20:05 2026] 
 
 ## Filter the object keeping only MS2 spectra with an precursor m/z value
 ## between a specified range:
@@ -745,9 +745,9 @@ filterPrecursorMzRange(sps_dda, c(80, 90))
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 #> Processing:
-#>  Filter: select spectra with a precursor m/z within [80, 90] [Tue Jun  2 13:33:19 2026] 
+#>  Filter: select spectra with a precursor m/z within [80, 90] [Tue Jun  2 19:20:05 2026] 
 
 ## Filter the object to MS2 spectra with an precursor m/z matching a
 ## pre-defined value (given ppm and tolerance)
@@ -769,9 +769,9 @@ filterPrecursorMzValues(sps_dda, 85, ppm = 5, tolerance = 0.1)
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 #> Processing:
-#>  Filter: select spectra with precursor m/z matching 85 [Tue Jun  2 13:33:19 2026] 
+#>  Filter: select spectra with precursor m/z matching 85 [Tue Jun  2 19:20:05 2026] 
 
 ## The `filterRanges()` function allows to filter a `Spectra` based on
 ## numerical ranges of any of its (numerical) spectra variables.
@@ -798,11 +798,11 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 #> Processing:
-#>  Filter: select spectra with a rtime within: [30, 350] [Tue Jun  2 13:33:19 2026]
-#>  Filter: select spectra with a precursorMz within: [200, 500] [Tue Jun  2 13:33:19 2026]
-#>  Filter: select spectra with a peaksCount within: [350, 600] [Tue Jun  2 13:33:19 2026] 
+#>  Filter: select spectra with a rtime within: [30, 350] [Tue Jun  2 19:20:05 2026]
+#>  Filter: select spectra with a precursorMz within: [200, 500] [Tue Jun  2 19:20:05 2026]
+#>  Filter: select spectra with a peaksCount within: [350, 600] [Tue Jun  2 19:20:05 2026] 
 
 ## `filterRanges()` can also be used to filter a `Spectra` object with
 ## multiple ranges for the same `spectraVariable` (e.g, here `"rtime"`)
@@ -828,10 +828,10 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 #> Processing:
-#>  Filter: select spectra with a rtime within: [30, 100] [Tue Jun  2 13:33:19 2026]
-#>  Filter: select spectra with a rtime within: [200, 300] [Tue Jun  2 13:33:19 2026] 
+#>  Filter: select spectra with a rtime within: [30, 100] [Tue Jun  2 19:20:05 2026]
+#>  Filter: select spectra with a rtime within: [200, 300] [Tue Jun  2 19:20:05 2026] 
 
 ## While `filterRanges()` filtered on numeric ranges, `filterValues()`
 ## allows to filter an object matching spectra variable values to user
@@ -861,10 +861,10 @@ filt_spectra
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 7a43ab62f56_7861
+#> 81948142b6a_7861
 #> Processing:
-#>  Filter: select spectra with a rtime similar to: 350 [Tue Jun  2 13:33:19 2026]
-#>  Filter: select spectra with a precursorMz similar to: 80 [Tue Jun  2 13:33:19 2026] 
+#>  Filter: select spectra with a rtime similar to: 350 [Tue Jun  2 19:20:05 2026]
+#>  Filter: select spectra with a precursorMz similar to: 80 [Tue Jun  2 19:20:05 2026] 
 
 
 ##  --------  FILTER SPECTRA DATA  --------
@@ -946,7 +946,7 @@ fft_spectrum
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
 #>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]
-#>  Remove fast fourier artefacts. [Tue Jun  2 13:33:22 2026] 
+#>  Remove fast fourier artefacts. [Tue Jun  2 19:20:08 2026] 
 plotSpectra(fft_spectrum, xlim = c(264.5, 265.5), ylim = c(0, 5e6))
 
 
@@ -968,8 +968,8 @@ fft_spectrum_filtered
 #> Lazy evaluation queue: 2 processing step(s)
 #> Processing:
 #>  Switch backend from MsBackendMzR to MsBackendDataFrame [Mon Nov 22 14:14:45 2021]
-#>  Remove fast fourier artefacts. [Tue Jun  2 13:33:22 2026]
-#>  Remove fast fourier artefacts. [Tue Jun  2 13:33:22 2026] 
+#>  Remove fast fourier artefacts. [Tue Jun  2 19:20:08 2026]
+#>  Remove fast fourier artefacts. [Tue Jun  2 19:20:08 2026] 
 length(mz(fft_spectrum_filtered)[[1]])
 #> [1] 297
 plotSpectra(fft_spectrum_filtered, xlim = c(264.5, 265.5), ylim = c(0, 5e6))

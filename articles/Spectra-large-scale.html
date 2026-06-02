@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,7 +90,7 @@ Louail [aut] (ORCID: <a href="https://orcid.org/0009-0007-5429-6846" class="exte
 [ctb] (ORCID: <a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
 [ctb], Mar Garcia-Aloy [ctb] (ORCID: <a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>), Guillaume
 Deflandre [ctb] (ORCID: <a href="https://orcid.org/0009-0008-1257-2416" class="external-link uri">https://orcid.org/0009-0008-1257-2416</a>), Ahlam Mentag
-[ctb] (ORCID: <a href="https://orcid.org/0009-0008-5438-7067" class="external-link uri">https://orcid.org/0009-0008-5438-7067</a>)<br><strong>Last modified:</strong> 2026-06-02 12:52:25.972528<br><strong>Compiled</strong>: Tue Jun 2 13:34:00 2026</p>
+[ctb] (ORCID: <a href="https://orcid.org/0009-0008-5438-7067" class="external-link uri">https://orcid.org/0009-0008-5438-7067</a>)<br><strong>Last modified:</strong> 2026-06-02 18:51:33.819899<br><strong>Compiled</strong>: Tue Jun 2 19:20:46 2026</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -160,9 +160,9 @@ backend.</p>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
-<span><span class="co">## 7a43ab62f56_7861</span></span>
-<span><span class="co">## 7a47aea6658_7862</span></span>
-<span><span class="co">## 7a453e85b8e_7859</span></span>
+<span><span class="co">## 81948142b6a_7861</span></span>
+<span><span class="co">## 8194defcf68_7862</span></span>
+<span><span class="co">## 819144c79ca_7859</span></span>
 <span><span class="co">##  ... 1 more files</span></span></code></pre>
 <p>The resulting <code>Spectra</code> uses a <code>MsBackendMzR</code>
 for data representation. This backend does only load general spectra
@@ -229,13 +229,13 @@ processing.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/processingChunkSize.html">processingChunkFactor</a></span><span class="op">(</span><span class="va">sps_mzr</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html" class="external-link">table</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## /github/home/.cache/R/ExperimentHub/7a43ab62f56_7861 </span></span>
+<span><span class="co">## /github/home/.cache/R/ExperimentHub/81948142b6a_7861 </span></span>
 <span><span class="co">##                                                 7602 </span></span>
-<span><span class="co">## /github/home/.cache/R/ExperimentHub/7a47aea6658_7862 </span></span>
+<span><span class="co">## /github/home/.cache/R/ExperimentHub/8194defcf68_7862 </span></span>
 <span><span class="co">##                                                 8999 </span></span>
-<span><span class="co">## /github/home/.cache/R/ExperimentHub/7a453e85b8e_7859 </span></span>
+<span><span class="co">## /github/home/.cache/R/ExperimentHub/819144c79ca_7859 </span></span>
 <span><span class="co">##                                                  931 </span></span>
-<span><span class="co">## /github/home/.cache/R/ExperimentHub/7a42dc50d57_7860 </span></span>
+<span><span class="co">##  /github/home/.cache/R/ExperimentHub/8194a77c84_7860 </span></span>
 <span><span class="co">##                                                  931</span></span></code></pre>
 <p>The data would thus be split and processed by the original file, from
 which the data is imported. We next specifically define the chunk-size
@@ -391,8 +391,8 @@ should be split for parallel processing.</li>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] MsDataHub_1.13.0    Spectra_1.23.0      BiocParallel_1.47.0</span></span>
-<span><span class="co">## [4] S4Vectors_0.51.2    BiocGenerics_0.59.3 generics_0.1.4     </span></span>
+<span><span class="co">## [1] MsDataHub_1.13.0    Spectra_1.23.1      BiocParallel_1.47.0</span></span>
+<span><span class="co">## [4] S4Vectors_0.51.3    BiocGenerics_0.59.6 generics_0.1.4     </span></span>
 <span><span class="co">## [7] BiocStyle_2.41.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
@@ -416,7 +416,7 @@ should be split for parallel processing.</li>
 <span><span class="co">## [52] bit64_4.8.2            XVector_0.53.0         httr_1.4.8            </span></span>
 <span><span class="co">## [55] rmarkdown_2.31         bit_4.6.0              otel_0.2.0            </span></span>
 <span><span class="co">## [58] png_0.1-9              ragg_1.5.2             memoise_2.0.1         </span></span>
-<span><span class="co">## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.47.1        </span></span>
+<span><span class="co">## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.47.2        </span></span>
 <span><span class="co">## [64] BiocFileCache_3.3.0    rlang_1.2.0            Rcpp_1.1.1-1.1        </span></span>
 <span><span class="co">## [67] glue_1.8.1             DBI_1.3.0              mzR_2.45.1            </span></span>
 <span><span class="co">## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              </span></span>

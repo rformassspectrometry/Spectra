@@ -476,6 +476,12 @@ export(
   BPPARAM = bpparam()
 )
 
+# S4 method for class 'OnDiskBackends'
+dataStorageBasePath(object)
+
+# S4 method for class 'OnDiskBackends'
+dataStorageBasePath(object) <- value
+
 # S4 method for class 'Spectra'
 show(object)
 

@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,7 +90,7 @@ Louail [aut] (ORCID: <a href="https://orcid.org/0009-0007-5429-6846" class="exte
 [ctb] (ORCID: <a href="https://orcid.org/0000-0003-0541-7369" class="external-link uri">https://orcid.org/0000-0003-0541-7369</a>), Nir Shahaf
 [ctb], Mar Garcia-Aloy [ctb] (ORCID: <a href="https://orcid.org/0000-0002-1330-6610" class="external-link uri">https://orcid.org/0000-0002-1330-6610</a>), Guillaume
 Deflandre [ctb] (ORCID: <a href="https://orcid.org/0009-0008-1257-2416" class="external-link uri">https://orcid.org/0009-0008-1257-2416</a>), Ahlam Mentag
-[ctb] (ORCID: <a href="https://orcid.org/0009-0008-5438-7067" class="external-link uri">https://orcid.org/0009-0008-5438-7067</a>)<br><strong>Last modified:</strong> 2026-06-02 12:52:25.972528<br><strong>Compiled</strong>: Tue Jun 2 13:34:18 2026</p>
+[ctb] (ORCID: <a href="https://orcid.org/0009-0008-5438-7067" class="external-link uri">https://orcid.org/0009-0008-5438-7067</a>)<br><strong>Last modified:</strong> 2026-06-02 18:51:33.819899<br><strong>Compiled</strong>: Tue Jun 2 19:21:04 2026</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -276,8 +276,8 @@ and their properties.</p>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
-<span><span class="co">## 7a453e85b8e_7859</span></span>
-<span><span class="co">## 7a42dc50d57_7860</span></span></code></pre>
+<span><span class="co">## 819144c79ca_7859</span></span>
+<span><span class="co">## 8194a77c84_7860</span></span></code></pre>
 <p>The <code>Spectra</code> object <code>sps_sciex</code> allows now to
 access spectra data from 1862 MS1 spectra and uses
 <code>MsBackendMzR</code> as backend (the <code>Spectra</code> object
@@ -450,8 +450,8 @@ they were extracted or the sample in which they were measured. The
 contrast, returns the originating file names:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859"</span></span>
-<span><span class="co">## [5] "7a453e85b8e_7859" "7a453e85b8e_7859"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "819144c79ca_7859" "819144c79ca_7859" "819144c79ca_7859" "819144c79ca_7859"</span></span>
+<span><span class="co">## [5] "819144c79ca_7859" "819144c79ca_7859"</span></span></code></pre>
 <p>The current data storage location of a spectrum can be retrieved with
 the <code>dataStorage</code> variable, which will return an arbitrary
 string for <code>Spectra</code> that use an in-memory backend or the
@@ -461,8 +461,8 @@ file where the data is stored for on-disk backends:</p>
 <pre><code><span><span class="co">## [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</span></span></code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859"</span></span>
-<span><span class="co">## [5] "7a453e85b8e_7859" "7a453e85b8e_7859"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "819144c79ca_7859" "819144c79ca_7859" "819144c79ca_7859" "819144c79ca_7859"</span></span>
+<span><span class="co">## [5] "819144c79ca_7859" "819144c79ca_7859"</span></span></code></pre>
 <p>Certain backends (such as the <code>MsBackendMemory</code> and
 <code>MsBackendDataFrame</code>) support also additional peaks
 variables. At present, these must already be present when the backend
@@ -774,7 +774,7 @@ spectra measured between 175 and 189 seconds in the measurement run.</p>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
-<span><span class="co">## 7a42dc50d57_7860</span></span></code></pre>
+<span><span class="co">## 8194a77c84_7860</span></span></code></pre>
 <p>The equivalent using filter function is shown below, with the added
 benefit that the filtering is recorded in the processing slot.</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
@@ -798,10 +798,10 @@ benefit that the filtering is recorded in the processing slot.</p>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
-<span><span class="co">## 7a42dc50d57_7860</span></span>
+<span><span class="co">## 8194a77c84_7860</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select data origin(s) /github/home/.cache/R/ExperimentHub/7a42dc50d57_7860 [Tue Jun  2 13:34:26 2026]</span></span>
-<span><span class="co">##  Filter: select retention time [175..189] on MS level(s)  [Tue Jun  2 13:34:26 2026]</span></span></code></pre>
+<span><span class="co">##  Filter: select data origin(s) /github/home/.cache/R/ExperimentHub/8194a77c84_7860 [Tue Jun  2 19:21:13 2026]</span></span>
+<span><span class="co">##  Filter: select retention time [175..189] on MS level(s)  [Tue Jun  2 19:21:13 2026]</span></span></code></pre>
 <p>Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
 backends could <em>translate</em> the filter function into a SQL
@@ -836,7 +836,7 @@ containing another MS2 spectrum for Caffeine.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Jun  2 13:34:26 2026]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Tue Jun  2 19:21:13 2026]</span></span></code></pre>
 <p>The resulting object contains now the data for all 4 MS2 spectra and
 an union of all spectra variables from both objects.</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
@@ -953,9 +953,9 @@ information about the number of such processing steps can be seen below
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 2 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Jun  2 13:34:26 2026]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jun  2 13:34:26 2026]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 13:34:27 2026]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Tue Jun  2 19:21:13 2026]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jun  2 19:21:13 2026]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 19:21:13 2026]</span></span></code></pre>
 <p>It is possible to add also custom functions to the processing queue
 of a <code>Spectra</code> object. Such a function must take a peaks
 matrix as its first argument, have <code>...</code> in the function
@@ -986,9 +986,9 @@ be passed with argument <code>y</code>.</p>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Lazy evaluation queue: 3 processing step(s)</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Jun  2 13:34:26 2026]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jun  2 13:34:26 2026]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 13:34:27 2026]</span></span></code></pre>
+<span><span class="co">##  Merge 2 Spectra into one [Tue Jun  2 19:21:13 2026]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jun  2 19:21:13 2026]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 19:21:13 2026]</span></span></code></pre>
 <p>Object <code>sps_2</code> has now 3 processing steps in its lazy
 evaluation queue. Calling <code><a href="../reference/spectraData.html">intensity()</a></code> on this object will
 now return intensities that are half of the intensities of the original
@@ -1256,9 +1256,9 @@ of the <code>sps_rep</code> object persistent.</p>
 <span><span class="co">## 4         2        NA        NA</span></span>
 <span><span class="co">##  ... 20 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Merge 2 Spectra into one [Tue Jun  2 13:34:26 2026]</span></span>
-<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jun  2 13:34:26 2026]</span></span>
-<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 13:34:27 2026]</span></span>
+<span><span class="co">##  Merge 2 Spectra into one [Tue Jun  2 19:21:13 2026]</span></span>
+<span><span class="co">##  Signal &lt;= 10 in MS level(s) 2 set to 0 [Tue Jun  2 19:21:13 2026]</span></span>
+<span><span class="co">##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Tue Jun  2 19:21:13 2026]</span></span>
 <span><span class="co">##  ...1 more processings. Use 'processingLog' to list all.</span></span></code></pre>
 <p>Before <code><a href="../reference/addProcessing.html">applyProcessing()</a></code> the lazy evaluation queue
 contained 2 processing steps, which were then applied to the peak data
@@ -1616,7 +1616,7 @@ parameters).</p>
 <div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/Spectra.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fl</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file25b13c3e1717...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file23c9540275bf...OK</span></span></code></pre>
 <p>To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
@@ -1637,8 +1637,8 @@ and spectra 2 and 4 to another.</p>
 <div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/Spectra.html">export</a></span><span class="op">(</span><span class="va">sps</span>, <span class="fu"><a href="../reference/MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">fls</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Writing file file25b12abcd5d9...OK</span></span>
-<span><span class="co">## Writing file file25b1275c373f...OK</span></span></code></pre>
+<pre><code><span><span class="co">## Writing file file23c95217a373...OK</span></span>
+<span><span class="co">## Writing file file23c95d047f07...OK</span></span></code></pre>
 <p>A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the <code><a href="../reference/addProcessing.html">smooth()</a></code>
 function) and centroiding (using the <code><a href="../reference/addProcessing.html">pickPeaks()</a></code> function)
@@ -1679,7 +1679,7 @@ backend of <code>sps_sciex</code> to the in-memory
 <span><span class="co">## 1862         1   259.752       931</span></span>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Tue Jun  2 13:34:32 2026]</span></span></code></pre>
+<span><span class="co">##  Switch backend from MsBackendMzR to MsBackendMemory [Tue Jun  2 19:21:19 2026]</span></span></code></pre>
 <p>With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.</p>
@@ -1694,8 +1694,8 @@ originating files:</p>
 <pre><code><span><span class="co">## [1] "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;" "&lt;memory&gt;"</span></span></code></pre>
 <div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sps_sciex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859" "7a453e85b8e_7859"</span></span>
-<span><span class="co">## [5] "7a453e85b8e_7859" "7a453e85b8e_7859"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "819144c79ca_7859" "819144c79ca_7859" "819144c79ca_7859" "819144c79ca_7859"</span></span>
+<span><span class="co">## [5] "819144c79ca_7859" "819144c79ca_7859"</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -1745,8 +1745,8 @@ location of the HDF5 file.</p>
 <div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sps_tmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">fl</span>, backend <span class="op">=</span> <span class="fu"><a href="../reference/MsBackend.html">MsBackendHdf5Peaks</a></span><span class="op">(</span><span class="op">)</span>, hdf5path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu"><a href="../reference/spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">sps_tmt</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "7a463467784_7858.h5" "7a463467784_7858.h5" "7a463467784_7858.h5"</span></span>
-<span><span class="co">## [4] "7a463467784_7858.h5" "7a463467784_7858.h5" "7a463467784_7858.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "8194c7f6717_7858.h5" "8194c7f6717_7858.h5" "8194c7f6717_7858.h5"</span></span>
+<span><span class="co">## [4] "8194c7f6717_7858.h5" "8194c7f6717_7858.h5" "8194c7f6717_7858.h5"</span></span></code></pre>
 <p>A (possibly incomplete) list of R packages providing additional
 backends that add support for additional data types or storage options
 is provided below:</p>
@@ -1907,13 +1907,13 @@ usable on the second computer.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">##  [1] msentropy_0.1.4     Rcpp_1.1.1-1.1      MsCoreUtils_1.25.4 </span></span>
-<span><span class="co">##  [4] MsDataHub_1.13.0    Spectra_1.23.0      BiocParallel_1.47.0</span></span>
-<span><span class="co">##  [7] S4Vectors_0.51.2    BiocGenerics_0.59.3 generics_0.1.4     </span></span>
+<span><span class="co">##  [4] MsDataHub_1.13.0    Spectra_1.23.1      BiocParallel_1.47.0</span></span>
+<span><span class="co">##  [7] S4Vectors_0.51.3    BiocGenerics_0.59.6 generics_0.1.4     </span></span>
 <span><span class="co">## [10] BiocStyle_2.41.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] KEGGREST_1.53.0        xfun_0.58              bslib_0.11.0          </span></span>
-<span><span class="co">##  [4] httr2_1.2.2            htmlwidgets_1.6.4      rhdf5_2.57.0          </span></span>
+<span><span class="co">##  [4] httr2_1.2.2            htmlwidgets_1.6.4      rhdf5_2.57.1          </span></span>
 <span><span class="co">##  [7] Biobase_2.73.1         rhdf5filters_1.25.0    vctrs_0.7.3           </span></span>
 <span><span class="co">## [10] tools_4.6.0            curl_7.1.0             parallel_4.6.0        </span></span>
 <span><span class="co">## [13] tibble_3.3.1           AnnotationDbi_1.75.0   RSQLite_3.53.1        </span></span>
@@ -1933,7 +1933,7 @@ usable on the second computer.</p>
 <span><span class="co">## [55] XVector_0.53.0         httr_1.4.8             rmarkdown_2.31        </span></span>
 <span><span class="co">## [58] bit_4.6.0              otel_0.2.0             png_0.1-9             </span></span>
 <span><span class="co">## [61] ragg_1.5.2             memoise_2.0.1          evaluate_1.0.5        </span></span>
-<span><span class="co">## [64] knitr_1.51             IRanges_2.47.1         BiocFileCache_3.3.0   </span></span>
+<span><span class="co">## [64] knitr_1.51             IRanges_2.47.2         BiocFileCache_3.3.0   </span></span>
 <span><span class="co">## [67] rlang_1.2.0            glue_1.8.1             DBI_1.3.0             </span></span>
 <span><span class="co">## [70] mzR_2.45.1             BiocManager_1.30.27    jsonlite_2.0.0        </span></span>
 <span><span class="co">## [73] Rhdf5lib_2.1.0         R6_2.6.1               systemfonts_1.3.2     </span></span>
