@@ -8,6 +8,7 @@
 \alias{class:MsBackend}
 \alias{MsBackend-class}
 \alias{MsBackendDataFrame-class}
+\alias{MsBackendHdf5Peaks-class}
 \alias{MsBackendMzR-class}
 \alias{[,MsBackend-method}
 \alias{uniqueMsLevels,MsBackend-method}

@@ -5,7 +5,7 @@ NULL
 #'
 #' @description
 #'
-#' The `MsBackendHdf5Peaks` is a bakend that keeps general spectra variables in
+#' The `MsBackendHdf5Peaks` is a backend that keeps general spectra variables in
 #' memory while reading (writing) peak data (i.e. m/z and intensity values) from
 #' and to Hdf5 files.
 #'
@@ -16,6 +16,8 @@ NULL
 #' MsBackendHdf5Peaks.
 #'
 #' @author Johannes Rainer
+#'
+#' @exportClass MsBackendHdf5Peaks
 #'
 #' @noRd
 setClass("MsBackendHdf5Peaks",
