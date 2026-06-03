@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-02 18:51:33.819899\
-**Compiled**: Tue Jun 2 19:20:46 2026
+**Last modified:** 2026-06-03 11:32:53.276942\
+**Compiled**: Wed Jun 3 12:01:40 2026
 
 ## Introduction
 
@@ -97,9 +97,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 81948142b6a_7861
-    ## 8194defcf68_7862
-    ## 819144c79ca_7859
+    ## 81918645fbf_7861
+    ## 81949f19d37_7862
+    ## 8193f791213_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -194,13 +194,13 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/81948142b6a_7861 
+    ## /github/home/.cache/R/ExperimentHub/81918645fbf_7861 
     ##                                                 7602 
-    ## /github/home/.cache/R/ExperimentHub/8194defcf68_7862 
+    ## /github/home/.cache/R/ExperimentHub/81949f19d37_7862 
     ##                                                 8999 
-    ## /github/home/.cache/R/ExperimentHub/819144c79ca_7859 
+    ## /github/home/.cache/R/ExperimentHub/8193f791213_7859 
     ##                                                  931 
-    ##  /github/home/.cache/R/ExperimentHub/8194a77c84_7860 
+    ## /github/home/.cache/R/ExperimentHub/8196479403f_7860 
     ##                                                  931
 
 The data would thus be split and processed by the original file, from
@@ -360,7 +360,7 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.13.0    Spectra_1.23.1      BiocParallel_1.47.0
+    ## [1] MsDataHub_1.13.0    Spectra_1.23.2      BiocParallel_1.47.0
     ## [4] S4Vectors_0.51.3    BiocGenerics_0.59.6 generics_0.1.4     
     ## [7] BiocStyle_2.41.0   
     ## 
