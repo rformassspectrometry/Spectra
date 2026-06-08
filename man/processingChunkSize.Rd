@@ -23,8 +23,9 @@
 
 \item{value}{\code{integer(1)} defining the chunk size.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}}
-for more information.}
+\item{BPPARAM}{Parallel setup configuration. Defaults to
+\code{BPPARAM = bpparam()} hence uses a globally defined setup. See \emph{notes}
+and \code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}} for more information.}
 }
 \value{
 \code{processingChunkSize()} returns the currently defined processing
@@ -85,6 +86,15 @@ performed.
 Some backends might not support parallel processing at all.
 For these, the \code{backendBpparam()} function will always return a
 \code{SerialParam()} independently on how parallel processing was defined.
+
+Also, on Windows, the only supported parallel processing options is
+\code{\link[BiocParallel:SnowParam]{BiocParallel::SnowParam()}} which requires starting and registering a
+separate R process for each parallel process. This can take up to 30-40
+seconds. In Windows, it is thus advisable to either register and initiate a
+\emph{global} parallel processing setup (e.g.
+\code{register(bpstart(SnowParam(4)))} to register and start 4 parallel processes)
+or to use \code{BPPARAM = SerialParam()} to disable parallel processing
+alltogether.
 }
 \author{
 Johannes Rainer

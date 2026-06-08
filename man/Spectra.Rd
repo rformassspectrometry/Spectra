@@ -81,9 +81,11 @@ passing the full spectra data to the initialize method. See section on
 creation of \code{Spectra} objects for details.
 For \code{export()}: \link[=MsBackend-class]{MsBackend} to be used to export the data.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}}
-for more information. This is passed directly to the
-\code{\link[=backendInitialize]{backendInitialize()}} method of the \link[=MsBackend-class]{MsBackend}.}
+\item{BPPARAM}{Parallel setup configuration. Defaults to
+\code{BPPARAM = bpparam()} hence using the \emph{globally} defined default parallel
+processing setup. See \code{\link[=processingChunkSize]{processingChunkSize()}} and
+\code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}} for more information. This is passed directly
+to the \code{\link[=backendInitialize]{backendInitialize()}} method of the \link[=MsBackend-class]{MsBackend}.}
 
 \item{source}{For \code{Spectra()}: instance of \link[=MsBackend-class]{MsBackend} that can be
 used to import spectrum data from the provided files. See section
@@ -106,6 +108,8 @@ methods for the MS data and relies on its \emph{backend} to provide the MS data.
 This allows to change data representations of a \code{Spectra} object depending
 on the user's needs and properties of the data. Different backends and
 their properties are explained in the \link{MsBackend} documentation.
+
+For information on parallel processing options see \code{\link[=processingChunkSize]{processingChunkSize()}}.
 
 Documentation on other topics and functionality of \code{Spectra}can be found in:
 \itemize{
