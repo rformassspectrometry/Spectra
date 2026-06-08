@@ -48,9 +48,8 @@ performed.}
 \item{FUN}{For \code{combineSpectra()}: function to combine the (peak matrices)
 of the spectra. Defaults to \code{\link[=combinePeaksData]{combinePeaksData()}}.}
 
-\item{BPPARAM}{Parallel setup configuration. See \code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}}
-for more information. This is passed directly to the
-\code{\link[=backendInitialize]{backendInitialize()}} method of the \link[=MsBackend-class]{MsBackend}.}
+\item{BPPARAM}{Parallel setup configuration. See \code{\link[=processingChunkSize]{processingChunkSize()}} and
+\code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}} for more information.}
 
 \item{y}{For \code{joinSpectraData()}: \code{DataFrame} with the spectra variables
 to join/add. For \code{cbind2()}: a \code{data.frame}, \code{DataFrame} or

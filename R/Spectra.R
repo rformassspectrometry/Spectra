@@ -27,6 +27,8 @@ NULL
 #' on the user's needs and properties of the data. Different backends and
 #' their properties are explained in the [MsBackend] documentation.
 #'
+#' For information on parallel processing options see [processingChunkSize()].
+#'
 #' Documentation on other topics and functionality of `Spectra`can be found in:
 #'
 #' - [spectraData()] for accessing and using MS data through `Spectra` objects.
@@ -49,9 +51,11 @@ NULL
 #'     creation of `Spectra` objects for details.
 #'     For `export()`: [MsBackend-class] to be used to export the data.
 #'
-#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
-#'     for more information. This is passed directly to the
-#'     [backendInitialize()] method of the [MsBackend-class].
+#' @param BPPARAM Parallel setup configuration. Defaults to
+#'     `BPPARAM = bpparam()` hence using the *globally* defined default parallel
+#'     processing setup. See [processingChunkSize()] and
+#'     [BiocParallel::bpparam()] for more information. This is passed directly
+#'     to the [backendInitialize()] method of the [MsBackend-class].
 #'
 #' @param f For `setBackend()`: factor defining how to split the data
 #'     for parallelized copying of the spectra data to the new backend. For
@@ -1579,9 +1583,8 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #' - `split()`: splits the `Spectra` object based on parameter `f` into a `list`
 #'   of `Spectra` objects.
 #'
-#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
-#'     for more information. This is passed directly to the
-#'     [backendInitialize()] method of the [MsBackend-class].
+#' @param BPPARAM Parallel setup configuration. See [processingChunkSize()] and
+#'     [BiocParallel::bpparam()] for more information.
 #'
 #' @param by.x A `character(1)` specifying the spectra variable used
 #'     for merging. Default is `"spectrumId"`.
@@ -3722,8 +3725,18 @@ setMethod("spectrapply", "Spectra", function(object, FUN, ...,
 #' For these, the `backendBpparam()` function will always return a
 #' `SerialParam()` independently on how parallel processing was defined.
 #'
-#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
-#'     for more information.
+#' Also, on Windows, the only supported parallel processing options is
+#' [BiocParallel::SnowParam()] which requires starting and registering a
+#' separate R process for each parallel process. This can take up to 30-40
+#' seconds. In Windows, it is thus advisable to either register and initiate a
+#' *global* parallel processing setup (e.g.
+#' `register(bpstart(SnowParam(4)))` to register and start 4 parallel processes)
+#' or to use `BPPARAM = SerialParam()` to disable parallel processing
+#' alltogether.
+#'
+#' @param BPPARAM Parallel setup configuration. Defaults to
+#'     `BPPARAM = bpparam()` hence uses a globally defined setup. See *notes*
+#'     and [BiocParallel::bpparam()] for more information.
 #'
 #' @param object `Spectra` object.
 #'
@@ -3805,9 +3818,8 @@ setMethod("processingChunkFactor", "Spectra", function(object) {
 #'     spectra belong to the same original data file (sample).
 #'     Defaults to `f = dataOrigin(x)`.
 #'
-#' @param BPPARAM Parallel setup configuration. See [BiocParallel::bpparam()]
-#'     for more information. This is passed directly to the
-#'     [backendInitialize()] method of the [MsBackend-class].
+#' @param BPPARAM Parallel setup configuration. See [processingChunkSize()] and
+#'     [BiocParallel::bpparam()] for more information.
 #'
 #' @author Johannes Rainer with feedback and suggestions from Corey Broeckling
 #'

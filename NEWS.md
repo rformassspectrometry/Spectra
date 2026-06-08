@@ -1,5 +1,10 @@
 # Spectra 1.23
 
+## Changes in 1.23.3
+
+- Improve documentation for the use of `SerialParam()` *vs* `SnowParam()` on
+  Windows.
+
 ## Changes in 1.23.2
 
 - Export the `MsBackendHdf5Peaks` class.
