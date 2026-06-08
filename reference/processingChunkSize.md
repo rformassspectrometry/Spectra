@@ -81,7 +81,8 @@ backendBpparam(object, BPPARAM = bpparam())
 
 - BPPARAM:
 
-  Parallel setup configuration. See
+  Parallel setup configuration. Defaults to `BPPARAM = bpparam()` hence
+  uses a globally defined setup. See *notes* and
   [`BiocParallel::bpparam()`](https://rdrr.io/pkg/BiocParallel/man/register.html)
   for more information.
 
@@ -101,6 +102,15 @@ the
 function will always return a
 [`SerialParam()`](https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html)
 independently on how parallel processing was defined.
+
+Also, on Windows, the only supported parallel processing options is
+[`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
+which requires starting and registering a separate R process for each
+parallel process. This can take up to 30-40 seconds. In Windows, it is
+thus advisable to either register and initiate a *global* parallel
+processing setup (e.g. `register(bpstart(SnowParam(4)))` to register and
+start 4 parallel processes) or to use `BPPARAM = SerialParam()` to
+disable parallel processing alltogether.
 
 ## Author
 

@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-03 11:32:53.276942\
-**Compiled**: Wed Jun 3 12:01:40 2026
+**Last modified:** 2026-06-08 13:56:43.673419\
+**Compiled**: Mon Jun 8 14:20:57 2026
 
 ## Introduction
 
@@ -97,9 +97,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 81918645fbf_7861
-    ## 81949f19d37_7862
-    ## 8193f791213_7859
+    ## 91768678268_7861
+    ## 9175e2a948_7862
+    ## 9172d9686cb_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -194,13 +194,13 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/81918645fbf_7861 
+    ## /github/home/.cache/R/ExperimentHub/91768678268_7861 
     ##                                                 7602 
-    ## /github/home/.cache/R/ExperimentHub/81949f19d37_7862 
+    ##  /github/home/.cache/R/ExperimentHub/9175e2a948_7862 
     ##                                                 8999 
-    ## /github/home/.cache/R/ExperimentHub/8193f791213_7859 
+    ## /github/home/.cache/R/ExperimentHub/9172d9686cb_7859 
     ##                                                  931 
-    ## /github/home/.cache/R/ExperimentHub/8196479403f_7860 
+    ## /github/home/.cache/R/ExperimentHub/91743b32bad_7860 
     ##                                                  931
 
 The data would thus be split and processed by the original file, from
@@ -360,7 +360,7 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.13.0    Spectra_1.23.2      BiocParallel_1.47.0
+    ## [1] MsDataHub_1.13.0    Spectra_1.23.3      BiocParallel_1.47.0
     ## [4] S4Vectors_0.51.3    BiocGenerics_0.59.6 generics_0.1.4     
     ## [7] BiocStyle_2.41.0   
     ## 
@@ -372,7 +372,7 @@ sessionInfo()
     ## [13] RSQLite_3.53.1         cluster_2.1.8.2        blob_1.3.0            
     ## [16] pkgconfig_2.0.3        data.table_1.18.4      dbplyr_2.5.2          
     ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.6.0        
-    ## [22] Biostrings_2.81.2      textshaping_1.0.5      Seqinfo_1.3.0         
+    ## [22] Biostrings_2.81.3      textshaping_1.0.5      Seqinfo_1.3.0         
     ## [25] codetools_0.2-20       ncdf4_1.24             clue_0.3-68           
     ## [28] htmltools_0.5.9        sass_0.4.10            yaml_2.3.12           
     ## [31] crayon_1.5.3           pkgdown_2.2.0.9000     pillar_1.11.1         

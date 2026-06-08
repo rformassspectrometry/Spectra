@@ -89,7 +89,7 @@ performed.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -190,8 +190,9 @@ performed.</p></li>
 
 
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
-<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code>
-for more information.</p></dd>
+<dd><p>Parallel setup configuration. Defaults to
+<code>BPPARAM = bpparam()</code> hence uses a globally defined setup. See <em>notes</em>
+and <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code> for more information.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -207,6 +208,14 @@ no splitting is defined.</p>
     <p>Some backends might not support parallel processing at all.
 For these, the <code><a href="MsBackend.html">backendBpparam()</a></code> function will always return a
 <code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam()</a></code> independently on how parallel processing was defined.</p>
+<p>Also, on Windows, the only supported parallel processing options is
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">BiocParallel::SnowParam()</a></code> which requires starting and registering a
+separate R process for each parallel process. This can take up to 30-40
+seconds. In Windows, it is thus advisable to either register and initiate a
+<em>global</em> parallel processing setup (e.g.
+<code>register(bpstart(SnowParam(4)))</code> to register and start 4 parallel processes)
+or to use <code>BPPARAM = SerialParam()</code> to disable parallel processing
+alltogether.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

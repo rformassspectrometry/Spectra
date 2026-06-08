@@ -7,6 +7,7 @@ methods for the MS data and relies on its backend to provide the MS data.
 This allows to change data representations of a Spectra object depending
 on the user's needs and properties of the data. Different backends and
 their properties are explained in the MsBackend documentation.
+For information on parallel processing options see processingChunkSize().
 Documentation on other topics and functionality of Spectracan be found in:
 spectraData() for accessing and using MS data through Spectra objects.
 filterMsLevel() to subset and filter Spectra objects.
@@ -27,6 +28,7 @@ methods for the MS data and relies on its backend to provide the MS data.
 This allows to change data representations of a Spectra object depending
 on the user's needs and properties of the data. Different backends and
 their properties are explained in the MsBackend documentation.
+For information on parallel processing options see processingChunkSize().
 Documentation on other topics and functionality of Spectracan be found in:
 spectraData() for accessing and using MS data through Spectra objects.
 filterMsLevel() to subset and filter Spectra objects.
@@ -47,7 +49,7 @@ compareSpectra() for spectra similarity calculations.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,6 +89,7 @@ methods for the MS data and relies on its <em>backend</em> to provide the MS dat
 This allows to change data representations of a <code>Spectra</code> object depending
 on the user's needs and properties of the data. Different backends and
 their properties are explained in the <a href="MsBackend.html">MsBackend</a> documentation.</p>
+<p>For information on parallel processing options see <code><a href="processingChunkSize.html">processingChunkSize()</a></code>.</p>
 <p>Documentation on other topics and functionality of <code>Spectra</code>can be found in:</p><ul><li><p><code><a href="spectraData.html">spectraData()</a></code> for accessing and using MS data through <code>Spectra</code> objects.</p></li>
 <li><p><code><a href="filterMsLevel.html">filterMsLevel()</a></code> to subset and filter <code>Spectra</code> objects.</p></li>
 <li><p><code><a href="spectra-plotting.html">plotSpectra()</a></code> for visualization of <code>Spectra</code> objects.</p></li>
@@ -190,9 +193,11 @@ For <code>export()</code>: <a href="MsBackend.html">MsBackend</a> to be used to 
 
 
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
-<dd><p>Parallel setup configuration. See <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code>
-for more information. This is passed directly to the
-<code><a href="MsBackend.html">backendInitialize()</a></code> method of the <a href="MsBackend.html">MsBackend</a>.</p></dd>
+<dd><p>Parallel setup configuration. Defaults to
+<code>BPPARAM = bpparam()</code> hence using the <em>globally</em> defined default parallel
+processing setup. See <code><a href="processingChunkSize.html">processingChunkSize()</a></code> and
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::bpparam()</a></code> for more information. This is passed directly
+to the <code><a href="MsBackend.html">backendInitialize()</a></code> method of the <a href="MsBackend.html">MsBackend</a>.</p></dd>
 
 
 <dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
@@ -409,8 +414,8 @@ parameter <code>backend</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8193f791213_7859</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8196479403f_7860</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9172d9686cb_7859</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91743b32bad_7860</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##  --------  CHANGING DATA REPRESENTATIONS  --------</span></span></span>
@@ -436,7 +441,7 @@ parameter <code>backend</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1862         1   259.752       931</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Jun  3 11:59:07 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Jun  8 14:18:51 2026] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The `MsBackendMemory()` supports the `setBackend()` method:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="MsBackend.html">supportsSetBackend</a></span><span class="op">(</span><span class="fu"><a href="MsBackend.html">MsBackendMemory</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -464,30 +469,30 @@ parameter <code>backend</code>.</p></li>
 <span class="r-in"><span><span class="co">## While objects that use an on-disk backend will list the files where the</span></span></span>
 <span class="r-in"><span><span class="co">## data is stored.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataStorage</a></span><span class="op">(</span><span class="va">sciex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The spectra variable `dataOrigin` returns for each spectrum the *origin*</span></span></span>
 <span class="r-in"><span><span class="co">## of the data. If the data is read from e.g. mzML files, this will be the</span></span></span>
 <span class="r-in"><span><span class="co">## original mzML file name:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sciex</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="spectraData.html">dataOrigin</a></span><span class="op">(</span><span class="va">sciex_im</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##  -------- DATA EXPORT  --------</span></span></span>

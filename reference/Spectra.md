@@ -13,6 +13,9 @@ their properties are explained in the
 [MsBackend](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
 documentation.
 
+For information on parallel processing options see
+[`processingChunkSize()`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md).
+
 Documentation on other topics and functionality of `Spectra`can be found
 in:
 
@@ -138,7 +141,10 @@ dataStorageBasePath(object) <- value
 
 - BPPARAM:
 
-  Parallel setup configuration. See
+  Parallel setup configuration. Defaults to `BPPARAM = bpparam()` hence
+  using the *globally* defined default parallel processing setup. See
+  [`processingChunkSize()`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)
+  and
   [`BiocParallel::bpparam()`](https://rdrr.io/pkg/BiocParallel/man/register.html)
   for more information. This is passed directly to the
   [`backendInitialize()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
@@ -408,8 +414,8 @@ sciex
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 8193f791213_7859
-#> 8196479403f_7860
+#> 9172d9686cb_7859
+#> 91743b32bad_7860
 
 
 ##  --------  CHANGING DATA REPRESENTATIONS  --------
@@ -435,7 +441,7 @@ sciex_im
 #> 1862         1   259.752       931
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Wed Jun  3 11:59:07 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Jun  8 14:18:51 2026] 
 
 ## The `MsBackendMemory()` supports the `setBackend()` method:
 supportsSetBackend(MsBackendMemory())
@@ -463,30 +469,30 @@ head(dataStorage(sciex_im))
 ## While objects that use an on-disk backend will list the files where the
 ## data is stored.
 head(dataStorage(sciex))
-#> [1] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [2] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [3] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [4] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [5] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [6] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
+#> [1] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
 
 ## The spectra variable `dataOrigin` returns for each spectrum the *origin*
 ## of the data. If the data is read from e.g. mzML files, this will be the
 ## original mzML file name:
 head(dataOrigin(sciex))
-#> [1] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [2] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [3] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [4] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [5] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [6] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
+#> [1] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
 head(dataOrigin(sciex_im))
-#> [1] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [2] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [3] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [4] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [5] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
-#> [6] "/github/home/.cache/R/ExperimentHub/8193f791213_7859"
+#> [1] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [2] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [3] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [4] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [5] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
+#> [6] "/github/home/.cache/R/ExperimentHub/9172d9686cb_7859"
 
 
 ##  -------- DATA EXPORT  --------

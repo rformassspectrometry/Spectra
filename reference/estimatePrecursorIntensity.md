@@ -65,11 +65,10 @@ estimatePrecursorIntensity(
 - BPPARAM:
 
   Parallel setup configuration. See
+  [`processingChunkSize()`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)
+  and
   [`BiocParallel::bpparam()`](https://rdrr.io/pkg/BiocParallel/man/register.html)
-  for more information. This is passed directly to the
-  [`backendInitialize()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
-  method of the
-  [MsBackend](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md).
+  for more information.
 
 ## Author
 

@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-03 11:32:53.276942\
-**Compiled**: Wed Jun 3 12:01:58 2026
+**Last modified:** 2026-06-08 13:56:43.673419\
+**Compiled**: Mon Jun 8 14:21:14 2026
 
 ## Introduction
 
@@ -154,6 +154,7 @@ properties.
 
 ``` r
 
+register(SerialParam())
 #' define the file names of the data to import; data provided through
 #' the MsDataHub package
 fls <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
@@ -179,8 +180,21 @@ sps_sciex
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 8193f791213_7859
-    ## 8196479403f_7860
+    ## 9172d9686cb_7859
+    ## 91743b32bad_7860
+
+Note that we disabled any parallel processing using the
+`register(SerialParam())` call. Many functions for `Spectra` objects
+support parallel processing and will by default use the globally defined
+setup. On Windows machines only
+[`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
+is supported, which however will start a new R process for each parallel
+process for any operation - which can take up to 30-40 seconds. Hence,
+for Windows, it is suggested to either register and initiate the
+parallel processing system globally (using
+e.g. `register(bppstart(SnowParam(4)))` to start a parallel processing
+setup with 4 processes), or to disable it (using
+`register(SerialParam())`).
 
 The `Spectra` object `sps_sciex` allows now to access spectra data from
 1862 MS1 spectra and uses `MsBackendMzR` as backend (the `Spectra`
@@ -438,8 +452,8 @@ data from mzML files, in contrast, returns the originating file names:
 head(basename(dataOrigin(sps_sciex)))
 ```
 
-    ## [1] "8193f791213_7859" "8193f791213_7859" "8193f791213_7859" "8193f791213_7859"
-    ## [5] "8193f791213_7859" "8193f791213_7859"
+    ## [1] "9172d9686cb_7859" "9172d9686cb_7859" "9172d9686cb_7859" "9172d9686cb_7859"
+    ## [5] "9172d9686cb_7859" "9172d9686cb_7859"
 
 The current data storage location of a spectrum can be retrieved with
 the `dataStorage` variable, which will return an arbitrary string for
@@ -458,8 +472,8 @@ dataStorage(sps)
 head(basename(dataStorage(sps_sciex)))
 ```
 
-    ## [1] "8193f791213_7859" "8193f791213_7859" "8193f791213_7859" "8193f791213_7859"
-    ## [5] "8193f791213_7859" "8193f791213_7859"
+    ## [1] "9172d9686cb_7859" "9172d9686cb_7859" "9172d9686cb_7859" "9172d9686cb_7859"
+    ## [5] "9172d9686cb_7859" "9172d9686cb_7859"
 
 Certain backends (such as the `MsBackendMemory` and
 `MsBackendDataFrame`) support also additional peaks variables. At
@@ -811,7 +825,7 @@ sps_sciex[sps_sciex$dataOrigin == fls[2] &
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 8196479403f_7860
+    ## 91743b32bad_7860
 
 The equivalent using filter function is shown below, with the added
 benefit that the filtering is recorded in the processing slot.
@@ -840,10 +854,10 @@ sps_sciex |>
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 8196479403f_7860
+    ## 91743b32bad_7860
     ## Processing:
-    ##  Filter: select data origin(s) /github/home/.cache/R/ExperimentHub/8196479403f_7860 [Wed Jun  3 12:02:06 2026]
-    ##  Filter: select retention time [175..189] on MS level(s)  [Wed Jun  3 12:02:06 2026]
+    ##  Filter: select data origin(s) /github/home/.cache/R/ExperimentHub/91743b32bad_7860 [Mon Jun  8 14:21:21 2026]
+    ##  Filter: select retention time [175..189] on MS level(s)  [Mon Jun  8 14:21:21 2026]
 
 Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
@@ -888,7 +902,7 @@ sps
     ## 4         2        NA        NA
     ##  ... 20 more variables/columns.
     ## Processing:
-    ##  Merge 2 Spectra into one [Wed Jun  3 12:02:06 2026]
+    ##  Merge 2 Spectra into one [Mon Jun  8 14:21:21 2026]
 
 The resulting object contains now the data for all 4 MS2 spectra and an
 union of all spectra variables from both objects.
@@ -1039,9 +1053,9 @@ sps_rep
     ##  ... 20 more variables/columns.
     ## Lazy evaluation queue: 2 processing step(s)
     ## Processing:
-    ##  Merge 2 Spectra into one [Wed Jun  3 12:02:06 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Wed Jun  3 12:02:06 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Jun  3 12:02:07 2026]
+    ##  Merge 2 Spectra into one [Mon Jun  8 14:21:21 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Mon Jun  8 14:21:21 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Jun  8 14:21:21 2026]
 
 It is possible to add also custom functions to the processing queue of a
 `Spectra` object. Such a function must take a peaks matrix as its first
@@ -1076,9 +1090,9 @@ sps_2
     ##  ... 20 more variables/columns.
     ## Lazy evaluation queue: 3 processing step(s)
     ## Processing:
-    ##  Merge 2 Spectra into one [Wed Jun  3 12:02:06 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Wed Jun  3 12:02:06 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Jun  3 12:02:07 2026]
+    ##  Merge 2 Spectra into one [Mon Jun  8 14:21:21 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Mon Jun  8 14:21:21 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Jun  8 14:21:21 2026]
 
 Object `sps_2` has now 3 processing steps in its lazy evaluation queue.
 Calling
@@ -1436,9 +1450,9 @@ sps_rep
     ## 4         2        NA        NA
     ##  ... 20 more variables/columns.
     ## Processing:
-    ##  Merge 2 Spectra into one [Wed Jun  3 12:02:06 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Wed Jun  3 12:02:06 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Wed Jun  3 12:02:07 2026]
+    ##  Merge 2 Spectra into one [Mon Jun  8 14:21:21 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Mon Jun  8 14:21:21 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Jun  8 14:21:21 2026]
     ##  ...1 more processings. Use 'processingLog' to list all.
 
 Before
@@ -1946,7 +1960,7 @@ fl <- tempfile()
 export(sps, MsBackendMzR(), file = fl)
 ```
 
-    ## Writing file file23c819f28ed9...OK
+    ## Writing file file24c275e64920...OK
 
 To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
@@ -1976,8 +1990,8 @@ fls <- c(tempfile(), tempfile())
 export(sps, MsBackendMzR(), file = fls[c(1, 2, 1, 2)])
 ```
 
-    ## Writing file file23c8314c449d...OK
-    ## Writing file file23c87ba9468c...OK
+    ## Writing file file24c27cbef396...OK
+    ## Writing file file24c250f9bb18...OK
 
 A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the
@@ -2027,7 +2041,7 @@ sps_sciex
     ## 1862         1   259.752       931
     ##  ... 34 more variables/columns.
     ## Processing:
-    ##  Switch backend from MsBackendMzR to MsBackendMemory [Wed Jun  3 12:02:12 2026]
+    ##  Switch backend from MsBackendMzR to MsBackendMemory [Mon Jun  8 14:21:26 2026]
 
 With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
@@ -2055,8 +2069,8 @@ head(dataStorage(sps_sciex))
 head(basename(dataOrigin(sps_sciex)))
 ```
 
-    ## [1] "8193f791213_7859" "8193f791213_7859" "8193f791213_7859" "8193f791213_7859"
-    ## [5] "8193f791213_7859" "8193f791213_7859"
+    ## [1] "9172d9686cb_7859" "9172d9686cb_7859" "9172d9686cb_7859" "9172d9686cb_7859"
+    ## [5] "9172d9686cb_7859" "9172d9686cb_7859"
 
 ## Backends
 
@@ -2115,8 +2129,8 @@ sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
 head(basename(dataStorage(sps_tmt)))
 ```
 
-    ## [1] "81974a4d5db_7858.h5" "81974a4d5db_7858.h5" "81974a4d5db_7858.h5"
-    ## [4] "81974a4d5db_7858.h5" "81974a4d5db_7858.h5" "81974a4d5db_7858.h5"
+    ## [1] "917582065d8_7858.h5" "917582065d8_7858.h5" "917582065d8_7858.h5"
+    ## [4] "917582065d8_7858.h5" "917582065d8_7858.h5" "917582065d8_7858.h5"
 
 A (possibly incomplete) list of R packages providing additional backends
 that add support for additional data types or storage options is
@@ -2305,7 +2319,7 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] msentropy_0.1.4     Rcpp_1.1.1-1.1      MsCoreUtils_1.25.4 
-    ##  [4] MsDataHub_1.13.0    Spectra_1.23.2      BiocParallel_1.47.0
+    ##  [4] MsDataHub_1.13.0    Spectra_1.23.3      BiocParallel_1.47.0
     ##  [7] S4Vectors_0.51.3    BiocGenerics_0.59.6 generics_0.1.4     
     ## [10] BiocStyle_2.41.0   
     ## 
@@ -2317,7 +2331,7 @@ sessionInfo()
     ## [13] tibble_3.3.1           AnnotationDbi_1.75.0   RSQLite_3.53.1        
     ## [16] cluster_2.1.8.2        blob_1.3.0             pkgconfig_2.0.3       
     ## [19] data.table_1.18.4      dbplyr_2.5.2           desc_1.4.3            
-    ## [22] lifecycle_1.0.5        compiler_4.6.0         Biostrings_2.81.2     
+    ## [22] lifecycle_1.0.5        compiler_4.6.0         Biostrings_2.81.3     
     ## [25] textshaping_1.0.5      Seqinfo_1.3.0          codetools_0.2-20      
     ## [28] ncdf4_1.24             clue_0.3-68            htmltools_0.5.9       
     ## [31] sass_0.4.10            yaml_2.3.12            crayon_1.5.3          

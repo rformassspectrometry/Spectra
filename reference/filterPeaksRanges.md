@@ -127,7 +127,7 @@ res
 #>  ... 16 more variables/columns.
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
-#>  Filter: remove peaks based on user-provided ranges for 1 variables [Wed Jun  3 12:01:04 2026] 
+#>  Filter: remove peaks based on user-provided ranges for 1 variables [Mon Jun  8 14:20:26 2026] 
 
 ## The Spectra object has still the same length and spectra variables
 length(res)
@@ -163,7 +163,7 @@ res
 #>  ... 16 more variables/columns.
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
-#>  Filter: select peaks based on user-provided ranges for 2 variables [Wed Jun  3 12:01:04 2026] 
+#>  Filter: select peaks based on user-provided ranges for 2 variables [Mon Jun  8 14:20:26 2026] 
 length(res)
 #> [1] 2
 
