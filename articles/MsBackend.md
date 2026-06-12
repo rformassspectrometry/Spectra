@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-08 13:56:43.673419\
-**Compiled**: Mon Jun 8 14:20:46 2026
+**Last modified:** 2026-06-12 14:09:35.718635\
+**Compiled**: Fri Jun 12 14:35:01 2026
 
 ## Introduction
 
@@ -2648,7 +2648,7 @@ sessionInfo()
     ## 
     ## other attached packages:
     ## [1] MsCoreUtils_1.25.4  IRanges_2.47.2      Spectra_1.23.3     
-    ## [4] BiocParallel_1.47.0 S4Vectors_0.51.3    BiocGenerics_0.59.6
+    ## [4] BiocParallel_1.47.0 S4Vectors_0.51.3    BiocGenerics_0.59.7
     ## [7] generics_0.1.4      BiocStyle_2.41.0   
     ## 
     ## loaded via a namespace (and not attached):

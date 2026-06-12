@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-08 13:56:43.673419\
-**Compiled**: Mon Jun 8 14:20:57 2026
+**Last modified:** 2026-06-12 14:09:35.718635\
+**Compiled**: Fri Jun 12 14:35:16 2026
 
 ## Introduction
 
@@ -97,9 +97,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 91768678268_7861
-    ## 9175e2a948_7862
-    ## 9172d9686cb_7859
+    ## 74825602e8c_7861
+    ## 7481e126cbf_7862
+    ## 7482fe40e87_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -194,13 +194,13 @@ processingChunkFactor(sps_mzr) |> table()
 ```
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/91768678268_7861 
+    ## /github/home/.cache/R/ExperimentHub/74825602e8c_7861 
     ##                                                 7602 
-    ##  /github/home/.cache/R/ExperimentHub/9175e2a948_7862 
+    ## /github/home/.cache/R/ExperimentHub/7481e126cbf_7862 
     ##                                                 8999 
-    ## /github/home/.cache/R/ExperimentHub/9172d9686cb_7859 
+    ## /github/home/.cache/R/ExperimentHub/7482fe40e87_7859 
     ##                                                  931 
-    ## /github/home/.cache/R/ExperimentHub/91743b32bad_7860 
+    ##  /github/home/.cache/R/ExperimentHub/74890c8574_7860 
     ##                                                  931
 
 The data would thus be split and processed by the original file, from
@@ -361,7 +361,7 @@ sessionInfo()
     ## 
     ## other attached packages:
     ## [1] MsDataHub_1.13.0    Spectra_1.23.3      BiocParallel_1.47.0
-    ## [4] S4Vectors_0.51.3    BiocGenerics_0.59.6 generics_0.1.4     
+    ## [4] S4Vectors_0.51.3    BiocGenerics_0.59.7 generics_0.1.4     
     ## [7] BiocStyle_2.41.0   
     ## 
     ## loaded via a namespace (and not attached):
