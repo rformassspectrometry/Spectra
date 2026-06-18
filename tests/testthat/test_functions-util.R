@@ -107,4 +107,8 @@ test_that("rbindlistWithRownames works", {
     expect_warning(res <- rbindlistWithRownames(list(a, b)), "not available")
     expect_equal(nrow(res), nrow(a) + nrow(b))
     expect_equal(rownames(res), as.character(seq_len(nrow(res))))
+
+    ## unique row names but with multiple NAs
+    res <- rbindlistWithRownames(list(a, a[1:10, ]))
+    expect_equal(rownames(res), as.character(1:110))
 })

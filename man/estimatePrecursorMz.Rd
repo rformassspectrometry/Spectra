@@ -19,7 +19,7 @@ precursorMz +/- (tolerance + ppm(precursorMz, ppm)) are considered.}
 m/z. See documentation of parameter \code{tolerance} for more information.}
 
 \item{BPPARAM}{parallel processing setup. Defaults to
-\code{BPPARAM = SerialParam()}. See \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}} for
+\code{BPPARAM = SerialParam()}. See \code{\link[BiocParallel:SerialParam]{BiocParallel::SerialParam()}} for
 more information.}
 }
 \value{

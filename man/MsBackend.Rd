@@ -8,6 +8,7 @@
 \alias{class:MsBackend}
 \alias{MsBackend-class}
 \alias{MsBackendDataFrame-class}
+\alias{MsBackendHdf5Peaks-class}
 \alias{MsBackendMzR-class}
 \alias{[,MsBackend-method}
 \alias{uniqueMsLevels,MsBackend-method}
@@ -319,7 +320,7 @@ MsBackendMzR()
 
 \item{BPPARAM}{for \code{backendBpparam()}: parameter object from the
 \code{BiocParallel} package defining the parallel processing setup.
-Defaults to \code{BPPARAM = bpparam()}. See \code{\link[BiocParallel:register]{BiocParallel::bpparam()}}
+Defaults to \code{BPPARAM = bpparam()}. See \code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}}
 for more information.}
 
 \item{...}{Additional arguments.}
@@ -384,7 +385,7 @@ to subset \code{object}.}
 
 \item{ppm}{For \code{filterPrecursorMzValues()}: \code{numeric(1)} with the
 m/z-relative maximal acceptable difference for a m/z to be considered
-matching. See \code{\link[MsCoreUtils:matching]{MsCoreUtils::closest()}} for details.
+matching. See \code{\link[MsCoreUtils:closest]{MsCoreUtils::closest()}} for details.
 For \code{filterValues()}: \code{numeric} of any length allowing to define
 a maximal accepted difference between user input \code{values} and the
 \code{spectraVariables} values.  If it is not equal to the length of the
@@ -393,7 +394,7 @@ recycled.}
 
 \item{tolerance}{For \code{filterPrecursorMzValues()}: \code{numeric(1)} with the
 maximal absolute acceptable difference for a m/z value to be considered
-matching. See documentation \code{\link[MsCoreUtils:matching]{MsCoreUtils::closest()}} for details.
+matching. See documentation \code{\link[MsCoreUtils:closest]{MsCoreUtils::closest()}} for details.
 For \code{filterValues()}: \code{numeric}
 accepted tolerance between the \code{values} and the spectra variables.
 Defaults to \code{tolerance = 0}. If it is not equal to the length of the
@@ -661,7 +662,7 @@ support \code{logical} and eventually \code{character}). While being apparently
 redundant to \code{[}, this methods avoids package namespace errors/problems
 that can result in implementations of \code{[} being not found by R (which
 can happen sometimes in parallel processing using the
-\code{\link[BiocParallel:SnowParam-class]{BiocParallel::SnowParam()}}). This method is used internally by \code{Spectra}
+\code{\link[BiocParallel:SnowParam]{BiocParallel::SnowParam()}}). This method is used internally by \code{Spectra}
 to extract/subset its backend. Implementation of this method is mandatory.
 \item \code{filterAcquisitionNum()}: filters the object keeping only spectra matching
 the provided acquisition numbers (argument \code{n}). If \code{dataOrigin} or
@@ -749,11 +750,11 @@ values are within any of the provided ranges are retained).
 Implementation of this method is optional since a default implementation
 for \code{MsBackend} is available.
 \item \code{intensity()}: gets the intensity values from the spectra. Returns
-a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors (intensity values for each
+a \code{\link[IRanges:NumericList]{IRanges::NumericList()}} of \code{numeric} vectors (intensity values for each
 spectrum). The length of the \code{list} is equal to the number of
 \code{spectra} in \code{object}.
 \item \verb{intensity<-}: replaces the intensity values. \code{value} has to be a \code{list}
-(or \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}}) of length equal to the number of spectra
+(or \code{\link[IRanges:NumericList]{IRanges::NumericList()}}) of length equal to the number of spectra
 and the number of values within each list element identical to the
 number of peaks in each spectrum (i.e. the \code{lengths(x)}). Note that just
 writeable backends support this method.
@@ -796,7 +797,7 @@ vector (of length equal to the number of spectra) with the MS
 level for each spectrum (or \code{NA_integer_} if not available).
 \item \verb{msLevel<-}: replaces the spectra's MS level.
 \item \code{mz()}: gets the mass-to-charge ratios (m/z) from the
-spectra. Returns a \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} or length equal to the
+spectra. Returns a \code{\link[IRanges:NumericList]{IRanges::NumericList()}} or length equal to the
 number of spectra, each element a \code{numeric} vector with the m/z values of
 one spectrum.
 \item \verb{mz<-}: replaces the m/z values. \code{value} has to be a \code{list} of length equal
@@ -974,9 +975,9 @@ containing the precursor of a (MS2) spectrum.
 precursor.
 \item \code{"precursorCharge"}: \code{integer} with the charge of the precursor.
 \item \code{"collisionEnergy"}: \code{numeric} with the collision energy.
-\item \code{"mz"}: \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors representing the
+\item \code{"mz"}: \code{\link[IRanges:NumericList]{IRanges::NumericList()}} of \code{numeric} vectors representing the
 m/z values for each spectrum.
-\item \code{"intensity"}: \code{\link[IRanges:AtomicList-class]{IRanges::NumericList()}} of \code{numeric} vectors
+\item \code{"intensity"}: \code{\link[IRanges:NumericList]{IRanges::NumericList()}} of \code{numeric} vectors
 representing the intensity values for each spectrum.
 }
 

@@ -899,7 +899,7 @@ test_that("$, $<-, [[, [[<-,Spectra works", {
 
     expect_error(sps$mz <- mz(sps))
 
-    expect_error(sps$add_col <- c(1, 2), "has to be either 1 or")
+    expect_error(sps$add_col <- c(1, 2), "has to be either 0, 1 or")
 })
 
 #### ---------------------------------------------------------------------------

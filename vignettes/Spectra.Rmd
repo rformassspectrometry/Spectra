@@ -150,6 +150,7 @@ data files only on demand. See section [Backends](#backends) for more details
 on backends and their properties.
 
 ```{r spectra-msbackendmzr, message = FALSE}
+register(SerialParam())
 #' define the file names of the data to import; data provided through
 #' the MsDataHub package
 fls <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
@@ -157,6 +158,16 @@ fls <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
 sps_sciex <- Spectra(fls, source = MsBackendMzR())
 sps_sciex
 ```
+
+Note that we disabled any parallel processing using the
+`register(SerialParam())` call. Many functions for `Spectra` objects support
+parallel processing and will by default use the globally defined setup. On
+Windows machines only `BiocParallel::SnowParam()` is supported, which however
+will start a new R process for each parallel process for any operation - which
+can take up to 30-40 seconds. Hence, for Windows, it is suggested to either
+register and initiate the parallel processing system globally (using
+e.g. `register(bppstart(SnowParam(4)))` to start a parallel processing setup
+with 4 processes), or to disable it (using `register(SerialParam())`).
 
 The `Spectra` object `sps_sciex` allows now to access spectra data from 1862 MS1
 spectra and uses `MsBackendMzR` as backend (the `Spectra` object `sps` created

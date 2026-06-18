@@ -521,7 +521,7 @@ test_that("$,$<-,MsBackendMzR works", {
 
     expect_error(tmp$mz <- NumericList(1:4, 1:6, compress = FALSE),
                  "not support replacing mz")
-    expect_error(tmp$new_col <- c(2, 4), "either 1 or")
+    expect_error(tmp$new_col <- c(2, 4), "either 0, 1 or")
 })
 
 test_that("export,MsBackendMzR works", {

@@ -26,7 +26,7 @@ processing. Default is \code{dataOrigin(x)}, i.e. each raw data
 files is processed in parallel.}
 
 \item{BPPARAM}{Parallel setup configuration. See
-\code{\link[BiocParallel:register]{BiocParallel::bpparam()}} for details.}
+\code{\link[BiocParallel:bpparam]{BiocParallel::bpparam()}} for details.}
 }
 \value{
 An updated \code{\link[=Spectra]{Spectra()}} object that now contains an integer

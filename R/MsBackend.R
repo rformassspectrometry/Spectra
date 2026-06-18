@@ -3,6 +3,7 @@
 #' @title Mass spectrometry data backends
 #'
 #' @aliases class:MsBackend MsBackend-class MsBackendDataFrame-class
+#' @aliases MsBackendHdf5Peaks-class
 #' @aliases MsBackendMzR-class [,MsBackend-method
 #' @aliases uniqueMsLevels,MsBackend-method
 #' @aliases MsBackendMemory-class
