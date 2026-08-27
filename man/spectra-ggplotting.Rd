@@ -130,6 +130,9 @@ plotting area.}
 \item{interactive}{\code{logical(1)} return the interactive ggplot based on
 ggiraph.}
 
+\item{interactive_labels}{\code{character} vector with the column names to show
+in the interactive label(s).}
+
 \item{y}{for \code{ggplotSpectraMirror()}: \code{Spectra} object of length 1 against
 which \code{x} should be plotted against.}
 
