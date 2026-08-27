@@ -93,6 +93,9 @@
 #' @param interactive `logical(1)` return the interactive ggplot based on
 #'     ggiraph.
 #'
+#' @param interactive_labels `character` vector with the column names to show
+#'     in the interactive label(s).
+#'
 #' @return These functions create a ggplot.
 #'
 #' @author Gabriele Tomè, Johannes Rainer
