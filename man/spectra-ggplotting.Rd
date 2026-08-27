@@ -25,7 +25,8 @@ ggplotSpectra(
   asp = 0.5,
   axes = TRUE,
   frame.plot = axes,
-  interactive = FALSE
+  interactive = FALSE,
+  interactive_labels = c("rtime", "mz", "intensity", "msLevel")
 )
 
 ggplotSpectraOverlay(
@@ -45,7 +46,8 @@ ggplotSpectraOverlay(
   asp = 0.5,
   axes = TRUE,
   frame.plot = axes,
-  interactive = FALSE
+  interactive = FALSE,
+  interactive_labels = c("rtime", "mz", "intensity", "msLevel")
 )
 
 \S4method{ggplotSpectraMirror}{Spectra}(
@@ -72,7 +74,8 @@ ggplotSpectraOverlay(
   matchPch = 16,
   matchLwd = 0.5,
   asp = 0.5,
-  interactive = FALSE
+  interactive = FALSE,
+  interactive_labels = c("rtime", "mz", "intensity", "msLevel")
 )
 }
 \arguments{

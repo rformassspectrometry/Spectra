@@ -197,7 +197,9 @@ ggplotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
                         main = character(), col = "#00000080",
                         labels = character(), labelCol = col, labelSize = 5,
                         labelAngle = 0, labelVjust = -0.2, labelHjust = 0.5, asp = 0.5, axes = TRUE, frame.plot = axes,
-                        interactive = FALSE){
+                        interactive = FALSE,
+                        interactive_labels = c("rtime", "mz",
+                                                "intensity", "msLevel")){
     if (!length(main))
         main <- paste0("MS", msLevel(x), " RT: ", round(rtime(x), 1))
     nsp <- length(x)
@@ -230,7 +232,8 @@ ggplotSpectra <- function(x, xlab = "m/z", ylab = "intensity",
                             col = col, labels = labels, labelCol = labelCol,
                             labelSize = labelSize, labelAngle = labelAngle,
                             labelVjust = labelVjust, labelHjust = labelHjust,
-                            asp = asp, axes = axes, frame.plot = frame.plot)
+                            asp = asp, axes = axes, frame.plot = frame.plot,
+                            interactive_labels = interactive_labels)
         girafe(gg)
     }
 }
@@ -245,7 +248,9 @@ ggplotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
                                labelCol = col, labelSize = 5,
                                labelAngle = 0, labelVjust = -0.2,
                                labelHjust = 0.5, asp = 0.5, axes = TRUE,
-                               frame.plot = axes, interactive = FALSE) {
+                               frame.plot = axes, interactive = FALSE,
+                               interactive_labels = c("rtime", "mz",
+                                                "intensity", "msLevel")) {
     nsp <- length(x)
     if (length(col) != nsp)
         col <- rep(col[1], nsp)
@@ -277,7 +282,8 @@ ggplotSpectraOverlay <- function(x, xlab = "m/z", ylab = "intensity",
                             labelCol = labelCol, labelSize = labelSize,
                             labelAngle = labelAngle, labelVjust = labelVjust,
                             labelHjust = labelHjust, asp = asp, axes = axes,
-                            frame.plot = frame.plot)
+                            frame.plot = frame.plot,
+                            interactive_labels = interactive_labels)
         girafe(gg)
     }
 }
@@ -293,7 +299,8 @@ setMethod(
             labelSize = 5, labelAngle = 0, labelVjust = -0.2, labelHjust = 0.5,
             axes = TRUE, frame.plot = axes, ppm = 20, tolerance = 0,
             matchCol = "#80B1D3", matchCex = 5, matchPch = 16,
-            matchLwd = 0.5, asp = 0.5, interactive = FALSE) {
+            matchLwd = 0.5, asp = 0.5, interactive = FALSE,
+            interactive_labels = c("rtime", "mz", "intensity", "msLevel")) {
         if (length(x) != 1 || length(y) != 1)
             stop("'x' and 'y' have to be of length 1")
         if (length(col) != 2)
@@ -343,7 +350,8 @@ setMethod(
                                 labelHjust = labelHjust, matchCol = matchCol,
                                 matchCex = matchCex, matchPch = matchPch,
                                 matchLwd = matchLwd, axes = axes,
-                                frame.plot = frame.plot)
+                                frame.plot = frame.plot,
+                                interactive_labels = interactive_labelss)
             girafe(gg)
         }
     })
@@ -512,7 +520,9 @@ setMethod(
                                   tolerance = 0, ppm = 20,
                                   matchCol = "#80B1D3", matchPch = 16,
                                   matchCex = 5, matchLwd = 0.5,
-                                  axes = TRUE, frame.plot = axes, ...) {
+                                  axes = TRUE, frame.plot = axes,
+                                  interactive_labels = c("rtime", "mz",
+                                                    "intensity", "msLevel")) {
     v <- asDataFrame(x)
     v$intensity_orient <- orientation * v[, "intensity"]
     v$rtime <- factor(v$rtime, levels = sort(unique(v$rtime)),
@@ -544,6 +554,7 @@ setMethod(
         v <- merge(v, col_df)
     }
 
+    interactive_labels <- intersect(interactive_labels, names(v))
     set_girafe_defaults(
         opts_zoom = opts_zoom(min = 1, max = 4),
         opts_tooltip = opts_tooltip(
@@ -568,7 +579,7 @@ setMethod(
             geom_bar_interactive(
                 aes(group = rtime, color = color, data_id = index,
                     tooltip = do.call(paste,
-                        c(lapply(names(v),
+                        c(lapply(interactive_labels,
                                  function(x){paste(x, ": ", v[, x])}),
                         sep = "\n"))),
                 width = 0.5, na.rm = TRUE, stat = "identity",
@@ -590,7 +601,7 @@ setMethod(
                     aes(x = mz, y = intensity_orient, group = rtime,
                         data_id = index,
                         tooltip = do.call(paste,
-                            c(lapply(names(v),
+                            c(lapply(interactive_labels,
                                     function(x){paste(x, ": ", v[, x])}),
                             sep = "\n"))),
                     color = matchCol, size = matchCex, shape = matchPch,
@@ -600,7 +611,7 @@ setMethod(
             geom_bar_interactive(
                     aes(group = rtime, color = color, data_id = index,
                     tooltip = do.call(paste,
-                        c(lapply(names(v),
+                        c(lapply(interactive_labels,
                                  function(x){paste(x, ": ", v[, x])}),
                         sep = "\n"))), width = 0.5,
                     na.rm = TRUE, stat = "identity", hover_nearest = TRUE) +
