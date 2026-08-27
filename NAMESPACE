@@ -22,6 +22,8 @@ export(filterPrecursorIsotopes)
 export(filterPrecursorMaxIntensity)
 export(filterPrecursorPeaks)
 export(fragmentGroupIndex)
+export(ggplotSpectra)
+export(ggplotSpectraOverlay)
 export(joinPeaks)
 export(joinPeaksGnps)
 export(joinPeaksNone)
@@ -113,6 +115,7 @@ exportMethods(filterPrecursorScan)
 exportMethods(filterRanges)
 exportMethods(filterRt)
 exportMethods(filterValues)
+exportMethods(ggplotSpectraMirror)
 exportMethods(intensity)
 exportMethods(ionCount)
 exportMethods(isCentroided)
@@ -161,78 +164,131 @@ importClassesFrom(IRanges,NumericList)
 importClassesFrom(ProtGenerics,Param)
 importClassesFrom(ProtGenerics,ProcessingStep)
 importClassesFrom(S4Vectors,DataFrame)
-importFrom(BiocGenerics,longForm)
-importFrom(BiocGenerics,updateObject)
-importFrom(BiocParallel,SerialParam)
-importFrom(BiocParallel,bplapply)
-importFrom(BiocParallel,bpparam)
+importFrom(BiocGenerics,
+  longForm,
+  updateObject
+)
+importFrom(BiocParallel,
+  SerialParam,
+  bplapply,
+  bpparam
+)
 importFrom(IRanges,NumericList)
-importFrom(MetaboCoreUtils,isotopicSubstitutionMatrix)
-importFrom(MetaboCoreUtils,isotopologues)
-importFrom(MsCoreUtils,between)
-importFrom(MsCoreUtils,closest)
-importFrom(MsCoreUtils,coefMA)
-importFrom(MsCoreUtils,coefSG)
-importFrom(MsCoreUtils,coefWMA)
-importFrom(MsCoreUtils,common)
-importFrom(MsCoreUtils,common_path)
-importFrom(MsCoreUtils,entropy)
-importFrom(MsCoreUtils,group)
-importFrom(MsCoreUtils,i2index)
-importFrom(MsCoreUtils,join)
-importFrom(MsCoreUtils,join_gnps)
-importFrom(MsCoreUtils,localMaxima)
-importFrom(MsCoreUtils,ndotproduct)
-importFrom(MsCoreUtils,nentropy)
-importFrom(MsCoreUtils,noise)
-importFrom(MsCoreUtils,ppm)
-importFrom(MsCoreUtils,rbindFill)
-importFrom(MsCoreUtils,refineCentroids)
-importFrom(MsCoreUtils,vapply1c)
-importFrom(MsCoreUtils,vapply1d)
-importFrom(MsCoreUtils,vapply1l)
-importFrom(ProtGenerics,ProcessingStep)
-importFrom(ProtGenerics,executeProcessingStep)
-importFrom(ProtGenerics,smooth)
-importFrom(S4Vectors,DataFrame)
-importFrom(S4Vectors,SimpleList)
-importFrom(S4Vectors,make_zero_col_DFrame)
+importFrom(MetaboCoreUtils,
+  isotopicSubstitutionMatrix,
+  isotopologues
+)
+importFrom(MsCoreUtils,
+  between,
+  closest,
+  coefMA,
+  coefSG,
+  coefWMA,
+  common,
+  common_path,
+  entropy,
+  group,
+  i2index,
+  join,
+  join_gnps,
+  localMaxima,
+  ndotproduct,
+  nentropy,
+  noise,
+  ppm,
+  rbindFill,
+  refineCentroids,
+  vapply1c,
+  vapply1d,
+  vapply1l
+)
+importFrom(ProtGenerics,
+  ProcessingStep,
+  executeProcessingStep,
+  smooth
+)
+importFrom(S4Vectors,
+  DataFrame,
+  SimpleList,
+  make_zero_col_DFrame
+)
 importFrom(data.table,rbindlist)
 importFrom(fs,path_sanitize)
-importFrom(grDevices,dev.flush)
-importFrom(grDevices,dev.hold)
-importFrom(grDevices,n2mfrow)
-importFrom(grDevices,xy.coords)
-importFrom(graphics,abline)
-importFrom(graphics,axis)
-importFrom(graphics,box)
-importFrom(graphics,hist)
-importFrom(graphics,par)
-importFrom(graphics,plot.new)
-importFrom(graphics,plot.window)
-importFrom(graphics,plot.xy)
-importFrom(graphics,segments)
-importFrom(graphics,strwidth)
-importFrom(graphics,text)
-importFrom(graphics,title)
-importFrom(methods,"slot<-")
-importFrom(methods,.hasSlot)
-importFrom(methods,.valueClassTest)
-importFrom(methods,as)
-importFrom(methods,callNextMethod)
-importFrom(methods,existsMethod)
-importFrom(methods,is)
-importFrom(methods,new)
-importFrom(methods,setAs)
-importFrom(methods,validObject)
-importFrom(stats,approx)
-importFrom(stats,cor)
-importFrom(stats,quantile)
-importFrom(stats,weighted.mean)
+importFrom(ggiraph,
+  facet_wrap_interactive,
+  geom_bar_interactive,
+  geom_hline_interactive,
+  geom_point_interactive,
+  geom_text_interactive,
+  girafe,
+  opts_sizing,
+  opts_toolbar,
+  opts_tooltip,
+  opts_zoom,
+  set_girafe_defaults
+)
+importFrom(ggplot2,
+  aes,
+  element_blank,
+  facet_wrap,
+  geom_bar,
+  geom_hline,
+  geom_point,
+  geom_text,
+  ggplot,
+  ggtitle,
+  labs,
+  scale_color_identity,
+  scale_y_continuous,
+  theme,
+  theme_bw,
+  xlim,
+  ylim
+)
+importFrom(grDevices,
+  dev.flush,
+  dev.hold,
+  n2mfrow,
+  xy.coords
+)
+importFrom(graphics,
+  abline,
+  axis,
+  box,
+  hist,
+  par,
+  plot.new,
+  plot.window,
+  plot.xy,
+  segments,
+  strwidth,
+  text,
+  title
+)
+importFrom(methods,
+  "slot<-",
+  .hasSlot,
+  .valueClassTest,
+  as,
+  callNextMethod,
+  existsMethod,
+  is,
+  new,
+  setAs,
+  validObject
+)
+importFrom(stats,
+  approx,
+  cor,
+  quantile,
+  weighted.mean
+)
 importFrom(tools,file_path_sans_ext)
-importFrom(utils,capture.output)
-importFrom(utils,combn)
-importFrom(utils,packageVersion)
+importFrom(utils,
+  capture.output,
+  combn,
+  packageVersion
+)
 importMethodsFrom(BiocParallel,bplapply)
 importMethodsFrom(BiocParallel,bpmapply)
 importMethodsFrom(IRanges,extractList)
