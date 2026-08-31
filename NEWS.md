@@ -1,8 +1,12 @@
 # Spectra 1.23
 
-## Changes in 1.23.4
+## Changes in 1.23.5
 
 - New plot functions based on `ggplot` and `ggiraph` for the interactivity.
+
+## Changes in 1.23.4
+
+- Small fixes in the documentation.
 
 ## Changes in 1.23.3
 
