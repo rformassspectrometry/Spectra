@@ -1563,8 +1563,8 @@ setReplaceMethod("[[", "Spectra", function(x, i, j, ..., value) {
 #' - `joinSpectraData()`: Individual spectra variables can be directly
 #'    added with the `$<-` or `[[<-` syntax. The `joinSpectraData()`
 #'    function allows to merge a `DataFrame` to the existing spectra
-#'    data of a `Spectra`. This function diverges from the [merge()] method in
-#'    two main ways:
+#'    data of a `Spectra`. This function diverges from the [base::merge()]
+#'    method in two main ways:
 #'    - The `by.x` and `by.y` column names must be of length 1.
 #'    - If variable names are shared in `x` and `y`, the spectra
 #'      variables of `x` are not modified. It's only the `y`

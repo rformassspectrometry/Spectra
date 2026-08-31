@@ -1,5 +1,9 @@
 # Spectra 1.23
 
+## Changes in 1.23.4
+
+- Small fixes in the documentation.
+
 ## Changes in 1.23.3
 
 - Improve documentation for the use of `SerialParam()` *vs* `SnowParam()` on

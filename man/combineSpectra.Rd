@@ -118,8 +118,8 @@ using the \code{\link[=setBackend]{setBackend()}} function (to e.g. a \code{\lin
 \item \code{joinSpectraData()}: Individual spectra variables can be directly
 added with the \verb{$<-} or \verb{[[<-} syntax. The \code{joinSpectraData()}
 function allows to merge a \code{DataFrame} to the existing spectra
-data of a \code{Spectra}. This function diverges from the \code{\link[=merge]{merge()}} method in
-two main ways:
+data of a \code{Spectra}. This function diverges from the \code{\link[base:merge]{base::merge()}}
+method in two main ways:
 \itemize{
 \item The \code{by.x} and \code{by.y} column names must be of length 1.
 \item If variable names are shared in \code{x} and \code{y}, the spectra
