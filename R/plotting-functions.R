@@ -47,9 +47,9 @@
 #'
 #' @param labels allows to specify a label for each peak. Needs to be a `list()`
 #'     with length equal to the number of spectra (each element of the list
-#'     being a `character()` with length equal to the number of peaks for that 
-#'     spectrum), or, ideally, a `function` that uses one of the `Spectra`'s 
-#'     variables (see examples below). `plotSpectraMirror()` supports only 
+#'     being a `character()` with length equal to the number of peaks for that
+#'     spectrum), or, ideally, a `function` that uses one of the `Spectra`'s
+#'     variables (see examples below). `plotSpectraMirror()` supports only
 #'     `labels` of type *function*.
 #'
 #' @param labelCex `numeric(1)` giving the amount by which the text should be
@@ -145,7 +145,7 @@
 #' ## Add a custom annotation for each peak.
 #' sp$label <- list(c("", "A", "B", "C", "D"),
 #'     c("Frodo", "Bilbo", "Peregrin", "Samwise"))
-#'     
+#'
 #' ## Plot each peak in a different color
 #' plotSpectra(sp, labels = sp$label,
 #'     col = list(1:5, 1:4))
@@ -232,7 +232,7 @@ plotSpectra <- function(x, xlab = "m/z", ylab = "intensity", type = "h",
         if (length(labels) != length(x))
             stop("Please provide a list of annotations of length equal to 'x'.")
     } else {labels <- NULL}
-    
+
     for (i in seq_len(nsp))
         .plot_single_spectrum(x[i], xlab = xlab, ylab = ylab, type = type,
                               xlim = xlim, ylim = ylim, main = main[i],

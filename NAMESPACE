@@ -22,6 +22,8 @@ export(filterPrecursorIsotopes)
 export(filterPrecursorMaxIntensity)
 export(filterPrecursorPeaks)
 export(fragmentGroupIndex)
+export(ggplotSpectra)
+export(ggplotSpectraOverlay)
 export(joinPeaks)
 export(joinPeaksGnps)
 export(joinPeaksNone)
@@ -113,6 +115,7 @@ exportMethods(filterPrecursorScan)
 exportMethods(filterRanges)
 exportMethods(filterRt)
 exportMethods(filterValues)
+exportMethods(ggplotSpectraMirror)
 exportMethods(intensity)
 exportMethods(ionCount)
 exportMethods(isCentroided)
@@ -211,6 +214,37 @@ importFrom(S4Vectors,
 )
 importFrom(data.table,rbindlist)
 importFrom(fs,path_sanitize)
+importFrom(ggiraph,
+  facet_wrap_interactive,
+  geom_bar_interactive,
+  geom_hline_interactive,
+  geom_point_interactive,
+  geom_text_interactive,
+  girafe,
+  opts_sizing,
+  opts_toolbar,
+  opts_tooltip,
+  opts_zoom,
+  set_girafe_defaults
+)
+importFrom(ggplot2,
+  aes,
+  element_blank,
+  facet_wrap,
+  geom_bar,
+  geom_hline,
+  geom_point,
+  geom_text,
+  ggplot,
+  ggtitle,
+  labs,
+  scale_color_identity,
+  scale_y_continuous,
+  theme,
+  theme_bw,
+  xlim,
+  ylim
+)
 importFrom(grDevices,
   dev.flush,
   dev.hold,

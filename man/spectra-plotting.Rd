@@ -216,7 +216,7 @@ plotSpectra(sp, labels = function(z) lapply(mz(z), format, digits = 4),
 ## Add a custom annotation for each peak.
 sp$label <- list(c("", "A", "B", "C", "D"),
     c("Frodo", "Bilbo", "Peregrin", "Samwise"))
-    
+
 ## Plot each peak in a different color
 plotSpectra(sp, labels = sp$label,
     col = list(1:5, 1:4))
