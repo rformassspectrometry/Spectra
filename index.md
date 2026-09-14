@@ -15,6 +15,8 @@ release](http://bioconductor.org/shields/build/release/bioc/Spectra.svg)](https:
 [![build
 devel](http://bioconductor.org/shields/build/devel/bioc/Spectra.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/Spectra/)
 
+## Overview
+
 The *Spectra* package defines an efficient infrastructure for storing
 and handling mass spectrometry spectra and functionality to subset,
 process, visualize and compare spectra data.
@@ -63,12 +65,22 @@ the R package providing it) is shown below:
   MS data and variables. Has a minimal memory footprint because all data
   is retrieved on-the-fly from the SQL database.
 
+- `MsBackendMassIVE` (package
+  [*MsBackendMassIVE*](https://github.com/RforMassSpectrometry/MsBackendMassIVE)):
+  retrieves and caches MS data files from the MassIVE data repository.
+
 - `MsBackendMemory` (package: *Spectra*): *default* backend which keeps
   all data in memory. Optimized for fast processing.
 
 - `MsBackendMetaboLights` (package
   [*MsBackendMetaboLights*](https://github.com/rformassspectrometry/MsBackendMetaboLights)):
-  retrieves and caches MS data files from MetaboLights.
+  retrieves and caches MS data files from the MetaboLights data
+  repository.
+
+- `MsBackendMetabolomicsWorkbench` (package
+  [*MsBackendMetabolomicsWorkbench*](https://github.com/rformassspectrometry/MsBackendMetabolomicsWorkbench)):
+  retrieves and caches MS data files from the MetabolomicsWorkbench data
+  repository.
 
 - `MsBackendMgf` (package
   [*MsBackendMgf*](https://github.com/rformassspectrometry/MsBackendMgf)):
@@ -118,22 +130,36 @@ the R package providing it) is shown below:
 For more information see the package
 [homepage](https://rformassspectrometry.github.io/Spectra).
 
-# Installation
+------------------------------------------------------------------------
+
+## ⤵️ Installation
 
 The package can be installed with
 
-``` r
+\
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"BiocManager"``)`\
+`BiocManager``::`[`install`](https://bioconductor.github.io/BiocManager/reference/install.html)`(``"Spectra"``)`
 
-install.packages("BiocManager")
-BiocManager::install("Spectra")
-```
+## 🤝 Contribution
 
-# Contributions
+Please help us improving and completing the package! Any type of
+contribution welcome 👐 - including discussions, suggestions or actual
+code. Don’t be afraid - we’re friendly ☺️! 👉 get involved by opening an
+[issue](https://github.com/rformassspectrometry/Spectra/issues).
 
-Contributions are highly welcome and should follow the [contribution
-guidelines](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/RforMassSpectrometry.html#contributions).
-Also, please check the coding style guidelines in the
-[RforMassSpectrometry
-vignette](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/RforMassSpectrometry.html)
-and importantly, follow our [code of
-conduct](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/RforMassSpectrometry.html#code-of-conduct).
+Please also check out the [**RforMassSpectrometry Contributions
+Guide**](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/RforMassSpectrometry.html#contributions).
+
+### 📜 Code of Conduct
+
+We follow the [**RforMassSpectrometry Code of
+Conduct**](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/RforMassSpectrometry.html#code-of-conduct)
+to maintain an inclusive and respectful community.
+
+## License
+
+This package is licensed under the **Artistic 2.0** license: 📄
+<https://opensource.org/license/Artistic-2.0>
+
+Documentation (manuals, vignettes) is licensed under **CC BY-NC-SA
+4.0**: 📄 <https://creativecommons.org/licenses/by-nc-sa/4.0/>

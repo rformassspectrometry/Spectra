@@ -46,8 +46,8 @@ using the setBackend() function (to e.g. a MsBackendMemory() backend).
 joinSpectraData(): Individual spectra variables can be directly
 added with the $&amp;lt;- or [[&amp;lt;- syntax. The joinSpectraData()
 function allows to merge a DataFrame to the existing spectra
-data of a Spectra. This function diverges from the merge() method in
-two main ways:
+data of a Spectra. This function diverges from the base::merge()
+method in two main ways:
 The by.x and by.y column names must be of length 1.
 If variable names are shared in x and y, the spectra
 variables of x are not modified. It's only the y
@@ -113,8 +113,8 @@ using the setBackend() function (to e.g. a MsBackendMemory() backend).
 joinSpectraData(): Individual spectra variables can be directly
 added with the $&amp;lt;- or [[&amp;lt;- syntax. The joinSpectraData()
 function allows to merge a DataFrame to the existing spectra
-data of a Spectra. This function diverges from the merge() method in
-two main ways:
+data of a Spectra. This function diverges from the base::merge()
+method in two main ways:
 The by.x and by.y column names must be of length 1.
 If variable names are shared in x and y, the spectra
 variables of x are not modified. It's only the y
@@ -141,7 +141,7 @@ of Spectra objects.
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -219,8 +219,8 @@ using the <code><a href="Spectra.html">setBackend()</a></code> function (to e.g.
 <li><p><code>joinSpectraData()</code>: Individual spectra variables can be directly
 added with the <code>$&lt;-</code> or <code>[[&lt;-</code> syntax. The <code>joinSpectraData()</code>
 function allows to merge a <code>DataFrame</code> to the existing spectra
-data of a <code>Spectra</code>. This function diverges from the <code><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge()</a></code> method in
-two main ways:</p><ul><li><p>The <code>by.x</code> and <code>by.y</code> column names must be of length 1.</p></li>
+data of a <code>Spectra</code>. This function diverges from the <code><a href="https://rdrr.io/r/base/merge.html" class="external-link">base::merge()</a></code>
+method in two main ways:</p><ul><li><p>The <code>by.x</code> and <code>by.y</code> column names must be of length 1.</p></li>
 <li><p>If variable names are shared in <code>x</code> and <code>y</code>, the spectra
 variables of <code>x</code> are not modified. It's only the <code>y</code>
 variables that are appended with the suffix defined in
@@ -386,8 +386,8 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7482fe40e87_7859</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74890c8574_7860</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13498fcc52e_7859</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134948039ea4_7860</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Subset to the first 100 spectra to reduce running time of the examples</span></span></span>
 <span class="r-in"><span><span class="va">sciex</span> <span class="op">&lt;-</span> <span class="va">sciex</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span></span></span>
@@ -422,8 +422,8 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 102         1    27.902       100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jun 12 14:33:02 2026]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Merge 2 Spectra into one [Fri Jun 12 14:33:02 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Sep 14 16:12:32 2026]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Merge 2 Spectra into one [Mon Sep 14 16:12:32 2026] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The new `Spectra` objects contains the union of spectra variables from</span></span></span>
 <span class="r-in"><span><span class="co">## both:</span></span></span>
@@ -521,7 +521,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         1      0.28         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jun 12 14:33:02 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Sep 14 16:12:32 2026] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`1`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -533,7 +533,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     1.396         5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jun 12 14:33:02 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Sep 14 16:12:32 2026] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`2`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:</span>
@@ -544,7 +544,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         1     2.233         8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jun 12 14:33:02 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Sep 14 16:12:32 2026] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`3`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -556,7 +556,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     3.349        12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jun 12 14:33:02 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Sep 14 16:12:32 2026] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`4`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:</span>
@@ -568,7 +568,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         1     4.465        16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jun 12 14:33:02 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Sep 14 16:12:32 2026] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`5`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:</span>
@@ -579,7 +579,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         1     5.302        19</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jun 12 14:33:02 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Mon Sep 14 16:12:32 2026] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -657,7 +657,7 @@ unique. This suffix will be used to amend <code>names(y)</code>, while
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
     </footer></div>

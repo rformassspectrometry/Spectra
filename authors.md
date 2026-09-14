@@ -37,13 +37,13 @@ MA, Verri Hernandes V, Gatto L, Gibb S and Wittin M. A Modular and
 Expandable Ecosystem for Metabolomics Data Annotation in R Metabolites
 2022, 12, 173. https://doi.org/10.3390/metabo12020173
 
-    @Article{,
-      title = {A Modular and Expandable Ecosystem for Metabolomics Data Annotation in R},
-      author = {Johannes Rainer and Andrea Vicini and Liesa Salzer and Jan Stanstrup and Josep M. Badia and Steffen Neumann and Michael A. Stravs and Vinicius {Verri Hernandes} and Laurent Gatto and Sebastian Gibb and Michael Witting},
-      journal = {Metabolites},
-      year = {2022},
-      doi = {10.3390/metabo12020173},
-      url = {https://www.mdpi.com/2218-1989/12/2/173},
-      volume = {12},
-      pages = {173},
-    }
+@Article{,\
+  title = {A Modular and Expandable Ecosystem for Metabolomics Data Annotation in R},\
+  author = {Johannes Rainer and Andrea Vicini and Liesa Salzer and Jan Stanstrup and Josep M. Badia and Steffen Neumann and Michael A. Stravs and Vinicius {Verri Hernandes} and Laurent Gatto and Sebastian Gibb and Michael Witting},\
+  journal = {Metabolites},\
+  year = {2022},\
+  doi = {10.3390/metabo12020173},\
+  url = {https://www.mdpi.com/2218-1989/12/2/173},\
+  volume = {12},\
+  pages = {173},\
+}

@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-12 14:09:35.718635\
-**Compiled**: Fri Jun 12 14:35:01 2026
+**Last modified:** 2026-09-14 15:43:35.997183\
+**Compiled**: Mon Sep 14 16:14:06 2026
 
 ## Introduction
 
@@ -132,28 +132,26 @@ expected to be of type `numeric` and to allow to store data from
 multiple spectra into a single backend object. We also define a simple
 constructor function that returns an empty instance of our new class.
 
-``` r
-
-library(Spectra)
-library(IRanges)
-
-setClass("MsBackendTest",
-         contains = "MsBackend",
-         slots = c(
-             spectraVars = "data.frame",
-             mz = "NumericList",
-             intensity = "NumericList"
-         ),
-         prototype = prototype(
-             spectraVars = data.frame(),
-             mz = NumericList(compress = FALSE),
-             intensity = NumericList(compress = FALSE)
-         ))
-
-MsBackendTest <- function() {
-    new("MsBackendTest")
-}
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`Spectra`](https://github.com/RforMassSpectrometry/Spectra)`)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`IRanges`](https://bioconductor.org/packages/IRanges)`)`\
+\
+[`setClass`](https://rdrr.io/r/methods/setClass.html)`(``"MsBackendTest"``,`\
+`         contains ``=`` ``"MsBackend"``,`\
+`         slots ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`             spectraVars ``=`` ``"data.frame"``,`\
+`             mz ``=`` ``"NumericList"``,`\
+`             intensity ``=`` ``"NumericList"`\
+`         ``)``,`\
+`         prototype ``=`` `[`prototype`](https://rdrr.io/r/methods/representation.html)`(`\
+`             spectraVars ``=`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(``)``,`\
+`             mz ``=`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(``compress ``=`` ``FALSE``)``,`\
+`             intensity ``=`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(``compress ``=`` ``FALSE``)`\
+`         ``)``)`\
+\
+`MsBackendTest`` ``<-`` ``function``(``)`` ``{`\
+`    `[`new`](https://rdrr.io/r/methods/new.html)`(``"MsBackendTest"``)`\
+`}`
 
 The 3 slots `spectraVars`, `mz` and `intensity` will be used to store
 our MS data, each row in `spectraVars` being data for one spectrum with
@@ -167,16 +165,14 @@ data to be OK. The function below simply checks that the number of rows
 of the `spectraVars` slot matches the length of the `mz` and `intensity`
 slot.
 
-``` r
-
-setValidity("MsBackendTest", function(object) {
-    if (length(object@mz) != length(object@intensity) ||
-        length(object@mz) != nrow(object@spectraVars))
-        return("length of 'mz' and 'intensity' has to match the number of ",
-               "rows of 'spectraVars'")
-    NULL
-})
-```
+\
+[`setValidity`](https://rdrr.io/r/methods/validObject.html)`(``"MsBackendTest"``, ``function``(``object``)`` ``{`\
+`    ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``object``@``mz``)`` ``!=`` `[`length`](https://rdrr.io/r/base/length.html)`(``object``@``intensity``)`` ``||`\
+`        `[`length`](https://rdrr.io/r/base/length.html)`(``object``@``mz``)`` ``!=`` `[`nrow`](https://rdrr.io/pkg/BiocGenerics/man/nrow.html)`(``object``@``spectraVars``)``)`\
+`        `[`return`](https://rdrr.io/r/base/function.html)`(``"length of 'mz' and 'intensity' has to match the number of "``,`\
+`               ``"rows of 'spectraVars'"``)`\
+`    ``NULL`\
+`}``)`
 
     ## Class "MsBackendTest" [in ".GlobalEnv"]
     ## 
@@ -190,10 +186,8 @@ setValidity("MsBackendTest", function(object) {
 We can now create an instance of our new class with the
 `MsBackendTest()` function.
 
-``` r
-
-MsBackendTest()
-```
+\
+`MsBackendTest``(``)`
 
     ## An object of class "MsBackendTest"
     ## Slot "spectraVars":
@@ -254,22 +248,20 @@ to a `data.frame` thus we use it in our implementation of the
 [`spectraData()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 method below:
 
-``` r
-
-setMethod(
-    "spectraData", "MsBackendTest",
-    function(object, columns = spectraVariables(object)) {
-        if (!all(columns %in% spectraVariables(object)))
-            stop("Some of the requested spectra variables are not available")
-        res <- fillCoreSpectraVariables(
-            object@spectraVars,
-            columns = columns[!columns %in% c("mz", "intensity")])
-        ## Add m/z and intensity values to the result
-        res$mz <- object@mz
-        res$intensity <- object@intensity
-        as(res[, columns, drop = FALSE], "DataFrame")
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(`\
+`    ``"spectraData"``, ``"MsBackendTest"``,`\
+`    ``function``(``object``, ``columns`` ``=`` `[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``)`` ``{`\
+`        ``if`` ``(``!`[`all`](https://rdrr.io/r/base/all.html)`(``columns`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` `[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``)``)`\
+`            `[`stop`](https://rdrr.io/r/base/stop.html)`(``"Some of the requested spectra variables are not available"``)`\
+`        ``res`` ``<-`` `[`fillCoreSpectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/fillCoreSpectraVariables.md)`(`\
+`            ``object``@``spectraVars``,`\
+`            columns ``=`` ``columns``[``!``columns`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` `[`c`](https://rdrr.io/r/base/c.html)`(``"mz"``, ``"intensity"``)``]``)`\
+`        ``## Add m/z and intensity values to the result`\
+`        ``res``$``mz`` ``<-`` ``object``@``mz`\
+`        ``res``$``intensity`` ``<-`` ``object``@``intensity`\
+`        `[`as`](https://rdrr.io/r/methods/as.html)`(``res``[``, ``columns``, drop ``=`` ``FALSE``]``, ``"DataFrame"``)`\
+`}``)`
 
 As an alternative, we could also initialize the `@spectraVars` data
 frame within the
@@ -299,10 +291,8 @@ The
 function returns the full list of mandatory spectra variables along with
 their expected data type.
 
-``` r
-
-coreSpectraVariables()
-```
+\
+[`coreSpectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``)`
 
     ##                 msLevel                   rtime          acquisitionNum 
     ##               "integer"               "numeric"               "integer" 
@@ -326,12 +316,10 @@ one for our `MsBackendTest` test backend: it will return the union of
 the core spectra variables and the names for all available spectra
 variables within the backend object.
 
-``` r
-
-setMethod("spectraVariables", "MsBackendTest", function(object) {
-    union(names(coreSpectraVariables()), colnames(object@spectraVars))
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"spectraVariables"``, ``"MsBackendTest"``, ``function``(``object``)`` ``{`\
+`    `[`union`](https://generics.r-lib.org/reference/setops.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(`[`coreSpectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``)``)``, `[`colnames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``object``@``spectraVars``)``)`\
+`}``)`
 
 Note that we avoided calling
 [`spectraData()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
@@ -367,24 +355,22 @@ Below we define a
 method that takes as arguments a `data.frame` with spectra variables and
 two `list`s with the m/z and intensity values for each spectrum.
 
-``` r
-
-setMethod(
-    "backendInitialize", "MsBackendTest",
-    function(object, svars, mz, intensity) {
-        if (!is.data.frame(svars))
-            stop("'svars' needs to be a 'data.frame' with spectra variables")
-        if (is.null(svars$dataStorage))
-            svars$dataStorage <- "<memory>"
-        if (is.null(svars$dataOrigin))
-            svars$dataOrigin <- "<user provided>"
-        object@spectraVars <- svars
-        object@mz <- NumericList(mz, compress = FALSE)
-        object@intensity <- NumericList(intensity, compress = FALSE)
-        validObject(object)
-        object
-    })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(`\
+`    ``"backendInitialize"``, ``"MsBackendTest"``,`\
+`    ``function``(``object``, ``svars``, ``mz``, ``intensity``)`` ``{`\
+`        ``if`` ``(``!`[`is.data.frame`](https://rdrr.io/r/base/as.data.frame.html)`(``svars``)``)`\
+`            `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'svars' needs to be a 'data.frame' with spectra variables"``)`\
+`        ``if`` ``(`[`is.null`](https://rdrr.io/r/base/NULL.html)`(``svars``$``dataStorage``)``)`\
+`            ``svars``$``dataStorage`` ``<-`` ``"<memory>"`\
+`        ``if`` ``(`[`is.null`](https://rdrr.io/r/base/NULL.html)`(``svars``$``dataOrigin``)``)`\
+`            ``svars``$``dataOrigin`` ``<-`` ``"<user provided>"`\
+`        ``object``@``spectraVars`` ``<-`` ``svars`\
+`        ``object``@``mz`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(``mz``, compress ``=`` ``FALSE``)`\
+`        ``object``@``intensity`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(``intensity``, compress ``=`` ``FALSE``)`\
+`        `[`validObject`](https://rdrr.io/r/methods/validObject.html)`(``object``)`\
+`        ``object`\
+`    ``}``)`
 
 In addition to adding the data to object, the function also defined the
 `dataStorage` and `dataOrigin` spectra variables. The purpose of these
@@ -398,25 +384,23 @@ data. We thus first define our MS data and pass this to the
 [`backendInitialize()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
 method.
 
-``` r
-
-## A data.frame with spectra variables.
-svars <- data.frame(msLevel = c(1L, 2L, 2L),
-                    rtime = c(1.2, 1.3, 1.4))
-## m/z values for each spectrum.
-mzs <- list(c(12.3, 13.5, 16.5, 17.5),
-            c(45.1, 45.2),
-            c(64.4, 123.1, 124.1))
-## intensity values for each spectrum.
-ints <- list(c(123.3, 153.6, 2354.3, 243.4),
-             c(100, 80.1),
-             c(12.3, 35.2, 100))
-
-## Create and initialize the backend
-be <- backendInitialize(MsBackendTest(),
-                        svars = svars, mz = mzs, intensity = ints)
-be
-```
+\
+`## A data.frame with spectra variables.`\
+`svars`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(``msLevel ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1L``, ``2L``, ``2L``)``,`\
+`                    rtime ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1.2``, ``1.3``, ``1.4``)``)`\
+`## m/z values for each spectrum.`\
+`mzs`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``12.3``, ``13.5``, ``16.5``, ``17.5``)``,`\
+`            `[`c`](https://rdrr.io/r/base/c.html)`(``45.1``, ``45.2``)``,`\
+`            `[`c`](https://rdrr.io/r/base/c.html)`(``64.4``, ``123.1``, ``124.1``)``)`\
+`## intensity values for each spectrum.`\
+`ints`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``123.3``, ``153.6``, ``2354.3``, ``243.4``)``,`\
+`             `[`c`](https://rdrr.io/r/base/c.html)`(``100``, ``80.1``)``,`\
+`             `[`c`](https://rdrr.io/r/base/c.html)`(``12.3``, ``35.2``, ``100``)``)`\
+\
+`## Create and initialize the backend`\
+`be`` ``<-`` `[`backendInitialize`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``MsBackendTest``(``)``,`\
+`                        svars ``=`` ``svars``, mz ``=`` ``mzs``, intensity ``=`` ``ints``)`\
+`be`
 
     ## An object of class "MsBackendTest"
     ## Slot "spectraVars":
@@ -459,68 +443,62 @@ method supporting also to initialize the backend with such a data frame
 and we also implement a helper function that checks spectra variables
 for the correct data type.
 
-``` r
-
-#' Helper function to check if core spectra variables have the correct
-#' data type.
-#'
-#' @param x `data.frame` with the data for spectra variables.
-#'
-#' @param name `character` defining the column names (spectra variables) of `x`
-#'     for which the correct data type should be evaluated.
-.sv_valid_data_type <- function(x, name = colnames(x)) {
-    sv <- coreSpectraVariables()[names(coreSpectraVariables()) %in% name]
-    for (i in seq_along(sv)) {
-        if (!is(x[, names(sv[i])], sv[i]))
-            stop("Spectra variabe \"", names(sv[i]), "\" is not of type ",
-                 sv[i], call. = FALSE)
-    }
-    TRUE
-}
-```
+\
+`#' Helper function to check if core spectra variables have the correct`\
+`#' data type.`\
+`#'`\
+`` #' @param x `data.frame` with the data for spectra variables. ``\
+`#'`\
+`` #' @param name `character` defining the column names (spectra variables) of `x` ``\
+`#'     for which the correct data type should be evaluated.`\
+`.sv_valid_data_type`` ``<-`` ``function``(``x``, ``name`` ``=`` `[`colnames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``x``)``)`` ``{`\
+`    ``sv`` ``<-`` `[`coreSpectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``)``[`[`names`](https://rdrr.io/r/base/names.html)`(`[`coreSpectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``)``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` ``name``]`\
+`    ``for`` ``(``i`` ``in`` `[`seq_along`](https://rdrr.io/r/base/seq.html)`(``sv``)``)`` ``{`\
+`        ``if`` ``(``!`[`is`](https://rdrr.io/r/methods/is.html)`(``x``[``, `[`names`](https://rdrr.io/r/base/names.html)`(``sv``[``i``]``)``]``, ``sv``[``i``]``)``)`\
+`            `[`stop`](https://rdrr.io/r/base/stop.html)`(``"Spectra variabe \""``, `[`names`](https://rdrr.io/r/base/names.html)`(``sv``[``i``]``)``, ``"\" is not of type "``,`\
+`                 ``sv``[``i``]``, call. ``=`` ``FALSE``)`\
+`    ``}`\
+`    ``TRUE`\
+`}`
 
 This function is then used to check the input data in our new
 [`backendInitialize()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
 method.
 
-``` r
-
-setMethod(
-    "backendInitialize", "MsBackendTest",
-    function(object, svars, mz, intensity, data) {
-        if (!missing(data)) {
-            svars <- as.data.frame(
-                data[, !colnames(data) %in% c("mz", "intensity")])
-            if (any(colnames(data) == "mz"))
-                mz <- data$mz
-            if (any(colnames(data) == "intensity"))
-                intensity <- data$intensity
-        }
-        if (!is.data.frame(svars))
-            stop("'svars' needs to be a 'data.frame' with spectra variables")
-        if (is.null(svars$dataStorage))
-            svars$dataStorage <- "<memory>"
-        if (is.null(svars$dataOrigin))
-            svars$dataOrigin <- "<user provided>"
-        .sv_valid_data_type(svars)
-        object@spectraVars <- svars
-        object@mz <- NumericList(mz, compress = FALSE)
-        object@intensity <- NumericList(intensity, compress = FALSE)
-        validObject(object)
-        object
-    })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(`\
+`    ``"backendInitialize"``, ``"MsBackendTest"``,`\
+`    ``function``(``object``, ``svars``, ``mz``, ``intensity``, ``data``)`` ``{`\
+`        ``if`` ``(``!`[`missing`](https://rdrr.io/r/base/missing.html)`(``data``)``)`` ``{`\
+`            ``svars`` ``<-`` `[`as.data.frame`](https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html)`(`\
+`                ``data``[``, ``!`[`colnames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``data``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` `[`c`](https://rdrr.io/r/base/c.html)`(``"mz"``, ``"intensity"``)``]``)`\
+`            ``if`` ``(`[`any`](https://rdrr.io/r/base/any.html)`(`[`colnames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``data``)`` ``==`` ``"mz"``)``)`\
+`                ``mz`` ``<-`` ``data``$``mz`\
+`            ``if`` ``(`[`any`](https://rdrr.io/r/base/any.html)`(`[`colnames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``data``)`` ``==`` ``"intensity"``)``)`\
+`                ``intensity`` ``<-`` ``data``$``intensity`\
+`        ``}`\
+`        ``if`` ``(``!`[`is.data.frame`](https://rdrr.io/r/base/as.data.frame.html)`(``svars``)``)`\
+`            `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'svars' needs to be a 'data.frame' with spectra variables"``)`\
+`        ``if`` ``(`[`is.null`](https://rdrr.io/r/base/NULL.html)`(``svars``$``dataStorage``)``)`\
+`            ``svars``$``dataStorage`` ``<-`` ``"<memory>"`\
+`        ``if`` ``(`[`is.null`](https://rdrr.io/r/base/NULL.html)`(``svars``$``dataOrigin``)``)`\
+`            ``svars``$``dataOrigin`` ``<-`` ``"<user provided>"`\
+`        ``.sv_valid_data_type``(``svars``)`\
+`        ``object``@``spectraVars`` ``<-`` ``svars`\
+`        ``object``@``mz`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(``mz``, compress ``=`` ``FALSE``)`\
+`        ``object``@``intensity`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(``intensity``, compress ``=`` ``FALSE``)`\
+`        `[`validObject`](https://rdrr.io/r/methods/validObject.html)`(``object``)`\
+`        ``object`\
+`    ``}``)`
 
 We below create the backend again with the updated
 [`backendInitialize()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md).
 
-``` r
-
-## Create and initialize the backend
-be <- backendInitialize(MsBackendTest(),
-                        svars = svars, mz = mzs, intensity = ints)
-be
-```
+\
+`## Create and initialize the backend`\
+`be`` ``<-`` `[`backendInitialize`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``MsBackendTest``(``)``,`\
+`                        svars ``=`` ``svars``, mz ``=`` ``mzs``, intensity ``=`` ``ints``)`\
+`be`
 
     ## An object of class "MsBackendTest"
     ## Slot "spectraVars":
@@ -587,11 +565,9 @@ test and use the
 [`spectraData()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 method:
 
-``` r
-
-## Full data
-spectraData(be)
-```
+\
+`## Full data`\
+[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## DataFrame with 3 rows and 19 columns
     ##     msLevel     rtime acquisitionNum scanIndex                 mz
@@ -620,11 +596,9 @@ spectraData(be)
     ## 2                     NA
     ## 3                     NA
 
-``` r
-
-## Selected variables
-spectraData(be, c("rtime", "mz", "centroided"))
-```
+\
+`## Selected variables`\
+[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``, `[`c`](https://rdrr.io/r/base/c.html)`(``"rtime"``, ``"mz"``, ``"centroided"``)``)`
 
     ## DataFrame with 3 rows and 3 columns
     ##       rtime                 mz centroided
@@ -633,11 +607,9 @@ spectraData(be, c("rtime", "mz", "centroided"))
     ## 2       1.3          45.1,45.2         NA
     ## 3       1.4   64.4,123.1,124.1         NA
 
-``` r
-
-## Only missing core spectra variables
-spectraData(be, c("centroided", "polarity"))
-```
+\
+`## Only missing core spectra variables`\
+[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``, `[`c`](https://rdrr.io/r/base/c.html)`(``"centroided"``, ``"polarity"``)``)`
 
     ## DataFrame with 3 rows and 2 columns
     ##   centroided  polarity
@@ -650,10 +622,8 @@ And the
 [`spectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 method:
 
-``` r
-
-spectraVariables(be)
-```
+\
+[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ##  [1] "msLevel"                 "rtime"                  
     ##  [3] "acquisitionNum"          "scanIndex"              
@@ -687,24 +657,20 @@ the `columns` parameter. This is the expected default behavior for a
 the user to specify which peaks variables should be returned in each
 `matrix`.
 
-``` r
-
-setMethod(
-    "peaksData", "MsBackendTest",
-    function(object, columns = c("mz", "intensity")) {
-        if (length(columns) != 2 && columns != c("mz", "intensity"))
-            stop("'columns' supports only \"mz\" and \"intensity\"")
-        mapply(mz = object@mz, intensity = object@intensity,
-               FUN = cbind, SIMPLIFY = FALSE, USE.NAMES = FALSE)
-    })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(`\
+`    ``"peaksData"``, ``"MsBackendTest"``,`\
+`    ``function``(``object``, ``columns`` ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"mz"``, ``"intensity"``)``)`` ``{`\
+`        ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``columns``)`` ``!=`` ``2`` ``&&`` ``columns`` ``!=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"mz"``, ``"intensity"``)``)`\
+`            `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'columns' supports only \"mz\" and \"intensity\""``)`\
+`        `[`mapply`](https://rdrr.io/pkg/BiocGenerics/man/mapply.html)`(``mz ``=`` ``object``@``mz``, intensity ``=`` ``object``@``intensity``,`\
+`               FUN ``=`` ``cbind``, SIMPLIFY ``=`` ``FALSE``, USE.NAMES ``=`` ``FALSE``)`\
+`    ``}``)`
 
 And with this method we can now extract the peaks data from our backend.
 
-``` r
-
-peaksData(be)
-```
+\
+[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [[1]]
     ##        mz intensity
@@ -776,26 +742,22 @@ needed). Below we implement
 [`extractByIndex()`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)
 for our backend:
 
-``` r
-
-setMethod("extractByIndex", c("MsBackendTest", "ANY"), function(object, i) {
-    object@spectraVars <- object@spectraVars[i, ]
-    object@mz <- object@mz[i]
-    object@intensity <- object@intensity[i]
-    object
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"extractByIndex"``, `[`c`](https://rdrr.io/r/base/c.html)`(``"MsBackendTest"``, ``"ANY"``)``, ``function``(``object``, ``i``)`` ``{`\
+`    ``object``@``spectraVars`` ``<-`` ``object``@``spectraVars``[``i``, ``]`\
+`    ``object``@``mz`` ``<-`` ``object``@``mz``[``i``]`\
+`    ``object``@``intensity`` ``<-`` ``object``@``intensity``[``i``]`\
+`    ``object`\
+`}``)`
 
 The `[` does not need to be defined because a default implementation for
 the base `MsBackend` exists.
 
 We can now subset our backend to the last two spectra.
 
-``` r
-
-a <- extractByIndex(be, 2:3)
-spectraData(a)
-```
+\
+`a`` ``<-`` `[`extractByIndex`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``be``, ``2``:``3``)`\
+[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``a``)`
 
     ## DataFrame with 2 rows and 19 columns
     ##     msLevel     rtime acquisitionNum scanIndex                mz
@@ -817,11 +779,9 @@ spectraData(a)
 
 Or extracting the second spectrum multiple times.
 
-``` r
-
-a <- be[c(2, 2, 2)]
-spectraData(a)
-```
+\
+`a`` ``<-`` ``be``[`[`c`](https://rdrr.io/r/base/c.html)`(``2``, ``2``, ``2``)``]`\
+[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``a``)`
 
     ## DataFrame with 3 rows and 19 columns
     ##       msLevel     rtime acquisitionNum scanIndex            mz     intensity
@@ -857,28 +817,24 @@ function instead of a simple
 [`rbind()`](https://rdrr.io/pkg/BiocGenerics/man/cbind.html) (this
 function joins data frames making an union of all available columns).
 
-``` r
-
-setMethod("backendMerge", "MsBackendTest", function(object, ...) {
-    res <- object
-    object <- unname(c(object, ...))
-    res@mz <- do.call(c, lapply(object, function(z) z@mz))
-    res@intensity <- do.call(c, lapply(object, function(z) z@intensity))
-    res@spectraVars <- do.call(MsCoreUtils::rbindFill,
-                               lapply(object, function(z) z@spectraVars))
-    validObject(res)
-    res
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"backendMerge"``, ``"MsBackendTest"``, ``function``(``object``, ``...``)`` ``{`\
+`    ``res`` ``<-`` ``object`\
+`    ``object`` ``<-`` `[`unname`](https://rdrr.io/pkg/S4Vectors/man/Vector-class.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``object``, ``...``)``)`\
+`    ``res``@``mz`` ``<-`` `[`do.call`](https://rdrr.io/pkg/BiocGenerics/man/do.call.html)`(``c``, `[`lapply`](https://rdrr.io/pkg/BiocGenerics/man/lapply.html)`(``object``, ``function``(``z``)`` ``z``@``mz``)``)`\
+`    ``res``@``intensity`` ``<-`` `[`do.call`](https://rdrr.io/pkg/BiocGenerics/man/do.call.html)`(``c``, `[`lapply`](https://rdrr.io/pkg/BiocGenerics/man/lapply.html)`(``object``, ``function``(``z``)`` ``z``@``intensity``)``)`\
+`    ``res``@``spectraVars`` ``<-`` `[`do.call`](https://rdrr.io/pkg/BiocGenerics/man/do.call.html)`(``MsCoreUtils``::`[`rbindFill`](https://rdrr.io/pkg/MsCoreUtils/man/rbindFill.html)`,`\
+`                               `[`lapply`](https://rdrr.io/pkg/BiocGenerics/man/lapply.html)`(``object``, ``function``(``z``)`` ``z``@``spectraVars``)``)`\
+`    `[`validObject`](https://rdrr.io/r/methods/validObject.html)`(``res``)`\
+`    ``res`\
+`}``)`
 
 Again, this implementation which requires 3 loops might not be the most
 efficient - but it allows to merge backends of the type `MsBackendTest`.
 
-``` r
-
-a <- backendMerge(be, be[2], be)
-a
-```
+\
+`a`` ``<-`` ``backendMerge``(``be``, ``be``[``2``]``, ``be``)`\
+`a`
 
     ## An object of class "MsBackendTest"
     ## Slot "spectraVars":
@@ -925,13 +881,11 @@ of spectra represented by the backend. For our test backend we can
 simply return the `@intensity` slot since the data is already stored
 within a `NumericList`.
 
-``` r
-
-setMethod("intensity", "MsBackendTest", function(object) {
-    object@intensity
-})
-intensity(be)
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"intensity"``, ``"MsBackendTest"``, ``function``(``object``)`` ``{`\
+`    ``object``@``intensity`\
+`}``)`\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## NumericList of length 3
     ## [[1]] 123.3 153.6 2354.3 243.4
@@ -945,13 +899,11 @@ expected to be a `NumericList` of length equal to the number of spectra
 represented by the backend. Also, the m/z values are expected to be
 ordered increasingly for each element (spectrum).
 
-``` r
-
-setMethod("mz", "MsBackendTest", function(object) {
-    object@mz
-})
-mz(be)
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"mz"``, ``"MsBackendTest"``, ``function``(``object``)`` ``{`\
+`    ``object``@``mz`\
+`}``)`\
+[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## NumericList of length 3
     ## [[1]] 12.3 13.5 16.5 17.5
@@ -966,13 +918,11 @@ can be used to extract (optional) names (or IDs) for individual spectra
 of a backend, or `NULL` if not set. For our test backend we can use the
 `rownames` of the `@spectraVars` slot to store spectra names.
 
-``` r
-
-setMethod("spectraNames", "MsBackendTest", function(object) {
-    rownames(object@spectraVars)
-})
-spectraNames(be)
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"spectraNames"``, ``"MsBackendTest"``, ``function``(``object``)`` ``{`\
+`    `[`rownames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``object``@``spectraVars``)`\
+`}``)`\
+[`spectraNames`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] "1" "2" "3"
 
@@ -1009,51 +959,43 @@ method we implement also a simple helper function `.match_length()` that
 checks for the correct length of `value`. Each data replacement method
 needs to check for that and this function thus reduces code duplication.
 
-``` r
-
-.match_length <- function(x, y) {
-    if (length(x) != length(y))
-        stop("Length of 'value' has to match the length of 'object'")
-}
-
-setReplaceMethod("$", "MsBackendTest", function(x, name, value) {
-    .match_length(x, value)
-    if (name == "mz") {
-        mz(x) <- value
-    } else if (name == "intensity") {
-       intensity(x) <- value
-    } else {
-        x@spectraVars[[name]] <- value
-    }
-    .sv_valid_data_type(x@spectraVars, name)
-    x
-})
-```
+\
+`.match_length`` ``<-`` ``function``(``x``, ``y``)`` ``{`\
+`    ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``x``)`` ``!=`` `[`length`](https://rdrr.io/r/base/length.html)`(``y``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"Length of 'value' has to match the length of 'object'"``)`\
+`}`\
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"$"``, ``"MsBackendTest"``, ``function``(``x``, ``name``, ``value``)`` ``{`\
+`    ``.match_length``(``x``, ``value``)`\
+`    ``if`` ``(``name`` ``==`` ``"mz"``)`` ``{`\
+`        `[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``x``)`` ``<-`` ``value`\
+`    ``}`` ``else`` ``if`` ``(``name`` ``==`` ``"intensity"``)`` ``{`\
+`       `[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``x``)`` ``<-`` ``value`\
+`    ``}`` ``else`` ``{`\
+`        ``x``@``spectraVars``[[``name``]``]`` ``<-`` ``value`\
+`    ``}`\
+`    ``.sv_valid_data_type``(``x``@``spectraVars``, ``name``)`\
+`    ``x`\
+`}``)`
 
 We can now replace for example existing spectra variables:
 
-``` r
-
-msLevel(be)
-```
+\
+[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 1 2 2
 
-``` r
-
-be$msLevel <- c(2L, 1L, 2L)
-msLevel(be)
-```
+\
+`be``$``msLevel`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``2L``, ``1L``, ``2L``)`\
+[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 2 1 2
 
 Or even add new spectra variables.
 
-``` r
-
-be$new_var <- c("a", "b", "c")
-be$new_var
-```
+\
+`be``$``new_var`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"a"``, ``"b"``, ``"c"``)`\
+`be``$``new_var`
 
     ## [1] "a" "b" "c"
 
@@ -1074,29 +1016,25 @@ added to the
 method and that allows to fill a `MsBackendTest` object with the full
 data.
 
-``` r
-
-setReplaceMethod("spectraData", "MsBackendTest", function(object, value) {
-    if (!inherits(value, "DataFrame"))
-        stop("'value' is expected to be a 'DataFrame'")
-    if (length(object) && length(object) != nrow(value))
-        stop("'value' has to be a 'DataFrame' with ", length(object), " rows")
-    object <- backendInitialize(MsBackendTest(), data = value)
-    object
-})
-```
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"spectraData"``, ``"MsBackendTest"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``if`` ``(``!`[`inherits`](https://rdrr.io/r/base/class.html)`(``value``, ``"DataFrame"``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'value' is expected to be a 'DataFrame'"``)`\
+`    ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``object``)`` ``&&`` `[`length`](https://rdrr.io/r/base/length.html)`(``object``)`` ``!=`` `[`nrow`](https://rdrr.io/pkg/BiocGenerics/man/nrow.html)`(``value``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'value' has to be a 'DataFrame' with "``, `[`length`](https://rdrr.io/r/base/length.html)`(``object``)``, ``" rows"``)`\
+`    ``object`` ``<-`` `[`backendInitialize`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``MsBackendTest``(``)``, data ``=`` ``value``)`\
+`    ``object`\
+`}``)`
 
 To test this new method we extract the full spectra data, add an
 additional column (spectra variable) and replace the data again.
 
-``` r
-
-d <- spectraData(be)
-d$new_col <- c("a", "b", "c")
-
-spectraData(be) <- d
-be$new_col
-```
+\
+`d`` ``<-`` `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`\
+`d``$``new_col`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"a"``, ``"b"``, ``"c"``)`\
+\
+[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` ``d`\
+`be``$``new_col`
 
     ## [1] "a" "b" "c"
 
@@ -1110,39 +1048,33 @@ intensities (and hence peaks) of a spectrum (that could be done with the
 at the same time). The `value` for the method should ideally be a
 `NumericList` to ensure that all intensity values are indeed `numeric`.
 
-``` r
-
-setReplaceMethod("intensity", "MsBackendTest", function(object, value) {
-    .match_length(object, value)
-    if (!(is.list(value) || inherits(value, "NumericList")))
-        stop("'value' has to be a list or NumericList")
-    if (!all(lengths(value) == lengths(mz(object))))
-        stop("lengths of 'value' has to match the number of peaks per spectrum")
-    if (!inherits(value, "NumericList"))
-        value <- NumericList(value, compress = FALSE)
-    object@intensity <- value
-    object
-})
-```
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"intensity"``, ``"MsBackendTest"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``.match_length``(``object``, ``value``)`\
+`    ``if`` ``(``!``(`[`is.list`](https://rdrr.io/r/base/list.html)`(``value``)`` ``||`` `[`inherits`](https://rdrr.io/r/base/class.html)`(``value``, ``"NumericList"``)``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'value' has to be a list or NumericList"``)`\
+`    ``if`` ``(``!`[`all`](https://rdrr.io/r/base/all.html)`(`[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``value``)`` ``==`` `[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(`[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``)``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"lengths of 'value' has to match the number of peaks per spectrum"``)`\
+`    ``if`` ``(``!`[`inherits`](https://rdrr.io/r/base/class.html)`(``value``, ``"NumericList"``)``)`\
+`        ``value`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(``value``, compress ``=`` ``FALSE``)`\
+`    ``object``@``intensity`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
 We could now use this method to replace the intensities in our backend
 with modified intensities.
 
-``` r
-
-intensity(be)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## NumericList of length 3
     ## [[1]] 123.3 153.6 2354.3 243.4
     ## [[2]] 100 80.1
     ## [[3]] 12.3 35.2 100
 
-``` r
-
-intensity(be) <- intensity(be) - 10
-intensity(be)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``-`` ``10`\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## NumericList of length 3
     ## [[1]] 113.3 143.6 2344.3 233.4
@@ -1160,22 +1092,20 @@ provided m/z values. We take here the advantage that a efficient
 implementation for `NumericList` is already available, which is faster
 than e.g. calling `vapply(mz(be), is.unsorted, logical(1))`.
 
-``` r
-
-setReplaceMethod("mz", "MsBackendTest", function(object, value) {
-    .match_length(object, value)
-    if (!(is.list(value) || inherits(value, "NumericList")))
-        stop("'value' has to be a list or NumericList")
-    if (!all(lengths(value) == lengths(mz(object))))
-        stop("lengths of 'value' has to match the number of peaks per spectrum")
-    if (!inherits(value, "NumericList"))
-        value <- NumericList(value, compress = FALSE)
-    if (any(is.unsorted(value)))
-        stop("m/z values need to be increasingly sorted within each spectrum")
-    object@mz <- value
-    object
-})
-```
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"mz"``, ``"MsBackendTest"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``.match_length``(``object``, ``value``)`\
+`    ``if`` ``(``!``(`[`is.list`](https://rdrr.io/r/base/list.html)`(``value``)`` ``||`` `[`inherits`](https://rdrr.io/r/base/class.html)`(``value``, ``"NumericList"``)``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'value' has to be a list or NumericList"``)`\
+`    ``if`` ``(``!`[`all`](https://rdrr.io/r/base/all.html)`(`[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``value``)`` ``==`` `[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(`[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``)``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"lengths of 'value' has to match the number of peaks per spectrum"``)`\
+`    ``if`` ``(``!`[`inherits`](https://rdrr.io/r/base/class.html)`(``value``, ``"NumericList"``)``)`\
+`        ``value`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(``value``, compress ``=`` ``FALSE``)`\
+`    ``if`` ``(`[`any`](https://rdrr.io/r/base/any.html)`(`[`is.unsorted`](https://rdrr.io/pkg/BiocGenerics/man/is.unsorted.html)`(``value``)``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"m/z values need to be increasingly sorted within each spectrum"``)`\
+`    ``object``@``mz`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
 #### `peaksData<-`
 
@@ -1189,38 +1119,32 @@ spectra in the backend. In the implementation for our backend class we
 need to loop over this list to extract the m/z and intensity values and
 assign them to the `@mz` and `@intensity` slots.
 
-``` r
-
-setReplaceMethod("peaksData", "MsBackendTest", function(object, value) {
-    if (!(is.list(value) || inherits(value, "SimpleList")))
-        stop("'value' has to be a list-like object")
-    .match_length(object, value)
-    object@mz <- NumericList(lapply(value, "[", , "mz"), compress = FALSE)
-    object@intensity <- NumericList(lapply(value, "[", , "intensity"),
-                                    compress = FALSE)
-    validObject(object)
-    object
-})
-```
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"peaksData"``, ``"MsBackendTest"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``if`` ``(``!``(`[`is.list`](https://rdrr.io/r/base/list.html)`(``value``)`` ``||`` `[`inherits`](https://rdrr.io/r/base/class.html)`(``value``, ``"SimpleList"``)``)``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'value' has to be a list-like object"``)`\
+`    ``.match_length``(``object``, ``value``)`\
+`    ``object``@``mz`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(`[`lapply`](https://rdrr.io/pkg/BiocGenerics/man/lapply.html)`(``value``, ``"["``, , ``"mz"``)``, compress ``=`` ``FALSE``)`\
+`    ``object``@``intensity`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(`[`lapply`](https://rdrr.io/pkg/BiocGenerics/man/lapply.html)`(``value``, ``"["``, , ``"intensity"``)``,`\
+`                                    compress ``=`` ``FALSE``)`\
+`    `[`validObject`](https://rdrr.io/r/methods/validObject.html)`(``object``)`\
+`    ``object`\
+`}``)`
 
 Using the `peaksData<-` method we can now also for example remove peaks.
 
-``` r
-
-pd <- peaksData(be)
-## Remove the first peak from the first spectrum
-pd[[1L]] <- pd[[1L]][-1L, ]
-
-lengths(be)
-```
+\
+`pd`` ``<-`` `[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`\
+`## Remove the first peak from the first spectrum`\
+`pd``[[``1L``]``]`` ``<-`` ``pd``[[``1L``]``]``[``-``1L``, ``]`\
+\
+[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 4 2 3
 
-``` r
-
-peaksData(be) <- pd
-lengths(be)
-```
+\
+[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` ``pd`\
+[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 3 2 3
 
@@ -1245,35 +1169,31 @@ the backend is removed (such as `"dataStorage"` for a `MsBackendMzR`
 backend, which is required by the backend to allow retrieval of m/z and
 intensity values).
 
-``` r
-
-setMethod(
-    "selectSpectraVariables", "MsBackendTest",
-    function(object, spectraVariables = spectraVariables(object)) {
-        keep <- colnames(object@spectraVars) %in% spectraVariables
-        object@spectraVars <- object@spectraVars[, keep, drop = FALSE]
-        if (!any(spectraVariables == "mz"))
-            object@mz <- NumericList(vector("list", length(object)),
-                                     compress = FALSE)
-        if (!any(spectraVariables == "intensity"))
-            object@intensity <- NumericList(vector("list", length(object)),
-                                            compress = FALSE)
-        validObject(object)
-        object
-    })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(`\
+`    ``"selectSpectraVariables"``, ``"MsBackendTest"``,`\
+`    ``function``(``object``, ``spectraVariables`` ``=`` `[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``)`` ``{`\
+`        ``keep`` ``<-`` `[`colnames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``object``@``spectraVars``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` ``spectraVariables`\
+`        ``object``@``spectraVars`` ``<-`` ``object``@``spectraVars``[``, ``keep``, drop ``=`` ``FALSE``]`\
+`        ``if`` ``(``!`[`any`](https://rdrr.io/r/base/any.html)`(``spectraVariables`` ``==`` ``"mz"``)``)`\
+`            ``object``@``mz`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(`[`vector`](https://rdrr.io/r/base/vector.html)`(``"list"``, `[`length`](https://rdrr.io/r/base/length.html)`(``object``)``)``,`\
+`                                     compress ``=`` ``FALSE``)`\
+`        ``if`` ``(``!`[`any`](https://rdrr.io/r/base/any.html)`(``spectraVariables`` ``==`` ``"intensity"``)``)`\
+`            ``object``@``intensity`` ``<-`` `[`NumericList`](https://rdrr.io/pkg/IRanges/man/AtomicList-class.html)`(`[`vector`](https://rdrr.io/r/base/vector.html)`(``"list"``, `[`length`](https://rdrr.io/r/base/length.html)`(``object``)``)``,`\
+`                                            compress ``=`` ``FALSE``)`\
+`        `[`validObject`](https://rdrr.io/r/methods/validObject.html)`(``object``)`\
+`        ``object`\
+`    ``}``)`
 
 We can now use
 [`selectSpectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)
 to remove for example the spectra variable `"new_var"` added above.
 
-``` r
-
-be2 <- be
-be2 <- selectSpectraVariables(be2, c("msLevel", "rtime", "mz",
-                                     "intensity", "dataStorage"))
-spectraVariables(be2)
-```
+\
+`be2`` ``<-`` ``be`\
+`be2`` ``<-`` `[`selectSpectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``be2``, `[`c`](https://rdrr.io/r/base/c.html)`(``"msLevel"``, ``"rtime"``, ``"mz"``,`\
+`                                     ``"intensity"``, ``"dataStorage"``)``)`\
+[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be2``)`
 
     ##  [1] "msLevel"                 "rtime"                  
     ##  [3] "acquisitionNum"          "scanIndex"              
@@ -1292,38 +1212,30 @@ they were not selected with the `spectraVariables` parameter. While
 these variables (such as `"dataOrigin"`) are still listed by
 `spectraVariables(be2)`, their actual values have been removed:
 
-``` r
-
-dataOrigin(be)
-```
+\
+[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] "<user provided>" "<user provided>" "<user provided>"
 
-``` r
-
-dataOrigin(be2)
-```
+\
+[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be2``)`
 
     ## [1] NA NA NA
 
 If `"mz"` and `"intensitity"` are not selected, the m/z and intensity
 values get removed.
 
-``` r
-
-be2 <- selectSpectraVariables(be2, c("msLevel", "rtime", "dataStorage"))
-mz(be2)
-```
+\
+`be2`` ``<-`` `[`selectSpectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``be2``, `[`c`](https://rdrr.io/r/base/c.html)`(``"msLevel"``, ``"rtime"``, ``"dataStorage"``)``)`\
+[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be2``)`
 
     ## NumericList of length 3
     ## [[1]] numeric(0)
     ## [[2]] numeric(0)
     ## [[3]] numeric(0)
 
-``` r
-
-intensity(be2)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be2``)`
 
     ## NumericList of length 3
     ## [[1]] numeric(0)
@@ -1340,26 +1252,20 @@ from data files, this spectra variable could be used to store the name
 of the data files and hence we would need to perform some additional
 checks within this replacement function.
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"dataStorage"``, ``"MsBackendTest"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``object``$``dataStorage`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
-setReplaceMethod("dataStorage", "MsBackendTest", function(object, value) {
-    object$dataStorage <- value
-    object
-})
-```
-
-``` r
-
-dataStorage(be)
-```
+\
+[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] "<memory>" "<memory>" "<memory>"
 
-``` r
-
-dataStorage(be) <- c("", "", "")
-dataStorage(be)
-```
+\
+[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``""``, ``""``, ``""``)`\
+[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] "" "" ""
 
@@ -1370,19 +1276,15 @@ Replace the names of individual spectras within the backend. Same as for
 type `character`. In our backend implementation we store the spectra
 names into the `rownames` of the `@spectraVars` data frame.
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"spectraNames"``, ``"MsBackendTest"``, ``function``(``object``, ``value``)`` ``{`\
+`    `[`rownames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``object``@``spectraVars``)`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
-setReplaceMethod("spectraNames", "MsBackendTest", function(object, value) {
-    rownames(object@spectraVars) <- value
-    object
-})
-```
-
-``` r
-
-spectraNames(be) <- c("a", "b", "c")
-spectraNames(be)
-```
+\
+[`spectraNames`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"a"``, ``"b"``, ``"c"``)`\
+[`spectraNames`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] "a" "b" "c"
 
@@ -1409,12 +1311,10 @@ check if the requested spectra variable is available and should throw an
 error otherwise. The default implementation of the method is shown
 below.
 
-``` r
-
-setMethod("$", "MsBackend", function(x, name) {
-    spectraData(x, columns = name)[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"$"``, ``"MsBackend"``, ``function``(``x``, ``name``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``x``, columns ``=`` ``name``)``[``, ``1L``]`\
+`}``)`
 
 #### `acquisitionNum()`
 
@@ -1423,12 +1323,10 @@ expected to return an `integer` vector with the same length as there are
 spectra represented by the backend. The default implementation is shown
 below.
 
-``` r
-
-setMethod("acquisitionNum", "MsBackend", function(object) {
-    spectraData(object, "acquisitionNum")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"acquisitionNum"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"acquisitionNum"``)``[``, ``1L``]`\
+`}``)`
 
 #### `backendBpparam()`
 
@@ -1442,14 +1340,12 @@ instead.
 
 The default implementation is shown below.
 
-``` r
-
-setMethod("backendBpparam", signature = "MsBackend",
-          function(object, BPPARAM = bpparam()) {
-              ## Return SerialParam() instead to disable parallel processing
-              BPPARAM
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"backendBpparam"``, signature ``=`` ``"MsBackend"``,`\
+`          ``function``(``object``, ``BPPARAM`` ``=`` `[`bpparam`](https://rdrr.io/pkg/BiocParallel/man/register.html)`(``)``)`` ``{`\
+`              ``## Return SerialParam() instead to disable parallel processing`\
+`              ``BPPARAM`\
+`          ``}``)`
 
 #### `backendParallelFactor()`
 
@@ -1461,12 +1357,10 @@ above for more information. The default implementation returns
 [`factor()`](https://rdrr.io/r/base/factor.html) (i.e. a `factor` of
 length 0) hence not suggesting any splitting:
 
-``` r
-
-setMethod("backendParallelFactor", "MsBackend", function(object, ...) {
-    factor()
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"backendParallelFactor"``, ``"MsBackend"``, ``function``(``object``, ``...``)`` ``{`\
+`    `[`factor`](https://rdrr.io/r/base/factor.html)`(``)`\
+`}``)`
 
 #### `backendRequiredSpectraVariables()`
 
@@ -1475,13 +1369,11 @@ The
 method can be implemented if a backend needs specific spectra variables
 to work. The default implementation is:
 
-``` r
-
-setMethod("backendRequiredSpectraVariables", "MsBackend",
-          function(object, ...) {
-              character()
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"backendRequiredSpectraVariables"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``...``)`` ``{`\
+`              `[`character`](https://rdrr.io/r/base/character.html)`(``)`\
+`          ``}``)`
 
 The implementation for `MsBackendMzR` returns
 `c("dataStorage", "scanIndex")` as the backend needs these two spectra
@@ -1494,12 +1386,10 @@ Extract for each spectrum the information whether it contains
 with the same length as there are spectra represented by the backend.
 The default implementation is shown below.
 
-``` r
-
-setMethod("centroided", "MsBackend", function(object) {
-    spectraData(object, "centroided")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"centroided"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"centroided"``)``[``, ``1L``]`\
+`}``)`
 
 #### `centroided<-`
 
@@ -1507,19 +1397,15 @@ Replace the value for the *centroided* core spectra variable. The
 provided data type **must** be a logical. The default implementation of
 this method is:
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"centroided"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``object``$``centroided`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
-setReplaceMethod("centroided", "MsBackend", function(object, value) {
-    object$centroided <- value
-    object
-})
-```
-
-``` r
-
-centroided(be) <- c(TRUE, FALSE, TRUE)
-centroided(be)
-```
+\
+[`centroided`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``TRUE``, ``FALSE``, ``TRUE``)`\
+[`centroided`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1]  TRUE FALSE  TRUE
 
@@ -1532,25 +1418,21 @@ with the same length as there are spectra represented by the backend
 available, such as MS1 spectra). The default implementation is shown
 below.
 
-``` r
-
-setMethod("collisionEnergy", "MsBackend", function(object) {
-    spectraData(object, "collisionEnergy")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"collisionEnergy"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"collisionEnergy"``)``[``, ``1L``]`\
+`}``)`
 
 #### `collisionEnergy<-`
 
 Replace the values for the collision energy. Parameter `value` has to be
 of type `numeric`. The default implementation of this method is:
 
-``` r
-
-setReplaceMethod("collisionEnergy", "MsBackend", function(object, value) {
-    object$collisionEnergy <- value
-    object
-})
-```
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"collisionEnergy"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``object``$``collisionEnergy`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
 #### `dataOrigin()`
 
@@ -1560,12 +1442,10 @@ method is expected to return a `character` vector of length equal to the
 number of spectra represented by the backend. The default implementation
 is shown below.
 
-``` r
-
-setMethod("dataOrigin", "MsBackend", function(object) {
-    spectraData(object, "dataOrigin")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"dataOrigin"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"dataOrigin"``)``[``, ``1L``]`\
+`}``)`
 
 #### `dataOrigin<-`
 
@@ -1573,26 +1453,20 @@ Replace the values for the data origin spectra variable. Parameter
 `value` has to be of type `character`. The default implementation of
 this method is:
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"dataOrigin"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``object``$``dataOrigin`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
-setReplaceMethod("dataOrigin", "MsBackend", function(object, value) {
-    object$dataOrigin <- value
-    object
-})
-```
-
-``` r
-
-dataOrigin(be)
-```
+\
+[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] "<user provided>" "<user provided>" "<user provided>"
 
-``` r
-
-dataOrigin(be) <- c("unknown", "file a", "file b")
-dataOrigin(be)
-```
+\
+[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"unknown"``, ``"file a"``, ``"file b"``)`\
+[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] "unknown" "file a"  "file b"
 
@@ -1618,12 +1492,10 @@ on an `MsBackendMzR` returns thus the names from the originating files.
 
 The default implementation of the method is shown below.
 
-``` r
-
-setMethod("dataOrigin", "MsBackend", function(object) {
-    spectraData(object, "dataStorage")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"dataOrigin"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"dataStorage"``)``[``, ``1L``]`\
+`}``)`
 
 #### `dropNaSpectraVariables()`
 
@@ -1643,16 +1515,14 @@ on-the-fly.
 
 The default implementation is shown below.
 
-``` r
-
-setMethod("dropNaSpectraVariables", "MsBackend", function(object) {
-    svs <- spectraVariables(object)
-    svs <- svs[!(svs %in% c("mz", "intensity"))]
-    spd <- spectraData(object, columns = svs)
-    keep <- !vapply1l(spd, function(z) all(is.na(z)))
-    selectSpectraVariables(object, c(svs[keep], "mz", "intensity"))
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"dropNaSpectraVariables"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    ``svs`` ``<-`` `[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`\
+`    ``svs`` ``<-`` ``svs``[``!``(``svs`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` `[`c`](https://rdrr.io/r/base/c.html)`(``"mz"``, ``"intensity"``)``)``]`\
+`    ``spd`` ``<-`` `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, columns ``=`` ``svs``)`\
+`    ``keep`` ``<-`` ``!``vapply1l``(``spd``, ``function``(``z``)`` `[`all`](https://rdrr.io/r/base/all.html)`(`[`is.na`](https://rdrr.io/r/base/NA.html)`(``z``)``)``)`\
+`    `[`selectSpectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``object``, `[`c`](https://rdrr.io/r/base/c.html)`(``svs``[``keep``]``, ``"mz"``, ``"intensity"``)``)`\
+`}``)`
 
 #### `isEmpty()`
 
@@ -1667,12 +1537,10 @@ default implementation is shown below. It requires the
 [`lengths()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 method to be implemented.
 
-``` r
-
-setMethod("isEmpty", "MsBackend", function(x) {
-    lengths(x) == 0L
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"isEmpty"``, ``"MsBackend"``, ``function``(``x``)`` ``{`\
+`    `[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``x``)`` ``==`` ``0L`\
+`}``)`
 
 #### `isolationWindowLowerMz()`
 
@@ -1682,12 +1550,10 @@ raw mzML files. The method is expected to return a `numeric` vector of
 length equal to the number of spectra represented by the backend. The
 default implementation is shown below.
 
-``` r
-
-setMethod("isolationWindowLowerMz", "MsBackend", function(object) {
-    spectraData(object, "isolationWindowLowerMz")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"isolationWindowLowerMz"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"isolationWindowLowerMz"``)``[``, ``1L``]`\
+`}``)`
 
 #### `isolationWindowLowerMz<-`
 
@@ -1696,20 +1562,16 @@ variable. Parameter `value` has to be of type `numeric` (`NA_real_`
 missing values are supported, e.g. for MS1 spectra). The default
 implementation of this method is:
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(`\
+`    ``"isolationWindowLowerMz"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`        ``object``$``isolationWindowLowerMz`` ``<-`` ``value`\
+`        ``object`\
+`    ``}``)`
 
-setReplaceMethod(
-    "isolationWindowLowerMz", "MsBackend", function(object, value) {
-        object$isolationWindowLowerMz <- value
-        object
-    })
-```
-
-``` r
-
-isolationWindowLowerMz(be) <- c(NA_real_, 245.3, NA_real_)
-isolationWindowLowerMz(be)
-```
+\
+[`isolationWindowLowerMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``NA_real_``, ``245.3``, ``NA_real_``)`\
+[`isolationWindowLowerMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1]    NA 245.3    NA
 
@@ -1721,12 +1583,10 @@ raw mzML files. The method is expected to return a `numeric` vector of
 length equal to the number of spectra represented by the backend. The
 default implementation is shown below.
 
-``` r
-
-setMethod("isolationWindowTargetMz", "MsBackend", function(object) {
-    spectraData(object, "isolationWindowTargetMz")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"isolationWindowTargetMz"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"isolationWindowTargetMz"``)``[``, ``1L``]`\
+`}``)`
 
 #### `isolationWindowTargetMz<-`
 
@@ -1735,20 +1595,16 @@ variable. Parameter `value` has to be of type `numeric` (`NA_real_`
 missing values are supported, e.g. for MS1 spectra). The default
 implementation of this method is:
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(`\
+`    ``"isolationWindowTargetMz"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`        ``object``$``isolationWindowTargetMz`` ``<-`` ``value`\
+`        ``object`\
+`    ``}``)`
 
-setReplaceMethod(
-    "isolationWindowTargetMz", "MsBackend", function(object, value) {
-        object$isolationWindowTargetMz <- value
-        object
-    })
-```
-
-``` r
-
-isolationWindowTargetMz(be) <- c(NA_real_, 245.4, NA_real_)
-isolationWindowTargetMz(be)
-```
+\
+[`isolationWindowTargetMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``NA_real_``, ``245.4``, ``NA_real_``)`\
+[`isolationWindowTargetMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1]    NA 245.4    NA
 
@@ -1760,12 +1616,10 @@ raw mzML files. The method is expected to return a `numeric` vector of
 length equal to the number of spectra represented by the backend. The
 default implementation is shown below.
 
-``` r
-
-setMethod("isolationWindowUpperMz", "MsBackend", function(object) {
-    spectraData(object, "isolationWindowUpperMz")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"isolationWindowUpperMz"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"isolationWindowUpperMz"``)``[``, ``1L``]`\
+`}``)`
 
 #### `isolationWindowUpperMz<-`
 
@@ -1774,20 +1628,16 @@ variable. Parameter `value` has to be of type `numeric` (`NA_real_`
 missing values are supported, e.g. for MS1 spectra). The default
 implementation of this method is:
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(`\
+`    ``"isolationWindowUpperMz"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`        ``object``$``isolationWindowUpperMz`` ``<-`` ``value`\
+`        ``object`\
+`    ``}``)`
 
-setReplaceMethod(
-    "isolationWindowUpperMz", "MsBackend", function(object, value) {
-        object$isolationWindowUpperMz <- value
-        object
-    })
-```
-
-``` r
-
-isolationWindowUpperMz(be) <- c(NA_real_, 245.5, NA_real_)
-isolationWindowUpperMz(be)
-```
+\
+[`isolationWindowUpperMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``NA_real_``, ``245.5``, ``NA_real_``)`\
+[`isolationWindowUpperMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1]    NA 245.5    NA
 
@@ -1797,12 +1647,10 @@ isolationWindowUpperMz(be)
 or `FALSE` indicating whether the backend supports replacing data or
 not. The default implementation is shown below.
 
-``` r
-
-setMethod("isReadOnly", "MsBackend", function(object) {
-    object@readonly
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"isReadOnly"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    ``object``@``readonly`\
+`}``)`
 
 #### `length()`
 
@@ -1813,12 +1661,10 @@ Note that the default implementation first accesses the **full** data,
 thus it is suggested, for new backends, to implement a more efficient
 function.
 
-``` r
-
-setMethod("length", "MsBackend", function(x) {
-    nrow(spectraData(x))
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"length"``, ``"MsBackend"``, ``function``(``x``)`` ``{`\
+`    `[`nrow`](https://rdrr.io/pkg/BiocGenerics/man/nrow.html)`(`[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``x``)``)`\
+`}``)`
 
 #### `lengths()`
 
@@ -1828,30 +1674,24 @@ method is expected to return an `integer` vector (same length as the
 number of spectra in the backend) with the total number of peaks per
 spectrum. The default implementation is shown below.
 
-``` r
-
-setMethod("lengths", "MsBackend", function(x, use.names = FALSE) {
-    vapply(peaksData(x), nrow, NA_integer_)
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"lengths"``, ``"MsBackend"``, ``function``(``x``, ``use.names`` ``=`` ``FALSE``)`` ``{`\
+`    `[`vapply`](https://rdrr.io/r/base/lapply.html)`(`[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``x``)``, ``nrow``, ``NA_integer_``)`\
+`}``)`
 
 For our `MsBackendTest` we can simply use the
 [`lengths()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 method on the m/z or intensity values for that.
 
-``` r
-
-setMethod("lengths", "MsBackendTest", function(x, use.names = FALSE) {
-    lengths(x@mz, use.names = use.names)
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"lengths"``, ``"MsBackendTest"``, ``function``(``x``, ``use.names`` ``=`` ``FALSE``)`` ``{`\
+`    `[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``x``@``mz``, use.names ``=`` ``use.names``)`\
+`}``)`
 
 And we can now get the peaks count per spectrum:
 
-``` r
-
-lengths(be)
-```
+\
+[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 3 2 3
 
@@ -1861,38 +1701,30 @@ Extract the MS level for each spectrum in the backend. This method is
 expected to return an `integer` of length equal to the number of spectra
 represented by the backend. The default implementation is shown below.
 
-``` r
-
-setMethod("msLevel", "MsBackend", function(object) {
-    spectraData(object, "msLevel")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"msLevel"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"msLevel"``)``[``, ``1L``]`\
+`}``)`
 
 #### `msLevel<-`
 
 Replace the MS level of spectra in a backend. Parameter `value` has to
 be of type `integer`. Missing values (`NA_integer_`) are supported.
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"msLevel"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``object``$``msLevel`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
-setReplaceMethod("msLevel", "MsBackend", function(object, value) {
-    object$msLevel <- value
-    object
-})
-```
-
-``` r
-
-msLevel(be)
-```
+\
+[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 2 1 2
 
-``` r
-
-msLevel(be) <- c(1L, 1L, 2L)
-msLevel(be)
-```
+\
+[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``1L``, ``1L``, ``2L``)`\
+[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 1 1 2
 
@@ -1907,12 +1739,10 @@ returns by default `c("mz", "intensity")`. This method should only be
 implemented for backends that (eventually) also provide additional peaks
 variables. The default implementation is shown below.
 
-``` r
-
-setMethod("peaksVariables", "MsBackend", function(object) {
-    c("mz", "intensity")
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"peaksVariables"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`c`](https://rdrr.io/r/base/c.html)`(``"mz"``, ``"intensity"``)`\
+`}``)`
 
 #### `polarity()`
 
@@ -1922,12 +1752,10 @@ to the number of spectra represented by the backend. Negative and
 positive polarity are expected to be encoded by `0L` and `1L`,
 respectively.
 
-``` r
-
-setMethod("polarity", "MsBackend", function(object) {
-    spectraData(object, "polarity")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"polarity"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"polarity"``)``[``, ``1L``]`\
+`}``)`
 
 #### `polarity<-`
 
@@ -1936,19 +1764,15 @@ has to be of type `integer` and should ideally also use the *standard*
 encoding `0L` and `1L` for negative and positive polarity (and
 `NA_integer` for missing).
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"polarity"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``object``$``polarity`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
-setReplaceMethod("polarity", "MsBackend", function(object, value) {
-    object$polarity <- value
-    object
-})
-```
-
-``` r
-
-polarity(be) <- c(0L, 0L, 0L)
-polarity(be)
-```
+\
+[`polarity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``0L``, ``0L``, ``0L``)`\
+[`polarity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 0 0 0
 
@@ -1960,12 +1784,10 @@ of spectra represented by the backend. For MS1 spectra (or if the
 acquisition number of the precursor is not provided) `NA_integer_` has
 to be returned. The default implementation is shown below.
 
-``` r
-
-setMethod("precScanNum", "MsBackend", function(object) {
-    spectraData(object, "precScanNum")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"precScanNum"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"precScanNum"``)``[``, ``1L``]`\
+`}``)`
 
 #### `precursorCharge()`
 
@@ -1975,12 +1797,10 @@ represented by the backend. For MS1 spectra (or if the charge of the
 precursor is not provided) `NA_integer_` has to be returned. The default
 implementation is shown below.
 
-``` r
-
-setMethod("precursorCharge", "MsBackend", function(object) {
-    spectraData(object, "precursorCharge")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"precursorCharge"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"precursorCharge"``)``[``, ``1L``]`\
+`}``)`
 
 #### `precursorIntensity()`
 
@@ -1990,12 +1810,10 @@ represented by the backend. For MS1 spectra (or if the precursor
 intensity for a fragment spectrum is not provided) `NA_real_` has to be
 returned. The default implementation is shown below.
 
-``` r
-
-setMethod("precursorIntensity", "MsBackend", function(object) {
-    spectraData(object, "precursorIntensity")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"precursorIntensity"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"precursorIntensity"``)``[``, ``1L``]`\
+`}``)`
 
 #### `precursorMz()`
 
@@ -2005,12 +1823,10 @@ by the backend. For MS1 spectra (or if the precursor m/z for a fragment
 spectrum is not provided) `NA_real_` has to be returned. The default
 implementation is shown below.
 
-``` r
-
-setMethod("precursorMz", "MsBackend", function(object) {
-    spectraData(object, "precursorMz")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"precursorMz"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"precursorMz"``)``[``, ``1L``]`\
+`}``)`
 
 #### `precursorMz<-`
 
@@ -2019,13 +1835,11 @@ Replace the values for the *precursor m/z* spectra variable. Parameter
 supported, e.g. for MS1 spectra). The default implementation uses the
 `$<-` method:
 
-``` r
-
-setReplaceMethod("precursorMz", "MsBackend", function(object, ..., value) {
-    object$precursorMz <- value
-    object
-})
-```
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"precursorMz"``, ``"MsBackend"``, ``function``(``object``, ``...``, ``value``)`` ``{`\
+`    ``object``$``precursorMz`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
 #### `ionCount()`
 
@@ -2036,12 +1850,10 @@ represented by the backend) with the sum of all intensities within each
 spectrum. For empty spectra `NA_real_` should be returned. The method
 below is the default implementation of the method.
 
-``` r
-
-setMethod("ionCount", "MsBackend", function(object) {
-    vapply1d(intensity(object), sum, na.rm = TRUE)
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"ionCount"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    ``vapply1d``(`[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``, ``sum``, na.rm ``=`` ``TRUE``)`\
+`}``)`
 
 #### `isCentroided()`
 
@@ -2051,12 +1863,10 @@ is *centroided*. In contrast to the
 method a heuristic approach is used. The default implementation is shown
 below.
 
-``` r
-
-setMethod("isCentroided", "MsBackend", function(object, ...) {
-    vapply1l(peaksData(object), .peaks_is_centroided)
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"isCentroided"``, ``"MsBackend"``, ``function``(``object``, ``...``)`` ``{`\
+`    ``vapply1l``(`[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``, ``.peaks_is_centroided``)`\
+`}``)`
 
 #### `longForm()`
 
@@ -2079,12 +1889,10 @@ simply returns the backend as-is. The `MsBackendSql` backend from the
 package in contrast re-initializes the data using the data from the
 database.
 
-``` r
-
-setMethod("reset", "MsBackend", function(object) {
-    object
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"reset"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    ``object`\
+`}``)`
 
 #### `export()`
 
@@ -2096,25 +1904,23 @@ data should be taken and exported. Implementation of this method is
 optional. The implementation of the method for the `MsBackendMzR`
 backend is shown below.
 
-``` r
-
-setMethod("export", "MsBackendMzR", function(object, x, file = tempfile(),
-                                             format = c("mzML", "mzXML"),
-                                             copy = FALSE,
-                                             BPPARAM = bpparam()) {
-    l <- length(x)
-    file <- sanitize_file_name(file)
-    if (length(file) == 1)
-        file <- rep_len(file, l)
-    if (length(file) != l)
-        stop("Parameter 'file' has to be either of length 1 or ",
-             length(x), ", i.e. 'length(x)'.", call. = FALSE)
-    f <- factor(file, levels = unique(file))
-    tmp <- bpmapply(.write_ms_data_mzR, split(x, f), levels(f),
-                    MoreArgs = list(format = format, copy = copy),
-                    BPPARAM = BPPARAM)
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"export"``, ``"MsBackendMzR"``, ``function``(``object``, ``x``, ``file`` ``=`` `[`tempfile`](https://rdrr.io/r/base/tempfile.html)`(``)``,`\
+`                                             ``format`` ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"mzML"``, ``"mzXML"``)``,`\
+`                                             ``copy`` ``=`` ``FALSE``,`\
+`                                             ``BPPARAM`` ``=`` `[`bpparam`](https://rdrr.io/pkg/BiocParallel/man/register.html)`(``)``)`` ``{`\
+`    ``l`` ``<-`` `[`length`](https://rdrr.io/r/base/length.html)`(``x``)`\
+`    ``file`` ``<-`` ``sanitize_file_name``(``file``)`\
+`    ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``file``)`` ``==`` ``1``)`\
+`        ``file`` ``<-`` `[`rep_len`](https://rdrr.io/r/base/rep.html)`(``file``, ``l``)`\
+`    ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``file``)`` ``!=`` ``l``)`\
+`        `[`stop`](https://rdrr.io/r/base/stop.html)`(``"Parameter 'file' has to be either of length 1 or "``,`\
+`             `[`length`](https://rdrr.io/r/base/length.html)`(``x``)``, ``", i.e. 'length(x)'."``, call. ``=`` ``FALSE``)`\
+`    ``f`` ``<-`` `[`factor`](https://rdrr.io/r/base/factor.html)`(``file``, levels ``=`` `[`unique`](https://rdrr.io/pkg/BiocGenerics/man/unique.html)`(``file``)``)`\
+`    ``tmp`` ``<-`` `[`bpmapply`](https://rdrr.io/pkg/BiocParallel/man/bpmapply.html)`(``.write_ms_data_mzR``, `[`split`](https://rformassspectrometry.github.io/Spectra/reference/combineSpectra.md)`(``x``, ``f``)``, `[`levels`](https://rdrr.io/pkg/S4Vectors/man/Factor-class.html)`(``f``)``,`\
+`                    MoreArgs ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``format ``=`` ``format``, copy ``=`` ``copy``)``,`\
+`                    BPPARAM ``=`` ``BPPARAM``)`\
+`}``)`
 
 See alternatively also the
 *[MsBackendMgf](https://bioconductor.org/packages/3.24/MsBackendMgf)*
@@ -2126,12 +1932,10 @@ Extract the retention time of each spectrum. This method is expected to
 return a `numeric` of length equal to the number of spectra represented
 by the backend. the default implementation is shown below.
 
-``` r
-
-setMethod("rtime", "MsBackend", function(object) {
-    spectraData(object, "rtime")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"rtime"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"rtime"``)``[``, ``1L``]`\
+`}``)`
 
 #### `rtime<-`
 
@@ -2141,26 +1945,20 @@ strict requirement, retention times should ideally be ordered
 increasingly *per sample* and their unit should be seconds. The default
 implementation is:
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"rtime"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``object``$``rtime`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
-setReplaceMethod("rtime", "MsBackend", function(object, value) {
-    object$rtime <- value
-    object
-})
-```
-
-``` r
-
-rtime(be)
-```
+\
+[`rtime`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 1.2 1.3 1.4
 
-``` r
-
-rtime(be) <- rtime(be) + 2
-rtime(be)
-```
+\
+[`rtime`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`rtime`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``+`` ``2`\
+[`rtime`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] 3.2 3.3 3.4
 
@@ -2173,12 +1971,10 @@ index of a spectrum as recorded by the MS instrument). This method is
 expected to return a `integer` of length equal to the number of spectra
 represented by the backend. The default implementation is shown below.
 
-``` r
-
-setMethod("scanIndex", "MsBackend", function(object) {
-    spectraData(object, "scanIndex")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"scanIndex"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"scanIndex"``)``[``, ``1L``]`\
+`}``)`
 
 #### `smoothed()`
 
@@ -2188,12 +1984,10 @@ compatibility but seldomly used. The method is expected to return a
 `logical` with length equal to the number of spectra represented by the
 backend. The default implementation is shown below.
 
-``` r
-
-setMethod("smoothed", "MsBackend", function(object) {
-    spectraData(object, "smoothed")[, 1L]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"smoothed"``, ``"MsBackend"``, ``function``(``object``)`` ``{`\
+`    `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"smoothed"``)``[``, ``1L``]`\
+`}``)`
 
 #### `smoothed<-`
 
@@ -2201,19 +1995,15 @@ Replace the spectra variable *smoothed* that indicates whether some data
 smoothing operation was performed on the spectra. Parameter `value` must
 be of type `logical`. The default implementation is:
 
-``` r
+\
+[`setReplaceMethod`](https://rdrr.io/r/methods/GenericFunctions.html)`(``"smoothed"``, ``"MsBackend"``, ``function``(``object``, ``value``)`` ``{`\
+`    ``object``$``smoothed`` ``<-`` ``value`\
+`    ``object`\
+`}``)`
 
-setReplaceMethod("smoothed", "MsBackend", function(object, value) {
-    object$smoothed <- value
-    object
-})
-```
-
-``` r
-
-smoothed(be) <- rep(TRUE, 3)
-smoothed(be)
-```
+\
+[`smoothed`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`` ``<-`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``TRUE``, ``3``)`\
+[`smoothed`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``be``)`
 
     ## [1] TRUE TRUE TRUE
 
@@ -2224,12 +2014,10 @@ The
 method should allow to split a `MsBackend` into a `list` of `MsBackend`
 objects. The default implementation is shown below.
 
-``` r
-
-setMethod("split", "MsBackend", function(x, f, drop = FALSE, ...) {
-    split.default(x, f, drop = drop, ...)
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"split"``, ``"MsBackend"``, ``function``(``x``, ``f``, ``drop`` ``=`` ``FALSE``, ``...``)`` ``{`\
+`    `[`split.default`](https://rdrr.io/r/base/split.html)`(``x``, ``f``, drop ``=`` ``drop``, ``...``)`\
+`}``)`
 
 #### `supportsSetBackend()`
 
@@ -2243,12 +2031,10 @@ the backend needs to have a parameter `data` in its
 method that allows it to be initialized with a `DataFrame` containing
 the full spectra data. The default implementation is shown below.
 
-``` r
-
-setMethod("supportsSetBackend", "MsBackend", function(object, ...) {
-    !isReadOnly(object)
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"supportsSetBackend"``, ``"MsBackend"``, ``function``(``object``, ``...``)`` ``{`\
+`    ``!``isReadOnly``(``object``)`\
+`}``)`
 
 #### `tic()`
 
@@ -2264,28 +2050,24 @@ data (`initial = FALSE`). The original tic values are usually provided
 by a spectra variable `"totIonCurrent"`. The default implementation is
 shown below.
 
-``` r
-
-setMethod("tic", "MsBackend", function(object, initial = TRUE) {
-    if (initial) {
-        if (any(spectraVariables(object) == "totIonCurrent"))
-            spectraData(object, "totIonCurrent")[, 1L]
-        else rep(NA_real_, length(object))
-    } else vapply(intensity(object), sum, numeric(1), na.rm = TRUE)
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"tic"``, ``"MsBackend"``, ``function``(``object``, ``initial`` ``=`` ``TRUE``)`` ``{`\
+`    ``if`` ``(``initial``)`` ``{`\
+`        ``if`` ``(`[`any`](https://rdrr.io/r/base/any.html)`(`[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` ``==`` ``"totIonCurrent"``)``)`\
+`            `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``, ``"totIonCurrent"``)``[``, ``1L``]`\
+`        ``else`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``NA_real_``, `[`length`](https://rdrr.io/r/base/length.html)`(``object``)``)`\
+`    ``}`` ``else`` `[`vapply`](https://rdrr.io/r/base/lapply.html)`(`[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``, ``sum``, `[`numeric`](https://rdrr.io/r/base/numeric.html)`(``1``)``, na.rm ``=`` ``TRUE``)`\
+`}``)`
 
 #### `uniqueMsLevels()`
 
 This method should return the unique MS level(s) of all spectra within
 the backend. The default implementation is shown below.
 
-``` r
-
-setMethod("uniqueMsLevels", "MsBackend", function(object, ...) {
-    unique(msLevel(object))
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"uniqueMsLevels"``, ``"MsBackend"``, ``function``(``object``, ``...``)`` ``{`\
+`    `[`unique`](https://rdrr.io/pkg/BiocGenerics/man/unique.html)`(`[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``)`\
+`}``)`
 
 This method thus retrieves first the MS levels of all spectra and then
 calls [`unique()`](https://rdrr.io/pkg/BiocGenerics/man/unique.html) on
@@ -2312,18 +2094,16 @@ should subset the backend to spectra with their `dataOrigin` spectra
 variable matching the values provided with the `dataOrigin` parameter.
 The default implementation for `MsBackend` is shown below.
 
-``` r
-
-setMethod("filterDataOrigin", "MsBackend",
-          function(object, dataOrigin = character()) {
-              if (length(dataOrigin)) {
-                  object <- object[dataOrigin(object) %in% dataOrigin]
-                  if (is.unsorted(dataOrigin))
-                      object[order(match(dataOrigin(object), dataOrigin))]
-                  else object
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterDataOrigin"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``dataOrigin`` ``=`` `[`character`](https://rdrr.io/r/base/character.html)`(``)``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``dataOrigin``)``)`` ``{`\
+`                  ``object`` ``<-`` ``object``[`[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` ``dataOrigin``]`\
+`                  ``if`` ``(`[`is.unsorted`](https://rdrr.io/pkg/BiocGenerics/man/is.unsorted.html)`(``dataOrigin``)``)`\
+`                      ``object``[`[`order`](https://rdrr.io/pkg/BiocGenerics/man/order.html)`(`[`match`](https://rdrr.io/pkg/BiocGenerics/man/match.html)`(`[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``, ``dataOrigin``)``)``]`\
+`                  ``else`` ``object`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 #### `filterDataStorage()`
 
@@ -2334,18 +2114,16 @@ the
 should subset a backend to spectra with their `dataStorage` spectra
 variable matching the values provided with the `dataStorage` parameter.
 
-``` r
-
-setMethod("filterDataStorage", "MsBackend",
-          function(object, dataStorage = character()) {
-              if (length(dataStorage)) {
-                  object <- object[dataStorage(object) %in% dataStorage]
-                  if (is.unsorted(dataStorage))
-                      object[order(match(dataStorage(object), dataStorage))]
-                  else object
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterDataStorage"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``dataStorage`` ``=`` `[`character`](https://rdrr.io/r/base/character.html)`(``)``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``dataStorage``)``)`` ``{`\
+`                  ``object`` ``<-`` ``object``[`[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` ``dataStorage``]`\
+`                  ``if`` ``(`[`is.unsorted`](https://rdrr.io/pkg/BiocGenerics/man/is.unsorted.html)`(``dataStorage``)``)`\
+`                      ``object``[`[`order`](https://rdrr.io/pkg/BiocGenerics/man/order.html)`(`[`match`](https://rdrr.io/pkg/BiocGenerics/man/match.html)`(`[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``, ``dataStorage``)``)``]`\
+`                  ``else`` ``object`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 #### `filterEmptySpectra()`
 
@@ -2355,13 +2133,11 @@ should remove all *empty* spectra (i.e. spectra without any mass peaks)
 from the backend. The method is expected to return the subset backend.
 The default implementation for `MsBackend` is shown below.
 
-``` r
-
-setMethod("filterEmptySpectra", "MsBackend", function(object, ...) {
-    if (!length(object)) return(object)
-    object[as.logical(lengths(object))]
-})
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterEmptySpectra"``, ``"MsBackend"``, ``function``(``object``, ``...``)`` ``{`\
+`    ``if`` ``(``!`[`length`](https://rdrr.io/r/base/length.html)`(``object``)``)`` `[`return`](https://rdrr.io/r/base/function.html)`(``object``)`\
+`    ``object``[`[`as.logical`](https://rdrr.io/r/base/logical.html)`(`[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``)``]`\
+`}``)`
 
 #### `filterIsolationWindow()`
 
@@ -2376,19 +2152,17 @@ The parameter `mz` defining this target m/z is expected to be a
 `numeric` of length 1. The default implementation for `MsBackend` is
 shown below.
 
-``` r
-
-setMethod("filterIsolationWindow", "MsBackend",
-          function(object, mz = numeric(), ...) {
-              if (length(mz)) {
-                  if (length(mz) > 1)
-                      stop("'mz' is expected to be a single m/z value")
-                  keep <- which(isolationWindowLowerMz(object) <= mz &
-                                isolationWindowUpperMz(object) >= mz)
-                  object[keep]
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterIsolationWindow"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``mz`` ``=`` `[`numeric`](https://rdrr.io/r/base/numeric.html)`(``)``, ``...``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``mz``)``)`` ``{`\
+`                  ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``mz``)`` ``>`` ``1``)`\
+`                      `[`stop`](https://rdrr.io/r/base/stop.html)`(``"'mz' is expected to be a single m/z value"``)`\
+`                  ``keep`` ``<-`` `[`which`](https://rdrr.io/pkg/BiocGenerics/man/which.html)`(`[`isolationWindowLowerMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` ``<=`` ``mz`` ``&`\
+`                                `[`isolationWindowUpperMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` ``>=`` ``mz``)`\
+`                  ``object``[``keep``]`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 #### `filterMsLevel()`
 
@@ -2398,15 +2172,13 @@ method is expected to reduce the backend to spectra with the provided MS
 level(s). Parameter `msLevel` has to be an `integer` (any length). The
 default implementation for `MsBackend` is shown below.
 
-``` r
-
-setMethod("filterMsLevel", "MsBackend",
-          function(object, msLevel = integer()) {
-              if (length(msLevel)) {
-                  object[msLevel(object) %in% msLevel]
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterMsLevel"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``msLevel`` ``=`` `[`integer`](https://rdrr.io/r/base/integer.html)`(``)``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``msLevel``)``)`` ``{`\
+`                  ``object``[`[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` ``msLevel``]`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 #### `filterPolarity()`
 
@@ -2417,15 +2189,13 @@ provided polarity (or polarities). Parameter `polarity` has to be an
 `integer` (of any length). The default implementation for `MsBackend` is
 shown below.
 
-``` r
-
-setMethod("filterPolarity", "MsBackend",
-          function(object, polarity = integer()) {
-              if (length(polarity))
-                  object[polarity(object) %in% polarity]
-              else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterPolarity"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``polarity`` ``=`` `[`integer`](https://rdrr.io/r/base/integer.html)`(``)``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``polarity``)``)`\
+`                  ``object``[`[`polarity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` ``polarity``]`\
+`              ``else`` ``object`\
+`          ``}``)`
 
 #### `filterPrecursorMzRange()`
 
@@ -2438,10 +2208,8 @@ a `numeric` of length 2 defining the lower and upper limit of this
 precursor m/z range. The default implementation for `MsBackend` is shown
 below.
 
-``` r
-
-library(MsCoreUtils)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`MsCoreUtils`](https://github.com/RforMassSpectrometry/MsCoreUtils)`)`
 
     ## 
     ## Attaching package: 'MsCoreUtils'
@@ -2454,21 +2222,23 @@ library(MsCoreUtils)
     ## 
     ##     bin, entropy, smooth
 
+    ## The following object is masked from 'package:BiocGenerics':
+    ## 
+    ##     group
+
     ## The following object is masked from 'package:stats':
     ## 
     ##     smooth
 
-``` r
-
-setMethod("filterPrecursorMzRange", "MsBackend",
-          function(object, mz = numeric()) {
-              if (length(mz)) {
-                  mz <- range(mz)
-                  keep <- which(between(precursorMz(object), mz))
-                  object[keep]
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterPrecursorMzRange"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``mz`` ``=`` `[`numeric`](https://rdrr.io/r/base/numeric.html)`(``)``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``mz``)``)`` ``{`\
+`                  ``mz`` ``<-`` `[`range`](https://rdrr.io/r/base/range.html)`(``mz``)`\
+`                  ``keep`` ``<-`` `[`which`](https://rdrr.io/pkg/BiocGenerics/man/which.html)`(`[`between`](https://rdrr.io/pkg/MsCoreUtils/man/range.html)`(`[`precursorMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``, ``mz``)``)`\
+`                  ``object``[``keep``]`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 #### `filterPrecursorMzValues()`
 
@@ -2480,28 +2250,24 @@ expected to be `numeric` of length 1) allow to define the conditions for
 the relaxed matching. Parameter `mz` has to be a `numeric` (of any
 length). The default implementation for `MsBackend` is shown below.
 
-``` r
-
-setMethod("filterPrecursorMzValues", "MsBackend",
-          function(object, mz = numeric(), ppm = 20, tolerance = 0) {
-              if (length(mz)) {
-                  object[.values_match_mz(precursorMz(object), mz = mz,
-                                          ppm = ppm, tolerance = tolerance)]
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterPrecursorMzValues"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``mz`` ``=`` `[`numeric`](https://rdrr.io/r/base/numeric.html)`(``)``, ``ppm`` ``=`` ``20``, ``tolerance`` ``=`` ``0``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``mz``)``)`` ``{`\
+`                  ``object``[``.values_match_mz``(`[`precursorMz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``, mz ``=`` ``mz``,`\
+`                                          ppm ``=`` ``ppm``, tolerance ``=`` ``tolerance``)``]`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 The `.values_match_mz` function used by this function is defined as:
 
-``` r
-
-.values_match_mz <- function(x, mz, ppm = 20, tolerance = 0) {
-    o <- order(x, na.last = NA)
-    cmn <- common(x[o], sort(mz), tolerance = tolerance, ppm = ppm,
-                  duplicates = "keep", .check = FALSE)
-    sort(o[cmn])
-}
-```
+\
+`.values_match_mz`` ``<-`` ``function``(``x``, ``mz``, ``ppm`` ``=`` ``20``, ``tolerance`` ``=`` ``0``)`` ``{`\
+`    ``o`` ``<-`` `[`order`](https://rdrr.io/pkg/BiocGenerics/man/order.html)`(``x``, na.last ``=`` ``NA``)`\
+`    ``cmn`` ``<-`` `[`common`](https://rdrr.io/pkg/MsCoreUtils/man/matching.html)`(``x``[``o``]``, `[`sort`](https://rdrr.io/pkg/BiocGenerics/man/sort.html)`(``mz``)``, tolerance ``=`` ``tolerance``, ppm ``=`` ``ppm``,`\
+`                  duplicates ``=`` ``"keep"``, .check ``=`` ``FALSE``)`\
+`    `[`sort`](https://rdrr.io/pkg/BiocGenerics/man/sort.html)`(``o``[``cmn``]``)`\
+`}`
 
 #### `filterPrecursorCharge()`
 
@@ -2512,16 +2278,14 @@ Parameter `z` defining the requested precursor charge has to be an
 `integer` (of any length). The default implementation for `MsBackend` is
 shown below.
 
-``` r
-
-setMethod("filterPrecursorCharge", "MsBackend",
-          function(object, z = integer()) {
-              if (length(z)) {
-                  keep <- which(precursorCharge(object) %in% z)
-                  object[keep]
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterPrecursorCharge"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``z`` ``=`` `[`integer`](https://rdrr.io/r/base/integer.html)`(``)``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``z``)``)`` ``{`\
+`                  ``keep`` ``<-`` `[`which`](https://rdrr.io/pkg/BiocGenerics/man/which.html)`(`[`precursorCharge`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` ``z``)`\
+`                  ``object``[``keep``]`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 #### `filterPrecursorScan()`
 
@@ -2533,22 +2297,20 @@ how the backend should be split (by default by original data file) to
 avoid selecting spectra from different samples/files. The default
 implementation for `MsBackend` is shown below.
 
-``` r
-
-setMethod("filterPrecursorScan", "MsBackend",
-          function(object, acquisitionNum = integer(), f = dataOrigin(object)) {
-              if (length(acquisitionNum) && length(f)) {
-                  if (!is.factor(f))
-                      f <- factor(f, exclude = character())
-                  keep <- unsplit(lapply(split(object, f = f), function(z, an) {
-                      .filterSpectraHierarchy(acquisitionNum(z),
-                                              precScanNum(z),
-                                              an)
-                  }, an = acquisitionNum), f = f)
-                  object[keep]
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterPrecursorScan"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``acquisitionNum`` ``=`` `[`integer`](https://rdrr.io/r/base/integer.html)`(``)``, ``f`` ``=`` `[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``acquisitionNum``)`` ``&&`` `[`length`](https://rdrr.io/r/base/length.html)`(``f``)``)`` ``{`\
+`                  ``if`` ``(``!`[`is.factor`](https://rdrr.io/r/base/factor.html)`(``f``)``)`\
+`                      ``f`` ``<-`` `[`factor`](https://rdrr.io/r/base/factor.html)`(``f``, exclude ``=`` `[`character`](https://rdrr.io/r/base/character.html)`(``)``)`\
+`                  ``keep`` ``<-`` `[`unsplit`](https://rdrr.io/pkg/BiocGenerics/man/unsplit.html)`(`[`lapply`](https://rdrr.io/pkg/BiocGenerics/man/lapply.html)`(`[`split`](https://rformassspectrometry.github.io/Spectra/reference/combineSpectra.md)`(``object``, f ``=`` ``f``)``, ``function``(``z``, ``an``)`` ``{`\
+`                      ``.filterSpectraHierarchy``(`[`acquisitionNum`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``z``)``,`\
+`                                              ``precScanNum``(``z``)``,`\
+`                                              ``an``)`\
+`                  ``}``, an ``=`` ``acquisitionNum``)``, f ``=`` ``f``)`\
+`                  ``object``[``keep``]`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 #### `filterRt()`
 
@@ -2563,18 +2325,16 @@ optionally used to restrict the filtering to the selected MS levels
 and all spectra with a different MS level are returned as well). The
 default implementation for `MsBackend` is shown below.
 
-``` r
-
-setMethod("filterRt", "MsBackend",
-          function(object, rt = numeric(), msLevel. = integer()) {
-              if (length(rt)) {
-                  rt <- range(rt)
-                  sel_ms <- msLevel(object) %in% msLevel.
-                  sel_rt <- between(rtime(object), rt) & sel_ms
-                  object[sel_rt | !sel_ms]
-              } else object
-          })
-```
+\
+[`setMethod`](https://rdrr.io/r/methods/setMethod.html)`(``"filterRt"``, ``"MsBackend"``,`\
+`          ``function``(``object``, ``rt`` ``=`` `[`numeric`](https://rdrr.io/r/base/numeric.html)`(``)``, ``msLevel.`` ``=`` `[`integer`](https://rdrr.io/r/base/integer.html)`(``)``)`` ``{`\
+`              ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``rt``)``)`` ``{`\
+`                  ``rt`` ``<-`` `[`range`](https://rdrr.io/r/base/range.html)`(``rt``)`\
+`                  ``sel_ms`` ``<-`` `[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` ``msLevel.`\
+`                  ``sel_rt`` ``<-`` `[`between`](https://rdrr.io/pkg/MsCoreUtils/man/range.html)`(`[`rtime`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``object``)``, ``rt``)`` ``&`` ``sel_ms`\
+`                  ``object``[``sel_rt`` ``|`` ``!``sel_ms``]`\
+`              ``}`` ``else`` ``object`\
+`          ``}``)`
 
 ### Implementation notes
 
@@ -2608,22 +2368,18 @@ and call the tests. The tests will be performed on a variable `be` in
 the current workspace (which in our case is an instance of our
 `MsBackendTest` class).
 
-``` r
-
-library(testthat)
-test_suite <- system.file("test_backends", "test_MsBackend",
-                          package = "Spectra")
-test_dir(test_suite, stop_on_failure = TRUE)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`testthat`](https://testthat.r-lib.org)`)`\
+`test_suite`` ``<-`` `[`system.file`](https://rdrr.io/r/base/system.file.html)`(``"test_backends"``, ``"test_MsBackend"``,`\
+`                          package ``=`` ``"Spectra"``)`\
+[`test_dir`](https://testthat.r-lib.org/reference/test_dir.html)`(``test_suite``, stop_on_failure ``=`` ``TRUE``)`
 
 ## Session information
 
-``` r
+\
+[`sessionInfo`](https://rdrr.io/r/utils/sessionInfo.html)`(``)`
 
-sessionInfo()
-```
-
-    ## R version 4.6.0 (2026-04-24)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -2647,23 +2403,23 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsCoreUtils_1.25.4  IRanges_2.47.2      Spectra_1.23.3     
-    ## [4] BiocParallel_1.47.0 S4Vectors_0.51.3    BiocGenerics_0.59.7
-    ## [7] generics_0.1.4      BiocStyle_2.41.0   
+    ## [1] MsCoreUtils_1.25.4   IRanges_2.47.5       Spectra_1.23.5      
+    ## [4] BiocParallel_1.47.0  S4Vectors_0.51.9     BiocGenerics_0.59.12
+    ## [7] generics_0.1.4       BiocStyle_2.41.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] jsonlite_2.0.0         compiler_4.6.0         BiocManager_1.30.27   
-    ##  [4] parallel_4.6.0         cluster_2.1.8.2        jquerylib_0.1.4       
+    ##  [1] jsonlite_2.0.0         compiler_4.6.1         BiocManager_1.30.27   
+    ##  [4] parallel_4.6.1         cluster_2.1.8.3        jquerylib_0.1.4       
     ##  [7] systemfonts_1.3.2      textshaping_1.0.5      yaml_2.3.12           
     ## [10] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.45.0   
-    ## [13] knitr_1.51             htmlwidgets_1.6.4      MASS_7.3-65           
-    ## [16] bookdown_0.46          desc_1.4.3             bslib_0.11.0          
-    ## [19] rlang_1.2.0            cachem_1.1.0           xfun_0.58             
+    ## [13] knitr_1.52             htmlwidgets_1.6.4      MASS_7.3-66           
+    ## [16] bookdown_0.48          desc_1.4.3             bslib_0.12.0          
+    ## [19] rlang_1.3.0            cachem_1.1.0           xfun_0.60             
     ## [22] fs_2.1.0               sass_0.4.10            otel_0.2.0            
-    ## [25] cli_3.6.6              pkgdown_2.2.0.9000     digest_0.6.39         
+    ## [25] cli_3.6.6              pkgdown_2.2.1.9000     digest_0.6.39         
     ## [28] MetaboCoreUtils_1.21.1 lifecycle_1.0.5        clue_0.3-68           
-    ## [31] data.table_1.18.4      evaluate_1.0.5         codetools_0.2-20      
-    ## [34] ragg_1.5.2             rmarkdown_2.31         tools_4.6.0           
+    ## [31] data.table_1.18.6.1    evaluate_1.0.5         codetools_0.2-20      
+    ## [34] ragg_1.5.2             rmarkdown_2.32         tools_4.6.1           
     ## [37] htmltools_0.5.9
 
 ## References

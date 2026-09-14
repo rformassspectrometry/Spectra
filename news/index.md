@@ -2,6 +2,14 @@
 
 ## Spectra 1.23
 
+### Changes in 1.23.5
+
+- Fix reference unit test in the unit test suite for `MsBackend`.
+
+### Changes in 1.23.4
+
+- Small fixes in the documentation.
+
 ### Changes in 1.23.3
 
 - Improve documentation for the use of

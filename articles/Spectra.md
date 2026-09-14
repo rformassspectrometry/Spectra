@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-12 14:09:35.718635\
-**Compiled**: Fri Jun 12 14:35:35 2026
+**Last modified:** 2026-09-14 15:43:35.997183\
+**Compiled**: Mon Sep 14 16:14:34 2026
 
 ## Introduction
 
@@ -108,30 +108,28 @@ annotations such as their ID in [HMDB](http://hmdb.ca) (human metabolome
 database) and their name. The m/z and intensity values for each spectrum
 have to be provided as a `list` of `numeric` values.
 
-``` r
-
-library(Spectra)
-
-spd <- DataFrame(
-    msLevel = c(2L, 2L, 2L),
-    polarity = c(1L, 1L, 1L),
-    id = c("HMDB0000001", "HMDB0000001", "HMDB0001847"),
-    name = c("1-Methylhistidine", "1-Methylhistidine", "Caffeine"))
-
-## Assign m/z and intensity values.
-spd$mz <- list(
-    c(109.2, 124.2, 124.5, 170.16, 170.52),
-    c(83.1, 96.12, 97.14, 109.14, 124.08, 125.1, 170.16),
-    c(56.0494, 69.0447, 83.0603, 109.0395, 110.0712,
-      111.0551, 123.0429, 138.0662, 195.0876))
-spd$intensity <- list(
-    c(3.407, 47.494, 3.094, 100.0, 13.240),
-    c(6.685, 4.381, 3.022, 16.708, 100.0, 4.565, 40.643),
-    c(0.459, 2.585, 2.446, 0.508, 8.968, 0.524, 0.974, 100.0, 40.994))
-
-sps <- Spectra(spd)
-sps
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`Spectra`](https://github.com/RforMassSpectrometry/Spectra)`)`\
+\
+`spd`` ``<-`` `[`DataFrame`](https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html)`(`\
+`    msLevel ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``2L``, ``2L``, ``2L``)``,`\
+`    polarity ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1L``, ``1L``, ``1L``)``,`\
+`    id ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"HMDB0000001"``, ``"HMDB0000001"``, ``"HMDB0001847"``)``,`\
+`    name ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"1-Methylhistidine"``, ``"1-Methylhistidine"``, ``"Caffeine"``)``)`\
+\
+`## Assign m/z and intensity values.`\
+`spd``$``mz`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`c`](https://rdrr.io/r/base/c.html)`(``109.2``, ``124.2``, ``124.5``, ``170.16``, ``170.52``)``,`\
+`    `[`c`](https://rdrr.io/r/base/c.html)`(``83.1``, ``96.12``, ``97.14``, ``109.14``, ``124.08``, ``125.1``, ``170.16``)``,`\
+`    `[`c`](https://rdrr.io/r/base/c.html)`(``56.0494``, ``69.0447``, ``83.0603``, ``109.0395``, ``110.0712``,`\
+`      ``111.0551``, ``123.0429``, ``138.0662``, ``195.0876``)``)`\
+`spd``$``intensity`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`c`](https://rdrr.io/r/base/c.html)`(``3.407``, ``47.494``, ``3.094``, ``100.0``, ``13.240``)``,`\
+`    `[`c`](https://rdrr.io/r/base/c.html)`(``6.685``, ``4.381``, ``3.022``, ``16.708``, ``100.0``, ``4.565``, ``40.643``)``,`\
+`    `[`c`](https://rdrr.io/r/base/c.html)`(``0.459``, ``2.585``, ``2.446``, ``0.508``, ``8.968``, ``0.524``, ``0.974``, ``100.0``, ``40.994``)``)`\
+\
+`sps`` ``<-`` `[`Spectra`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``spd``)`\
+`sps`
 
     ## MSn data (Spectra) with 3 spectra in a MsBackendMemory backend:
     ##     msLevel     rtime scanIndex
@@ -152,16 +150,14 @@ intensity values from the original data files only on demand. See
 section [Backends](#backends) for more details on backends and their
 properties.
 
-``` r
-
-register(SerialParam())
-#' define the file names of the data to import; data provided through
-#' the MsDataHub package
-fls <- c(MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
-         MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
-sps_sciex <- Spectra(fls, source = MsBackendMzR())
-sps_sciex
-```
+\
+[`register`](https://rdrr.io/pkg/BiocParallel/man/register.html)`(`[`SerialParam`](https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html)`(``)``)`\
+`#' define the file names of the data to import; data provided through`\
+`#' the MsDataHub package`\
+`fls`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``MsDataHub``::`[`X20171016_POOL_POS_1_105.134.mzML`](https://rformassspectrometry.github.io/MsDataHub/reference/sciex.html)`(``)``,`\
+`         ``MsDataHub``::`[`X20171016_POOL_POS_3_105.134.mzML`](https://rformassspectrometry.github.io/MsDataHub/reference/sciex.html)`(``)``)`\
+`sps_sciex`` ``<-`` `[`Spectra`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``fls``, source ``=`` `[`MsBackendMzR`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``)`\
+`sps_sciex`
 
     ## MSn data (Spectra) with 1862 spectra in a MsBackendMzR backend:
     ##        msLevel     rtime scanIndex
@@ -180,8 +176,8 @@ sps_sciex
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 7482fe40e87_7859
-    ## 74890c8574_7860
+    ## 13498fcc52e_7859
+    ## 134948039ea4_7860
 
 Note that we disabled any parallel processing using the
 `register(SerialParam())` call. Many functions for `Spectra` objects
@@ -209,10 +205,8 @@ variables can be listed with the
 [`spectraVariables()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 method:
 
-``` r
-
-spectraVariables(sps)
-```
+\
+[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ##  [1] "msLevel"                 "rtime"                  
     ##  [3] "acquisitionNum"          "scanIndex"              
@@ -225,10 +219,8 @@ spectraVariables(sps)
     ## [17] "isolationWindowUpperMz"  "id"                     
     ## [19] "name"
 
-``` r
-
-spectraVariables(sps_sciex)
-```
+\
+[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_sciex``)`
 
     ##  [1] "msLevel"                  "rtime"                   
     ##  [3] "acquisitionNum"           "scanIndex"               
@@ -260,17 +252,13 @@ and
 [`rtime()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 to access the MS levels and retention times for the spectra in `sps`.
 
-``` r
-
-msLevel(sps)
-```
+\
+[`msLevel`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## [1] 2 2 2
 
-``` r
-
-rtime(sps)
-```
+\
+[`rtime`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## [1] NA NA NA
 
@@ -279,10 +267,8 @@ returned for them. The `Spectra` object `sps_sciex` contains many more
 variables, all of which were extracted from the mzML files. Below we
 extract the retention times for the first spectra in the object.
 
-``` r
-
-head(rtime(sps_sciex))
-```
+\
+[`head`](https://rdrr.io/r/utils/head.html)`(`[`rtime`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_sciex``)``)`
 
     ## [1] 0.280 0.559 0.838 1.117 1.396 1.675
 
@@ -291,17 +277,13 @@ use `$` to extract a specific spectra variable. To extract the name of
 the compounds in `sps` we can use `sps$name`, or, to extract the MS
 levels `sps$msLevel`.
 
-``` r
-
-sps$name
-```
+\
+`sps``$``name`
 
     ## [1] "1-Methylhistidine" "1-Methylhistidine" "Caffeine"
 
-``` r
-
-sps$msLevel
-```
+\
+`sps``$``msLevel`
 
     ## [1] 2 2 2
 
@@ -309,12 +291,10 @@ We could also replace specific spectra variables using either the
 dedicated method or `$`. Below we specify that all spectra in `sps`
 represent centroided data.
 
-``` r
-
-sps$centroided <- TRUE
-
-centroided(sps)
-```
+\
+`sps``$``centroided`` ``<-`` ``TRUE`\
+\
+[`centroided`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## [1] TRUE TRUE TRUE
 
@@ -322,13 +302,11 @@ The `$` operator can also be used to add arbitrary new spectra variables
 to a `Spectra` object. Below we add the SPLASH key to each of the
 spectra.
 
-``` r
-
-sps$splash <- c(
-    "splash10-00di-0900000000-037d24a7d65676b7e356",
-    "splash10-00di-0900000000-03e99316bd6c098f5d11",
-    "splash10-000i-0900000000-9af60e39c843cb715435")
-```
+\
+`sps``$``splash`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    ``"splash10-00di-0900000000-037d24a7d65676b7e356"``,`\
+`    ``"splash10-00di-0900000000-03e99316bd6c098f5d11"``,`\
+`    ``"splash10-000i-0900000000-9af60e39c843cb715435"``)`
 
 This new spectra variable will now be listed as an additional variable
 in the result of the
@@ -343,20 +321,16 @@ or
 [`intensity()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 functions, each of which return a `list` of `numeric` values.
 
-``` r
-
-mz(sps)
-```
+\
+[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## NumericList of length 3
     ## [[1]] 109.2 124.2 124.5 170.16 170.52
     ## [[2]] 83.1 96.12 97.14 109.14 124.08 125.1 170.16
     ## [[3]] 56.0494 69.0447 83.0603 109.0395 110.0712 111.0551 123.0429 138.0662 195.0876
 
-``` r
-
-intensity(sps)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## NumericList of length 3
     ## [[1]] 3.407 47.494 3.094 100 13.24
@@ -371,10 +345,8 @@ a `Spectra` object can be determined with the
 [`peaksVariables()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 function.
 
-``` r
-
-peaksVariables(sps)
-```
+\
+[`peaksVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## [1] "mz"        "intensity"
 
@@ -385,11 +357,9 @@ interest. By default
 [`peaksData()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 extracts m/z and intensity values.
 
-``` r
-
-pks <- peaksData(sps)
-pks[[1]]
-```
+\
+`pks`` ``<-`` `[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`\
+`pks``[[``1``]``]`
 
     ##          mz intensity
     ## [1,] 109.20     3.407
@@ -402,10 +372,8 @@ Note that we would get the same result by using the
 [`as()`](https://rdrr.io/r/methods/as.html) method to coerce a `Spectra`
 object to a `list` or `SimpleList`:
 
-``` r
-
-as(sps, "SimpleList")
-```
+\
+[`as`](https://rdrr.io/r/methods/as.html)`(``sps``, ``"SimpleList"``)`
 
     ## List of length 3
 
@@ -416,10 +384,8 @@ function returns a `DataFrame` with the full data for each spectrum
 (which can be specified with the `columns` parameter). Below we extract
 the spectra data for variables `"msLevel"`, `"id"` and `"name"`.
 
-``` r
-
-spectraData(sps, columns = c("msLevel", "id", "name"))
-```
+\
+[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``, columns ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"msLevel"``, ``"id"``, ``"name"``)``)`
 
     ## DataFrame with 3 rows and 3 columns
     ##     msLevel          id              name
@@ -437,43 +403,35 @@ of each spectrum can be extracted with the
 function. For `sps`, the `Spectra` created from a `DataFrame`, this will
 be `NA` because we did not specify the data origin:
 
-``` r
-
-dataOrigin(sps)
-```
+\
+[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## [1] NA NA NA
 
 `dataOrigin` for `sps_sciex`, the `Spectra` which was initialized with
 data from mzML files, in contrast, returns the originating file names:
 
-``` r
+\
+[`head`](https://rdrr.io/r/utils/head.html)`(`[`basename`](https://rdrr.io/pkg/BiocGenerics/man/path.html)`(`[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_sciex``)``)``)`
 
-head(basename(dataOrigin(sps_sciex)))
-```
-
-    ## [1] "7482fe40e87_7859" "7482fe40e87_7859" "7482fe40e87_7859" "7482fe40e87_7859"
-    ## [5] "7482fe40e87_7859" "7482fe40e87_7859"
+    ## [1] "13498fcc52e_7859" "13498fcc52e_7859" "13498fcc52e_7859" "13498fcc52e_7859"
+    ## [5] "13498fcc52e_7859" "13498fcc52e_7859"
 
 The current data storage location of a spectrum can be retrieved with
 the `dataStorage` variable, which will return an arbitrary string for
 `Spectra` that use an in-memory backend or the file where the data is
 stored for on-disk backends:
 
-``` r
-
-dataStorage(sps)
-```
+\
+[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## [1] "<memory>" "<memory>" "<memory>"
 
-``` r
+\
+[`head`](https://rdrr.io/r/utils/head.html)`(`[`basename`](https://rdrr.io/pkg/BiocGenerics/man/path.html)`(`[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_sciex``)``)``)`
 
-head(basename(dataStorage(sps_sciex)))
-```
-
-    ## [1] "7482fe40e87_7859" "7482fe40e87_7859" "7482fe40e87_7859" "7482fe40e87_7859"
-    ## [5] "7482fe40e87_7859" "7482fe40e87_7859"
+    ## [1] "13498fcc52e_7859" "13498fcc52e_7859" "13498fcc52e_7859" "13498fcc52e_7859"
+    ## [5] "13498fcc52e_7859" "13498fcc52e_7859"
 
 Certain backends (such as the `MsBackendMemory` and
 `MsBackendDataFrame`) support also additional peaks variables. At
@@ -489,25 +447,21 @@ of the new peak variable must match
 [`lengths()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 of `mz` or `intensity`, i.e. the number of peaks per spectrum).
 
-``` r
-
-## Extract the full data from a spectrum
-spd <- spectraData(sps, columns = union(spectraVariables(sps),
-                                        peaksVariables(sps)))
-## Add a new column with a *annotation* for each peak
-spd$peak_anno <- list(c("a", NA_character_, "b", "c", "d"),
-                      c("a", "b", "c", "d", "e", "f", "g"),
-                      c("a", "b", "c", "d", "e", "f", "g", "h", "i"))
-## lengths have to match:
-lengths(spd$peak_anno)
-```
+\
+`## Extract the full data from a spectrum`\
+`spd`` ``<-`` `[`spectraData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``, columns ``=`` `[`union`](https://generics.r-lib.org/reference/setops.html)`(`[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)``,`\
+`                                        `[`peaksVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)``)``)`\
+`## Add a new column with a *annotation* for each peak`\
+`spd``$``peak_anno`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"a"``, ``NA_character_``, ``"b"``, ``"c"``, ``"d"``)``,`\
+`                      `[`c`](https://rdrr.io/r/base/c.html)`(``"a"``, ``"b"``, ``"c"``, ``"d"``, ``"e"``, ``"f"``, ``"g"``)``,`\
+`                      `[`c`](https://rdrr.io/r/base/c.html)`(``"a"``, ``"b"``, ``"c"``, ``"d"``, ``"e"``, ``"f"``, ``"g"``, ``"h"``, ``"i"``)``)`\
+`## lengths have to match:`\
+[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``spd``$``peak_anno``)`
 
     ## [1] 5 7 9
 
-``` r
-
-lengths(spd$mz)
-```
+\
+[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``spd``$``mz``)`
 
     ## [1] 5 7 9
 
@@ -519,12 +473,10 @@ method of `MsBackendMemory` and `MsBackendDataFrame`) allows to define
 which of the columns from an input data contain peaks variables (in our
 case `"mz"`, `"intensity"` and the additional `"peak_anno"` column).
 
-``` r
-
-sps2 <- Spectra(spd, backend = MsBackendMemory(),
-                peaksVariables = c("mz", "intensity", "peak_anno"))
-peaksVariables(sps2)
-```
+\
+`sps2`` ``<-`` `[`Spectra`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``spd``, backend ``=`` `[`MsBackendMemory`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``,`\
+`                peaksVariables ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"mz"``, ``"intensity"``, ``"peak_anno"``)``)`\
+[`peaksVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps2``)`
 
     ## [1] "mz"        "intensity" "peak_anno"
 
@@ -534,10 +486,8 @@ function that has a second parameter `columns` allowing to define which
 peak variables to return. Below we extract the peak data for the second
 spectrum.
 
-``` r
-
-peaksData(sps2, columns = peaksVariables(sps2))[[2L]]
-```
+\
+[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps2``, columns ``=`` `[`peaksVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps2``)``)``[[``2L``]``]`
 
     ##       mz intensity peak_anno
     ## 1  83.10     6.685         a
@@ -552,11 +502,9 @@ We can also use the
 [`peaksData()`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)
 function to extract the values for individual peak variables.
 
-``` r
-
-## Peak annotations for the first spectrum
-peaksData(sps2, "peak_anno")[[1L]]
-```
+\
+`## Peak annotations for the first spectrum`\
+[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps2``, ``"peak_anno"``)``[[``1L``]``]`
 
     ##   peak_anno
     ## 1         a
@@ -565,11 +513,9 @@ peaksData(sps2, "peak_anno")[[1L]]
     ## 4         c
     ## 5         d
 
-``` r
-
-## Peak annotations for the second spectrum
-peaksData(sps2, "peak_anno")[[2L]]
-```
+\
+`## Peak annotations for the second spectrum`\
+[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps2``, ``"peak_anno"``)``[[``2L``]``]`
 
     ##   peak_anno
     ## 1         a
@@ -582,10 +528,8 @@ peaksData(sps2, "peak_anno")[[2L]]
 
 Peak variables can also be extracted using the `$` method:
 
-``` r
-
-sps2$peak_anno
-```
+\
+`sps2``$``peak_anno`
 
     ## [[1]]
     ## [1] "a" NA  "b" "c" "d"
@@ -728,13 +672,11 @@ In this example, we use the
 function to retain spectra with a base peak m/z close to 100 (+/- 30
 ppm) and a retention time around 230 (+/- 5 s).
 
-``` r
-
-sps_sub <- filterValues(sps_sciex, spectraVariables = c("basePeakMZ", "rtime"),
-                        values = c(123.089, 230), tolerance = c(0,5),
-                        ppm = c(30, 0), match = "all")
-length(sps_sub)
-```
+\
+`sps_sub`` ``<-`` `[`filterValues`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``sps_sciex``, spectraVariables ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"basePeakMZ"``, ``"rtime"``)``,`\
+`                        values ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``123.089``, ``230``)``, tolerance ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``,``5``)``,`\
+`                        ppm ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``30``, ``0``)``, match ``=`` ``"all"``)`\
+[`length`](https://rdrr.io/r/base/length.html)`(``sps_sub``)`
 
     ## [1] 72
 
@@ -743,15 +685,13 @@ Then, we demonstrate the usage of the
 function to filter spectra based on ranges of values for variables such
 as base peak m/z, peak count, and retention time.
 
-``` r
-
-sps_ranges <- filterRanges(sps_sciex,
-                           spectraVariables = c("basePeakMZ","peaksCount",
-                                                "rtime"),
-                           ranges = c(123.09,124, 3500, 3520, 259, 260),
-                           match = "all")
-length(sps_ranges)
-```
+\
+`sps_ranges`` ``<-`` `[`filterRanges`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``sps_sciex``,`\
+`                           spectraVariables ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"basePeakMZ"``,``"peaksCount"``,`\
+`                                                ``"rtime"``)``,`\
+`                           ranges ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``123.09``,``124``, ``3500``, ``3520``, ``259``, ``260``)``,`\
+`                           match ``=`` ``"all"``)`\
+[`length`](https://rdrr.io/r/base/length.html)`(``sps_ranges``)`
 
     ## [1] 1
 
@@ -763,15 +703,13 @@ is to use the parameter `match = "any"`, which retains spectra that
 match any one of the conditions instead of having to match all of them.
 Let’s run the code once again but change the match parameter this time:
 
-``` r
-
-sps_ranges <- filterRanges(sps_sciex,
-                           spectraVariables = c("basePeakMZ",
-                                                "peaksCount", "rtime"),
-                           ranges = c(123.09, 124, 3500, 3520, 259, 260),
-                           match = "any")
-length(sps_ranges)
-```
+\
+`sps_ranges`` ``<-`` `[`filterRanges`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``sps_sciex``,`\
+`                           spectraVariables ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"basePeakMZ"``,`\
+`                                                ``"peaksCount"``, ``"rtime"``)``,`\
+`                           ranges ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``123.09``, ``124``, ``3500``, ``3520``, ``259``, ``260``)``,`\
+`                           match ``=`` ``"any"``)`\
+[`length`](https://rdrr.io/r/base/length.html)`(``sps_ranges``)`
 
     ## [1] 473
 
@@ -781,32 +719,26 @@ In the example below we use specific functions to select all spectra
 measured in the second mzML file and subsequently filter them to retain
 spectra measured between 175 and 189 seconds in the measurement run.
 
-``` r
-
-fls <- unique(dataOrigin(sps_sciex))
-file_2 <- filterDataOrigin(sps_sciex, dataOrigin = fls[2])
-length(file_2)
-```
+\
+`fls`` ``<-`` `[`unique`](https://rdrr.io/pkg/BiocGenerics/man/unique.html)`(`[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_sciex``)``)`\
+`file_2`` ``<-`` `[`filterDataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``sps_sciex``, dataOrigin ``=`` ``fls``[``2``]``)`\
+[`length`](https://rdrr.io/r/base/length.html)`(``file_2``)`
 
     ## [1] 931
 
-``` r
-
-sps_sub <- filterRt(file_2, rt = c(175, 189))
-length(sps_sub)
-```
+\
+`sps_sub`` ``<-`` `[`filterRt`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``file_2``, rt ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``175``, ``189``)``)`\
+[`length`](https://rdrr.io/r/base/length.html)`(``sps_sub``)`
 
     ## [1] 50
 
 In addition, `Spectra` support also subsetting with `[`. Below we
 perform the filtering above with `[` -based subsetting.
 
-``` r
-
-sps_sciex[sps_sciex$dataOrigin == fls[2] &
-          sps_sciex$rtime >= 175 &
-          sps_sciex$rtime <= 189]
-```
+\
+`sps_sciex``[``sps_sciex``$``dataOrigin`` ``==`` ``fls``[``2``]`` ``&`\
+`          ``sps_sciex``$``rtime`` ``>=`` ``175`` ``&`\
+`          ``sps_sciex``$``rtime`` ``<=`` ``189``]`
 
     ## MSn data (Spectra) with 50 spectra in a MsBackendMzR backend:
     ##       msLevel     rtime scanIndex
@@ -825,17 +757,15 @@ sps_sciex[sps_sciex$dataOrigin == fls[2] &
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 74890c8574_7860
+    ## 134948039ea4_7860
 
 The equivalent using filter function is shown below, with the added
 benefit that the filtering is recorded in the processing slot.
 
-``` r
-
-sps_sciex |>
-    filterDataOrigin(fls[2]) |>
-    filterRt(c(175, 189))
-```
+\
+`sps_sciex`` ``|>`\
+`    `[`filterDataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``fls``[``2``]``)`` ``|>`\
+`    `[`filterRt`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``175``, ``189``)``)`
 
     ## MSn data (Spectra) with 50 spectra in a MsBackendMzR backend:
     ##       msLevel     rtime scanIndex
@@ -854,10 +784,10 @@ sps_sciex |>
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 74890c8574_7860
+    ## 134948039ea4_7860
     ## Processing:
-    ##  Filter: select data origin(s) /github/home/.cache/R/ExperimentHub/74890c8574_7860 [Fri Jun 12 14:35:44 2026]
-    ##  Filter: select retention time [175..189] on MS level(s)  [Fri Jun 12 14:35:44 2026]
+    ##  Filter: select data origin(s) /github/home/.cache/R/ExperimentHub/134948039ea4_7860 [Mon Sep 14 16:14:41 2026]
+    ##  Filter: select retention time [175..189] on MS level(s)  [Mon Sep 14 16:14:41 2026]
 
 Note that the use of the filter functions might be more efficient for
 some backends, depending on their implementation, (e.g. database-based
@@ -872,26 +802,22 @@ spectra variables of the individual objects. Below we combine the
 `Spectra` object `sps` with an additional object containing another MS2
 spectrum for Caffeine.
 
-``` r
-
-caf_df <- DataFrame(msLevel = 2L, name = "Caffeine",
-                    id = "HMDB0001847",
-                    instrument = "Agilent 1200 RRLC; Agilent 6520 QTOF",
-                    splash = "splash10-0002-0900000000-413259091ba7edc46b87",
-                    centroided = TRUE)
-caf_df$mz <- list(c(110.0710, 138.0655, 138.1057, 138.1742, 195.9864))
-caf_df$intensity <- list(c(3.837, 32.341, 0.84, 0.534, 100))
-
-caf <- Spectra(caf_df)
-```
+\
+`caf_df`` ``<-`` `[`DataFrame`](https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html)`(``msLevel ``=`` ``2L``, name ``=`` ``"Caffeine"``,`\
+`                    id ``=`` ``"HMDB0001847"``,`\
+`                    instrument ``=`` ``"Agilent 1200 RRLC; Agilent 6520 QTOF"``,`\
+`                    splash ``=`` ``"splash10-0002-0900000000-413259091ba7edc46b87"``,`\
+`                    centroided ``=`` ``TRUE``)`\
+`caf_df``$``mz`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``110.0710``, ``138.0655``, ``138.1057``, ``138.1742``, ``195.9864``)``)`\
+`caf_df``$``intensity`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``3.837``, ``32.341``, ``0.84``, ``0.534``, ``100``)``)`\
+\
+`caf`` ``<-`` `[`Spectra`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``caf_df``)`
 
 Next we combine the two objects.
 
-``` r
-
-sps <- concatenateSpectra(sps, caf)
-sps
-```
+\
+`sps`` ``<-`` `[`concatenateSpectra`](https://rformassspectrometry.github.io/Spectra/reference/combineSpectra.md)`(``sps``, ``caf``)`\
+`sps`
 
     ## MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
     ##     msLevel     rtime scanIndex
@@ -902,15 +828,13 @@ sps
     ## 4         2        NA        NA
     ##  ... 20 more variables/columns.
     ## Processing:
-    ##  Merge 2 Spectra into one [Fri Jun 12 14:35:44 2026]
+    ##  Merge 2 Spectra into one [Mon Sep 14 16:14:41 2026]
 
 The resulting object contains now the data for all 4 MS2 spectra and an
 union of all spectra variables from both objects.
 
-``` r
-
-spectraVariables(sps)
-```
+\
+[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ##  [1] "msLevel"                 "rtime"                  
     ##  [3] "acquisitionNum"          "scanIndex"              
@@ -928,10 +852,8 @@ The second object had an additional spectra variable *instrument* that
 was not present in `sps` and all the spectra in this object will thus
 get a value of `NA` for this variable.
 
-``` r
-
-sps$instrument
-```
+\
+`sps``$``instrument`
 
     ## [1] NA                                    
     ## [2] NA                                    
@@ -976,17 +898,13 @@ operation with the
 function to replace peak intensities below 10 in each spectrum in `sps`
 with a value of 0.
 
-``` r
-
-sps_rep <- replaceIntensitiesBelow(sps, threshold = 10, value = 0)
-```
+\
+`sps_rep`` ``<-`` `[`replaceIntensitiesBelow`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps``, threshold ``=`` ``10``, value ``=`` ``0``)`
 
 As a result intensities below 10 were set to 0 for all peaks.
 
-``` r
-
-intensity(sps_rep)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_rep``)`
 
     ## NumericList of length 4
     ## [[1]] 0 47.494 0 100 13.24
@@ -1000,15 +918,11 @@ removed with the
 function specifying a lower required intensity level or optionally also
 an upper intensity limit.
 
-``` r
+\
+`sps_rep`` ``<-`` `[`filterIntensity`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)`(``sps_rep``, intensity ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.1``, ``Inf``)``)`
 
-sps_rep <- filterIntensity(sps_rep, intensity = c(0.1, Inf))
-```
-
-``` r
-
-intensity(sps_rep)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_rep``)`
 
     ## NumericList of length 4
     ## [[1]] 47.494 100 13.24
@@ -1038,10 +952,8 @@ backends or database-based backends). The information about the number
 of such processing steps can be seen below (next to *Lazy evaluation
 queue*).
 
-``` r
-
-sps_rep
-```
+\
+`sps_rep`
 
     ## MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
     ##     msLevel     rtime scanIndex
@@ -1053,9 +965,9 @@ sps_rep
     ##  ... 20 more variables/columns.
     ## Lazy evaluation queue: 2 processing step(s)
     ## Processing:
-    ##  Merge 2 Spectra into one [Fri Jun 12 14:35:44 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Fri Jun 12 14:35:44 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jun 12 14:35:44 2026]
+    ##  Merge 2 Spectra into one [Mon Sep 14 16:14:41 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Mon Sep 14 16:14:41 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Sep 14 16:14:41 2026]
 
 It is possible to add also custom functions to the processing queue of a
 `Spectra` object. Such a function must take a peaks matrix as its first
@@ -1065,20 +977,18 @@ column containing the peaks’ m/z values and the second the corresponding
 intensities). Below we define a function that divides the intensities of
 each peak by a value which can be passed with argument `y`.
 
-``` r
-
-## Define a function that takes a matrix as input, divides the second
-## column by parameter y and returns it. Note that ... is required in
-## the function's definition.
-divide_intensities <- function(x, y, ...) {
-    x[, 2] <- x[, 2] / y
-    x
-}
-
-## Add the function to the procesing queue
-sps_2 <- addProcessing(sps_rep, divide_intensities, y = 2)
-sps_2
-```
+\
+`## Define a function that takes a matrix as input, divides the second`\
+`## column by parameter y and returns it. Note that ... is required in`\
+`## the function's definition.`\
+`divide_intensities`` ``<-`` ``function``(``x``, ``y``, ``...``)`` ``{`\
+`    ``x``[``, ``2``]`` ``<-`` ``x``[``, ``2``]`` ``/`` ``y`\
+`    ``x`\
+`}`\
+\
+`## Add the function to the procesing queue`\
+`sps_2`` ``<-`` `[`addProcessing`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps_rep``, ``divide_intensities``, y ``=`` ``2``)`\
+`sps_2`
 
     ## MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
     ##     msLevel     rtime scanIndex
@@ -1090,9 +1000,9 @@ sps_2
     ##  ... 20 more variables/columns.
     ## Lazy evaluation queue: 3 processing step(s)
     ## Processing:
-    ##  Merge 2 Spectra into one [Fri Jun 12 14:35:44 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Fri Jun 12 14:35:44 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jun 12 14:35:44 2026]
+    ##  Merge 2 Spectra into one [Mon Sep 14 16:14:41 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Mon Sep 14 16:14:41 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Sep 14 16:14:41 2026]
 
 Object `sps_2` has now 3 processing steps in its lazy evaluation queue.
 Calling
@@ -1100,10 +1010,8 @@ Calling
 on this object will now return intensities that are half of the
 intensities of the original objects `sps`.
 
-``` r
-
-intensity(sps_2)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_2``)`
 
     ## NumericList of length 4
     ## [[1]] 23.747 50 6.62
@@ -1111,10 +1019,8 @@ intensity(sps_2)
     ## [[3]] 50 20.497
     ## [[4]] 16.1705 50
 
-``` r
-
-intensity(sps_rep)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_rep``)`
 
     ## NumericList of length 4
     ## [[1]] 47.494 100 13.24
@@ -1127,22 +1033,18 @@ from each spectrum (note: we use the
 [`unname()`](https://rdrr.io/pkg/S4Vectors/man/Vector-class.html)
 function to remove any names from the results):
 
-``` r
-
-max_peak <- function(x, ...) {
-    unname(x[which.max(x[, 2]), , drop = FALSE])
-}
-
-sps_2 <- addProcessing(sps_rep, max_peak)
-lengths(sps_2)
-```
+\
+`max_peak`` ``<-`` ``function``(``x``, ``...``)`` ``{`\
+`    `[`unname`](https://rdrr.io/pkg/S4Vectors/man/Vector-class.html)`(``x``[`[`which.max`](https://rdrr.io/pkg/BiocGenerics/man/which.min.html)`(``x``[``, ``2``]``)``, , drop ``=`` ``FALSE``]``)`\
+`}`\
+\
+`sps_2`` ``<-`` `[`addProcessing`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps_rep``, ``max_peak``)`\
+[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_2``)`
 
     ## [1] 1 1 1 1
 
-``` r
-
-intensity(sps_2)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_2``)`
 
     ## NumericList of length 4
     ## [[1]] 100
@@ -1173,27 +1075,23 @@ our function, we have to add a parameter to the function that has the
 same name as the spectrum variable we want to access (in our case
 `precursorMz`).
 
-``` r
-
-sps_rep$precursorMz <- c(170.5, 170.5, 195.1, 195.1)
-
-neutral_loss <- function(x, precursorMz, ...) {
-    x[, "mz"] <- precursorMz - x[, "mz"]
-    x[order(x[, "mz"]), , drop = FALSE]
-}
-```
+\
+`sps_rep``$``precursorMz`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``170.5``, ``170.5``, ``195.1``, ``195.1``)`\
+\
+`neutral_loss`` ``<-`` ``function``(``x``, ``precursorMz``, ``...``)`` ``{`\
+`    ``x``[``, ``"mz"``]`` ``<-`` ``precursorMz`` ``-`` ``x``[``, ``"mz"``]`\
+`    ``x``[`[`order`](https://rdrr.io/pkg/BiocGenerics/man/order.html)`(``x``[``, ``"mz"``]``)``, , drop ``=`` ``FALSE``]`\
+`}`
 
 We have then to call
 [`addProcessing()`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
 with `spectraVariables = "precursorMz"` to specify that this spectra
 variable is passed along to our function.
 
-``` r
-
-sps_3 <- addProcessing(sps_rep, neutral_loss,
-                       spectraVariables = "precursorMz")
-mz(sps_rep)
-```
+\
+`sps_3`` ``<-`` `[`addProcessing`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps_rep``, ``neutral_loss``,`\
+`                       spectraVariables ``=`` ``"precursorMz"``)`\
+[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_rep``)`
 
     ## NumericList of length 4
     ## [[1]] 124.2 170.16 170.52
@@ -1201,10 +1099,8 @@ mz(sps_rep)
     ## [[3]] 138.0662 195.0876
     ## [[4]] 138.0655 195.9864
 
-``` r
-
-mz(sps_3)
-```
+\
+[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_3``)`
 
     ## NumericList of length 4
     ## [[1]] -0.0200000000000102 0.340000000000003 46.3
@@ -1224,19 +1120,17 @@ default renamed** to `spectrumMsLevel` prior passing it to the function.
 We have thus to use a parameter called `spectrumMsLevel` in the
 `neutral_loss` function instead of `msLevel`.
 
-``` r
-
-neutral_loss <- function(x, spectrumMsLevel, precursorMz, ...) {
-    if (spectrumMsLevel == 2L) {
-        x[, "mz"] <- precursorMz - x[, "mz"]
-        x <- x[order(x[, "mz"]), , drop = FALSE]
-    }
-    x
-}
-sps_3 <- addProcessing(sps_rep, neutral_loss,
-                       spectraVariables = c("msLevel", "precursorMz"))
-mz(sps_3)
-```
+\
+`neutral_loss`` ``<-`` ``function``(``x``, ``spectrumMsLevel``, ``precursorMz``, ``...``)`` ``{`\
+`    ``if`` ``(``spectrumMsLevel`` ``==`` ``2L``)`` ``{`\
+`        ``x``[``, ``"mz"``]`` ``<-`` ``precursorMz`` ``-`` ``x``[``, ``"mz"``]`\
+`        ``x`` ``<-`` ``x``[`[`order`](https://rdrr.io/pkg/BiocGenerics/man/order.html)`(``x``[``, ``"mz"``]``)``, , drop ``=`` ``FALSE``]`\
+`    ``}`\
+`    ``x`\
+`}`\
+`sps_3`` ``<-`` `[`addProcessing`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps_rep``, ``neutral_loss``,`\
+`                       spectraVariables ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"msLevel"``, ``"precursorMz"``)``)`\
+[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_3``)`
 
     ## NumericList of length 4
     ## [[1]] -0.0200000000000102 0.340000000000003 46.3
@@ -1263,10 +1157,8 @@ whether the spectrum contains peaks with an m/z value matching the one
 of the precursor (given `tolerance` and `ppm`). The returned peaks
 matrix contains all peaks except those matching the precursor m/z.
 
-``` r
-
-library(MsCoreUtils)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`MsCoreUtils`](https://github.com/RforMassSpectrometry/MsCoreUtils)`)`
 
     ## 
     ## Attaching package: 'MsCoreUtils'
@@ -1275,32 +1167,32 @@ library(MsCoreUtils)
     ## 
     ##     bin, entropy, smooth
 
+    ## The following object is masked from 'package:BiocGenerics':
+    ## 
+    ##     group
+
     ## The following object is masked from 'package:stats':
     ## 
     ##     smooth
 
-``` r
-
-remove_precursor <- function(x, precursorMz, tolerance = 0.1, ppm = 0, ...) {
-    if (!is.na(precursorMz)) {
-        keep <- is.na(closest(x[, "mz"], precursorMz, tolerance = tolerance,
-                             ppm = ppm, .check = FALSE))
-        x[keep, , drop = FALSE]
-    } else x
-}
-```
+\
+`remove_precursor`` ``<-`` ``function``(``x``, ``precursorMz``, ``tolerance`` ``=`` ``0.1``, ``ppm`` ``=`` ``0``, ``...``)`` ``{`\
+`    ``if`` ``(``!`[`is.na`](https://rdrr.io/r/base/NA.html)`(``precursorMz``)``)`` ``{`\
+`        ``keep`` ``<-`` `[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`closest`](https://rdrr.io/pkg/MsCoreUtils/man/matching.html)`(``x``[``, ``"mz"``]``, ``precursorMz``, tolerance ``=`` ``tolerance``,`\
+`                             ppm ``=`` ``ppm``, .check ``=`` ``FALSE``)``)`\
+`        ``x``[``keep``, , drop ``=`` ``FALSE``]`\
+`    ``}`` ``else`` ``x`\
+`}`
 
 We can now again add this processing step to our `Spectra` object. As a
 result, peaks matching the precursor m/z (with `tolerance = 0.1` and
 `ppm = 0`) will be removed.
 
-``` r
-
-sps_4 <- addProcessing(sps_rep, remove_precursor,
-                       spectraVariables = "precursorMz")
-
-peaksData(sps_4) |> as.list()
-```
+\
+`sps_4`` ``<-`` `[`addProcessing`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps_rep``, ``remove_precursor``,`\
+`                       spectraVariables ``=`` ``"precursorMz"``)`\
+\
+[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_4``)`` ``|>`` `[`as.list`](https://rdrr.io/pkg/BiocGenerics/man/as.list.html)`(``)`
 
     ## [[1]]
     ##          mz intensity
@@ -1324,10 +1216,8 @@ peaksData(sps_4) |> as.list()
 
 As a reference, the original peak matrices are shown below.
 
-``` r
-
-peaksData(sps_rep) |> as.list()
-```
+\
+[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_rep``)`` ``|>`` `[`as.list`](https://rdrr.io/pkg/BiocGenerics/man/as.list.html)`(``)`
 
     ## [[1]]
     ##          mz intensity
@@ -1354,12 +1244,10 @@ peaksData(sps_rep) |> as.list()
 Note that we can also perform a more relaxed matching of m/z values by
 passing a different value for `tolerance` to the function:
 
-``` r
-
-sps_4 <- addProcessing(sps_rep, remove_precursor, tolerance = 0.6,
-                       spectraVariables = "precursorMz")
-peaksData(sps_4) |> as.list()
-```
+\
+`sps_4`` ``<-`` `[`addProcessing`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps_rep``, ``remove_precursor``, tolerance ``=`` ``0.6``,`\
+`                       spectraVariables ``=`` ``"precursorMz"``)`\
+[`peaksData`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_4``)`` ``|>`` `[`as.list`](https://rdrr.io/pkg/BiocGenerics/man/as.list.html)`(``)`
 
     ## [[1]]
     ##         mz intensity
@@ -1389,12 +1277,10 @@ method on the storage backend. Below we call
 [`reset()`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)
 on the `sps_2` object and hence restore the data to its original state.
 
-``` r
-
-sps_2_rest <- reset(sps_2)
-
-intensity(sps_2_rest)
-```
+\
+`sps_2_rest`` ``<-`` `[`reset`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps_2``)`\
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_2_rest``)`
 
     ## NumericList of length 4
     ## [[1]] 3.407 47.494 3.094 100 13.24
@@ -1402,10 +1288,8 @@ intensity(sps_2_rest)
     ## [[3]] 0.459 2.585 2.446 0.508 8.968 0.524 0.974 100 40.994
     ## [[4]] 3.837 32.341 0.84 0.534 100
 
-``` r
-
-intensity(sps)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`
 
     ## NumericList of length 4
     ## [[1]] 3.407 47.494 3.094 100 13.24
@@ -1421,25 +1305,19 @@ back to the data storage with the
 function. Below we use this to make all data manipulations on peak data
 of the `sps_rep` object persistent.
 
-``` r
-
-length(sps_rep@processingQueue)
-```
+\
+[`length`](https://rdrr.io/r/base/length.html)`(``sps_rep``@``processingQueue``)`
 
     ## [1] 2
 
-``` r
-
-sps_rep <- applyProcessing(sps_rep)
-length(sps_rep@processingQueue)
-```
+\
+`sps_rep`` ``<-`` `[`applyProcessing`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps_rep``)`\
+[`length`](https://rdrr.io/r/base/length.html)`(``sps_rep``@``processingQueue``)`
 
     ## [1] 0
 
-``` r
-
-sps_rep
-```
+\
+`sps_rep`
 
     ## MSn data (Spectra) with 4 spectra in a MsBackendMemory backend:
     ##     msLevel     rtime scanIndex
@@ -1450,9 +1328,9 @@ sps_rep
     ## 4         2        NA        NA
     ##  ... 20 more variables/columns.
     ## Processing:
-    ##  Merge 2 Spectra into one [Fri Jun 12 14:35:44 2026]
-    ##  Signal <= 10 in MS level(s) 2 set to 0 [Fri Jun 12 14:35:44 2026]
-    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Fri Jun 12 14:35:44 2026]
+    ##  Merge 2 Spectra into one [Mon Sep 14 16:14:41 2026]
+    ##  Signal <= 10 in MS level(s) 2 set to 0 [Mon Sep 14 16:14:41 2026]
+    ##  Remove peaks with intensities outside [0.1, Inf] in spectra of MS level(s) 2. [Mon Sep 14 16:14:41 2026]
     ##  ...1 more processings. Use 'processingLog' to list all.
 
 Before
@@ -1479,10 +1357,8 @@ Below we use
 to plot the 4 spectra from the `sps` object using their names (as
 provided in spectra variable `"name"`) as plot titles.
 
-``` r
-
-plotSpectra(sps, main = sps$name)
-```
+\
+[`plotSpectra`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps``, main ``=`` ``sps``$``name``)`
 
 ![](Spectra_files/figure-html/plotspectra-1.png)
 
@@ -1494,12 +1370,10 @@ Parameters `labelSrt`, `labelPos` and `labelOffset` define the rotation
 of the label text and its position relative to the x and y coordinates
 of the peak.
 
-``` r
-
-plotSpectra(sps, main = sps$name,
-            labels = function(z) lapply(mz(z), format, digits = 4),
-            labelSrt = -30, labelPos = 2, labelOffset = 0.1)
-```
+\
+[`plotSpectra`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps``, main ``=`` ``sps``$``name``,`\
+`            labels ``=`` ``function``(``z``)`` `[`lapply`](https://rdrr.io/pkg/BiocGenerics/man/lapply.html)`(`[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``z``)``, ``format``, digits ``=`` ``4``)``,`\
+`            labelSrt ``=`` ``-``30``, labelPos ``=`` ``2``, labelOffset ``=`` ``0.1``)`
 
 ![](Spectra_files/figure-html/plotspectra-label-1.png)
 
@@ -1507,18 +1381,16 @@ These plots are rather busy and for some peaks the m/z values are
 overplotted. Below we define a *label function* that will only indicate
 the m/z of peaks with an intensity higher than 30.
 
-``` r
-
-mzLabel = function(z) {
-    lapply(seq_along(mz(z)), function(i) {
-            lbls <- format(mz(z)[[i]], digits = 4)
-            lbls[intensity(z)[[i]] <= 30] <- ""
-            lbls
-     })
- }
-plotSpectra(sps, main = sps$name, labels = mzLabel,
-            labelSrt = -30, labelPos = 2, labelOffset = 0.1)
-```
+\
+`mzLabel`` ``=`` ``function``(``z``)`` ``{`\
+`    `[`lapply`](https://rdrr.io/pkg/BiocGenerics/man/lapply.html)`(`[`seq_along`](https://rdrr.io/r/base/seq.html)`(`[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``z``)``)``, ``function``(``i``)`` ``{`\
+`            ``lbls`` ``<-`` `[`format`](https://rdrr.io/pkg/BiocGenerics/man/format.html)`(`[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``z``)``[[``i``]``]``, digits ``=`` ``4``)`\
+`            ``lbls``[`[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``z``)``[[``i``]``]`` ``<=`` ``30``]`` ``<-`` ``""`\
+`            ``lbls`\
+`     ``}``)`\
+` ``}`\
+[`plotSpectra`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps``, main ``=`` ``sps``$``name``, labels ``=`` ``mzLabel``,`\
+`            labelSrt ``=`` ``-``30``, labelPos ``=`` ``2``, labelOffset ``=`` ``0.1``)`
 
 ![](Spectra_files/figure-html/plotspectra-label-int-1.png)
 
@@ -1529,12 +1401,10 @@ This can be done with
 which we use below to create an *overlay-plot* of our 4 example spectra,
 using a different color for each spectrum.
 
-``` r
-
-cols <- c("#E41A1C80", "#377EB880", "#4DAF4A80", "#984EA380")
-plotSpectraOverlay(sps, lwd = 2, col = cols)
-legend("topleft", col = cols, legend = sps$name, pch = 15)
-```
+\
+`cols`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"#E41A1C80"``, ``"#377EB880"``, ``"#4DAF4A80"``, ``"#984EA380"``)`\
+[`plotSpectraOverlay`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps``, lwd ``=`` ``2``, col ``=`` ``cols``)`\
+[`legend`](https://rdrr.io/r/graphics/legend.html)`(``"topleft"``, col ``=`` ``cols``, legend ``=`` ``sps``$``name``, pch ``=`` ``15``)`
 
 ![](Spectra_files/figure-html/plotspectraoverlay-1.png)
 
@@ -1544,10 +1414,8 @@ allows to plot two spectra against each other as a *mirror plot* which
 is ideal to visualize spectra comparison results. Below we plot a
 spectrum of 1-Methylhistidine against one of Caffeine.
 
-``` r
-
-plotSpectraMirror(sps[1], sps[3])
-```
+\
+[`plotSpectraMirror`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps``[``1``]``, ``sps``[``3``]``)`
 
 ![](Spectra_files/figure-html/plotspectramirror-1.png)
 
@@ -1556,12 +1424,10 @@ one of Caffeine. None of the peaks of the two spectra match. Below we
 plot the two spectra of 1-Methylhistidine and the two of Caffeine
 against each other matching peaks with a `ppm` of 50.
 
-``` r
-
-par(mfrow = c(1, 2))
-plotSpectraMirror(sps[1], sps[2], main = "1-Methylhistidine", ppm = 50)
-plotSpectraMirror(sps[3], sps[4], main = "Caffeine", ppm = 50)
-```
+\
+[`par`](https://rdrr.io/r/graphics/par.html)`(``mfrow ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``2``)``)`\
+[`plotSpectraMirror`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps``[``1``]``, ``sps``[``2``]``, main ``=`` ``"1-Methylhistidine"``, ppm ``=`` ``50``)`\
+[`plotSpectraMirror`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps``[``3``]``, ``sps``[``4``]``, main ``=`` ``"Caffeine"``, ppm ``=`` ``50``)`
 
 ![](Spectra_files/figure-html/plotspectramirror-ppm-1.png)
 
@@ -1605,17 +1471,13 @@ spectrum for each compound. We use the spectra variable `$name`, that
 contains the names of the compounds, to define which spectra should be
 grouped together.
 
-``` r
-
-sps_agg <- combineSpectra(sps, f = sps$name)
-```
+\
+`sps_agg`` ``<-`` `[`combineSpectra`](https://rformassspectrometry.github.io/Spectra/reference/combineSpectra.md)`(``sps``, f ``=`` ``sps``$``name``)`
 
 As a result, the 4 spectra got aggregated into two.
 
-``` r
-
-plotSpectra(sps_agg, main = sps_agg$name)
-```
+\
+[`plotSpectra`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps_agg``, main ``=`` ``sps_agg``$``name``)`
 
 ![](Spectra_files/figure-html/unnamed-chunk-16-1.png)
 
@@ -1624,11 +1486,9 @@ alternative, by specifying `peaks = "intersect"` and `minProp = 1`, we
 could combine the spectra keeping only peaks that are present in
 **both** input spectra.
 
-``` r
-
-sps_agg <- combineSpectra(sps, f = sps$name, peaks = "intersect", minProp = 1)
-plotSpectra(sps_agg, main = sps_agg$name)
-```
+\
+`sps_agg`` ``<-`` `[`combineSpectra`](https://rformassspectrometry.github.io/Spectra/reference/combineSpectra.md)`(``sps``, f ``=`` ``sps``$``name``, peaks ``=`` ``"intersect"``, minProp ``=`` ``1``)`\
+[`plotSpectra`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps_agg``, main ``=`` ``sps_agg``$``name``)`
 
 ![](Spectra_files/figure-html/unnamed-chunk-17-1.png)
 
@@ -1644,12 +1504,10 @@ measured on different instruments with different precision). Thus, we
 next increase the `tolerance` and `ppm` parameters to group also peaks
 with a larger difference in their m/z values.
 
-``` r
-
-sps_agg <- combineSpectra(sps, f = sps$name, peaks = "intersect",
-                          minProp = 1, tolerance = 0.2)
-plotSpectra(sps_agg, main = sps_agg$name)
-```
+\
+`sps_agg`` ``<-`` `[`combineSpectra`](https://rformassspectrometry.github.io/Spectra/reference/combineSpectra.md)`(``sps``, f ``=`` ``sps``$``name``, peaks ``=`` ``"intersect"``,`\
+`                          minProp ``=`` ``1``, tolerance ``=`` ``0.2``)`\
+[`plotSpectra`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps_agg``, main ``=`` ``sps_agg``$``name``)`
 
 ![](Spectra_files/figure-html/unnamed-chunk-18-1.png)
 
@@ -1676,26 +1534,22 @@ returns a single peak matrix as output. We thus define below a function
 that calculates the total signal (TIC) for each input peak matrix, and
 returns the one peak matrix with the largest TIC.
 
-``` r
-
-#' function to select and return the peak matrix with the largest tic from
-#' the provided list of peak matrices.
-maxTic <- function(x, ...) {
-    tic <- vapply(x, function(z) sum(z[, "intensity"], na.rm = TRUE),
-                  numeric(1))
-    x[[which.max(tic)]]
-}
-```
+\
+`#' function to select and return the peak matrix with the largest tic from`\
+`#' the provided list of peak matrices.`\
+`maxTic`` ``<-`` ``function``(``x``, ``...``)`` ``{`\
+`    ``tic`` ``<-`` `[`vapply`](https://rdrr.io/r/base/lapply.html)`(``x``, ``function``(``z``)`` `[`sum`](https://rdrr.io/r/base/sum.html)`(``z``[``, ``"intensity"``]``, na.rm ``=`` ``TRUE``)``,`\
+`                  `[`numeric`](https://rdrr.io/r/base/numeric.html)`(``1``)``)`\
+`    ``x``[[`[`which.max`](https://rdrr.io/pkg/BiocGenerics/man/which.min.html)`(``tic``)``]``]`\
+`}`
 
 We can now use this function with
 [`combineSpectra()`](https://rformassspectrometry.github.io/Spectra/reference/combineSpectra.md)
 to select for each compound the spectrum with the largest TIC.
 
-``` r
-
-sps_agg <- combineSpectra(sps, f = sps$name, FUN = maxTic)
-plotSpectra(sps_agg, main = sps_agg$name)
-```
+\
+`sps_agg`` ``<-`` `[`combineSpectra`](https://rformassspectrometry.github.io/Spectra/reference/combineSpectra.md)`(``sps``, f ``=`` ``sps``$``name``, FUN ``=`` ``maxTic``)`\
+[`plotSpectra`](https://rformassspectrometry.github.io/Spectra/reference/spectra-plotting.md)`(``sps_agg``, main ``=`` ``sps_agg``$``name``)`
 
 ![](Spectra_files/figure-html/unnamed-chunk-20-1.png)
 
@@ -1729,10 +1583,8 @@ Below we calculate pairwise similarities between all spectra in `sps`
 accepting a 50 ppm difference of peaks’ m/z values for being considered
 matching.
 
-``` r
-
-compareSpectra(sps, ppm = 50)
-```
+\
+[`compareSpectra`](https://rformassspectrometry.github.io/Spectra/reference/compareSpectra.md)`(``sps``, ppm ``=`` ``50``)`
 
     ##           1         2         3         4
     ## 1 1.0000000 0.1380817 0.0000000 0.0000000
@@ -1757,13 +1609,11 @@ compared spectra are returned. The result is then a 3-dimensional
 (`[, , 1]`) and the number of matching peaks in the second `matrix`
 (`[, , 2]`):
 
-``` r
-
-sim <- compareSpectra(sps, sps, ppm = 40, matchedPeaksCount = TRUE)
-
-#' The similarity scores:
-sim[, , 1L]
-```
+\
+`sim`` ``<-`` `[`compareSpectra`](https://rformassspectrometry.github.io/Spectra/reference/compareSpectra.md)`(``sps``, ``sps``, ppm ``=`` ``40``, matchedPeaksCount ``=`` ``TRUE``)`\
+\
+`#' The similarity scores:`\
+`sim``[``, , ``1L``]`
 
     ##           1         2         3         4
     ## 1 1.0000000 0.1380817 0.0000000 0.0000000
@@ -1771,11 +1621,9 @@ sim[, , 1L]
     ## 3 0.0000000 0.0000000 1.0000000 0.1817149
     ## 4 0.0000000 0.0000000 0.1817149 1.0000000
 
-``` r
-
-#' The number of matching peaks:
-sim[, , 2L]
-```
+\
+`#' The number of matching peaks:`\
+`sim``[``, , ``2L``]`
 
     ##   1 2 3 4
     ## 1 5 1 0 0
@@ -1811,18 +1659,14 @@ call. We use `ms2_tolerance_in_ppm = 50` to set the tolerance for
 m/z-relative peak matching (equivalent to `ppm = 50` used above) and
 `ms2_tolerance_in_da = -1` to disable absolute tolerance matching.
 
-``` r
-
-library(msentropy)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`msentropy`](https://github.com/YuanyueLi/MSEntropy)`)`
 
     ## Loading required package: Rcpp
 
-``` r
-
-compareSpectra(sps, MAPFUN = joinPeaksNone, FUN = msentropy_similarity,
-               ms2_tolerance_in_ppm = 50, ms2_tolerance_in_da = -1)
-```
+\
+[`compareSpectra`](https://rformassspectrometry.github.io/Spectra/reference/compareSpectra.md)`(``sps``, MAPFUN ``=`` ``joinPeaksNone``, FUN ``=`` ``msentropy_similarity``,`\
+`               ms2_tolerance_in_ppm ``=`` ``50``, ms2_tolerance_in_da ``=`` ``-``1``)`
 
     ##           1         2         3         4
     ## 1 1.0000000 0.3002225 0.0000000 0.0000000
@@ -1844,27 +1688,21 @@ smaller than 0.1 are aggregated into one binned peak. Below, we
 explicitly set `zero.rm = FALSE` to retain all bins generated by the
 function, including those with an intensity of zero.
 
-``` r
-
-sps_bin <- Spectra::bin(sps, binSize = 0.1, zero.rm = FALSE)
-```
+\
+`sps_bin`` ``<-`` ``Spectra``::`[`bin`](https://rformassspectrometry.github.io/Spectra/reference/addProcessing.md)`(``sps``, binSize ``=`` ``0.1``, zero.rm ``=`` ``FALSE``)`
 
 All spectra will now have the same number of m/z values.
 
-``` r
-
-lengths(sps_bin)
-```
+\
+[`lengths`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_bin``)`
 
     ## [1] 1400 1400 1400 1400
 
 Most of the intensity values for these will however be 0 (because in the
 original spectra no peak for the respective m/z bin was present).
 
-``` r
-
-intensity(sps_bin)
-```
+\
+[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_bin``)`
 
     ## NumericList of length 4
     ## [[1]] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1875,20 +1713,16 @@ intensity(sps_bin)
 We’re next creating an intensity matrix for our `Spectra` object, each
 row being one spectrum and columns representing the binned m/z values.
 
-``` r
-
-intmat <- do.call(rbind, intensity(sps_bin))
-```
+\
+`intmat`` ``<-`` `[`do.call`](https://rdrr.io/pkg/BiocGenerics/man/do.call.html)`(``rbind``, `[`intensity`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_bin``)``)`
 
 We can now identify those columns (m/z bins) with only 0s across all
 spectra and remove these.
 
-``` r
-
-zeros <- colSums(intmat) == 0
-intmat <- intmat[, !zeros]
-intmat
-```
+\
+`zeros`` ``<-`` `[`colSums`](https://rdrr.io/r/base/colSums.html)`(``intmat``)`` ``==`` ``0`\
+`intmat`` ``<-`` ``intmat``[``, ``!``zeros``]`\
+`intmat`
 
     ##       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]  [,7]   [,8]  [,9] [,10] [,11] [,12]
     ## [1,] 0.000 0.000 0.000 0.000 0.000 0.000 0.000  0.000 3.407 0.000 0.000 0.000
@@ -1906,18 +1740,14 @@ The associated m/z values for the bins can be extracted with
 from the binned `Spectra` object. Below we use these as column names for
 the intensity matrix.
 
-``` r
-
-colnames(intmat) <- mz(sps_bin)[[1L]][!zeros]
-```
+\
+[`colnames`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)`(``intmat``)`` ``<-`` `[`mz`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_bin``)``[[``1L``]``]``[``!``zeros``]`
 
 This intensity matrix could now for example be used to cluster the
 spectra based on their peak intensities.
 
-``` r
-
-heatmap(intmat)
-```
+\
+[`heatmap`](https://rdrr.io/r/stats/heatmap.html)`(``intmat``)`
 
 ![](Spectra_files/figure-html/unnamed-chunk-29-1.png)
 
@@ -1954,24 +1784,20 @@ result file (a temporary file) to the
 function (see also the help page of the `export,MsBackendMzR` function
 for additional supported parameters).
 
-``` r
+\
+`fl`` ``<-`` `[`tempfile`](https://rdrr.io/r/base/tempfile.html)`(``)`\
+[`export`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``sps``, `[`MsBackendMzR`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``, file ``=`` ``fl``)`
 
-fl <- tempfile()
-export(sps, MsBackendMzR(), file = fl)
-```
-
-    ## Writing file file18434218f081...OK
+    ## Writing file file31b432069003...OK
 
 To evaluate which of the spectra variables were exported, we load the
 exported data again and identify spectra variables in the original file
 which could not be exported (because they are not defined variables in
 the mzML standard).
 
-``` r
-
-sps_im <- Spectra(backendInitialize(MsBackendMzR(), fl))
-spectraVariables(sps)[!spectraVariables(sps) %in% spectraVariables(sps_im)]
-```
+\
+`sps_im`` ``<-`` `[`Spectra`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(`[`backendInitialize`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(`[`MsBackendMzR`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``, ``fl``)``)`\
+[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)``[``!`[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps``)`` `[`%in%`](https://rdrr.io/pkg/BiocGenerics/man/match.html)` `[`spectraVariables`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_im``)``]`
 
     ## [1] "id"         "name"       "splash"     "instrument"
 
@@ -1984,14 +1810,12 @@ should be exported (parameter `file` has thus to be of length equal to
 the number of spectra). As an example we export below the spectrum 1 and
 3 to one file and spectra 2 and 4 to another.
 
-``` r
+\
+`fls`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`tempfile`](https://rdrr.io/r/base/tempfile.html)`(``)``, `[`tempfile`](https://rdrr.io/r/base/tempfile.html)`(``)``)`\
+[`export`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``sps``, `[`MsBackendMzR`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``, file ``=`` ``fls``[`[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``2``, ``1``, ``2``)``]``)`
 
-fls <- c(tempfile(), tempfile())
-export(sps, MsBackendMzR(), file = fls[c(1, 2, 1, 2)])
-```
-
-    ## Writing file file18439cadaf3...OK
-    ## Writing file file184312614ca7...OK
+    ## Writing file file31b466e35c69...OK
+    ## Writing file file31b47bb3175d...OK
 
 A more realistic use case for mzML export would be to export MS data
 after processing, such as smoothing (using the
@@ -2012,18 +1836,14 @@ the data even without the need to keep the original mzML files. Below we
 change the backend of `sps_sciex` to the in-memory `MsBackendMemory`
 backend.
 
-``` r
-
-print(object.size(sps_sciex), units = "Mb")
-```
+\
+[`print`](https://rdrr.io/r/base/print.html)`(`[`object.size`](https://rdrr.io/r/utils/object.size.html)`(``sps_sciex``)``, units ``=`` ``"Mb"``)`
 
     ## 0.4 Mb
 
-``` r
-
-sps_sciex <- setBackend(sps_sciex, MsBackendMemory())
-sps_sciex
-```
+\
+`sps_sciex`` ``<-`` `[`setBackend`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``sps_sciex``, `[`MsBackendMemory`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``)`\
+`sps_sciex`
 
     ## MSn data (Spectra) with 1862 spectra in a MsBackendMemory backend:
     ##        msLevel     rtime scanIndex
@@ -2041,36 +1861,30 @@ sps_sciex
     ## 1862         1   259.752       931
     ##  ... 34 more variables/columns.
     ## Processing:
-    ##  Switch backend from MsBackendMzR to MsBackendMemory [Fri Jun 12 14:35:50 2026]
+    ##  Switch backend from MsBackendMzR to MsBackendMemory [Mon Sep 14 16:14:46 2026]
 
 With the call the full peak data was imported from the original mzML
 files into the object. This has obviously an impact on the object’s
 size, which is now much larger than before.
 
-``` r
-
-print(object.size(sps_sciex), units = "Mb")
-```
+\
+[`print`](https://rdrr.io/r/base/print.html)`(`[`object.size`](https://rdrr.io/r/utils/object.size.html)`(``sps_sciex``)``, units ``=`` ``"Mb"``)`
 
     ## 53.2 Mb
 
 The `dataStorage` spectrum variable has now changed, while `dataOrigin`
 still keeps the information about the originating files:
 
-``` r
-
-head(dataStorage(sps_sciex))
-```
+\
+[`head`](https://rdrr.io/r/utils/head.html)`(`[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_sciex``)``)`
 
     ## [1] "<memory>" "<memory>" "<memory>" "<memory>" "<memory>" "<memory>"
 
-``` r
+\
+[`head`](https://rdrr.io/r/utils/head.html)`(`[`basename`](https://rdrr.io/pkg/BiocGenerics/man/path.html)`(`[`dataOrigin`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_sciex``)``)``)`
 
-head(basename(dataOrigin(sps_sciex)))
-```
-
-    ## [1] "7482fe40e87_7859" "7482fe40e87_7859" "7482fe40e87_7859" "7482fe40e87_7859"
-    ## [5] "7482fe40e87_7859" "7482fe40e87_7859"
+    ## [1] "13498fcc52e_7859" "13498fcc52e_7859" "13498fcc52e_7859" "13498fcc52e_7859"
+    ## [5] "13498fcc52e_7859" "13498fcc52e_7859"
 
 ## Backends
 
@@ -2114,23 +1928,24 @@ With the example below we load the data from a single mzML file and use
 a `MsBackendHdf5Peaks` backend for data storage. The `hdf5path`
 parameter allows us to specify the storage location of the HDF5 file.
 
-``` r
-
-fl <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
-```
+\
+`fl`` ``<-`` ``MsDataHub``::`[`TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz`](https://rformassspectrometry.github.io/MsDataHub/reference/PXD000001.html)`(``)`
 
     ## see ?MsDataHub and browseVignettes('MsDataHub') for documentation
 
     ## loading from cache
 
-``` r
+\
+`sps_tmt`` ``<-`` `[`Spectra`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``fl``, backend ``=`` `[`MsBackendHdf5Peaks`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``, hdf5path ``=`` `[`tempdir`](https://rdrr.io/r/base/tempfile.html)`(``)``)`
 
-sps_tmt <- Spectra(fl, backend = MsBackendHdf5Peaks(), hdf5path = tempdir())
-head(basename(dataStorage(sps_tmt)))
-```
+    ## Warning in h5writeDataset.array(...): Dataset already exists. Arguments `size`,
+    ## `variableLengthString`, `encoding`, and `level` are ignored.
 
-    ## [1] "74861e1f51f_7858.h5" "74861e1f51f_7858.h5" "74861e1f51f_7858.h5"
-    ## [4] "74861e1f51f_7858.h5" "74861e1f51f_7858.h5" "74861e1f51f_7858.h5"
+\
+[`head`](https://rdrr.io/r/utils/head.html)`(`[`basename`](https://rdrr.io/pkg/BiocGenerics/man/path.html)`(`[`dataStorage`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_tmt``)``)``)`
+
+    ## [1] "1349515fe5e4_7858.h5" "1349515fe5e4_7858.h5" "1349515fe5e4_7858.h5"
+    ## [4] "1349515fe5e4_7858.h5" "1349515fe5e4_7858.h5" "1349515fe5e4_7858.h5"
 
 A (possibly incomplete) list of R packages providing additional backends
 that add support for additional data types or storage options is
@@ -2256,20 +2071,16 @@ files *a.mzML*, *b.mzML* are stored in a directory */data/mzML/* on one
 computer. These get loaded as a `Spectra` object with `MsBackendMzR` and
 then serialized to a file *A.RData*.
 
-``` r
-
-A <- Spectra(c("/data/mzML/a.mzML", "/data/mzML/b.mzML"))
-save(A, file = "A.RData")
-```
+\
+`A`` ``<-`` `[`Spectra`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"/data/mzML/a.mzML"``, ``"/data/mzML/b.mzML"``)``)`\
+[`save`](https://rdrr.io/r/base/save.html)`(``A``, file ``=`` ``"A.RData"``)`
 
 Assuming this file gets now copied to another computer (where the data
 is not available in a folder */data/mzML/*) and loaded with
 [`load()`](https://rdrr.io/r/base/load.html).
 
-``` r
-
-load("A.RData")
-```
+\
+[`load`](https://rdrr.io/r/base/load.html)`(``"A.RData"``)`
 
 This `Spectra` object would not be valid because its `MsBackendMzR` can
 no longer access the MS data in the original data files. Assuming the
@@ -2278,10 +2089,8 @@ user also copied the data files *a.mzML* and *b.mzML*, but to a folder
 be adapted to match the directory where the data files are available on
 the second computer:
 
-``` r
-
-dataStorageBasePath(A) <- "/some_other_folder"
-```
+\
+[`dataStorageBasePath`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``A``)`` ``<-`` ``"/some_other_folder"`
 
 By pointing now the storage path to the new storage location of the data
 files, the `Spectra` object `A` would also be usable on the second
@@ -2289,12 +2098,10 @@ computer.
 
 ## Session information
 
-``` r
+\
+[`sessionInfo`](https://rdrr.io/r/utils/sessionInfo.html)`(``)`
 
-sessionInfo()
-```
-
-    ## R version 4.6.0 (2026-04-24)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -2318,38 +2125,38 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] msentropy_0.1.4     Rcpp_1.1.1-1.1      MsCoreUtils_1.25.4 
-    ##  [4] MsDataHub_1.13.0    Spectra_1.23.3      BiocParallel_1.47.0
-    ##  [7] S4Vectors_0.51.3    BiocGenerics_0.59.7 generics_0.1.4     
-    ## [10] BiocStyle_2.41.0   
+    ##  [1] msentropy_0.1.4      Rcpp_1.1.2           MsCoreUtils_1.25.4  
+    ##  [4] MsDataHub_1.13.1     Spectra_1.23.5       BiocParallel_1.47.0 
+    ##  [7] S4Vectors_0.51.9     BiocGenerics_0.59.12 generics_0.1.4      
+    ## [10] BiocStyle_2.41.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] KEGGREST_1.53.0        xfun_0.58              bslib_0.11.0          
-    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      rhdf5_2.57.1          
-    ##  [7] Biobase_2.73.1         rhdf5filters_1.25.0    vctrs_0.7.3           
-    ## [10] tools_4.6.0            curl_7.1.0             parallel_4.6.0        
-    ## [13] tibble_3.3.1           AnnotationDbi_1.75.0   RSQLite_3.53.1        
-    ## [16] cluster_2.1.8.2        blob_1.3.0             pkgconfig_2.0.3       
-    ## [19] data.table_1.18.4      dbplyr_2.5.2           desc_1.4.3            
-    ## [22] lifecycle_1.0.5        compiler_4.6.0         Biostrings_2.81.3     
-    ## [25] textshaping_1.0.5      Seqinfo_1.3.0          codetools_0.2-20      
-    ## [28] ncdf4_1.24             clue_0.3-68            htmltools_0.5.9       
-    ## [31] sass_0.4.10            yaml_2.3.12            crayon_1.5.3          
-    ## [34] pkgdown_2.2.0.9000     pillar_1.11.1          jquerylib_0.1.4       
-    ## [37] MASS_7.3-65            cachem_1.1.0           MetaboCoreUtils_1.21.1
-    ## [40] ExperimentHub_3.3.0    AnnotationHub_4.3.0    tidyselect_1.2.1      
-    ## [43] digest_0.6.39          purrr_1.2.2            dplyr_1.2.1           
-    ## [46] bookdown_0.46          BiocVersion_3.24.0     fastmap_1.2.0         
-    ## [49] cli_3.6.6              magrittr_2.0.5         withr_3.0.2           
-    ## [52] filelock_1.0.3         rappdirs_0.3.4         bit64_4.8.2           
-    ## [55] XVector_0.53.0         httr_1.4.8             rmarkdown_2.31        
-    ## [58] bit_4.6.0              otel_0.2.0             png_0.1-9             
-    ## [61] ragg_1.5.2             memoise_2.0.1          evaluate_1.0.5        
-    ## [64] knitr_1.51             IRanges_2.47.2         BiocFileCache_3.3.0   
-    ## [67] rlang_1.2.0            glue_1.8.1             DBI_1.3.0             
-    ## [70] mzR_2.45.1             BiocManager_1.30.27    jsonlite_2.0.0        
-    ## [73] Rhdf5lib_2.1.0         R6_2.6.1               systemfonts_1.3.2     
-    ## [76] fs_2.1.0               ProtGenerics_1.45.0
+    ##  [1] KEGGREST_1.53.6        xfun_0.60              bslib_0.12.0          
+    ##  [4] httr2_1.3.0            htmlwidgets_1.6.4      rhdf5_2.57.12         
+    ##  [7] Biobase_2.73.2         rhdf5filters_1.25.4    vctrs_0.7.3           
+    ## [10] tools_4.6.1            curl_8.0.0             parallel_4.6.1        
+    ## [13] tibble_3.3.1           AnnotationDbi_1.75.2   RSQLite_3.53.3        
+    ## [16] cluster_2.1.8.3        blob_1.3.0             BiocBaseUtils_1.15.1  
+    ## [19] pkgconfig_2.0.3        data.table_1.18.6.1    dbplyr_2.6.0          
+    ## [22] desc_1.4.3             lifecycle_1.0.5        compiler_4.6.1        
+    ## [25] Biostrings_2.81.9      textshaping_1.0.5      Seqinfo_1.3.2         
+    ## [28] codetools_0.2-20       ncdf4_1.24             clue_0.3-68           
+    ## [31] htmltools_0.5.9        sass_0.4.10            yaml_2.3.12           
+    ## [34] crayon_1.5.3           pkgdown_2.2.1.9000     pillar_1.11.1         
+    ## [37] jquerylib_0.1.4        MASS_7.3-66            cachem_1.1.0          
+    ## [40] MetaboCoreUtils_1.21.1 ExperimentHub_3.3.2    AnnotationHub_4.3.2   
+    ## [43] tidyselect_1.2.1       digest_0.6.39          purrr_1.2.2           
+    ## [46] dplyr_1.2.1            bookdown_0.48          BiocVersion_3.24.0    
+    ## [49] fastmap_1.2.0          cli_3.6.6              magrittr_2.0.5        
+    ## [52] withr_3.0.3            filelock_1.0.3         rappdirs_0.3.4        
+    ## [55] bit64_4.8.6            XVector_0.53.0         httr_1.4.9            
+    ## [58] rmarkdown_2.32         bit_4.6.0              otel_0.2.0            
+    ## [61] png_0.1-9              ragg_1.5.2             memoise_2.0.1         
+    ## [64] evaluate_1.0.5         knitr_1.52             IRanges_2.47.5        
+    ## [67] BiocFileCache_3.3.0    rlang_1.3.0            glue_1.8.1            
+    ## [70] DBI_1.3.0              mzR_2.45.3             BiocManager_1.30.27   
+    ## [73] jsonlite_2.0.0         Rhdf5lib_2.1.0         R6_2.6.1              
+    ## [76] systemfonts_1.3.2      fs_2.1.0               ProtGenerics_1.45.0
 
 ## References
 

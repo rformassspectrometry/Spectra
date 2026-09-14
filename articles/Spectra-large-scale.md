@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-06-12 14:09:35.718635\
-**Compiled**: Fri Jun 12 14:35:16 2026
+**Last modified:** 2026-09-14 15:43:35.997183\
+**Compiled**: Mon Sep 14 16:14:18 2026
 
 ## Introduction
 
@@ -45,17 +45,15 @@ also the analysis of very large data sets). Below we load MS data from 4
 test files provided through the *MsDataHub* package into a `Spectra`
 object using an `MsBackendMzR` backend.
 
-``` r
-
-library(Spectra)
-
-#' Define the file names from which to import the data
-fls <- c(
-    MsDataHub::PestMix1_DDA.mzML(),
-    MsDataHub::PestMix1_SWATH.mzML(),
-    MsDataHub::X20171016_POOL_POS_1_105.134.mzML(),
-    MsDataHub::X20171016_POOL_POS_3_105.134.mzML())
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`Spectra`](https://github.com/RforMassSpectrometry/Spectra)`)`\
+\
+`#' Define the file names from which to import the data`\
+`fls`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    ``MsDataHub``::`[`PestMix1_DDA.mzML`](https://rformassspectrometry.github.io/MsDataHub/reference/TripleTOF.html)`(``)``,`\
+`    ``MsDataHub``::`[`PestMix1_SWATH.mzML`](https://rformassspectrometry.github.io/MsDataHub/reference/TripleTOF.html)`(``)``,`\
+`    ``MsDataHub``::`[`X20171016_POOL_POS_1_105.134.mzML`](https://rformassspectrometry.github.io/MsDataHub/reference/sciex.html)`(``)``,`\
+`    ``MsDataHub``::`[`X20171016_POOL_POS_3_105.134.mzML`](https://rformassspectrometry.github.io/MsDataHub/reference/sciex.html)`(``)``)`
 
     ## see ?MsDataHub and browseVignettes('MsDataHub') for documentation
 
@@ -73,12 +71,10 @@ fls <- c(
 
     ## loading from cache
 
-``` r
-
-#' Creating a Spectra object representing the MS data
-sps_mzr <- Spectra(fls, source = MsBackendMzR())
-sps_mzr
-```
+\
+`#' Creating a Spectra object representing the MS data`\
+`sps_mzr`` ``<-`` `[`Spectra`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``fls``, source ``=`` `[`MsBackendMzR`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``)`\
+`sps_mzr`
 
     ## MSn data (Spectra) with 18463 spectra in a MsBackendMzR backend:
     ##         msLevel     rtime scanIndex
@@ -97,9 +93,9 @@ sps_mzr
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 74825602e8c_7861
-    ## 7481e126cbf_7862
-    ## 7482fe40e87_7859
+    ## 1349adccd8_7861
+    ## 13493633097d_7862
+    ## 13498fcc52e_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -112,19 +108,15 @@ Below we create a `Spectra` that keeps the full data in memory by
 changing the backend to a `MsBackendMemory` backend and compare the
 sizes of both objects.
 
-``` r
-
-sps_mem <- setBackend(sps_mzr, MsBackendMemory())
-
-print(object.size(sps_mzr), units = "MB")
-```
+\
+`sps_mem`` ``<-`` `[`setBackend`](https://rformassspectrometry.github.io/Spectra/reference/Spectra.md)`(``sps_mzr``, `[`MsBackendMemory`](https://rformassspectrometry.github.io/Spectra/reference/MsBackend.md)`(``)``)`\
+\
+[`print`](https://rdrr.io/r/base/print.html)`(`[`object.size`](https://rdrr.io/r/utils/object.size.html)`(``sps_mzr``)``, units ``=`` ``"MB"``)`
 
     ## 5.3 Mb
 
-``` r
-
-print(object.size(sps_mem), units = "MB")
-```
+\
+[`print`](https://rdrr.io/r/base/print.html)`(`[`object.size`](https://rdrr.io/r/utils/object.size.html)`(``sps_mem``)``, units ``=`` ``"MB"``)`
 
     ## 140.2 Mb
 
@@ -133,11 +125,9 @@ Keeping the full data in memory requires thus considerably more memory.
 We next disable parallel processing for *Spectra* to allow an unbiased
 estimation of memory usage.
 
-``` r
-
-#' Disable parallel processing globally
-register(SerialParam())
-```
+\
+`#' Disable parallel processing globally`\
+[`register`](https://rdrr.io/pkg/BiocParallel/man/register.html)`(`[`SerialParam`](https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html)`(``)``)`
 
 ## Chunk-wise and parallel processing
 
@@ -174,10 +164,8 @@ function can be used to evaluate how the data will be split. Below we
 use this function to evaluate how chunk-wise processing would be
 performed with the two `Spectra` objects.
 
-``` r
-
-processingChunkFactor(sps_mem)
-```
+\
+[`processingChunkFactor`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)`(``sps_mem``)`
 
     ## factor()
     ## Levels:
@@ -188,20 +176,18 @@ chunk-wise processing will be performed. We next evaluate whether the
 `Spectra` with the `MsBackendMzR` on-disk backend would use chunk-wise
 processing.
 
-``` r
-
-processingChunkFactor(sps_mzr) |> table()
-```
+\
+[`processingChunkFactor`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)`(``sps_mzr``)`` ``|>`` `[`table`](https://rdrr.io/pkg/BiocGenerics/man/table.html)`(``)`
 
     ## 
-    ## /github/home/.cache/R/ExperimentHub/74825602e8c_7861 
-    ##                                                 7602 
-    ## /github/home/.cache/R/ExperimentHub/7481e126cbf_7862 
-    ##                                                 8999 
-    ## /github/home/.cache/R/ExperimentHub/7482fe40e87_7859 
-    ##                                                  931 
-    ##  /github/home/.cache/R/ExperimentHub/74890c8574_7860 
-    ##                                                  931
+    ##   /github/home/.cache/R/ExperimentHub/1349adccd8_7861 
+    ##                                                  7602 
+    ## /github/home/.cache/R/ExperimentHub/13493633097d_7862 
+    ##                                                  8999 
+    ##  /github/home/.cache/R/ExperimentHub/13498fcc52e_7859 
+    ##                                                   931 
+    ## /github/home/.cache/R/ExperimentHub/134948039ea4_7860 
+    ##                                                   931
 
 The data would thus be split and processed by the original file, from
 which the data is imported. We next specifically define the chunk-size
@@ -209,11 +195,9 @@ for both `Spectra` with the
 [`processingChunkSize()`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)
 function.
 
-``` r
-
-processingChunkSize(sps_mem) <- 3000
-processingChunkFactor(sps_mem) |> table()
-```
+\
+[`processingChunkSize`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)`(``sps_mem``)`` ``<-`` ``3000`\
+[`processingChunkFactor`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)`(``sps_mem``)`` ``|>`` `[`table`](https://rdrr.io/pkg/BiocGenerics/man/table.html)`(``)`
 
     ## 
     ##    1    2    3    4    5    6    7 
@@ -223,11 +207,9 @@ After setting the chunk size, also the `Spectra` with the in-memory
 backend would use chunk-wise processing. We repeat with the other
 `Spectra` object:
 
-``` r
-
-processingChunkSize(sps_mzr) <- 3000
-processingChunkFactor(sps_mzr) |> table()
-```
+\
+[`processingChunkSize`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)`(``sps_mzr``)`` ``<-`` ``3000`\
+[`processingChunkFactor`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)`(``sps_mzr``)`` ``|>`` `[`table`](https://rdrr.io/pkg/BiocGenerics/man/table.html)`(``)`
 
     ## 
     ##    1    2    3    4    5    6    7 
@@ -244,10 +226,8 @@ data will by default be performed in a chunk-wise manner. Thus, calling
 on our `Spectra` will now split the data in chunks of 3000 spectra and
 sum the intensities (per spectrum) chunk by chunk.
 
-``` r
-
-tic <- ionCount(sps_mem)
-```
+\
+`tic`` ``<-`` `[`ionCount`](https://rformassspectrometry.github.io/Spectra/reference/spectraData.md)`(``sps_mem``)`
 
 While chunk-wise processing reduces the memory demand of operations, the
 splitting and merging of the data and results can negatively impact
@@ -331,12 +311,10 @@ i.e., based on the `processingChunkFactor`:
 
 ## Session information
 
-``` r
+\
+[`sessionInfo`](https://rdrr.io/r/utils/sessionInfo.html)`(``)`
 
-sessionInfo()
-```
-
-    ## R version 4.6.0 (2026-04-24)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -360,34 +338,34 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.13.0    Spectra_1.23.3      BiocParallel_1.47.0
-    ## [4] S4Vectors_0.51.3    BiocGenerics_0.59.7 generics_0.1.4     
-    ## [7] BiocStyle_2.41.0   
+    ## [1] MsDataHub_1.13.1     Spectra_1.23.5       BiocParallel_1.47.0 
+    ## [4] S4Vectors_0.51.9     BiocGenerics_0.59.12 generics_0.1.4      
+    ## [7] BiocStyle_2.41.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] KEGGREST_1.53.0        xfun_0.58              bslib_0.11.0          
-    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      Biobase_2.73.1        
-    ##  [7] vctrs_0.7.3            tools_4.6.0            curl_7.1.0            
-    ## [10] parallel_4.6.0         tibble_3.3.1           AnnotationDbi_1.75.0  
-    ## [13] RSQLite_3.53.1         cluster_2.1.8.2        blob_1.3.0            
-    ## [16] pkgconfig_2.0.3        data.table_1.18.4      dbplyr_2.5.2          
-    ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.6.0        
-    ## [22] Biostrings_2.81.3      textshaping_1.0.5      Seqinfo_1.3.0         
-    ## [25] codetools_0.2-20       ncdf4_1.24             clue_0.3-68           
-    ## [28] htmltools_0.5.9        sass_0.4.10            yaml_2.3.12           
-    ## [31] crayon_1.5.3           pkgdown_2.2.0.9000     pillar_1.11.1         
-    ## [34] jquerylib_0.1.4        MASS_7.3-65            cachem_1.1.0          
-    ## [37] MetaboCoreUtils_1.21.1 ExperimentHub_3.3.0    AnnotationHub_4.3.0   
-    ## [40] tidyselect_1.2.1       digest_0.6.39          purrr_1.2.2           
-    ## [43] dplyr_1.2.1            bookdown_0.46          BiocVersion_3.24.0    
-    ## [46] fastmap_1.2.0          cli_3.6.6              magrittr_2.0.5        
-    ## [49] withr_3.0.2            filelock_1.0.3         rappdirs_0.3.4        
-    ## [52] bit64_4.8.2            XVector_0.53.0         httr_1.4.8            
-    ## [55] rmarkdown_2.31         bit_4.6.0              otel_0.2.0            
-    ## [58] png_0.1-9              ragg_1.5.2             memoise_2.0.1         
-    ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.47.2        
-    ## [64] BiocFileCache_3.3.0    rlang_1.2.0            Rcpp_1.1.1-1.1        
-    ## [67] glue_1.8.1             DBI_1.3.0              mzR_2.45.1            
-    ## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              
-    ## [73] systemfonts_1.3.2      fs_2.1.0               ProtGenerics_1.45.0   
-    ## [76] MsCoreUtils_1.25.4
+    ##  [1] KEGGREST_1.53.6        xfun_0.60              bslib_0.12.0          
+    ##  [4] httr2_1.3.0            htmlwidgets_1.6.4      Biobase_2.73.2        
+    ##  [7] vctrs_0.7.3            tools_4.6.1            curl_8.0.0            
+    ## [10] parallel_4.6.1         tibble_3.3.1           AnnotationDbi_1.75.2  
+    ## [13] RSQLite_3.53.3         cluster_2.1.8.3        blob_1.3.0            
+    ## [16] BiocBaseUtils_1.15.1   pkgconfig_2.0.3        data.table_1.18.6.1   
+    ## [19] dbplyr_2.6.0           desc_1.4.3             lifecycle_1.0.5       
+    ## [22] compiler_4.6.1         Biostrings_2.81.9      textshaping_1.0.5     
+    ## [25] Seqinfo_1.3.2          codetools_0.2-20       ncdf4_1.24            
+    ## [28] clue_0.3-68            htmltools_0.5.9        sass_0.4.10           
+    ## [31] yaml_2.3.12            crayon_1.5.3           pkgdown_2.2.1.9000    
+    ## [34] pillar_1.11.1          jquerylib_0.1.4        MASS_7.3-66           
+    ## [37] cachem_1.1.0           MetaboCoreUtils_1.21.1 ExperimentHub_3.3.2   
+    ## [40] AnnotationHub_4.3.2    tidyselect_1.2.1       digest_0.6.39         
+    ## [43] purrr_1.2.2            dplyr_1.2.1            bookdown_0.48         
+    ## [46] BiocVersion_3.24.0     fastmap_1.2.0          cli_3.6.6             
+    ## [49] magrittr_2.0.5         withr_3.0.3            filelock_1.0.3        
+    ## [52] rappdirs_0.3.4         bit64_4.8.6            XVector_0.53.0        
+    ## [55] httr_1.4.9             rmarkdown_2.32         bit_4.6.0             
+    ## [58] otel_0.2.0             png_0.1-9              ragg_1.5.2            
+    ## [61] memoise_2.0.1          evaluate_1.0.5         knitr_1.52            
+    ## [64] IRanges_2.47.5         BiocFileCache_3.3.0    rlang_1.3.0           
+    ## [67] Rcpp_1.1.2             glue_1.8.1             DBI_1.3.0             
+    ## [70] mzR_2.45.3             BiocManager_1.30.27    jsonlite_2.0.0        
+    ## [73] R6_2.6.1               systemfonts_1.3.2      fs_2.1.0              
+    ## [76] ProtGenerics_1.45.0    MsCoreUtils_1.25.4
