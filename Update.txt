@@ -1,0 +1,3 @@
+Optimization of function of "peak-list-function.R" from lin 231 to line 252
+
+Before combining the spectra, only keep the m/z within the thershold for each mz group 
