@@ -2,6 +2,11 @@
 
 ## Spectra 1.23
 
+### Changes in 1.23.6
+
+- Update citation information and add links to additional external
+  backends.
+
 ### Changes in 1.23.5
 
 - Fix reference unit test in the unit test suite for `MsBackend`.

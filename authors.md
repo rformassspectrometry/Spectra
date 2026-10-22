@@ -32,6 +32,19 @@
 Source:
 [`inst/CITATION`](https://github.com/RforMassSpectrometry/Spectra/blob/main/inst/CITATION)
 
+Rainer J, De Graeve M, Louail P, Gibb S, Gatto L. An Open Infrastructure
+for Mass Spectrometry Data in R. Methods Mol Biol. 2027;3071:29-54. doi:
+10.1007/978-1-0716-5519-1_3. PMID: 42878754.
+
+@Article{,\
+  title = {An Open Infrastructure for Mass Spectrometry Data in R},\
+  author = {Johannes Rainer and Marilyn {De Graeve} and Philippine Louail and Sebastian Gibb and Laurent Gatto},\
+  journal = {Methods in Molecular Biology},\
+  year = {2027},\
+  doi = {10.1007/978-1-0716-5519-1_3},\
+  pages = {29-54},\
+}
+
 Rainer J, Vicini A, Salzer L, Stanstrup J, Badia JM, Neumann S, Stravs
 MA, Verri Hernandes V, Gatto L, Gibb S and Wittin M. A Modular and
 Expandable Ecosystem for Metabolomics Data Annotation in R Metabolites

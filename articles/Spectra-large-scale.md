@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-09-14 15:43:35.997183\
-**Compiled**: Mon Sep 14 16:14:18 2026
+**Last modified:** 2026-10-22 06:13:55.613696\
+**Compiled**: Thu Oct 22 06:52:52 2026
 
 ## Introduction
 
@@ -93,9 +93,9 @@ object using an `MsBackendMzR` backend.
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## 1349adccd8_7861
-    ## 13493633097d_7862
-    ## 13498fcc52e_7859
+    ## 13f241a6688e_7861
+    ## 13f247fe6844_7862
+    ## 13f2aef50a3_7859
     ##  ... 1 more files
 
 The resulting `Spectra` uses a `MsBackendMzR` for data representation.
@@ -180,13 +180,13 @@ processing.
 [`processingChunkFactor`](https://rformassspectrometry.github.io/Spectra/reference/processingChunkSize.md)`(``sps_mzr``)`` ``|>`` `[`table`](https://rdrr.io/pkg/BiocGenerics/man/table.html)`(``)`
 
     ## 
-    ##   /github/home/.cache/R/ExperimentHub/1349adccd8_7861 
+    ## /github/home/.cache/R/ExperimentHub/13f241a6688e_7861 
     ##                                                  7602 
-    ## /github/home/.cache/R/ExperimentHub/13493633097d_7862 
+    ## /github/home/.cache/R/ExperimentHub/13f247fe6844_7862 
     ##                                                  8999 
-    ##  /github/home/.cache/R/ExperimentHub/13498fcc52e_7859 
+    ##  /github/home/.cache/R/ExperimentHub/13f2aef50a3_7859 
     ##                                                   931 
-    ## /github/home/.cache/R/ExperimentHub/134948039ea4_7860 
+    ## /github/home/.cache/R/ExperimentHub/13f214bbdcc6_7860 
     ##                                                   931
 
 The data would thus be split and processed by the original file, from
@@ -316,7 +316,7 @@ i.e., based on the `processingChunkFactor`:
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
+    ## Running under: Ubuntu 24.04.5 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -338,14 +338,14 @@ i.e., based on the `processingChunkFactor`:
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.13.1     Spectra_1.23.5       BiocParallel_1.47.0 
-    ## [4] S4Vectors_0.51.9     BiocGenerics_0.59.12 generics_0.1.4      
+    ## [1] MsDataHub_1.13.3     Spectra_1.23.6       BiocParallel_1.47.0 
+    ## [4] S4Vectors_0.51.10    BiocGenerics_0.59.12 generics_0.1.4      
     ## [7] BiocStyle_2.41.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] KEGGREST_1.53.6        xfun_0.60              bslib_0.12.0          
+    ##  [1] KEGGREST_1.53.6        xfun_0.62              bslib_0.12.0          
     ##  [4] httr2_1.3.0            htmlwidgets_1.6.4      Biobase_2.73.2        
-    ##  [7] vctrs_0.7.3            tools_4.6.1            curl_8.0.0            
+    ##  [7] vctrs_0.7.3            tools_4.6.1            curl_8.1.0            
     ## [10] parallel_4.6.1         tibble_3.3.1           AnnotationDbi_1.75.2  
     ## [13] RSQLite_3.53.3         cluster_2.1.8.3        blob_1.3.0            
     ## [16] BiocBaseUtils_1.15.1   pkgconfig_2.0.3        data.table_1.18.6.1   
@@ -355,7 +355,7 @@ i.e., based on the `processingChunkFactor`:
     ## [28] clue_0.3-68            htmltools_0.5.9        sass_0.4.10           
     ## [31] yaml_2.3.12            crayon_1.5.3           pkgdown_2.2.1.9000    
     ## [34] pillar_1.11.1          jquerylib_0.1.4        MASS_7.3-66           
-    ## [37] cachem_1.1.0           MetaboCoreUtils_1.21.1 ExperimentHub_3.3.2   
+    ## [37] cachem_1.1.0           MetaboCoreUtils_1.21.2 ExperimentHub_3.3.2   
     ## [40] AnnotationHub_4.3.2    tidyselect_1.2.1       digest_0.6.39         
     ## [43] purrr_1.2.2            dplyr_1.2.1            bookdown_0.48         
     ## [46] BiocVersion_3.24.0     fastmap_1.2.0          cli_3.6.6             
