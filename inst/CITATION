@@ -1,6 +1,22 @@
 citHeader("To cite the Spectra package in publications use:")
 
 citEntry(entry = "article",
+         title = "An Open Infrastructure for Mass Spectrometry Data in R",
+         author = personList(
+             person(given = "Johannes", family = "Rainer"),
+             person(given = "Marilyn", family = "De Graeve"),
+             person(given = "Philippine", family = "Louail"),
+             person(given = "Sebastian", family = "Gibb"),
+             person(given = "Laurent", family = "Gatto")
+         ),
+         journal = "Methods in Molecular Biology",
+         year = "2027",
+         doi = "10.1007/978-1-0716-5519-1_3",
+         pages = "29-54",
+         textVersion = "Rainer J, De Graeve M, Louail P, Gibb S, Gatto L. An Open Infrastructure for Mass Spectrometry Data in R. Methods Mol Biol. 2027;3071:29-54. doi: 10.1007/978-1-0716-5519-1_3. PMID: 42878754."
+         )
+
+citEntry(entry = "article",
          title  = "A Modular and Expandable Ecosystem for Metabolomics Data Annotation in R",
          author = personList(
            person(given = "Johannes", family = "Rainer"),

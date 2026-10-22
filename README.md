@@ -9,6 +9,13 @@
 [![build release](http://bioconductor.org/shields/build/release/bioc/Spectra.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/Spectra/)
 [![build devel](http://bioconductor.org/shields/build/devel/bioc/Spectra.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/Spectra/)
 
+📰 Cite us:
+
+Rainer J, De Graeve M, Louail P, Gibb S, Gatto L. An Open Infrastructure for
+Mass Spectrometry Data in R. *Methods Mol Biol.* 2027;3071:29-54. doi:
+[10.1007/978-1-0716-5519-1_3](https://doi.org/10.1007/978-1-0716-5519-1_3). PMID:
+42878754.
+
 ## Overview
 
 The *Spectra* package defines an efficient infrastructure for storing and
@@ -16,7 +23,7 @@ handling mass spectrometry spectra and functionality to subset, process,
 visualize and compare spectra data.
 
 A description of its functionality and design is available in this
-[preprint](https://doi.org/10.31219/osf.io/cwt2v_v2).
+[preprint](https://doi.org/10.31219/osf.io/cwt2v_v3).
 
 *Spectra* provides different implementations (backends) to store mass
 spectrometry data. These comprise backends tuned for fast data access and
@@ -70,12 +77,17 @@ package providing it) is shown below:
 
 - `MsBackendMetabolomicsWorkbench` (package
   [*MsBackendMetabolomicsWorkbench*](https://github.com/rformassspectrometry/MsBackendMetabolomicsWorkbench)):
-  retrieves and caches MS data files from the MetabolomicsWorkbench data repository.
+  retrieves and caches MS data files from the MetabolomicsWorkbench data
+  repository.
 
 - `MsBackendMgf` (package
   [*MsBackendMgf*](https://github.com/rformassspectrometry/MsBackendMgf)): allows
   to import/export data in mascot generic format (MGF). Extends the
   `MsBackendDataFrame` and keeps thus all data, after import, in memory.
+
+- `MsBackendMongoDb`: (package
+  [*MsBackendMongoDb*](https://github.com/rformassspectrometry/MsBackendMongoDb)):
+  stores and retrieves MS data from a MongoDB noSQL database.
 
 - `MsBackendMsp` (package
   [*MsbackendMsp*](https://github.com/rformassspectrometry/MsBackendMsp)): allows
@@ -93,6 +105,11 @@ package providing it) is shown below:
   stores all MS data in a SQL database and has thus a minimal memory footprint.
   Does, in contrast to `MsBackendSql`, not keep an active SQL database
   connection and can thus support parallel processing.
+
+- `MsBackendParquet`: (package [*MsBackendParquet*](https://bioconductor.org/packagesMsBackendParquet)):
+  stores and accesses MS data in parquet files. This backend, similar to the
+  `MsBackendSql` below, has a very minimal memory footprint and is particularly
+  useful for very large data sets.
 
 - `MsBackendRawFileReader` (package
   [*MsBackendRawFileReader*](https://github.com/fgcz/MsBackendRawFileReader)):

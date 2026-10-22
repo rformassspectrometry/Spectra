@@ -30,15 +30,17 @@ register(SerialParam())
 # Introduction
 
 The `r Biocpkg("Spectra")` package provides a scalable and flexible
-infrastructure to represent, retrieve and handle mass spectrometry (MS)
-data. The `Spectra` object provides the user with a single standardized
-interface to access and manipulate MS data while supporting, through the concept
-of exchangeable *backends*, a large variety of different ways to store and
-retrieve mass spectrometry data. Such backends range from mzML/mzXML/CDF files,
-simple flat files, or database systems.
+infrastructure to represent, retrieve and handle mass spectrometry (MS) data
+[@rainer_open_2027]. The `Spectra` object provides the user with a single
+standardized interface to access and manipulate MS data while supporting,
+through the concept of exchangeable *backends*, a large variety of different
+ways to store and retrieve mass spectrometry data. Such backends range from
+mzML/mzXML/CDF files, simple flat files, or database systems.
 
 This vignette provides general examples and descriptions for the *Spectra*
-package. Additional information and tutorials are available, such as
+package. Additional information is available in the respective book chapter
+[@rainer_open_2027] (open preprint available at [rainer_open_2026]), or
+tutorials such as
 [SpectraTutorials](https://jorainer.github.io/SpectraTutorials/),
 [MetaboAnnotationTutorials](https://jorainer.github.io/MetaboAnnotationTutorials),
 or also in [@rainer_modular_2022]. For information on how to handle and
@@ -1309,16 +1311,37 @@ add support for additional data types or storage options is provided below:
   and variables. Has a minimal memory footprint because all data is retrieved
   on-the-fly from the SQL database.
 
-- `MsBackendMetaboLights` (package `r
-  BiocStyle::Biocpkg("MsBackendMetaboLights")`): retrieves and caches MS data
-  files from the MetaboLights repository.
+- `MsBackendMassIVE` (package `r BiocStyle::Biocpkg("MsBackendMassIVE")`):
+  retrieves and caches MS data files from the MassIVE repository.
+
+- `MsBackendMetaboLights` (package
+  `r BiocStyle::Biocpkg("MsBackendMetaboLights")`): retrieves and caches MS
+  data files from the public MetaboLights data repository.
+
+- `MsBackendMetabolomicsWorkbench` (package
+  `r BiocStyle::Biocpkg("MsBackendMetabolomicsWorkbench")`): retrieves and
+  caches MS data files from the MetabolomicsWorkbench repository.
 
 - `MsBackendMgf`: (package `r BiocStyle::Biocpkg("MsBackendMgf")`): support for
   import/export of mass spectrometry files in mascot generic format (MGF).
 
+- `MsBackendMongoDb`: (package
+  [*MsBackendMongoDb*](https://github.com/rformassspectrometry/MsBackendMongoDb)):
+  stores and retrieves MS data from a MongoDB noSQL database.
+
 - `MsBackendMsp`: (package `r BiocStyle::Biocpkg("MsBackendMsp")`): allows to
   import/export data in NIST MSP format. Extends the `MsBackendDataFrame` and
   keeps thus all data, after import, in memory.
+
+- `MsBackendOfflineSql` (package `r BiocStyle::Biocpkg("MsBackendSQL")`):
+  stores all MS data in a SQL database and has thus a minimal memory footprint.
+  Does, in contrast to `MsBackendSql`, not keep an active SQL database
+  connection and can thus support parallel processing.
+
+- `MsBackendParquet`: (package `r BiocStyle::Biocpkg("MsBackendParquet")`):
+  stores and accesses MS data in parquet files. This backend, similar to the
+  `MsBackendSql` below, has a very minimal memory footprint and is particularly
+  useful for very large data sets.
 
 - `MsBackendRawFileReader` (package `r Biocpkg("MsBackendRawFileReader")`):
   implements a backend for reading MS data from Thermo Fisher Scientific's raw
