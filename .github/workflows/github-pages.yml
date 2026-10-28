@@ -1,0 +1,134 @@
+## Read more about GitHub actions the features of this GitHub Actions workflow
+## at https://lcolladotor.github.io/biocthis/articles/biocthis.html#use_bioc_github_action
+##
+## For more details, check the biocthis developer notes vignette at
+## https://lcolladotor.github.io/biocthis/articles/biocthis_dev_notes.html
+##
+## You can add this workflow to other packages using:
+## > biocthis::use_bioc_github_action()
+##
+## Using GitHub Actions exposes you to many details about how R packages are
+## compiled and installed in several operating system.s
+### If you need help, please follow the steps listed at
+## https://github.com/r-lib/actions#where-to-find-help
+##
+## If you found an issue specific to biocthis's GHA workflow, please report it
+## with the information that will make it easier for others to help you.
+## Thank you!
+
+## Acronyms:
+## * GHA: GitHub Action
+## * OS: operating system
+
+on:
+  push:
+    branches:
+    - main
+
+name: github-pages
+
+## These environment variables control whether to run GHA code later on that is
+## specific to testthat, covr, and pkgdown.
+##
+## If you need to clear the cache of packages, update the number inside
+## cache-version as discussed at https://github.com/r-lib/actions/issues/86.
+## Note that you can always run a GHA test without the cache by using the word
+## "/nocache" in the commit message.
+env:
+  has_testthat: 'true'
+  run_covr: 'true'
+  run_pkgdown: 'true'
+  has_RUnit: 'false'
+  has_BiocCheck: 'false'
+  cache-version: 'cache-v4'
+
+jobs:
+  build-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    container: ${{ matrix.config.cont }}
+    ## Environment variables unique to this job.
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: ubuntu-latest, r: 'devel', bioc: 'devel', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
+      NOT_CRAN: true
+      TZ: UTC
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+
+      ## Most of these steps are the same as the ones in
+      ## https://github.com/r-lib/actions/blob/master/examples/check-standard.yaml
+      ## If they update their steps, we will also need to update ours.
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Query dependencies
+        run: |
+          install.packages('remotes')
+          saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
+        shell: Rscript {0}
+
+      - name: Install Linux system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sysreqs=$(Rscript -e 'cat("apt-get update -y && apt-get install -y", paste(gsub("apt-get install -y ", "", remotes::system_requirements("ubuntu", "20.04")), collapse = " "))')
+          echo $sysreqs
+          sudo -s eval "$sysreqs"
+
+      - name: Install BiocManager
+        run: |
+          message(paste('****', Sys.time(), 'installing BiocManager ****'))
+          remotes::install_cran("BiocManager")
+        shell: Rscript {0}
+
+      - name: Set BiocVersion
+        run: |
+          BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE)
+        shell: Rscript {0}
+
+      - name: Install dependencies pass 1
+        run: |
+          install.packages(c("pak", "remotes"))
+          pak::local_install_dev_deps(ask = FALSE)
+
+          ## Pass #1 at installing dependencies
+          pak::local_install(dependencies = TRUE)
+        continue-on-error: true
+        shell: Rscript {0}
+
+      - name: Install dependencies pass 2
+        run: |
+          ## Pass #2 at installing dependencies
+          pak::local_install(dependencies = TRUE)
+        shell: Rscript {0}
+
+      - name: Install pkgdown
+        if: github.ref == 'refs/heads/main' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        run: |
+          remotes::install_github("r-lib/pkgdown")
+        shell: Rscript {0}
+
+      - name: Install package
+        if: github.ref == 'refs/heads/main' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        run: R CMD INSTALL .
+
+      - name: Deploy package
+        if: github.ref == 'refs/heads/main' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git config --global --add safe.directory /__w/Spectra/Spectra
+          Rscript -e "pkgdown::deploy_to_branch(new_process = FALSE)"
+        shell: bash {0}
+        ## Note that you need to run pkgdown::deploy_to_branch(new_process = FALSE)
+        ## at least one locally before this will work. This creates the gh-pages
+        ## branch (erasing anything you haven't version controlled!) and
+        ## makes the git history recognizable by pkgdown.
