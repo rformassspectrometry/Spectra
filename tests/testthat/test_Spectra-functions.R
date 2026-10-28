@@ -929,3 +929,71 @@ test_that("shiftPeaks works", {
     res_mz <- mz(res)
     expect_equal(res_mz, mz(a) + seq_along(a))
 })
+
+test_that("filterNoisePeaks works", {
+    s <- filterEmptySpectra(sps_dda)
+
+    res <- filterNoisePeaks(s)
+    ms1 <- filterMsLevel(s, 1L)
+    ms1_res <- filterMsLevel(res, 1L)
+    expect_equal(lengths(ms1), lengths(ms1_res))
+
+    ms2 <- filterMsLevel(s, 2L)
+    ms2_res <- filterMsLevel(res, 2L)
+    ## All with less than 30 peaks are identical
+    l <- lengths(ms2) < 30
+    expect_equal(lengths(ms2[l]), lengths(ms2_res[l]))
+
+    expect_true(sum(lengths(ms2[!l]) > lengths(ms2_res[!l])) > 50)
+
+    ## Some examples:
+    i <- 47
+    i <- 411
+
+    if (FALSE) {
+        ## Compare against the *reference* implementation.
+        source("https://raw.githubusercontent.com/NicolaDalla/MSMS_noise_cleaning/refs/heads/mode/cleaning_function.R")
+
+        ms2$index <- seq_along(ms2)
+        res <- filterNoisePeaks(ms2)
+        ref <- cleaning_ref(ms2)
+        l <- lengths(ms2) >= 30
+        expect_equal(peaksData(res[!l]), peaksData(ref[!l]))
+
+        res <- res[l]
+        ref <- ref[l]
+        d <- lengths(res) == lengths(ref)
+        expect_equal(peaksData(res[d]), peaksData(ref[d]))
+
+        ## Nail down to those that differ
+        res <- res[!d]
+        ref <- ref[!d]
+
+        i <- res$index[1L] # keeps an additional peak with very low intensity
+        i <- res$index[2L] # keeps an additional peak with lower intensity
+        i <- res$index[3L] # keeps a single peak with an intensity below estimated
+        i <- res$index[6L] # keeps additional peaks at low intensity range
+        i <- res$index[7L] # keeps additional peaks at low intensity range
+        i <- res$index[10L] # throws warning.
+
+        x <- peaksData(ms2[i])[[1L]]
+
+        plotSpectra(ms2[i])
+        i <- log10(x[, "intensity"])
+        n <- which(i < quantile(i, 0.75))
+        o <- rank(i)
+        m <- rlm(y ~ x, list(x = o[n], y = i[n]))
+        p <- predict(m, list(x = o, y = i))
+        keep <- (i - p) > sd(residuals(m)) * 3
+        keep2 <- abs(p - i) > sd(residuals(m)) * 3
+
+        plot(o, i, xlab = "order", ylab = expression(log[10]~intensity))
+        points(o[n], i[n], pch = 16)
+        abline(m)
+        points(o[keep], i[keep], pch = 16, col = "blue", cex = 2)
+        points(o[keep2], i[keep2], pch = 1, col = "red", cex = 2, lwd = 2)
+
+        ## The discrepancy was reported in issue
+        ## https://github.com/NicolaDalla/MSMS_noise_cleaning/issues/1
+    }
+})
