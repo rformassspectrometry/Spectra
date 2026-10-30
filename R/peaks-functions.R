@@ -785,7 +785,7 @@ joinPeaksNone <- function(x, y, ...) {
 #' the intensity of noise peaks to follow a uniform distribution (Dalla Valle
 #' 2025).
 #' In detail, a linear model is robustly fitted to the intensities of
-#' peaks with an intensity below the `intensityQuantile` quantile (by default
+#' peaks with an intensity below the `intensityQuantile` (by default
 #' the 75% quantile). Peaks are retained if their measured intensity is
 #' considerably larger than the expected intensity based on the background
 #' (noise) distribution (i.e., larger than 3 times the standard deviation of
@@ -809,7 +809,7 @@ joinPeaksNone <- function(x, y, ...) {
 #' @param intensityQuantile `numeric(1)` defining the intensity quantile below
 #'     which peak intensities are used to model the expected (uniform) noise.
 #'
-#' @param msLevel `ineger(1)` defining the MS level for which the filter should
+#' @param msLevel `integer(1)` defining the MS level for which the filter should
 #'     be applied. For spectra with an MS level different than `msLevel` the
 #'     input peak matrix `x` is returned unchanged.
 #'

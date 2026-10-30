@@ -1314,10 +1314,10 @@ shiftPeaks <- function(object, offset = 0.0,
 #' For `method = "uniform_intensity`": the method fits (robustly) a linear
 #' model explaining the peak intensity by the rank of the peak (in the
 #' intensity-ordered peak list) for peaks with an intensity below the
-#' `intensityQuantile` intensity quantile. Peaks are retained if their
-#' measured intensity is considerably larger than the expected intensity
+#' `intensityQuantile` (by default the 75% quantile). Peaks are retained if
+#' their measured intensity is considerably larger than the expected intensity
 #' following the background distribution (i.e., larger than 3 times the
-#' standard deviation of the noise model residuals). True fragment peaks are
+#' standard deviation of the noise model residuals). *True* fragment peaks are
 #' thus required to have intensities larger than expected from the (uniform)
 #' background distribution. See examples below for a graphical illustration
 #' of the approach.
@@ -1336,7 +1336,7 @@ shiftPeaks <- function(object, offset = 0.0,
 #'     `method = "uniform_intensity"` (the default) is supported.
 #'
 #' @param minPeakCount `integer(1)` with the minimal required number of peaks
-#'     of a spectrum to apply the filter.
+#'     of a spectrum to apply the filter. Defaults to `minPeakCount = 30`.
 #'
 #' @param msLevel. `integer(1)` defining the MS level of the spectra which
 #'     should be filtered. Defaults to `msLevel. = 2L`.

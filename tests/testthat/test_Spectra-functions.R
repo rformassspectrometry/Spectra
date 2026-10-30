@@ -945,18 +945,4 @@ test_that("filterNoisePeaks works", {
     expect_equal(lengths(ms2[l]), lengths(ms2_res[l]))
 
     expect_true(sum(lengths(ms2[!l]) > lengths(ms2_res[!l])) > 50)
-
-    ## Some examples:
-    i <- 47
-    i <- 411
-
-    if (FALSE) {
-        ## Compare against the *reference* implementation.
-        source("https://raw.githubusercontent.com/NicolaDalla/MSMS_noise_cleaning/refs/heads/mode/cleaning_function.R")
-
-        ms2$index <- seq_along(ms2)
-        res <- filterNoisePeaks(ms2)
-        ref <- cleaning_ref(ms2)
-        expect_equal(peaksData(res), peaksData(ref))
-    }
 })
