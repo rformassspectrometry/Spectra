@@ -772,3 +772,35 @@ test_that(".peaks_shift_mz_variable_x works", {
     res <- .peaks_shift_mz_variable_left(pks, offset = "what", what = 3)
     expect_equal(res[, 1L], pks[, 1L] - 3)
 })
+
+test_that(".peaks_filter_uniform_intensity_noise works", {
+    tmp <- cbind(mz = numeric(), intensity = numeric())
+    res <- .peaks_filter_uniform_intensity_noise(tmp, spectrumMsLevel = 2L)
+    expect_equal(res, tmp)
+
+    set.seed(123)
+    tmp <- cbind(
+        mz = abs(rnorm(44, mean = 20, sd = 10)),
+        intensity = c(runif(40, min = 10, max = 20), 28, 87, 59, 49))
+    res <- .peaks_filter_uniform_intensity_noise(tmp, spectrumMsLevel = 2L)
+    expect_true(is.matrix(res))
+    ## A bit surprising, but that's what we get...
+    expect_equal(res, tmp[c(1L, which(tmp[, "intensity"] >= 28)), ])
+
+    res <- .peaks_filter_uniform_intensity_noise(tmp, spectrumMsLevel = 2L,
+                                                 minPeakCount = 50)
+    expect_equal(res, tmp)
+
+    res <- .peaks_filter_uniform_intensity_noise(tmp, spectrumMsLevel = 1L,
+                                                 msLevel = 2L)
+    expect_equal(res, tmp)
+
+    tmp <- cbind(
+        mz = abs(rnorm(44, mean = 20, sd = 10)),
+        intensity = c(runif(44, min = 10, max = 30)))
+
+    ## Real data.
+    tmp <- peaksData(filterMsLevel(sps_dda, 2L))[[271]]
+    res <- .peaks_filter_uniform_intensity_noise(tmp, spectrumMsLevel = 2L)
+    expect_true(nrow(res) < nrow(tmp))
+})

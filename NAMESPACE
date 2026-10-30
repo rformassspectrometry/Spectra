@@ -17,6 +17,7 @@ export(countIdentifications)
 export(deisotopeSpectra)
 export(estimatePrecursorMz)
 export(fillCoreSpectraVariables)
+export(filterNoisePeaks)
 export(filterPeaksRanges)
 export(filterPrecursorIsotopes)
 export(filterPrecursorMaxIntensity)
@@ -171,6 +172,7 @@ importFrom(BiocParallel,
   bpparam
 )
 importFrom(IRanges,NumericList)
+importFrom(MASS,rlm)
 importFrom(MetaboCoreUtils,
   isotopicSubstitutionMatrix,
   isotopologues
@@ -246,7 +248,10 @@ importFrom(methods,
 importFrom(stats,
   approx,
   cor,
+  predict,
   quantile,
+  residuals,
+  sd,
   weighted.mean
 )
 importFrom(tools,file_path_sans_ext)

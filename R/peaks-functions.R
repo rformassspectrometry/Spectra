@@ -776,3 +776,85 @@ joinPeaksNone <- function(x, y, ...) {
     x[, 1L] <- x[, 1L] - offset
     x
 }
+
+#' @title Remove background peaks based on signal noise modeling
+#'
+#' @description
+#'
+#' This function removes peaks based on a noise modeling approach that assumes
+#' the intensity of noise peaks to follow a uniform distribution (Dalla Valle
+#' 2025).
+#' In detail, a linear model is robustly fitted to the intensities of
+#' peaks with an intensity below the `intensityQuantile` (by default
+#' the 75% quantile). Peaks are retained if their measured intensity is
+#' considerably larger than the expected intensity based on the background
+#' (noise) distribution (i.e., larger than 3 times the standard deviation of
+#' the noise model residuals). True fragment peaks are thus required to have
+#' larger intensities then expected from the (uniform signal) background
+#' distribution.
+#'
+#' @note
+#'
+#' The current implementation based on the original function from
+#' (Dalla Valle 2025).
+#'
+#' @param x peak `matrix` (or `data.frame`).
+#'
+#' @param spectrumMsLevel `integer(1)` with the MS level of the current
+#'     spectrum.
+#'
+#' @param minPeakCount `integer(1)` with the minimum required number of peaks
+#'     to filter the peaks matrix based on intensity noise estimation.
+#'
+#' @param intensityQuantile `numeric(1)` defining the intensity quantile below
+#'     which peak intensities are used to model the expected (uniform) noise.
+#'
+#' @param msLevel `integer(1)` defining the MS level for which the filter should
+#'     be applied. For spectra with an MS level different than `msLevel` the
+#'     input peak matrix `x` is returned unchanged.
+#'
+#' @return
+#'
+#' Input matrix `x` or a subset of `x` with noise peaks (rows) removed.
+#' The original input matrix is returned if:
+#'
+#' - the MS level of the spectrum does not match `msLevel`
+#' - the total number of peaks is below `minPeakCount`
+#' - less than 4 data points (peaks) are available to fit the model
+#' - not a single peak passes the filter
+#'
+#' @author Johannes Rainer, Nicola Dalla Valle
+#'
+#' @references
+#'
+#' Nicola Dalla Valle, Mar Garcia-Aloy, Peter Robatscher, Pietro Franceschi,
+#' Michael Oberhuber; Improving Spectral Similarity and Molecular Network
+#' Reliability through Noise Signal Filtering in MS/MS Spectra. Anal. Chem. 29
+#' July 2025; 97 (29): 15873–15882. https://doi.org/10.1021/acs.analchem.5c02109
+#'
+#' @importFrom MASS rlm
+#'
+#' @importFrom stats sd residuals predict
+#'
+#' @noRd
+.peaks_filter_uniform_intensity_noise <- function(x, spectrumMsLevel,
+                                                  minPeakCount = 30L,
+                                                  intensityQuantile = 0.75,
+                                                  msLevel = spectrumMsLevel,
+                                                  ...) {
+    if (!spectrumMsLevel %in% msLevel)
+        return(x)
+    if (nrow(x) < minPeakCount)
+        return(x)
+    i <- log10(x[, "intensity"])
+    n <- which(i < quantile(i, intensityQuantile))
+    if (length(x) <= 3) # only fit if we have at least 4 points
+        return(x)
+    o <- rank(i)
+    m <- rlm(y ~ x, list(x = o[n], y = i[n]))
+    p <- predict(m, list(x = o, y = i))
+    keep <- (i - p) > sd(residuals(m)) * 3
+    if (any(keep))
+        x[keep, , drop = FALSE]
+    else x
+}

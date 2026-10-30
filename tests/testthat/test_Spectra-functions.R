@@ -929,3 +929,20 @@ test_that("shiftPeaks works", {
     res_mz <- mz(res)
     expect_equal(res_mz, mz(a) + seq_along(a))
 })
+
+test_that("filterNoisePeaks works", {
+    s <- filterEmptySpectra(sps_dda)
+
+    res <- filterNoisePeaks(s)
+    ms1 <- filterMsLevel(s, 1L)
+    ms1_res <- filterMsLevel(res, 1L)
+    expect_equal(lengths(ms1), lengths(ms1_res))
+
+    ms2 <- filterMsLevel(s, 2L)
+    ms2_res <- filterMsLevel(res, 2L)
+    ## All with less than 30 peaks are identical
+    l <- lengths(ms2) < 30
+    expect_equal(lengths(ms2[l]), lengths(ms2_res[l]))
+
+    expect_true(sum(lengths(ms2[!l]) > lengths(ms2_res[!l])) > 50)
+})
