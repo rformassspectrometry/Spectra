@@ -62,7 +62,7 @@ head(res)
 ## For such a calculation the vectorized `sqrt` would however be recommended
 system.time(sqrt(x))
 #>    user  system elapsed 
-#>   0.001   0.000   0.000 
+#>       0       0       0 
 system.time(chunkapply(x, sqrt, chunkSize = 200))
 #>    user  system elapsed 
 #>       0       0       0 

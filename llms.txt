@@ -391,6 +391,9 @@ Documentation (manuals, vignettes) is licensed under **CC BY-NC-SA
   [`filterValues(`*`<Spectra>`*`)`](https://rformassspectrometry.github.io/Spectra/reference/filterMsLevel.md)
   : Filter and subset Spectra objects
 
+- [`filterNoisePeaks()`](https://rformassspectrometry.github.io/Spectra/reference/filterNoisePeaks.md)
+  : Filter peaks based on noise modeling
+
 - [`filterPeaksRanges()`](https://rformassspectrometry.github.io/Spectra/reference/filterPeaksRanges.md)
   : Filter peaks based on spectra and peaks variable ranges
 

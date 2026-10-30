@@ -23,7 +23,7 @@ previous and next MS1 spectrum. See below for an example."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -140,6 +140,9 @@ Defaults to <code>f = dataOrigin(x)</code>.</p></dd>
 <span class="r-in"><span><span class="co">## compare the estimated and reported precursor intensities.</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu">MsDataHub</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/MsDataHub/reference/PXD000001.html" class="external-link">TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> see ?MsDataHub and browseVignettes('MsDataHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> downloading 1 resources</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> retrieving 1 resource</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
 <span class="r-in"><span><span class="va">tmt</span> <span class="op">&lt;-</span> <span class="fu"><a href="Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">f</span>, backend <span class="op">=</span> <span class="fu"><a href="MsBackend.html">MsBackendMzR</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pmi</span> <span class="op">&lt;-</span> <span class="fu">estimatePrecursorIntensity</span><span class="op">(</span><span class="va">tmt</span><span class="op">)</span></span></span>

@@ -2,6 +2,13 @@
 
 ## Spectra 1.23
 
+### Changes in 1.23.7
+
+- Add
+  [`filterNoisePeaks()`](https://rformassspectrometry.github.io/Spectra/reference/filterNoisePeaks.md)
+  function to support removing *noise peaks* following the method from
+  Dalla Valle et al. Anal. Chem. (2025).
+
 ### Changes in 1.23.6
 
 - Update citation information and add links to additional external

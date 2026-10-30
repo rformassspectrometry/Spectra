@@ -87,6 +87,9 @@ Johannes Rainer with feedback and suggestions from Corey Broeckling
 ## compare the estimated and reported precursor intensities.
 f <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
 #> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> downloading 1 resources
+#> retrieving 1 resource
+#> 
 #> loading from cache
 tmt <- Spectra(f, backend = MsBackendMzR())
 pmi <- estimatePrecursorIntensity(tmt)

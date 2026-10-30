@@ -13,8 +13,8 @@ Garcia-Aloy \[ctb\] (ORCID: <https://orcid.org/0000-0002-1330-6610>),
 Guillaume Deflandre \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-1257-2416>), Ahlam Mentag \[ctb\] (ORCID:
 <https://orcid.org/0009-0008-5438-7067>)\
-**Last modified:** 2026-10-22 06:13:55.613696\
-**Compiled**: Thu Oct 22 06:52:37 2026
+**Last modified:** 2026-10-30 12:51:43.782394\
+**Compiled**: Fri Oct 30 13:07:21 2026
 
 ## Introduction
 
@@ -2222,10 +2222,6 @@ below.
     ## 
     ##     bin, entropy, smooth
 
-    ## The following object is masked from 'package:BiocGenerics':
-    ## 
-    ##     group
-
     ## The following object is masked from 'package:stats':
     ## 
     ##     smooth
@@ -2403,21 +2399,21 @@ the current workspace (which in our case is an instance of our
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsCoreUtils_1.25.4   IRanges_2.47.5       Spectra_1.23.6      
-    ## [4] BiocParallel_1.47.0  S4Vectors_0.51.10    BiocGenerics_0.59.12
-    ## [7] generics_0.1.4       BiocStyle_2.41.0    
+    ## [1] MsCoreUtils_1.24.0  IRanges_2.46.0      Spectra_1.23.7     
+    ## [4] BiocParallel_1.46.0 S4Vectors_0.50.3    BiocGenerics_0.58.1
+    ## [7] generics_0.1.4      BiocStyle_2.40.0   
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] jsonlite_2.0.0         compiler_4.6.1         BiocManager_1.30.27   
     ##  [4] parallel_4.6.1         cluster_2.1.8.3        jquerylib_0.1.4       
     ##  [7] systemfonts_1.3.2      textshaping_1.0.5      yaml_2.3.12           
-    ## [10] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.45.0   
+    ## [10] fastmap_1.2.0          R6_2.6.1               ProtGenerics_1.44.0   
     ## [13] knitr_1.52             htmlwidgets_1.6.4      MASS_7.3-66           
     ## [16] bookdown_0.48          desc_1.4.3             bslib_0.12.0          
     ## [19] rlang_1.3.0            cachem_1.1.0           xfun_0.62             
     ## [22] fs_2.1.0               sass_0.4.10            otel_0.2.0            
     ## [25] cli_3.6.6              pkgdown_2.2.1.9000     digest_0.6.39         
-    ## [28] MetaboCoreUtils_1.21.2 lifecycle_1.0.5        clue_0.3-68           
+    ## [28] MetaboCoreUtils_1.20.1 lifecycle_1.0.5        clue_0.3-68           
     ## [31] data.table_1.18.6.1    evaluate_1.0.5         codetools_0.2-20      
     ## [34] ragg_1.5.2             rmarkdown_2.32         tools_4.6.1           
     ## [37] htmltools_0.5.9

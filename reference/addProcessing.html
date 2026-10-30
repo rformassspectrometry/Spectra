@@ -25,7 +25,7 @@ memory demand, a chunk-wise processing of the data is performed."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">Spectra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.23.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -550,6 +550,9 @@ processing.</p></li>
 <span class="r-in"><span><span class="co">## Load a `Spectra` object with LC-MS/MS data.</span></span></span>
 <span class="r-in"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu">MsDataHub</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/MsDataHub/reference/TripleTOF.html" class="external-link">PestMix1_DDA.mzML</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> see ?MsDataHub and browseVignettes('MsDataHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> downloading 1 resources</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> retrieving 1 resource</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
 <span class="r-in"><span><span class="va">sps_dda</span> <span class="op">&lt;-</span> <span class="fu"><a href="Spectra.html">Spectra</a></span><span class="op">(</span><span class="va">fl</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sps_dda</span></span></span>
@@ -570,7 +573,7 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13f241a6688e_7861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2bc3259ee9cd_7861</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##  --------  FUNCTIONS RETURNING A SPECTRA  --------</span></span></span>
@@ -595,10 +598,10 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13f241a6688e_7861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2bc3259ee9cd_7861</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Lazy evaluation queue: 1 processing step(s)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 20 in MS level(s) 1, 2 set to 0 [Thu Oct 22 06:50:19 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Signal &lt;= 20 in MS level(s) 1, 2 set to 0 [Fri Oct 30 13:04:55 2026] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get the intensities of the first spectrum before and after the</span></span></span>
 <span class="r-in"><span><span class="co">## operation</span></span></span>
@@ -758,10 +761,10 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13f241a6688e_7861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2bc3259ee9cd_7861</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Scale peak intensities in spectra of MS level(s) 2. [Thu Oct 22 06:50:22 2026]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Thu Oct 22 06:50:23 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Scale peak intensities in spectra of MS level(s) 2. [Fri Oct 30 13:04:58 2026]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Reset object. [Fri Oct 30 13:04:59 2026] </span>
 <span class="r-in"><span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">sps_dda</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 223 211 227 210 220 228</span>
 <span class="r-in"><span><span class="fu"><a href="spectraData.html">lengths</a></span><span class="op">(</span><span class="va">sps_mod</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -795,9 +798,9 @@ processing.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7602         1   899.993      7602</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ... 34 more variables/columns.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Oct 22 06:50:25 2026]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Thu Oct 22 06:50:25 2026]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Applied processing queue with 1 steps [Thu Oct 22 06:50:26 2026] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Oct 30 13:05:02 2026]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Fri Oct 30 13:05:02 2026]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Applied processing queue with 1 steps [Fri Oct 30 13:05:02 2026] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## While we can't *undo* this filtering operation now using the `reset()`</span></span></span>
 <span class="r-in"><span><span class="co">## function, accessing the data would now be faster, because the operation</span></span></span>

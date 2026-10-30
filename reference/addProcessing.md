@@ -532,6 +532,9 @@ Shahaf, Mar Garcia-Aloy
 ## Load a `Spectra` object with LC-MS/MS data.
 fl <- MsDataHub::PestMix1_DDA.mzML()
 #> see ?MsDataHub and browseVignettes('MsDataHub') for documentation
+#> downloading 1 resources
+#> retrieving 1 resource
+#> 
 #> loading from cache
 sps_dda <- Spectra(fl)
 sps_dda
@@ -552,7 +555,7 @@ sps_dda
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 13f241a6688e_7861
+#> 2bc3259ee9cd_7861
 
 
 ##  --------  FUNCTIONS RETURNING A SPECTRA  --------
@@ -577,10 +580,10 @@ sps_mod
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 13f241a6688e_7861
+#> 2bc3259ee9cd_7861
 #> Lazy evaluation queue: 1 processing step(s)
 #> Processing:
-#>  Signal <= 20 in MS level(s) 1, 2 set to 0 [Thu Oct 22 06:50:19 2026] 
+#>  Signal <= 20 in MS level(s) 1, 2 set to 0 [Fri Oct 30 13:04:55 2026] 
 
 ## Get the intensities of the first spectrum before and after the
 ## operation
@@ -740,10 +743,10 @@ tmp
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> 13f241a6688e_7861
+#> 2bc3259ee9cd_7861
 #> Processing:
-#>  Scale peak intensities in spectra of MS level(s) 2. [Thu Oct 22 06:50:22 2026]
-#>  Reset object. [Thu Oct 22 06:50:23 2026] 
+#>  Scale peak intensities in spectra of MS level(s) 2. [Fri Oct 30 13:04:58 2026]
+#>  Reset object. [Fri Oct 30 13:04:59 2026] 
 lengths(sps_dda) |> head()
 #> [1] 223 211 227 210 220 228
 lengths(sps_mod) |> head()
@@ -777,9 +780,9 @@ sps_mod
 #> 7602         1   899.993      7602
 #>  ... 34 more variables/columns.
 #> Processing:
-#>  Switch backend from MsBackendMzR to MsBackendMemory [Thu Oct 22 06:50:25 2026]
-#>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Thu Oct 22 06:50:25 2026]
-#>  Applied processing queue with 1 steps [Thu Oct 22 06:50:26 2026] 
+#>  Switch backend from MsBackendMzR to MsBackendMemory [Fri Oct 30 13:05:02 2026]
+#>  Remove peaks with intensities outside [5, Inf] in spectra of MS level(s) 1, 2. [Fri Oct 30 13:05:02 2026]
+#>  Applied processing queue with 1 steps [Fri Oct 30 13:05:02 2026] 
 
 ## While we can't *undo* this filtering operation now using the `reset()`
 ## function, accessing the data would now be faster, because the operation
